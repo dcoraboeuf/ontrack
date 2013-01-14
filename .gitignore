@@ -1,1 +1,9 @@
-target/
+target
+.settings
+.project
+.classpath
+.groovy
+.idea
+*.iml
+work
+
