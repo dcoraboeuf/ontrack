@@ -45,6 +45,7 @@
 	</properties>
 
 	<modules>
+		<module>ontrack-core</module>
 	</modules>
 
 	<dependencyManagement>
