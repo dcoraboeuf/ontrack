@@ -1,6 +1,7 @@
 package net.ontrack.web.config;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -40,6 +42,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public Strings strings() throws IOException {
 		return StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
+	}
+	
+	@Bean
+	public Object exporter() throws IOException {
+		MBeanExporter exporter = new MBeanExporter();
+		exporter.setBeans(Collections.<String,Object>singletonMap("bean:name=strings", strings()));
+		return exporter;
 	}
 
 	@Override
