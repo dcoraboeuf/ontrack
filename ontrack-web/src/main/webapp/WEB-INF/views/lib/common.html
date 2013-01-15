@@ -2,9 +2,9 @@
 <#include "/lib/i18n.html" />
 
 <#macro usermessage>
-	<#if message??>
-		<div class="alert alert-${message.type}">
-			${message.message?html}
+	<#if usermessage??>
+		<div class="alert alert-${usermessage.type}">
+			${usermessage.message?html}
 		</div>
 	</#if>
 </#macro>
@@ -14,14 +14,6 @@
 		<@lh key="general.yes" />
 	<#else>
 		<@lh key="general.no" />
-	</#if>
-</#macro>
-
-<#macro select_option value text selection>
-	<#if value == selection>
-		<option value="${value?html}" selected="selected">${text?html}</option>
-	<#else>
-		<option value="${value?html}">${text?html}</option>
 	</#if>
 </#macro>
 
@@ -42,15 +34,4 @@
 			<#nested>
 		</section>
 	</section>
-</#macro>
-
-<#macro dialog id>
-	<div id="${id?html}" class="dialog">
-		<#nested />
-		<div id="${id?html}-error" class="alert alert-error"></div>
-	</div>
-</#macro>
-
-<#macro current_date>
-	<input id="current_date" type="hidden" value="${currentDate?html}" /> 
 </#macro>

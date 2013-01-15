@@ -3,7 +3,7 @@
 
 <#macro layout_title page title="">
 	<#if title == "">
-		<@lh key = pageId />
+		<@lh key = page />
 	<#else>
 		${title?html}
 	</#if>
@@ -48,7 +48,7 @@
 				<script src="${base}/scripts/${scriptfile}" type="text/javascript"></script>
 			</#list>
 			
-			<title><@lh key="app.title"/> - <@lh key="app.version" /> - <@layout_title pageId=pageId title=title /></title>
+			<title><@lh key="app.title"/> - <@lh key="app.version" /> - <@layout_title page=page title=title /></title>
 	    </head>
 		<body>
 			<#nested>
