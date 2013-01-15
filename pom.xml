@@ -47,6 +47,7 @@
 	<modules>
 		<module>ontrack-core</module>
 		<module>ontrack-backend</module>
+		<module>ontrack-web</module>
 	</modules>
 
 	<dependencyManagement>

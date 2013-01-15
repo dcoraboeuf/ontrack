@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+	<New id="ontrackDataSource" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>jdbc/ontrack</Arg>
+		<Arg>
+			<New class="org.apache.commons.dbcp.BasicDataSource">
+				<Set name="DriverClassName">com.mysql.jdbc.Driver</Set>
+				<Set name="Url">jdbc:mysql://mysql/ontrack</Set>
+				<Set name="Username">ontrack</Set>
+				<Set name="Password">ontrack</Set>
+				<Set name="DefaultAutoCommit">false</Set>
+				<Set name="InitialSize">3</Set>
+				<Set name="MaxActive">6</Set>
+			</New>
+		</Arg>
+	</New>
+
+	<New id="ontrackMailSession" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>mail/SendGrid</Arg>
+		<Arg>
+			<New class="org.eclipse.jetty.jndi.factories.MailSessionReference">
+				<Set name="user">fred</Set>
+				<Set name="password">fred</Set>
+				<Set name="properties">
+					<New class="java.util.Properties">
+						<Put name="mail.smtp.host">XXX</Put>
+						<Put name="mail.from">me@me</Put>
+						<Put name="mail.debug">true</Put>
+					</New>
+				</Set>
+			</New>
+		</Arg>
+	</New>
+
+</Configure>
