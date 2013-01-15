@@ -13,12 +13,16 @@ import net.ontrack.web.support.fm.FnLocSelected;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -26,8 +30,12 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 @Configuration
 @EnableWebMvc
+@PropertySource("/META-INF/strings/core.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
-	
+
+	@Autowired
+	private Environment env;
+
 	// TODO Moves this to the core
 	@Bean
 	public Strings strings() throws IOException {
@@ -38,17 +46,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
-	
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		String version = env.getProperty("app.version");
+		registry.addResourceHandler(String.format("/resources/v%s/**", version)).addResourceLocations("/static/");
+	}
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new WebInterceptor());
 	}
-	
+
 	@Bean
 	public FreeMarkerConfig freemarkerConfig() throws IOException {
 		FreeMarkerConfigurer c = new FreeMarkerConfigurer();
 		c.setTemplateLoaderPath("/WEB-INF/views");
-		// Freemarker variables		
+		// Freemarker variables
 		Map<String, Object> variables = new HashMap<>();
 		variables.put("loc", new FnLoc(strings()));
 		variables.put("locSelected", new FnLocSelected());
@@ -58,7 +72,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		// OK
 		return c;
 	}
-	
+
 	@Bean
 	public ViewResolver viewResolver() {
 		FreeMarkerViewResolver o = new FreeMarkerViewResolver();
