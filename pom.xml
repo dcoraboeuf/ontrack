@@ -35,7 +35,7 @@
 
 	<properties>
 		<!-- Versions -->
-		<springVersion>3.1.1.RELEASE</springVersion>
+		<springVersion>3.2.0.RELEASE</springVersion>
 		<springSecurityVersion>3.1.1.RELEASE</springSecurityVersion>
 		<slf4jVersion>1.6.1</slf4jVersion>
 		<groovyVersion>2.0.5</groovyVersion>
@@ -48,6 +48,7 @@
 		<module>ontrack-core</module>
 		<module>ontrack-backend</module>
 		<module>ontrack-web</module>
+		<module>ontrack-service</module>
 	</modules>
 
 	<dependencyManagement>
