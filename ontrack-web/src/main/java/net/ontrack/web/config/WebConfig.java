@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.FnLoc;
 import net.ontrack.web.support.fm.FnLocFormatDate;
@@ -40,14 +41,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	// TODO Moves this to the core
 	@Bean
-	public Strings strings() throws IOException {
+	public Strings strings() {
 		return StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
 	}
-	
+
 	@Bean
 	public Object exporter() throws IOException {
 		MBeanExporter exporter = new MBeanExporter();
-		exporter.setBeans(Collections.<String,Object>singletonMap("bean:name=strings", strings()));
+		exporter.setBeans(Collections.<String, Object> singletonMap("bean:name=strings", strings()));
 		return exporter;
 	}
 
@@ -64,11 +65,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LocaleInterceptor(strings()));
 		registry.addInterceptor(new WebInterceptor());
 	}
 
 	@Bean
-	public FreeMarkerConfig freemarkerConfig() throws IOException {
+	public FreeMarkerConfig freemarkerConfig() {
 		FreeMarkerConfigurer c = new FreeMarkerConfigurer();
 		c.setTemplateLoaderPath("/WEB-INF/views");
 		// Freemarker variables
