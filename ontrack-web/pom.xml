@@ -12,12 +12,11 @@
 	<artifactId>ontrack-web</artifactId>
 	<packaging>war</packaging>
 	
-	<name>ontrack-web</name>
+	<name>ontrack Web</name>
 	<description>The Web application</description>
 	
 	<dependencies>
 		<!-- This -->
-		<!--
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ontrack-service</artifactId>
@@ -25,11 +24,10 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>iteach-backend</artifactId>
+			<artifactId>ontrack-backend</artifactId>
 			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-		-->
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
