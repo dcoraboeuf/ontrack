@@ -3,15 +3,13 @@
 <#macro projectgroups id="projectgroups" create=true>
 	<@dynamicsection id=id>
 		<#if create>
-			<@form>
-				<@dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
+			<@form_dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
 					<@form_text name="name" label=loc('projectgroup.name') />
 					<@form_memo name="description" label=loc('projectgroup.description') />
 					
 					<@dialog_button_cancel />
 					<@dialog_button id="projectgroup-create-dialog-submit" class="btn-primary" text=loc('general.create') />
-				</@dialog>
-			</@form>
+			</@form_dialog>
 			<button id="projectgroup-create-button" type="button" class="btn btn-link" onclick="ProjectGroups.createProjectGroup()"><@lh key="projectgroup.create" /></button>
 		</#if>
 	</@dynamicsection>

@@ -93,6 +93,14 @@
 	</form>
 </#macro>
 
+<#macro form_dialog id title>
+	<@form>
+		<@dialog id=id title=title>
+			<#nested />
+		</@dialog>
+	</@form>
+</#macro>
+
 <#macro form_field name label idPrefix="" help="">
 	<#assign id = idPrefix + name />
 	<div class="control-group">
