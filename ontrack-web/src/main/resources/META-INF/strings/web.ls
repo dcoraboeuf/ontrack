@@ -40,9 +40,14 @@ projectgroup.create.title
 
 projectgroup.name
 	en,fr -> @[model.name]
+projectgroup.description
+	en,fr -> @[model.description]
 	
 [model]
 
 model.name
 	en -> Name
 	fr -> Nom
+
+model.description
+	en,fr -> Description

@@ -95,15 +95,27 @@
 	</form>
 </#macro>
 
-<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="">
+<#macro form_field name label idPrefix="" help="">
 	<#assign id = idPrefix + name />
 	<div class="control-group">
 		<label class="control-label" for="${id?html}">${label?html}</label>
 		<div class="controls">
-			<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size}" maxlength="${maxlength}" />
+			<#nested />
 			<#if help != "">
 				<span class="help-block">${help?html}</span>
 			</#if>
 		</div>
 	</div>
+</#macro>
+
+<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="">
+	<@form_field name=name label=label idPrefix=idPrefix help=help>
+		<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size}" maxlength="${maxlength}" />
+	</@form_field>
+</#macro>
+
+<#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="">
+	<@form_field name=name label=label idPrefix=idPrefix help=help>
+		<textarea name="${name?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size}" maxlength="${maxlength}" rows="${rows}"></textarea>
+	</@form_field>
 </#macro>
