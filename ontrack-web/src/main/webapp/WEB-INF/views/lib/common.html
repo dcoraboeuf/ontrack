@@ -50,18 +50,20 @@
 	<#assign dialogButtons = [] />
 	<#assign content><#nested/></#assign>
 	<div id="${id?html}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="${id?html}-label" aria-hidden="true" data-keyboard="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
-			<h3 id="${id?html}-label">${title?html}</h3>
-		</div>
-		<div class="modal-body">
-			${content}
-		</div>
-		<div class="modal-footer">
-			<#list dialogButtons as dialogButton>
-				${dialogButton}
-			</#list>
-		</div>
+		<@form id=id+"-form">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
+				<h3 id="${id?html}-label">${title?html}</h3>
+			</div>
+			<div class="modal-body">
+				${content}
+			</div>
+			<div class="modal-footer">
+				<#list dialogButtons as dialogButton>
+					${dialogButton}
+				</#list>
+			</div>
+		</@form>
 	</div>
 	<#assign dialogId = "" />
 </#macro>
@@ -87,18 +89,10 @@
 	</#if>
 </#macro>
 
-<#macro form>
-	<form class="form-horizontal">
+<#macro form id>
+	<form id="${id?html}" class="form-horizontal">
 		<#nested />
 	</form>
-</#macro>
-
-<#macro form_dialog id title>
-	<@form>
-		<@dialog id=id title=title>
-			<#nested />
-		</@dialog>
-	</@form>
 </#macro>
 
 <#macro form_field name label idPrefix="" help="">

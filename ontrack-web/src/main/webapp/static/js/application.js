@@ -44,8 +44,8 @@ var Application = function () {
 	
 	function dialog (dialogId, onSubmitFn) {
 		// Sets the submit function
-		$('form > #' + dialogId + ' button[type="submit"]').unbind('submit');
-		$('form > #' + dialogId + ' button[type="submit"]').submit(function () {
+		$('#' + dialogId + ' form').unbind('submit');
+		$('#' + dialogId + ' form').submit(function () {
 			if (onSubmitFn()) {
 				$('#' + dialogId).modal('hide');
 			}
