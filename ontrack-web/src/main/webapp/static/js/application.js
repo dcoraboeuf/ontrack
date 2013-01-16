@@ -20,7 +20,7 @@ String.prototype.html = function() {
 String.prototype.htmlWithLines = function() {
 	var text = this.html();
 	return text.replace(/\n/g, '<br/>');
-}
+};
 
 // Global functions
 
@@ -41,6 +41,10 @@ function loc () {
 // Application singleton
 
 var Application = function () {
+	
+	function dialog (config) {
+		
+	}
 	
 	function confirmAndCall (text, callback) {
 		$('<div>{0}</div>'.format(text)).dialog({
@@ -119,6 +123,7 @@ var Application = function () {
 	}
 	
 	return {
+		dialog: dialog,
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,

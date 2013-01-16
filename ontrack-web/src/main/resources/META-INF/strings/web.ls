@@ -4,6 +4,16 @@ language.en
 	en,fr -> English
 language.fr
 	en,fr -> Français
+	
+[general]
+
+general.cancel
+	en -> Cancel
+	fr -> Annuler
+	
+general.create
+	en -> Create
+	fr -> Créer
 
 [home]
 
@@ -19,8 +29,10 @@ home.projects
 	en -> Projects
 	fr -> Projets
 
-[projectgroups]
+[projectgroup]
 
-projectgroups.create
+projectgroup.create
 	en -> New group
 	fr -> Nouveau groupe
+
+projectgroup.create.title
