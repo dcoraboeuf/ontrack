@@ -18,3 +18,9 @@ home.projectgroups
 home.projects
 	en -> Projects
 	fr -> Projets
+
+[projectgroups]
+
+projectgroups.create
+	en -> New group
+	fr -> Nouveau groupe

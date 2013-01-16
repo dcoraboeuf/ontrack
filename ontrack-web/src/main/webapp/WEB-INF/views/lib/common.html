@@ -35,3 +35,12 @@
 		</section>
 	</section>
 </#macro>
+
+<#macro dynamicsection id>
+	<div id="${id?html}">
+		TODO Loads ${id?html}
+		<div id="${id?html}-footer">
+			<#nested />
+		</div>
+	</div>
+</#macro>

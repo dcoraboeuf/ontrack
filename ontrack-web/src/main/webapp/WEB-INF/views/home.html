@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home">
+<@layout_std page="home" modules=["projectgroups"]>
 	<div class="container-fluid">
 		<div id="home-row" class="row-fluid">
 			<div class="span9">
@@ -8,6 +8,7 @@
 			</div>
 			<div class="span3">
 				<@panel title=loc("home.projectgroups")>
+					<@projectgroups />
 				</@panel>
 				<@panel title=loc("home.projects")>
 				</@panel>

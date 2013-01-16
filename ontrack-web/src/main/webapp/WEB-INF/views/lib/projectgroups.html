@@ -1,0 +1,9 @@
+<script type="text/javascript" src="${base}/js/projectgroups.js"></script>
+
+<#macro projectgroups id="projectgroups" create=true>
+	<@dynamicsection id=id>
+		<#if create>
+			<button type="button" class="btn btn-link" onclick="ProjectGroups.createProjectGroup()"><@lh key="projectgroups.create" /></button>
+		</#if>
+	</@dynamicsection>
+</#macro>
