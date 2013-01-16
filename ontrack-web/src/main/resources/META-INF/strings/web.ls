@@ -37,3 +37,12 @@ projectgroup.create
 
 projectgroup.create.title
 	en,fr -> @[projectgroup.create]
+
+projectgroup.name
+	en,fr -> @[model.name]
+	
+[model]
+
+model.name
+	en -> Name
+	fr -> Nom

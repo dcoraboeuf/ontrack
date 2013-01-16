@@ -69,10 +69,12 @@
 <#macro dialog_button id text class="" extra="" main=true>
 	<#if dialogId?? && dialogId != "">
 		<#assign attributes = extra />
+		<#assign buttonType = "button" />
 		<#if main>
 			<#assign attributes = attributes + ' x-main="true"' />
+			<#assign buttonType = "submit" />
 		</#if>
-		<#assign dialogButton><button type="button" class="btn ${class?html}" ${attributes}>${text?html}</button></#assign>
+		<#assign dialogButton><button type="${buttonType?html}" class="btn ${class?html}" ${attributes}>${text?html}</button></#assign>
 		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
 	<#else>
 		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
@@ -85,4 +87,23 @@
 	<#else>
 		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
 	</#if>
+</#macro>
+
+<#macro form>
+	<form class="form-horizontal">
+		<#nested />
+	</form>
+</#macro>
+
+<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="">
+	<#assign id = idPrefix + name />
+	<div class="control-group">
+		<label class="control-label" for="${id?html}">${label?html}</label>
+		<div class="controls">
+			<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size}" maxlength="${maxlength}" />
+			<#if help != "">
+				<span class="help-block">${help?html}</span>
+			</#if>
+		</div>
+	</div>
 </#macro>

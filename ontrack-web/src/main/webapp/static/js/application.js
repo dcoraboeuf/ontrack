@@ -49,6 +49,7 @@ var Application = function () {
 			if (onMainFn()) {
 				$('#' + dialogId).modal('hide');
 			}
+			return false;
 		});
 		// Shows the dialog
 		$('#' + dialogId).modal({

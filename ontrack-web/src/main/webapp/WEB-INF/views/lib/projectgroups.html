@@ -4,7 +4,9 @@
 	<@dynamicsection id=id>
 		<#if create>
 			<@dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
-				My content
+				<@form>
+					<@form_text name="name" label=loc('projectgroup.name') />
+				</@form>
 				<@dialog_button_cancel />
 				<@dialog_button id="projectgroup-create-dialog-submit" class="btn-primary" text=loc('general.create') main=true />
 			</@dialog>
