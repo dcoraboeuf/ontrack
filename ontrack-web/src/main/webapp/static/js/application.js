@@ -42,8 +42,9 @@ function loc () {
 
 var Application = function () {
 	
-	function dialog (config) {
-		
+	function dialog (dialogId) {
+		$('#' + dialogId).modal({
+		});
 	}
 	
 	function confirmAndCall (text, callback) {

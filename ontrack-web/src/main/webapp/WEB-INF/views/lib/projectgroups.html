@@ -3,7 +3,9 @@
 <#macro projectgroups id="projectgroups" create=true>
 	<@dynamicsection id=id>
 		<#if create>
-			<button type="button" class="btn btn-link" onclick="ProjectGroups.createProjectGroup()"><@lh key="projectgroup.create" /></button>
+			<@dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
+			</@dialog>
+			<button id="projectgroup-create-button" type="button" class="btn btn-link" onclick="ProjectGroups.createProjectGroup()"><@lh key="projectgroup.create" /></button>
 		</#if>
 	</@dynamicsection>
 </#macro>
