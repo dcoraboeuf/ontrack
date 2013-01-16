@@ -1,5 +1,17 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="home">
-	TODO Home page
+	<div class="container-fluid">
+		<div id="home-row" class="row-fluid">
+			<div class="span9">
+				TODO All events
+			</div>
+			<div class="span3">
+				<@panel title=loc("home.projectgroups")>
+				</@panel>
+				<@panel title=loc("home.projects")>
+				</@panel>
+			</div>
+		</div>
+	</div>
 </@layout_std>

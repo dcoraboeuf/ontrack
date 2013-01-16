@@ -9,4 +9,12 @@ language.fr
 
 home
 	en -> Home page
-	fr -> Page d'acceuil
+	fr -> Page d'accueil
+
+home.projectgroups
+	en -> Groups
+	fr -> Groupes
+
+home.projects
+	en -> Projects
+	fr -> Projets
