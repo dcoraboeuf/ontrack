@@ -42,11 +42,11 @@ function loc () {
 
 var Application = function () {
 	
-	function dialog (dialogId, onMainFn) {
-		// Sets the main function
-		$('#' + dialogId + ' button[x-main=true]').unbind('click');
-		$('#' + dialogId + ' button[x-main=true]').click(function () {
-			if (onMainFn()) {
+	function dialog (dialogId, onSubmitFn) {
+		// Sets the submit function
+		$('form > #' + dialogId + ' button[type="submit"]').unbind('submit');
+		$('form > #' + dialogId + ' button[type="submit"]').submit(function () {
+			if (onSubmitFn()) {
 				$('#' + dialogId).modal('hide');
 			}
 			return false;

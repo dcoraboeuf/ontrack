@@ -66,15 +66,13 @@
 	<#assign dialogId = "" />
 </#macro>
 
-<#macro dialog_button id text class="" extra="" main=true>
+<#macro dialog_button id text class="" extra="" submit=true>
 	<#if dialogId?? && dialogId != "">
-		<#assign attributes = extra />
 		<#assign buttonType = "button" />
-		<#if main>
-			<#assign attributes = attributes + ' x-main="true"' />
+		<#if submit>
 			<#assign buttonType = "submit" />
 		</#if>
-		<#assign dialogButton><button type="${buttonType?html}" class="btn ${class?html}" ${attributes}>${text?html}</button></#assign>
+		<#assign dialogButton><button type="${buttonType?html}" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
 		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
 	<#else>
 		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
@@ -83,7 +81,7 @@
 
 <#macro dialog_button_cancel>
 	<#if dialogId?? && dialogId != "">
-		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' main=false />
+		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' submit=false />
 	<#else>
 		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
 	</#if>
@@ -108,14 +106,18 @@
 	</div>
 </#macro>
 
-<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="">
+<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true>
 	<@form_field name=name label=label idPrefix=idPrefix help=help>
-		<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size}" maxlength="${maxlength}" />
+		<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size}" maxlength="${maxlength}" <@input_required required=required /> />
 	</@form_field>
 </#macro>
 
 <#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="">
 	<@form_field name=name label=label idPrefix=idPrefix help=help>
-		<textarea name="${name?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size}" maxlength="${maxlength}" rows="${rows}"></textarea>
+		<textarea name="${name?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size}" maxlength="${maxlength}" rows="${rows}" <@input_required required=required /> ></textarea>
 	</@form_field>
+</#macro>
+
+<#macro input_required required=true>
+	<#if required>required="required"</#if>
 </#macro>
