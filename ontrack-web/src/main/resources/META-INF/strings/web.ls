@@ -36,3 +36,4 @@ projectgroup.create
 	fr -> Nouveau groupe
 
 projectgroup.create.title
+	en,fr -> @[projectgroup.create]
