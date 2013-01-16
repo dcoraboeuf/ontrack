@@ -66,9 +66,13 @@
 	<#assign dialogId = "" />
 </#macro>
 
-<#macro dialog_button id text class="" extra="">
+<#macro dialog_button id text class="" extra="" main=true>
 	<#if dialogId?? && dialogId != "">
-		<#assign dialogButton><button type="button" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
+		<#assign attributes = extra />
+		<#if main>
+			<#assign attributes = attributes + ' x-main="true"' />
+		</#if>
+		<#assign dialogButton><button type="button" class="btn ${class?html}" ${attributes}>${text?html}</button></#assign>
 		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
 	<#else>
 		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
@@ -77,7 +81,7 @@
 
 <#macro dialog_button_cancel>
 	<#if dialogId?? && dialogId != "">
-		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' />
+		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' main=false />
 	<#else>
 		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
 	</#if>

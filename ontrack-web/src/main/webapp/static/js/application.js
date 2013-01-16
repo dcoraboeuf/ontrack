@@ -42,7 +42,15 @@ function loc () {
 
 var Application = function () {
 	
-	function dialog (dialogId) {
+	function dialog (dialogId, onMainFn) {
+		// Sets the main function
+		$('#' + dialogId + ' button[x-main=true]').unbind('click');
+		$('#' + dialogId + ' button[x-main=true]').click(function () {
+			if (onMainFn()) {
+				$('#' + dialogId).modal('hide');
+			}
+		});
+		// Shows the dialog
 		$('#' + dialogId).modal({
 		});
 	}

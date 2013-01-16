@@ -5,6 +5,7 @@
 		<#if create>
 			<@dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
 				<@dialog_button_cancel />
+				<@dialog_button id="projectgroup-create-dialog-submit" class="btn-primary" text=loc('general.create') main=true />
 			</@dialog>
 			<button id="projectgroup-create-button" type="button" class="btn btn-link" onclick="ProjectGroups.createProjectGroup()"><@lh key="projectgroup.create" /></button>
 		</#if>
