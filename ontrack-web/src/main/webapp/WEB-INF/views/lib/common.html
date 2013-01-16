@@ -46,6 +46,9 @@
 </#macro>
 
 <#macro dialog id title>
+	<#assign dialogId = id />
+	<#assign dialogButtons = [] />
+	<#assign content><#nested/></#assign>
 	<div id="${id?html}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="${id?html}-label" aria-hidden="true" data-keyboard="true">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
@@ -55,8 +58,27 @@
 			<p>One fine body...</p>
 		</div>
 		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			<button class="btn btn-primary">Save changes</button>
+			<#list dialogButtons as dialogButton>
+				${dialogButton}
+			</#list>
 		</div>
 	</div>
+	<#assign dialogId = "" />
+</#macro>
+
+<#macro dialog_button id text class="" extra="">
+	<#if dialogId?? && dialogId != "">
+		<#assign dialogButton><button type="button" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
+		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
+	<#else>
+		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
+	</#if>
+</#macro>
+
+<#macro dialog_button_cancel>
+	<#if dialogId?? && dialogId != "">
+		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' />
+	<#else>
+		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
+	</#if>
 </#macro>
