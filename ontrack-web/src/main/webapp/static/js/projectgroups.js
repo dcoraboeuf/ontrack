@@ -5,7 +5,7 @@ var ProjectGroups = function () {
 			'projectgroup-create-dialog',
 			loc('projectgroup.create.title'),
 			'POST',
-			'gui/projectgroup');
+			'ui/manage/projectgroup');
 	}
 	
 	return {
