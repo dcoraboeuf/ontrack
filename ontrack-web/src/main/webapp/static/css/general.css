@@ -1,4 +1,9 @@
+/*
+
 /* Initial state for a dialog: hidden */
-.dialog {
+.x-dialog {
+	display: none;
+}
+.x-dialog-error {
 	display: none;
 }

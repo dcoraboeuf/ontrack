@@ -49,10 +49,11 @@
 	<#assign dialogId = id />
 	<#assign dialogButtons = [] />
 	<#assign content><#nested/></#assign>
-	<@form id=id class="dialog">
+	<@form id=id class="x-dialog">
 		<div id="${id?html}-content">
 			${content}
 		</div>
+		<div id="${id?html}-error" class="x-dialog-error alert alert-error"></div>
 		<div id="${id?html}-footer">
 			<#list dialogButtons as dialogButton>
 				${dialogButton}

@@ -42,6 +42,18 @@ function loc () {
 
 var Application = function () {
 	
+	function dialogAndSubmit (dialogId, dialogTitle, method, url) {
+		dialog (
+			dialogId,
+			dialogTitle,
+			function (successFn) {
+				submit (dialogId, method, url, successFn, function (message) {
+			  		$('#' + dialogId + '-error').html(message.htmlWithLines());
+			  		$('#' + dialogId + '-error').show();
+				});
+			});
+	}
+	
 	function dialog (dialogId, dialogTitle, onSubmitFn) {
 		// Sets the submit function
 		$('#' + dialogId).unbind('submit');
@@ -79,14 +91,14 @@ var Application = function () {
 		return data;
 	}
 	
-	function submit (baseId, method, url, successFn) {
+	function submit (baseId, method, url, successFn, errorMessageFn) {
 		// Collects all fields values
 		var data = values (baseId);
 		// Call
-		ajax (method, url, data, successFn);
+		ajax (method, url, data, successFn, errorMessageFn);
 	}
 	
-	function ajax (method, url, data, successFn) {
+	function ajax (method, url, data, successFn, errorMessageFn) {
 		$.ajax({
 			type: method,
 			url: url,
@@ -97,9 +109,9 @@ var Application = function () {
 				successFn(data);
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-			  	if (jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
-			  		// FIXME Error callback
-			  		alert(jqXHR.responseText);
+			  	if (errorMessageFn && jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
+			  		// Error callback
+			  		errorMessageFn(jqXHR.responseText);
 			  	} else {
 			  		Application.displayAjaxError (loc('client.error.general'), jqXHR, textStatus, errorThrown);
 			  	}
@@ -185,6 +197,7 @@ var Application = function () {
 	return {
 		dialog: dialog,
 		submit: submit,
+		dialogAndSubmit: dialogAndSubmit,
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
