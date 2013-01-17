@@ -1,12 +1,13 @@
 var ProjectGroups = function () {
-
-	function doCreateProjectGroup () {
-		alert('Create');
-		return true;
-	}
 	
 	function createProjectGroup () {
-		Application.dialog('projectgroup-create-dialog', doCreateProjectGroup);
+		Application.dialog(
+			'projectgroup-create-dialog',
+			loc('projectgroup.create.title'),
+			function (successFn) {
+				Application.submit('projectgroup-create-dialog', 'POST', 'gui/projectgroup', successFn);
+			}
+		);
 	}
 	
 	return {

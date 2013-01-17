@@ -45,26 +45,20 @@
 	</div>
 </#macro>
 
-<#macro dialog id title>
+<#macro dialog id>
 	<#assign dialogId = id />
 	<#assign dialogButtons = [] />
 	<#assign content><#nested/></#assign>
-	<div id="${id?html}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="${id?html}-label" aria-hidden="true" data-keyboard="true">
-		<@form id=id+"-form">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
-				<h3 id="${id?html}-label">${title?html}</h3>
-			</div>
-			<div class="modal-body">
-				${content}
-			</div>
-			<div class="modal-footer">
-				<#list dialogButtons as dialogButton>
-					${dialogButton}
-				</#list>
-			</div>
-		</@form>
-	</div>
+	<@form id=id class="dialog">
+		<div id="${id?html}-content">
+			${content}
+		</div>
+		<div id="${id?html}-footer">
+			<#list dialogButtons as dialogButton>
+				${dialogButton}
+			</#list>
+		</div>
+	</@form>
 	<#assign dialogId = "" />
 </#macro>
 
@@ -74,7 +68,7 @@
 		<#if submit>
 			<#assign buttonType = "submit" />
 		</#if>
-		<#assign dialogButton><button type="${buttonType?html}" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
+		<#assign dialogButton><button id="${id?html}" type="${buttonType?html}" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
 		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
 	<#else>
 		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
@@ -83,14 +77,14 @@
 
 <#macro dialog_button_cancel>
 	<#if dialogId?? && dialogId != "">
-		<@dialog_button id=dialogId+"cancel" class="btn-link" text=loc('general.cancel') extra='data-dismiss="modal" aria-hidden="true"' submit=false />
+		<@dialog_button id=dialogId+"-cancel" class="btn-link" text=loc('general.cancel') submit=false />
 	<#else>
 		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
 	</#if>
 </#macro>
 
-<#macro form id>
-	<form id="${id?html}" class="form-horizontal">
+<#macro form id class="">
+	<form id="${id?html}" class="form-horizontal ${class?html}">
 		<#nested />
 	</form>
 </#macro>

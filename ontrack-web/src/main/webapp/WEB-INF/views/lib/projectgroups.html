@@ -3,7 +3,7 @@
 <#macro projectgroups id="projectgroups" create=true>
 	<@dynamicsection id=id>
 		<#if create>
-			<@dialog id="projectgroup-create-dialog" title=loc("projectgroup.create.title")>
+			<@dialog id="projectgroup-create-dialog">
 				<@form_text name="name" label=loc('projectgroup.name') />
 				<@form_memo name="description" label=loc('projectgroup.description') />
 				

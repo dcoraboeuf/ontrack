@@ -42,17 +42,68 @@ function loc () {
 
 var Application = function () {
 	
-	function dialog (dialogId, onSubmitFn) {
+	function dialog (dialogId, dialogTitle, onSubmitFn) {
 		// Sets the submit function
-		$('#' + dialogId + ' form').unbind('submit');
-		$('#' + dialogId + ' form').submit(function () {
-			if (onSubmitFn()) {
-				$('#' + dialogId).modal('hide');
-			}
+		$('#' + dialogId).unbind('submit');
+		$('#' + dialogId).submit(function () {
+			onSubmitFn(function () {
+				$('#' + dialogId).dialog('close');
+			});
 			return false;
 		});
+		// Sets the cancel button (if any)
+		$('#' + dialogId + '-cancel').unbind('click');
+		$('#' + dialogId + '-cancel').click(function () {
+			$('#' + dialogId).dialog('close');
+		});
 		// Shows the dialog
-		$('#' + dialogId).modal({
+		$('#' + dialogId).dialog({
+			title: dialogTitle,
+			width: 450,
+			modal: true
+		});
+	}
+	
+	function values (baseId) {
+		var data = {};
+		$('#' + baseId + ' input').each (function (index, field) {
+			var name = field.getAttribute('name');
+			var value = field.value;
+			data[name] = value;
+		});
+		$('#' + baseId + ' textarea').each (function (index, field) {
+			var name = field.getAttribute('name');
+			var value = field.value;
+			data[name] = value;
+		});
+		return data;
+	}
+	
+	function submit (baseId, method, url, successFn) {
+		// Collects all fields values
+		var data = values (baseId);
+		// Call
+		ajax (method, url, data, successFn);
+	}
+	
+	function ajax (method, url, data, successFn) {
+		$.ajax({
+			type: method,
+			url: url,
+			contentType: 'application/json',
+			data: JSON.stringify(data),
+			dataType: 'json',
+			success: function (data) {
+				successFn(data);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+			  	if (jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
+			  		// FIXME Error callback
+			  		alert(jqXHR.responseText);
+			  	} else {
+			  		Application.displayAjaxError (loc('client.error.general'), jqXHR, textStatus, errorThrown);
+			  	}
+			}
 		});
 	}
 	
@@ -80,8 +131,7 @@ var Application = function () {
 	
 	function displayError (text) {
 		$('<div>{0}</div>'.format(text.htmlWithLines())).dialog({
-			title: loc('general.error.title'),
-			dialogClass: 'error-dialog',
+			title: loc('client.error.title'),
 			modal: true,
             buttons: {
                 Ok: function() {
@@ -134,6 +184,7 @@ var Application = function () {
 	
 	return {
 		dialog: dialog,
+		submit: submit,
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,

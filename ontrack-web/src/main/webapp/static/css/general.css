@@ -1,0 +1,4 @@
+/* Initial state for a dialog: hidden */
+.dialog {
+	display: none;
+}

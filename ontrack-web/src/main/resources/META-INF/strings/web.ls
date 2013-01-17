@@ -5,6 +5,16 @@ language.en
 language.fr
 	en,fr -> Français
 	
+[client]
+
+client.error.title
+	en -> Error
+	fr -> Erreur
+
+client.error.general
+	en -> Communication error
+	fr -> Erreur de communication
+	
 [general]
 
 general.cancel
