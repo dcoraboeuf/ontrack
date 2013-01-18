@@ -42,7 +42,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	// TODO Moves this to the core
 	@Bean
 	public Strings strings() {
-		return StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH, Locale.GERMAN);
+		return StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
 	}
 
 	@Bean

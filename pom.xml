@@ -96,7 +96,7 @@
 			<dependency>
 				<groupId>net.sf.jstring</groupId>
 				<artifactId>jstring</artifactId>
-				<version>2.3</version>
+				<version>2.4</version>
 			</dependency>
 			<!-- Spring -->
 			<dependency>
