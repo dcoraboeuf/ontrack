@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript;
 import static org.apache.commons.lang3.StringUtils.replace;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -13,31 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstring.Strings;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+public abstract class LocalisationController {
 
-@Controller
-public class LocalisationController {
+	protected final Strings strings;
 
-	private final Strings strings;
-
-	@Autowired
 	public LocalisationController(Strings strings) {
 		this.strings = strings;
 	}
+	
+	public abstract void localisation(Locale locale, HttpServletResponse response, String language, String version) throws IOException;
 
-	@RequestMapping(value = "/localization", method = RequestMethod.GET)
-	public void localisation(Locale locale, HttpServletResponse response) throws IOException {
-
-		// Locale
-		if (locale == null) {
-			locale = Locale.ENGLISH;
-		}
-
+	protected String generateJS(Locale locale) {
 		// Restricts the locale
 		locale = strings.getSupportedLocales().filterForLookup(locale);
+		
 		// Gets the list of key/values
 		Map<String, String> map = strings.getKeyValues(locale);
 		// Output
@@ -57,17 +47,20 @@ public class LocalisationController {
 		js.append("\n};\n");
 		// Content
 		String content = js.toString();
-		// Returns the response as JS
+		return content;
+	}
+
+	protected String escape(String value) {
+		return escapeEcmaScript(replace(value, "''", "'"));
+	}
+
+	protected void writeJS(String content, HttpServletResponse response) throws UnsupportedEncodingException, IOException {
 		byte[] bytes = content.getBytes("UTF-8");
 		response.setContentType("text/javascript");
 		response.setContentLength(bytes.length);
 		ServletOutputStream outputStream = response.getOutputStream();
 		outputStream.write(bytes);
 		outputStream.flush();
-	}
-
-	protected String escape(String value) {
-		return escapeEcmaScript(replace(value, "''", "'"));
 	}
 
 }
