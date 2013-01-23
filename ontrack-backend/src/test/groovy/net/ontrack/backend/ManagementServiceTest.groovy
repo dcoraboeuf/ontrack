@@ -14,6 +14,15 @@ class ManagementServiceTest extends AbstractValidationTest {
 	private ManagementService service
 	
 	@Test
+	void getProjectGroupList() {
+		def list = service.getProjectGroupList()
+		assert list != null
+		assert [1, 2] == list*.id
+		assert ["GROUP1", "GROUP2"] == list*.name
+		assert ["Group 1", "Group 2"] == list*.description
+	}
+	
+	@Test
 	void createProjectGroup() {
 		def summary = service.createProjectGroup(new ProjectGroupCreationForm("My name", "My description"))
 		assert summary != null

@@ -16,11 +16,21 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
+class ManagementServiceImpl extends AbstractGroovyService implements ManagementService {
 
 	@Autowired
 	public ManagementServiceImpl(DataSource dataSource, Validator validator) {
 		super(dataSource, validator);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProjectGroupSummary> getProjectGroupList() {
+		def list = []
+		sql.eachRow(SQL.PROJECT_GROUP_LIST) {
+			list << new ProjectGroupSummary(it.id, it.name, it.description)
+		}
+		list
 	}
 
 	@Override

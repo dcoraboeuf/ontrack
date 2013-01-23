@@ -1,5 +1,7 @@
 package net.ontrack.web.ui;
 
+import java.util.List;
+
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.ui.ManageUI;
@@ -20,6 +22,12 @@ public class ManageUIController implements ManageUI {
 	@Autowired
 	public ManageUIController(ManagementService managementService) {
 		this.managementService = managementService;
+	}
+
+	@Override
+	@RequestMapping(value = "/ui/manage/projectgroup/all", method = RequestMethod.GET)
+	public @ResponseBody List<ProjectGroupSummary> getProjectGroupList() {
+		return managementService.getProjectGroupList();
 	}
 
 	@Override
