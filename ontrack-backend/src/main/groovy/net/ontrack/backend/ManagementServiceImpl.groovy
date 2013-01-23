@@ -8,6 +8,7 @@ import javax.validation.Validator
 import net.ontrack.backend.db.SQL
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
+import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.ManagementService
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +26,8 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	@Override
 	@Transactional
 	public ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form) {
-		// TODO Validation
+		// Validation
+		validate(form, NameDescription.class);
 		// Query
 		int id = dbCreate (SQL.PROJECT_GROUP_CREATE, ["name": form.name, "description": form.description])
 		// OK
