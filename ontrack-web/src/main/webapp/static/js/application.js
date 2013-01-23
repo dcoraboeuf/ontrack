@@ -98,6 +98,19 @@ var Application = function () {
 		ajax (method, url, data, successFn, errorMessageFn);
 	}
 	
+	function onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn) {
+	  	if (errorMessageFn) {
+	  		if (jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
+	  			errorMessageFn(jqXHR.responseText);
+	  		} else {
+	  			var message = getAjaxError(loc('client.error.general'), jqXHR, textStatus, errorThrown);
+	  			errorMessageFn(message);
+	  		}
+	  	} else {
+	  		Application.displayAjaxError (loc('client.error.general'), jqXHR, textStatus, errorThrown);
+	  	}
+	}
+	
 	function ajax (method, url, data, successFn, errorMessageFn) {
 		$.ajax({
 			type: method,
@@ -109,12 +122,21 @@ var Application = function () {
 				successFn(data);
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
-			  	if (errorMessageFn && jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
-			  		// Error callback
-			  		errorMessageFn(jqXHR.responseText);
-			  	} else {
-			  		Application.displayAjaxError (loc('client.error.general'), jqXHR, textStatus, errorThrown);
-			  	}
+				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
+			}
+		});
+	}
+	
+	function ajaxGet (url, successFn, errorMessageFn) {
+		$.ajax({
+			type: 'GET',
+			url: url,
+			dataType: 'json',
+			success: function (data) {
+				successFn(data);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
 			}
 		});
 	}
@@ -194,6 +216,30 @@ var Application = function () {
 		}
 	}
 	
+	function load (id) {
+		// Gets the loading information
+		var url = $('#' + id).attr('data-url');
+		if (url) {
+			console.log('Start loading "{0}" into "{1}"'.format(url, id));
+			// Starts loading
+			loading("#" + id + '-loading', true);
+	  		$('#' + id + '-error').hide();
+			// Call
+			ajaxGet (
+				url,
+				function (data) {
+					
+				},
+				function (message) {
+			  		$('#' + id + '-error').html(message.htmlWithLines());
+			  		$('#' + id + '-error').show();
+					loading("#" + id + '-loading', false);
+				});
+		} else {
+			throw 'No "data-url" is defined on element "{0}"'.format(id);
+		}
+	}
+	
 	return {
 		dialog: dialog,
 		submit: submit,
@@ -219,7 +265,8 @@ var Application = function () {
 			var confirmValue = $(confirmation).val();
 			return validate (confirmation, confirmValue == value);
 		},
-		loading: loading
+		loading: loading,
+		load: load
 	};
 	
 } ();

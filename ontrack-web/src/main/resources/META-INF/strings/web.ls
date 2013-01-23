@@ -24,6 +24,10 @@ general.cancel
 general.create
 	en -> Create
 	fr -> Créer
+	
+general.loading
+	en -> Loading...
+	fr -> Chargement en cours...
 
 [home]
 

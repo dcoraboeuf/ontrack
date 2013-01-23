@@ -36,13 +36,25 @@
 	</section>
 </#macro>
 
-<#macro dynamicsection id>
-	<div id="${id?html}">
-		TODO Loads ${id?html}
+<#macro dynamicsection id url>
+	<div id="${id?html}" data-url="${url?html}">
+		<div id="${id?html}-body">
+			<div id="${id?html}-loading">
+			</div>
+			<div id="${id?html}-error" class="x-error alert alert-error">
+			</div>
+			<div id="${id?html}-list">
+			</div>
+		</div>
 		<div id="${id?html}-footer">
 			<#nested />
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			Application.load('${id?html}');
+		});
+	</script>
 </#macro>
 
 <#macro dialog id>
@@ -53,7 +65,7 @@
 		<div id="${id?html}-content">
 			${content}
 		</div>
-		<div id="${id?html}-error" class="x-dialog-error alert alert-error"></div>
+		<div id="${id?html}-error" class="x-error alert alert-error"></div>
 		<div id="${id?html}-footer">
 			<#list dialogButtons as dialogButton>
 				${dialogButton}
