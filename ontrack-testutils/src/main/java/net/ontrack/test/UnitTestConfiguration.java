@@ -1,4 +1,4 @@
-package net.ontrack.backend.config;
+package net.ontrack.test;
 
 import java.io.IOException;
 import java.util.Locale;

@@ -94,6 +94,12 @@
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		<!-- Testing -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ontrack-testutils</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	    <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -118,6 +124,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
