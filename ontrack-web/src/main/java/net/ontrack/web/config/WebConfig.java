@@ -37,6 +37,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.jmx.export.MBeanExporter;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -46,6 +47,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
 
@@ -114,11 +116,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ViewResolver viewResolver() {
+	public ViewResolver freemarkerViewResolver() {
 		FreeMarkerViewResolver o = new FreeMarkerViewResolver();
 		o.setCache(false);
 		o.setPrefix("");
 		o.setSuffix(".html");
+		return o;
+	}
+
+	@Bean
+	public View jsonViewResolver() {
+		MappingJacksonJsonView o = new MappingJacksonJsonView();
+		o.setObjectMapper(jacksonObjectMapper());
 		return o;
 	}
 	
