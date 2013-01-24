@@ -1,7 +1,5 @@
 package net.ontrack.web.test
 
-import java.lang.invoke.MethodHandleImpl.BindCaller.T
-
 import net.ontrack.test.AbstractIntegrationTest
 
 import org.codehaus.jackson.map.ObjectMapper
