@@ -1,55 +1,78 @@
 var Template = function () {
+
+	var Tag = function (name, attributes, content) {
 	
-	function Table () {
-		this._lines = [];
-	}
-	
-	Table.prototype.render = function () {
-		var html = '<table class="table"><tbody>'
-		  + this._lines.join('\n')
-		  + '</tbody></table>';
-		return html;
-	};
-	
-	Table.prototype.lines = function (items, lineTemplate) {
-		for (var i = 0 ; i < items.length ; i++) {
-			this._lines.push(lineTemplate(items[i], i));
-		}
-		return this;
-	};
-	
-	function Markup (tag) {
-		this._tag = tag;
-		this._body = [];
-	}
-	
-	Markup.prototype.render = function (item) {
-		var content = '';
-		$.each (this._body, function (index, bodyItem) {
-			if ($.isFunction(bodyItem)) {
-				content += bodyItem(item);
+		function renderContent (content) {
+			if ($.isFunction(content)) {
+				return content();
+			} else if ($.isArray(content)) {
+				var html = '';
+				$.each(content, function (i, c) {
+					html += renderContent(c);
+				});
+				return html;
+			} else if (content.render) {
+				return content.render();
 			} else {
-				content += bodyItem;
+				return content;
 			}
-		});
-		return '<{0}>{1}</{0}>'.format(this._tag, content);
-	};
+		}
 	
-	Markup.prototype.td = function (property) {
-		return this.body(function (item) {
-			return Template.td(property).render(item);
-		});
+		return {
+			render: function () {
+				var html = '<{0}'.format(name);
+				// TODO Attributes
+				if (content) {
+					html += '>';
+					html += renderContent(content);
+					html += '</{0}>'.format(name);
+				} else {
+					html += '/>';
+				}
+				return html;
+			}
+		};
 	};
-	
-	Markup.prototype.body = function (content) {
-		this._body.push(content);
-		return this;
+
+	var Table = function () {
+		this._row = null;
+		return {
+			withRow: function (row) {
+				this._row = row;
+				return this;
+			},
+			render: function (items) {
+				return new Tag('table', {}, new Tag('body', {}, this._row.tags(items))).render();
+			}
+		};
 	};
-	
-	Markup.prototype.row = function (item) {
-		var markup = this;
-		return function (item) {
-			return new Markup('tr').body(markup.render(item)).render(item);
+
+	var TableRow = function () {
+		var cells = [];
+		return {
+			cell: function (property, attributes) {
+				cells.push(new TableCell(this, property, attributes));
+				return this;
+			},
+			tags: function (items) {
+				var list = [];
+				$.each (items, function (index, item) {
+					var tds = [];
+					$.each (cells, function (icell, cell) {
+						tds.push(cell.tag(item));
+					});
+					list.push(new Tag('tr', {}, tds));
+				});
+				return list;
+			}
+		};
+	};
+
+	var TableCell = function (row, property, attributes) {
+		return {
+			tag: function (item) {
+				return new Tag('td', {}, 'Value');
+			}
 		};
 	};
 	
@@ -57,10 +80,8 @@ var Template = function () {
 		table: function () {
 			return new Table();
 		},
-		td: function (property) {
-			return new Markup('td').body(function (item) {
-				return item[property].toString().html();
-			});
+		row: function () {
+			return new TableRow();
 		}
 	};
 	

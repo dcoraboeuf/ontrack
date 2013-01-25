@@ -12,7 +12,11 @@ var ProjectGroups = function () {
 	}
 	
 	function projectGroupTemplate (items) {
-		return Template.table().lines(items, Template.td("name").td("description").row()).render();
+		return Template.table().withRow(
+			Template.row()
+				.cell("id")
+				.cell("name", {title: "description"})
+		).render(items);
 	}
 	
 	return {
