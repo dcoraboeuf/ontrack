@@ -1,0 +1,9 @@
+package net.ontrack.service;
+
+import net.ontrack.service.model.Audited;
+
+public interface AuditService {
+
+	void audit(boolean creation, Audited audited, int id);
+
+}
