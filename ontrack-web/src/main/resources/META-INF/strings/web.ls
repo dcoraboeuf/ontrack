@@ -57,3 +57,17 @@ projectgroup.name
 projectgroup.description
 	en,fr -> @[model.description]
 
+[project]
+
+project.create
+	en -> New project
+	fr -> Nouveau projet
+
+project.create.title
+	en,fr -> @[project.create]
+
+project.name
+	en,fr -> @[model.name]
+project.description
+	en,fr -> @[model.description]
+

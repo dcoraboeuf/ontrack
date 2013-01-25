@@ -1,0 +1,16 @@
+<script type="text/javascript" src="${base}/js/projects.js"></script>
+
+<#macro projects id="projects" create=true>
+	<@dynamicsection id=id url="ui/manage/project/all" template="Projects.projectTemplate">
+		<#if create>
+			<@dialog id="project-create-dialog">
+				<@form_text name="name" label=loc('project.name') />
+				<@form_memo name="description" label=loc('project.description') />
+				
+				<@dialog_button_cancel />
+				<@dialog_button id="project-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+			</@dialog>
+			<button id="project-create-button" type="button" class="btn" onclick="Projects.createProject()"><@lh key="project.create" /></button>
+		</#if>
+	</@dynamicsection>
+</#macro>

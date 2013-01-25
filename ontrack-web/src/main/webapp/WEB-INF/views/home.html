@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" modules=["projectgroups"]>
+<@layout_std page="home" modules=["projectgroups","projects"]>
 	<div class="container-fluid">
 		<div id="home-row" class="row-fluid">
 			<div class="span9">
@@ -11,7 +11,7 @@
 					<@projectgroups />
 				</@panel>
 				<@panel title=loc("home.projects")>
-					TODO List of projects
+					<@projects />
 				</@panel>
 			</div>
 		</div>
