@@ -267,7 +267,6 @@ var Application = function () {
 					$('#' + id + '-list').empty();
 					// Template
 					var html = templateFn(data);
-					console.log("Filling {0} with {1}".format(id, html));
 					$('#' + id + '-list').append(html);
 				},
 				function (message) {

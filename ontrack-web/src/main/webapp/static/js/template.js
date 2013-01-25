@@ -5,7 +5,16 @@ var Template = function () {
 		return {
 			render: function () {
 				var html = '<{0}'.format(name);
-				// TODO Attributes
+				for (var key in attributes) {
+					var value = attributes[key];
+					if (typeof value === "boolean") {
+						if (value) {
+							html += ' {0}="{0}"'.format(key);
+						}
+					} else {
+						html += ' {0}="{1}"'.format(key.html(), value);
+					}
+				}
 				if (content) {
 					html += '>';
 					html += renderContent(content);
@@ -56,7 +65,7 @@ var Template = function () {
 		return {
 			tag: function (item) {
 				var value = String(getValue(item, property));
-				return new Tag('td', {}, value.html());
+				return new Tag('td', getAttributes(item, attributes), value.html());
 			}
 		};
 	};
@@ -69,6 +78,16 @@ var Template = function () {
 		} else {
 			return property;
 		}
+	}
+	
+	function getAttributes (item, attributes) {
+		var map = {};
+		for (var key in attributes) {
+			var property = attributes[key];
+			var value = getValue(item, property);
+			map[key] = value;
+		}
+		return map;
 	}
 	
 	function renderContent (content) {
