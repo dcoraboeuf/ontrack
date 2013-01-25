@@ -29,13 +29,18 @@ var Template = function () {
 
 	var Table = function () {
 		this._row = null;
+		this._class = "";
 		return {
 			withRow: function (row) {
 				this._row = row;
 				return this;
 			},
+			withClass: function (css) {
+				this._class += " " + css;
+				return this;
+			},
 			render: function (items) {
-				return new Tag('table', {}, new Tag('body', {}, this._row.tags(items))).render();
+				return new Tag('table', {'class': this._class}, new Tag('body', {}, this._row.tags(items))).render();
 			}
 		};
 	};
