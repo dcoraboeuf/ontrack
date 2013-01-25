@@ -11,7 +11,8 @@ var Audit = function () {
 	
 	function audit (item) {
 		var key = "audit." + item.audited + "." + (item.creation ? "created" : "updated");
-		return key + "." + item.auditedId;
+		var text = loc(key, item.auditedName);
+		return text;
 	}
 	
 	return {

@@ -1,5 +1,7 @@
 package net.ontrack.backend;
 
+import static java.lang.String.format;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -37,7 +39,7 @@ public class AuditServiceImpl extends NamedParameterJdbcDaoSupport implements Au
 		params.addValue("audit_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
 		params.addValue("audit_creation", creation);
 		getNamedParameterJdbcTemplate().update(
-			String.format(SQL.AUDIT_CREATE, audited.name()),
+			format(SQL.AUDIT_CREATE, audited.name()),
 			params);
 	}
 	
@@ -56,9 +58,12 @@ public class AuditServiceImpl extends NamedParameterJdbcDaoSupport implements Au
 	}
 
 	protected Audit createAudit(ResultSet rs) throws SQLException {
+		// General
 		int id = rs.getInt("id");
 		DateTime timestamp = SQLUtils.getDateTime(rs, "audit_timestamp");
 		boolean creation = rs.getBoolean("audit_creation");
+		// TODO Author
+		// Audited entity
 		Audited audited = null;
 		int auditedId = 0;
 		for (Audited candidate: Audited.values()) {
@@ -69,11 +74,23 @@ public class AuditServiceImpl extends NamedParameterJdbcDaoSupport implements Au
 				break;
 			}
 		}
+		// Test of the audited entity
 		if (audited == null) {
 			throw new AuditNotRelatedException(id);
 		} else {
-			return new Audit(id, timestamp, creation, audited, auditedId);
+			// Audited name
+			String auditedName = getAuditedName(audited, auditedId);
+			// OK
+			return new Audit(id, timestamp, creation, audited, auditedId, auditedName);
 		}
+	}
+
+	protected String getAuditedName(Audited audited, int auditedId) {
+		return getNamedParameterJdbcTemplate().queryForObject(
+			format(SQL.AUDIT_NAME, audited.nameColumn(), audited.name()),
+			new MapSqlParameterSource("id", auditedId),
+			String.class);
+			
 	}
 
 }

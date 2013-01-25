@@ -22,4 +22,6 @@ interface SQL {
 		"""
 	String AUDIT_ALL = 'SELECT * FROM AUDIT ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	
+	String AUDIT_NAME = 'SELECT %s FROM %s WHERE ID = :id'
+	
 }

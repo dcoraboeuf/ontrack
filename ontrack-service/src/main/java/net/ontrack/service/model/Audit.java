@@ -13,5 +13,6 @@ public class Audit {
 	private final boolean creation;
 	private final Audited audited;
 	private final int auditedId;
+	private final String auditedName;
 
 }
