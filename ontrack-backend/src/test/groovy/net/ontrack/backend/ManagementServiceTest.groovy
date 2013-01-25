@@ -1,7 +1,5 @@
 package net.ontrack.backend
 
-import java.lang.invoke.MethodHandleImpl.BindCaller.T
-
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.service.ManagementService
 
