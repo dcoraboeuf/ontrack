@@ -2,22 +2,6 @@ var Template = function () {
 
 	var Tag = function (name, attributes, content) {
 	
-		function renderContent (content) {
-			if ($.isFunction(content)) {
-				return content();
-			} else if ($.isArray(content)) {
-				var html = '';
-				$.each(content, function (i, c) {
-					html += renderContent(c);
-				});
-				return html;
-			} else if (content.render) {
-				return content.render();
-			} else {
-				return content;
-			}
-		}
-	
 		return {
 			render: function () {
 				var html = '<{0}'.format(name);
@@ -71,10 +55,37 @@ var Template = function () {
 	var TableCell = function (row, property, attributes) {
 		return {
 			tag: function (item) {
-				return new Tag('td', {}, 'Value');
+				var value = String(getValue(item, property));
+				return new Tag('td', {}, value.html());
 			}
 		};
 	};
+	
+	function getValue (o, property) {
+		if ($.isFunction(property)) {
+			return property(o);
+		} else if (typeof property === "string" && property.length > 0 && property.charAt(0) == "$") {
+			return o[property.substring(1)];
+		} else {
+			return property;
+		}
+	}
+	
+	function renderContent (content) {
+		if ($.isFunction(content)) {
+			return content();
+		} else if ($.isArray(content)) {
+			var html = '';
+			$.each(content, function (i, c) {
+				html += renderContent(c);
+			});
+			return html;
+		} else if (content.render) {
+			return content.render();
+		} else {
+			return content;
+		}
+	}
 	
 	return {
 		table: function () {

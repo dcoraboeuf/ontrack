@@ -14,8 +14,8 @@ var ProjectGroups = function () {
 	function projectGroupTemplate (items) {
 		return Template.table().withRow(
 			Template.row()
-				.cell("id")
-				.cell("name", {title: "description"})
+				.cell("$id")
+				.cell("$name", {title: "$description"})
 		).render(items);
 	}
 	
