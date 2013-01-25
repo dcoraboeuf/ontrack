@@ -36,7 +36,7 @@
 	</section>
 </#macro>
 
-<#macro dynamicsection id url>
+<#macro dynamicsection id url template>
 	<div id="${id?html}" data-url="${url?html}">
 		<div id="${id?html}-body">
 			<div id="${id?html}-loading">
@@ -52,7 +52,7 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function () {
-			Application.load('${id?html}');
+			Application.load('${id?html}', ${template?html});
 		});
 	</script>
 </#macro>

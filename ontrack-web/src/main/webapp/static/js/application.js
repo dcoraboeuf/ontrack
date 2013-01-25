@@ -216,11 +216,11 @@ var Application = function () {
 		}
 	}
 	
-	function load (id) {
+	function load (id, templateFn) {
 		// Gets the loading information
 		var url = $('#' + id).attr('data-url');
 		if (url) {
-			console.log('Start loading "{0}" into "{1}"'.format(url, id));
+			console.log('Loading "{0}" into "{1}"'.format(url, id));
 			// Starts loading
 			loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
@@ -228,7 +228,13 @@ var Application = function () {
 			ajaxGet (
 				url,
 				function (data) {
-					
+					// Loading done
+					loading("#" + id + '-loading', false);
+					// Clears the container
+					$('#' + id + '-list').empty();
+					// Template
+					var html = templateFn(data);
+					$('#' + id + '-list').append(html);
 				},
 				function (message) {
 			  		$('#' + id + '-error').html(message.htmlWithLines());

@@ -8,8 +8,17 @@ var ProjectGroups = function () {
 			'ui/manage/projectgroup');
 	}
 	
+	function projectGroupTemplate (items) {
+		var html = Template.table().lines(items, function (item) {
+			return item.name;
+		}).render();
+		return html;
+		// return Template.table().lines(items, td("id").td("name").td("description").line()).render();
+	}
+	
 	return {
-		createProjectGroup: createProjectGroup
+		createProjectGroup: createProjectGroup,
+		projectGroupTemplate: projectGroupTemplate
 	};
 	
 } ();

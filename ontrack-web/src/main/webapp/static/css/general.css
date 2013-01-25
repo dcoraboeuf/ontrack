@@ -5,6 +5,11 @@
 	background-repeat: no-repeat;
 }
 
+/* Templates */
+.template {
+	display: none;
+}
+
 /* Error indicator */
 .x-error {
 	display: none;
