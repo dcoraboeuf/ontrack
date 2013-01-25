@@ -4,8 +4,10 @@ import javax.sql.DataSource
 import javax.validation.Validator
 
 import net.ontrack.backend.db.SQL
+import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
+import net.ontrack.core.model.ProjectSummary
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.ManagementService
 
@@ -20,6 +22,8 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	public ManagementServiceImpl(DataSource dataSource, Validator validator) {
 		super(dataSource, validator);
 	}
+	
+	// Project groups
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -38,5 +42,26 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		int id = dbCreate (SQL.PROJECT_GROUP_CREATE, ["name": form.name, "description": form.description])
 		// OK
 		new ProjectGroupSummary(id, form.name, form.description)
+	}
+	
+	// Projects
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProjectSummary> getProjectList() {
+		return dbList(SQL.PROJECT_LIST) { rs ->
+			new ProjectGroupSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
+		}
+	}
+
+	@Override
+	@Transactional
+	public ProjectSummary createProject(ProjectCreationForm form) {
+		// Validation
+		validate(form, NameDescription.class);
+		// Query
+		int id = dbCreate (SQL.PROJECT_CREATE, ["name": form.name, "description": form.description])
+		// OK
+		new ProjectSummary(id, form.name, form.description)
 	}
 }

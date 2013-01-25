@@ -2,8 +2,10 @@ package net.ontrack.web.ui;
 
 import java.util.List;
 
+import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
+import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.ManagementService;
 
@@ -23,6 +25,8 @@ public class ManageUIController implements ManageUI {
 	public ManageUIController(ManagementService managementService) {
 		this.managementService = managementService;
 	}
+	
+	// Project groups
 
 	@Override
 	@RequestMapping(value = "/ui/manage/projectgroup/all", method = RequestMethod.GET)
@@ -34,6 +38,20 @@ public class ManageUIController implements ManageUI {
 	@RequestMapping(value = "/ui/manage/projectgroup", method = RequestMethod.POST)
 	public @ResponseBody ProjectGroupSummary createProjectGroup(@RequestBody ProjectGroupCreationForm form) {
 		return managementService.createProjectGroup(form);
+	}
+	
+	// Projects
+
+	@Override
+	@RequestMapping(value = "/ui/manage/project/all", method = RequestMethod.GET)
+	public @ResponseBody List<ProjectSummary> getProjectList() {
+		return managementService.getProjectList();
+	}
+
+	@Override
+	@RequestMapping(value = "/ui/manage/project", method = RequestMethod.POST)
+	public @ResponseBody ProjectSummary createProject(@RequestBody ProjectCreationForm form) {
+		return managementService.createProject(form);
 	}
 
 }

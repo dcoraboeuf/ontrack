@@ -1,5 +1,6 @@
 package net.ontrack.backend
 
+import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.service.ManagementService
 
@@ -47,6 +48,14 @@ class ManagementServiceTest extends AbstractValidationTest {
 		validateNOK(" - Description: may not be null\n") {
 			service.createProjectGroup(new ProjectGroupCreationForm("Name", null))
 		}
+	}
+	
+	@Test
+	void createProject() {
+		def summary = service.createProject(new ProjectCreationForm("My name", "My description"))
+		assert summary != null
+		assert "My name" == summary.name
+		assert "My description" == summary.description
 	}
 
 }

@@ -7,7 +7,7 @@ var Projects = function () {
 			'POST',
 			'ui/manage/project',
 			function (data) {
-				Application.load('projects', projectGroupTemplate);
+				Application.load('projects', projectTemplate);
 			});
 	}
 	
