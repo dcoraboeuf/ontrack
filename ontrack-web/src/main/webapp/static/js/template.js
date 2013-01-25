@@ -6,7 +6,7 @@ var Template = function () {
 	
 	Table.prototype.render = function () {
 		var html = '<table class="table"><tbody>'
-		  + this._lines
+		  + this._lines.join('\n')
 		  + '</tbody></table>';
 		return html;
 	};

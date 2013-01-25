@@ -42,18 +42,35 @@ function loc () {
 
 var Application = function () {
 	
-	function dialogAndSubmit (dialogId, dialogTitle, method, url) {
+	function dialogAndSubmit (dialogId, dialogTitle, method, url, onSuccessFn) {
 		dialog (
 			dialogId,
 			dialogTitle,
-			function (successFn) {
-				submit (dialogId, method, url, successFn, function (message) {
-			  		$('#' + dialogId + '-error').html(message.htmlWithLines());
-			  		$('#' + dialogId + '-error').show();
+			function (closeFn) {
+				submit (
+					dialogId,
+					method, url, 
+					function (data) {
+						// Does something with the data
+						onSuccessFn(data);
+						// Closes the dialog
+						closeFn();
+					},
+					function (message) {
+				  		$('#' + dialogId + '-error').html(message.htmlWithLines());
+				  		$('#' + dialogId + '-error').show();
 				});
 			});
 	}
 	
+	/**
+	 * Opens a dialog defined by the <code>dialogId</code> HTML fragment.
+	 * @param dialogId ID of a HTML section
+	 * @param dialogTitle Title of the dialog
+	 * @param onSubmitFn <code>(. => .) => .</code> - Function to call when the <code>submit</code> button
+	 * is triggered. The <code>onSubmitFn</code> is called with a function
+	 * (no argument) which is responsible to close the dialog. 
+	 */
 	function dialog (dialogId, dialogTitle, onSubmitFn) {
 		// Sets the submit function
 		$('#' + dialogId).unbind('submit');
@@ -91,6 +108,15 @@ var Application = function () {
 		return data;
 	}
 	
+	/**
+	 * Submit a set of data defined in a form.
+	 * @param baseId ID of the HTML form
+	 * @param method HTTP method to use ('GET', 'POST'...)
+	 * @param url URL to call
+	 * @param successFn <code>(JSON => .)</code> Function called in case of success.
+	 * @param errorMessageFn <code>(String => .)</code> Function called in case of error.
+	 * @see #ajax
+	 */
 	function submit (baseId, method, url, successFn, errorMessageFn) {
 		// Collects all fields values
 		var data = values (baseId);
@@ -111,6 +137,13 @@ var Application = function () {
 	  	}
 	}
 	
+	/**
+	 * @param method HTTP method to use ('GET', 'POST'...)
+	 * @param url URL to call
+	 * @param data Data to send as JSON
+	 * @param successFn <code>(JSON => .)</code> Function called in case of success.
+	 * @param errorMessageFn <code>(String => .)</code> Function called in case of error.
+	 */
 	function ajax (method, url, data, successFn, errorMessageFn) {
 		$.ajax({
 			type: method,
@@ -234,6 +267,7 @@ var Application = function () {
 					$('#' + id + '-list').empty();
 					// Template
 					var html = templateFn(data);
+					console.log("Filling {0} with {1}".format(id, html));
 					$('#' + id + '-list').append(html);
 				},
 				function (message) {
