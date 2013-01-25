@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.lang.invoke.MethodHandleImpl.BindCaller.T
 
 import net.ontrack.core.model.ProjectGroupCreationForm
+import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.web.test.AbstractWebTest
 
 import org.junit.Test
@@ -31,6 +32,15 @@ class ManageUIControllerTest extends AbstractWebTest {
 			.andExpect(jsonPath('$.id').value(greaterThan(0)))
 			.andExpect(jsonPath('$.name').value("GRP1"))
 			.andExpect(jsonPath('$.description').value("My first group"))
+		// Gets the resulting list
+		String content = this.mockMvc.perform(get("/ui/manage/projectgroup/all").accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andReturn().response.contentAsString
+		List<ProjectGroupSummary> summaries = parse(content, List.class)
+		assert summaries.find { it.name == "GRP1" } != null
+		assert summaries.find { it.description == "My first group" } != null
 	}
 
 }

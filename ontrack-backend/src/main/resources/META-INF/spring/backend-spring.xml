@@ -18,5 +18,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd">
     
     <context:component-scan base-package="net.ontrack"/>
+    
+    <aop:aspectj-autoproxy/>
+    
+    <task:annotation-driven/>
+    
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+  		<property name="dataSource" ref="dataSource"/>
+  	</bean>
 
 </beans>

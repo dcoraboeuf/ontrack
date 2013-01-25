@@ -1,5 +1,9 @@
 package net.ontrack.backend;
 
+import groovy.lang.Closure;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +19,7 @@ import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.MultiLocalizable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -38,6 +43,17 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 		} else {
 			return items.get(0);
 		}
+	}
+	
+	protected <T> List<T> dbList (String sql, final Closure<T> mapping) {
+		return getJdbcTemplate().query(sql, new RowMapper<T> () {
+
+			@Override
+			public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return mapping.call(rs);
+			}
+			
+		});
 	}
 	
 	protected int dbCreate (String sql, Map<String, ?> parameters) {

@@ -1,5 +1,7 @@
 package net.ontrack.web.test
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
+
 import net.ontrack.test.AbstractIntegrationTest
 
 import org.codehaus.jackson.map.ObjectMapper
@@ -28,6 +30,10 @@ abstract class AbstractWebTest extends AbstractIntegrationTest {
 	
 	protected String json (Object o) {
 		return objectMapper.writeValueAsString(o)
+	}
+	
+	protected <T> T parse (String json, Class<T> type) {
+		return objectMapper.readValue(json, type)
 	}
 
 }
