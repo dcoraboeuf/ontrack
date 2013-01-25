@@ -1,10 +1,10 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" modules=["projectgroups","projects"]>
+<@layout_std page="home" modules=["projectgroups","projects","audit"]>
 	<div class="container-fluid">
 		<div id="home-row" class="row-fluid">
 			<div class="span9">
-				TODO All events
+				<@audit />
 			</div>
 			<div class="span3">
 				<@panel title=loc("home.projectgroups")>

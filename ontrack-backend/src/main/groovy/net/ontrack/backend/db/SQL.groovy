@@ -20,5 +20,6 @@ interface SQL {
 		INSERT INTO AUDIT (AUTHOR, AUTHOR_ID, AUDIT_TIMESTAMP, AUDIT_CREATION, %s)
 		VALUES (:author, :author_id, :audit_timestamp, :audit_creation, :id)
 		"""
+	String AUDIT_ALL = 'SELECT * FROM AUDIT ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	
 }

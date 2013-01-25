@@ -49,7 +49,7 @@ var Template = function () {
 		var cells = [];
 		return {
 			cell: function (property, attributes) {
-				cells.push(new TableCell(this, property, attributes));
+				cells.push(new TableCell(property, attributes));
 				return this;
 			},
 			tags: function (items) {
@@ -66,7 +66,7 @@ var Template = function () {
 		};
 	};
 
-	var TableCell = function (row, property, attributes) {
+	var TableCell = function (property, attributes) {
 		return {
 			tag: function (item) {
 				var value = String(getValue(item, property));
