@@ -13,6 +13,7 @@ import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
 import net.ontrack.service.model.EventSource;
+import net.ontrack.service.model.EventType;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,14 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
 	@Override
 	@Transactional
-	public void audit(boolean creation, EventSource audited, int id) {
+	public void audit(EventType eventType, int id) {
 		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
 		params.addValue("author", "");
 		params.addValue("author_id", null);
 		params.addValue("event_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
-		params.addValue("event_creation", creation);
+		params.addValue("event_type", eventType.name());
 		getNamedParameterJdbcTemplate().update(
-			format(SQL.EVENT_CREATE, audited.name()),
+			format(SQL.EVENT_CREATE, eventType.getSource().name()),
 			params);
 	}
 	
@@ -63,25 +64,16 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 		DateTime timestamp = SQLUtils.getDateTime(rs, "event_timestamp");
 		boolean creation = rs.getBoolean("event_creation");
 		// TODO Author
-		// Audited entity
-		EventSource audited = null;
-		int auditedId = 0;
-		for (EventSource candidate: EventSource.values()) {
-			int candidateId = rs.getInt(candidate.name());
-			if (!rs.wasNull()) {
-				audited = candidate;
-				auditedId = candidateId;
-				break;
-			}
-		}
-		// Test of the audited entity
-		if (audited == null) {
-			throw new AuditNotRelatedException(id);
+		// Event type
+		EventType eventType = SQLUtils.getEnum(EventType.class, rs, "event_type");
+		// Source entity
+		int sourceId = rs.getInt(eventType.getSource().name());
+		// Test of the source entity
+		if (rs.wasNull()) {
+			throw new EventNotRelatedException(id);
 		} else {
-			// Audited name
-			String auditedName = getAuditedName(audited, auditedId);
 			// OK
-			return new Event(id, timestamp, creation, audited, auditedId, auditedName);
+			return new Event(id, timestamp, creation, eventType, sourceId);
 		}
 	}
 

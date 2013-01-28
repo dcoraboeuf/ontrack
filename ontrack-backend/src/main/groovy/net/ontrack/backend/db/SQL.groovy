@@ -17,8 +17,8 @@ interface SQL {
 	// Audit
 	
 	String EVENT_CREATE = """
-		INSERT INTO EVENTS (AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP, EVENT_CREATION, %s)
-		VALUES (:author, :author_id, :event_timestamp, :event_creation, :id)
+		INSERT INTO EVENTS (AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP, EVENT_TYPE, %s)
+		VALUES (:author, :author_id, :event_timestamp, :event_type, :id)
 		"""
 	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	

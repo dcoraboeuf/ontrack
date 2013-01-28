@@ -15,7 +15,7 @@ import javax.validation.Validator;
 
 import net.ontrack.core.validation.ValidationException;
 import net.ontrack.service.EventService;
-import net.ontrack.service.model.EventSource;
+import net.ontrack.service.model.EventType;
 import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.MultiLocalizable;
@@ -40,8 +40,8 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
         this.auditService = auditService;
 	}
 	
-	protected void audit (boolean creation, EventSource audited, int id) {
-		auditService.audit(creation, audited, id);
+	protected void audit (EventType eventType, int id) {
+		auditService.audit(eventType, id);
 	}
 	
 	protected <T> T getFirstItem (String sql, MapSqlParameterSource criteria, Class<T> type) {
