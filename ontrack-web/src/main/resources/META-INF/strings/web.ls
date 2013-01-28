@@ -21,6 +21,10 @@ general.cancel
 	en -> Cancel
 	fr -> Annuler
 	
+general.close
+	en -> Close
+	fr -> Fermer
+	
 general.create
 	en -> Create
 	fr -> Créer
