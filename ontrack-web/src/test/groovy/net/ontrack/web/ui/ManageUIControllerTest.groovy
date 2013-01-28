@@ -78,7 +78,8 @@ class ManageUIControllerTest extends AbstractWebTest {
 		assert events != null && !events.empty
 		def e = events.get(0)
 		assert e != null
-		assert summary.id == e.sourceId
+		assert summary.id == e.entities.PROJECT.id
+		assert summary.name == e.entities.PROJECT.name
 		assert EventType.PROJECT_CREATED.name() == e.eventType
 	}
 
