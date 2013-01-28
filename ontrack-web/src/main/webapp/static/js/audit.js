@@ -10,7 +10,7 @@ var Audit = function () {
 	}
 	
 	function audit (item) {
-		var key = "audit." + item.audited + "." + (item.creation ? "created" : "updated");
+		var key = "event." + item.audited + "." + (item.creation ? "created" : "updated");
 		var text = loc(key, item.auditedName);
 		return text;
 	}

@@ -2,8 +2,8 @@ package net.ontrack.web.ui;
 
 import java.util.List;
 
-import net.ontrack.service.AuditService;
-import net.ontrack.service.model.Audit;
+import net.ontrack.service.EventService;
+import net.ontrack.service.model.Event;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class AuditUIController {
+public class EventUIController {
 
-	private final AuditService auditService;
+	private final EventService auditService;
 
 	@Autowired
-	public AuditUIController(AuditService auditService) {
+	public EventUIController(EventService auditService) {
 		this.auditService = auditService;
 	}
 	
-	@RequestMapping(value = "/ui/audit/all", method = RequestMethod.GET)
-	public @ResponseBody List<Audit> all (@RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
+	@RequestMapping(value = "/ui/event/all", method = RequestMethod.GET)
+	public @ResponseBody List<Event> all (@RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
 		return auditService.all(offset, count);
 	}
 

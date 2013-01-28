@@ -9,9 +9,9 @@ import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.core.model.ProjectSummary
 import net.ontrack.core.validation.NameDescription
-import net.ontrack.service.AuditService;
+import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService
-import net.ontrack.service.model.Audited;
+import net.ontrack.service.model.EventSource;
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
 
 	@Autowired
-	public ManagementServiceImpl(DataSource dataSource, Validator validator, AuditService auditService) {
+	public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService) {
 		super(dataSource, validator, auditService);
 	}
 	
@@ -43,7 +43,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Query
 		int id = dbCreate (SQL.PROJECT_GROUP_CREATE, ["name": form.name, "description": form.description])
 		// Audit
-		audit(true, Audited.PROJECT_GROUP, id)
+		audit(true, EventSource.PROJECT_GROUP, id)
 		// OK
 		new ProjectGroupSummary(id, form.name, form.description)
 	}
@@ -66,7 +66,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Query
 		int id = dbCreate (SQL.PROJECT_CREATE, ["name": form.name, "description": form.description])
 		// Audit
-		audit(true, Audited.PROJECT, id)
+		audit(true, EventSource.PROJECT, id)
 		// OK
 		new ProjectSummary(id, form.name, form.description)
 	}

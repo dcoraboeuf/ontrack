@@ -71,12 +71,3 @@ project.name
 project.description
 	en,fr -> @[model.description]
 
-[audit]
-
-audit.PROJECT_GROUP.created
-	en -> Group *{0}* was created
-	fr -> Le groupe *{0} a été créé
-
-audit.PROJECT.created
-	en -> Project *{0}* has been created
-	fr -> Le project *{0}* a été créé

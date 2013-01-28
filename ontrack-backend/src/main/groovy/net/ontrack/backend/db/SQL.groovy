@@ -16,12 +16,12 @@ interface SQL {
 	
 	// Audit
 	
-	String AUDIT_CREATE = """
-		INSERT INTO AUDIT (AUTHOR, AUTHOR_ID, AUDIT_TIMESTAMP, AUDIT_CREATION, %s)
-		VALUES (:author, :author_id, :audit_timestamp, :audit_creation, :id)
+	String EVENT_CREATE = """
+		INSERT INTO EVENTS (AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP, EVENT_CREATION, %s)
+		VALUES (:author, :author_id, :event_timestamp, :event_creation, :id)
 		"""
-	String AUDIT_ALL = 'SELECT * FROM AUDIT ORDER BY ID DESC LIMIT :count OFFSET :offset'
+	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	
-	String AUDIT_NAME = 'SELECT %s FROM %s WHERE ID = :id'
+	String EVENT_NAME = 'SELECT %s FROM %s WHERE ID = :id'
 	
 }

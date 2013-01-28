@@ -14,8 +14,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import net.ontrack.core.validation.ValidationException;
-import net.ontrack.service.AuditService;
-import net.ontrack.service.model.Audited;
+import net.ontrack.service.EventService;
+import net.ontrack.service.model.EventSource;
 import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.MultiLocalizable;
@@ -32,15 +32,15 @@ import com.google.common.collect.Collections2;
 public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
     private final Validator validator;
-    private final AuditService auditService;
+    private final EventService auditService;
 	
-	public AbstractServiceImpl(DataSource dataSource, Validator validator, AuditService auditService) {
+	public AbstractServiceImpl(DataSource dataSource, Validator validator, EventService auditService) {
 		setDataSource(dataSource);
         this.validator = validator;
         this.auditService = auditService;
 	}
 	
-	protected void audit (boolean creation, Audited audited, int id) {
+	protected void audit (boolean creation, EventSource audited, int id) {
 		auditService.audit(creation, audited, id);
 	}
 	

@@ -10,9 +10,9 @@ import javax.sql.DataSource;
 
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
-import net.ontrack.service.AuditService;
-import net.ontrack.service.model.Audit;
-import net.ontrack.service.model.Audited;
+import net.ontrack.service.EventService;
+import net.ontrack.service.model.Event;
+import net.ontrack.service.model.EventSource;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,50 +23,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AuditServiceImpl extends NamedParameterJdbcDaoSupport implements AuditService {
+public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements EventService {
 	
 	@Autowired
-	public AuditServiceImpl(DataSource dataSource) {
+	public EventServiceImpl(DataSource dataSource) {
 		setDataSource(dataSource);
 	}
 
 	@Override
 	@Transactional
-	public void audit(boolean creation, Audited audited, int id) {
+	public void audit(boolean creation, EventSource audited, int id) {
 		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
 		params.addValue("author", "");
 		params.addValue("author_id", null);
-		params.addValue("audit_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
-		params.addValue("audit_creation", creation);
+		params.addValue("event_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
+		params.addValue("event_creation", creation);
 		getNamedParameterJdbcTemplate().update(
-			format(SQL.AUDIT_CREATE, audited.name()),
+			format(SQL.EVENT_CREATE, audited.name()),
 			params);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Audit> all(int offset, int count) {
+	public List<Event> all(int offset, int count) {
 		return getNamedParameterJdbcTemplate().query(
-			SQL.AUDIT_ALL,
+			SQL.EVENT_ALL,
 			new MapSqlParameterSource("offset", offset).addValue("count", count),
-			new RowMapper<Audit>() {
+			new RowMapper<Event>() {
 				@Override
-				public Audit mapRow(ResultSet rs, int rowNum) throws SQLException {
+				public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
 					return createAudit(rs);
 				}
 			});
 	}
 
-	protected Audit createAudit(ResultSet rs) throws SQLException {
+	protected Event createAudit(ResultSet rs) throws SQLException {
 		// General
 		int id = rs.getInt("id");
-		DateTime timestamp = SQLUtils.getDateTime(rs, "audit_timestamp");
-		boolean creation = rs.getBoolean("audit_creation");
+		DateTime timestamp = SQLUtils.getDateTime(rs, "event_timestamp");
+		boolean creation = rs.getBoolean("event_creation");
 		// TODO Author
 		// Audited entity
-		Audited audited = null;
+		EventSource audited = null;
 		int auditedId = 0;
-		for (Audited candidate: Audited.values()) {
+		for (EventSource candidate: EventSource.values()) {
 			int candidateId = rs.getInt(candidate.name());
 			if (!rs.wasNull()) {
 				audited = candidate;
@@ -81,13 +81,13 @@ public class AuditServiceImpl extends NamedParameterJdbcDaoSupport implements Au
 			// Audited name
 			String auditedName = getAuditedName(audited, auditedId);
 			// OK
-			return new Audit(id, timestamp, creation, audited, auditedId, auditedName);
+			return new Event(id, timestamp, creation, audited, auditedId, auditedName);
 		}
 	}
 
-	protected String getAuditedName(Audited audited, int auditedId) {
+	protected String getAuditedName(EventSource audited, int auditedId) {
 		return getNamedParameterJdbcTemplate().queryForObject(
-			format(SQL.AUDIT_NAME, audited.nameColumn(), audited.name()),
+			format(SQL.EVENT_NAME, audited.nameColumn(), audited.name()),
 			new MapSqlParameterSource("id", auditedId),
 			String.class);
 			
