@@ -24,3 +24,13 @@
 .x-dialog {
 	display: none;
 }
+
+/* Items */
+
+.item.action {
+	opacity: 0;
+}
+
+td:hover .item.action {
+	opacity: 0.5;	
+}
