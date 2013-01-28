@@ -2,7 +2,11 @@ package net.ontrack.backend
 
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
+import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
+import net.ontrack.service.model.Entity
+import net.ontrack.service.model.EntityStub
+import net.ontrack.service.model.EventType
 
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +15,9 @@ class ManagementServiceTest extends AbstractValidationTest {
 	
 	@Autowired
 	private ManagementService service
+	
+	@Autowired
+	private EventService eventService
 	
 	@Test
 	void getProjectGroupList() {
@@ -60,13 +67,21 @@ class ManagementServiceTest extends AbstractValidationTest {
 	
 	@Test
 	void loadProject() {
+		// Creates the project
 		def summary = service.createProject(new ProjectCreationForm("LOAD1", "My description"))
 		assert summary != null
 		assert "LOAD1" == summary.name
 		assert "My description" == summary.description
+		// Gets the project
 		summary = service.getProject(summary.id)
 		assert "LOAD1" == summary.name
 		assert "My description" == summary.description
+		// Gets the audit
+		def events = eventService.all(0, 1)
+		assert events != null && !events.empty
+		def event = events.get(0)
+		assert EventType.PROJECT_CREATED == event.eventType
+		assert Collections.singletonMap(Entity.PROJECT, new EntityStub(summary.id, "LOAD1")) == event.entities
 	}
 
 }
