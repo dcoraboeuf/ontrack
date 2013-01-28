@@ -1,12 +1,7 @@
 var Audit = function () {
 	
 	function auditTemplate (items) {
-		return Template.table().withClass("table").withClass("table-hover").withRow(
-				Template.row()
-					.cell(function (item) {
-						return audit(item);
-					})
-			).render(items);
+		return Template.list(items, audit);
 	}
 	
 	function audit (item) {
