@@ -1,5 +1,6 @@
 package net.ontrack.backend
 
+import java.sql.ResultSet
 import javax.sql.DataSource
 import javax.validation.Validator
 
@@ -11,8 +12,7 @@ import net.ontrack.core.model.ProjectSummary
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
-import net.ontrack.service.model.EventSource
-import net.ontrack.service.model.EventType;
+import net.ontrack.service.model.EventType
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -51,12 +51,20 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	// Projects
 	
+	ProjectSummary readProjectSummary (ResultSet rs) {
+		return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
+	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProjectSummary> getProjectList() {
-		return dbList(SQL.PROJECT_LIST) { rs ->
-			new ProjectGroupSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
-		}
+		return dbList(SQL.PROJECT_LIST) { readProjectSummary(it) }
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ProjectSummary getProject(int id) {
+		return dbLoad(SQL.PROJECT, id) {readProjectSummary(it) }
 	}
 
 	@Override

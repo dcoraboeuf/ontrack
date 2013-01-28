@@ -12,11 +12,7 @@ var ProjectGroups = function () {
 	}
 	
 	function projectGroupTemplate (items) {
-		return Template.table().withClass("table").withClass("table-hover").withRow(
-			Template.row()
-				//.cell("$id")
-				.cell("$name", {title: "$description", 'class': "action"})
-		).render(items);
+		return Template.links(items, 'gui/projectgroup');
 	}
 	
 	return {

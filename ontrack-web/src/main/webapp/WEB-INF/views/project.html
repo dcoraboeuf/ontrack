@@ -1,0 +1,21 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="project" title=project.name modules=["projects","audit"] breadcrumbs = {loc("home"): ""}>
+	<div class="container-fluid">
+		<div id="project-name-row" class="row-fluid">
+			<div class="span12">
+				<h3>${project.name?html}</h3>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3">
+				<p class="help-block">${project.description?html}</p>
+				<p>
+					<button class="btn"><@lh key="general.modify" /></button>
+					<button class="btn btn-danger" onclick="Projects.deleteProject(${project.id})"><@lh key="general.delete" /></button>
+					<a href="" class="btn btn-link"><@lh key="general.close"/></a>
+				</p>
+			</div>
+		</div>
+	</div>
+</@layout_std>

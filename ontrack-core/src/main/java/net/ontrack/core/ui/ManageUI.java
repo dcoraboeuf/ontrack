@@ -21,4 +21,6 @@ public interface ManageUI {
 
 	ProjectSummary createProject(ProjectCreationForm form);
 
+	ProjectSummary getProject(int id);
+
 }

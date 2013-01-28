@@ -174,6 +174,20 @@ var Application = function () {
 		});
 	}
 	
+	function ajaxDelete (url, successFn, errorMessageFn) {
+		$.ajax({
+			type: 'DELETE',
+			url: url,
+			dataType: 'json',
+			success: function (data) {
+				successFn(data);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
+			}
+		});
+	}
+	
 	function confirmAndCall (text, callback) {
 		$('<div>{0}</div>'.format(text)).dialog({
 			title: loc('general.confirm.title'),
@@ -279,6 +293,25 @@ var Application = function () {
 		}
 	}
 	
+	function deleteEntity (entity, id, backUrl) {
+		var url = 'ui/manage/{0}/{1}'.format(entity, id);
+		ajaxGet (
+			url,
+			function (o) {
+				confirmAndCall(
+					loc('{0}.delete.prompt'.format(entity), o.name),
+					function () {
+						ajaxDelete (
+							url,
+							function () {
+								location = backUrl;
+							},
+							displayError);
+					});
+			},
+			displayError);
+	}
+	
 	return {
 		dialog: dialog,
 		submit: submit,
@@ -305,7 +338,8 @@ var Application = function () {
 			return validate (confirmation, confirmValue == value);
 		},
 		loading: loading,
-		load: load
+		load: load,
+		deleteEntity: deleteEntity
 	};
 	
 } ();

@@ -11,16 +11,17 @@ var Projects = function () {
 			});
 	}
 	
+	function deleteProject (id) {
+		Application.deleteEntity('project', id);
+	}
+	
 	function projectTemplate (items) {
-		return Template.table().withClass("table").withClass("table-hover").withRow(
-			Template.row()
-				//.cell("$id")
-				.cell("$name", {title: "$description", 'class': "action"})
-		).render(items);
+		return Template.links(items, 'gui/project');
 	}
 	
 	return {
 		createProject: createProject,
+		deleteProject: deleteProject,
 		projectTemplate: projectTemplate
 	};
 	
