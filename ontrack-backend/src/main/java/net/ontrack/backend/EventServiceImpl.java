@@ -62,7 +62,6 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 		// General
 		int id = rs.getInt("id");
 		DateTime timestamp = SQLUtils.getDateTime(rs, "event_timestamp");
-		boolean creation = rs.getBoolean("event_creation");
 		// TODO Author
 		// Event type
 		EventType eventType = SQLUtils.getEnum(EventType.class, rs, "event_type");
@@ -73,7 +72,7 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 			throw new EventNotRelatedException(id);
 		} else {
 			// OK
-			return new Event(id, timestamp, creation, eventType, sourceId);
+			return new Event(id, timestamp, eventType, sourceId);
 		}
 	}
 

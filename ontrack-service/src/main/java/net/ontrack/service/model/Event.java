@@ -10,7 +10,6 @@ public class Event {
 	private final int id;
 	// TODO Author info
 	private final DateTime timestamp;
-	private final boolean creation;
 	private final EventType eventType;
 	private final int sourceId;
 
