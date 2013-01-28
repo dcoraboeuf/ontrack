@@ -1,6 +1,7 @@
 package net.ontrack.backend
 
 import java.sql.ResultSet
+
 import javax.sql.DataSource
 import javax.validation.Validator
 
@@ -12,7 +13,8 @@ import net.ontrack.core.model.ProjectSummary
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
-import net.ontrack.service.model.EventType
+import net.ontrack.service.model.Event
+import net.ontrack.service.model.EventType;
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -44,7 +46,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Query
 		int id = dbCreate (SQL.PROJECT_GROUP_CREATE, ["name": form.name, "description": form.description])
 		// Audit
-		audit(EventType.PROJECT_GROUP_CREATED, id)
+		event(Event.of(EventType.PROJECT_GROUP_CREATED).withProjectGroup(id))
 		// OK
 		new ProjectGroupSummary(id, form.name, form.description)
 	}
@@ -75,7 +77,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Query
 		int id = dbCreate (SQL.PROJECT_CREATE, ["name": form.name, "description": form.description])
 		// Audit
-		audit(EventType.PROJECT_CREATED, id)
+		event(Event.of(EventType.PROJECT_CREATED).withProject(id))
 		// OK
 		new ProjectSummary(id, form.name, form.description)
 	}

@@ -3,12 +3,12 @@ package net.ontrack.service;
 import java.util.List;
 
 import net.ontrack.service.model.Event;
-import net.ontrack.service.model.EventType;
+import net.ontrack.service.model.ExpandedEvent;
 
 public interface EventService {
 
-	void audit(EventType eventType, int id);
+	void event(Event event);
 
-	List<Event> all(int offset, int count);
+	List<ExpandedEvent> all(int offset, int count);
 
 }

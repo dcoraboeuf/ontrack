@@ -17,11 +17,6 @@ interface SQL {
 	String PROJECT_CREATE = "INSERT INTO PROJECT (NAME, DESCRIPTION) VALUES (:name, :description)"
 	
 	// Audit
-	
-	String EVENT_CREATE = """
-		INSERT INTO EVENTS (AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP, EVENT_TYPE, %s)
-		VALUES (:author, :author_id, :event_timestamp, :event_type, :id)
-		"""
 	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	
 	String EVENT_NAME = 'SELECT %s FROM %s WHERE ID = :id'

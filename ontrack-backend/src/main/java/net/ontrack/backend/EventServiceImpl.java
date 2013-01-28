@@ -5,15 +5,18 @@ import static java.lang.String.format;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.service.EventService;
+import net.ontrack.service.model.EntityStub;
 import net.ontrack.service.model.Event;
-import net.ontrack.service.model.EventSource;
+import net.ontrack.service.model.Entity;
 import net.ontrack.service.model.EventType;
+import net.ontrack.service.model.ExpandedEvent;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,53 +36,74 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
 	@Override
 	@Transactional
-	public void audit(EventType eventType, int id) {
-		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
+	public void event(Event event) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		// TODO Author
 		params.addValue("author", "");
 		params.addValue("author_id", null);
+		// Timestamping
 		params.addValue("event_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
-		params.addValue("event_type", eventType.name());
-		getNamedParameterJdbcTemplate().update(
-			format(SQL.EVENT_CREATE, eventType.getSource().name()),
-			params);
+		// Event type
+		params.addValue("event_type", event.getEventType().name());
+		// SQL query
+		StringBuilder sqlInsert = new StringBuilder("INSERT INTO EVENTS (AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP, EVENT_TYPE");
+		StringBuilder sqlValues = new StringBuilder("VALUES (:author, :author_id, :event_timestamp, :event_type");
+		for (Map.Entry<Entity,Integer> entry: event.getEntities().entrySet()) {
+			Entity entity = entry.getKey();
+			int entityId = entry.getValue();
+			sqlInsert.append(", ").append(entity.name());
+			sqlValues.append(", :").append(entity.name());
+			params.addValue(entity.name(), entityId);
+		}
+		String sql = sqlInsert + ") " + sqlValues + ")";
+		// Execution
+		getNamedParameterJdbcTemplate().update(sql, params);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Event> all(int offset, int count) {
+	public List<ExpandedEvent> all(int offset, int count) {
 		return getNamedParameterJdbcTemplate().query(
 			SQL.EVENT_ALL,
 			new MapSqlParameterSource("offset", offset).addValue("count", count),
-			new RowMapper<Event>() {
+			new RowMapper<ExpandedEvent>() {
 				@Override
-				public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
+				public ExpandedEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
 					return createAudit(rs);
 				}
 			});
 	}
 
-	protected Event createAudit(ResultSet rs) throws SQLException {
+	protected ExpandedEvent createAudit(ResultSet rs) throws SQLException {
 		// General
 		int id = rs.getInt("id");
 		DateTime timestamp = SQLUtils.getDateTime(rs, "event_timestamp");
 		// TODO Author
 		// Event type
 		EventType eventType = SQLUtils.getEnum(EventType.class, rs, "event_type");
-		// Source entity
-		int sourceId = rs.getInt(eventType.getSource().name());
 		// Test of the source entity
 		if (rs.wasNull()) {
 			throw new EventNotRelatedException(id);
 		} else {
+			// Event
+			ExpandedEvent e = new ExpandedEvent(id, eventType, timestamp);
+			// Collects the entities
+			for (Entity entity: Entity.values()) {
+				int entityId = rs.getInt(entity.name());
+				if (!rs.wasNull()) {
+					String entityName = getEntityName(entity, entityId);
+					e = e.withEntity(entity, new EntityStub(entityId, entityName));
+				}
+			}
 			// OK
-			return new Event(id, timestamp, eventType, sourceId);
+			return e;
 		}
 	}
 
-	protected String getAuditedName(EventSource audited, int auditedId) {
+	protected String getEntityName(Entity entity, int entityId) {
 		return getNamedParameterJdbcTemplate().queryForObject(
-			format(SQL.EVENT_NAME, audited.nameColumn(), audited.name()),
-			new MapSqlParameterSource("id", auditedId),
+			format(SQL.EVENT_NAME, entity.nameColumn(), entity.name()),
+			new MapSqlParameterSource("id", entityId),
 			String.class);
 			
 	}

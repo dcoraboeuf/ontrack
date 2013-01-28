@@ -1,6 +1,6 @@
 package net.ontrack.service.model;
 
-public enum EventSource {
+public enum Entity {
 	
 	PROJECT_GROUP,
 	
@@ -8,11 +8,11 @@ public enum EventSource {
 	
 	private String nameColumn;
 	
-	EventSource () {
+	Entity () {
 		this("name");
 	}
 	
-	EventSource (String nameColumn) {
+	Entity (String nameColumn) {
 		this.nameColumn = nameColumn;
 	}
 	
