@@ -1,0 +1,12 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="project" modules=["audit"]>
+	<div class="container-fluid">
+		<div id="home-row" class="row-fluid">
+			<div class="span12">
+				<b>${project.name?html}</b>
+				<span class="info">${project.description?html}</span>
+			</div>
+		</div>
+	</div>
+</@layout_std>

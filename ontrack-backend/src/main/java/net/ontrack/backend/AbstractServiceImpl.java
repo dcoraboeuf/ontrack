@@ -64,6 +64,21 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 		});
 	}
 	
+	protected <T> T dbLoad (String sql, int id, final Closure<T> mapping) {
+		return getNamedParameterJdbcTemplate().queryForObject(
+			sql,
+			params("id", id),
+			new RowMapper<T> () {
+
+				@Override
+				public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+					return mapping.call(rs);
+				}
+				
+			}
+		);
+	}
+	
 	protected int dbCreate (String sql, Map<String, ?> parameters) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(parameters), keyHolder);

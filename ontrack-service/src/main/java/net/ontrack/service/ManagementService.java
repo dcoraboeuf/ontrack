@@ -21,4 +21,6 @@ public interface ManagementService {
 
 	List<ProjectSummary> getProjectList();
 
+	ProjectSummary getProject(int id);
+
 }

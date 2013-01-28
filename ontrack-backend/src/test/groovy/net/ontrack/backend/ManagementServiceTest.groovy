@@ -1,5 +1,7 @@
 package net.ontrack.backend
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
+
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.service.ManagementService
@@ -55,6 +57,17 @@ class ManagementServiceTest extends AbstractValidationTest {
 		def summary = service.createProject(new ProjectCreationForm("My name", "My description"))
 		assert summary != null
 		assert "My name" == summary.name
+		assert "My description" == summary.description
+	}
+	
+	@Test
+	void loadProject() {
+		def summary = service.createProject(new ProjectCreationForm("LOAD1", "My description"))
+		assert summary != null
+		assert "LOAD1" == summary.name
+		assert "My description" == summary.description
+		summary = service.getProject(summary.id)
+		assert "LOAD1" == summary.name
 		assert "My description" == summary.description
 	}
 

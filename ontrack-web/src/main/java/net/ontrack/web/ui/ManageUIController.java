@@ -11,6 +11,7 @@ import net.ontrack.service.ManagementService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,6 +53,12 @@ public class ManageUIController implements ManageUI {
 	@RequestMapping(value = "/ui/manage/project", method = RequestMethod.POST)
 	public @ResponseBody ProjectSummary createProject(@RequestBody ProjectCreationForm form) {
 		return managementService.createProject(form);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/project/{0}", method = RequestMethod.GET)
+	public ProjectSummary getProject(@PathVariable int id) {
+		return managementService.getProject(id);
 	}
 
 }
