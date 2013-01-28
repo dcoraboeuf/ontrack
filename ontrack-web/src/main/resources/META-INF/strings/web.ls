@@ -36,10 +36,14 @@ general.modify
 general.delete
 	en -> Delete
 	fr -> Supprimer
+
+general.confirm.title
+	en,fr -> Confirmation
 	
 general.loading
 	en -> Loading...
 	fr -> Chargement en cours...
+	
 
 [home]
 
@@ -74,6 +78,10 @@ projectgroup.description
 project.create
 	en -> New project
 	fr -> Nouveau projet
+	
+project.delete.prompt
+	en -> Are you sure to delete the project "{0}" and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer le projet "{0}" et toutes ses informations associées?
 
 project.create.title
 	en,fr -> @[project.create]

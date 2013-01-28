@@ -56,8 +56,8 @@ public class ManageUIController implements ManageUI {
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/project/{0}", method = RequestMethod.GET)
-	public ProjectSummary getProject(@PathVariable int id) {
+	@RequestMapping(value = "/ui/manage/project/{id}", method = RequestMethod.GET)
+	public @ResponseBody ProjectSummary getProject(@PathVariable int id) {
 		return managementService.getProject(id);
 	}
 
