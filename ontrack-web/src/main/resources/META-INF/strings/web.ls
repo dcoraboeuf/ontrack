@@ -25,6 +25,14 @@ general.create
 	en -> Create
 	fr -> Créer
 	
+general.modify
+	en -> Modify
+	fr -> Modifier
+
+general.delete
+	en -> Delete
+	fr -> Supprimer
+	
 general.loading
 	en -> Loading...
 	fr -> Chargement en cours...

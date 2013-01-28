@@ -2,10 +2,18 @@
 
 <@layout_std page="project" title=project.name modules=["audit"] breadcrumbs = {loc("home"): ""}>
 	<div class="container-fluid">
-		<div id="home-row" class="row-fluid">
+		<div id="project-name-row" class="row-fluid">
 			<div class="span12">
-				<b>${project.name?html}</b>
-				<span class="info">${project.description?html}</span>
+				<h3>${project.name?html}</h3>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3">
+				<p class="help-block">${project.description?html}</p>
+				<p>
+					<button class="btn"><@lh key="general.modify" /></button>
+					<button class="btn btn-danger"><@lh key="general.delete" /></button>
+				</p>
 			</div>
 		</div>
 	</div>
