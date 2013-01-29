@@ -7,12 +7,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
+
+import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.core.model.ProjectSummary
 import net.ontrack.service.model.Event
-import net.ontrack.service.model.EventType
 import net.ontrack.web.test.AbstractWebTest
 
 import org.junit.Test

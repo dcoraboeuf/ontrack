@@ -6,6 +6,8 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EventType;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

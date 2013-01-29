@@ -11,12 +11,12 @@ import javax.sql.DataSource;
 
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
+import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EntityStub;
+import net.ontrack.core.model.EventType;
+import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.service.EventService;
-import net.ontrack.service.model.EntityStub;
 import net.ontrack.service.model.Event;
-import net.ontrack.service.model.Entity;
-import net.ontrack.service.model.EventType;
-import net.ontrack.service.model.ExpandedEvent;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;

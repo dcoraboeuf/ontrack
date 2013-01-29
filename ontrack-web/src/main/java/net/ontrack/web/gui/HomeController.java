@@ -1,4 +1,4 @@
-package net.ontrack.web.home;
+package net.ontrack.web.gui;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

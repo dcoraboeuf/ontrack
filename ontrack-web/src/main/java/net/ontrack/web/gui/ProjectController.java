@@ -1,4 +1,4 @@
-package net.ontrack.web.pages;
+package net.ontrack.web.gui;
 
 import net.ontrack.core.ui.ManageUI;
 

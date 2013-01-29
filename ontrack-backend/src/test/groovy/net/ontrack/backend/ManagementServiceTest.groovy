@@ -1,12 +1,14 @@
 package net.ontrack.backend
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
+
+import net.ontrack.core.model.Entity
+import net.ontrack.core.model.EntityStub
+import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
-import net.ontrack.service.model.Entity
-import net.ontrack.service.model.EntityStub
-import net.ontrack.service.model.EventType
 
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

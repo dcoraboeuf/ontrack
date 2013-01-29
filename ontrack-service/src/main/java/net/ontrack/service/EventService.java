@@ -2,8 +2,8 @@ package net.ontrack.service;
 
 import java.util.List;
 
+import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.service.model.Event;
-import net.ontrack.service.model.ExpandedEvent;
 
 public interface EventService {
 

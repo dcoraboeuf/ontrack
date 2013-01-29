@@ -1,11 +1,13 @@
 package net.ontrack.backend
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
 import java.sql.ResultSet
 
 import javax.sql.DataSource
 import javax.validation.Validator
 
 import net.ontrack.backend.db.SQL
+import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
@@ -14,7 +16,6 @@ import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
 import net.ontrack.service.model.Event
-import net.ontrack.service.model.EventType;
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

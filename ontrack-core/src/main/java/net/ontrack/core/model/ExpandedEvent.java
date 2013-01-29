@@ -1,13 +1,13 @@
-package net.ontrack.service.model;
+package net.ontrack.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import org.joda.time.DateTime;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,4 +1,4 @@
-package net.ontrack.service.model;
+package net.ontrack.core.model;
 
 public enum Entity {
 	
