@@ -12,6 +12,7 @@ import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
 import net.sf.jstring.Strings;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ import com.google.common.collect.Lists;
 @RequestMapping("/gui/event")
 public class EventController {
 	
-	private final Pattern pattern = Pattern.compile("($[^$.]+$)");
+	private final Pattern pattern = Pattern.compile("(\\$[^$.]+\\$)");
 
 	private final EventUI eventUI;
 	private final Strings strings;
@@ -109,14 +110,15 @@ public class EventController {
 	protected String createLink(Entity entity, EntityStub entityStub, String alternative) {
 		// Text
 		String text = alternative != null ? alternative : entityStub.getName();
+		text = StringEscapeUtils.escapeHtml4(text);
 		// Href
 		String href = createLinkHref(entity, entityStub);
 		// Link
-		return String.format("<a href=\"{1}\">{0}</a>", text, href);
+		return String.format("<a href=\"%s\">%s</a>", href, text);
 	}
 
 	protected String createLinkHref(Entity entity, EntityStub entityStub) {
-		return String.format("gui/{0}/{1}", entity.name().toLowerCase(), entityStub.getId());
+		return String.format("gui/%s/%d", entity.name().toLowerCase(), entityStub.getId());
 	}
 
 }
