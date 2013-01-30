@@ -1,5 +1,10 @@
 package net.ontrack.web.test
 
+import static org.hamcrest.Matchers.*
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+
 import java.lang.invoke.MethodHandleImpl.BindCaller.T
 
 import net.ontrack.test.AbstractIntegrationTest
@@ -7,8 +12,10 @@ import net.ontrack.test.AbstractIntegrationTest
 import org.codehaus.jackson.map.ObjectMapper
 import org.junit.Before
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
@@ -39,6 +46,15 @@ abstract class AbstractWebTest extends AbstractIntegrationTest {
 	protected <T> List<T> parseList (String json, Class<T> type) {
 		def node = objectMapper.readTree(json)
 		return node.collect { this.objectMapper.readValue (it, type) }
+	}
+	
+	protected <T> T getCall (String url, Class<T> type) {
+		String json = this.mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andReturn().response.contentAsString
+		return parse(json, type)
 	}
 
 }

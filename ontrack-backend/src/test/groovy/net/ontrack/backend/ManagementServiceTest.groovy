@@ -104,5 +104,18 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert EventType.PROJECT_DELETED == event.eventType
 		assert ["project": "DELETE1"] == event.values
 	}
+	
+	@Test
+	void getEntityId() {
+		assert 1 == service.getEntityId(Entity.PROJECT, "PROJECT1")
+		assert 2 == service.getEntityId(Entity.PROJECT, "PROJECT2")
+		assert 1 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP1")
+		assert 2 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP2")
+	}
+	
+	@Test(expected = EntityNameNotFoundException)
+	void getEntityId_not_found() {
+		service.getEntityId(Entity.PROJECT, "PROJECTX")
+	}
 
 }

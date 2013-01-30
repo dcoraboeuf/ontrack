@@ -96,9 +96,25 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		return ack
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public int getEntityId(Entity entity, String name) {
+		def sql = "SELECT ID FROM ${entity.name()} WHERE ${entity.nameColumn()} = :name"
+		Integer id = getFirstItem(sql, params("name", name), Integer.class)
+		if (id == null) {
+			throw new EntityNameNotFoundException (entity, name)
+		} else {
+			return id
+		}
+	}
+	
 	protected String getEntityName (Entity entity, int id) {
-		def sql = "SELECT NAME FROM ${entity.name()} WHERE ID = :id"
-		return getFirstItem(sql, params("id", id), String.class)
-		// TODO EntityIdNotFoundException
+		def sql = "SELECT ${entity.nameColumn()} FROM ${entity.name()} WHERE ID = :id"
+		String name = getFirstItem(sql, params("id", id), String.class)
+		if (name == null) {
+			throw new EntityIdNotFoundException (entity, id)
+		} else {
+			return name
+		}
 	}
 }

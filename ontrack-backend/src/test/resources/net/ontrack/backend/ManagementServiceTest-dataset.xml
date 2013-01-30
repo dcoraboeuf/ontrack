@@ -2,5 +2,8 @@
 
 	<PROJECT_GROUP id="1" name="GROUP1" description="Group 1" />
 	<PROJECT_GROUP id="2" name="GROUP2" description="Group 2" />
+	
+	<PROJECT id="1" name="PROJECT1" description="Project 1" project_group="1" />
+	<PROJECT id="2" name="PROJECT2" description="Project 2" />
 
 </dataset>

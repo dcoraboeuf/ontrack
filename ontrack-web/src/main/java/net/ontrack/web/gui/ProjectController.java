@@ -20,8 +20,8 @@ public class ProjectController {
 		this.manageUI = manageUI;
 	}
 
-	@RequestMapping(value = "/{id:\\d+}", method = RequestMethod.GET)
-	public String getProject(Model model, @PathVariable int id) {
+	@RequestMapping(value = "/{id:[A-Z0-9_]+}", method = RequestMethod.GET)
+	public String getProject(Model model, @PathVariable String id) {
 		// Loads the project details
 		model.addAttribute("project", manageUI.getProject(id));
 		// OK

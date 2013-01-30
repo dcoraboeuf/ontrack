@@ -22,8 +22,8 @@ public interface ManageUI {
 
 	ProjectSummary createProject(ProjectCreationForm form);
 
-	ProjectSummary getProject(int id);
+	ProjectSummary getProject(String idOrName);
 
-	Ack deleteProject(int id);
+	Ack deleteProject(String idOrName);
 
 }
