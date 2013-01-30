@@ -7,8 +7,7 @@ var Projects = function () {
 			'POST',
 			'ui/manage/project',
 			function (data) {
-				Application.reload('projects');
-				Application.reload('audit');
+				location = 'gui/project/' + data.name;
 			});
 	}
 	
