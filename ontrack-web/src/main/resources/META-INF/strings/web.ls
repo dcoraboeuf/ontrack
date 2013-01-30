@@ -44,6 +44,47 @@ general.loading
 	en -> Loading...
 	fr -> Chargement en cours...
 	
+general.error.technical
+	en -> Technical error
+	fr -> Erreur technique
+	
+general.error.contact
+	en -> Please report the following message and identifier to the ontrack administrator.
+	fr -> Veuillez signaler le message et l'identifiant qui suivent à l'administrateur d'ontrack.
+
+general.error.full
+	en -> ...
+		An error has occurred.\n
+		@[general.error.contact]\n
+		\n
+		{0}\n
+		Identifier: {1}
+		...
+	fr -> ...
+		Une erreur est survenue.\n
+		@[general.error.contact]\n
+		{0}\n
+		Identifiant : {1}
+		...
+	
+# Error page
+[error]
+
+error
+	en -> Error
+	fr -> Erreur
+	
+error.message
+	en -> ...
+		An error has occurred. We are sorry for any inconvenience.
+		...
+	fr -> ...
+		Une erreur s'est produite. Nous nous excusons pour le problème rencontré.
+		...
+
+error.back
+	en -> Go back to the portal
+	fr -> Revenir à l'acceuil  
 
 [home]
 
