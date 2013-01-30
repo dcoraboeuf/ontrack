@@ -1,5 +1,9 @@
 [events]
 
+event.ago
+	en -> {0} ago
+	fr -> il y a {0}
+
 event.PROJECT_GROUP_CREATED
 	en -> Group $PROJECT_GROUP$ was created.
 	fr -> Le groupe $PROJECT_GROUP$ a été créé.

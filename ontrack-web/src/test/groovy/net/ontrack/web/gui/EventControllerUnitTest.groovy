@@ -9,6 +9,7 @@ import net.sf.jstring.support.StringsLoader
 import org.joda.time.DateTime
 import org.junit.Test
 
+
 class EventControllerUnitTest {
 	
 	@Test
@@ -84,12 +85,12 @@ class EventControllerUnitTest {
 	void toGUIEvent_one_entity () {
 		def strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH)
 		EventController controller = new EventController(null, strings)
-		def now = new DateTime()
-		def event = controller.toGUIEvent(new ExpandedEvent(10, EventType.PROJECT_CREATED, now).withEntity(Entity.PROJECT, new EntityStub(1001, "My project")), Locale.ENGLISH)
+		def event = controller.toGUIEvent(new ExpandedEvent(10, EventType.PROJECT_CREATED, new DateTime(2013,1,30,10,5,30)).withEntity(Entity.PROJECT, new EntityStub(1001, "My project")), Locale.ENGLISH, new DateTime(2013,1,30,11,10,45))
 		assert event != null
 		assert event.id == 10
 		assert event.eventType == EventType.PROJECT_CREATED
-		assert event.timestamp == now
+		assert event.timestamp == "Jan 30, 2013 10:05:30 AM"
+		assert event.elapsed == "1 hour ago"
 		assert 'Project <a href="gui/project/1001">My project</a> has been created.' == event.html
 	}
 

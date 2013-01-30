@@ -14,6 +14,10 @@ import net.sf.jstring.Strings;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.PeriodFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,20 +47,30 @@ public class EventController {
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public @ResponseBody
 	List<GUIEvent> all(final Locale locale, @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
+		// Reference time
+		final DateTime now = new DateTime();
 		// Gets the raw events
 		List<ExpandedEvent> events = eventUI.all(offset, count);
 		// Localizes them
 		List<GUIEvent> guiEvents = Lists.transform(events, new Function<ExpandedEvent, GUIEvent>() {
 			@Override
 			public GUIEvent apply (ExpandedEvent event) {
-				return toGUIEvent (event, locale);
+				return toGUIEvent (event, locale, now);
 			}
 		});
 		// OK
 		return guiEvents;
 	}
 
-	protected GUIEvent toGUIEvent(ExpandedEvent event, Locale locale) {
+	protected GUIEvent toGUIEvent(ExpandedEvent event, Locale locale, DateTime now) {
+		// Formatted timestamp
+		String timestamp = DateTimeFormat.mediumDateTime().withLocale(locale).print(event.getTimestamp());
+		// Formatted elapsed time
+		Period period = new Period(event.getTimestamp(), now);
+		period = compress(period);
+		String elapsed = PeriodFormat.wordBased(locale).print(period);
+		elapsed = strings.get(locale, "event.ago", elapsed);
+		
 		// Generating the HTML
 		// Getting the general pattern from the localization strings
 		String canvas = strings.get(locale, "event." + event.getEventType().name());
@@ -70,9 +84,29 @@ public class EventController {
 		m.appendTail(html); 
 		
 		// OK
-		return new GUIEvent (event.getId(), event.getEventType(), event.getTimestamp(), html.toString());
+		return new GUIEvent (event.getId(), event.getEventType(), timestamp, elapsed, html.toString());
 	}
 	
+	protected Period compress(Period period) {
+		Period p;
+		if (period.getYears() > 0) {
+			p = period.withMonths(0).withWeeks(0).withDays(0).withHours(0).withMinutes(0).withSeconds(0).withMillis(0);
+		} else if (period.getMonths() > 0) {
+			p = period.withWeeks(0).withDays(0).withHours(0).withMinutes(0).withSeconds(0).withMillis(0);			
+		} else if (period.getWeeks() > 0) {
+			p = period.withDays(0).withHours(0).withMinutes(0).withSeconds(0).withMillis(0);
+		} else if (period.getDays() > 0) {
+			p = period.withHours(0).withMinutes(0).withSeconds(0).withMillis(0);
+		} else if (period.getHours() > 0) {
+			p = period.withMinutes(0).withSeconds(0).withMillis(0);
+		} else if (period.getMinutes() > 0) {
+			p = period.withSeconds(0).withMillis(0);
+		} else {
+			p = period.withMillis(0);
+		}
+		return p;
+	}
+
 	protected String expandToken (String rawToken, ExpandedEvent event) {
 		// Gets rid of the $...$
 		String token = StringUtils.substring(rawToken, 1, -1);
