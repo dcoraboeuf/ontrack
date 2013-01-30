@@ -12,7 +12,7 @@ var Projects = function () {
 	}
 	
 	function deleteProject (id) {
-		Application.deleteEntity('project', id);
+		Application.deleteEntity('project', id, '');
 	}
 	
 	function projectTemplate (items) {
