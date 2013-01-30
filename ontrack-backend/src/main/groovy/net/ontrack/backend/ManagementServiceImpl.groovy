@@ -7,6 +7,8 @@ import javax.sql.DataSource
 import javax.validation.Validator
 
 import net.ontrack.backend.db.SQL
+import net.ontrack.core.model.Ack
+import net.ontrack.core.model.Entity
 import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
@@ -81,5 +83,22 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		event(Event.of(EventType.PROJECT_CREATED).withProject(id))
 		// OK
 		new ProjectSummary(id, form.name, form.description)
+	}
+	
+	@Override
+	@Transactional
+	public Ack deleteProject(int id) {
+		def name = getEntityName(Entity.PROJECT, id)
+		def ack = dbDelete(SQL.PROJECT_DELETE, id)
+		if (ack.success) {
+			event(Event.of(EventType.PROJECT_DELETED).withValue("project", name))
+		}
+		return ack
+	}
+	
+	protected String getEntityName (Entity entity, int id) {
+		def sql = "SELECT NAME FROM ${entity.name()} WHERE ID = :id"
+		return getFirstItem(sql, params("id", id), String.class)
+		// TODO EntityIdNotFoundException
 	}
 }

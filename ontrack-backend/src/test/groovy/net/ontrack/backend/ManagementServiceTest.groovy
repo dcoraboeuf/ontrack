@@ -85,5 +85,28 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert EventType.PROJECT_CREATED == event.eventType
 		assert Collections.singletonMap(Entity.PROJECT, new EntityStub(summary.id, "LOAD1")) == event.entities
 	}
+	
+	@Test
+	void deleteProject() {
+		// Creates the project
+		def summary = service.createProject(new ProjectCreationForm("DELETE1", "My description"))
+		assert summary != null
+		assert "DELETE1" == summary.name
+		assert "My description" == summary.description
+		// Deletes the project
+		def ack = service.deleteProject(summary.id)
+		assert ack.success
+		// Gets the audit
+		def events = eventService.all(0, 2)
+		assert events != null && !events.empty
+		// Deletion
+		def event = events.get(0)
+		assert EventType.PROJECT_DELETED == event.eventType
+		assert ["project": "My description"] == event.values
+		// Creation
+		event = events.get(1)
+		assert EventType.PROJECT_CREATED == event.eventType
+		assert Collections.singletonMap(Entity.PROJECT, new EntityStub(summary.id, "DELETE1")) == event.entities
+	}
 
 }

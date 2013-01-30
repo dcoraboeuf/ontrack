@@ -2,6 +2,7 @@ package net.ontrack.core.ui;
 
 import java.util.List;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
@@ -22,5 +23,7 @@ public interface ManageUI {
 	ProjectSummary createProject(ProjectCreationForm form);
 
 	ProjectSummary getProject(int id);
+
+	Ack deleteProject(int id);
 
 }

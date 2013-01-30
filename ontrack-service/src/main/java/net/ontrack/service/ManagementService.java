@@ -2,6 +2,7 @@ package net.ontrack.service;
 
 import java.util.List;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
@@ -22,5 +23,7 @@ public interface ManagementService {
 	List<ProjectSummary> getProjectList();
 
 	ProjectSummary getProject(int id);
+
+	Ack deleteProject(int id);
 
 }

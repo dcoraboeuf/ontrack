@@ -14,6 +14,6 @@ event.PROJECT_CREATED
 
 
 event.PROJECT_DELETED
-	en -> Project $PROJECT$ has been deleted.
-	fr -> Le project $PROJECT$ a été supprimé.
+	en -> Project $project$ has been deleted.
+	fr -> Le project $project$ a été supprimé.
 	

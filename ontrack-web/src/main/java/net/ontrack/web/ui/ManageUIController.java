@@ -2,6 +2,7 @@ package net.ontrack.web.ui;
 
 import java.util.List;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
@@ -59,6 +60,12 @@ public class ManageUIController implements ManageUI {
 	@RequestMapping(value = "/ui/manage/project/{id}", method = RequestMethod.GET)
 	public @ResponseBody ProjectSummary getProject(@PathVariable int id) {
 		return managementService.getProject(id);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/project/{id}", method = RequestMethod.DELETE)
+	public @ResponseBody Ack deleteProject(@PathVariable int id) {
+		return managementService.deleteProject(id);
 	}
 
 }

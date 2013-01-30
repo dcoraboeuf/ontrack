@@ -14,11 +14,17 @@ import net.ontrack.core.model.EventType;
 public class Event {
 	
 	public static Event of (EventType eventType) {
-		return new Event(eventType, new HashMap<Entity, Integer>()); 
+		return new Event(eventType, new HashMap<Entity, Integer>(), new HashMap<String, String>()); 
 	}
 	
 	private final EventType eventType;
 	private final Map<Entity, Integer> entities;
+	private final Map<String, String> values;
+	
+	public Event withValue (String name, String value) {
+		values.put(name, value);
+		return this;
+	}
 	
 	public Event withProjectGroup (int id) {
 		return withEntity (Entity.PROJECT_GROUP, id);

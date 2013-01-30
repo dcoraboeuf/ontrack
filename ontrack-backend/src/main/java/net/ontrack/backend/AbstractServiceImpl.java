@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.validation.ValidationException;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
@@ -83,6 +84,11 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(parameters), keyHolder);
 		return keyHolder.getKey().intValue();
+	}
+	
+	protected Ack dbDelete (String sql, int id) {
+		int count = getNamedParameterJdbcTemplate().update(sql, params("id", id));
+		return Ack.one(count);
 	}
 	
 	protected MapSqlParameterSource params (String name, Object value) {

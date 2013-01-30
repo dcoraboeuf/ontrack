@@ -16,6 +16,8 @@ interface SQL {
 	
 	String PROJECT_CREATE = "INSERT INTO PROJECT (NAME, DESCRIPTION) VALUES (:name, :description)"
 	
+	String PROJECT_DELETE = "DELETE FROM PROJECT WHERE ID = :id"
+	
 	// Audit
 	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	

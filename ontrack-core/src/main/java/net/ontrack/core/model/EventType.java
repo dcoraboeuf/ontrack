@@ -4,6 +4,8 @@ public enum EventType {
 	
 	PROJECT_GROUP_CREATED,
 	
-	PROJECT_CREATED;
+	PROJECT_CREATED,
+	
+	PROJECT_DELETED;
 
 }
