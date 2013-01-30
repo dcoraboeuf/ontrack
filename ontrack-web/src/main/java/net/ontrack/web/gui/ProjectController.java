@@ -1,6 +1,8 @@
 package net.ontrack.web.gui;
 
 import net.ontrack.core.ui.ManageUI;
+import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.ErrorHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/gui/project")
-public class ProjectController {
+public class ProjectController extends AbstractGUIController {
 
 	private final ManageUI manageUI;
 
 	@Autowired
-	public ProjectController(ManageUI manageUI) {
+	public ProjectController(ErrorHandler errorHandler, ManageUI manageUI) {
+		super(errorHandler);
 		this.manageUI = manageUI;
 	}
 

@@ -11,6 +11,9 @@ import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.support.AbstractUIController;
+import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.Strings;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,14 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class ManageUIController implements ManageUI {
+public class ManageUIController extends AbstractUIController implements ManageUI {
 	
 	private final Pattern numeric = Pattern.compile("[0-9]+");
 
 	private final ManagementService managementService;
 
 	@Autowired
-	public ManageUIController(ManagementService managementService) {
+	public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService) {
+		super(errorHandler, strings);
 		this.managementService = managementService;
 	}
 	

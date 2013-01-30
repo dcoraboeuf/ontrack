@@ -1,4 +1,4 @@
-package net.ontrack.web.gui;
+package net.ontrack.web.ui;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
@@ -13,6 +13,8 @@ import net.ontrack.core.model.EntityStub;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
+import net.ontrack.web.support.AbstractUIController;
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -33,18 +35,17 @@ import com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping("/gui/event")
-public class EventController {
+public class EventController extends AbstractUIController {
 
 	private final Pattern replacementPattern = Pattern.compile("(\\$[^$.]+\\$)");
 	private final Pattern entityPattern = Pattern.compile("[A-Z_]+");
 
 	private final EventUI eventUI;
-	private final Strings strings;
-
+	
 	@Autowired
-	public EventController(EventUI eventUI, Strings strings) {
+	public EventController(ErrorHandler errorHandler, Strings strings, EventUI eventUI) {
+		super(errorHandler, strings);
 		this.eventUI = eventUI;
-		this.strings = strings;
 	}
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
