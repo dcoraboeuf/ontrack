@@ -31,3 +31,8 @@
 .x-dialog {
 	display: none;
 }
+
+/* Events */
+.event-value {
+	color: #7AB1CC;
+}

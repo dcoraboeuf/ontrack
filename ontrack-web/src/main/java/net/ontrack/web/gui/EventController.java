@@ -1,5 +1,8 @@
 package net.ontrack.web.gui;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -130,15 +133,15 @@ public class EventController {
 				return createLink (entity, entityStub, alternative);
 			}
 		}
-		// FIXME Looks for a fixed value
+		// Looks for a fixed value
 		else {
-//			String value = event.getValues().get(key);
-//			if (value == null) {
+			String value = event.getValues().get(key);
+			if (value == null) {
 				// TODO Uses a proper exception
 				throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
-//			} else {
-//				return StringEscapeUtils.escapeHtml4(value);
-//			}
+			} else {
+				return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
+			}
 		}
 	}
 
@@ -149,11 +152,11 @@ public class EventController {
 		// Href
 		String href = createLinkHref(entity, entityStub);
 		// Link
-		return String.format("<a href=\"%s\">%s</a>", href, text);
+		return format("<a class=\"event-entity\" href=\"%s\">%s</a>", href, text);
 	}
 
 	protected String createLinkHref(Entity entity, EntityStub entityStub) {
-		return String.format("gui/%s/%d", entity.name().toLowerCase(), entityStub.getId());
+		return format("gui/%s/%d", entity.name().toLowerCase(), entityStub.getId());
 	}
 
 }

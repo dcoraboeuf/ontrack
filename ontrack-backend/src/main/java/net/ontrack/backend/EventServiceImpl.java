@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +58,18 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 		}
 		String sql = sqlInsert + ") " + sqlValues + ")";
 		// Execution
-		getNamedParameterJdbcTemplate().update(sql, params);
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		getNamedParameterJdbcTemplate().update(sql, params, keyHolder);
+		int eventId = keyHolder.getKey().intValue();
+		
+		// Event values
+		Map<String, String> values = event.getValues();
+		params = new MapSqlParameterSource("id", eventId);
+		for (Map.Entry<String, String> entry: values.entrySet()) {
+			String name = entry.getKey();
+			String value = entry.getValue();
+			getNamedParameterJdbcTemplate().update(SQL.EVENT_VALUE_INSERT, params.addValue("name", name).addValue("value", value));
+		}
 	}
 	
 	@Override
@@ -87,6 +99,7 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 		} else {
 			// Event
 			ExpandedEvent e = new ExpandedEvent(id, eventType, timestamp);
+			
 			// Collects the entities
 			for (Entity entity: Entity.values()) {
 				int entityId = rs.getInt(entity.name());
@@ -95,6 +108,15 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 					e = e.withEntity(entity, new EntityStub(entityId, entityName));
 				}
 			}
+			
+			// Collects the values
+			List<Map<String,Object>> values = getNamedParameterJdbcTemplate().queryForList(SQL.EVENT_VALUE_LIST, new MapSqlParameterSource("id", id));
+			for (Map<String, Object> row: values) {
+				String name = (String) row.get("PROP_NAME");
+				String value = (String) row.get("PROP_VALUE");
+				e = e.withValue(name, value);
+			}
+			
 			// OK
 			return e;
 		}
