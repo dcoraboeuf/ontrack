@@ -1,5 +1,7 @@
 package net.ontrack.web.test
 
+import java.lang.invoke.MethodHandleImpl.BindCaller.T
+
 import net.ontrack.test.AbstractIntegrationTest
 
 import org.codehaus.jackson.map.ObjectMapper
@@ -17,7 +19,7 @@ abstract class AbstractWebTest extends AbstractIntegrationTest {
     private WebApplicationContext wac;
 	
 	@Autowired
-	private ObjectMapper objectMapper
+	protected ObjectMapper objectMapper
 	
 	protected MockMvc mockMvc;
 
@@ -32,6 +34,11 @@ abstract class AbstractWebTest extends AbstractIntegrationTest {
 	
 	protected <T> T parse (String json, Class<T> type) {
 		return objectMapper.readValue(json, type)
+	}
+	
+	protected <T> List<T> parseList (String json, Class<T> type) {
+		def node = objectMapper.readTree(json)
+		return node.collect { this.objectMapper.readValue (it, type) }
 	}
 
 }

@@ -14,7 +14,7 @@ import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.core.model.ProjectSummary
-import net.ontrack.service.model.Event
+import net.ontrack.web.gui.model.GUIEvent
 import net.ontrack.web.test.AbstractWebTest
 
 import org.junit.Test
@@ -71,18 +71,17 @@ class ManageUIControllerTest extends AbstractWebTest {
 		assert summary != null
 		assert summary.description == "My first project"
 		// Gets the event
-		json = this.mockMvc.perform(get("/ui/event/all").accept(MediaType.APPLICATION_JSON))
+		json = this.mockMvc.perform(get("/gui/event/all").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
 			.andReturn().response.contentAsString
-		List<Event> events = parse(json, List.class)
+		List<GUIEvent> events = parseList(json, GUIEvent)
 		assert events != null && !events.empty
 		def e = events.get(0)
 		assert e != null
-		assert summary.id == e.entities.PROJECT.id
-		assert summary.name == e.entities.PROJECT.name
-		assert EventType.PROJECT_CREATED.name() == e.eventType
+		assert EventType.PROJECT_CREATED == e.eventType
+		assert """Project <a href="gui/project/1">PRJ1</a> has been created.""" == e.html
 	}
 
 }
