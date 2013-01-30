@@ -5,7 +5,7 @@ var Audit = function () {
 	}
 	
 	function audit (item) {
-		return item.html;
+		return item.html + ' <span class="elapsed">- <span title="{1}">{0}</span></span>'.format(item.elapsed.html(), item.timestamp.html());
 	}
 	
 	return {

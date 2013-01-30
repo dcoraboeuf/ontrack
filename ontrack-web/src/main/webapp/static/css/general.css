@@ -3,6 +3,13 @@
 	cursor: pointer;
 }
 
+/* Time elapsed */
+.elapsed {
+	font-size: 0.75em;
+	color: lightgray;
+	font-style: italic;
+}
+
 /* Loading indicator */
 .loading {
 	padding-left: 24px;
