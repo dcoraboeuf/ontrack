@@ -7,7 +7,8 @@ var ProjectGroups = function () {
 			'POST',
 			'ui/manage/projectgroup',
 			function (data) {
-				Application.load('projectgroups', projectGroupTemplate);
+				Application.reload('projectgroups');
+				Application.reload('audit');
 			});
 	}
 	

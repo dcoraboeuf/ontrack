@@ -7,7 +7,8 @@ var Projects = function () {
 			'POST',
 			'ui/manage/project',
 			function (data) {
-				Application.load('projects', projectTemplate);
+				Application.reload('projects');
+				Application.reload('audit');
 			});
 	}
 	

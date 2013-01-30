@@ -263,6 +263,22 @@ var Application = function () {
 		}
 	}
 	
+	var templates = {};
+	
+	function loadInit (id, templateFn) {
+		// Registers the function
+		templates["load-" + id] = templateFn;
+		// Initial load
+		load (id, templateFn);
+	}
+	
+	function reload (id) {
+		// Gets the load function
+		var templateFn = templates["load-" + id];
+		// Reloads
+		load (id, templateFn);
+	}
+		
 	function load (id, templateFn) {
 		// Gets the loading information
 		var url = $('#' + id).attr('data-url');
@@ -338,7 +354,9 @@ var Application = function () {
 			return validate (confirmation, confirmValue == value);
 		},
 		loading: loading,
+		loadInit: loadInit,
 		load: load,
+		reload: reload,
 		deleteEntity: deleteEntity
 	};
 	
