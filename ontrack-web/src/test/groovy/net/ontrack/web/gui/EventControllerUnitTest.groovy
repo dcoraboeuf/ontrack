@@ -26,6 +26,20 @@ class EventControllerUnitTest {
 	}
 	
 	@Test
+	void createLink_project_group_no_alternative () {
+		EventController controller = new EventController(null, null)
+		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(2001, "My > project group"), null)
+		assert """<a href="gui/project_group/2001">My &gt; project group</a>""" == href
+	}
+	
+	@Test
+	void createLink_project_group_alternative () {
+		EventController controller = new EventController(null, null)
+		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(2001, "My > project group"), "te>st")
+		assert """<a href="gui/project_group/2001">te&gt;st</a>""" == href
+	}
+	
+	@Test
 	void createLink_project_no_alternative () {
 		EventController controller = new EventController(null, null)
 		def href = controller.createLink(Entity.PROJECT, new EntityStub(1001, "My > project"), null)
@@ -40,21 +54,28 @@ class EventControllerUnitTest {
 	}
 	
 	@Test
-	void expandToken_entity () {
+	void expandToken_entity_project () {
 		EventController controller = new EventController(null, null)
 		def value = controller.expandToken('$PROJECT$', new ExpandedEvent(1, EventType.PROJECT_CREATED, new DateTime()).withEntity(Entity.PROJECT, new EntityStub(1, "My project")))
 		assert """<a href="gui/project/1">My project</a>""" == value
 	}
 	
 	@Test
-	void expandToken_entity_with_alternative () {
+	void expandToken_entity_project_group () {
 		EventController controller = new EventController(null, null)
-		def value = controller.expandToken('$PROJECT|this project$', new ExpandedEvent(1, EventType.PROJECT_CREATED, new DateTime()).withEntity(Entity.PROJECT, new EntityStub(1, "My project")))
-		assert """<a href="gui/project/1">this project</a>""" == value
+		def value = controller.expandToken('$PROJECT_GROUP$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(1, "My project group")))
+		assert """<a href="gui/project_group/1">My project group</a>""" == value
+	}
+	
+	@Test
+	void expandToken_entity_project_group_with_alternative () {
+		EventController controller = new EventController(null, null)
+		def value = controller.expandToken('$PROJECT_GROUP|this group$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(1, "My project group")))
+		assert """<a href="gui/project_group/1">this group</a>""" == value
 	}
 	
 	@Test(expected = IllegalStateException)
-	void expandToken_entity_not_found () {
+	void expandToken_entity_project_not_found () {
 		EventController controller = new EventController(null, null)
 		controller.expandToken('$PROJECT$', new ExpandedEvent(1, EventType.PROJECT_CREATED, new DateTime()))		
 	}

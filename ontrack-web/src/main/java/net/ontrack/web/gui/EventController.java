@@ -27,8 +27,9 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping("/gui/event")
 public class EventController {
-	
-	private final Pattern pattern = Pattern.compile("(\\$[^$.]+\\$)");
+
+	private final Pattern replacementPattern = Pattern.compile("(\\$[^$.]+\\$)");
+	private final Pattern entityPattern = Pattern.compile("[A-Z_]+");
 
 	private final EventUI eventUI;
 	private final Strings strings;
@@ -60,7 +61,7 @@ public class EventController {
 		// Getting the general pattern from the localization strings
 		String canvas = strings.get(locale, "event." + event.getEventType().name());
 		// Replacing the $...$ tokens
-		Matcher m = pattern.matcher(canvas);
+		Matcher m = replacementPattern.matcher(canvas);
 		StringBuffer html = new StringBuffer();
 		while (m.find()) {
 			String value = expandToken(m.group(), event);
@@ -84,7 +85,7 @@ public class EventController {
 			alternative = token.substring(pipe + 1);
 		}
 		// Looks for an entity stub
-		if (StringUtils.isAllUpperCase(key)) {
+		if (entityPattern.matcher(key).matches()) {
 			// Gets the entity
 			Entity entity = Entity.valueOf(key);
 			EntityStub entityStub = event.getEntities().get(entity);
