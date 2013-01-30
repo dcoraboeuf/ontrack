@@ -32,9 +32,9 @@ class ManagementServiceTest extends AbstractValidationTest {
 	
 	@Test
 	void createProjectGroup() {
-		def summary = service.createProjectGroup(new ProjectGroupCreationForm("My name", "My description"))
+		def summary = service.createProjectGroup(new ProjectGroupCreationForm("GRP1", "My description"))
 		assert summary != null
-		assert "My name" == summary.name
+		assert "GRP1" == summary.name
 		assert "My description" == summary.description
 	}
 	
@@ -55,16 +55,23 @@ class ManagementServiceTest extends AbstractValidationTest {
 	@Test
 	void createProjectGroup_description_null() {
 		validateNOK(" - Description: may not be null\n") {
-			service.createProjectGroup(new ProjectGroupCreationForm("Name", null))
+			service.createProjectGroup(new ProjectGroupCreationForm("NAME", null))
 		}
 	}
 	
 	@Test
 	void createProject() {
-		def summary = service.createProject(new ProjectCreationForm("My name", "My description"))
+		def summary = service.createProject(new ProjectCreationForm("PRJ1", "My description"))
 		assert summary != null
-		assert "My name" == summary.name
+		assert "PRJ1" == summary.name
 		assert "My description" == summary.description
+	}
+	
+	@Test
+	void createProject_name_format() {
+		validateNOK(""" - Name: must match "[A-Z0-9_.]*"\n""") {
+			service.createProject(new ProjectCreationForm("Project1", "My description"))
+		}
 	}
 	
 	@Test

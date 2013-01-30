@@ -121,7 +121,7 @@
 	</@form_field>
 </#macro>
 
-<#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="">
+<#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="" required=true>
 	<@form_field name=name label=label idPrefix=idPrefix help=help>
 		<textarea name="${name?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size?c}" maxlength="${maxlength?c}" rows="${rows?c}" <@input_required required=required /> ></textarea>
 	</@form_field>

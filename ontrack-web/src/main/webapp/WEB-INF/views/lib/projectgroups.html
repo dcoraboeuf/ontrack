@@ -5,7 +5,7 @@
 		<#if create>
 			<@dialog id="projectgroup-create-dialog">
 				<@form_text name="name" label=loc('projectgroup.name') />
-				<@form_memo name="description" label=loc('projectgroup.description') />
+				<@form_memo name="description" label=loc('projectgroup.description') required=false />
 				
 				<@dialog_button_cancel />
 				<@dialog_button id="projectgroup-create-dialog-submit" class="btn-primary" text=loc('general.create') />

@@ -61,7 +61,7 @@ public class ManageUIController implements ManageUI {
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_]+}", method = RequestMethod.GET)
+	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
 	public @ResponseBody ProjectSummary getProject(@PathVariable String idOrName) {
 		return managementService.getProject(getId (Entity.PROJECT, idOrName));
 	}
@@ -71,7 +71,7 @@ public class ManageUIController implements ManageUI {
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_]+}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
 	public @ResponseBody Ack deleteProject(@PathVariable String idOrName) {
 		return managementService.deleteProject(getId (Entity.PROJECT, idOrName));
 	}
