@@ -29,6 +29,8 @@ public interface ManageUI {
 	Ack deleteProject(String idOrName);
 	
 	// Branches
+
+	List<BranchSummary> getBranchList(String projectIdOrName);
 	
 	BranchSummary createBranch (String projectIdOrName, BranchCreationForm form);
 	

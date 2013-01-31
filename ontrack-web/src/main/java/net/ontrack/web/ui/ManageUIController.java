@@ -83,6 +83,13 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	}
 	
 	// Branches
+
+	@Override
+	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
+	public @ResponseBody List<BranchSummary> getBranchList(@PathVariable String projectIdOrName) {
+		int project = getId(Entity.PROJECT, projectIdOrName);
+		return managementService.getBranchList(project);
+	}
 	
 	@Override
 	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}", method = RequestMethod.POST)

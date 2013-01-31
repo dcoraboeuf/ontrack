@@ -38,7 +38,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProjectGroupSummary> getProjectGroupList() {
-		return dbList(SQL.PROJECT_GROUP_LIST) { rs ->
+		return dbList(SQL.PROJECT_GROUP_LIST, [:]) { rs ->
 			new ProjectGroupSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
 		}
 	}
@@ -99,6 +99,16 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	}
 	
 	// Branches
+	
+	BranchSummary readBranchSummary (ResultSet rs) {
+		return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<BranchSummary> getBranchList(int project) {
+		return dbList(SQL.BRANCH_LIST, ["project": project]) { readBranchSummary(it) }
+	}
 	
 	@Override
 	@Transactional

@@ -31,6 +31,8 @@ public interface ManagementService {
 	
 	// Branches
 
+	List<BranchSummary> getBranchList(int project);
+
 	BranchSummary createBranch(int project, BranchCreationForm form);
 	
 	// Common

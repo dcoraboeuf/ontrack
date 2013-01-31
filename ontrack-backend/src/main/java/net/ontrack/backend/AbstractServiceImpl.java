@@ -54,13 +54,16 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 		}
 	}
 	
-	protected <T> List<T> dbList (String sql, final Closure<T> mapping) {
-		return getJdbcTemplate().query(sql, new RowMapper<T> () {
+	protected <T> List<T> dbList (String sql, Map<String, ?> params, final Closure<T> mapping) {
+		return getNamedParameterJdbcTemplate().query(
+			sql,
+			new MapSqlParameterSource(params),
+			new RowMapper<T> () {
 
-			@Override
-			public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return mapping.call(rs);
-			}
+				@Override
+				public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+					return mapping.call(rs);
+				}
 			
 		});
 	}
