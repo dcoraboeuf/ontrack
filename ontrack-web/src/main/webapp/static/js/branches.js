@@ -15,8 +15,10 @@ var Branches = function () {
 		Application.deleteEntity('branch', id, '');
 	}
 	
-	function branchTemplate (items) {
-		return Template.links(items, 'gui/branch');
+	function branchTemplate (project) {
+		return function (items) {
+			return Template.links(items, 'gui/branch/' + project);
+		};
 	}
 	
 	return {
