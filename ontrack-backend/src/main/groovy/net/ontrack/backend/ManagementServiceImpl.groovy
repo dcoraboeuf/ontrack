@@ -65,7 +65,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProjectSummary> getProjectList() {
-		return dbList(SQL.PROJECT_LIST) { readProjectSummary(it) }
+		return dbList(SQL.PROJECT_LIST, [:]) { readProjectSummary(it) }
 	}
 	
 	@Override

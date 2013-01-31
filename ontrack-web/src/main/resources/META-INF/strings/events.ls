@@ -17,3 +17,6 @@ event.PROJECT_DELETED
 	en -> Project $project$ has been deleted.
 	fr -> Le project $project$ a été supprimé.
 	
+event.BRANCH_CREATED
+	en -> Branch $BRANCH$ has been created for the $PROJECT$ project.
+	fr -> La branche $BRANCH$ a été créée pour le projet $PROJECT$.
