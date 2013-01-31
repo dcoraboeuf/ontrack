@@ -131,4 +131,13 @@ project.name
 	en,fr -> @[model.name]
 project.description
 	en,fr -> @[model.description]
+project.branches
+	en,fr -> Branches
 
+[branches]
+
+[events]
+
+event.list
+	en -> Activity
+	fr -> Activité
