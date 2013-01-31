@@ -2,6 +2,7 @@ package net.ontrack.backend
 
 import java.lang.invoke.MethodHandleImpl.BindCaller.T
 
+import net.ontrack.core.model.BranchCreationForm
 import net.ontrack.core.model.Entity
 import net.ontrack.core.model.EntityStub
 import net.ontrack.core.model.EventType
@@ -110,6 +111,30 @@ class ManagementServiceTest extends AbstractValidationTest {
 		def event = events.get(0)
 		assert EventType.PROJECT_DELETED == event.eventType
 		assert ["project": "DELETE1"] == event.values
+	}
+	
+	@Test
+	void getBranchList() {
+		def branches = service.getBranchList(1)
+		assert branches != null && branches.size == 2
+		assert ["BRANCH1", "BRANCH2"] == branches*.name
+		assert ["Project 1 branch 1", "Project 1 branch 2"] == branches*.description
+	}
+	
+	@Test
+	void getBranch() {
+		def branch = service.getBranch(3)
+		assert branch != null
+		assert "BRANCH1" == branch.name
+		"Project 2 branch 1" == branch.description
+	}
+	
+	@Test
+	void createBranch() {
+		def branch = service.createBranch(2, new BranchCreationForm("BRANCH2", "Project 2 branch 2"))
+		assert branch != null
+		assert "BRANCH2" == branch.name
+		"Project 2 branch 2" == branch.description
 	}
 	
 	@Test
