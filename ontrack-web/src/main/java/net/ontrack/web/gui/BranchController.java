@@ -25,10 +25,18 @@ public class BranchController extends AbstractGUIController {
 
 	@RequestMapping(value = "/{project:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
 	public String getBranch(Model model, @PathVariable String project, @PathVariable String name) {
-		// Loads the project details
-		model.addAttribute("project", manageUI.getBranch(project, name));
+		// Loads the details
+		model.addAttribute("branch", manageUI.getBranch(project, name));
 		// OK
-		return "project";
+		return "branch";
+	}
+
+	@RequestMapping(value = "/{id:\\d+}", method = RequestMethod.GET)
+	public String getBranch(Model model, @PathVariable int id) {
+		// Loads the details
+		model.addAttribute("branch", manageUI.getBranch(id));
+		// OK
+		return "branch";
 	}
 
 }

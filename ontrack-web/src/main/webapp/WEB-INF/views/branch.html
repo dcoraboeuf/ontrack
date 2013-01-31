@@ -1,0 +1,34 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="branch" title=branch.name modules=["projects","branches","audit"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+				<@panel title=branch.project.name+"/"+branch.name>
+					<p class="help-block">${branch.description?html}</p>
+					<p>
+						<button class="btn"><@lh key="general.modify" /></button>
+						<button class="btn btn-danger" onclick="Branches.deleteBranch(${branch.id})"><@lh key="general.delete" /></button>
+						<a href="gui/project/${branch.project.name?html}" class="btn btn-link"><@lh key="general.close"/></a>
+					</p>
+				</@panel>
+				<@panel title=loc("branch.promotion_levels")>
+					TODO Promotion levels
+				</@panel>
+				<@panel title=loc("branch.validation_stamps")>
+					TODO Validation stamps
+				</@panel>
+			</div>
+			<div class="span5">
+				<@panel title=loc("branches.builds")>
+					TODO Runs
+				</@panel>
+			</div>
+			<div class="span4">
+				<@panel title=loc("event.list")>
+					TODO Branch events
+				</@panel>
+			</div>
+		</div>
+	</div>
+</@layout_std>

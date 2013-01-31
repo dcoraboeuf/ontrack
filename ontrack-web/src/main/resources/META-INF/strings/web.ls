@@ -152,6 +152,17 @@ branch.name
 branch.description
 	en,fr -> @[model.description]
 	
+branches.builds
+	en,fr -> Builds
+
+branch.promotion_levels
+	en -> Promotion levels
+	fr -> Niveaux de promotion
+
+branch.validation_stamps
+	en -> Validation stamps
+	fr -> Validations
+	
 [events]
 
 event.list

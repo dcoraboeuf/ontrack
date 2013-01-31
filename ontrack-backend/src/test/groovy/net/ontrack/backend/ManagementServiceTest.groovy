@@ -119,6 +119,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert branches != null && branches.size == 2
 		assert ["BRANCH1", "BRANCH2"] == branches*.name
 		assert ["Project 1 branch 1", "Project 1 branch 2"] == branches*.description
+		assert ["PROJECT1", "PROJECT1"] == branches*.project*.name
 	}
 	
 	@Test
@@ -127,6 +128,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert branch != null
 		assert "BRANCH1" == branch.name
 		"Project 2 branch 1" == branch.description
+		assert "PROJECT2" == branch.project.name
 	}
 	
 	@Test

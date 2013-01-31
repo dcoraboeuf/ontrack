@@ -101,7 +101,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	// Branches
 	
 	BranchSummary readBranchSummary (ResultSet rs) {
-		return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"))
+		return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getProject(rs.getInt("project")))
 	}
 	
 	@Override
@@ -113,7 +113,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	@Override
 	@Transactional(readOnly = true)
 	public BranchSummary getBranch(int id) {
-		return dbLoad(SQL.BRANCH, id) {readBranchSummary(it) }
+		return dbLoad(SQL.BRANCH, id) { readBranchSummary(it) }
 	}
 	
 	@Override
@@ -126,7 +126,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Audit
 		event(Event.of(EventType.BRANCH_CREATED).withProject(project).withBranch(id))
 		// OK
-		new BranchSummary(id, form.name, form.description)
+		new BranchSummary(id, form.name, form.description, getProject(project))
 	}
 	
 	// Common

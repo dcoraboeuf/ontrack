@@ -8,5 +8,6 @@ public class BranchSummary {
 	private final int id;
 	private final String name;
 	private final String description;
+	private final ProjectSummary project;
 
 }
