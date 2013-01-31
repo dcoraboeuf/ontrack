@@ -33,10 +33,12 @@ public interface ManagementService {
 
 	List<BranchSummary> getBranchList(int project);
 
+	BranchSummary getBranch(int id);
+
 	BranchSummary createBranch(int project, BranchCreationForm form);
 	
 	// Common
 
-	int getEntityId(Entity entity, String name);
+	int getEntityId(Entity entity, String name, int... parentIds);
 
 }

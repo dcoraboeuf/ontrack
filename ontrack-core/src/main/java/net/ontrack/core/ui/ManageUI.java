@@ -31,6 +31,10 @@ public interface ManageUI {
 	// Branches
 
 	List<BranchSummary> getBranchList(String projectIdOrName);
+
+	BranchSummary getBranch(String project, String name);
+
+	BranchSummary getBranch(int id);
 	
 	BranchSummary createBranch (String projectIdOrName, BranchCreationForm form);
 	

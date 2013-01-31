@@ -111,6 +111,12 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
+	public BranchSummary getBranch(int id) {
+		return dbLoad(SQL.BRANCH, id) {readBranchSummary(it) }
+	}
+	
+	@Override
 	@Transactional
 	public BranchSummary createBranch(int project, BranchCreationForm form) {
 		// Validation
@@ -127,9 +133,15 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional(readOnly = true)
-	public int getEntityId(Entity entity, String name) {
+	public int getEntityId(Entity entity, String name, int... parentIds) {
 		def sql = "SELECT ID FROM ${entity.name()} WHERE ${entity.nameColumn()} = :name"
-		Integer id = getFirstItem(sql, params("name", name), Integer.class)
+		def sqlParams = params("name", name)
+		entity.parentColumns.eachWithIndex { parentColumn, index ->
+			def parentId = parentIds[index]
+			sql += " AND ${parentColumn} = :parent${index}"
+			sqlParams.addValue("parent${index}", parentId)
+		}
+		Integer id = getFirstItem(sql, sqlParams, Integer.class)
 		if (id == null) {
 			throw new EntityNameNotFoundException (entity, name)
 		} else {

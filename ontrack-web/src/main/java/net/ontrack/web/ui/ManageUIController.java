@@ -92,6 +92,20 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	}
 	
 	@Override
+	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody BranchSummary getBranch(@PathVariable String projectIdOrName, @PathVariable String idOrName) {
+		int project = getId(Entity.PROJECT, projectIdOrName);
+		int branch = getId(Entity.BRANCH, idOrName, project);
+		return managementService.getBranch(branch);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/branch/{id:\\d+}", method = RequestMethod.GET)
+	public @ResponseBody BranchSummary getBranch(@PathVariable int id) {
+		return managementService.getBranch(id);
+	}
+	
+	@Override
 	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
 	public @ResponseBody BranchSummary createBranch(@PathVariable String projectIdOrName, @RequestBody BranchCreationForm form) {
 		int project = getId(Entity.PROJECT, projectIdOrName);
@@ -100,11 +114,11 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	
 	// Common
 
-	protected int getId(Entity entity, String idOrName) {
+	protected int getId(Entity entity, String idOrName, int... parentIds) {
 		if (isNumeric(idOrName)) {
 			return Integer.parseInt(idOrName, 10);
 		} else {
-			return managementService.getEntityId(entity, idOrName);
+			return managementService.getEntityId(entity, idOrName, parentIds);
 		}
 	}
 

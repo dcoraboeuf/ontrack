@@ -20,6 +20,8 @@ interface SQL {
 	
 	// Branches
 	
+	String BRANCH = "SELECT * FROM BRANCH WHERE ID = :id"
+	
 	String BRANCH_LIST = "SELECT ID, NAME, DESCRIPTION FROM BRANCH WHERE PROJECT = :project ORDER BY NAME"
 	
 	String BRANCH_CREATE = "INSERT INTO BRANCH (PROJECT, NAME, DESCRIPTION) VALUES (:project, :name, :description)"
