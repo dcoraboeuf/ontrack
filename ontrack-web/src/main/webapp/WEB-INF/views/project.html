@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="project" title=project.name modules=["projects","audit"] breadcrumbs = {loc("home"): ""}>
+<@layout_std page="project" title=project.name modules=["projects","branches","audit"] breadcrumbs = {loc("home"): ""}>
 	<div class="container-fluid">
 		<div id="project-name-row" class="row-fluid">
 			<div class="span3">
@@ -15,7 +15,7 @@
 			</div>
 			<div class="span5">
 				<@panel title=loc("project.branches")>
-					TODO Branches
+					<@branches project=project.name />
 				</@panel>
 			</div>
 			<div class="span4">

@@ -1,0 +1,16 @@
+<script type="text/javascript" src="${base}/js/branches.js"></script>
+
+<#macro branches project id="branches" create=true>
+	<@dynamicsection id=id url="ui/manage/branch/${project?html}/all" template="Branches.branchTemplate">
+		<#if create>
+			<@dialog id="branch-create-dialog">
+				<@form_text name="name" label=loc('branch.name') />
+				<@form_memo name="description" label=loc('branch.description') required=false />
+				
+				<@dialog_button_cancel />
+				<@dialog_button id="branch-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+			</@dialog>
+			<button id="branch-create-button" type="button" class="btn" onclick="Branches.createBranch('${project?html}')"><@lh key="branch.create" /></button>
+		</#if>
+	</@dynamicsection>
+</#macro>

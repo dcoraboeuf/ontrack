@@ -136,6 +136,22 @@ project.branches
 
 [branches]
 
+branch.create
+	en -> New branch
+	fr -> Nouvelle branche
+	
+branch.delete.prompt
+	en -> Are you sure to delete the "{0}" branch and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" et toutes ses informations associées?
+
+branch.create.title
+	en,fr -> @[branch.create]
+
+branch.name
+	en,fr -> @[model.name]
+branch.description
+	en,fr -> @[model.description]
+	
 [events]
 
 event.list
