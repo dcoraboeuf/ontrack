@@ -3,6 +3,8 @@ package net.ontrack.service;
 import java.util.List;
 
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.BranchCreationForm;
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
@@ -26,6 +28,12 @@ public interface ManagementService {
 	ProjectSummary getProject(int id);
 
 	Ack deleteProject(int id);
+	
+	// Branches
+
+	BranchSummary createBranch(int project, BranchCreationForm form);
+	
+	// Common
 
 	int getEntityId(Entity entity, String name);
 

@@ -18,7 +18,12 @@ interface SQL {
 	
 	String PROJECT_DELETE = "DELETE FROM PROJECT WHERE ID = :id"
 	
+	// Branches
+	
+	String BRANCH_CREATE = "INSERT INTO BRANCH (PROJECT, NAME, DESCRIPTION) VALUES (:project, :name, :description)"
+	
 	// Audit
+	
 	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
 	
 	String EVENT_NAME = 'SELECT %s FROM %s WHERE ID = :id'

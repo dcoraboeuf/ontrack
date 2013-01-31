@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.BranchCreationForm;
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
@@ -79,6 +81,17 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	public @ResponseBody Ack deleteProject(@PathVariable String idOrName) {
 		return managementService.deleteProject(getId (Entity.PROJECT, idOrName));
 	}
+	
+	// Branches
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
+	public @ResponseBody BranchSummary createBranch(@PathVariable String projectIdOrName, @RequestBody BranchCreationForm form) {
+		int project = getId(Entity.PROJECT, projectIdOrName);
+		return managementService.createBranch (project, form);
+	}
+	
+	// Common
 
 	protected int getId(Entity entity, String idOrName) {
 		if (isNumeric(idOrName)) {

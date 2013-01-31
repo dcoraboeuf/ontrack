@@ -3,6 +3,8 @@ package net.ontrack.core.ui;
 import java.util.List;
 
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.BranchCreationForm;
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
@@ -25,5 +27,10 @@ public interface ManageUI {
 	ProjectSummary getProject(String idOrName);
 
 	Ack deleteProject(String idOrName);
+	
+	// Branches
+	
+	BranchSummary createBranch (String projectIdOrName, BranchCreationForm form);
+	
 
 }

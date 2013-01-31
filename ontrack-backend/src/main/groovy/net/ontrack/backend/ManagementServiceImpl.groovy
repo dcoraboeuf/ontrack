@@ -8,6 +8,8 @@ import javax.validation.Validator
 
 import net.ontrack.backend.db.SQL
 import net.ontrack.core.model.Ack
+import net.ontrack.core.model.BranchCreationForm
+import net.ontrack.core.model.BranchSummary
 import net.ontrack.core.model.Entity
 import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
@@ -95,6 +97,23 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		}
 		return ack
 	}
+	
+	// Branches
+	
+	@Override
+	@Transactional
+	public BranchSummary createBranch(int project, BranchCreationForm form) {
+		// Validation
+		validate(form, NameDescription.class)
+		// Query
+		int id = dbCreate (SQL.BRANCH_CREATE, ["project": project, "name": form.name, "description": form.description])
+		// Audit
+		event(Event.of(EventType.BRANCH_CREATED).withProject(project).withBranch(id))
+		// OK
+		new BranchSummary(id, form.name, form.description)
+	}
+	
+	// Common
 	
 	@Override
 	@Transactional(readOnly = true)

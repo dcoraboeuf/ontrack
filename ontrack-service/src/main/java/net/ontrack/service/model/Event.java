@@ -33,6 +33,10 @@ public class Event {
 	public Event withProject (int id) {
 		return withEntity (Entity.PROJECT, id);
 	}
+	
+	public Event withBranch (int id) {
+		return withEntity (Entity.BRANCH, id);
+	}
 
 	private Event withEntity(Entity entity, int id) {
 		entities.put(entity, id);

@@ -6,6 +6,8 @@ public enum EventType {
 	
 	PROJECT_CREATED,
 	
-	PROJECT_DELETED;
+	PROJECT_DELETED,
+	
+	BRANCH_CREATED;
 
 }

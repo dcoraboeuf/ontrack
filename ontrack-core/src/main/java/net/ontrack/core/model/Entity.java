@@ -4,7 +4,9 @@ public enum Entity {
 	
 	PROJECT_GROUP,
 	
-	PROJECT;
+	PROJECT,
+	
+	BRANCH;
 	
 	private String nameColumn;
 	
