@@ -37,6 +37,10 @@ public class Event {
 	public Event withBranch (int id) {
 		return withEntity (Entity.BRANCH, id);
 	}
+	
+	public Event withValidationStamp (int id) {
+		return withEntity (Entity.VALIDATION_STAMP, id);
+	}
 
 	private Event withEntity(Entity entity, int id) {
 		entities.put(entity, id);

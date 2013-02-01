@@ -134,7 +134,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	// Validation stamps
 	
 	ValidationStampSummary readValidationStampSummary (ResultSet rs) {
-		return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")))
+		return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")))
 	}
 	
 	@Override
@@ -159,7 +159,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		// Branch summary
 		def theBranch = getBranch(branch)
 		// Audit
-		event(Event.of(EventType.VALIDATION_STAMP_CREATED).withProject(theBranch.project.id).withBranch(id))
+		event(Event.of(EventType.VALIDATION_STAMP_CREATED).withProject(theBranch.project.id).withBranch(theBranch.id).withValidationStamp(id))
 		// OK
 		new ValidationStampSummary(id, form.name, form.description, theBranch)
 	}
