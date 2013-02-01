@@ -11,6 +11,8 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.ValidationStampCreationForm;
+import net.ontrack.core.model.ValidationStampSummary;
 
 public interface ManagementService {
 	
@@ -37,6 +39,14 @@ public interface ManagementService {
 	BranchSummary getBranch(int id);
 
 	BranchSummary createBranch(int project, BranchCreationForm form);
+	
+	// Validation stamps
+
+	List<ValidationStampSummary> getValidationStampList(int branch);
+
+	ValidationStampSummary getValidationStamp(int id);
+
+	ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
 	
 	// Common
 

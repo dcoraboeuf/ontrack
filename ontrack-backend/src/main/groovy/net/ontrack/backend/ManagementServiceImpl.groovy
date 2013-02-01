@@ -16,6 +16,8 @@ import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.core.model.ProjectSummary
+import net.ontrack.core.model.ValidationStampCreationForm
+import net.ontrack.core.model.ValidationStampSummary
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
@@ -127,6 +129,39 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		event(Event.of(EventType.BRANCH_CREATED).withProject(project).withBranch(id))
 		// OK
 		new BranchSummary(id, form.name, form.description, getProject(project))
+	}
+	
+	// Validation stamps
+	
+	ValidationStampSummary readValidationStampSummary (ResultSet rs) {
+		return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")))
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ValidationStampSummary> getValidationStampList(int branch) {
+		return dbList(SQL.VALIDATION_STAMP_LIST, ["branch": branch]) { readValidationStampSummary(it) }
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ValidationStampSummary getValidationStamp(int id) {
+		return dbLoad(SQL.VALIDATION_STAMP, id) { readValidationStampSummary(it) }
+	}
+	
+	@Override
+	@Transactional
+	public ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form) {
+		// Validation
+		validate(form, NameDescription.class)
+		// Query
+		int id = dbCreate (SQL.VALIDATION_STAMP_CREATE, ["branch": branch, "name": form.name, "description": form.description])
+		// Branch summary
+		def theBranch = getBranch(branch)
+		// Audit
+		event(Event.of(EventType.VALIDATION_STAMP_CREATED).withProject(theBranch.project.id).withBranch(id))
+		// OK
+		new ValidationStampSummary(id, form.name, form.description, theBranch)
 	}
 	
 	// Common

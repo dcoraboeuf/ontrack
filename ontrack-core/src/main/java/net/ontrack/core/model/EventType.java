@@ -8,6 +8,8 @@ public enum EventType {
 	
 	PROJECT_DELETED,
 	
-	BRANCH_CREATED;
+	BRANCH_CREATED,
+	
+	VALIDATION_STAMP_CREATED;
 
 }

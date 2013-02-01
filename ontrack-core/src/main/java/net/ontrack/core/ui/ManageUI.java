@@ -9,6 +9,8 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.ValidationStampCreationForm;
+import net.ontrack.core.model.ValidationStampSummary;
 
 public interface ManageUI {
 	
@@ -35,6 +37,14 @@ public interface ManageUI {
 	BranchSummary getBranch(String project, String name);
 	
 	BranchSummary createBranch (String project, BranchCreationForm form);
+	
+	// Validation stamps
+
+	List<ValidationStampSummary> getValidationStampList(String project, String branch);
+
+	ValidationStampSummary getValidationStamp(String project, String branch, String name);
+	
+	ValidationStampSummary createValidationStamp (String project, String branch, ValidationStampCreationForm form);
 	
 
 }

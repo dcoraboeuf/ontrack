@@ -13,6 +13,9 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.ValidationStampCreationForm;
+import net.ontrack.core.model.ValidationStampSummary;
+import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.support.AbstractUIController;
@@ -89,26 +92,66 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	@Override
 	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
 	public @ResponseBody List<BranchSummary> getBranchList(@PathVariable String project) {
-		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		int projectId = getProjectId(project);
 		return managementService.getBranchList(projectId);
 	}
 	
 	@Override
 	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
 	public @ResponseBody BranchSummary getBranch(@PathVariable String project, @PathVariable String name) {
-		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
-		int branchId = getId(Entity.BRANCH, name, Collections.singletonMap(Entity.PROJECT, projectId));
+		int branchId = getBranchId(project, name);
 		return managementService.getBranch(branchId);
 	}
 	
 	@Override
 	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
 	public @ResponseBody BranchSummary createBranch(@PathVariable String project, @RequestBody BranchCreationForm form) {
-		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		int projectId = getProjectId(project);
 		return managementService.createBranch (projectId, form);
 	}
 	
+	// Validation stamps
+
+	@Override
+	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
+	public @ResponseBody List<ValidationStampSummary> getValidationStampList(@PathVariable String project, @PathVariable String branch) {
+		int branchId = getBranchId(project, branch);
+		return managementService.getValidationStampList(branchId);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody ValidationStampSummary getValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+		int validationStampId = getValidationStampId(project, branch, name);
+		return managementService.getValidationStamp(validationStampId);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
+	public @ResponseBody ValidationStampSummary createValidationStamp(@PathVariable String project, @PathVariable String branch, @RequestBody ValidationStampCreationForm form) {
+		int branchId = getBranchId(project, branch);
+		return managementService.createValidationStamp (branchId, form);
+	}
+	
 	// Common
+
+	protected int getValidationStampId(String project, String branch, String validationStamp) {
+		int projectId = getProjectId(project);
+		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
+		int validationStampId = getId(Entity.VALIDATION_STAMP, validationStamp, MapBuilder.create(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).build());
+		return validationStampId;
+	}
+
+	protected int getBranchId(String project, String branch) {
+		int projectId = getProjectId(project);
+		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
+		return branchId;
+	}
+
+	protected int getProjectId(String project) {
+		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		return projectId;
+	}
 
 	protected int getId(Entity entity, String name, Map<Entity, Integer> parentIds) {
 		return managementService.getEntityId(entity, name, parentIds);
