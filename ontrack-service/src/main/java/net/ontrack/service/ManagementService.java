@@ -1,6 +1,7 @@
 package net.ontrack.service;
 
 import java.util.List;
+import java.util.Map;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BranchCreationForm;
@@ -39,6 +40,6 @@ public interface ManagementService {
 	
 	// Common
 
-	int getEntityId(Entity entity, String name, int... parentIds);
+	int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
 
 }

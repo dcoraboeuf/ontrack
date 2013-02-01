@@ -24,19 +24,17 @@ public interface ManageUI {
 
 	ProjectSummary createProject(ProjectCreationForm form);
 
-	ProjectSummary getProject(String idOrName);
+	ProjectSummary getProject(String name);
 
-	Ack deleteProject(String idOrName);
+	Ack deleteProject(String name);
 	
 	// Branches
 
-	List<BranchSummary> getBranchList(String projectIdOrName);
+	List<BranchSummary> getBranchList(String project);
 
 	BranchSummary getBranch(String project, String name);
-
-	BranchSummary getBranch(int id);
 	
-	BranchSummary createBranch (String projectIdOrName, BranchCreationForm form);
+	BranchSummary createBranch (String project, BranchCreationForm form);
 	
 
 }

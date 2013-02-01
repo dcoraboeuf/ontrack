@@ -81,14 +81,10 @@ class ManageUIControllerTest extends AbstractWebTest {
 		def e = events.get(0)
 		assert e != null
 		assert EventType.PROJECT_CREATED == e.eventType
-		assert """Project <a class="event-entity" href="gui/project/1">PRJ1</a> has been created.""" == e.html
-		
-		// Gets the project by ID
-		ProjectSummary project = getCall("/ui/manage/project/${summary.id}", ProjectSummary)
-		assert project.id == summary.id
+		assert """Project <a class="event-entity" href="gui/project/PRJ1">PRJ1</a> has been created.""" == e.html
 		
 		// Gets the project by name
-		project = getCall("/ui/manage/project/${summary.name}", ProjectSummary)
+		def project = getCall("/ui/manage/project/PRJ1", ProjectSummary)
 		assert project.id == summary.id
 	}
 

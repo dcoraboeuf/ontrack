@@ -31,12 +31,4 @@ public class BranchController extends AbstractGUIController {
 		return "branch";
 	}
 
-	@RequestMapping(value = "/{id:\\d+}", method = RequestMethod.GET)
-	public String getBranch(Model model, @PathVariable int id) {
-		// Loads the details
-		model.addAttribute("branch", manageUI.getBranch(id));
-		// OK
-		return "branch";
-	}
-
 }

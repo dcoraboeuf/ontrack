@@ -9,26 +9,26 @@ public enum Entity {
 	
 	PROJECT,
 	
-	BRANCH("name", "project");
+	BRANCH("name", PROJECT);
 	
 	private String nameColumn;
-	private List<String> parentColumns;
+	private List<Entity> parents;
 	
 	Entity () {
 		this("name");
 	}
 	
-	Entity (String nameColumn, String... parentColumns) {
+	Entity (String nameColumn, Entity... parents) {
 		this.nameColumn = nameColumn;
-		this.parentColumns = Arrays.asList(parentColumns);
+		this.parents = Arrays.asList(parents);
 	}
 	
 	public String nameColumn() {
 		return nameColumn;
 	}
 	
-	public List<String> getParentColumns() {
-		return parentColumns;
+	public List<Entity> getParents() {
+		return parents;
 	}
 
 }

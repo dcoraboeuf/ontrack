@@ -11,8 +11,8 @@ var Projects = function () {
 			});
 	}
 	
-	function deleteProject (id) {
-		Application.deleteEntity('project', id, '');
+	function deleteProject (name) {
+		Application.deleteEntity('project', name, '');
 	}
 	
 	function projectTemplate (items) {

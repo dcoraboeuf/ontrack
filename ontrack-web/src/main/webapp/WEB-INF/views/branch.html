@@ -8,7 +8,7 @@
 					<p class="help-block">${branch.description?html}</p>
 					<p>
 						<button class="btn"><@lh key="general.modify" /></button>
-						<button class="btn btn-danger" onclick="Branches.deleteBranch(${branch.id})"><@lh key="general.delete" /></button>
+						<button class="btn btn-danger" onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><@lh key="general.delete" /></button>
 						<a href="gui/project/${branch.project.name?html}" class="btn btn-link"><@lh key="general.close"/></a>
 					</p>
 				</@panel>

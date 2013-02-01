@@ -1,6 +1,8 @@
 package net.ontrack.web.ui;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.ontrack.core.model.Ack;
@@ -67,9 +69,9 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public @ResponseBody ProjectSummary getProject(@PathVariable String idOrName) {
-		return managementService.getProject(getId (Entity.PROJECT, idOrName));
+	@RequestMapping(value = "/ui/manage/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody ProjectSummary getProject(@PathVariable String name) {
+		return managementService.getProject(getId (Entity.PROJECT, name, Collections.<Entity, Integer>emptyMap()));
 	}
 
 	protected boolean isNumeric(String value) {
@@ -77,49 +79,39 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/project/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
-	public @ResponseBody Ack deleteProject(@PathVariable String idOrName) {
-		return managementService.deleteProject(getId (Entity.PROJECT, idOrName));
+	@RequestMapping(value = "/ui/manage/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+	public @ResponseBody Ack deleteProject(@PathVariable String name) {
+		return managementService.deleteProject(getId (Entity.PROJECT, name, Collections.<Entity, Integer>emptyMap()));
 	}
 	
 	// Branches
 
 	@Override
-	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
-	public @ResponseBody List<BranchSummary> getBranchList(@PathVariable String projectIdOrName) {
-		int project = getId(Entity.PROJECT, projectIdOrName);
-		return managementService.getBranchList(project);
+	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
+	public @ResponseBody List<BranchSummary> getBranchList(@PathVariable String project) {
+		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		return managementService.getBranchList(projectId);
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public @ResponseBody BranchSummary getBranch(@PathVariable String projectIdOrName, @PathVariable String idOrName) {
-		int project = getId(Entity.PROJECT, projectIdOrName);
-		int branch = getId(Entity.BRANCH, idOrName, project);
-		return managementService.getBranch(branch);
+	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}/{idOrName:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody BranchSummary getBranch(@PathVariable String project, @PathVariable String name) {
+		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		int branchId = getId(Entity.BRANCH, name, Collections.singletonMap(Entity.PROJECT, projectId));
+		return managementService.getBranch(branchId);
 	}
 	
 	@Override
-	@RequestMapping(value = "/ui/manage/branch/{id:\\d+}", method = RequestMethod.GET)
-	public @ResponseBody BranchSummary getBranch(@PathVariable int id) {
-		return managementService.getBranch(id);
-	}
-	
-	@Override
-	@RequestMapping(value = "/ui/manage/branch/{projectIdOrName:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
-	public @ResponseBody BranchSummary createBranch(@PathVariable String projectIdOrName, @RequestBody BranchCreationForm form) {
-		int project = getId(Entity.PROJECT, projectIdOrName);
-		return managementService.createBranch (project, form);
+	@RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
+	public @ResponseBody BranchSummary createBranch(@PathVariable String project, @RequestBody BranchCreationForm form) {
+		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
+		return managementService.createBranch (projectId, form);
 	}
 	
 	// Common
 
-	protected int getId(Entity entity, String idOrName, int... parentIds) {
-		if (isNumeric(idOrName)) {
-			return Integer.parseInt(idOrName, 10);
-		} else {
-			return managementService.getEntityId(entity, idOrName, parentIds);
-		}
+	protected int getId(Entity entity, String name, Map<Entity, Integer> parentIds) {
+		return managementService.getEntityId(entity, name, parentIds);
 	}
 
 }

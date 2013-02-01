@@ -91,7 +91,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert events != null && !events.empty
 		def event = events.get(0)
 		assert EventType.PROJECT_CREATED == event.eventType
-		assert Collections.singletonMap(Entity.PROJECT, new EntityStub(summary.id, "LOAD1")) == event.entities
+		assert Collections.singletonMap(Entity.PROJECT, new EntityStub(Entity.PROJECT, summary.id, "LOAD1")) == event.entities
 	}
 	
 	@Test
@@ -141,15 +141,15 @@ class ManagementServiceTest extends AbstractValidationTest {
 	
 	@Test
 	void getEntityId() {
-		assert 1 == service.getEntityId(Entity.PROJECT, "PROJECT1")
-		assert 2 == service.getEntityId(Entity.PROJECT, "PROJECT2")
-		assert 1 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP1")
-		assert 2 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP2")
+		assert 1 == service.getEntityId(Entity.PROJECT, "PROJECT1", [:])
+		assert 2 == service.getEntityId(Entity.PROJECT, "PROJECT2", [:])
+		assert 1 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP1", [:])
+		assert 2 == service.getEntityId(Entity.PROJECT_GROUP, "GROUP2", [:])
 	}
 	
 	@Test(expected = EntityNameNotFoundException)
 	void getEntityId_not_found() {
-		service.getEntityId(Entity.PROJECT, "PROJECTX")
+		service.getEntityId(Entity.PROJECT, "PROJECTX", [:])
 	}
 
 }

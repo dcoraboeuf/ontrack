@@ -11,8 +11,8 @@ var Branches = function () {
 			});
 	}
 	
-	function deleteBranch (id) {
-		Application.deleteEntity('branch', id, '');
+	function deleteBranch (project,name) {
+		Application.deleteEntity('branch/' + project, name, '');
 	}
 	
 	function branchTemplate (project) {

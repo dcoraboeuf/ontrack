@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,7 +132,7 @@ public class EventController extends AbstractUIController {
 				// TODO Uses a proper exception
 				throw new IllegalStateException("Could not find entity " + key + " in event " + event.getId());
 			} else {
-				return createLink (entity, entityStub, alternative);
+				return createLink (entity, entityStub, alternative, event.getId(), event.getEntities());
 			}
 		}
 		// Looks for a fixed value
@@ -146,18 +147,34 @@ public class EventController extends AbstractUIController {
 		}
 	}
 
-	protected String createLink(Entity entity, EntityStub entityStub, String alternative) {
+	protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity,EntityStub> parentEntities) {
 		// Text
 		String text = alternative != null ? alternative : entityStub.getName();
 		text = StringEscapeUtils.escapeHtml4(text);
 		// Href
-		String href = createLinkHref(entity, entityStub);
+		String href = createLinkHref(entity, entityStub, eventId, parentEntities);
 		// Link
 		return format("<a class=\"event-entity\" href=\"%s\">%s</a>", href, text);
 	}
 
-	protected String createLinkHref(Entity entity, EntityStub entityStub) {
-		return format("gui/%s/%d", entity.name().toLowerCase(), entityStub.getId());
+	protected String createLinkHref(Entity entity, EntityStub entityStub, int eventId, Map<Entity,EntityStub> parentEntities) {
+		// Start of the URI
+		StringBuilder uri = new StringBuilder("gui/").append(entity.name().toLowerCase());
+		// For each parent entity
+		for (Entity parentEntity : entity.getParents()) {
+			// Gets the parent stub
+			EntityStub parentStub = parentEntities.get(parentEntity);
+			if (parentStub == null) {
+				// TODO Uses a proper exception
+				throw new IllegalStateException("Could not find entity " + parentEntity + " in event " + eventId);
+			}
+			// Adds it to the URI
+			uri.append("/").append(parentStub.getName());
+		}
+		// Appends this entity to the URI
+		uri.append("/").append(entityStub.getName());
+		// OK
+		return uri.toString();
 	}
 
 }

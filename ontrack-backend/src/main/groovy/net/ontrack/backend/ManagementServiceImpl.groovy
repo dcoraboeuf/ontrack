@@ -133,12 +133,12 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional(readOnly = true)
-	public int getEntityId(Entity entity, String name, int... parentIds) {
+	public int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds) {
 		def sql = "SELECT ID FROM ${entity.name()} WHERE ${entity.nameColumn()} = :name"
 		def sqlParams = params("name", name)
-		entity.parentColumns.eachWithIndex { parentColumn, index ->
-			def parentId = parentIds[index]
-			sql += " AND ${parentColumn} = :parent${index}"
+		entity.parents.eachWithIndex { parent, index ->
+			def parentId = parentIds[parent]
+			sql += " AND ${parent} = :parent${index}"
 			sqlParams.addValue("parent${index}", parentId)
 		}
 		Integer id = getFirstItem(sql, sqlParams, Integer.class)

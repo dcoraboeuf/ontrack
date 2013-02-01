@@ -105,7 +105,7 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 				int entityId = rs.getInt(entity.name());
 				if (!rs.wasNull()) {
 					String entityName = getEntityName(entity, entityId);
-					e = e.withEntity(entity, new EntityStub(entityId, entityName));
+					e = e.withEntity(entity, new EntityStub(entity, entityId, entityName));
 				}
 			}
 			

@@ -1,5 +1,6 @@
 package net.ontrack.web.gui
 
+import static java.lang.Object.*
 import net.ontrack.core.model.Entity
 import net.ontrack.core.model.EntityStub
 import net.ontrack.core.model.EventType
@@ -10,70 +11,83 @@ import net.sf.jstring.support.StringsLoader
 import org.joda.time.DateTime
 import org.junit.Test
 
-
 class EventControllerUnitTest {
 	
 	@Test
 	void createLinkHref_project_group () {
 		EventController controller = dummy()
-		def href = controller.createLinkHref(Entity.PROJECT_GROUP, new EntityStub(5, "My project group"))
-		assert """gui/project_group/5""" == href
+		def href = controller.createLinkHref(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 5, "GROUP3"), 1, [:])
+		assert """gui/project_group/GROUP3""" == href
 	}
 	
 	@Test
 	void createLinkHref_project () {
 		EventController controller = dummy()
-		def href = controller.createLinkHref(Entity.PROJECT, new EntityStub(1001, "My project"))
-		assert """gui/project/1001""" == href
+		def href = controller.createLinkHref(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ5"), 1, [:])
+		assert """gui/project/PROJ5""" == href
 	}
 	
 	@Test
 	void createLink_project_group_no_alternative () {
 		EventController controller = dummy()
-		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(2001, "My > project group"), null)
-		assert """<a class="event-entity" href="gui/project_group/2001">My &gt; project group</a>""" == href
+		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 2001, "GROUP2"), null, 1, [:])
+		assert """<a class="event-entity" href="gui/project_group/GROUP2">GROUP2</a>""" == href
 	}
 	
 	@Test
 	void createLink_project_group_alternative () {
 		EventController controller = dummy()
-		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(2001, "My > project group"), "te>st")
-		assert """<a class="event-entity" href="gui/project_group/2001">te&gt;st</a>""" == href
+		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 2001, "GROUP1"), "te>st", 1, [:])
+		assert """<a class="event-entity" href="gui/project_group/GROUP1">te&gt;st</a>""" == href
 	}
 	
 	@Test
 	void createLink_project_no_alternative () {
 		EventController controller = dummy()
-		def href = controller.createLink(Entity.PROJECT, new EntityStub(1001, "My > project"), null)
-		assert """<a class="event-entity" href="gui/project/1001">My &gt; project</a>""" == href
+		def href = controller.createLink(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ4"), null, 1, [:])
+		assert """<a class="event-entity" href="gui/project/PROJ4">PROJ4</a>""" == href
 	}
 	
 	@Test
 	void createLink_project_alternative () {
 		EventController controller = dummy()
-		def href = controller.createLink(Entity.PROJECT, new EntityStub(1001, "My > project"), "te>st")
-		assert """<a class="event-entity" href="gui/project/1001">te&gt;st</a>""" == href
+		def href = controller.createLink(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ3"), "te>st", 1, [:])
+		assert """<a class="event-entity" href="gui/project/PROJ3">te&gt;st</a>""" == href
+	}
+	
+	@Test
+	void createLink_branch() {
+		EventController controller = dummy()
+		def href = controller.createLink(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "1.x"), null, 1, Collections.singletonMap(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ3")))
+		assert """<a class="event-entity" href="gui/branch/PROJ3/1.x">1.x</a>""" == href
+	}
+	
+	// TODO Use a proper exception
+	@Test(expected = IllegalStateException)
+	void createLink_branch_no_project() {
+		EventController controller = dummy()
+		controller.createLink(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "1.x"), null, 1, Collections.emptyMap())
 	}
 	
 	@Test
 	void expandToken_entity_project () {
 		EventController controller = dummy()
-		def value = controller.expandToken('$PROJECT$', new ExpandedEvent(1, EventType.PROJECT_CREATED, new DateTime()).withEntity(Entity.PROJECT, new EntityStub(1, "My project")))
-		assert """<a class="event-entity" href="gui/project/1">My project</a>""" == value
+		def value = controller.expandToken('$PROJECT$', new ExpandedEvent(1, EventType.PROJECT_CREATED, new DateTime()).withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1, "PROJ1")))
+		assert """<a class="event-entity" href="gui/project/PROJ1">PROJ1</a>""" == value
 	}
 	
 	@Test
 	void expandToken_entity_project_group () {
 		EventController controller = dummy()
-		def value = controller.expandToken('$PROJECT_GROUP$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(1, "My project group")))
-		assert """<a class="event-entity" href="gui/project_group/1">My project group</a>""" == value
+		def value = controller.expandToken('$PROJECT_GROUP$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 1, "GROUP1")))
+		assert """<a class="event-entity" href="gui/project_group/GROUP1">GROUP1</a>""" == value
 	}
 	
 	@Test
 	void expandToken_entity_project_group_with_alternative () {
 		EventController controller = dummy()
-		def value = controller.expandToken('$PROJECT_GROUP|this group$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(1, "My project group")))
-		assert """<a class="event-entity" href="gui/project_group/1">this group</a>""" == value
+		def value = controller.expandToken('$PROJECT_GROUP|this group$', new ExpandedEvent(1, EventType.PROJECT_GROUP_CREATED, new DateTime()).withEntity(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 1, "GROUP2")))
+		assert """<a class="event-entity" href="gui/project_group/GROUP2">this group</a>""" == value
 	}
 	
 	@Test(expected = IllegalStateException)
@@ -93,13 +107,31 @@ class EventControllerUnitTest {
 	void toGUIEvent_one_entity () {
 		def strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH)
 		EventController controller = new EventController(null, strings, null)
-		def event = controller.toGUIEvent(new ExpandedEvent(10, EventType.PROJECT_CREATED, new DateTime(2013,1,30,10,5,30)).withEntity(Entity.PROJECT, new EntityStub(1001, "My project")), Locale.ENGLISH, new DateTime(2013,1,30,11,10,45))
+		def event = controller.toGUIEvent(new ExpandedEvent(10, EventType.PROJECT_CREATED, new DateTime(2013,1,30,10,5,30)).withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ2")), Locale.ENGLISH, new DateTime(2013,1,30,11,10,45))
 		assert event != null
 		assert event.id == 10
 		assert event.eventType == EventType.PROJECT_CREATED
 		assert event.timestamp == "Jan 30, 2013 10:05:30 AM"
 		assert event.elapsed == "1 hour ago"
-		assert 'Project <a class="event-entity" href="gui/project/1001">My project</a> has been created.' == event.html
+		assert 'Project <a class="event-entity" href="gui/project/PROJ2">PROJ2</a> has been created.' == event.html
+	}
+	
+	@Test
+	void toGUIEvent_two_entities () {
+		def strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH)
+		EventController controller = new EventController(null, strings, null)
+		def event = controller.toGUIEvent(
+			new ExpandedEvent(10, EventType.BRANCH_CREATED,
+				new DateTime(2013,1,30,10,5,30))
+				.withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ1"))
+				.withEntity(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "1.x")),
+			Locale.ENGLISH, new DateTime(2013,1,30,11,10,45))
+		assert event != null
+		assert event.id == 10
+		assert event.eventType == EventType.BRANCH_CREATED
+		assert event.timestamp == "Jan 30, 2013 10:05:30 AM"
+		assert event.elapsed == "1 hour ago"
+		assert 'Branch <a class="event-entity" href="gui/branch/PROJ1/1.x">1.x</a> has been created for the <a class="event-entity" href="gui/project/PROJ1">PROJ1</a> project.' == event.html
 	}
 	
 	EventController dummy() {
