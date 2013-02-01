@@ -162,6 +162,20 @@ branch.promotion_levels
 branch.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
+
+[validation_stamps]
+
+validation_stamp.create
+	en -> New validation stamp
+	fr -> Nouvelle validation
+	
+validation_stamp.create.title
+	en,fr -> @[validation_stamp.create]
+	
+validation_stamp.name
+	en,fr -> @[model.name]
+validation_stamp.description
+	en,fr -> @[model.description]
 	
 [events]
 

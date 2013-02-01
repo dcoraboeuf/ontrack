@@ -1,0 +1,16 @@
+<script type="text/javascript" src="${base}/js/validation_stamps.js"></script>
+
+<#macro validation_stamps project branch id="validation_stamps" create=true>
+	<@dynamicsection id=id url="ui/manage/validation_stamp/${project?html}/${branch?html}/all" template="ValidationStamps.validationStampTemplate('${project?html}','${branch?html}')">
+		<#if create>
+			<@dialog id="validation_stamp-create-dialog">
+				<@form_text name="name" label=loc('validation_stamp.name') />
+				<@form_memo name="description" label=loc('validation_stamp.description') required=false />
+				
+				<@dialog_button_cancel />
+				<@dialog_button id="validation_stamp-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+			</@dialog>
+			<button id="validation_stamp-create-button" type="button" class="btn" onclick="ValidationStamps.createValidationStamp('${project?html}','${branch?html}')"><@lh key="validation_stamp.create" /></button>
+		</#if>
+	</@dynamicsection>
+</#macro>

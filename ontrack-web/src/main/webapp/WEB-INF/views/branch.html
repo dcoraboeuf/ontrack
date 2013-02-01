@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="branch" title=branch.name modules=["projects","branches","audit"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
+<@layout_std page="branch" title=branch.name modules=["projects","branches","validation_stamps","audit"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span3">
@@ -16,7 +16,7 @@
 					TODO Promotion levels
 				</@panel>
 				<@panel title=loc("branch.validation_stamps")>
-					TODO Validation stamps
+					<@validation_stamps project=branch.project.name branch=branch.name />
 				</@panel>
 			</div>
 			<div class="span5">
