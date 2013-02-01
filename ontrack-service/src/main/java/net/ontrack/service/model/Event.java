@@ -38,6 +38,10 @@ public class Event {
 		return withEntity (Entity.BRANCH, id);
 	}
 	
+	public Event withBuild (int id) {
+		return withEntity (Entity.BUILD, id);
+	}
+	
 	public Event withValidationStamp (int id) {
 		return withEntity (Entity.VALIDATION_STAMP, id);
 	}

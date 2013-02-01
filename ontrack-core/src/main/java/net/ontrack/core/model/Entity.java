@@ -11,6 +11,8 @@ public enum Entity {
 	
 	BRANCH("name", PROJECT),
 	
+	BUILD("name", PROJECT, BRANCH),
+	
 	VALIDATION_STAMP("name", PROJECT, BRANCH);
 	
 	private String nameColumn;

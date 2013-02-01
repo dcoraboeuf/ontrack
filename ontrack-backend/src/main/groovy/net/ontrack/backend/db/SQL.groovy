@@ -26,6 +26,10 @@ interface SQL {
 	
 	String BRANCH_CREATE = "INSERT INTO BRANCH (PROJECT, NAME, DESCRIPTION) VALUES (:project, :name, :description)"
 	
+	// Builds
+	
+	String BUILD_CREATE = "INSERT INTO BUILD (BRANCH, NAME, DESCRIPTION) VALUES (:branch, :name, :description)"
+	
 	// Validation stamps
 	
 	String VALIDATION_STAMP = "SELECT * FROM VALIDATION_STAMP WHERE ID = :id"

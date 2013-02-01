@@ -31,16 +31,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class ManageUIController extends AbstractUIController implements ManageUI {
+public class ManageUIController extends AbstractEntityUIController implements ManageUI {
 	
 	private final Pattern numeric = Pattern.compile("[0-9]+");
 
-	private final ManagementService managementService;
-
 	@Autowired
 	public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService) {
-		super(errorHandler, strings);
-		this.managementService = managementService;
+		super(errorHandler, strings, managementService);
 	}
 	
 	// Project groups
@@ -131,30 +128,6 @@ public class ManageUIController extends AbstractUIController implements ManageUI
 	public @ResponseBody ValidationStampSummary createValidationStamp(@PathVariable String project, @PathVariable String branch, @RequestBody ValidationStampCreationForm form) {
 		int branchId = getBranchId(project, branch);
 		return managementService.createValidationStamp (branchId, form);
-	}
-	
-	// Common
-
-	protected int getValidationStampId(String project, String branch, String validationStamp) {
-		int projectId = getProjectId(project);
-		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
-		int validationStampId = getId(Entity.VALIDATION_STAMP, validationStamp, MapBuilder.create(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).build());
-		return validationStampId;
-	}
-
-	protected int getBranchId(String project, String branch) {
-		int projectId = getProjectId(project);
-		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
-		return branchId;
-	}
-
-	protected int getProjectId(String project) {
-		int projectId = getId(Entity.PROJECT, project, Collections.<Entity, Integer>emptyMap());
-		return projectId;
-	}
-
-	protected int getId(Entity entity, String name, Map<Entity, Integer> parentIds) {
-		return managementService.getEntityId(entity, name, parentIds);
 	}
 
 }
