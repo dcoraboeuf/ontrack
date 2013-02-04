@@ -2,12 +2,12 @@ package net.ontrack.web.ui;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BranchCreationForm;
 import net.ontrack.core.model.BranchSummary;
+import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
@@ -15,10 +15,8 @@ import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ValidationStampCreationForm;
 import net.ontrack.core.model.ValidationStampSummary;
-import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.ManagementService;
-import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 
@@ -128,6 +126,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 	public @ResponseBody ValidationStampSummary createValidationStamp(@PathVariable String project, @PathVariable String branch, @RequestBody ValidationStampCreationForm form) {
 		int branchId = getBranchId(project, branch);
 		return managementService.createValidationStamp (branchId, form);
+	}
+	
+	// Builds
+
+	@Override
+	@RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
+	public @ResponseBody List<BuildSummary> getBuildList(@PathVariable String project, @PathVariable String branch) {
+		int branchId = getBranchId(project, branch);
+		return managementService.getBuildList(branchId);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody BuildSummary getBuild(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+		int buildId = getBuildId(project, branch, name);
+		return managementService.getBuild(buildId);
 	}
 
 }

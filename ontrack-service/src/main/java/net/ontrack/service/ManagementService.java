@@ -6,6 +6,7 @@ import java.util.Map;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BranchCreationForm;
 import net.ontrack.core.model.BranchSummary;
+import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
@@ -47,6 +48,12 @@ public interface ManagementService {
 	ValidationStampSummary getValidationStamp(int id);
 
 	ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
+	
+	// Builds
+
+	List<BuildSummary> getBuildList(int branchId);
+
+	BuildSummary getBuild(int buildId);
 	
 	// Common
 

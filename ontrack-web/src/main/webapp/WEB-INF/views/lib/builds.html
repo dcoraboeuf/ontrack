@@ -1,0 +1,6 @@
+<script type="text/javascript" src="${base}/js/builds.js"></script>
+
+<#macro builds project branch id="builds">
+	<@dynamicsection id=id url="ui/manage/build/${project?html}/${branch?html}/all" template="Builds.buildTemplate('${project?html}','${branch?html}')">
+	</@dynamicsection>
+</#macro>

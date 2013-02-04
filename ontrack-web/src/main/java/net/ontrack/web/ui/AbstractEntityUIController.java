@@ -28,6 +28,13 @@ public class AbstractEntityUIController extends AbstractUIController {
 		return validationStampId;
 	}
 
+	protected int getBuildId(String project, String branch, String validationStamp) {
+		int projectId = getProjectId(project);
+		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
+		int buildId = getId(Entity.BUILD, validationStamp, MapBuilder.create(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).build());
+		return buildId;
+	}
+
 	protected int getBranchId(String project, String branch) {
 		int projectId = getProjectId(project);
 		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));

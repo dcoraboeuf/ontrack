@@ -7,7 +7,6 @@ import net.ontrack.core.model.ValidationRunSummary;
 import net.ontrack.core.ui.ControlUI;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
-import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 

@@ -1,6 +1,5 @@
 package net.ontrack.backend
 
-import java.lang.invoke.MethodHandleImpl.BindCaller.T
 import java.sql.ResultSet
 
 import javax.sql.DataSource
@@ -10,6 +9,7 @@ import net.ontrack.backend.db.SQL
 import net.ontrack.core.model.Ack
 import net.ontrack.core.model.BranchCreationForm
 import net.ontrack.core.model.BranchSummary
+import net.ontrack.core.model.BuildSummary
 import net.ontrack.core.model.Entity
 import net.ontrack.core.model.EventType
 import net.ontrack.core.model.ProjectCreationForm
@@ -162,6 +162,24 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		event(Event.of(EventType.VALIDATION_STAMP_CREATED).withProject(theBranch.project.id).withBranch(theBranch.id).withValidationStamp(id))
 		// OK
 		new ValidationStampSummary(id, form.name, form.description, theBranch)
+	}
+	
+	// Builds
+	
+	BuildSummary readBuildSummary (ResultSet rs) {
+		return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")))
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<BuildSummary> getBuildList(int branch) {
+		return dbList(SQL.BUILD_LIST, ["branch": branch]) { readBuildSummary(it) }
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public BuildSummary getBuild(int id) {
+		return dbLoad(SQL.BUILD, id) { readBuildSummary(it) }
 	}
 	
 	// Common
