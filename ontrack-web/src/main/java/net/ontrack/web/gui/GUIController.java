@@ -12,6 +12,7 @@ import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -91,6 +92,9 @@ public class GUIController extends AbstractGUIController {
 	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
 	public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
 		byte[] content = manageUI.imageValidationStamp(project, branch, name);
+		if (content == null) {
+			content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
+		}
 		response.setContentType("image/png");
 		response.setContentLength(content.length);
 		response.setStatus(HttpServletResponse.SC_OK);
