@@ -188,6 +188,11 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		return Ack.one(count)
 	}
 	
+	@Override
+	public byte[] imageValidationStamp(int validationStampId) {
+		return getFirstItem(SQL.VALIDATIONSTAMP_IMAGE, params("id", validationStampId), byte[])
+	}
+	
 	// Builds
 	
 	BuildSummary readBuildSummary (ResultSet rs) {

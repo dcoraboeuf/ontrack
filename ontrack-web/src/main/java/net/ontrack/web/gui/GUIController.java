@@ -73,7 +73,7 @@ public class GUIController extends AbstractGUIController {
 	public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
 		try {
 			// Upload
-			manageUI.imageValidationStamp(project, branch, name, image);
+			manageUI.setImageValidationStamp(project, branch, name, image);
 			// Success
 			model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "validation_stamp.image.success")));
 		} catch (InputException ex) {

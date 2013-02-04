@@ -21,6 +21,11 @@ import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -132,9 +137,20 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 	
 	@Override
 	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
-	public @ResponseBody Ack imageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
+	public @ResponseBody Ack setImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
 		int validationStampId = getValidationStampId(project, branch, name);
 		return managementService.imageValidationStamp(validationStampId, image);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+	public HttpEntity<byte[]> getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+		int validationStampId = getValidationStampId(project, branch, name);
+		byte[] content = managementService.imageValidationStamp(validationStampId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.IMAGE_PNG);
+		headers.setContentLength(content.length);
+		return new ResponseEntity<>(headers, HttpStatus.OK);
 	}
 	
 	// Builds
