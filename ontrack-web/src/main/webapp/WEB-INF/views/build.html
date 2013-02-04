@@ -17,6 +17,9 @@
 					<b>${build.name?html}</b>
 				</p>
 			</div>
+			<div class="span4">
+				<@audit filter="?build=${build.id}" />
+			</div>
 		</div>
 	</div>
 </@layout_std>
