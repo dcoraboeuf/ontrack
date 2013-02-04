@@ -20,7 +20,11 @@ client.error.general
 general.cancel
 	en -> Cancel
 	fr -> Annuler
-	
+
+general.submit
+	en -> Submit
+	fr -> Envoyer	
+
 general.close
 	en -> Close
 	fr -> Fermer
@@ -181,6 +185,9 @@ validation_stamp.image
 validation_stamp.image.edit
 	en -> Change image
 	fr -> Changer l'image
+validation_stamp.image.placeholder
+	en -> Select an image
+	fr -> Sélectionnez une image
 validation_stamp.image.help
 	en -> PNG image, max. 4K
 	fr -> Image PNG, max. 4K

@@ -19,7 +19,15 @@
 				<p class="help-block">${validationStamp.description?html}</p>
 				<p>
 					<@lh key="validation_stamp.image" />
-					<i class="icon-pencil action action-optional" title="<@lh key='validation_stamp.image.edit' />"></i>
+					<i id="validation_stamp-image-link" class="icon-pencil action action-optional" title="<@lh key='validation_stamp.image.edit' />" onclick="ValidationStamps.editImage();"></i>
+					<div id="validation_stamp-image-form" class="alert alert-info x-dialog" style="float:left">
+						<form method="POST" enctype="multipart/form-data" action="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image">
+							<input id="validation_stamp.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
+							<p class="help-block"><@lh key="validation_stamp.image.help" /></p>
+							<button id="validation_stamp.image.submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
+							<button id="validation_stamp.image.cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>
+						</form>
+					</div>
 				</p>
 			</div>
 			<div class="span4">

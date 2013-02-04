@@ -357,7 +357,8 @@ var Application = function () {
 		loadInit: loadInit,
 		load: load,
 		reload: reload,
-		deleteEntity: deleteEntity
+		deleteEntity: deleteEntity,
+		ajaxGet: ajaxGet
 	};
 	
 } ();

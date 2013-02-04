@@ -21,10 +21,20 @@ var ValidationStamps = function () {
 		};
 	}
 	
+	function editImage () {
+		$('#validation_stamp-image-form').toggle();
+	}
+	
+	function editImageCancel() {
+		$('#validation_stamp-image-form').hide();
+	}
+	
 	return {
 		createValidationStamp: createValidationStamp,
 		deleteValidationStamp: deleteValidationStamp,
-		validationStampTemplate: validationStampTemplate
+		validationStampTemplate: validationStampTemplate,
+		editImage: editImage,
+		editImageCancel: editImageCancel
 	};
 	
 } ();
