@@ -15,11 +15,11 @@ public enum Entity {
 	
 	VALIDATION_STAMP("NAME", list(PROJECT, BRANCH), list(BRANCH)),
 	
-	VALIDATION_RUN("ID", list(PROJECT, BRANCH, BUILD, VALIDATION_STAMP), list(BUILD, VALIDATION_STAMP));
+	VALIDATION_RUN("ID", list(), list(BUILD, VALIDATION_STAMP));
 	
 	private String nameColumn;
-	private List<Entity> parents;
 	private List<Entity> context;
+	private List<Entity> parents;
 	
 	Entity (String nameColumn, List<Entity> context, List<Entity> parents) {
 		this.nameColumn = nameColumn;
