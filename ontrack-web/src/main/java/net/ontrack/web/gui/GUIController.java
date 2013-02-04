@@ -75,6 +75,7 @@ public class GUIController extends AbstractGUIController {
 	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
 	public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
 		try {
+			// TODO Custom (global) error handler for the upload exceptions
 			// Upload
 			manageUI.setImageValidationStamp(project, branch, name, image);
 			// Success
