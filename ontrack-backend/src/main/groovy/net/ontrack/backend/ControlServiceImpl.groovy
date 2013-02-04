@@ -55,8 +55,19 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 		int id = dbCreate (SQL.VALIDATION_RUN_CREATE, ["build": build, "validationStamp": validationStamp, "description": validationRun.description])
 		// First status
 		createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.status, validationRun.description))
+		// Summary
+		def run = managementService.getValidationRun(id)
+		// Event
+		event(Event.of(EventType.VALIDATION_RUN_CREATED)
+			.withProject(run.build.branch.project.id)
+			.withBranch(run.build.branch.id)
+			.withValidationStamp(validationStamp)
+			.withBuild(build)
+			.withValidationRun(id)
+			.withValue("status", validationRun.status)
+			)
 		// Gets the summary
-		return managementService.getValidationRun(id)
+		return run
 	}
 	
 	@Transactional

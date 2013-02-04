@@ -42,6 +42,10 @@ public class Event {
 		return withEntity (Entity.BUILD, id);
 	}
 	
+	public Event withValidationRun (int id) {
+		return withEntity (Entity.VALIDATION_RUN, id);
+	}
+	
 	public Event withValidationStamp (int id) {
 		return withEntity (Entity.VALIDATION_STAMP, id);
 	}

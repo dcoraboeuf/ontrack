@@ -13,7 +13,9 @@ public enum Entity {
 	
 	BUILD("NAME", list(PROJECT, BRANCH), list(BRANCH)),
 	
-	VALIDATION_STAMP("NAME", list(PROJECT, BRANCH), list(BRANCH));
+	VALIDATION_STAMP("NAME", list(PROJECT, BRANCH), list(BRANCH)),
+	
+	VALIDATION_RUN("ID", list(PROJECT, BRANCH, BUILD, VALIDATION_STAMP), list(BUILD, VALIDATION_STAMP));
 	
 	private String nameColumn;
 	private List<Entity> parents;

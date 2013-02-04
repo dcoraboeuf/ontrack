@@ -27,3 +27,7 @@ event.VALIDATION_STAMP_CREATED
 event.BUILD_CREATED
 	en -> Build $BUILD$ has been created for the $BRANCH$ in the $PROJECT$ project.
 	fr -> Le build $BUILD$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.
+
+event.VALIDATION_RUN_CREATED
+	en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ is $status$.
+	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est $status$.
