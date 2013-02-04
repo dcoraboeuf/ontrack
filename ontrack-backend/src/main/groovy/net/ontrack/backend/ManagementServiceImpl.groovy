@@ -26,6 +26,7 @@ import net.ontrack.service.model.Event
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -162,6 +163,29 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		event(Event.of(EventType.VALIDATION_STAMP_CREATED).withProject(theBranch.project.id).withBranch(theBranch.id).withValidationStamp(id))
 		// OK
 		new ValidationStampSummary(id, form.name, form.description, theBranch)
+	}
+	
+	@Override
+	@Transactional
+	public Ack imageValidationStamp(int validationStampId, MultipartFile image) {
+		// Checks the image type
+		def contentType = image.getContentType();
+		if (contentType != "image/png") {
+			throw new ImageIncorrectMIMETypeException(contentType, "image/png");
+		} 
+		// Checks the size
+		def imageSize = image.getSize()
+		if (imageSize > SQL.VALIDATION_STAMP_IMAGE_MAXSIZE) {
+			throw new ImageTooBigException(imageSize, SQL.VALIDATION_STAMP_IMAGE_MAXSIZE)
+		}
+		// Gets the bytes
+		def content = image.getBytes()
+		// Updates the content
+		def count = getNamedParameterJdbcTemplate().update(
+			SQL.VALIDATIONSTAMP_IMAGE_UPDATE,
+			params("id", validationStampId).addValue("image", content))
+		// OK
+		return Ack.one(count)
 	}
 	
 	// Builds

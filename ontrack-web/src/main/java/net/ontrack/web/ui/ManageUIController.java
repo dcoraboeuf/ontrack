@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
@@ -126,6 +128,13 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 	public @ResponseBody ValidationStampSummary createValidationStamp(@PathVariable String project, @PathVariable String branch, @RequestBody ValidationStampCreationForm form) {
 		int branchId = getBranchId(project, branch);
 		return managementService.createValidationStamp (branchId, form);
+	}
+	
+	@Override
+	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+	public @ResponseBody Ack imageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
+		int validationStampId = getValidationStampId(project, branch, name);
+		return managementService.imageValidationStamp(validationStampId, image);
 	}
 	
 	// Builds

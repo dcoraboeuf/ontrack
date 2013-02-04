@@ -191,6 +191,9 @@ validation_stamp.image.placeholder
 validation_stamp.image.help
 	en -> PNG image, max. 4K
 	fr -> Image PNG, max. 4K
+validation_stamp.image.success
+	en -> Successful upload of the image.
+	fr -> L'image a été chargée correctement.
 	
 [events]
 

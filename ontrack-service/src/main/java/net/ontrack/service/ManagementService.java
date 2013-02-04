@@ -3,6 +3,8 @@ package net.ontrack.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BranchCreationForm;
 import net.ontrack.core.model.BranchSummary;
@@ -48,6 +50,8 @@ public interface ManagementService {
 	ValidationStampSummary getValidationStamp(int id);
 
 	ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
+
+	Ack imageValidationStamp(int validationStampId, MultipartFile image);
 	
 	// Builds
 

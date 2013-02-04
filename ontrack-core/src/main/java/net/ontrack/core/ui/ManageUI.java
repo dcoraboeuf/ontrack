@@ -13,6 +13,8 @@ import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ValidationStampCreationForm;
 import net.ontrack.core.model.ValidationStampSummary;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface ManageUI {
 	
 	// Project groups
@@ -46,11 +48,13 @@ public interface ManageUI {
 	ValidationStampSummary getValidationStamp(String project, String branch, String name);
 	
 	ValidationStampSummary createValidationStamp (String project, String branch, ValidationStampCreationForm form);
+
+	Ack imageValidationStamp(String project, String branch, String name, MultipartFile image);
 	
 	// Builds
 
 	List<BuildSummary> getBuildList(String project, String branch);
 
-	BuildSummary getBuild(String project, String branch, String name);	
+	BuildSummary getBuild(String project, String branch, String name);
 
 }

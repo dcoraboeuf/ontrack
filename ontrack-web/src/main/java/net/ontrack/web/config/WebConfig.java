@@ -37,6 +37,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.jmx.export.MBeanExporter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -128,6 +129,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public View jsonViewResolver() {
 		MappingJacksonJsonView o = new MappingJacksonJsonView();
 		o.setObjectMapper(jacksonObjectMapper());
+		return o;
+	}
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver o = new CommonsMultipartResolver();
+		o.setMaxUploadSize(4 * 1024); // 4K limit 
 		return o;
 	}
 	
