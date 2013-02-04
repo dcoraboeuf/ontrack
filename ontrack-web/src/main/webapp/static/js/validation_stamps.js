@@ -17,7 +17,16 @@ var ValidationStamps = function () {
 	
 	function validationStampTemplate (project, branch) {
 		return function (items) {
-			return Template.links(items, 'gui/validation_stamp/{0}/{1}'.format(project,branch));
+			return Template.list(items, function (stamp) {
+				var html = '';
+				html += '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
+					project.html(),
+					branch.html(),
+					stamp.name.html()
+					);
+				html += ' <a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
+				return html;
+			});
 		};
 	}
 	
