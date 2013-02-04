@@ -176,6 +176,14 @@ validation_stamp.name
 	en,fr -> @[model.name]
 validation_stamp.description
 	en,fr -> @[model.description]
+validation_stamp.image
+	en,fr -> Image
+validation_stamp.image.edit
+	en -> Change image
+	fr -> Changer l'image
+validation_stamp.image.help
+	en -> PNG image, max. 4K
+	fr -> Image PNG, max. 4K
 	
 [events]
 

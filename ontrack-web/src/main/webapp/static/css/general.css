@@ -36,3 +36,11 @@
 .event-value {
 	color: #7AB1CC;
 }
+
+/* Action visible only when container is hovered */
+.action.action-optional {
+	opacity: 0;
+}
+*:hover > .action.action-optional {
+	opacity: 0.5;
+}

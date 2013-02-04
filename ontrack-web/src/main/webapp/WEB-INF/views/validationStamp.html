@@ -17,6 +17,10 @@
 					<b>${validationStamp.name?html}</b>
 				</p>
 				<p class="help-block">${validationStamp.description?html}</p>
+				<p>
+					<@lh key="validation_stamp.image" />
+					<i class="icon-pencil action action-optional" title="<@lh key='validation_stamp.image.edit' />"></i>
+				</p>
 			</div>
 			<div class="span4">
 				<@audit filter="?validationStamp=${validationStamp.id}" />
