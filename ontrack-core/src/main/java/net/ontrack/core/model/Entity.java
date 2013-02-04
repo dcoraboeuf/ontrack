@@ -5,26 +5,24 @@ import java.util.List;
 
 public enum Entity {
 	
-	PROJECT_GROUP,
+	PROJECT_GROUP("NAME", list(), list()),
 	
-	PROJECT,
+	PROJECT("NAME", list(), list()),
 	
-	BRANCH("NAME", PROJECT),
+	BRANCH("NAME", list(PROJECT), list(PROJECT)),
 	
-	BUILD("NAME", PROJECT, BRANCH),
+	BUILD("NAME", list(PROJECT, BRANCH), list(BRANCH)),
 	
-	VALIDATION_STAMP("NAME", PROJECT, BRANCH);
+	VALIDATION_STAMP("NAME", list(PROJECT, BRANCH), list(BRANCH));
 	
 	private String nameColumn;
 	private List<Entity> parents;
+	private List<Entity> context;
 	
-	Entity () {
-		this("name");
-	}
-	
-	Entity (String nameColumn, Entity... parents) {
+	Entity (String nameColumn, List<Entity> context, List<Entity> parents) {
 		this.nameColumn = nameColumn;
-		this.parents = Arrays.asList(parents);
+		this.context = context;
+		this.parents = parents;
 	}
 	
 	public String nameColumn() {
@@ -33,6 +31,14 @@ public enum Entity {
 	
 	public List<Entity> getParents() {
 		return parents;
+	}
+	
+	public List<Entity> getContext() {
+		return context;
+	}
+	
+	public static List<Entity> list(Entity... entities) {
+		return Arrays.asList(entities);
 	}
 
 }

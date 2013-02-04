@@ -28,6 +28,23 @@ class EventControllerUnitTest {
 	}
 	
 	@Test
+	void createLinkHref_branch () {
+		EventController controller = dummy()
+		def href = controller.createLinkHref(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "BRANCH1"), 1, Collections.singletonMap(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ6")))
+		assert """gui/branch/PROJ6/BRANCH1""" == href
+	}
+	
+	@Test
+	void createLinkHref_build () {
+		EventController controller = dummy()
+		def context = [:]
+		context.put(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ7"))
+		context.put(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "BRANCH2"))
+		def href = controller.createLinkHref(Entity.BUILD, new EntityStub(Entity.BUILD, 3001, "BUILD1"), 1, context)
+		assert """gui/build/PROJ7/BRANCH2/BUILD1""" == href
+	}
+	
+	@Test
 	void createLink_project_group_no_alternative () {
 		EventController controller = dummy()
 		def href = controller.createLink(Entity.PROJECT_GROUP, new EntityStub(Entity.PROJECT_GROUP, 2001, "GROUP2"), null, 1, [:])

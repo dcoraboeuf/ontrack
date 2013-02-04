@@ -147,29 +147,29 @@ public class EventController extends AbstractUIController {
 		}
 	}
 
-	protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity,EntityStub> parentEntities) {
+	protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity,EntityStub> contextEntities) {
 		// Text
 		String text = alternative != null ? alternative : entityStub.getName();
 		text = StringEscapeUtils.escapeHtml4(text);
 		// Href
-		String href = createLinkHref(entity, entityStub, eventId, parentEntities);
+		String href = createLinkHref(entity, entityStub, eventId, contextEntities);
 		// Link
 		return format("<a class=\"event-entity\" href=\"%s\">%s</a>", href, text);
 	}
 
-	protected String createLinkHref(Entity entity, EntityStub entityStub, int eventId, Map<Entity,EntityStub> parentEntities) {
+	protected String createLinkHref(Entity entity, EntityStub entityStub, int eventId, Map<Entity,EntityStub> contextEntities) {
 		// Start of the URI
 		StringBuilder uri = new StringBuilder("gui/").append(entity.name().toLowerCase());
-		// For each parent entity
-		for (Entity parentEntity : entity.getParents()) {
-			// Gets the parent stub
-			EntityStub parentStub = parentEntities.get(parentEntity);
-			if (parentStub == null) {
+		// For each context entity
+		for (Entity contextEntity : entity.getContext()) {
+			// Gets the context stub
+			EntityStub contextStub = contextEntities.get(contextEntity);
+			if (contextStub == null) {
 				// TODO Uses a proper exception
-				throw new IllegalStateException("Could not find entity " + parentEntity + " in event " + eventId);
+				throw new IllegalStateException("Could not find entity " + contextEntity + " in event " + eventId);
 			}
 			// Adds it to the URI
-			uri.append("/").append(parentStub.getName());
+			uri.append("/").append(contextStub.getName());
 		}
 		// Appends this entity to the URI
 		uri.append("/").append(entityStub.getName());
