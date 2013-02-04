@@ -17,7 +17,7 @@ var ValidationStamps = function () {
 	
 	function validationStampTemplate (project, branch) {
 		return function (items) {
-			return Template.links(items, 'validation_stamp/{0}/{1}'.format(project,branch));
+			return Template.links(items, 'gui/validation_stamp/{0}/{1}'.format(project,branch));
 		};
 	}
 	

@@ -19,3 +19,7 @@ model.branch
 
 model.build
 	en,fr -> Build
+
+model.validation_stamp
+	en -> Validation stamp
+	fr -> Validation

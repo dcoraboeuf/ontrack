@@ -16,6 +16,7 @@
 					<@lh key="model.build" />
 					<b>${build.name?html}</b>
 				</p>
+				<p class="help-block">${build.description?html}</p>
 			</div>
 			<div class="span4">
 				<@audit filter="?build=${build.id}" />

@@ -1,0 +1,26 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="validation_stamp" title=validationStamp.name modules=["projects","branches","builds","validation_stamps","audit"] breadcrumbs = {loc("home"): "", validationStamp.branch.project.name?html: "gui/project/${validationStamp.branch.project.name?html}", validationStamp.branch.name?html: "gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}"}>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+				<p>
+					<@lh key="model.project" />
+					<b><a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a></b>
+				</p>
+				<p>
+					<@lh key="model.branch" />
+					<b><a href="gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a></b>
+				</p>
+				<p>
+					<@lh key="model.validation_stamp" />
+					<b>${validationStamp.name?html}</b>
+				</p>
+				<p class="help-block">${validationStamp.description?html}</p>
+			</div>
+			<div class="span4">
+				<@audit filter="?validationStamp=${validationStamp.id}" />
+			</div>
+		</div>
+	</div>
+</@layout_std>
