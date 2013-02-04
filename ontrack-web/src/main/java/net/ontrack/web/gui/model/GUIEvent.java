@@ -12,5 +12,7 @@ public class GUIEvent {
 	private final String timestamp;
 	private final String elapsed;
 	private final String html;
+	private final String icon;
+	private final String status;
 
 }

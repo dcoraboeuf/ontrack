@@ -99,10 +99,24 @@ public class EventController extends AbstractUIController {
 			String value = expandToken(m.group(), event);
 			m.appendReplacement(html, value);
 		}
-		m.appendTail(html); 
+		m.appendTail(html);
+		
+		// Icon & status
+		String icon = "";
+		String status = "";
+		
+		// Stamp --> icon
+		Map<Entity, EntityStub> entities = event.getEntities();
+		EntityStub stamp = entities.get(Entity.VALIDATION_STAMP);
+		if (stamp != null) {
+			icon = String.format("gui/validation_stamp/%s/%s/%s/image",
+					entities.get(Entity.PROJECT).getName(),
+					entities.get(Entity.BRANCH).getName(),
+					stamp.getName());
+		}
 		
 		// OK
-		return new GUIEvent (event.getId(), event.getEventType(), timestamp, elapsed, html.toString());
+		return new GUIEvent (event.getId(), event.getEventType(), timestamp, elapsed, html.toString(), icon, status);
 	}
 	
 	protected Period compress(Period period) {

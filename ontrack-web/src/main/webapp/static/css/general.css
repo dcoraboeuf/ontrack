@@ -36,6 +36,10 @@
 .event-value {
 	color: #7AB1CC;
 }
+.event-icon {
+	padding-right: 1em;
+	float: left;
+}
 
 /* Action visible only when container is hovered */
 .action.action-optional {
