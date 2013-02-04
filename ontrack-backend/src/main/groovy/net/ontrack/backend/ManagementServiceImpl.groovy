@@ -1,6 +1,7 @@
 package net.ontrack.backend
 
 import java.sql.ResultSet
+import java.sql.SQLException
 
 import javax.sql.DataSource
 import javax.validation.Validator
@@ -24,9 +25,11 @@ import net.ontrack.service.ManagementService
 import net.ontrack.service.model.Event
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataAccessException
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -190,7 +193,20 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	public byte[] imageValidationStamp(int validationStampId) {
-		return getFirstItem(SQL.VALIDATIONSTAMP_IMAGE, params("id", validationStampId), byte[])
+		def list = getNamedParameterJdbcTemplate().query(
+			SQL.VALIDATIONSTAMP_IMAGE,
+			params("id", validationStampId),
+			new RowMapper<byte[]>() {
+				@Override
+				byte[] mapRow(ResultSet rs, int row) throws SQLException ,DataAccessException {
+					return rs.getBytes("image")
+				}
+			})
+		if (list.isEmpty()) {
+			return null
+		} else {
+			return list[0]
+		}
 	}
 	
 	// Builds

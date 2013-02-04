@@ -1,6 +1,9 @@
 package net.ontrack.web.gui;
 
+import java.io.IOException;
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletResponse;
 
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
@@ -21,8 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class GUIController extends AbstractGUIController {
 
-	private final ManageUI manageUI;
 	private final Strings strings;
+	private final ManageUI manageUI;
 
 	@Autowired
 	public GUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
@@ -82,6 +85,16 @@ public class GUIController extends AbstractGUIController {
 		}
 		// OK
 		return getValidationStamp(model, project, branch, name);
+	}
+	
+	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+	public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
+		byte[] content = manageUI.imageValidationStamp(project, branch, name);
+		response.setContentType("image/png");
+		response.setContentLength(content.length);
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.getOutputStream().write(content);
+		response.getOutputStream().flush();
 	}
 
 }

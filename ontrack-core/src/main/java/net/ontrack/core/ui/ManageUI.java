@@ -13,7 +13,6 @@ import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ValidationStampCreationForm;
 import net.ontrack.core.model.ValidationStampSummary;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ManageUI {
@@ -51,13 +50,13 @@ public interface ManageUI {
 	ValidationStampSummary createValidationStamp (String project, String branch, ValidationStampCreationForm form);
 
 	Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image);
-
-	HttpEntity<byte[]> getImageValidationStamp(String project, String branch, String name);
 	
 	// Builds
 
 	List<BuildSummary> getBuildList(String project, String branch);
 
 	BuildSummary getBuild(String project, String branch, String name);
+
+	byte[] imageValidationStamp(String project, String branch, String name);
 
 }

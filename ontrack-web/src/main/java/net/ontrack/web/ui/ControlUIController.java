@@ -6,7 +6,7 @@ import net.ontrack.core.model.ValidationRunCreationForm;
 import net.ontrack.core.model.ValidationRunSummary;
 import net.ontrack.core.ui.ControlUI;
 import net.ontrack.service.ControlService;
-import net.ontrack.service.ManagementService;
+import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 
@@ -25,15 +25,15 @@ public class ControlUIController extends AbstractEntityUIController implements C
 	private final ControlService controlService;
 
 	@Autowired
-	public ControlUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, ControlService controlService) {
-		super(errorHandler, strings, managementService);
+	public ControlUIController(ErrorHandler errorHandler, Strings strings, EntityConverter entityConverter, ControlService controlService) {
+		super(errorHandler, strings, entityConverter);
 		this.controlService = controlService;
 	}
 
 	@Override
 	@RequestMapping(value = "/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
 	public @ResponseBody BuildSummary createBuild(@PathVariable String project, @PathVariable String branch, @RequestBody BuildCreationForm build) {
-		int branchId = getBranchId(project, branch);
+		int branchId = entityConverter.getBranchId(project, branch);
 		return controlService.createBuild(branchId, build);
 	}
 
