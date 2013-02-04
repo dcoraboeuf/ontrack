@@ -28,10 +28,10 @@ public class GUIController extends AbstractGUIController {
 		return "home";
 	}
 
-	@RequestMapping(value = "/gui/branch/{id:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public String getProject(Model model, @PathVariable String id) {
+	@RequestMapping(value = "/gui/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public String getProject(Model model, @PathVariable String name) {
 		// Loads the project details
-		model.addAttribute("project", manageUI.getProject(id));
+		model.addAttribute("project", manageUI.getProject(name));
 		// OK
 		return "project";
 	}

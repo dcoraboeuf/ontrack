@@ -9,3 +9,13 @@ model.name
 model.description
 	en,fr -> Description
 	
+model.project
+	en -> Project
+	fr -> Projet
+	
+model.branch
+	en -> Branch
+	fr -> Branche
+
+model.build
+	en,fr -> Build
