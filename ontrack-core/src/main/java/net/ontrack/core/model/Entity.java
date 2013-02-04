@@ -9,11 +9,11 @@ public enum Entity {
 	
 	PROJECT,
 	
-	BRANCH("name", PROJECT),
+	BRANCH("NAME", PROJECT),
 	
-	BUILD("name", PROJECT, BRANCH),
+	BUILD("NAME", PROJECT, BRANCH),
 	
-	VALIDATION_STAMP("name", PROJECT, BRANCH);
+	VALIDATION_STAMP("NAME", PROJECT, BRANCH);
 	
 	private String nameColumn;
 	private List<Entity> parents;
