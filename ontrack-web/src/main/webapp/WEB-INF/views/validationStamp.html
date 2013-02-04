@@ -22,7 +22,7 @@
 					<i id="validation_stamp-image-link" class="icon-pencil action action-optional" title="<@lh key='validation_stamp.image.edit' />" onclick="ValidationStamps.editImage();"></i>
 				</p>
 				<p>
-					<img src="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image" />
+					<i class="action" onclick="ValidationStamps.editImage();"><@validation_stamp_img validationStamp=validationStamp /></i>
 				</p>
 				<p>
 					<div id="validation_stamp-image-form" class="alert alert-info x-dialog" style="float:left">
