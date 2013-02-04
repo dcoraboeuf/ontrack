@@ -4,9 +4,14 @@ import javax.sql.DataSource
 import javax.validation.Validator
 
 import net.ontrack.backend.db.SQL
+import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.BuildCreationForm
 import net.ontrack.core.model.BuildSummary
 import net.ontrack.core.model.EventType
+import net.ontrack.core.model.ValidationRunCreationForm
+import net.ontrack.core.model.ValidationRunStatusCreationForm
+import net.ontrack.core.model.ValidationRunStatusSummary
+import net.ontrack.core.model.ValidationRunSummary
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.ControlService
 import net.ontrack.service.EventService
@@ -41,6 +46,34 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 		event(Event.of(EventType.BUILD_CREATED).withProject(theBranch.project.id).withBranch(theBranch.id).withBuild(id))
 		// OK
 		new BuildSummary(id, form.name, form.description, theBranch)
+	}
+	
+	@Override
+	@Transactional
+	public ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun) {
+		// Run itself
+		int id = dbCreate (SQL.VALIDATION_RUN_CREATE, ["build": build, "validationStamp": validationStamp, "description": validationRun.description])
+		// First status
+		createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.status, validationRun.description))
+		// Gets the summary
+		return managementService.getValidationRun(id)
+	}
+	
+	@Transactional
+	public ValidationRunStatusSummary createValidationRunStatus (int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
+		// TODO Validation of the status
+		// TODO Author
+		// Creation
+		int id = dbCreate (SQL.VALIDATION_RUN_STATUS_CREATE, [
+			"validationRun": validationRun,
+			"status": validationRunStatus.status,
+			"description": validationRunStatus.description,
+			"author": "",
+			"authorId": null,
+			"statusTimestamp": SQLUtils.toTimestamp(SQLUtils.now()) 
+			])
+		// OK
+		return new ValidationRunStatusSummary(id, validationRunStatus.status, validationRunStatus.description)
 	}
 
 }

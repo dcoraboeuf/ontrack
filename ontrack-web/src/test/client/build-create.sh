@@ -10,4 +10,4 @@ DATA="{\"name\":\"${NAME}\",\"description\":\"${DESCRIPTION}\"}"
 
 echo POST to $URL
 
-curl http://localhost:8080/ontrack/ui/control/build/EBANK/2.6 --header "Content-Type: application/json" --data $DATA
+curl ${URL} --header "Content-Type: application/json" --data $DATA

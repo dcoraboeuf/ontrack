@@ -40,8 +40,9 @@ public class ControlUIController extends AbstractEntityUIController implements C
 	@Override
 	@RequestMapping(value = "/validation/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{build:[A-Z0-9_\\.]+}", method = RequestMethod.POST)
 	public @ResponseBody ValidationRunSummary createValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @RequestBody ValidationRunCreationForm validationRun) {
-		// FIXME Implement ControlUI.createValidationRun
-		throw new RuntimeException("NYI");
+		int buildId = entityConverter.getBuildId(project, branch, build);
+		int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+		return controlService.createValidationRun(buildId, validationStampId, validationRun);
 	}
 
 }

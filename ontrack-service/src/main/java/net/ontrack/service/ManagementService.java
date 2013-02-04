@@ -14,6 +14,7 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectGroupCreationForm;
 import net.ontrack.core.model.ProjectGroupSummary;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.ValidationRunSummary;
 import net.ontrack.core.model.ValidationStampCreationForm;
 import net.ontrack.core.model.ValidationStampSummary;
 
@@ -60,6 +61,10 @@ public interface ManagementService {
 	List<BuildSummary> getBuildList(int branchId);
 
 	BuildSummary getBuild(int buildId);
+	
+	// Validation runs
+	
+	ValidationRunSummary getValidationRun (int validationRunId);
 	
 	// Common
 

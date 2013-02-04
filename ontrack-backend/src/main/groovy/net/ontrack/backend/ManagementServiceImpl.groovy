@@ -17,6 +17,8 @@ import net.ontrack.core.model.ProjectCreationForm
 import net.ontrack.core.model.ProjectGroupCreationForm
 import net.ontrack.core.model.ProjectGroupSummary
 import net.ontrack.core.model.ProjectSummary
+import net.ontrack.core.model.ValidationRunStatusStub
+import net.ontrack.core.model.ValidationRunSummary
 import net.ontrack.core.model.ValidationStampCreationForm
 import net.ontrack.core.model.ValidationStampSummary
 import net.ontrack.core.validation.NameDescription
@@ -225,6 +227,34 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	@Transactional(readOnly = true)
 	public BuildSummary getBuild(int id) {
 		return dbLoad(SQL.BUILD, id) { readBuildSummary(it) }
+	}
+	
+	// Validation runs
+	
+	ValidationRunSummary readValidationRunSummary (ResultSet rs) {
+		def id = rs.getInt("id")
+		return new ValidationRunSummary(
+			id,
+			rs.getString("description"),
+			getBuild(rs.getInt("build")),
+			getValidationStamp(rs.getInt("validation_stamp")),
+			getLastValidationRunStatus(id))
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ValidationRunSummary getValidationRun(int id) {
+		return dbLoad(SQL.VALIDATION_RUN, id) { readValidationRunSummary(it) }
+	}
+	
+	// Validation run status
+	
+	ValidationRunStatusStub getLastValidationRunStatus (int validationRunId) {
+		return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST, validationRunId) { rs ->
+			new ValidationRunStatusStub (rs.getInt("id"), rs.getString("status"), rs.getString("description"))
+			// TODO Author
+			// TODO Timestamp
+		}
 	}
 	
 	// Common
