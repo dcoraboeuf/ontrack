@@ -13,6 +13,7 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EntityStub;
+import net.ontrack.core.model.EventFilter;
 import net.ontrack.core.model.EventType;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.service.EventService;
@@ -74,10 +75,32 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<ExpandedEvent> all(int offset, int count) {
+	public List<ExpandedEvent> list(EventFilter filter) {
+		// SQL
+		StringBuilder sql = new StringBuilder("SELECT * FROM EVENTS");
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		// Entities
+		int count = 0;
+		for(Map.Entry<Entity,Integer> entry: filter.getEntities().entrySet()) {
+			Entity entity = entry.getKey();
+			int id = entry.getValue();
+			if (count == 0) {
+				sql.append(" WHERE");
+			} else {
+				sql.append(" AND");
+			}
+			count++;
+			sql.append(format(" %1$s = :entity%1$s", entity.name()));
+			params.addValue(format("entity%s", entity.name()), id);
+		}
+		// Limit & offset
+		sql.append(" ORDER BY ID DESC LIMIT :count OFFSET :offset");
+		params.addValue("offset", filter.getOffset());
+		params.addValue("count", filter.getCount());
+		// Query
 		return getNamedParameterJdbcTemplate().query(
-			SQL.EVENT_ALL,
-			new MapSqlParameterSource("offset", offset).addValue("count", count),
+			sql.toString(),
+			params,
 			new RowMapper<ExpandedEvent>() {
 				@Override
 				public ExpandedEvent mapRow(ResultSet rs, int rowNum) throws SQLException {

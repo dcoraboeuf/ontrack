@@ -44,8 +44,6 @@ interface SQL {
 	
 	// Audit
 	
-	String EVENT_ALL = 'SELECT * FROM EVENTS ORDER BY ID DESC LIMIT :count OFFSET :offset'
-	
 	String EVENT_NAME = 'SELECT %s FROM %s WHERE ID = :id'
 
 	String EVENT_VALUE_INSERT = "INSERT INTO EVENT_VALUES (EVENT, PROP_NAME, PROP_VALUE) VALUES (:id, :name, :value)";

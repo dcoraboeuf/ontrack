@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EntityStub;
+import net.ontrack.core.model.EventFilter;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
@@ -49,13 +50,25 @@ public class EventController extends AbstractUIController {
 		this.eventUI = eventUI;
 	}
 
-	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody
-	List<GUIEvent> all(final Locale locale, @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
+	List<GUIEvent> all(
+			final Locale locale,
+			@RequestParam(required = false, defaultValue = "0") int project,
+			@RequestParam(required = false, defaultValue = "0") int branch,
+			@RequestParam(required = false, defaultValue = "0") int validationStamp,
+			@RequestParam(required = false, defaultValue = "0") int build,
+			@RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
 		// Reference time
 		final DateTime now = new DateTime();
+		// Filter
+		EventFilter filter = new EventFilter(offset, count);
+		filter.withEntity(Entity.PROJECT, project);
+		filter.withEntity(Entity.BRANCH, branch);
+		filter.withEntity(Entity.VALIDATION_STAMP, validationStamp);
+		filter.withEntity(Entity.BUILD, build);
 		// Gets the raw events
-		List<ExpandedEvent> events = eventUI.all(offset, count);
+		List<ExpandedEvent> events = eventUI.list(filter);
 		// Localizes them
 		List<GUIEvent> guiEvents = Lists.transform(events, new Function<ExpandedEvent, GUIEvent>() {
 			@Override
