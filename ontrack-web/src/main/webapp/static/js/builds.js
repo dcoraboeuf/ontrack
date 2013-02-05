@@ -9,11 +9,13 @@ var Builds = function () {
 	function buildValidationStampTemplate (project, branch) {
 	    return function (items) {
             return Template.list(items, function (stamp) {
-                var pClass = '';
+                var pClass;
                 if (!stamp.run) {
-                    pClass += ' validation-stamp-norun';
+                    pClass = 'validation-stamp-norun status-NONE';
+                } else {
+                    pClass = 'status-' + stamp.status;
                 }
-                var html = '<p class="{0}">'.format(pClass);
+                var html = '<div class="{0}">'.format(pClass);
                 html += '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
                     project.html(),
                     branch.html(),
@@ -26,7 +28,7 @@ var Builds = function () {
                     html += ' <span class="validation-run-description">{0}</span>'.format(stamp.statusDescription.html());
                     html += '</p>';
                 }
-                html += '</p>';
+                html += '</div>';
                 return html;
             });
         };
