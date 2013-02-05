@@ -54,3 +54,17 @@
  .validation-stamp-norun {
     opacity: 0.25;
  }
+
+.validation-run {
+    font-size: 75%;
+    margin: 0px;
+}
+
+.validation-run-status {
+    font-weight: bold;
+}
+
+.validation-run-description {
+    font-style: italic;
+    color: gray;
+}

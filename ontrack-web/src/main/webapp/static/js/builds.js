@@ -21,7 +21,10 @@ var Builds = function () {
                     );
                 html += ' <a href="gui/validation_stamp/{0}/{1}/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
-                    html += ' <a href="gui/validation_run/{0}"><i class="icon-play"></i></a>'.format(stamp.runId);
+                    html += ' <p class="validation-run">';
+                    html += '<a href="gui/validation_run/{0}"><i class="icon-play"></i> <span class="validation-run-status">{1}</span></a>'.format(stamp.runId, stamp.status.html());
+                    html += ' <span class="validation-run-description">{0}</span>'.format(stamp.statusDescription.html());
+                    html += '</p>';
                 }
                 html += '</p>';
                 return html;
