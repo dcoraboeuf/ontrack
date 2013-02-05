@@ -1,33 +1,18 @@
 package net.ontrack.web.ui;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.BranchCreationForm;
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.BuildSummary;
-import net.ontrack.core.model.ProjectCreationForm;
-import net.ontrack.core.model.ProjectGroupCreationForm;
-import net.ontrack.core.model.ProjectGroupSummary;
-import net.ontrack.core.model.ProjectSummary;
-import net.ontrack.core.model.ValidationStampCreationForm;
-import net.ontrack.core.model.ValidationStampSummary;
+import net.ontrack.core.model.*;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
@@ -162,4 +147,10 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 		return managementService.getBuild(buildId);
 	}
 
+    @Override
+    @RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/validationStamps", method = RequestMethod.GET)
+    public @ResponseBody List<BuildValidationStamp> getBuildValidationStamps(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        int buildId = entityConverter.getBuildId(project, branch, name);
+        return managementService.getBuildValidationStamps(buildId);
+    }
 }

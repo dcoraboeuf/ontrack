@@ -71,7 +71,7 @@ class ManageUIControllerTest extends AbstractWebTest {
 		assert summary != null
 		assert summary.description == "My first project"
 		// Gets the event
-		json = this.mockMvc.perform(get("/gui/event/all").accept(MediaType.APPLICATION_JSON))
+		json = this.mockMvc.perform(get("/gui/event").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))

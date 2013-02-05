@@ -2,16 +2,7 @@ package net.ontrack.core.ui;
 
 import java.util.List;
 
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.BranchCreationForm;
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.BuildSummary;
-import net.ontrack.core.model.ProjectCreationForm;
-import net.ontrack.core.model.ProjectGroupCreationForm;
-import net.ontrack.core.model.ProjectGroupSummary;
-import net.ontrack.core.model.ProjectSummary;
-import net.ontrack.core.model.ValidationStampCreationForm;
-import net.ontrack.core.model.ValidationStampSummary;
+import net.ontrack.core.model.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +41,8 @@ public interface ManageUI {
 	ValidationStampSummary createValidationStamp (String project, String branch, ValidationStampCreationForm form);
 
 	Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image);
+
+    byte[] imageValidationStamp(String project, String branch, String name);
 	
 	// Builds
 
@@ -57,6 +50,6 @@ public interface ManageUI {
 
 	BuildSummary getBuild(String project, String branch, String name);
 
-	byte[] imageValidationStamp(String project, String branch, String name);
+    List<BuildValidationStamp> getBuildValidationStamps(String project, String branch, String name);
 
 }
