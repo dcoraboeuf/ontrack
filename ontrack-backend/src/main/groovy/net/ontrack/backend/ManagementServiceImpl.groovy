@@ -1,5 +1,7 @@
 package net.ontrack.backend
 
+import net.ontrack.core.model.BuildValidationStamp
+
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -228,8 +230,28 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	public BuildSummary getBuild(int id) {
 		return dbLoad(SQL.BUILD, id) { readBuildSummary(it) }
 	}
-	
-	// Validation runs
+
+    @Override
+    @Transactional(readOnly = true)
+    List<BuildValidationStamp> getBuildValidationStamps(int buildId) {
+        // Gets the build details
+        def build = getBuild(buildId)
+        // Gets all the stamps for the branch
+        def stamps = getValidationStampList(build.branch.id)
+        // Collects information for all stamps
+        return stamps.collect { stamp ->
+            def buildStamp = BuildValidationStamp.of(stamp)
+            // Gets the latest run status for this build and this stamp
+            def runStatus = getLastValidationRunStatus(buildId, stamp.id)
+            if (runStatus != null) {
+                buildStamp = buildStamp.withRun(runStatus)
+            }
+            // OK
+            buildStamp
+        }
+    }
+
+    // Validation runs
 	
 	ValidationRunSummary readValidationRunSummary (ResultSet rs) {
 		def id = rs.getInt("id")
@@ -248,13 +270,19 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	}
 	
 	// Validation run status
+
+    ValidationRunStatusStub readValidationRunStatusStub (ResultSet rs) {
+        new ValidationRunStatusStub (rs.getInt("id"), rs.getString("status"), rs.getString("description"))
+        // TODO Author
+        // TODO Timestamp
+    }
+
+    ValidationRunStatusStub getLastValidationRunStatus (int buildId, int validationStampId) {
+        return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST_FOR_BUILD, [build: buildId, validationStamp: validationStampId]) { readValidationRunStatusStub (it) }
+    }
 	
 	ValidationRunStatusStub getLastValidationRunStatus (int validationRunId) {
-		return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST, validationRunId) { rs ->
-			new ValidationRunStatusStub (rs.getInt("id"), rs.getString("status"), rs.getString("description"))
-			// TODO Author
-			// TODO Timestamp
-		}
+		return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST, validationRunId) { readValidationRunStatusStub (it) }
 	}
 	
 	// Common
