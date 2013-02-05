@@ -48,3 +48,9 @@
 *:hover > .action.action-optional {
 	opacity: 0.5;
 }
+
+/* Validation stamps and their runs */
+
+ .validation-stamp-norun {
+    opacity: 0.25;
+ }
