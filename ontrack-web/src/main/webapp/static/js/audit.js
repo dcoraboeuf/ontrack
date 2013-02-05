@@ -5,7 +5,7 @@ var Audit = function () {
 	}
 	
 	function audit (item) {
-		var html = '<div class="status-{0}">'.format(item.status!=""?item.status:"NONE");
+		var html = '<div class="{0}">'.format(item.status!="" ? 'status-' + item.status : '');
 		if (item.icon != "") {
 			html += '<img width="24" src="{0}" class="event-icon" /> '.format(item.icon.html());
 		}
