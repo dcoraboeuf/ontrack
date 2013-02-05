@@ -9,10 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.EntityStub;
-import net.ontrack.core.model.EventFilter;
-import net.ontrack.core.model.ExpandedEvent;
+import net.ontrack.core.model.*;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
 import net.ontrack.web.support.AbstractUIController;
@@ -114,6 +111,12 @@ public class EventController extends AbstractUIController {
 					entities.get(Entity.BRANCH).getName(),
 					stamp.getName());
 		}
+
+        // Status --> status class
+        String statusValue = event.getValues().get("status");
+        if (StringUtils.isNotBlank(statusValue)) {
+            status = statusValue;
+        }
 		
 		// OK
 		return new GUIEvent (event.getId(), event.getEventType(), timestamp, elapsed, html.toString(), icon, status);
