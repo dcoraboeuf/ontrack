@@ -15,7 +15,7 @@ public class BuildValidationStamp {
 	private final String name;
 	private final String description;
 	private final int runId;
-	private final String status;
+	private final Status status;
 	private final String statusDescription;
 
     public boolean isRun() {

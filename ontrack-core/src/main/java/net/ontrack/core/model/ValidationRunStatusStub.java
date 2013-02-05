@@ -6,7 +6,7 @@ import lombok.Data;
 public class ValidationRunStatusStub {
 	
 	private final int id;
-	private final String status;
+	private final Status status;
 	private final String description;
 
 }

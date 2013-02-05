@@ -1,40 +1,24 @@
 package net.ontrack.backend
 
-import net.ontrack.core.model.BuildValidationStamp
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
-
-import java.sql.ResultSet
-import java.sql.SQLException
-
-import javax.sql.DataSource
-import javax.validation.Validator
-
 import net.ontrack.backend.db.SQL
-import net.ontrack.core.model.Ack
-import net.ontrack.core.model.BranchCreationForm
-import net.ontrack.core.model.BranchSummary
-import net.ontrack.core.model.BuildSummary
-import net.ontrack.core.model.Entity
-import net.ontrack.core.model.EventType
-import net.ontrack.core.model.ProjectCreationForm
-import net.ontrack.core.model.ProjectGroupCreationForm
-import net.ontrack.core.model.ProjectGroupSummary
-import net.ontrack.core.model.ProjectSummary
-import net.ontrack.core.model.ValidationRunStatusStub
-import net.ontrack.core.model.ValidationRunSummary
-import net.ontrack.core.model.ValidationStampCreationForm
-import net.ontrack.core.model.ValidationStampSummary
+import net.ontrack.backend.db.SQLUtils
+import net.ontrack.core.model.*
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
 import net.ontrack.service.model.Event
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+
+import javax.sql.DataSource
+import javax.validation.Validator
+import java.sql.ResultSet
+import java.sql.SQLException
 
 @Service
 class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -273,7 +257,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	// Validation run status
 
     ValidationRunStatusStub readValidationRunStatusStub (ResultSet rs) {
-        new ValidationRunStatusStub (rs.getInt("id"), rs.getString("status"), rs.getString("description"))
+        new ValidationRunStatusStub (rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"))
         // TODO Author
         // TODO Timestamp
     }

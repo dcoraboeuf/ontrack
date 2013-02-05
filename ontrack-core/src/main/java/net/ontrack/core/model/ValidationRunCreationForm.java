@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ValidationRunCreationForm {
 	
-	private final String status;
+	private final Status status;
 	private final String description;
 
 }
