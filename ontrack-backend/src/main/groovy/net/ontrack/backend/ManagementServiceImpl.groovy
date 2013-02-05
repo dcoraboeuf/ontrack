@@ -1,6 +1,7 @@
 package net.ontrack.backend
 
 import net.ontrack.core.model.BuildValidationStamp
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -278,7 +279,15 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
     }
 
     ValidationRunStatusStub getLastValidationRunStatus (int buildId, int validationStampId) {
-        return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST_FOR_BUILD, [build: buildId, validationStamp: validationStampId]) { readValidationRunStatusStub (it) }
+        Integer id = getFirstItem(
+           SQL.VALIDATION_RUN_LAST_FOR_BUILD,
+           new MapSqlParameterSource([build: buildId, validationStamp: validationStampId]),
+           Integer.class)
+        if (id == null) {
+            return null;
+        } else {
+            return getLastValidationRunStatus(id)
+        }
     }
 	
 	ValidationRunStatusStub getLastValidationRunStatus (int validationRunId) {

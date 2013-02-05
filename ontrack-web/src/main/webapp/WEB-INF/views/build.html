@@ -27,7 +27,8 @@
 			</div>
 			<div class="span5">
 				<@panel title=loc("build.validation_stamps")>
-					TODO List of validation stamps
+					<@dynamicsection id="build-validation-stamp-list" url="ui/manage/build/${build.branch.project.name?html}/${build.branch.name?html}/${build.name?html}/validationStamps" template="Builds.buildValidationStampTemplate">
+                    </@dynamicsection>
 				</@panel>
 			</div>
 		</div>
