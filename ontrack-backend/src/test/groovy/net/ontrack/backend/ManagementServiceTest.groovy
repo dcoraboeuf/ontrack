@@ -1,5 +1,7 @@
 package net.ontrack.backend
 
+import net.ontrack.core.model.EventFilter
+
 import java.lang.invoke.MethodHandleImpl.BindCaller.T
 
 import net.ontrack.core.model.BranchCreationForm
@@ -87,7 +89,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 		assert "LOAD1" == summary.name
 		assert "My description" == summary.description
 		// Gets the audit
-		def events = eventService.all(0, 1)
+		def events = eventService.list(new EventFilter(0, 1))
 		assert events != null && !events.empty
 		def event = events.get(0)
 		assert EventType.PROJECT_CREATED == event.eventType
@@ -105,7 +107,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 		def ack = service.deleteProject(summary.id)
 		assert ack.success
 		// Gets the audit
-		def events = eventService.all(0, 1)
+		def events = eventService.list(new EventFilter(0,1))
 		assert events != null && !events.empty
 		// Deletion
 		def event = events.get(0)

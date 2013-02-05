@@ -48,3 +48,56 @@
 *:hover > .action.action-optional {
 	opacity: 0.5;
 }
+
+/* Validation stamps and their runs */
+
+ .validation-stamp-norun {
+    opacity: 0.25;
+ }
+
+.validation-run {
+    font-size: 75%;
+    margin: 0px;
+}
+
+.validation-run-status {
+    font-weight: bold;
+}
+
+.validation-run-description {
+    font-style: italic;
+    color: gray;
+}
+
+/* Run statuses */
+/* See the Status enum */
+
+.status-NONE {
+    border-left: solid 2em white;
+    padding-left: 1em;
+}
+
+.status-PASSED {
+    border-left: solid 2em #11FF11;
+    padding-left: 1em;
+}
+
+.status-INTERRUPTED {
+    border-left: solid 2em #666666;
+    padding-left: 1em;
+}
+
+.status-FAILED {
+    border-left: solid 2em #DD0000;
+    padding-left: 1em;
+}
+
+.status-INVESTIGATED {
+    border-left: dashed 2em #3290E3;
+    padding-left: 1em;
+}
+
+.status-DEFECTIVE {
+    border-left: solid 2em #FA8219;
+    padding-left: 1em;
+}

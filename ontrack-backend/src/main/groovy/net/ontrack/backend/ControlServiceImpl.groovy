@@ -64,7 +64,7 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 			.withValidationStamp(validationStamp)
 			.withBuild(build)
 			.withValidationRun(id)
-			.withValue("status", validationRun.status)
+			.withValue("status", validationRun.status.name())
 			)
 		// Gets the summary
 		return run
@@ -77,7 +77,7 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 		// Creation
 		int id = dbCreate (SQL.VALIDATION_RUN_STATUS_CREATE, [
 			"validationRun": validationRun,
-			"status": validationRunStatus.status,
+			"status": validationRunStatus.status.name(),
 			"description": validationRunStatus.description,
 			"author": "",
 			"authorId": null,

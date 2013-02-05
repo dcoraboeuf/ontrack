@@ -56,32 +56,47 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 	
 	protected <T> List<T> dbList (String sql, Map<String, ?> params, final Closure<T> mapping) {
 		return getNamedParameterJdbcTemplate().query(
-			sql,
-			new MapSqlParameterSource(params),
-			new RowMapper<T> () {
+                sql,
+                new MapSqlParameterSource(params),
+                new RowMapper<T>() {
 
-				@Override
-				public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-					return mapping.call(rs);
-				}
-			
-		});
-	}
-	
-	protected <T> T dbLoad (String sql, int id, final Closure<T> mapping) {
-		return getNamedParameterJdbcTemplate().queryForObject(
-			sql,
-			params("id", id),
-			new RowMapper<T> () {
+                    @Override
+                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return mapping.call(rs);
+                    }
 
-				@Override
-				public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-					return mapping.call(rs);
-				}
-				
-			}
-		);
+                });
 	}
+
+    protected <T> T dbLoad (String sql, Map<String,?> params, final Closure<T> mapping) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                sql,
+                new MapSqlParameterSource(params),
+                new RowMapper<T> () {
+
+                    @Override
+                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return mapping.call(rs);
+                    }
+
+                }
+        );
+    }
+
+    protected <T> T dbLoad (String sql, int id, final Closure<T> mapping) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                sql,
+                params("id", id),
+                new RowMapper<T> () {
+
+                    @Override
+                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return mapping.call(rs);
+                    }
+
+                }
+        );
+    }
 	
 	protected int dbCreate (String sql, Map<String, ?> parameters) {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

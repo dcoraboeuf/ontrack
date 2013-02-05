@@ -195,6 +195,12 @@ validation_stamp.image.success
 	en -> Successful upload of the image.
 	fr -> L'image a été chargée correctement.
 	
+[builds]
+
+build.validation_stamps
+	en -> Validation stamps
+	fr -> Validations
+	
 [events]
 
 event.list

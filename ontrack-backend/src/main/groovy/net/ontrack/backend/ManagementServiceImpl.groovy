@@ -1,37 +1,24 @@
 package net.ontrack.backend
 
-import java.sql.ResultSet
-import java.sql.SQLException
-
-import javax.sql.DataSource
-import javax.validation.Validator
-
 import net.ontrack.backend.db.SQL
-import net.ontrack.core.model.Ack
-import net.ontrack.core.model.BranchCreationForm
-import net.ontrack.core.model.BranchSummary
-import net.ontrack.core.model.BuildSummary
-import net.ontrack.core.model.Entity
-import net.ontrack.core.model.EventType
-import net.ontrack.core.model.ProjectCreationForm
-import net.ontrack.core.model.ProjectGroupCreationForm
-import net.ontrack.core.model.ProjectGroupSummary
-import net.ontrack.core.model.ProjectSummary
-import net.ontrack.core.model.ValidationRunStatusStub
-import net.ontrack.core.model.ValidationRunSummary
-import net.ontrack.core.model.ValidationStampCreationForm
-import net.ontrack.core.model.ValidationStampSummary
+import net.ontrack.backend.db.SQLUtils
+import net.ontrack.core.model.*
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
 import net.ontrack.service.model.Event
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+
+import javax.sql.DataSource
+import javax.validation.Validator
+import java.sql.ResultSet
+import java.sql.SQLException
 
 @Service
 class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -228,8 +215,28 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	public BuildSummary getBuild(int id) {
 		return dbLoad(SQL.BUILD, id) { readBuildSummary(it) }
 	}
-	
-	// Validation runs
+
+    @Override
+    @Transactional(readOnly = true)
+    List<BuildValidationStamp> getBuildValidationStamps(int buildId) {
+        // Gets the build details
+        def build = getBuild(buildId)
+        // Gets all the stamps for the branch
+        def stamps = getValidationStampList(build.branch.id)
+        // Collects information for all stamps
+        return stamps.collect { stamp ->
+            def buildStamp = BuildValidationStamp.of(stamp)
+            // Gets the latest run status for this build and this stamp
+            def runStatus = getLastValidationRunStatus(buildId, stamp.id)
+            if (runStatus != null) {
+                buildStamp = buildStamp.withRun(runStatus)
+            }
+            // OK
+            buildStamp
+        }
+    }
+
+    // Validation runs
 	
 	ValidationRunSummary readValidationRunSummary (ResultSet rs) {
 		def id = rs.getInt("id")
@@ -248,13 +255,27 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	}
 	
 	// Validation run status
+
+    ValidationRunStatusStub readValidationRunStatusStub (ResultSet rs) {
+        new ValidationRunStatusStub (rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"))
+        // TODO Author
+        // TODO Timestamp
+    }
+
+    ValidationRunStatusStub getLastValidationRunStatus (int buildId, int validationStampId) {
+        Integer id = getFirstItem(
+           SQL.VALIDATION_RUN_LAST_FOR_BUILD,
+           new MapSqlParameterSource([build: buildId, validationStamp: validationStampId]),
+           Integer.class)
+        if (id == null) {
+            return null;
+        } else {
+            return getLastValidationRunStatus(id)
+        }
+    }
 	
 	ValidationRunStatusStub getLastValidationRunStatus (int validationRunId) {
-		return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST, validationRunId) { rs ->
-			new ValidationRunStatusStub (rs.getInt("id"), rs.getString("status"), rs.getString("description"))
-			// TODO Author
-			// TODO Timestamp
-		}
+		return dbLoad(SQL.VALIDATION_RUN_STATUS_LAST, validationRunId) { readValidationRunStatusStub (it) }
 	}
 	
 	// Common
