@@ -153,4 +153,12 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         int buildId = entityConverter.getBuildId(project, branch, name);
         return managementService.getBuildValidationStamps(buildId);
     }
+
+    // Validation runs
+
+    @Override
+    @RequestMapping(value = "/ui/manage/validation_run/{runId:[0-9]+}", method = RequestMethod.GET)
+    public @ResponseBody ValidationRunSummary getValidationRun(@PathVariable int runId) {
+        return managementService.getValidationRun(runId);
+    }
 }

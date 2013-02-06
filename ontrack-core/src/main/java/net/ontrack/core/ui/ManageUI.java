@@ -52,4 +52,7 @@ public interface ManageUI {
 
     List<BuildValidationStamp> getBuildValidationStamps(String project, String branch, String name);
 
+    // Validation runs
+
+    ValidationRunSummary getValidationRun(int runId);
 }

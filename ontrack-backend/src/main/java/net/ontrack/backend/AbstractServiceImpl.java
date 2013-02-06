@@ -76,7 +76,7 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
                     @Override
                     public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return mapping.call(rs);
+                        return mapping.call(rs, rowNum);
                     }
 
                 }

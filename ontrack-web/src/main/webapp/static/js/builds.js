@@ -23,7 +23,7 @@ var Builds = function () {
                 if (stamp.run) {
                     $.each(stamp.runs, function (index, run) {
                         html += ' <p class="validation-run status-{0}">'.format(run.status);
-                        html += '<a href="gui/validation_run/{0}"><i class="icon-play"></i> <span class="validation-run-status">{1}</span></a>'.format(run.id, run.status.html());
+                        html += '<a href="gui/validation_run/{0}"><i class="icon-play"></i> <span class="validation-run-status">{1}</span></a>'.format(run.runId, run.status.html());
                         html += ' <span class="validation-run-description">{0}</span>'.format(run.statusDescription.html());
                         html += '</p>';
                     });

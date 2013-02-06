@@ -1,0 +1,19 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="validationRun" title="TODO"
+    modules=["projects","branches","builds","validation_stamps","audit"]
+    breadcrumbs = {
+        loc("home"): "",
+        validationRun.build.branch.project.name?html:
+            "gui/project/${validationRun.build.branch.project.name?html}",
+        validationRun.build.branch.name?html:
+            "gui/branch/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}",
+        validationRun.validationStamp.name?html:
+            "gui/validation_stamp/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.validationStamp.name?html}"}>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+			</div>
+		</div>
+	</div>
+</@layout_std>

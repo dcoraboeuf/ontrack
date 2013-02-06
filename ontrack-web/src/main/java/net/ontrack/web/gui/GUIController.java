@@ -65,13 +65,21 @@ public class GUIController extends AbstractGUIController {
 		return "build";
 	}
 
-	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public String getValidationStamp(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
-		// Loads the details
-		model.addAttribute("validationStamp", manageUI.getValidationStamp(project, branch, name));
-		// OK
-		return "validationStamp";
-	}
+    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getValidationStamp(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("validationStamp", manageUI.getValidationStamp(project, branch, name));
+        // OK
+        return "validationStamp";
+    }
+
+    @RequestMapping(value = "/gui/validation_run/{id:[0-9]+}", method = RequestMethod.GET)
+    public String getValidationRun(Model model, @PathVariable int id) {
+        // Loads the details
+        model.addAttribute("validationRun", manageUI.getValidationRun(id));
+        // OK
+        return "validationRun";
+    }
 
 	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
 	public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {

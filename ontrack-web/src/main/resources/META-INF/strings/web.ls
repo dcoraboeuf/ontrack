@@ -200,6 +200,12 @@ validation_stamp.image.success
 build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
+
+[runs]
+
+validationRun
+    en -> Run
+    fr -> Exécution
 	
 [events]
 
