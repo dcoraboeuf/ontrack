@@ -240,6 +240,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 		def id = rs.getInt("id")
 		return new ValidationRunSummary(
 			id,
+            rs.getInt("indexNb"),
 			rs.getString("description"),
 			getBuild(rs.getInt("build")),
 			getValidationStamp(rs.getInt("validation_stamp")),

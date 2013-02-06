@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validationRun" title="TODO"
+<@layout_std page="validationRun" title="#${validationRun.indexNb?string}"
     modules=["projects","branches","builds","validation_stamps","audit"]
     breadcrumbs = {
         loc("home"): "",
@@ -13,6 +13,25 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span3">
+                <div class="alert alert-info">
+                    <p>
+                        <@lh key="model.project" />
+                        <b><a href="gui/project/${validationRun.build.branch.project.name?html}">${validationRun.build.branch.project.name?html}</a></b>
+                    </p>
+                    <p>
+                        <@lh key="model.branch" />
+                        <b><a href="gui/branch/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}">${validationRun.build.branch.name?html}</a></b>
+                    </p>
+                    <p>
+                        <@lh key="model.build" />
+                        <b><a href="gui/build/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.build.name?html}">${validationRun.build.name?html}</a></b>
+                    </p>
+                    <p>
+                        <p><@lh key="model.validation_stamp" /></p>
+                        <@validation_stamp_img validationStamp=validationRun.validationStamp />
+                        <b><a href="gui/validation_stamp/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.validationStamp.name?html}">${validationRun.validationStamp.name?html}</a></b>
+                    </p>
+                </div>
 			</div>
 		</div>
 	</div>

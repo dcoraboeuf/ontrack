@@ -4,7 +4,7 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span3">
-				<@panel title=loc('model.build')>
+                <div class="alert alert-info">
 					<p>
 						<@lh key="model.project" />
 						<b><a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a></b>
@@ -18,7 +18,7 @@
 						<b>${build.name?html}</b>
 					</p>
 					<p class="help-block">${build.description?html}</p>
-				</@panel>
+				</div>
 			</div>
 			<div class="span4">
 				<@panel title=loc("event.list")>

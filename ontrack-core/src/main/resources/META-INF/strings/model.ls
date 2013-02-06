@@ -23,3 +23,7 @@ model.build
 model.validation_stamp
 	en -> Validation stamp
 	fr -> Validation
+
+model.validation_run
+    en -> Run
+    fr -> Exécution
