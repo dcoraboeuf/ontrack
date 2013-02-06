@@ -31,8 +31,17 @@
                         <@validation_stamp_img validationStamp=validationRun.validationStamp />
                         <b><a href="gui/validation_stamp/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.validationStamp.name?html}">${validationRun.validationStamp.name?html}</a></b>
                     </p>
+                    <p>
+                        <@lh key="model.validation_run" />
+                        <b>#${validationRun.indexNb?html}</b>
+                    </p>
                 </div>
 			</div>
+            <div class="span4">
+                <@panel title=loc("event.list")>
+                    <@audit filter="?validationRun=${validationRun.id}" />
+                </@panel>
+            </div>
 		</div>
 	</div>
 </@layout_std>

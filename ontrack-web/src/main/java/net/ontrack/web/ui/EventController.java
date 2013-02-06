@@ -54,8 +54,9 @@ public class EventController extends AbstractUIController {
 			@RequestParam(required = false, defaultValue = "0") int project,
 			@RequestParam(required = false, defaultValue = "0") int branch,
 			@RequestParam(required = false, defaultValue = "0") int validationStamp,
-			@RequestParam(required = false, defaultValue = "0") int build,
-			@RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
+            @RequestParam(required = false, defaultValue = "0") int build,
+            @RequestParam(required = false, defaultValue = "0") int validationRun,
+            @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
 		// Reference time
 		final DateTime now = new DateTime();
 		// Filter
@@ -63,7 +64,8 @@ public class EventController extends AbstractUIController {
 		filter.withEntity(Entity.PROJECT, project);
 		filter.withEntity(Entity.BRANCH, branch);
 		filter.withEntity(Entity.VALIDATION_STAMP, validationStamp);
-		filter.withEntity(Entity.BUILD, build);
+        filter.withEntity(Entity.BUILD, build);
+        filter.withEntity(Entity.VALIDATION_RUN, validationRun);
 		// Gets the raw events
 		List<ExpandedEvent> events = eventUI.list(filter);
 		// Localizes them
