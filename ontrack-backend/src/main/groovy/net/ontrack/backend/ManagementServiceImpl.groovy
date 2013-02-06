@@ -226,11 +226,9 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
         // Collects information for all stamps
         return stamps.collect { stamp ->
             def buildStamp = BuildValidationStamp.of(stamp)
-            // Gets the latest run status for this build and this stamp
-            def runStatus = getLastValidationRunStatus(buildId, stamp.id)
-            if (runStatus != null) {
-                buildStamp = buildStamp.withRun(runStatus)
-            }
+            // Gets the latest runs with their status for this build and this stamp
+            def runStatuses = getValidationRuns(buildId, stamp.id)
+            buildStamp = buildStamp.withRuns(runStatuses)
             // OK
             buildStamp
         }
@@ -253,6 +251,17 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	public ValidationRunSummary getValidationRun(int id) {
 		return dbLoad(SQL.VALIDATION_RUN, id) { readValidationRunSummary(it) }
 	}
+
+    List<BuildValidationStampRun> getValidationRuns (int buildId, int validationStampId) {
+        def runIds = dbList(
+                SQL.VALIDATION_RUN_FOR_BUILD_AND_STAMP,
+                [build: buildId, validationStamp: validationStampId])
+                { it.getInt("ID") }
+        runIds.collect { runId ->
+            def runStatus = getLastValidationRunStatus(runId)
+            new BuildValidationStampRun(runId, runStatus.status, runStatus.description)
+        }
+    }
 	
 	// Validation run status
 
@@ -260,18 +269,6 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
         new ValidationRunStatusStub (rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"))
         // TODO Author
         // TODO Timestamp
-    }
-
-    ValidationRunStatusStub getLastValidationRunStatus (int buildId, int validationStampId) {
-        Integer id = getFirstItem(
-           SQL.VALIDATION_RUN_LAST_FOR_BUILD,
-           new MapSqlParameterSource([build: buildId, validationStamp: validationStampId]),
-           Integer.class)
-        if (id == null) {
-            return null;
-        } else {
-            return getLastValidationRunStatus(id)
-        }
     }
 	
 	ValidationRunStatusStub getLastValidationRunStatus (int validationRunId) {

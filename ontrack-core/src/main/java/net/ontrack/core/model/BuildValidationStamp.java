@@ -4,26 +4,27 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Collections;
+import java.util.List;
+
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class BuildValidationStamp {
 
     public static BuildValidationStamp of (ValidationStampSummary validationStamp) {
-        return new BuildValidationStamp(validationStamp.getName(), validationStamp.getDescription(), 0, null, null);
+        return new BuildValidationStamp(validationStamp.getName(), validationStamp.getDescription(), Collections.<BuildValidationStampRun>emptyList());
     }
 
 	private final String name;
 	private final String description;
-	private final int runId;
-	private final Status status;
-	private final String statusDescription;
+    private final List<BuildValidationStampRun> runs;
 
     public boolean isRun() {
-        return runId > 0;
+        return !runs.isEmpty();
     }
 
-    public BuildValidationStamp withRun (ValidationRunStatusStub validationRun) {
-        return new BuildValidationStamp(name, description, validationRun.getId(), validationRun.getStatus(), validationRun.getDescription());
+    public BuildValidationStamp withRuns (List<BuildValidationStampRun> runs) {
+        return new BuildValidationStamp(name, description, runs);
     }
 
 }
