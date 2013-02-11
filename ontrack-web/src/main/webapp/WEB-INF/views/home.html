@@ -8,10 +8,10 @@
 			</div>
 			<div class="span3">
 				<@panel title=loc("home.projectgroups")>
-					<@projectgroups />
+					<@projectgroups create=secAdmin() />
 				</@panel>
 				<@panel title=loc("home.projects")>
-					<@projects />
+					<@projects create=secAdmin() />
 				</@panel>
 			</div>
 		</div>

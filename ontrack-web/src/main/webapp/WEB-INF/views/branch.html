@@ -7,8 +7,10 @@
 				<@panel title=branch.project.name+"/"+branch.name>
 					<p class="help-block">${branch.description?html}</p>
 					<p>
-						<button class="btn"><@lh key="general.modify" /></button>
-						<button class="btn btn-danger" onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><@lh key="general.delete" /></button>
+                        <#if secAdmin()>
+                            <button class="btn"><@lh key="general.modify" /></button>
+                            <button class="btn btn-danger" onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><@lh key="general.delete" /></button>
+                        </#if>
 						<a href="gui/project/${branch.project.name?html}" class="btn btn-link"><@lh key="general.close"/></a>
 					</p>
 				</@panel>
@@ -16,7 +18,7 @@
 					TODO Promotion levels
 				</@panel>
 				<@panel title=loc("branch.validation_stamps")>
-					<@validation_stamps project=branch.project.name branch=branch.name />
+					<@validation_stamps project=branch.project.name branch=branch.name create=secAdmin() />
 				</@panel>
 			</div>
 			<div class="span5">

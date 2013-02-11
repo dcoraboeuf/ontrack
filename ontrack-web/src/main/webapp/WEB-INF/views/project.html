@@ -7,15 +7,17 @@
 				<@panel title=project.name>
 					<p class="help-block">${project.description?html}</p>
 					<p>
-						<button class="btn"><@lh key="general.modify" /></button>
-						<button class="btn btn-danger" onclick="Projects.deleteProject('${project.name?html}')"><@lh key="general.delete" /></button>
+                        <#if secAdmin()>
+                            <button class="btn"><@lh key="general.modify" /></button>
+                            <button class="btn btn-danger" onclick="Projects.deleteProject('${project.name?html}')"><@lh key="general.delete" /></button>
+                        </#if>
 						<a href="" class="btn btn-link"><@lh key="general.close"/></a>
 					</p>
 				</@panel>
 			</div>
 			<div class="span5">
 				<@panel title=loc("project.branches")>
-					<@branches project=project.name />
+					<@branches project=project.name create=secAdmin() />
 				</@panel>
 			</div>
 			<div class="span4">
