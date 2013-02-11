@@ -1,5 +1,9 @@
 <#include "/lib/i18n.html" />
 
 <#macro security>
-	<#-- TODO Login or user profile -->
+    <#if secLogged()>
+        TODO Logged
+    <#else/>
+        <li><a href="login"><@lh key="login.link" /></a></li>
+    </#if>
 </#macro>

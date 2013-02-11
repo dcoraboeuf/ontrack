@@ -1,23 +1,14 @@
 package net.ontrack.web.config;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.netbeetle.jackson.ObjectMapperFactory;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
-import net.ontrack.web.support.fm.FnLoc;
-import net.ontrack.web.support.fm.FnLocFormatDate;
-import net.ontrack.web.support.fm.FnLocFormatTime;
-import net.ontrack.web.support.fm.FnLocSelected;
+import net.ontrack.web.support.fm.*;
 import net.ontrack.web.support.json.LocalTimeDeserializer;
 import net.ontrack.web.support.json.LocalTimeSerializer;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
-
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ext.JodaDeserializers.LocalDateDeserializer;
@@ -40,17 +31,14 @@ import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
-import com.netbeetle.jackson.ObjectMapperFactory;
+import java.io.IOException;
+import java.util.*;
 
 @Configuration
 @EnableWebMvc
@@ -59,6 +47,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	private Environment env;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
 	// TODO Moves this to the core
 	@Bean
@@ -111,6 +102,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		variables.put("locSelected", new FnLocSelected());
 		variables.put("locFormatDate", new FnLocFormatDate(strings()));
 		variables.put("locFormatTime", new FnLocFormatTime(strings()));
+        variables.put("secLogged", new FnSecLogged(securityUtils));
 		c.setFreemarkerVariables(variables);
 		// OK
 		return c;

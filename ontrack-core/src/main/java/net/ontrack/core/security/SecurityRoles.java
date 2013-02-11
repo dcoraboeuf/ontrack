@@ -6,4 +6,6 @@ public interface SecurityRoles {
 	
 	String CONTROLLER = "ROLE_CONTROLLER";
 
+    String USER = "ROLE_USER";
+
 }

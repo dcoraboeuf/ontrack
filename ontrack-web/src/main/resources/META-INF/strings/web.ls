@@ -88,7 +88,13 @@ error.message
 
 error.back
 	en -> Go back to the portal
-	fr -> Revenir à l'acceuil  
+	fr -> Revenir à l'acceuil
+
+[login]
+
+login.link
+    en -> Sign in
+    fr -> Se connecter
 
 [home]
 
