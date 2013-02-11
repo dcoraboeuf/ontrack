@@ -1,26 +1,21 @@
 package net.ontrack.backend
 
-import javax.sql.DataSource
-import javax.validation.Validator
-
 import net.ontrack.backend.db.SQL
-import net.ontrack.backend.db.SQLUtils;
-import net.ontrack.core.model.BuildCreationForm
-import net.ontrack.core.model.BuildSummary
-import net.ontrack.core.model.EventType
-import net.ontrack.core.model.ValidationRunCreationForm
-import net.ontrack.core.model.ValidationRunStatusCreationForm
-import net.ontrack.core.model.ValidationRunStatusSummary
-import net.ontrack.core.model.ValidationRunSummary
+import net.ontrack.backend.db.SQLUtils
+import net.ontrack.core.model.*
+import net.ontrack.core.security.SecurityRoles
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.ControlService
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
 import net.ontrack.service.model.Event
-
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+import javax.sql.DataSource
+import javax.validation.Validator
 
 @Service
 class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
@@ -35,6 +30,7 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 	
 	@Override
 	@Transactional
+    @Secured([SecurityRoles.CONTROLLER,SecurityRoles.ADMINISTRATOR])
 	public BuildSummary createBuild(int branch, BuildCreationForm form) {
 		// Validation
 		validate(form, NameDescription.class)
@@ -50,6 +46,7 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 	
 	@Override
 	@Transactional
+    @Secured([SecurityRoles.CONTROLLER,SecurityRoles.ADMINISTRATOR])
 	public ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun) {
 		// Run itself
 		int id = dbCreate (SQL.VALIDATION_RUN_CREATE, ["build": build, "validationStamp": validationStamp, "description": validationRun.description])
@@ -69,8 +66,10 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 		// Gets the summary
 		return run
 	}
-	
+
+    @Override
 	@Transactional
+    @Secured([SecurityRoles.USER,SecurityRoles.CONTROLLER,SecurityRoles.ADMINISTRATOR])
 	public ValidationRunStatusSummary createValidationRunStatus (int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
 		// TODO Validation of the status
 		// TODO Author

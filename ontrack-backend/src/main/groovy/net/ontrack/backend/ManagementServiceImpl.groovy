@@ -3,6 +3,7 @@ package net.ontrack.backend
 import net.ontrack.backend.db.SQL
 import net.ontrack.backend.db.SQLUtils
 import net.ontrack.core.model.*
+import net.ontrack.core.security.SecurityRoles
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.EventService
 import net.ontrack.service.ManagementService
@@ -10,6 +11,7 @@ import net.ontrack.service.model.Event
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -39,6 +41,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form) {
 		// Validation
 		validate(form, NameDescription.class);
@@ -70,6 +73,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public ProjectSummary createProject(ProjectCreationForm form) {
 		// Validation
 		validate(form, NameDescription.class);
@@ -83,6 +87,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public Ack deleteProject(int id) {
 		def name = getEntityName(Entity.PROJECT, id)
 		def ack = dbDelete(SQL.PROJECT_DELETE, id)
@@ -112,6 +117,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public BranchSummary createBranch(int project, BranchCreationForm form) {
 		// Validation
 		validate(form, NameDescription.class)
@@ -143,6 +149,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form) {
 		// Validation
 		validate(form, NameDescription.class)
@@ -158,6 +165,7 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
 	public Ack imageValidationStamp(int validationStampId, MultipartFile image) {
 		// Checks the image type
 		def contentType = image.getContentType();

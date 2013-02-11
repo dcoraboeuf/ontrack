@@ -1,17 +1,16 @@
 package net.ontrack.web.support;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 public abstract class AbstractUIController extends AbstractController {
 
@@ -41,7 +40,11 @@ public abstract class AbstractUIController extends AbstractController {
 	}
 	
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> onException (HttpServletRequest request, Locale locale, Exception ex) {
+	public ResponseEntity<String> onException (HttpServletRequest request, Locale locale, Exception ex) throws Exception {
+        // Ignores access errors
+        if (ex instanceof AccessDeniedException) {
+            throw ex;
+        }
 		// Error message
 		ErrorMessage error = errorHandler.handleError (request, locale, ex);
 		// Returns a message to display to the user
