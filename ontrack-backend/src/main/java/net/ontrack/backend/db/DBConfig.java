@@ -1,20 +1,18 @@
 package net.ontrack.backend.db;
 
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import net.sf.dbinit.DBInit;
 import net.sf.dbinit.DBInitAction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
+import java.util.List;
+
 @Configuration
 public class DBConfig {
 	
-	public static final int VERSION = 4;
+	public static final int VERSION = 5;
 	
 	@Autowired
 	private DataSource dataSource;
