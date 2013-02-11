@@ -107,6 +107,28 @@ login.password
     en -> Password
     fr -> Mot de passe
 
+logout
+    en -> Sign out
+    fr -> Se déconnecter
+
+[profile]
+
+profile
+    en -> Profile
+    fr -> Profil
+
+[settings]
+
+settings
+    en -> Settings
+    fr -> Configuration
+
+[accounts]
+
+accounts
+    en -> Accounts
+    fr -> Utilisateurs
+
 [home]
 
 home
