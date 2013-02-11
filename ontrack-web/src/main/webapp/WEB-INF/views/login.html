@@ -1,0 +1,26 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="login" showSecurity=false>
+    <form action="j_spring_security_check" method="POST" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="j_username"><@lh key="login.user" /></label>
+            <div class="controls">
+                <input id="j_username" type="text" size="50" name="j_username" required="required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="j_password"><@lh key="login.password" /></label>
+            <div class="controls">
+                <input id="j_password" type="password" size="50" name="j_password" required="required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">
+                    <@lh key="login" />
+                </button>
+                <a href="" class="btn btn-link"><@lh key="general.cancel" /></a>
+            </div>
+        </div>
+    </form>
+</@layout_std>

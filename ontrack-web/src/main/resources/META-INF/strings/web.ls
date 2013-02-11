@@ -93,8 +93,19 @@ error.back
 [login]
 
 login.link
+    en,fr -> @[login]
+
+login
     en -> Sign in
     fr -> Se connecter
+
+login.user
+    en -> User
+    fr -> Utilisateur
+
+login.password
+    en -> Password
+    fr -> Mot de passe
 
 [home]
 
