@@ -134,10 +134,12 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 	// Builds
 
 	@Override
-	@RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
-	public @ResponseBody List<BuildSummary> getBuildList(@PathVariable String project, @PathVariable String branch) {
+	@RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+	public @ResponseBody List<BuildSummary> getBuildList(@PathVariable String project, @PathVariable String branch,
+        @RequestParam(required = false, defaultValue = "0") int offset,
+        @RequestParam(required = false, defaultValue = "10") int count) {
 		int branchId = entityConverter.getBranchId(project, branch);
-		return managementService.getBuildList(branchId);
+		return managementService.getBuildList(branchId, offset, count);
 	}
 	
 	@Override

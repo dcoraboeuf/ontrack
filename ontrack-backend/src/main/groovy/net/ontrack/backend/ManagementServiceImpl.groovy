@@ -10,7 +10,6 @@ import net.ontrack.service.model.Event
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -206,8 +205,8 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<BuildSummary> getBuildList(int branch) {
-		return dbList(SQL.BUILD_LIST, ["branch": branch]) { readBuildSummary(it) }
+	public List<BuildSummary> getBuildList(int branch, int offset, int count) {
+		return dbList(SQL.BUILD_LIST, ["branch": branch, "offset": offset, "count": count]) { readBuildSummary(it) }
 	}
 	
 	@Override

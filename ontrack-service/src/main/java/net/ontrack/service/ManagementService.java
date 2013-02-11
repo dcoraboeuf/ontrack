@@ -1,10 +1,10 @@
 package net.ontrack.service;
 
-import java.util.List;
-import java.util.Map;
-
 import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ManagementService {
 	
@@ -46,7 +46,7 @@ public interface ManagementService {
 	
 	// Builds
 
-	List<BuildSummary> getBuildList(int branchId);
+	List<BuildSummary> getBuildList(int branchId, int offset, int count);
 
 	BuildSummary getBuild(int buildId);
 

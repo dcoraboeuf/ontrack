@@ -1,10 +1,9 @@
 package net.ontrack.core.ui;
 
-import java.util.List;
-
 import net.ontrack.core.model.*;
-
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface ManageUI {
 	
@@ -46,7 +45,7 @@ public interface ManageUI {
 	
 	// Builds
 
-	List<BuildSummary> getBuildList(String project, String branch);
+	List<BuildSummary> getBuildList(String project, String branch, int offset, int count);
 
 	BuildSummary getBuild(String project, String branch, String name);
 
