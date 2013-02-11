@@ -16,4 +16,5 @@ echo ${DATA}
 echo
 echo
 
-curl ${URL} --header "Content-Type: application/json" --data "$DATA"
+curl ${URL} --header "Content-Type: application/json" --data "$DATA" $*
+

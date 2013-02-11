@@ -10,4 +10,5 @@ DATA="{\"name\":\"${NAME}\",\"description\":\"${DESCRIPTION}\"}"
 
 echo POST to $URL
 
-curl ${URL} --header "Content-Type: application/json" --data $DATA
+curl ${URL} --header "Content-Type: application/json" --data $DATA $*
+
