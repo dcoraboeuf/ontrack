@@ -92,9 +92,6 @@ error.back
 
 [login]
 
-login.link
-    en,fr -> @[login]
-
 login
     en -> Sign in
     fr -> Se connecter

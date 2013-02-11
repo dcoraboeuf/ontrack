@@ -37,7 +37,7 @@ public class BuiltinAuthenticationProvider implements AuthenticationProvider {
         }
         // Failure, not authenticated
         else {
-            return token;
+            return null;
         }
     }
 
