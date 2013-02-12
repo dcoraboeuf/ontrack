@@ -1,6 +1,8 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.LDAPConfigurationListener;
+import net.ontrack.backend.ConfigurationCache;
+import net.ontrack.backend.ConfigurationCacheKey;
+import net.ontrack.backend.ConfigurationCacheSubscriber;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +20,25 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider, LDAPConfigurationListener {
+public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider, ConfigurationCacheSubscriber<LDAPConfiguration> {
 
     private final AdminService adminService;
     private final LdapAuthoritiesPopulator authoritiesPopulator;
+    private final ConfigurationCache configurationCache;
 
     private LdapAuthenticationProvider ldapAuthenticationProvider;
 
     @Autowired
-    public ConfigurableLdapAuthenticationProvider(AdminService adminService, LdapAuthoritiesPopulator authoritiesPopulator) {
+    public ConfigurableLdapAuthenticationProvider(AdminService adminService, LdapAuthoritiesPopulator authoritiesPopulator, ConfigurationCache configurationCache) {
         this.adminService = adminService;
         this.authoritiesPopulator = authoritiesPopulator;
+        this.configurationCache = configurationCache;
     }
 
     @PostConstruct
     public void init() {
-        onLDAPConfigurationChanged(adminService.getLDAPConfiguration());
+        configurationCache.subscribe(ConfigurationCacheKey.LDAP, this);
+        onConfigurationChange(ConfigurationCacheKey.LDAP, adminService.getLDAPConfiguration());
     }
 
     @Override
@@ -54,7 +59,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
     }
 
     @Override
-    public synchronized void onLDAPConfigurationChanged(LDAPConfiguration configuration) {
+    public void onConfigurationChange(ConfigurationCacheKey key, LDAPConfiguration configuration) {
         if (configuration.isEnabled()) {
             // LDAP URL
             String ldapUrl = String.format("ldap://%s:%s", configuration.getHost(), configuration.getPort());
