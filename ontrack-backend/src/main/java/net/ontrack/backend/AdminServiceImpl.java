@@ -1,9 +1,12 @@
 package net.ontrack.backend;
 
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.LDAPConfiguration;
+import net.ontrack.service.validation.LDAPConfigurationValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,5 +43,23 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
         }
         // OK
         return c;
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public void saveLDAPConfiguration(LDAPConfiguration configuration) {
+        // Validation
+        validate(configuration, LDAPConfigurationValidation.class);
+        // Saving...
+        configurationService.set(ConfigurationKey.LDAP_ENABLED, configuration.isEnabled());
+        if (configuration.isEnabled()) {
+            configurationService.set(ConfigurationKey.LDAP_HOST, configuration.getHost());
+            configurationService.set(ConfigurationKey.LDAP_PORT, configuration.getPort());
+            configurationService.set(ConfigurationKey.LDAP_SEARCH_BASE, configuration.getSearchBase());
+            configurationService.set(ConfigurationKey.LDAP_SEARCH_FILTER, configuration.getSearchFilter());
+            configurationService.set(ConfigurationKey.LDAP_USER, configuration.getUser());
+            configurationService.set(ConfigurationKey.LDAP_PASSWORD, configuration.getPassword());
+        }
     }
 }

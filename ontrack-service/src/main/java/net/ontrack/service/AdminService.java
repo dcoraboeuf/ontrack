@@ -6,4 +6,5 @@ public interface AdminService {
 
     LDAPConfiguration getLDAPConfiguration();
 
+    void saveLDAPConfiguration(LDAPConfiguration configuration);
 }

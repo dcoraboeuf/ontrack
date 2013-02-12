@@ -1,9 +1,10 @@
 package net.ontrack.service.model;
 
 import lombok.Data;
+import net.ontrack.service.validation.LDAPConfigurationValidation;
 
 @Data
-public class LDAPConfiguration {
+public class LDAPConfiguration implements LDAPConfigurationValidation {
 
     private boolean enabled;
     private String host;

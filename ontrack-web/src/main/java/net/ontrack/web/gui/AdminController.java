@@ -39,7 +39,8 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/settings/ldap", method = RequestMethod.POST)
     public String ldap(Model model, LDAPConfiguration configuration) {
-        // FIXME Saves the configuration
+        // Saves the configuration
+        adminService.saveLDAPConfiguration(configuration);
         // OK
         // TODO Uses flash attribute for the success message
         return "redirect:/gui/admin/settings";
