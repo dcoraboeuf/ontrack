@@ -5,7 +5,8 @@ var Builds = function () {
             var html = '<table class="table table-hover"><thead>';
             // Header
             html += '<tr>';
-                html += '<th>{0}</th>'.format(loc('model.build'));
+                html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
+                html += '<th colspan="1">{0}</th>'.format(loc('branch.validation_stamps'));
             html += '</tr>';
             // Items
             html += '</thead><tbody>';

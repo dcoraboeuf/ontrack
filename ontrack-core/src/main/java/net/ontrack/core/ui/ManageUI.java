@@ -45,7 +45,7 @@ public interface ManageUI {
 	
 	// Builds
 
-	List<BuildSummary> getBuildList(String project, String branch, int offset, int count);
+	List<BuildCompleteStatus> getBuildList(String project, String branch, int offset, int count);
 
 	BuildSummary getBuild(String project, String branch, String name);
 
