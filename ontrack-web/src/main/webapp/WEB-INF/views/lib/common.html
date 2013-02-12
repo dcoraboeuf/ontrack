@@ -2,9 +2,9 @@
 <#include "/lib/i18n.html" />
 
 <#macro usermessage>
-	<#if usermessage??>
-		<div class="alert alert-${usermessage.type}">
-			${usermessage.message?html}
+	<#if message??>
+		<div class="alert alert-${message.type}">
+			${message.message?html}
 		</div>
 	</#if>
 </#macro>

@@ -154,6 +154,10 @@ ldap.password
     en -> LDAP password
     fr -> Mot de passe LDAP
 
+ldap.saved
+    en -> LDAP configuration has been saved.
+    fr -> La configuration LDAP a été sauvegardée.
+
 [accounts]
 
 accounts
