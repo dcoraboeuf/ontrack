@@ -11,21 +11,39 @@ var Builds = function () {
             html += '<tr>';
             $.each(branchBuilds.validationStamps, function (index, validationStamp) {
                 html += '<th align="center">';
-                html += '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
-                    project.html(),
-                    branch.html(),
-                    validationStamp.name.html()
-                    );
-                html += '<br/><a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), validationStamp.name.html());
+                html += '<a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
+                html += ValidationStamps.validationStampImage(project, branch, validationStamp);
+                html += '</a>';
                 html += '</th>';
             });
             html += '</tr>';
             // Items
             html += '</thead><tbody>';
             $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
-                html += '<tr><td class="branch-build">';
-                    html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
-                html += '</td></tr>';
+                html += '<tr>';
+                    html += '<td class="branch-build">';
+                        html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
+                    html += '</td>';
+                    $.each(branchBuilds.validationStamps, function (index, validationStamp) {
+                        var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
+                        html += '<td>';
+                        if (buildValidationStamp) {
+                            if (buildValidationStamp.run) {
+                                $.each(buildValidationStamp.runs, function (index, run) {
+                                    html += ' <p class="validation-run status-{0}">'.format(run.status);
+                                    html += '<a href="gui/validation_run/{0}"><i class="icon-play"></i> <span class="validation-run-status">{1}</span></a>'.format(run.runId, run.status.html());
+                                    html += ' <span class="validation-run-description">{0}</span>'.format(run.statusDescription.html());
+                                    html += '</p>';
+                                });
+                            } else {
+                                html += '<span class="muted">{0}</span>'.format(loc('validationRun.notRun'));
+                            }
+                        } else {
+                            html += '-';
+                        }
+                        html += '</td>';
+                    });
+                html += '</tr>';
             });
             // End
             html += '</tbody></table>';
@@ -41,11 +59,7 @@ var Builds = function () {
                     pClass = 'validation-stamp-norun';
                 }
                 var html = '<div class="{0}">'.format(pClass);
-                html += '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
-                    project.html(),
-                    branch.html(),
-                    stamp.name.html()
-                    );
+                html += ValidationStamps.validationStampImage(project, branch, stamp);
                 html += ' <a href="gui/validation_stamp/{0}/{1}/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
                     $.each(stamp.runs, function (index, run) {

@@ -280,7 +280,11 @@ build.validation_stamps
 validationRun
     en -> Run
     fr -> Exécution
-	
+
+validationRun.notRun
+    en -> Not run
+    fr -> Non exécuté
+
 [events]
 
 event.list
