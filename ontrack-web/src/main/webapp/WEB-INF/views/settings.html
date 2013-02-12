@@ -11,14 +11,14 @@
             <div id="section-security" class="accordion-body collapse in">
                 <div class="accordion-inner">
                     <form action="gui/admin/settings/ldap" method="POST" class="form-horizontal">
-                        <@form_checkbox idPrefix="ldap-" name="enabled" label=loc("ldap.enabled") />
+                        <@form_checkbox idPrefix="ldap-" name="enabled" label=loc("ldap.enabled") checked=ldap.enabled />
                         <div id="settings-ldap">
-                            <@form_text idPrefix="ldap-" name="host" label=loc("ldap.host") class="settings-ldap" />
-                            <@form_text idPrefix="ldap-" name="port" label=loc("ldap.port") size=5 maxlength=5 class="settings-ldap input-mini" />
-                            <@form_text idPrefix="ldap-" name="searchBase" label=loc("ldap.search.base") class="settings-ldap input-large" />
-                            <@form_text idPrefix="ldap-" name="searchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" />
-                            <@form_text idPrefix="ldap-" name="user" label=loc("ldap.user") class="settings-ldap" />
-                            <@form_password idPrefix="ldap-" name="password" label=loc("ldap.password") class="settings-ldap" />
+                            <@form_text idPrefix="ldap-" name="host" label=loc("ldap.host") class="settings-ldap" value=ldap.host />
+                            <@form_text idPrefix="ldap-" name="port" label=loc("ldap.port") size=5 maxlength=5 class="settings-ldap input-mini" value=ldap.port />
+                            <@form_text idPrefix="ldap-" name="searchBase" label=loc("ldap.search.base") class="settings-ldap input-large" value=ldap.searchBase />
+                            <@form_text idPrefix="ldap-" name="searchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" value=ldap.searchFilter />
+                            <@form_text idPrefix="ldap-" name="user" label=loc("ldap.user") class="settings-ldap" value=ldap.user />
+                            <@form_password idPrefix="ldap-" name="password" label=loc("ldap.password") class="settings-ldap" value=ldap.password />
                         </div>
                         <div class="control-group">
                             <div class="controls">
