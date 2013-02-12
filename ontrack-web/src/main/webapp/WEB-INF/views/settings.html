@@ -1,0 +1,35 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="settings" script=true>
+    <div class="accordion" id="accordion-container">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-container" href="#section-security">
+                    <@lh key="settings.security" />
+                </a>
+            </div>
+            <div id="section-security" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <form action="gui/admin/settings/ldap" method="POST" class="form-horizontal">
+                        <@form_checkbox name="ldapEnabled" label=loc("ldap.enabled") />
+                        <div id="settings-ldap">
+                            <@form_text name="ldapHost" label=loc("ldap.host") class="settings-ldap" />
+                            <@form_text name="ldapPort" label=loc("ldap.port") size=5 maxlength=5 class="settings-ldap input-mini" />
+                            <@form_text name="ldapSearchBase" label=loc("ldap.search.base") class="settings-ldap input-large" />
+                            <@form_text name="ldapSearchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" />
+                            <@form_text name="ldapUser" label=loc("ldap.user") class="settings-ldap" />
+                            <@form_password name="ldapPassword" label=loc("ldap.password") class="settings-ldap" />
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">
+                                    <@lh key="general.submit" />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</@layout_std>

@@ -120,6 +120,40 @@ settings
     en -> Settings
     fr -> Configuration
 
+settings.security
+    en -> Security settings
+    fr -> Configuration de la sécurité
+
+[security.ldap]
+
+ldap.enabled
+    en -> Enable LDAP authentication
+    fr -> Activer l'authentification par LDAP
+
+ldap.host
+    en -> LDAP server
+    fr -> Serveur LDAP
+
+ldap.port
+    en -> LDAP server port
+    fr -> Port du serveur LDAP
+
+ldap.search.base
+    en -> LDAP search base
+    fr -> Base de recherche LDAP
+
+ldap.search.filter
+    en -> LDAP filter
+    fr -> Filtre LDAP
+
+ldap.user
+    en -> LDAP user
+    fr -> Utilisateur LDAP
+
+ldap.password
+    en -> LDAP password
+    fr -> Mot de passe LDAP
+
 [accounts]
 
 accounts

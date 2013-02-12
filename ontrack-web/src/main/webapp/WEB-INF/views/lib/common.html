@@ -115,15 +115,31 @@
 	</div>
 </#macro>
 
-<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true>
-	<@form_field name=name label=label idPrefix=idPrefix help=help>
-		<input name="${name?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> />
-	</@form_field>
+<#macro form_checkbox name label idPrefix="" help="" checked=false>
+    <@form_field name=name label=label idPrefix=idPrefix help=help>
+        <#assign checkedAttr = "" />
+        <#if checked>
+            <#assign checkedAttr = 'checked="checked"' />
+        </#if>
+        <input name="${name?html}" type="checkbox" id="${id?html}" ${checkedAttr} />
+    </@form_field>
 </#macro>
 
-<#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="" required=true>
+<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true class="">
+    <@form_field name=name label=label idPrefix=idPrefix help=help>
+        <input name="${name?html}" class="${class?html}" type="text" id="${id?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> />
+    </@form_field>
+</#macro>
+
+<#macro form_password name label idPrefix="" size=16 maxlength=16 help="" required=true class="">
+    <@form_field name=name label=label idPrefix=idPrefix help=help>
+        <input name="${name?html}" class="${class?html}" type="password" id="${id?html}"size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> />
+    </@form_field>
+</#macro>
+
+<#macro form_memo name label idPrefix="" size=40 rows=4 maxlength=1000 placeholder="" help="" required=true class="">
 	<@form_field name=name label=label idPrefix=idPrefix help=help>
-		<textarea name="${name?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size?c}" maxlength="${maxlength?c}" rows="${rows?c}" <@input_required required=required /> ></textarea>
+		<textarea name="${name?html}" class="${class?html}" id="${id?html}" placeholder="${placeholder?html}" columns="${size?c}" maxlength="${maxlength?c}" rows="${rows?c}" <@input_required required=required /> ></textarea>
 	</@form_field>
 </#macro>
 
