@@ -46,7 +46,7 @@ public interface ManagementService {
 	
 	// Builds
 
-	List<BuildCompleteStatus> getBuildList(int branchId, int offset, int count);
+    BranchBuilds getBuildList(int branchId, int offset, int count);
 
 	BuildSummary getBuild(int buildId);
 

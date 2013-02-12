@@ -1,10 +1,14 @@
 package net.ontrack.core.model;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,10 +20,18 @@ public class BuildCompleteStatus {
     private final String description;
 
     // List of validation stamps with their associated runs for this build
-    private final List<BuildValidationStamp> validationStamps;
+    private final Map<String,BuildValidationStamp> validationStamps;
 
     public BuildCompleteStatus (BuildSummary summary, List<BuildValidationStamp> stamps) {
-        this(summary.getId(), summary.getName(), summary.getDescription(), stamps);
+        this(summary.getId(), summary.getName(), summary.getDescription(),
+            new TreeMap<String, BuildValidationStamp>(
+                Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
+                    @Override
+                    public String apply(BuildValidationStamp stamp) {
+                        return stamp.getName();
+                    }
+                })
+            ));
     }
 
 }

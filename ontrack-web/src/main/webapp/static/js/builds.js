@@ -1,18 +1,30 @@
 var Builds = function () {
 	
 	function buildTemplate (project, branch) {
-	    return function (items) {
+	    return function (branchBuilds) {
             var html = '<table class="table table-hover"><thead>';
             // Header
             html += '<tr>';
                 html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
-                html += '<th colspan="1">{0}</th>'.format(loc('branch.validation_stamps'));
+                html += '<th colspan="{1}">{0}</th>'.format(loc('branch.validation_stamps'), branchBuilds.validationStamps.length);
+            html += '</tr>';
+            html += '<tr>';
+            $.each(branchBuilds.validationStamps, function (index, validationStamp) {
+                html += '<th align="center">';
+                html += '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
+                    project.html(),
+                    branch.html(),
+                    validationStamp.name.html()
+                    );
+                html += '<br/><a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), validationStamp.name.html());
+                html += '</th>';
+            });
             html += '</tr>';
             // Items
             html += '</thead><tbody>';
-            $.each (items, function (index, item) {
+            $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
                 html += '<tr><td class="branch-build">';
-                    html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),item.name.html());
+                    html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
                 html += '</td></tr>';
             });
             // End

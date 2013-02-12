@@ -213,12 +213,15 @@ class ManagementServiceImpl extends AbstractServiceImpl implements ManagementSer
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<BuildCompleteStatus> getBuildList(int branch, int offset, int count) {
+	public BranchBuilds getBuildList(int branch, int offset, int count) {
 		List<BuildSummary> builds = dbList(SQL.BUILD_LIST, ["branch": branch, "offset": offset, "count": count]) { readBuildSummary(it) }
-        builds.collect { summary ->
-            def stamps = getBuildValidationStamps(summary.id)
-            new BuildCompleteStatus(summary, stamps)
-        }
+        new BranchBuilds(
+            getValidationStampList(branch),
+            builds.collect { summary ->
+                def stamps = getBuildValidationStamps(summary.id)
+                new BuildCompleteStatus(summary, stamps)
+            }
+        )
 	}
 	
 	@Override
