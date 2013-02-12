@@ -10,6 +10,16 @@
 	font-style: italic;
 }
 
+/* Page title */
+
+.page-title {
+}
+
+.page-title .title {
+    font-weight: bold;
+    font-size: 150%;
+}
+
 /* Loading indicator */
 .loading {
 	padding-left: 24px;
