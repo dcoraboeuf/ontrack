@@ -1,9 +1,23 @@
 var Builds = function () {
 	
 	function buildTemplate (project, branch) {
-		return function (items) {
-			return Template.links(items, 'gui/build/{0}/{1}'.format(project,branch));
-		};
+	    return function (items) {
+            var html = '<table class="table table-hover"><thead>';
+            // Header
+            html += '<tr>';
+                html += '<th>{0}</th>'.format(loc('model.build'));
+            html += '</tr>';
+            // Items
+            html += '</thead><tbody>';
+            $.each (items, function (index, item) {
+                html += '<tr><td class="branch-build">';
+                    html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),item.name.html());
+                html += '</td></tr>';
+            });
+            // End
+            html += '</tbody></table>';
+            return html;
+        };
 	}
 
 	function buildValidationStampTemplate (project, branch) {
