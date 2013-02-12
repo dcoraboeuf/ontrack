@@ -13,7 +13,7 @@ var Settings = function () {
 
     function ldapSetup () {
         ldapEnabled();
-        $('#ldapEnabled').click(ldapEnabled);
+        $('#ldap-enabled').click(ldapEnabled);
     }
 
     return {
