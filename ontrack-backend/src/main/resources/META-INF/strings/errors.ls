@@ -4,8 +4,11 @@ net.ontrack.backend.EventNotRelatedException
 	en,fr -> [E-001] Event [{0}] is not related to any entity.
 
 net.ontrack.backend.EntityIdNotFoundException
-	en -> [E-002] {0} ID "{1}" cannot be found
-	
+	en -> [E-002] {0} ID "{1}" cannot be found.
+
+net.ontrack.backend.ConfigurationKeyMissingException
+    en -> [E-003] Configuration key [{0}] is missing.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

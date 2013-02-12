@@ -1,7 +1,7 @@
 var Settings = function () {
 
     function ldapEnabled () {
-        var ldapEnabled = $('#ldapEnabled').is(':checked');
+        var ldapEnabled = $('#ldap-enabled').is(':checked');
         if (ldapEnabled) {
             $('#settings-ldap').show();
             $('.settings-ldap').attr('required', 'required');

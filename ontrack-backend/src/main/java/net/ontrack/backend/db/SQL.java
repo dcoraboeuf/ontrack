@@ -73,4 +73,8 @@ public interface SQL {
     // Accounts
 
     String ACCOUNT_AUTHENTICATE = "SELECT ID, NAME, FULLNAME, ROLENAME FROM ACCOUNTS WHERE MODE = 'builtin' AND NAME = :user AND PASSWORD = :password";
+
+    // Configuration
+
+    String CONFIGURATION_GET = "SELECT VALUE FROM CONFIGURATION WHERE NAME = :name";
 }

@@ -11,14 +11,14 @@
             <div id="section-security" class="accordion-body collapse in">
                 <div class="accordion-inner">
                     <form action="gui/admin/settings/ldap" method="POST" class="form-horizontal">
-                        <@form_checkbox name="ldapEnabled" label=loc("ldap.enabled") />
+                        <@form_checkbox idPrefix="ldap-" name="enabled" label=loc("ldap.enabled") />
                         <div id="settings-ldap">
-                            <@form_text name="ldapHost" label=loc("ldap.host") class="settings-ldap" />
-                            <@form_text name="ldapPort" label=loc("ldap.port") size=5 maxlength=5 class="settings-ldap input-mini" />
-                            <@form_text name="ldapSearchBase" label=loc("ldap.search.base") class="settings-ldap input-large" />
-                            <@form_text name="ldapSearchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" />
-                            <@form_text name="ldapUser" label=loc("ldap.user") class="settings-ldap" />
-                            <@form_password name="ldapPassword" label=loc("ldap.password") class="settings-ldap" />
+                            <@form_text idPrefix="ldap-" name="host" label=loc("ldap.host") class="settings-ldap" />
+                            <@form_text idPrefix="ldap-" name="port" label=loc("ldap.port") size=5 maxlength=5 class="settings-ldap input-mini" />
+                            <@form_text idPrefix="ldap-" name="searchBase" label=loc("ldap.search.base") class="settings-ldap input-large" />
+                            <@form_text idPrefix="ldap-" name="searchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" />
+                            <@form_text idPrefix="ldap-" name="user" label=loc("ldap.user") class="settings-ldap" />
+                            <@form_password idPrefix="ldap-" name="password" label=loc("ldap.password") class="settings-ldap" />
                         </div>
                         <div class="control-group">
                             <div class="controls">
@@ -32,4 +32,5 @@
             </div>
         </div>
     </div>
+    <a href=""><@lh key="general.close"/></a>
 </@layout_std>
