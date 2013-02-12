@@ -308,6 +308,15 @@ var Application = function () {
 			throw 'No "data-url" is defined on element "{0}"'.format(id);
 		}
 	}
+
+	function extractEntity (value) {
+	    var pos = value.indexOf('/');
+	    if (pos > 0) {
+	        return value.substring(0, pos);
+	    } else {
+	        return value;
+	    }
+	}
 	
 	function deleteEntity (entity, id, backUrl) {
 		var url = 'ui/manage/{0}/{1}'.format(entity, id);
@@ -315,7 +324,7 @@ var Application = function () {
 			url,
 			function (o) {
 				confirmAndCall(
-					loc('{0}.delete.prompt'.format(entity), o.name),
+					loc('{0}.delete.prompt'.format(extractEntity(entity)), o.name),
 					function () {
 						ajaxDelete (
 							url,
