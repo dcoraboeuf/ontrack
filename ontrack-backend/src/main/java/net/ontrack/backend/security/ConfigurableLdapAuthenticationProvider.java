@@ -21,6 +21,7 @@ import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider, ConfigurationCacheSubscriber<LDAPConfiguration> {
@@ -30,6 +31,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
     private final LdapAuthoritiesPopulator authoritiesPopulator;
     private final ConfigurationCache configurationCache;
 
+    private AtomicBoolean init = new AtomicBoolean();
     private LdapAuthenticationProvider ldapAuthenticationProvider;
 
     @Autowired
@@ -41,13 +43,20 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
     }
 
     @PostConstruct
-    public void init() {
+    public void subscribeToConfigurationChanges() {
         configurationCache.subscribe(ConfigurationCacheKey.LDAP, this);
-        onConfigurationChange(ConfigurationCacheKey.LDAP, adminService.getLDAPConfiguration());
+    }
+
+    protected void init() {
+        if (!init.compareAndSet(true, true)) {
+            onConfigurationChange(ConfigurationCacheKey.LDAP, adminService.getLDAPConfiguration());
+        }
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        // Initialization (on demand)
+        init();
         // If not enabled, cannot authenticate!
         if (ldapAuthenticationProvider == null) {
             return null;
