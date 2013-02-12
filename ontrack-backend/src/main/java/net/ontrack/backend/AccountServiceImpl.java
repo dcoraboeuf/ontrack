@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.token.Sha512DigestUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.Validator;
@@ -24,6 +25,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account authenticate(String user, String password) {
         try {
             return getNamedParameterJdbcTemplate().queryForObject(
@@ -39,5 +41,11 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getRole(String mode, String user) {
+        return getFirstItem(SQL.ACCOUNT_ROLE, params("mode", mode).addValue("user", user), String.class);
     }
 }
