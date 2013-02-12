@@ -9,6 +9,9 @@ net.ontrack.backend.EntityIdNotFoundException
 net.ontrack.backend.ConfigurationKeyMissingException
     en -> [E-003] Configuration key [{0}] is missing.
 
+net.ontrack.backend.security.CannotInitializeLDAPException
+    en -> [E-004] Cannot initialize the LDAP.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

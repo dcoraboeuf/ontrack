@@ -1,5 +1,6 @@
 package net.ontrack.backend.security;
 
+import net.ontrack.backend.AccountService;
 import net.ontrack.backend.ConfigurationCache;
 import net.ontrack.backend.ConfigurationCacheKey;
 import net.ontrack.backend.ConfigurationCacheSubscriber;
@@ -23,14 +24,16 @@ import javax.annotation.PostConstruct;
 public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider, ConfigurationCacheSubscriber<LDAPConfiguration> {
 
     private final AdminService adminService;
+    private final AccountService accountService;
     private final LdapAuthoritiesPopulator authoritiesPopulator;
     private final ConfigurationCache configurationCache;
 
     private LdapAuthenticationProvider ldapAuthenticationProvider;
 
     @Autowired
-    public ConfigurableLdapAuthenticationProvider(AdminService adminService, LdapAuthoritiesPopulator authoritiesPopulator, ConfigurationCache configurationCache) {
+    public ConfigurableLdapAuthenticationProvider(AdminService adminService, AccountService accountService, LdapAuthoritiesPopulator authoritiesPopulator, ConfigurationCache configurationCache) {
         this.adminService = adminService;
+        this.accountService = accountService;
         this.authoritiesPopulator = authoritiesPopulator;
         this.configurationCache = configurationCache;
     }
@@ -49,7 +52,14 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
         }
         // LDAP connection
         else {
-            return ldapAuthenticationProvider.authenticate(authentication);
+            Authentication ldapAuthentication = ldapAuthenticationProvider.authenticate(authentication);
+            if (ldapAuthentication != null && ldapAuthentication.isAuthenticated()) {
+                // FIXME Gets the account
+                // OK
+                return ldapAuthentication;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -64,17 +74,22 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
             // LDAP URL
             String ldapUrl = String.format("ldap://%s:%s", configuration.getHost(), configuration.getPort());
             // LDAP context
-            DefaultSpringSecurityContextSource ldapSource = new DefaultSpringSecurityContextSource(ldapUrl);
-            ldapSource.setUserDn(configuration.getUser());
-            ldapSource.setPassword(configuration.getPassword());
+            DefaultSpringSecurityContextSource ldapContextSource = new DefaultSpringSecurityContextSource(ldapUrl);
+            ldapContextSource.setUserDn(configuration.getUser());
+            ldapContextSource.setPassword(configuration.getPassword());
+            try {
+                ldapContextSource.afterPropertiesSet();
+            } catch (Exception e) {
+                throw new CannotInitializeLDAPException(e);
+            }
             // User search
             FilterBasedLdapUserSearch userSearch = new FilterBasedLdapUserSearch(
                     configuration.getSearchBase(),
                     configuration.getSearchFilter(),
-                    ldapSource);
+                    ldapContextSource);
             userSearch.setSearchSubtree(true);
             // Bind authenticator
-            BindAuthenticator bindAuthenticator = new BindAuthenticator(ldapSource);
+            BindAuthenticator bindAuthenticator = new BindAuthenticator(ldapContextSource);
             bindAuthenticator.setUserSearch(userSearch);
             // Provider
             LdapAuthenticationProvider ldap = new LdapAuthenticationProvider(bindAuthenticator, authoritiesPopulator);
