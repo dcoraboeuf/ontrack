@@ -9,5 +9,6 @@ public class Account {
     private final String name;
     private final String fullName;
     private final String roleName;
+    private final String mode;
 
 }

@@ -4,6 +4,8 @@ import net.ontrack.backend.AccountService;
 import net.ontrack.backend.ConfigurationCache;
 import net.ontrack.backend.ConfigurationCacheKey;
 import net.ontrack.backend.ConfigurationCacheSubscriber;
+import net.ontrack.core.model.Account;
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +56,14 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
         else {
             Authentication ldapAuthentication = ldapAuthenticationProvider.authenticate(authentication);
             if (ldapAuthentication != null && ldapAuthentication.isAuthenticated()) {
-                // FIXME Gets the account
+                // Gets the account
+                String name = ldapAuthentication.getName();
+                Account account = accountService.getAccount("ldap", name);
+                if (account == null) {
+                    account = new Account(0, name, name, SecurityRoles.USER, "ldap");
+                }
                 // OK
-                return ldapAuthentication;
+                return new AccountAuthentication(account);
             } else {
                 return null;
             }

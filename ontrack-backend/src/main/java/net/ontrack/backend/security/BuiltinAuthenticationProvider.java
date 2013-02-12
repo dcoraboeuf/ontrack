@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,9 +30,7 @@ public class BuiltinAuthenticationProvider implements AuthenticationProvider {
         Account account = accountService.authenticate(user, password);
         // If account found
         if (account != null) {
-            UsernamePasswordAuthenticationToken newToken = new UsernamePasswordAuthenticationToken(user, password, AuthorityUtils.createAuthorityList(account.getRoleName()));
-            newToken.setDetails(account);
-            return newToken;
+            return new AccountAuthentication(account);
         }
         // Failure, not authenticated
         else {

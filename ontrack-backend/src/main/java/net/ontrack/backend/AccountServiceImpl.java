@@ -31,12 +31,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             return getNamedParameterJdbcTemplate().queryForObject(
                     SQL.ACCOUNT_AUTHENTICATE,
                     params("user", user).addValue("password", StringUtils.upperCase(Sha512DigestUtils.shaHex(password))),
-                    new RowMapper<Account>() {
-                        @Override
-                        public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return new Account(rs.getInt("id"), rs.getString("name"), rs.getString("fullName"), rs.getString("roleName"));
-                        }
-                    }
+                    new AccountRowMapper()
             );
         } catch (EmptyResultDataAccessException ex) {
             return null;
@@ -47,5 +42,26 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Transactional(readOnly = true)
     public String getRole(String mode, String user) {
         return getFirstItem(SQL.ACCOUNT_ROLE, params("mode", mode).addValue("user", user), String.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Account getAccount(String mode, String user) {
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    SQL.ACCOUNT,
+                    params("user", user).addValue("mode", mode),
+                    new AccountRowMapper()
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
+    private static class AccountRowMapper implements RowMapper<Account> {
+        @Override
+        public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Account(rs.getInt("id"), rs.getString("name"), rs.getString("fullName"), rs.getString("roleName"), rs.getString("mode"));
+        }
     }
 }
