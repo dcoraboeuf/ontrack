@@ -16,6 +16,7 @@ http://www.springframework.org/schema/security/spring-security.xsd">
 
     <authentication-manager>
         <authentication-provider ref="builtinAuthenticationProvider" />
+        <authentication-provider ref="configurableLdapAuthenticationProvider" />
     </authentication-manager>
 
 </beans:beans>

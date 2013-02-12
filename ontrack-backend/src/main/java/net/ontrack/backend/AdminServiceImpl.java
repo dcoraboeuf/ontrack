@@ -12,16 +12,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.Validator;
+import java.util.List;
 
 @Service
 public class AdminServiceImpl extends AbstractServiceImpl implements AdminService {
 
     private final ConfigurationService configurationService;
+    private final List<LDAPConfigurationListener> ldapConfigurationListeners;
 
     @Autowired
-    public AdminServiceImpl(DataSource dataSource, Validator validator, EventService eventService, ConfigurationService configurationService) {
+    public AdminServiceImpl(DataSource dataSource, Validator validator, EventService eventService, ConfigurationService configurationService, List<LDAPConfigurationListener> ldapConfigurationListeners) {
         super(dataSource, validator, eventService);
         this.configurationService = configurationService;
+        this.ldapConfigurationListeners = ldapConfigurationListeners;
     }
 
     @Override
@@ -60,6 +63,10 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
             configurationService.set(ConfigurationKey.LDAP_SEARCH_FILTER, configuration.getSearchFilter());
             configurationService.set(ConfigurationKey.LDAP_USER, configuration.getUser());
             configurationService.set(ConfigurationKey.LDAP_PASSWORD, configuration.getPassword());
+        }
+        // Notifies the configuration listeners
+        for (LDAPConfigurationListener ldapConfigurationListener : ldapConfigurationListeners) {
+            ldapConfigurationListener.onLDAPConfigurationChanged(configuration);
         }
     }
 }
