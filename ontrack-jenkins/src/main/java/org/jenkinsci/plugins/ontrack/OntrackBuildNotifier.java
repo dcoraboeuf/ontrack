@@ -7,7 +7,9 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
 
@@ -27,8 +29,20 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         this.build = build;
     }
 
+    public String getProject() {
+        return project;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public String getBuild() {
+        return build;
+    }
+
     @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // TODO Expands the expressions into actual values
         // Logging of parameters
         listener.getLogger().format("Creating build %s on project %s for branch %s%n", build, project, branch);
@@ -37,8 +51,17 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         return true;
     }
 
+    @Override
+    public OntrackBuildDescriptorImpl getDescriptor() {
+        return (OntrackBuildDescriptorImpl) super.getDescriptor();
+    }
+
     @Extension
     public static final class OntrackBuildDescriptorImpl extends BuildStepDescriptor<Publisher> {
+
+        private String ontrackUrl;
+        private String ontrackUser;
+        private String ontrackPassword;
 
         public OntrackBuildDescriptorImpl() {
             super(OntrackBuildNotifier.class);
@@ -54,5 +77,25 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
             return true;
         }
 
+        @Override
+        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+            ontrackUrl = json.getString("ontrackUrl");
+            ontrackUser = json.getString("ontrackUser");
+            ontrackPassword = json.getString("ontrackPassword");
+            save();
+            return super.configure(req, json);
+        }
+
+        public String getOntrackUrl() {
+            return ontrackUrl;
+        }
+
+        public String getOntrackUser() {
+            return ontrackUser;
+        }
+
+        public String getOntrackPassword() {
+            return ontrackPassword;
+        }
     }
 }

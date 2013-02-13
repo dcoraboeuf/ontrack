@@ -5,4 +5,7 @@
   <f:entry title="Branch" field="branch">
     <f:textbox />
   </f:entry>
+  <f:entry title="Build" field="build">
+    <f:textbox />
+  </f:entry>
 </j:jelly>
