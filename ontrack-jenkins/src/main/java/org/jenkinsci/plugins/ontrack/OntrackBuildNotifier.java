@@ -65,6 +65,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
 
         public OntrackBuildDescriptorImpl() {
             super(OntrackBuildNotifier.class);
+            load();
         }
 
         @Override
@@ -76,6 +77,8 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return true;
         }
+
+
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
