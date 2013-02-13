@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>ontrack-parent</artifactId>
+        <groupId>net.ontrack</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ontrack-client</artifactId>
+
+    <name>ontrack Client</name>
+
+    <dependencies>
+        <!-- This -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- HTTP client -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
