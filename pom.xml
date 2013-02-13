@@ -49,7 +49,8 @@
 		<module>ontrack-backend</module>
 		<module>ontrack-web</module>
 		<module>ontrack-service</module>
-		<module>ontrack-testutils</module>
+        <module>ontrack-testutils</module>
+        <module>ontrack-jenkins</module>
 	</modules>
 
 	<dependencyManagement>
