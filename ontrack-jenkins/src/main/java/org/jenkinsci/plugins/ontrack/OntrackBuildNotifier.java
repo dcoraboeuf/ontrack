@@ -18,20 +18,20 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
 
     private final String project;
     private final String branch;
-    // TODO Build expression
+    private final String build;
 
     @DataBoundConstructor
-    public OntrackBuildNotifier(String project, String branch) {
+    public OntrackBuildNotifier(String project, String branch, String build) {
         this.project = project;
         this.branch = branch;
+        this.build = build;
     }
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // TODO Expands the expressions into actual values
         // Logging of parameters
-        // TODO Logs the build number to create
-        listener.getLogger().format("Creating build on project %s for branch %s%n", project, branch);
+        listener.getLogger().format("Creating build %s on project %s for branch %s%n", build, project, branch);
         // FIXME Calling ontrack UI
         // OK
         return true;
