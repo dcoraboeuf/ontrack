@@ -14,6 +14,17 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
+    <name>ontrack Jenkins plug-in</name>
+
+    <dependencies>
+        <!-- This -->
+        <dependency>
+            <groupId>net.ontrack</groupId>
+            <artifactId>ontrack-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
         <repository>
