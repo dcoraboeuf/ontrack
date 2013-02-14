@@ -3,14 +3,12 @@ package org.jenkinsci.plugins.ontrack;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Publisher;
-import net.sf.json.JSONObject;
+import net.ontrack.core.model.BuildCreationForm;
+import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.ui.ControlUI;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -49,12 +47,19 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // Expands the expressions into actual values
-        String projectName = expand(project, theBuild, listener);
-        String branchName = expand(branch, theBuild, listener);
-        String buildName= expand(build, theBuild, listener);
+        final String projectName = expand(project, theBuild, listener);
+        final String branchName = expand(branch, theBuild, listener);
+        final String buildName= expand(build, theBuild, listener);
+        // TODO Build description
+        final String buildDescription = String.format("Build %s", theBuild);
         // Logging of parameters
         listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
-        // FIXME Calling ontrack UI
+        // Calling ontrack UI
+        BuildSummary buildSummary = call (new ClientCall<BuildSummary>() {
+            public BuildSummary onCall(ControlUI ui) {
+                return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
+            }
+        });
         // OK
         return true;
     }
@@ -92,52 +97,16 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         }
     }
 
-    @Override
-    public OntrackBuildDescriptorImpl getDescriptor() {
-        return (OntrackBuildDescriptorImpl) super.getDescriptor();
-    }
-
     @Extension
-    public static final class OntrackBuildDescriptorImpl extends BuildStepDescriptor<Publisher> {
-
-        private String ontrackUrl;
-        private String ontrackUser;
-        private String ontrackPassword;
+    public static final class OntrackBuildDescriptorImpl extends OntrackDescriptorImpl {
 
         public OntrackBuildDescriptorImpl() {
             super(OntrackBuildNotifier.class);
-            load();
         }
 
         @Override
         public String getDisplayName() {
             return "ontrack Build creation";
-        }
-
-        @Override
-        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-            return true;
-        }
-
-        @Override
-        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-            ontrackUrl = json.getString("ontrackUrl");
-            ontrackUser = json.getString("ontrackUser");
-            ontrackPassword = json.getString("ontrackPassword");
-            save();
-            return super.configure(req, json);
-        }
-
-        public String getOntrackUrl() {
-            return ontrackUrl;
-        }
-
-        public String getOntrackUser() {
-            return ontrackUser;
-        }
-
-        public String getOntrackPassword() {
-            return ontrackPassword;
         }
     }
 }
