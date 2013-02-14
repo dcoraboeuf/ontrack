@@ -9,6 +9,7 @@ http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http auto-config="true">
 		<intercept-url pattern="**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/ui/login" access="ROLE_USER,ROLE_ADMIN,ROLE_CONTROLLER"/>
         <form-login login-page="/login" />
         <http-basic/>
         <logout logout-url="/logout" />
