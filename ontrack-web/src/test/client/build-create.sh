@@ -1,14 +1,16 @@
 #!/bin/bash
 
-PROJECT=$1
-BRANCH=$2
-NAME=$3
-DESCRIPTION=$4
+USER=$1
+PASSWORD=$2
+PROJECT=$3
+BRANCH=$4
+NAME=$5
+DESCRIPTION=$6
 
 URL=http://localhost:8080/ontrack/ui/control/build/${PROJECT}/${BRANCH}
 DATA="{\"name\":\"${NAME}\",\"description\":\"${DESCRIPTION}\"}"
 
 echo POST to $URL
 
-curl ${URL} --header "Content-Type: application/json" --data $DATA $*
+curl "${URL}" --user ${USER}:${PASSWORD} --header "Content-Type: application/json" --data "$DATA" 
 
