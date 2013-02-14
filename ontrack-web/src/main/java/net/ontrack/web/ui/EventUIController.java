@@ -1,6 +1,5 @@
 package net.ontrack.web.ui;
 
-import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.EventFilter;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.ui.EventUI;
@@ -27,15 +26,6 @@ public class EventUIController extends AbstractUIController implements EventUI {
 		super(errorHandler, strings);
 		this.auditService = auditService;
 	}
-
-    /**
-     * Forces the login of the user for pure-UI calls.
-     */
-    @RequestMapping(value = "/ui/login", method = RequestMethod.GET)
-    public @ResponseBody
-    Ack login() {
-        return Ack.OK;
-    }
 	
 	@Override
 	@RequestMapping(value = "/ui/event", method = RequestMethod.GET)
