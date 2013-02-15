@@ -3,7 +3,10 @@ package org.jenkinsci.plugins.ontrack;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Publisher;
 import net.ontrack.core.model.BuildCreationForm;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.ui.ControlUI;
@@ -20,7 +23,6 @@ import java.util.regex.Pattern;
 public class OntrackBuildNotifier extends AbstractOntrackNotifier {
 
     public static final String REGEX_ENV_VARIABLE = "\\$\\{([a-zA-Z0-9_]+)\\}";
-
     private final String project;
     private final String branch;
     private final String build;
@@ -49,13 +51,13 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         // Expands the expressions into actual values
         final String projectName = expand(project, theBuild, listener);
         final String branchName = expand(branch, theBuild, listener);
-        final String buildName= expand(build, theBuild, listener);
+        final String buildName = expand(build, theBuild, listener);
         // TODO Build description
         final String buildDescription = String.format("Build %s", theBuild);
         // Logging of parameters
         listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
         // Calling ontrack UI
-        BuildSummary buildSummary = call (new ClientCall<BuildSummary>() {
+        BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
             public BuildSummary onCall(ControlUI ui) {
                 return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
             }
@@ -98,10 +100,15 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
     }
 
     @Extension
-    public static final class OntrackBuildDescriptorImpl extends OntrackDescriptorImpl {
+    public static final class OntrackBuildDescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         public OntrackBuildDescriptorImpl() {
             super(OntrackBuildNotifier.class);
+        }
+
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+            return true;
         }
 
         @Override
