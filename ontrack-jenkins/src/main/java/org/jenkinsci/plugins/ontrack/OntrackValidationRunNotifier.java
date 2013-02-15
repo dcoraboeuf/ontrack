@@ -5,6 +5,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import net.ontrack.core.model.Status;
@@ -56,8 +57,8 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
         final String branchName = expand(branch, theBuild, listener);
         final String buildName = expand(build, theBuild, listener);
         final String validationStampName = expand(validationStamp, theBuild, listener);
-        // TODO Run status
-        Status runStatus = Status.PASSED;
+        // Run status
+        Status runStatus = getRunStatus(theBuild);
         // TODO Run description
         String runDescription = String.format("Run %s", theBuild);
         // Run creation form
@@ -72,6 +73,17 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
         });
         // OK
         return true;
+    }
+
+    private Status getRunStatus(AbstractBuild<?, ?> theBuild) {
+        Result result = theBuild.getResult();
+        if (result.isBetterOrEqualTo(Result.SUCCESS)) {
+            return Status.PASSED;
+        } else if (result.equals(Result.ABORTED)) {
+            return Status.INTERRUPTED;
+        } else {
+            return Status.FAILED;
+        }
     }
 
     @Extension
