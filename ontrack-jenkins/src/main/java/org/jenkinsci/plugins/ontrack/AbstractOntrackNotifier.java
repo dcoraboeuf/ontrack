@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.ontrack;
 
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
+import jenkins.model.Jenkins;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.support.ControlUIClientFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -13,13 +14,12 @@ public abstract class AbstractOntrackNotifier extends Notifier {
     }
 
     protected <T> T call(ClientCall<T> clientCall) {
-        // FIXME Gets the configuration
-        // OntrackDescriptorImpl descriptor = getDescriptor();
-        // FIXME Gets the configuration data
-        String url = "", user = "", password = "";
-        // String url = descriptor.getOntrackUrl();
-        // String user = descriptor.getOntrackUser();
-        // String password = descriptor.getOntrackPassword();
+        // Gets the configuration
+        OntrackConfiguration configuration = (OntrackConfiguration) Jenkins.getInstance().getDescriptor(OntrackConfiguration.class);
+        // Gets the configuration data
+        String url = configuration.getOntrackUrl();
+        String user = configuration.getOntrackUser();
+        String password = configuration.getOntrackPassword();
         // Controls the data
         if (StringUtils.isBlank(url)) {
             throw new IllegalStateException("ontrack URL global parameter must be defined");
