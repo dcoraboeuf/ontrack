@@ -281,7 +281,7 @@ var Application = function () {
 		// Gets the load function
 		var templateFn = templates["load-" + id];
 		// Reloads
-		load (id, templateFn);
+		load (id, templateFn, append);
 	}
 
 	function loadMore (id) {
@@ -317,7 +317,7 @@ var Application = function () {
 					// Loading done
 					loading("#" + id + '-loading', false);
 					// Clears the container
-					if (append === true) {
+					if (append !== true) {
 					    $('#' + id + '-list').empty();
 					}
 					// Template
