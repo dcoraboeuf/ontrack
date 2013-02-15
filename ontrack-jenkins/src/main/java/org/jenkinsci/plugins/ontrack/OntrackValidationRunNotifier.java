@@ -7,8 +7,9 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
-import net.ontrack.core.model.BuildCreationForm;
-import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.Status;
+import net.ontrack.core.model.ValidationRunCreationForm;
+import net.ontrack.core.model.ValidationRunSummary;
 import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -17,17 +18,19 @@ import java.io.IOException;
 /**
  * Allows to notify for a build.
  */
-public class OntrackBuildNotifier extends AbstractOntrackNotifier {
+public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
 
     private final String project;
     private final String branch;
     private final String build;
+    private final String validationStamp;
 
     @DataBoundConstructor
-    public OntrackBuildNotifier(String project, String branch, String build) {
+    public OntrackValidationRunNotifier(String project, String branch, String build, String validationStamp) {
         this.project = project;
         this.branch = branch;
         this.build = build;
+        this.validationStamp = validationStamp;
     }
 
     public String getProject() {
@@ -42,20 +45,29 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
         return build;
     }
 
+    public String getValidationStamp() {
+        return validationStamp;
+    }
+
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // Expands the expressions into actual values
         final String projectName = expand(project, theBuild, listener);
         final String branchName = expand(branch, theBuild, listener);
         final String buildName = expand(build, theBuild, listener);
-        // TODO Build description
-        final String buildDescription = String.format("Build %s", theBuild);
+        final String validationStampName = expand(validationStamp, theBuild, listener);
+        // TODO Run status
+        Status runStatus = Status.PASSED;
+        // TODO Run description
+        String runDescription = String.format("Run %s", theBuild);
+        // Run creation form
+        final ValidationRunCreationForm runCreationForm = new ValidationRunCreationForm(runStatus, runDescription);
         // Logging of parameters
-        listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
+        listener.getLogger().format("Running %s with status %s for build %s of branch %s of project %s", validationStampName, runStatus, buildName, branchName, projectName);
         // Calling ontrack UI
-        BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
-            public BuildSummary onCall(ControlUI ui) {
-                return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
+        ValidationRunSummary summary = call(new ClientCall<ValidationRunSummary>() {
+            public ValidationRunSummary onCall(ControlUI ui) {
+                return ui.createValidationRun(projectName, branchName, buildName, validationStampName, runCreationForm);
             }
         });
         // OK
@@ -66,7 +78,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
     public static final class OntrackBuildDescriptorImpl extends BuildStepDescriptor<Publisher> {
 
         public OntrackBuildDescriptorImpl() {
-            super(OntrackBuildNotifier.class);
+            super(OntrackValidationRunNotifier.class);
         }
 
         @Override
@@ -76,7 +88,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
 
         @Override
         public String getDisplayName() {
-            return "ontrack Build creation";
+            return "ontrack Validation run creation";
         }
     }
 }
