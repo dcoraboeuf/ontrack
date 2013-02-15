@@ -277,7 +277,7 @@ var Application = function () {
 		load (id, templateFn);
 	}
 	
-	function reload (id) {
+	function reload (id, append) {
 		// Gets the load function
 		var templateFn = templates["load-" + id];
 		// Reloads
@@ -287,10 +287,15 @@ var Application = function () {
 	function loadMore (id) {
 		// Gets the loading information
 		var url = $('#' + id).attr('data-url');
-		// TODO Limit and count
+		// Offset and count
+		var offsetAndCount = offsetsAndCounts[id];
+		// Adjust the offset
+		offsetAndCount.offset += offsetAndCount.count;
+		// Loads more
+		reload(id, true);
 	}
 		
-	function load (id, templateFn) {
+	function load (id, templateFn, append) {
 		// Gets the loading information
 		var url = $('#' + id).attr('data-url');
 		var more = $('#' + id).attr('data-more');
@@ -312,7 +317,9 @@ var Application = function () {
 					// Loading done
 					loading("#" + id + '-loading', false);
 					// Clears the container
-					$('#' + id + '-list').empty();
+					if (append === true) {
+					    $('#' + id + '-list').empty();
+					}
 					// Template
 					var html = templateFn(data);
 					$('#' + id + '-list').append(html);
