@@ -2,7 +2,6 @@ package net.ontrack.web.ui;
 
 import net.ontrack.core.model.EventFilter;
 import net.ontrack.core.model.ExpandedEvent;
-import net.ontrack.core.model.ExpandedEvents;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.service.EventService;
 import net.ontrack.web.support.AbstractUIController;
@@ -30,8 +29,7 @@ public class EventUIController extends AbstractUIController implements EventUI {
 	
 	@Override
 	@RequestMapping(value = "/ui/event", method = RequestMethod.GET)
-	public @ResponseBody
-    ExpandedEvents list (@RequestBody EventFilter filter) {
+	public @ResponseBody List<ExpandedEvent> list (@RequestBody EventFilter filter) {
 		return auditService.list(filter);
 	}
 
