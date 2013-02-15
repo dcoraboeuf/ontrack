@@ -1,7 +1,7 @@
 var Audit = function () {
 	
-	function auditTemplate (items) {
-		return Template.list(items, audit);
+	function auditTemplate (events) {
+		return Template.list(events.events, audit);
 	}
 	
 	function audit (item) {

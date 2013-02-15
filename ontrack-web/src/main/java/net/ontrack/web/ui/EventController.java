@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import net.ontrack.core.model.*;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
+import net.ontrack.web.gui.model.GUIEvents;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -49,7 +50,7 @@ public class EventController extends AbstractUIController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody
-	List<GUIEvent> all(
+    GUIEvents all(
 			final Locale locale,
 			@RequestParam(required = false, defaultValue = "0") int project,
 			@RequestParam(required = false, defaultValue = "0") int branch,
@@ -68,16 +69,16 @@ public class EventController extends AbstractUIController {
         filter.withEntity(Entity.BUILD, build);
         filter.withEntity(Entity.VALIDATION_RUN, validationRun);
 		// Gets the raw events
-		List<ExpandedEvent> events = eventUI.list(filter);
+        ExpandedEvents events = eventUI.list(filter);
 		// Localizes them
-		List<GUIEvent> guiEvents = Lists.transform(events, new Function<ExpandedEvent, GUIEvent>() {
+		List<GUIEvent> guiEvents = Lists.transform(events.getEvents(), new Function<ExpandedEvent, GUIEvent>() {
 			@Override
 			public GUIEvent apply (ExpandedEvent event) {
 				return toGUIEvent (event, locale, now);
 			}
 		});
 		// OK
-		return guiEvents;
+		return new GUIEvents(guiEvents, events.isMore());
 	}
 
 	protected GUIEvent toGUIEvent(ExpandedEvent event, Locale locale, DateTime now) {

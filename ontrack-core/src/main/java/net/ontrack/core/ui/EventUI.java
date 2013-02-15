@@ -1,13 +1,11 @@
 package net.ontrack.core.ui;
 
-import java.util.List;
-
 import net.ontrack.core.model.EventFilter;
-import net.ontrack.core.model.ExpandedEvent;
+import net.ontrack.core.model.ExpandedEvents;
 
 
 public interface EventUI {
-	
-	List<ExpandedEvent> list (EventFilter filter);
+
+    ExpandedEvents list(EventFilter filter);
 
 }
