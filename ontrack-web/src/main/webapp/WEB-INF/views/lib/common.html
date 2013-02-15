@@ -36,7 +36,7 @@
 	</section>
 </#macro>
 
-<#macro dynamicsection id url template>
+<#macro dynamicsection id url template more=false>
 	<div id="${id?html}" data-url="${url?html}">
 		<div id="${id?html}-body" class="dynamic-body">
 			<div id="${id?html}-loading" class="dynamic-loading">
@@ -46,6 +46,11 @@
 			<div id="${id?html}-list" class="dynamic-list">
 			</div>
 		</div>
+        <#if more>
+            <div id="${id?html}-more-section">
+                <button id="${id?html}-more" type="button" class="btn btn-link" onclick=""><@lh key="general.more" /></button>
+            </div>
+        </#if>
         <div id="${id?html}-footer" class="dynamic-footer">
             <#nested />
         </div>
