@@ -264,10 +264,15 @@ var Application = function () {
 	}
 	
 	var templates = {};
+	var offsetsAndCounts = {};
 	
 	function loadInit (id, templateFn) {
 		// Registers the function
 		templates["load-" + id] = templateFn;
+		offsetsAndCounts[id] = {
+		    offset: 0,
+		    count: 10
+		};
 		// Initial load
 		load (id, templateFn);
 	}
@@ -278,11 +283,24 @@ var Application = function () {
 		// Reloads
 		load (id, templateFn);
 	}
+
+	function loadMore (id) {
+		// Gets the loading information
+		var url = $('#' + id).attr('data-url');
+		// TODO Limit and count
+	}
 		
 	function load (id, templateFn) {
 		// Gets the loading information
 		var url = $('#' + id).attr('data-url');
+		var more = $('#' + id).attr('data-more');
 		if (url) {
+		    // Offset and count
+		    var offsetAndCount = offsetsAndCounts[id];
+		    if (more == 'true' && offsetAndCount) {
+		        url += '&offset={0}&count={1}'.format(offsetAndCount.offset, offsetAndCount.count);
+		    }
+		    // Log
 			console.log('Loading "{0}" into "{1}"'.format(url, id));
 			// Starts loading
 			loading("#" + id + '-loading', true);
@@ -366,6 +384,7 @@ var Application = function () {
 		loadInit: loadInit,
 		load: load,
 		reload: reload,
+		loadMore: loadMore,
 		deleteEntity: deleteEntity,
 		ajaxGet: ajaxGet
 	};
