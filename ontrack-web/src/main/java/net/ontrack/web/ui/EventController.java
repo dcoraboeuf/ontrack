@@ -56,7 +56,8 @@ public class EventController extends AbstractUIController {
 			@RequestParam(required = false, defaultValue = "0") int validationStamp,
             @RequestParam(required = false, defaultValue = "0") int build,
             @RequestParam(required = false, defaultValue = "0") int validationRun,
-            @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "20") int count) {
+            @RequestParam(required = false, defaultValue = "0") int offset,
+            @RequestParam(required = false, defaultValue = "20") int count) {
 		// Reference time
 		final DateTime now = new DateTime();
 		// Filter
