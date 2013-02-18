@@ -88,7 +88,7 @@ var Template = function () {
 	}
 
 	function error (id, message) {
-        $('#' + id + '-error').html(message.htmlWithLines());
+        $('#' + id + '-error').html(String(message).htmlWithLines());
         $('#' + id + '-error').show();
         Application.loading("#" + id + '-loading', false);
 	}
@@ -121,13 +121,13 @@ var Template = function () {
 					// Loading done
 					Application.loading("#" + id + '-loading', false);
 					// Uses the data
-					try {
+					// try {
 					    display(id, append, config, data);
 					    // Management of the 'more'
 					    moreStatus(id, config, data);
-					} catch (message) {
-				        error(id, message);
-					}
+					// } catch (message) {
+				    //     error(id, message);
+					// }
 				},
 				function (message) {
 				    error(id, message);
