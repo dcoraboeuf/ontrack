@@ -2,35 +2,31 @@
 
 <@layout_std page="build" title=build.name modules=["projects","branches","builds","validation_stamps","audit"] breadcrumbs = {loc("home"): "", build.branch.project.name?html: "gui/project/${build.branch.project.name?html}", build.branch.name?html: "gui/branch/${build.branch.project.name?html}/${build.branch.name?html}"}>
 	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a>
+                    / <a href="gui/branch/${build.branch.project.name?html}/${build.branch.name?html}">${build.branch.name?html}</a>
+                    / ${build.name?html}
+                </span>
+                <span class="action action-optional">
+                    <span onclick="location='gui/branch/${build.branch.project.name?html}/${build.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                </span>
+            </div>
+            <div class="muted">${build.description?html}</div>
+        </div>
 		<div class="row-fluid">
-			<div class="span3">
-                <div class="alert alert-info">
-					<p>
-						<@lh key="model.project" />
-						<b><a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a></b>
-					</p>
-					<p>
-						<@lh key="model.branch" />
-						<b><a href="gui/branch/${build.branch.project.name?html}/${build.branch.name?html}">${build.branch.name?html}</a></b>
-					</p>
-					<p>
-						<@lh key="model.build" />
-						<b>${build.name?html}</b>
-					</p>
-					<p class="help-block">${build.description?html}</p>
-				</div>
-			</div>
-			<div class="span4">
-				<@panel title=loc("event.list")>
-					<@audit filter="&build=${build.id}" />
-				</@panel>
-			</div>
-			<div class="span5">
-				<@panel title=loc("build.validation_stamps")>
-					<@dynamicsection
+            <div class="span8">
+                <@panel title=loc("build.validation_stamps")>
+                    <@dynamicsection
                         id="build-validation-stamp-list"
                         template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')">
                     </@dynamicsection>
+                </@panel>
+            </div>
+			<div class="span4">
+				<@panel title=loc("event.list")>
+					<@audit filter="&build=${build.id}" />
 				</@panel>
 			</div>
 		</div>
