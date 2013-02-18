@@ -4,6 +4,7 @@ import net.ontrack.backend.db.SQL
 import net.ontrack.backend.db.SQLUtils
 import net.ontrack.core.model.*
 import net.ontrack.core.security.SecurityRoles
+import net.ontrack.core.security.SecurityUtils
 import net.ontrack.core.validation.NameDescription
 import net.ontrack.service.ControlService
 import net.ontrack.service.EventService
@@ -21,11 +22,13 @@ import javax.validation.Validator
 class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 	
 	private final ManagementService managementService
+    private final SecurityUtils securityUtils
 
 	@Autowired
-	public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService) {
+	public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, SecurityUtils securityUtils) {
 		super(dataSource, validator, auditService)
 		this.managementService = managementService
+        this.securityUtils = securityUtils
 	}
 	
 	@Override
@@ -72,18 +75,19 @@ class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
     @Secured([SecurityRoles.USER,SecurityRoles.CONTROLLER,SecurityRoles.ADMINISTRATOR])
 	public ValidationRunStatusSummary createValidationRunStatus (int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
 		// TODO Validation of the status
-		// TODO Author
+		// Author
+        def signature = securityUtils.getCurrentSignature()
 		// Creation
 		int id = dbCreate (SQL.VALIDATION_RUN_STATUS_CREATE, [
 			"validationRun": validationRun,
 			"status": validationRunStatus.status.name(),
 			"description": validationRunStatus.description,
-			"author": "",
-			"authorId": null,
+			"author": signature.name,
+			"authorId": signature.id,
 			"statusTimestamp": SQLUtils.toTimestamp(SQLUtils.now()) 
 			])
 		// OK
-		return new ValidationRunStatusSummary(id, validationRunStatus.status, validationRunStatus.description)
+		return new ValidationRunStatusSummary(id, signature.name, validationRunStatus.status, validationRunStatus.description)
 	}
 
 }

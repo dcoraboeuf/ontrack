@@ -1,6 +1,7 @@
 package net.ontrack.core.security;
 
 import net.ontrack.core.model.Account;
+import net.ontrack.core.model.Signature;
 
 public interface SecurityUtils {
 
@@ -9,6 +10,8 @@ public interface SecurityUtils {
 	Account getCurrentAccount();
 
 	int getCurrentAccountId();
+
+    Signature getCurrentSignature();
 
 	boolean isAdmin();
 

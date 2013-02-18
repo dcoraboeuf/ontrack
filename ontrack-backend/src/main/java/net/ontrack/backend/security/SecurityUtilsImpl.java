@@ -1,8 +1,10 @@
 package net.ontrack.backend.security;
 
 import net.ontrack.core.model.Account;
+import net.ontrack.core.model.Signature;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +33,22 @@ public class SecurityUtilsImpl implements SecurityUtils {
     public int getCurrentAccountId() {
         Account account = getCurrentAccount();
         return account != null ? account.getId() : -1;
+    }
+
+    @Override
+    public Signature getCurrentSignature() {
+        Account account = getCurrentAccount();
+        String accountName;
+        if (account != null) {
+            accountName = account.getFullName();
+            if (StringUtils.isBlank(accountName)) {
+                accountName = account.getName();
+            }
+        } else {
+            accountName = "Anonymous";
+        }
+        Integer accountId = account != null ? account.getId() : null;
+        return new Signature(accountId, accountName);
     }
 
     @Override

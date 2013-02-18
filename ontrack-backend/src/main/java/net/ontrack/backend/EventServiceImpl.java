@@ -42,19 +42,9 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
     public void event(Event event) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         // Author
-        Account account = securityUtils.getCurrentAccount();
-        String accountName;
-        if (account != null) {
-            accountName = account.getFullName();
-            if (StringUtils.isBlank(accountName)) {
-                accountName = account.getName();
-            }
-        } else {
-            accountName = "Anonymous";
-        }
-        Integer accountId = account != null ? account.getId() : null;
-        params.addValue("author", accountName);
-        params.addValue("author_id", accountId);
+        Signature signature = securityUtils.getCurrentSignature();
+        params.addValue("author", signature.getName());
+        params.addValue("author_id", signature.getId());
         // Timestamping
         params.addValue("event_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
         // Event type
