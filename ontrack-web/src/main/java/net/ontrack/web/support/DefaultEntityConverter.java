@@ -24,7 +24,7 @@ public class DefaultEntityConverter implements EntityConverter {
 	public int getValidationStampId(String project, String branch, String validationStamp) {
 		int projectId = getProjectId(project);
 		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
-		int validationStampId = getId(Entity.VALIDATION_STAMP, validationStamp, MapBuilder.create(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).build());
+		int validationStampId = getId(Entity.VALIDATION_STAMP, validationStamp, MapBuilder.of(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).get());
 		return validationStampId;
 	}
 
@@ -32,7 +32,7 @@ public class DefaultEntityConverter implements EntityConverter {
 	public int getBuildId(String project, String branch, String validationStamp) {
 		int projectId = getProjectId(project);
 		int branchId = getId(Entity.BRANCH, branch, Collections.singletonMap(Entity.PROJECT, projectId));
-		int buildId = getId(Entity.BUILD, validationStamp, MapBuilder.create(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).build());
+		int buildId = getId(Entity.BUILD, validationStamp, MapBuilder.of(Entity.PROJECT, projectId).with(Entity.BRANCH, branchId).get());
 		return buildId;
 	}
 

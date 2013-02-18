@@ -19,7 +19,7 @@ public class MapBuilder<K, V> {
 		return new MapBuilder<K, V>();
 	}
 
-	public static <K, V> MapBuilder<K, V> create(K key, V value) {
+	public static <K, V> MapBuilder<K, V> of(K key, V value) {
 		return MapBuilder.<K, V> create().with(key, value);
 	}
 
@@ -30,7 +30,7 @@ public class MapBuilder<K, V> {
 		return this;
 	}
 
-	public Map<K, V> build() {
+	public Map<K, V> get() {
 		return map;
 	}
 
