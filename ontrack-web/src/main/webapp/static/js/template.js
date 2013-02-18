@@ -50,7 +50,7 @@ var Template = function () {
 	}
 
 	function fill (contentFn) {
-	    return function (containerId, append, items) {
+	    return function (containerId, append, config, items) {
             var html = contentFn(items, append);
             var containerSelector = '#' + containerId;
             $(containerSelector).empty();
@@ -58,7 +58,7 @@ var Template = function () {
         }
 	}
 
-	function defaultRender (containerId, config, data) {
+	function defaultRender (containerId, append, config, data) {
         table(containerId, false, config, data, function (item) {
             return String(item).html();
         });
@@ -89,7 +89,7 @@ var Template = function () {
 	function error (id, message) {
         $('#' + id + '-error').html(message.htmlWithLines());
         $('#' + id + '-error').show();
-        loading("#" + id + '-loading', false);
+        Application.loading("#" + id + '-loading', false);
 	}
 
 	function more (id) {
@@ -161,7 +161,8 @@ var Template = function () {
 	    more: more,
 
 	    asTable: asTable,
-	    asLink: asLink
+	    asLink: asLink,
+	    fill: fill
 	};
 	
 } ();

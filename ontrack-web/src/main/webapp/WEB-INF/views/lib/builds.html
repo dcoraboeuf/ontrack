@@ -2,6 +2,6 @@
 <link rel="stylesheet" type="text/css" href="${base}/css/builds.css" />
 
 <#macro builds project branch id="builds">
-	<@dynamicsection id=id url="ui/manage/build/${project?html}/${branch?html}" template="Builds.buildTemplate('${project?html}','${branch?html}')">
+	<@dynamicsection id=id template="Builds.buildTemplate('${project?html}','${branch?html}')">
 	</@dynamicsection>
 </#macro>

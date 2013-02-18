@@ -1,7 +1,7 @@
 <script type="text/javascript" src="${base}/js/validation_stamps.js"></script>
 
 <#macro validation_stamps project branch id="validation_stamps" create=true>
-	<@dynamicsection id=id url="ui/manage/validation_stamp/${project?html}/${branch?html}/all" template="ValidationStamps.validationStampTemplate('${project?html}','${branch?html}')">
+	<@dynamicsection id=id template="ValidationStamps.validationStampTemplate('${project?html}','${branch?html}')">
 		<#if create>
 			<@dialog id="validation_stamp-create-dialog">
 				<@form_text name="name" label=loc('validation_stamp.name') />
