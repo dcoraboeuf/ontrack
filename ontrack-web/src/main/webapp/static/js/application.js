@@ -276,13 +276,6 @@ var Application = function () {
 		// Initial load
 		load (id, templateFn);
 	}
-	
-	function reload (id, append) {
-		// Gets the load function
-		var templateFn = templates["load-" + id];
-		// Reloads
-		load (id, templateFn, append);
-	}
 
 	function loadMore (id) {
 		// Gets the loading information
@@ -391,9 +384,6 @@ var Application = function () {
 			return validate (confirmation, confirmValue == value);
 		},
 		loading: loading,
-		load: load,
-		reload: reload,
-		loadMore: loadMore,
 		deleteEntity: deleteEntity,
 		ajaxGet: ajaxGet
 	};

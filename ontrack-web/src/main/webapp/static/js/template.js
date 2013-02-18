@@ -64,10 +64,23 @@ var Template = function () {
         });
 	}
 
-	function display (id, config, data) {
+	function moreStatus(id, config, data) {
+	    if (config.more) {
+	        console.log("Template.moreStatus, id={0}, data={1}, count={2}".format(id, data.length, config.count));
+	        config.offset += data.length;
+	        var hasMore = (data.length >= config.count);
+	        if (hasMore) {
+	            $('#'+ id + '-more-section').show();
+	        } else {
+	            $('#'+ id + '-more-section').hide();
+	        }
+	    }
+	}
+
+	function display (id, append, config, data) {
 	    var containerId = id + '-list';
 	    if (config.render) {
-            config.render(containerId, false, config, data);
+            config.render(containerId, append, config, data);
 	    } else {
 	        throw "{0} template has no 'render' function.".format(id);
 	    }
@@ -79,7 +92,11 @@ var Template = function () {
         loading("#" + id + '-loading', false);
 	}
 
-	function load (id) {
+	function more (id) {
+        load(id, true);
+	}
+
+	function load (id, append) {
 	    var selector = '#' + id;
 	    // Gets the template
 	    var config = $(selector).data('template-config');
@@ -104,7 +121,9 @@ var Template = function () {
 					Application.loading("#" + id + '-loading', false);
 					// Uses the data
 					try {
-					    display(id, config, data);
+					    display(id, append, config, data);
+					    // Management of the 'more'
+					    moreStatus(id, config, data);
 					} catch (message) {
 				        error(id, message);
 					}
@@ -123,7 +142,7 @@ var Template = function () {
         // Associates the template definition with the ID
         $('#' + id).data('template-config', config);
         // Loading
-        load(id);
+        load(id, false);
 	}
 
 	function config (input) {
@@ -139,6 +158,7 @@ var Template = function () {
 	return {
 	    config: config,
 	    init: init,
+	    more: more,
 
 	    asTable: asTable,
 	    asLink: asLink
