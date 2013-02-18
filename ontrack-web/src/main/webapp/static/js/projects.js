@@ -15,8 +15,8 @@ var Projects = function () {
 		Application.deleteEntity('project', name, '');
 	}
 	
-	function projectTemplate (items) {
-		return Template.links(items, 'gui/project');
+	function projectTemplate (containerId, append, items) {
+		return Template.table(containerId, append, items, Template.tableRowLink('gui/project'));
 	}
 	
 	return {

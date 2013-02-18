@@ -11,9 +11,9 @@ var ProjectGroups = function () {
 				Application.reload('audit');
 			});
 	}
-	
-	function projectGroupTemplate (items) {
-		return Template.links(items, 'gui/projectgroup');
+
+	function projectGroupTemplate (containerId, append, items) {
+		return Template.table(containerId, append, items, Template.tableRowLink('gui/projectgroup'));
 	}
 	
 	return {

@@ -17,10 +17,10 @@ var Template = function () {
 		return html;
 	}
 	
-	function links (items, url) {
-		return list (items, function (item) {
+	function tableRowLink (url) {
+	    return function (item) {
 			return '<a href="{0}/{2}" title="{3}">{2}</a>'.format(url, item.id, item.name.html(), item.description.html());
-		});
+	    };
 	}
 
 	function table (containerId, append, items, itemFn) {
@@ -36,7 +36,8 @@ var Template = function () {
 	}
 	
 	return {
-		table: table
+		table: table,
+		tableRowLink: tableRowLink
 	};
 	
 } ();
