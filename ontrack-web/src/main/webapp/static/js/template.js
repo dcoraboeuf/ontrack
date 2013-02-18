@@ -34,8 +34,18 @@ var Template = function () {
 	        $(containerSelector).append(generateTable(items, itemFn));
 	    }
 	}
+
+	function fill (contentFn) {
+	    return function (containerId, append, items) {
+            var html = contentFn(items, append);
+            var containerSelector = '#' + containerId;
+            $(containerSelector).empty();
+            $(containerSelector).append(html);
+        }
+	}
 	
 	return {
+	    fill: fill,
 		table: table,
 		tableRowLink: tableRowLink
 	};

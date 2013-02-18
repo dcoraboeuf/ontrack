@@ -12,7 +12,7 @@ var Builds = function () {
     }
 	
 	function buildTemplate (project, branch) {
-	    return function (branchBuilds) {
+	    return Template.fill(function (branchBuilds) {
             var html = '<table class="table table-hover"><thead>';
             // Header
             html += '<tr>';
@@ -54,7 +54,7 @@ var Builds = function () {
             // End
             html += '</tbody></table>';
             return html;
-        };
+        });
 	}
 
 	function buildValidationStampTemplate (project, branch) {
