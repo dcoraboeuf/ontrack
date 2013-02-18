@@ -23,4 +23,16 @@ class AccountServiceTest extends AbstractValidationTest {
         assert SecurityRoles.ADMINISTRATOR == account.roleName
     }
 
+    @Test
+    void authenticate_wrong_name() {
+        def account = accountService.authenticate('xxx', 'admin');
+        assert account == null
+    }
+
+    @Test
+    void authenticate_wrong_password() {
+        def account = accountService.authenticate('admin', 'xxx');
+        assert account == null
+    }
+
 }
