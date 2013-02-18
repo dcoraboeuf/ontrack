@@ -1,8 +1,8 @@
 [events]
 
 event.ago
-	en -> {0} ago
-	fr -> il y a {0}
+	en -> {0} ago by {1}
+	fr -> il y a {0} par {1}
 
 event.PROJECT_GROUP_CREATED
 	en -> Group $PROJECT_GROUP$ was created.

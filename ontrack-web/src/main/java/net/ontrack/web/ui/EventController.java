@@ -87,7 +87,7 @@ public class EventController extends AbstractUIController {
 		Period period = new Period(event.getTimestamp(), now);
 		period = compress(period);
 		String elapsed = PeriodFormat.wordBased(locale).print(period);
-		elapsed = strings.get(locale, "event.ago", elapsed);
+		elapsed = strings.get(locale, "event.ago", elapsed, event.getAuthor());
 		
 		// Generating the HTML
 		// Getting the general pattern from the localization strings
