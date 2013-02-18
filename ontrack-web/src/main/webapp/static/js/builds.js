@@ -58,8 +58,8 @@ var Builds = function () {
 	}
 
 	function buildValidationStampTemplate (project, branch) {
-	    return function (items) {
-            return Template.list(items, function (stamp) {
+	    return function (containerId, append, items) {
+            return Template.table(containerId, append, items, function (stamp) {
                 var pClass;
                 if (!stamp.run) {
                     pClass = 'validation-stamp-norun';
