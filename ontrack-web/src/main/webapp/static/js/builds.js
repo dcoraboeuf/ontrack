@@ -15,6 +15,9 @@ var Builds = function () {
 	    return Template.config({
 	        url: 'ui/manage/build/{0}/{1}?u=1'.format(project, branch),
 	        more: true,
+	        moreFn: function (branchBuilds) {
+	            return branchBuilds.builds.length >= 10;
+	        },
 	        placeholder: loc('branch.nobuild'),
 	        render: Template.fill(function (branchBuilds, append) {
                 if (branchBuilds.builds.length == 0) {

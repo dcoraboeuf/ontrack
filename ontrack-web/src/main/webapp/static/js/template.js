@@ -68,7 +68,12 @@ var Template = function () {
 	    if (config.more) {
 	        // console.log("Template.moreStatus, id={0}, data={1}, count={2}".format(id, data.length, config.count));
 	        config.offset += data.length;
-	        var hasMore = (data.length >= config.count);
+	        var hasMore;
+	        if (config.moreFn) {
+                hasMore = config.moreFn(data);
+	        } else {
+	            hasMore = (data.length >= config.count);
+	        }
 	        if (hasMore) {
 	            $('#'+ id + '-more-section').show();
 	        } else {
