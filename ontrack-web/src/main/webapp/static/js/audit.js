@@ -16,7 +16,12 @@ var Audit = function () {
 	}
 	
 	return {
-		auditTemplate: auditTemplate
+		auditTemplate: function (filter) {
+		    return Template.config({
+		        url: 'gui/event?u=1' + filter,
+		        more: true
+		    });
+		}
 	};
 	
 } ();

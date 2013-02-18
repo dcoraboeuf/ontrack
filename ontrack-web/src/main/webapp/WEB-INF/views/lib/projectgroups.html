@@ -1,7 +1,7 @@
 <script type="text/javascript" src="${base}/js/projectgroups.js"></script>
 
 <#macro projectgroups id="projectgroups" create=true>
-	<@dynamicsection id=id url="ui/manage/projectgroup/all" template="ProjectGroups.projectGroupTemplate">
+	<@dynamicsection id=id template="ProjectGroups.projectGroupTemplate">
 		<#if create>
 			<@dialog id="projectgroup-create-dialog">
 				<@form_text name="name" label=loc('projectgroup.name') />

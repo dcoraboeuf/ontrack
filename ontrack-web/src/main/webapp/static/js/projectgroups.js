@@ -18,7 +18,10 @@ var ProjectGroups = function () {
 	
 	return {
 		createProjectGroup: createProjectGroup,
-		projectGroupTemplate: projectGroupTemplate
+		// Template for the list of groups
+		projectGroupTemplate: Template.config({
+            url: 'ui/manage/projectgroup/all'
+		})
 	};
 	
 } ();

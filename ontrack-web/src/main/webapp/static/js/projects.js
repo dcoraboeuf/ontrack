@@ -22,7 +22,10 @@ var Projects = function () {
 	return {
 		createProject: createProject,
 		deleteProject: deleteProject,
-		projectTemplate: projectTemplate
+		projectTemplate: Template.config({
+		    url: 'ui/manage/project/all',
+		    render: Template.asTable(Template.asLink('gui/project'))
+		})
 	};
 	
 } ();

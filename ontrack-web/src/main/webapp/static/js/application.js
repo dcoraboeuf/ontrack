@@ -391,7 +391,6 @@ var Application = function () {
 			return validate (confirmation, confirmValue == value);
 		},
 		loading: loading,
-		loadInit: loadInit,
 		load: load,
 		reload: reload,
 		loadMore: loadMore,
