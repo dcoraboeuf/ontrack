@@ -66,7 +66,7 @@ var Template = function () {
 
 	function moreStatus(id, config, data) {
 	    if (config.more) {
-	        console.log("Template.moreStatus, id={0}, data={1}, count={2}".format(id, data.length, config.count));
+	        // console.log("Template.moreStatus, id={0}, data={1}, count={2}".format(id, data.length, config.count));
 	        config.offset += data.length;
 	        var hasMore = (data.length >= config.count);
 	        if (hasMore) {
@@ -109,7 +109,7 @@ var Template = function () {
 		        url += '&count=' + config.count;
 		    }
 		    // Logging
-		    console.log('Template.load id={0},url={1},more={2}'.format(id, url, config.more));
+		    console.log('Template.load id={0},url={1},more={2},append={3}'.format(id, url, config.more, append));
 			// Starts loading
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
@@ -138,7 +138,7 @@ var Template = function () {
 
 	function init (id, config) {
 	    // Logging
-	    console.log("Template for {0}:".format(id), config);
+	    // console.log("Template for {0}:".format(id), config);
         // Associates the template definition with the ID
         $('#' + id).data('template-config', config);
         // Loading
