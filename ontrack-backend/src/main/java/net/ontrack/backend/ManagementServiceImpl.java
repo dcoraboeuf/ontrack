@@ -165,6 +165,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new BranchSummary(id, form.getName(), form.getDescription(), getProject(project));
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack deleteBranch(int branchId) {
+        BranchSummary branch = getBranch(branchId);
+        Ack ack = dbDelete(SQL.BRANCH_DELETE, branchId);
+        if (ack.isSuccess()) {
+            event(Event.of(EventType.BRANCH_DELETED)
+                    .withValue("project", branch.getProject().getName())
+                    .withValue("branch", branch.getName()));
+        }
+        return ack;
+    }
+
     // Validation stamps
 
     protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {

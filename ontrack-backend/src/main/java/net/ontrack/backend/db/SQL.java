@@ -25,6 +25,8 @@ public interface SQL {
 	String BRANCH_LIST = "SELECT ID, PROJECT, NAME, DESCRIPTION FROM BRANCH WHERE PROJECT = :project ORDER BY NAME";
 	
 	String BRANCH_CREATE = "INSERT INTO BRANCH (PROJECT, NAME, DESCRIPTION) VALUES (:project, :name, :description)";
+
+    String BRANCH_DELETE = "DELETE FROM BRANCH WHERE ID = :id";
 	
 	// Builds
 	

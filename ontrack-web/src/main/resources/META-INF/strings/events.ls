@@ -19,6 +19,10 @@ event.PROJECT_DELETED
 event.BRANCH_CREATED
 	en -> Branch $BRANCH$ has been created for the $PROJECT$ project.
 	fr -> La branche $BRANCH$ a été créée pour le projet $PROJECT$.
+
+event.BRANCH_DELETED
+    en -> The $branch$ of the $project$ project has been deleted.
+    fr -> La branche $branch$ du projet $project$ a été supprimée.
 	
 event.VALIDATION_STAMP_CREATED
 	en -> The $VALIDATION_STAMP$ validation stamp has been created for the $BRANCH$ branch of the $PROJECT$ project.

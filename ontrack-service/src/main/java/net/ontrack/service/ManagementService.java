@@ -31,6 +31,8 @@ public interface ManagementService {
 	BranchSummary getBranch(int id);
 
 	BranchSummary createBranch(int project, BranchCreationForm form);
+
+    Ack deleteBranch(int branchId);
 	
 	// Validation stamps
 
@@ -59,5 +61,4 @@ public interface ManagementService {
 	// Common
 
 	int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
-
 }

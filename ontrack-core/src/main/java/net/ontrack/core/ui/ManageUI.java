@@ -30,6 +30,8 @@ public interface ManageUI {
 	BranchSummary getBranch(String project, String name);
 	
 	BranchSummary createBranch (String project, BranchCreationForm form);
+
+    Ack deleteBranch(String project, String name);
 	
 	// Validation stamps
 

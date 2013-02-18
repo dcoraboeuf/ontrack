@@ -93,8 +93,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 		int projectId = entityConverter.getProjectId(project);
 		return managementService.createBranch (projectId, form);
 	}
-	
-	// Validation stamps
+
+    @Override
+    @RequestMapping(value = "/ui/manage/branch/{project:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+    public @ResponseBody Ack deleteBranch(@PathVariable String project, @PathVariable String name) {
+        int branchId = entityConverter.getBranchId(project, name);
+        return managementService.deleteBranch(branchId);
+    }
+
+    // Validation stamps
 
 	@Override
 	@RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/all", method = RequestMethod.GET)
