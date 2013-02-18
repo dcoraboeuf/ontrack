@@ -1,6 +1,6 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.AccountService;
+import net.ontrack.service.AccountService;
 import net.ontrack.backend.ConfigurationCache;
 import net.ontrack.backend.ConfigurationCacheKey;
 import net.ontrack.backend.ConfigurationCacheSubscriber;

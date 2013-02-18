@@ -172,6 +172,22 @@ accounts
     en -> Accounts
     fr -> Utilisateurs
 
+account.name
+    en -> Name
+    fr -> Nom
+
+account.fullName
+    en -> Full name
+    fr -> Nom complet
+
+account.role
+    en -> Role
+    fr -> Rôle
+
+account.mode
+    en -> Mode
+    fr -> Mode
+
 [home]
 
 home

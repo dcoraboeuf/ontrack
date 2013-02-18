@@ -1,0 +1,24 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="accounts" breadcrumbs = {loc("home"): ""}>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><@lh key="account.name" /></th>
+                <th><@lh key="account.fullName" /></th>
+                <th><@lh key="account.role" /></th>
+                <th><@lh key="account.mode" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            <#list accounts as account>
+                <tr>
+                    <td>${account.name?html}</td>
+                    <td>${account.fullName?html}</td>
+                    <td>${account.roleName?html}</td>
+                    <td>${account.mode?html}</td>
+                </tr>
+            </#list>
+        </tbody>
+    </table>
+</@layout_std>

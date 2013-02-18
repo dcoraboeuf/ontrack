@@ -1,6 +1,6 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.AccountService;
+import net.ontrack.service.AccountService;
 import net.ontrack.core.security.SecurityRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DirContextOperations;

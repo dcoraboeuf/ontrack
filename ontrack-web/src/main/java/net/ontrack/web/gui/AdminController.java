@@ -1,6 +1,7 @@
 package net.ontrack.web.gui;
 
 import net.ontrack.core.model.UserMessage;
+import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.web.support.AbstractGUIController;
@@ -20,12 +21,14 @@ import java.util.Locale;
 public class AdminController extends AbstractGUIController {
 
     private final AdminService adminService;
+    private final AccountService accountService;
     private final Strings strings;
 
     @Autowired
-    public AdminController(ErrorHandler errorHandler, AdminService adminService, Strings strings) {
+    public AdminController(ErrorHandler errorHandler, AdminService adminService, AccountService accountService, Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
+        this.accountService = accountService;
         this.strings = strings;
     }
 
@@ -52,6 +55,15 @@ public class AdminController extends AbstractGUIController {
         redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "ldap.saved")));
         // OK
         return "redirect:/gui/admin/settings";
+    }
+
+    /**
+     * Management of accounts
+     */
+    @RequestMapping(value = "/accounts", method = RequestMethod.GET)
+    public String accounts(Model model) {
+        model.addAttribute("accounts", accountService.getAccounts());
+        return "accounts";
     }
 
 }

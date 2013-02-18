@@ -1,6 +1,8 @@
-package net.ontrack.backend;
+package net.ontrack.service;
 
 import net.ontrack.core.model.Account;
+
+import java.util.List;
 
 public interface AccountService {
 
@@ -9,4 +11,6 @@ public interface AccountService {
     String getRole(String mode, String user);
 
     Account getAccount(String mode, String user);
+
+    List<Account> getAccounts();
 }

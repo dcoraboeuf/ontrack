@@ -1,9 +1,7 @@
 package net.ontrack.backend
 
-import net.ontrack.core.model.*
 import net.ontrack.core.security.SecurityRoles
-import net.ontrack.service.EventService
-import net.ontrack.service.ManagementService
+import net.ontrack.service.AccountService
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 
