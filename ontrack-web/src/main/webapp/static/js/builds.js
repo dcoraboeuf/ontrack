@@ -65,6 +65,7 @@ var Builds = function () {
 	    return Template.config({
 	        url: 'ui/manage/build/{0}/{1}?u=1'.format(project, branch),
 	        more: true,
+	        refresh: true,
 	        dataLength: function (branchBuilds) {
 	            return branchBuilds.builds.length;
 	        },
@@ -93,6 +94,7 @@ var Builds = function () {
 	function buildValidationStampTemplate (project, branch, build) {
 	    return Template.config({
 	        url: 'ui/manage/build/{0}/{1}/{2}/validationStamps'.format(project, branch, build),
+	        refresh: true,
 	        render: Template.asTable(function (stamp) {
                 var pClass;
                 if (!stamp.run) {

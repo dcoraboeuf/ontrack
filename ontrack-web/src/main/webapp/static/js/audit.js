@@ -16,6 +16,7 @@ var Audit = function () {
 		    return Template.config({
 		        url: 'gui/event?u=1' + filter,
 		        more: true,
+		        refresh: true,
 		        render: Template.asTable(audit)
 		    });
 		}

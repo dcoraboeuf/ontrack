@@ -97,6 +97,17 @@ var Template = function () {
         load(id, true);
 	}
 
+	function reload (id) {
+	    var selector = '#' + id;
+	    // Gets the template
+	    var config = $(selector).data('template-config');
+	    // Reinitializes the offset and count
+	    config.count = 10;
+	    config.offset = 0;
+	    // Reloads
+	    load(id, false);
+	}
+
 	function load (id, append) {
 	    var selector = '#' + id;
 	    // Gets the template
@@ -144,10 +155,18 @@ var Template = function () {
         $('#' + id).data('template-config', config);
         // Loading
         load(id, false);
+        // Reloading?
+        if (config.refresh) {
+            setInterval(function () {
+                reload(id);
+            }, config.refreshInterval);
+        }
 	}
 
 	function config (input) {
 	    return $.extend({}, {
+	        refresh: false,
+	        refreshInterval: 30000, // 30 seconds
             offset: 0,
             count: 10,
             more: false,
