@@ -1,7 +1,7 @@
 var Audit = function () {
 	
-	function auditTemplate (items) {
-		return Template.list(items, audit);
+	function auditTemplate (containerId, append, items) {
+	    Template.table(containerId, append, items, audit);
 	}
 	
 	function audit (item) {

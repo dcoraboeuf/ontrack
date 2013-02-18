@@ -316,13 +316,8 @@ var Application = function () {
 				function (data) {
 					// Loading done
 					loading("#" + id + '-loading', false);
-					// Clears the container
-					if (append !== true) {
-					    $('#' + id + '-list').empty();
-					}
-					// Template
-					var html = templateFn(data);
-					$('#' + id + '-list').append(html);
+					// Fills the container
+					templateFn(id + '-list', append, data);
 				},
 				function (message) {
 			  		$('#' + id + '-error').html(message.htmlWithLines());
