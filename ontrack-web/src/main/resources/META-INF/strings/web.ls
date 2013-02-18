@@ -237,6 +237,10 @@ branch.description
 branches.builds
 	en,fr -> Builds
 
+branch.nobuild
+    en -> No build has been done yet on this branch.
+    fr -> Aucun build n'a encore été exécuté sur cette branche.
+
 branch.promotion_levels
 	en -> Promotion levels
 	fr -> Niveaux de promotion

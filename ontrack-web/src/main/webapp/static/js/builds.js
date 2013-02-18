@@ -13,6 +13,9 @@ var Builds = function () {
 	
 	function buildTemplate (project, branch) {
 	    return Template.fill(function (branchBuilds) {
+	        if (branchBuilds.builds.length == 0) {
+	            return '<div>&nbsp;</div><div class="alert">{0}</div>'.format(loc('branch.nobuild'));
+	        }
             var html = '<table class="table table-hover"><thead>';
             // Header
             html += '<tr>';
