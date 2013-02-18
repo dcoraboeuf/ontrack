@@ -16,9 +16,9 @@ var Branches = function () {
 	}
 	
 	function branchTemplate (project) {
-		return function (items) {
-			return Template.links(items, 'gui/branch/' + project);
-		};
+	    return function (containerId, append, items) {
+	        return Template.table(containerId, append, items, Template.tableRowLink('gui/branch/' + project));
+	    };
 	}
 	
 	return {
