@@ -65,9 +65,10 @@ var Builds = function () {
          });
 	}
 
-	function buildValidationStampTemplate (project, branch) {
-	    return function (containerId, append, items) {
-            return Template.table(containerId, append, items, function (stamp) {
+	function buildValidationStampTemplate (project, branch, build) {
+	    return Template.config({
+	        url: 'ui/manage/build/{0}/{1}/{2}/validationStamps'.format(project, branch, build),
+	        render: Template.asTable(function (stamp) {
                 var pClass;
                 if (!stamp.run) {
                     pClass = 'validation-stamp-norun';
@@ -80,8 +81,8 @@ var Builds = function () {
                 }
                 html += '</div>';
                 return html;
-            });
-        };
+	        })
+	    });
 	}
 	
 	return {

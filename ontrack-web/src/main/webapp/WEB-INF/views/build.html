@@ -29,8 +29,7 @@
 				<@panel title=loc("build.validation_stamps")>
 					<@dynamicsection
                         id="build-validation-stamp-list"
-                        url="ui/manage/build/${build.branch.project.name?html}/${build.branch.name?html}/${build.name?html}/validationStamps"
-                        template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}')">
+                        template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')">
                     </@dynamicsection>
 				</@panel>
 			</div>
