@@ -23,3 +23,6 @@ net.ontrack.backend.ImageIncorrectMIMETypeException
 net.ontrack.backend.ImageTooBigException
 	en -> Image size ({0}) is too big - maximum size is {1}.
 	fr -> La taille de l'image ({0}) est trop grande - le maximum est {1}.
+net.ontrack.backend.ImageCannotReadException
+    en -> Cannot read image content.
+    fr -> Impossible de lire le contenu de l'image.

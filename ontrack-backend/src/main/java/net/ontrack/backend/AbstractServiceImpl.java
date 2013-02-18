@@ -1,18 +1,7 @@
 package net.ontrack.backend;
 
-import groovy.lang.Closure;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.sql.DataSource;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.validation.ValidationException;
 import net.ontrack.service.EventService;
@@ -20,106 +9,65 @@ import net.ontrack.service.model.Event;
 import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.MultiLocalizable;
-
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import javax.sql.DataSource;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
     private final Validator validator;
     private final EventService eventService;
-	
-	public AbstractServiceImpl(DataSource dataSource, Validator validator, EventService eventService) {
-		setDataSource(dataSource);
+
+    public AbstractServiceImpl(DataSource dataSource, Validator validator, EventService eventService) {
+        setDataSource(dataSource);
         this.validator = validator;
         this.eventService = eventService;
-	}
-	
-	protected void event (Event event) {
-		eventService.event(event);
-	}
-	
-	protected <T> T getFirstItem (String sql, MapSqlParameterSource criteria, Class<T> type) {
-		List<T> items = getNamedParameterJdbcTemplate().queryForList(sql, criteria, type);
-		if (items.isEmpty()) {
-			return null;
-		} else {
-			return items.get(0);
-		}
-	}
-	
-	protected <T> List<T> dbList (String sql, Map<String, ?> params, final Closure<T> mapping) {
-		return getNamedParameterJdbcTemplate().query(
-                sql,
-                new MapSqlParameterSource(params),
-                new RowMapper<T>() {
-
-                    @Override
-                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return mapping.call(rs);
-                    }
-
-                });
-	}
-
-    protected <T> T dbLoad (String sql, Map<String,?> params, final Closure<T> mapping) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                sql,
-                new MapSqlParameterSource(params),
-                new RowMapper<T> () {
-
-                    @Override
-                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return mapping.call(rs, rowNum);
-                    }
-
-                }
-        );
     }
 
-    protected <T> T dbLoad (String sql, int id, final Closure<T> mapping) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                sql,
-                params("id", id),
-                new RowMapper<T> () {
-
-                    @Override
-                    public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return mapping.call(rs);
-                    }
-
-                }
-        );
+    protected void event(Event event) {
+        eventService.event(event);
     }
-	
-	protected int dbCreate (String sql, Map<String, ?> parameters) {
-		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-		getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(parameters), keyHolder);
-		return keyHolder.getKey().intValue();
-	}
-	
-	protected Ack dbDelete (String sql, int id) {
-		int count = getNamedParameterJdbcTemplate().update(sql, params("id", id));
-		return Ack.one(count);
-	}
-	
-	protected MapSqlParameterSource params (String name, Object value) {
-		return new MapSqlParameterSource(name, value);
-	}
 
-    protected void validate (final Object o, Class<?> group) {
+    protected <T> T getFirstItem(String sql, MapSqlParameterSource criteria, Class<T> type) {
+        List<T> items = getNamedParameterJdbcTemplate().queryForList(sql, criteria, type);
+        if (items.isEmpty()) {
+            return null;
+        } else {
+            return items.get(0);
+        }
+    }
+
+    protected int dbCreate(String sql, Map<String, ?> parameters) {
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(parameters), keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    protected Ack dbDelete(String sql, int id) {
+        int count = getNamedParameterJdbcTemplate().update(sql, params("id", id));
+        return Ack.one(count);
+    }
+
+    protected MapSqlParameterSource params(String name, Object value) {
+        return new MapSqlParameterSource(name, value);
+    }
+
+    protected void validate(final Object o, Class<?> group) {
         Set<ConstraintViolation<Object>> violations = validator.validate(o, group);
         if (violations != null && !violations.isEmpty()) {
             Collection<Localizable> messages = Collections2.transform(violations, new Function<ConstraintViolation<Object>, Localizable>() {
                 @Override
                 public Localizable apply(ConstraintViolation<Object> violation) {
-                    return getViolationMessage (o, violation);
+                    return getViolationMessage(o, violation);
                 }
             });
             // Exception
