@@ -7,7 +7,7 @@ import net.ontrack.core.model.EventType;
 public class GUIEvent {
 	
 	private final int id;
-	// TODO Author
+	private final String author;
 	private final EventType eventType;
 	private final String timestamp;
 	private final String elapsed;

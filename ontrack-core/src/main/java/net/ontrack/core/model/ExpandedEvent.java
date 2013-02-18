@@ -14,14 +14,14 @@ import org.joda.time.DateTime;
 public class ExpandedEvent {
 
 	private final int id;
-	// TODO Author
+	private final String author;
 	private final EventType eventType;
 	private final DateTime timestamp;
 	private final Map<Entity, EntityStub> entities;
 	private final Map<String, String> values;
 
-	public ExpandedEvent(int id, EventType eventType, DateTime timestamp) {
-		this(id, eventType, timestamp, new HashMap<Entity, EntityStub>(), new HashMap<String,String>());
+	public ExpandedEvent(int id, String author, EventType eventType, DateTime timestamp) {
+		this(id, author, eventType, timestamp, new HashMap<Entity, EntityStub>(), new HashMap<String,String>());
 	}
 	
 	public ExpandedEvent withValue (String name, String value) {

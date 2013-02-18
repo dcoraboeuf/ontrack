@@ -122,7 +122,7 @@ public class EventController extends AbstractUIController {
         }
 		
 		// OK
-		return new GUIEvent (event.getId(), event.getEventType(), timestamp, elapsed, html.toString(), icon, status);
+		return new GUIEvent (event.getId(), event.getAuthor(), event.getEventType(), timestamp, elapsed, html.toString(), icon, status);
 	}
 	
 	protected Period compress(Period period) {
