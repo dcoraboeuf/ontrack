@@ -318,6 +318,14 @@ var Application = function () {
 					loading("#" + id + '-loading', false);
 					// Fills the container
 					templateFn(id + '-list', append, data);
+					// Adjust the more button
+					if (more == 'true') {
+					    var some = data.length && data.length > 0;
+					    if (!some) {
+					        // Disable the more button
+					        $('#' + id + "-more").hide();
+					    }
+                    }
 				},
 				function (message) {
 			  		$('#' + id + '-error').html(message.htmlWithLines());
