@@ -1,9 +1,5 @@
 var Audit = function () {
 	
-	function auditTemplate (containerId, append, items) {
-	    Template.table(containerId, append, items, audit);
-	}
-	
 	function audit (item) {
 		var html = '<div class="{0}">'.format(item.status!="" ? 'status-' + item.status : '');
 		if (item.icon != "") {
@@ -19,7 +15,8 @@ var Audit = function () {
 		auditTemplate: function (filter) {
 		    return Template.config({
 		        url: 'gui/event?u=1' + filter,
-		        more: true
+		        more: true,
+		        render: Template.asTable(audit)
 		    });
 		}
 	};
