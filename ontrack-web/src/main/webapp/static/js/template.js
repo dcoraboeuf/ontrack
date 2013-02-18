@@ -67,13 +67,9 @@ var Template = function () {
 	function moreStatus(id, config, data) {
 	    if (config.more) {
 	        // console.log("Template.moreStatus, id={0}, data={1}, count={2}".format(id, data.length, config.count));
-	        config.offset += data.length;
-	        var hasMore;
-	        if (config.moreFn) {
-                hasMore = config.moreFn(data);
-	        } else {
-	            hasMore = (data.length >= config.count);
-	        }
+	        var dataCount = config.dataLength(data);
+	        config.offset += dataCount;
+	        var hasMore = (dataCount >= config.count);
 	        if (hasMore) {
 	            $('#'+ id + '-more-section').show();
 	        } else {
@@ -156,6 +152,9 @@ var Template = function () {
             count: 10,
             more: false,
             render: defaultRender,
+            dataLength: function (data) {
+                return data.length;
+            },
             placeholder: loc('general.empty')
 	    }, input);
 	}
