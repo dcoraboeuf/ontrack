@@ -24,8 +24,8 @@ var ValidationStamps = function () {
 	}
 	
 	function validationStampTemplate (project, branch) {
-		return function (items) {
-			return Template.list(items, function (stamp) {
+		return function (containerId, append, items) {
+		    return Template.table(containerId, append, items, function (stamp) {
 				var html = '';
 				html += validationStampImage (project, branch, stamp);
 				html += ' <a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
