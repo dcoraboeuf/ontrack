@@ -11,16 +11,14 @@ var ProjectGroups = function () {
 				Application.reload('audit');
 			});
 	}
-
-	function projectGroupTemplate (containerId, append, items) {
-		return Template.table(containerId, append, items, Template.tableRowLink('gui/projectgroup'));
-	}
 	
 	return {
 		createProjectGroup: createProjectGroup,
 		// Template for the list of groups
 		projectGroupTemplate: Template.config({
-            url: 'ui/manage/projectgroup/all'
+            url: 'ui/manage/projectgroup/all',
+            render: Template.asTable(Template.asLink('gui/projectgroup')),
+            placeholder: loc('projectgroup.empty')
 		})
 	};
 	

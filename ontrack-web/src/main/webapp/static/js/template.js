@@ -25,19 +25,27 @@ var Template = function () {
 
 	function asTable (itemFn) {
         return function (containerId, append, config, data) {
-            table(containerId, append, data, itemFn);
+            table(containerId, append, config, data, itemFn);
         };
 	}
 
-	function table (containerId, append, items, itemFn) {
+	function table (containerId, append, config, items, itemFn) {
 	    var containerSelector = '#' + containerId;
 	    if (append === true && $(containerSelector).has("tbody").length) {
 	        $(containerSelector + " tbody").append(generateTableRows(items, itemFn));
 	    } else {
 	        // No table defined, or no need to append
-	        // Direct filling of the container
-	        $(containerSelector).empty();
-	        $(containerSelector).append(generateTable(items, itemFn));
+	        // Some items
+	        if (items.length && items.length > 0) {
+                // Direct filling of the container
+                $(containerSelector).empty();
+                $(containerSelector).append(generateTable(items, itemFn));
+	        }
+	        // No items
+	        else {
+	            $(containerSelector).empty();
+	            $(containerSelector).append('<div class="alert">{0}</div>'.format(config.placeholder));
+            }
 	    }
 	}
 
@@ -50,16 +58,16 @@ var Template = function () {
         }
 	}
 
-	function defaultRender (containerId, template, data) {
-        table(containerId, data, function (item) {
+	function defaultRender (containerId, config, data) {
+        table(containerId, false, config, data, function (item) {
             return String(item).html();
         });
 	}
 
-	function display (id, template, data) {
+	function display (id, config, data) {
 	    var containerId = id + '-list';
-	    if (template.render) {
-            template.render(containerId, false, template, data);
+	    if (config.render) {
+            config.render(containerId, false, config, data);
 	    } else {
 	        throw "{0} template has no 'render' function.".format(id);
 	    }
@@ -74,17 +82,17 @@ var Template = function () {
 	function load (id) {
 	    var selector = '#' + id;
 	    // Gets the template
-	    var template = $(selector).data('template');
+	    var config = $(selector).data('template-config');
 		// Gets the loading information
-		var url = template.url;
+		var url = config.url;
 		if (url) {
 		    // Offset and count
-		    if (template.more) {
-		        url += '&offset=' + template.offset;
-		        url += '&count=' + template.count;
+		    if (config.more) {
+		        url += '&offset=' + config.offset;
+		        url += '&count=' + config.count;
 		    }
 		    // Logging
-		    console.log('Template.load id={0},url={1},more={2}'.format(id, url, template.more));
+		    console.log('Template.load id={0},url={1},more={2}'.format(id, url, config.more));
 			// Starts loading
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
@@ -96,7 +104,7 @@ var Template = function () {
 					Application.loading("#" + id + '-loading', false);
 					// Uses the data
 					try {
-					    display(id, template, data);
+					    display(id, config, data);
 					} catch (message) {
 				        error(id, message);
 					}
@@ -109,11 +117,11 @@ var Template = function () {
 		}
 	}
 
-	function init (id, template) {
+	function init (id, config) {
 	    // Logging
-	    console.log("Template for {0}:".format(id), template);
+	    console.log("Template for {0}:".format(id), config);
         // Associates the template definition with the ID
-        $('#' + id).data('template', template);
+        $('#' + id).data('template-config', config);
         // Loading
         load(id);
 	}
@@ -123,7 +131,8 @@ var Template = function () {
             offset: 0,
             count: 10,
             more: false,
-            render: defaultRender
+            render: defaultRender,
+            placeholder: loc('general.empty')
 	    }, input);
 	}
 	

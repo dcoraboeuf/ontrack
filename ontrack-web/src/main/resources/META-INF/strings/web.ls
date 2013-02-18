@@ -48,6 +48,10 @@ general.loading
 	en -> Loading...
 	fr -> Chargement en cours...
 
+general.empty
+    en -> No entry
+    fr -> Aucune entrée
+
 general.more
     en -> More...
     fr -> Plus...
@@ -184,6 +188,10 @@ home.projects
 
 [projectgroup]
 
+projectgroup.empty
+    en -> No project group has been created yet.
+    fr -> Aucun groupe de projet n'a encore été créé.
+
 projectgroup.create
 	en -> New group
 	fr -> Nouveau groupe
@@ -197,6 +205,10 @@ projectgroup.description
 	en,fr -> @[model.description]
 
 [project]
+
+project.empty
+    en -> No project has been created yet.
+    fr -> Aucun projet n'a encore été créé.
 
 project.create
 	en -> New project
@@ -217,6 +229,10 @@ project.branches
 	en,fr -> Branches
 
 [branches]
+
+branch.empty
+    en -> No branch has been created yet.
+    fr -> Aucune branche n'a encore été créée.
 
 branch.create
 	en -> New branch
@@ -250,6 +266,10 @@ branch.validation_stamps
 	fr -> Validations
 
 [validation_stamps]
+
+validation_stamp.empty
+    en -> No validation stamp has been created yet.
+    fr -> Aucune validation n'a encore été créée.
 
 validation_stamp.create
 	en -> New validation stamp
