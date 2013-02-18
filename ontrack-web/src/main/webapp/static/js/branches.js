@@ -24,7 +24,13 @@ var Branches = function () {
 	return {
 		createBranch: createBranch,
 		deleteBranch: deleteBranch,
-		branchTemplate: branchTemplate
+		branchTemplate: function (project) {
+		    return Template.config({
+		        url: 'ui/manage/branch/{0}/all'.format(project.html()),
+		        render: Template.asTable(Template.asLink('gui/branch/{0}'.format(project.html()))),
+		        placeholder: loc('branch.empty')
+		    });
+		}
 	};
 	
 } ();

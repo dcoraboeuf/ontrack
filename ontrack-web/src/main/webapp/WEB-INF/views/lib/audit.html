@@ -1,6 +1,6 @@
 <script type="text/javascript" src="${base}/js/audit.js"></script>
 
 <#macro audit id="audit" filter="">
-	<@dynamicsection id=id template="Audit.auditTemplate('${filter?html}')">
+	<@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
 	</@dynamicsection>
 </#macro>

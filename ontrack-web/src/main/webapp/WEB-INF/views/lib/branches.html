@@ -1,7 +1,7 @@
 <script type="text/javascript" src="${base}/js/branches.js"></script>
 
 <#macro branches project id="branches" create=true>
-	<@dynamicsection id=id url="ui/manage/branch/${project?html}/all" template="Branches.branchTemplate('${project?html}')">
+	<@dynamicsection id=id template="Branches.branchTemplate('${project?html}')">
 		<#if create>
 			<@dialog id="branch-create-dialog">
 				<@form_text name="name" label=loc('branch.name') />
