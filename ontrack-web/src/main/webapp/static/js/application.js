@@ -123,16 +123,12 @@ var Application = function () {
 	
 	function values (baseId) {
 		var data = {};
-		$('#' + baseId + ' input').each (function (index, field) {
+		$('#' + baseId + ' input,textarea,select').each (function (index, field) {
 			var name = field.getAttribute('name');
 			var value = field.value;
 			data[name] = value;
 		});
-		$('#' + baseId + ' textarea').each (function (index, field) {
-			var name = field.getAttribute('name');
-			var value = field.value;
-			data[name] = value;
-		});
+		console.log(JSON.stringify(data));
 		return data;
 	}
 	
