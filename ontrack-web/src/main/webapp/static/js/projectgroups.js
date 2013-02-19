@@ -6,8 +6,7 @@ var ProjectGroups = function () {
 			title: loc('projectgroup.create.title'),
 			url: 'ui/manage/projectgroup',
 			successFn: function (data) {
-				Application.reload('projectgroups');
-				Application.reload('audit');
+				location.reload();
 			}
 	    });
 	}
