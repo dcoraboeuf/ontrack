@@ -24,8 +24,8 @@
     <button type="button" class="btn btn-link" onclick="Accounts.createAccount()"><@lh key="account.new" /></button>
 
     <@dialog id="account-create-dialog">
-        <@form_text name="name" label=loc('account.name') />
-        <@form_memo name="fullName" label=loc('account.fullName') />
+        <@form_text name="name" label=loc('account.name') size=16 maxlength=16 />
+        <@form_text name="fullName" label=loc('account.fullName') maxlength=80 />
 
         <!-- Role -->
         <@form_select name="roleName" label=loc('account.role')>

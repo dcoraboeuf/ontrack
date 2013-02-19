@@ -82,6 +82,8 @@ public interface SQL {
 
     String ACCOUNT_LIST = "SELECT ID, NAME, FULLNAME, ROLENAME, MODE FROM ACCOUNTS ORDER BY NAME";
 
+    String ACCOUNT_CREATE = "INSERT INTO ACCOUNTS (NAME, FULLNAME, ROLENAME, MODE, PASSWORD) VALUES (:name, :fullName, :roleName, :mode, :password)";
+
     // Configuration
 
     String CONFIGURATION_GET = "SELECT VALUE FROM CONFIGURATION WHERE NAME = :name";

@@ -1,6 +1,7 @@
 package net.ontrack.backend;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.validation.ValidationException;
@@ -17,10 +18,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
@@ -59,6 +57,12 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
     protected MapSqlParameterSource params(String name, Object value) {
         return new MapSqlParameterSource(name, value);
+    }
+
+    public <T> void validate(T value, Predicate<T> predicate, String code, Object... parameters) {
+        if (!predicate.apply(value)) {
+            throw new ValidationException(new MultiLocalizable(Collections.singletonList(new LocalizableMessage(code, parameters))));
+        }
     }
 
     protected void validate(final Object o, Class<?> group) {
