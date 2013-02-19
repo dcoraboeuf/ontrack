@@ -226,6 +226,10 @@ account.password.confirm
     en -> Confirm password
     fr -> Confirmation du mot de passe
 
+account.password.confirm.incorrect
+    en -> Password confirmation is incorrect
+    fr -> La confirmation du mot de passe est incorrecte.
+
 [home]
 
 home

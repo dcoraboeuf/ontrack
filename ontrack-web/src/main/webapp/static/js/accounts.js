@@ -23,6 +23,21 @@ var Accounts = function () {
                     }
                 });
 			},
+			validateFn: function () {
+                var mode = $('#mode').val();
+			    if (mode == 'builtin') {
+			        var password = $('#password').val();
+			        var confirm = $('#passwordConfirm').val();
+			        if (password != confirm) {
+                        Application.dialogError('account-create-dialog', loc('account.password.confirm.incorrect'));
+			            return false;
+			        } else {
+			            return true;
+			        }
+			    } else {
+			        return true;
+			    }
+			},
 			successFn: function (data) {
 				location = 'gui/admin/accounts';
 			}

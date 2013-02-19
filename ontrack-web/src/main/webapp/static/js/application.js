@@ -51,11 +51,16 @@ var Application = function () {
 	 * @param url URL to post to
 	 * @param successFn Function to call when the submit is OK. This function takes the returned JSON data as a unique parameter
 	 * @param openFn Function to call when the dialog is opended. This defaults to no action
+	 * @param validateFn Function to call when validating before submitting. It must return false when
+	 *    the validation is not OK. The default returns always true.
 	 */
 	function dialogAndSubmit (config) {
 	    config = $.extend({
 	        method: 'POST',
-	        openFn: $.noop
+	        openFn: $.noop,
+	        validateFn: function () {
+	            return true;
+	        }
 	    }, config);
 	    // Dialog
 	    dialog ({
@@ -63,23 +68,36 @@ var Application = function () {
 	        title: config.title,
 	        openFn: config.openFn,
 	        submitFn: function (closeFn) {
-				submit ({
-                    id: config.id,
-                    method: config.method,
-                    url: config.url,
-                    successFn: function (data) {
-						// Does something with the data
-						config.successFn(data);
-						// Closes the dialog
-						closeFn();
-                    },
-                    errorMessageFn: function (message) {
-				  		$('#' + config.id + '-error').html(message.htmlWithLines());
-				  		$('#' + config.id + '-error').show();
-                    }
-				});
+	            if (config.validateFn()) {
+                    submit ({
+                        id: config.id,
+                        method: config.method,
+                        url: config.url,
+                        successFn: function (data) {
+                            // Does something with the data
+                            config.successFn(data);
+                            // Closes the dialog
+                            closeFn();
+                        },
+                        errorMessageFn: function (message) {
+                            dialogError(config.id, message);
+                        }
+                    });
+                }
 	        }
 	    });
+	}
+
+	/**
+	 * Displays an error in a dialog. If the message is null or not defined, clears the error box.
+	 */
+	function dialogError (id, message) {
+	    if (message && message != '') {
+            $('#' + id + '-error').html(message.htmlWithLines());
+            $('#' + id + '-error').show();
+        } else {
+            $('#' + id + '-error').hide();
+        }
 	}
 	
 	/**
@@ -111,6 +129,8 @@ var Application = function () {
 		$('#' + config.id + '-cancel').click(function () {
 			$('#' + config.id).dialog('close');
 		});
+		// Clears any error message
+		dialogError();
 		// Initialization
 		config.openFn();
 		// Shows the dialog
@@ -326,6 +346,7 @@ var Application = function () {
 		dialog: dialog,
 		submit: submit,
 		dialogAndSubmit: dialogAndSubmit,
+		dialogError: dialogError,
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
