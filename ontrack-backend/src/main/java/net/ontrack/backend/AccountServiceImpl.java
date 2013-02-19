@@ -33,7 +33,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     private final RowMapper<Account> accountRowMapper = new RowMapper<Account>() {
         @Override
         public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Account(rs.getInt("id"), rs.getString("name"), rs.getString("fullName"), rs.getString("roleName"), rs.getString("mode"));
+            return new Account(rs.getInt("id"), rs.getString("name"), rs.getString("fullName"), rs.getString("email"), rs.getString("roleName"), rs.getString("mode"));
         }
     };
 
@@ -118,6 +118,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                 MapBuilder.params("name", form.getName())
                         .with("fullName", form.getFullName())
                         .with("roleName", form.getRoleName())
+                        .with("email", form.getEmail())
                         .with("mode", form.getMode())
                         .with("password", form.getPassword())
                         .get()

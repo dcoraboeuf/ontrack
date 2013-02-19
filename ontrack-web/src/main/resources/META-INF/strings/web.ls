@@ -184,6 +184,10 @@ account.fullName
     en -> Full name
     fr -> Nom complet
 
+account.email
+    en -> eMail
+    fr -> Courriel
+
 account.role
     en -> Role
     fr -> Rôle

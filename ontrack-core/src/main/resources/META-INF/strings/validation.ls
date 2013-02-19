@@ -9,6 +9,15 @@ validation.field
 
 [account]
 
+net.ontrack.core.model.AccountCreationForm.name
+    en,fr -> @[account.name]
+
+net.ontrack.core.model.AccountCreationForm.fullName
+    en,fr -> @[account.fullName]
+
+net.ontrack.core.model.AccountCreationForm.email
+    en,fr -> @[account.email]
+
 net.ontrack.core.model.Account.roleName.incorrect
     en -> The account role must be one of {0}
     fr -> Le rôle de l'utilisateur doit avoir l'une des valeurs suivantes : {0}

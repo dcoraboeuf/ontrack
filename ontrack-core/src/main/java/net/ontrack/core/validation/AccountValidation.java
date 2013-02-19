@@ -17,4 +17,8 @@ public interface AccountValidation {
     @Size(min = 0, max = 80)
     String getFullName();
 
+    @NotNull
+    @Size(min = 1, max = 80)
+    String getEmail();
+
 }
