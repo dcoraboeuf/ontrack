@@ -48,12 +48,16 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
         try {
             return getNamedParameterJdbcTemplate().queryForObject(
                     SQL.ACCOUNT_AUTHENTICATE,
-                    params("user", user).addValue("password", StringUtils.upperCase(Sha512DigestUtils.shaHex(password))),
+                    params("user", user).addValue("password", encodePassword(password)),
                     accountRowMapper
             );
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }
+    }
+
+    private String encodePassword(String password) {
+        return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
     }
 
     @Override
@@ -112,6 +116,8 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                 return !"builtin".equals(form.getMode()) || StringUtils.isNotBlank(input);
             }
         }, "net.ontrack.core.model.Account.password.requiredForBuiltin");
+        // Encoding of the password
+        String password = encodePassword(form.getPassword());
         // Creation
         int count = dbCreate(
                 SQL.ACCOUNT_CREATE,
@@ -120,7 +126,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                         .with("roleName", form.getRoleName())
                         .with("email", form.getEmail())
                         .with("mode", form.getMode())
-                        .with("password", form.getPassword())
+                        .with("password", password)
                         .get()
         );
         // OK
