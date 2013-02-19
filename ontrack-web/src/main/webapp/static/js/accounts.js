@@ -1,14 +1,14 @@
 var Accounts = function () {
 
     function createAccount () {
-		Application.dialogAndSubmit(
-			'account-create-dialog',
-			loc('account.new'),
-			'POST',
-			'ui/admin/accounts',
-			function (data) {
+		Application.dialogAndSubmit({
+			id: 'account-create-dialog',
+			title: loc('account.new'),
+			url: 'ui/admin/accounts',
+			successFn: function (data) {
 				location = 'gui/admin/accounts';
-			});
+			}
+		});
     }
 
     return {

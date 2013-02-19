@@ -1,13 +1,13 @@
 var Projects = function () {
 	
 	function createProject () {
-		Application.dialogAndSubmit(
-			'project-create-dialog',
-			loc('project.create.title'),
-			'POST',
-			'ui/manage/project',
-			function (data) {
-				location = 'gui/project/' + data.name;
+		Application.dialogAndSubmit({
+			id: 'project-create-dialog',
+			title: loc('project.create.title'),
+			url: 'ui/manage/project',
+			successFn: function (data) {
+				    location = 'gui/project/' + data.name;
+			    }
 			});
 	}
 	

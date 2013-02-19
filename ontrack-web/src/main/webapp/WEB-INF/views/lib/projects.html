@@ -6,9 +6,9 @@
 			<@dialog id="project-create-dialog">
 				<@form_text name="name" label=loc('project.name') />
 				<@form_memo name="description" label=loc('project.description') required=false />
-				
+
+                <@dialog_button id="project-create-dialog-submit" class="btn-primary" text=loc('general.create') />
 				<@dialog_button_cancel />
-				<@dialog_button id="project-create-dialog-submit" class="btn-primary" text=loc('general.create') />
 			</@dialog>
 			<button id="project-create-button" type="button" class="btn" onclick="Projects.createProject()"><@lh key="project.create" /></button>
 		</#if>

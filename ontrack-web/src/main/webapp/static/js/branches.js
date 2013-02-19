@@ -1,14 +1,14 @@
 var Branches = function () {
 	
 	function createBranch (project) {
-		Application.dialogAndSubmit(
-			'branch-create-dialog',
-			loc('branch.create.title'),
-			'POST',
-			'ui/manage/branch/' + project,
-			function (data) {
+		Application.dialogAndSubmit({
+			id: 'branch-create-dialog',
+			title: loc('branch.create.title'),
+			url: 'ui/manage/branch/' + project,
+			successFn: function (data) {
 				location = 'gui/branch/' + project + '/' + data.name;
-			});
+			}
+	    });
 	}
 	
 	function deleteBranch (project,name) {

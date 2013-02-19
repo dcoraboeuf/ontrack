@@ -1,14 +1,14 @@
 var ValidationStamps = function () {
 	
 	function createValidationStamp (project, branch) {
-		Application.dialogAndSubmit(
-			'validation_stamp-create-dialog',
-			loc('validation_stamp.create.title'),
-			'POST',
-			'ui/manage/validation_stamp/{0}/{1}'.format(project,branch),
-			function (data) {
+		Application.dialogAndSubmit({
+			id: 'validation_stamp-create-dialog',
+			title: loc('validation_stamp.create.title'),
+			url: 'ui/manage/validation_stamp/{0}/{1}'.format(project,branch),
+			successFn: function (data) {
 				location = 'gui/validation_stamp/{0}/{1}/{2}'.format(project,branch,data.name);
-			});
+			}
+		});
 	}
 	
 	function deleteValidationStamp(project, branch, name) {

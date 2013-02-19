@@ -1,15 +1,15 @@
 var ProjectGroups = function () {
 	
 	function createProjectGroup () {
-		Application.dialogAndSubmit(
-			'projectgroup-create-dialog',
-			loc('projectgroup.create.title'),
-			'POST',
-			'ui/manage/projectgroup',
-			function (data) {
+		Application.dialogAndSubmit({
+			id: 'projectgroup-create-dialog',
+			title: loc('projectgroup.create.title'),
+			url: 'ui/manage/projectgroup',
+			successFn: function (data) {
 				Application.reload('projectgroups');
 				Application.reload('audit');
-			});
+			}
+	    });
 	}
 	
 	return {

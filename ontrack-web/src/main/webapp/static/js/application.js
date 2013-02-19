@@ -41,54 +41,76 @@ function loc () {
 // Application singleton
 
 var Application = function () {
-	
-	function dialogAndSubmit (dialogId, dialogTitle, method, url, onSuccessFn) {
-		dialog (
-			dialogId,
-			dialogTitle,
-			function (closeFn) {
-				submit (
-					dialogId,
-					method, url, 
-					function (data) {
+
+	/**
+	 * Opens a dialog and manages the submit through a AJAX request.
+	 * Configuration:
+	 * @param id Dialog HTML ID
+	 * @param title Dialog title
+	 * @param method HTTP method (defaults to 'POST')
+	 * @param url URL to post to
+	 * @param successFn Function to call when the submit is OK. This function takes the returned JSON data as a unique parameter
+	 */
+	function dialogAndSubmit (config) {
+	    config = $.extend({
+	        method: 'POST'
+	    }, config);
+	    // Dialog
+	    dialog ({
+	        id: config.id,
+	        title: config.title,
+	        submitFn: function (closeFn) {
+				submit ({
+                    id: config.id,
+                    method: config.method,
+                    url: config.url,
+                    successFn: function (data) {
 						// Does something with the data
-						onSuccessFn(data);
+						config.successFn(data);
 						// Closes the dialog
 						closeFn();
-					},
-					function (message) {
-				  		$('#' + dialogId + '-error').html(message.htmlWithLines());
-				  		$('#' + dialogId + '-error').show();
+                    },
+                    errorMessageFn: function (message) {
+				  		$('#' + config.id + '-error').html(message.htmlWithLines());
+				  		$('#' + config.id + '-error').show();
+                    }
 				});
-			});
+	        }
+	    });
 	}
 	
 	/**
 	 * Opens a dialog defined by the <code>dialogId</code> HTML fragment.
-	 * @param dialogId ID of a HTML section
-	 * @param dialogTitle Title of the dialog
-	 * @param onSubmitFn <code>(. => .) => .</code> - Function to call when the <code>submit</code> button
-	 * is triggered. The <code>onSubmitFn</code> is called with a function
-	 * (no argument) which is responsible to close the dialog. 
+	 * @param id ID of a HTML section
+	 * @param title Title of the dialog
+	 * @param submitFn Function to call when the <code>submit</code> button
+	 * is triggered. The <code>submitFn</code> is called with a function
+	 * (no argument) which is responsible to close the dialog. Defaults to just
+	 * closing the dialog
 	 */
-	function dialog (dialogId, dialogTitle, onSubmitFn) {
+	function dialog (config) {
+	    config = $.extend({
+	        submitFn: function (closeFn) {
+	            closeFn();
+	        }
+	    }, config);
 		// Sets the submit function
-		$('#' + dialogId).unbind('submit');
-		$('#' + dialogId).submit(function () {
-			onSubmitFn(function () {
-				$('#' + dialogId).dialog('close');
+		$('#' + config.id).unbind('submit');
+		$('#' + config.id).submit(function () {
+			config.submitFn(function () {
+				$('#' + config.id).dialog('close');
 			});
 			return false;
 		});
 		// Sets the cancel button (if any)
-		$('#' + dialogId + '-cancel').unbind('click');
-		$('#' + dialogId + '-cancel').click(function () {
-			$('#' + dialogId).dialog('close');
+		$('#' + config.id + '-cancel').unbind('click');
+		$('#' + config.id + '-cancel').click(function () {
+			$('#' + config.id).dialog('close');
 		});
 		// Shows the dialog
-		$('#' + dialogId).dialog({
-			title: dialogTitle,
-			width: 450,
+		$('#' + config.id).dialog({
+			title: config.title,
+			width: 450, // TODO In configuration
 			modal: true
 		});
 	}
@@ -110,18 +132,25 @@ var Application = function () {
 	
 	/**
 	 * Submit a set of data defined in a form.
-	 * @param baseId ID of the HTML form
+	 * @param id ID of the HTML form
 	 * @param method HTTP method to use ('GET', 'POST'...)
 	 * @param url URL to call
 	 * @param successFn <code>(JSON => .)</code> Function called in case of success.
 	 * @param errorMessageFn <code>(String => .)</code> Function called in case of error.
 	 * @see #ajax
 	 */
-	function submit (baseId, method, url, successFn, errorMessageFn) {
+	function submit (config) {
+	    config = $.extend({
+	        method: 'POST',
+	        successFn: $.noop,
+	        errorMessageFn: function (message) {
+	            displayError(message);
+	        }
+	    }, config);
 		// Collects all fields values
-		var data = values (baseId);
+		var data = values (config.id);
 		// Call
-		ajax (method, url, data, successFn, errorMessageFn);
+		ajax (config.method, config.url, data, config.successFn, config.errorMessageFn);
 	}
 	
 	function onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn) {
