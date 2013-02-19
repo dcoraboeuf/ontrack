@@ -6,6 +6,7 @@
             <tr>
                 <th><@lh key="account.name" /></th>
                 <th><@lh key="account.fullName" /></th>
+                <th><@lh key="account.email" /></th>
                 <th><@lh key="account.role" /></th>
                 <th><@lh key="account.mode" /></th>
             </tr>
@@ -15,6 +16,7 @@
                 <tr>
                     <td>${account.name?html}</td>
                     <td>${account.fullName?html}</td>
+                    <td><a href="mailto:${account.email?html}">${account.email?html}</a></td>
                     <td><@lh key="account.role." + account.roleName /></td>
                     <td>${account.mode?html}</td>
                 </tr>
