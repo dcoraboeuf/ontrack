@@ -50,15 +50,18 @@ var Application = function () {
 	 * @param method HTTP method (defaults to 'POST')
 	 * @param url URL to post to
 	 * @param successFn Function to call when the submit is OK. This function takes the returned JSON data as a unique parameter
+	 * @param openFn Function to call when the dialog is opended. This defaults to no action
 	 */
 	function dialogAndSubmit (config) {
 	    config = $.extend({
-	        method: 'POST'
+	        method: 'POST',
+	        openFn: $.noop
 	    }, config);
 	    // Dialog
 	    dialog ({
 	        id: config.id,
 	        title: config.title,
+	        openFn: config.openFn,
 	        submitFn: function (closeFn) {
 				submit ({
                     id: config.id,
@@ -87,6 +90,7 @@ var Application = function () {
 	 * is triggered. The <code>submitFn</code> is called with a function
 	 * (no argument) which is responsible to close the dialog. Defaults to just
 	 * closing the dialog
+	 * @param openFn Function to call when the dialog is opended. This defaults to no action
 	 */
 	function dialog (config) {
 	    config = $.extend({
@@ -107,6 +111,8 @@ var Application = function () {
 		$('#' + config.id + '-cancel').click(function () {
 			$('#' + config.id).dialog('close');
 		});
+		// Initialization
+		config.openFn();
 		// Shows the dialog
 		$('#' + config.id).dialog({
 			title: config.title,
