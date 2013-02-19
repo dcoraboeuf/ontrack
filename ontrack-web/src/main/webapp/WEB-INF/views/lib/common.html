@@ -118,6 +118,18 @@
 	</div>
 </#macro>
 
+<#macro form_select name label idPrefix="" help="">
+    <@form_field name=name label=label idPrefix=idPrefix help=help>
+        <select id="${id?html}" name="${name?html}">
+            <#nested/>
+        </select>
+    </@form_field>
+</#macro>
+
+<#macro form_select_option value text>
+    <option value="${value?html}">${text?html}</option>
+</#macro>
+
 <#macro form_checkbox name label idPrefix="" help="" checked=false>
     <@form_field name=name label=label idPrefix=idPrefix help=help>
         <#assign checkedAttr = "" />

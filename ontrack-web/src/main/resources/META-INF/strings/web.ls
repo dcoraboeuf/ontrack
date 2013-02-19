@@ -172,6 +172,10 @@ accounts
     en -> Accounts
     fr -> Utilisateurs
 
+account.new
+    en -> Create a new account
+    fr -> Créer un nouvel utilisateur
+
 account.name
     en -> Name
     fr -> Nom
@@ -184,9 +188,43 @@ account.role
     en -> Role
     fr -> Rôle
 
+account.role.ROLE_ADMIN
+    en -> Administrator
+    fr -> Administrateur
+account.role.ROLE_CONTROLLER
+    en -> Controller
+    fr -> Contrôleur
+account.role.ROLE_USER
+    en -> User
+    fr -> Utilisateur
+account.role.ROLE_ADMIN.help
+    en -> Administrators can: manage other accounts, manage all entities (projects, branches...).
+    fr -> Les administrateurs peuvent gérer les autres comptes, gérer toutes les entités (projets, branches, ...).
+account.role.ROLE_CONTROLLER.help
+    en -> Controllers can create builds and validation runs. This role is typically given to automated tools like Jenkins.
+    fr -> Les contrôleurs peuvent créer des builds et exécuter des validations. Ce rôle est typiquement attribué à des outils comme Jenkins.
+account.role.ROLE_USER.help
+    en -> Users can enter comments and add new statuses for builds and validation runs.
+    fr -> Les utilisateurs peuvent ajouter des commentaires et des informations de statut aux builds et aux exécutions de validations.
+
 account.mode
-    en -> Mode
-    fr -> Mode
+    en -> Authentication mode
+    fr -> Mode d'authentification
+
+account.mode.builtin
+    en -> Built in
+    fr -> Prédéfini
+
+account.mode.ldap
+    en,fr -> LDAP
+
+account.password
+    en -> Password
+    fr -> Mot de passe
+
+account.password.confirm
+    en -> Confirm password
+    fr -> Confirmation du mot de passe
 
 [home]
 

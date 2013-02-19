@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="accounts" breadcrumbs = {loc("home"): ""}>
+<@layout_std page="accounts" script=true breadcrumbs = {loc("home"): ""}>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -15,10 +15,43 @@
                 <tr>
                     <td>${account.name?html}</td>
                     <td>${account.fullName?html}</td>
-                    <td>${account.roleName?html}</td>
+                    <td><@lh key="account.role." + account.roleName /></td>
                     <td>${account.mode?html}</td>
                 </tr>
             </#list>
         </tbody>
     </table>
+    <button type="button" class="btn btn-link" onclick="Accounts.createAccount()"><@lh key="account.new" /></button>
+
+    <@dialog id="account-create-dialog">
+        <@form_text name="name" label=loc('account.name') />
+        <@form_memo name="fullName" label=loc('account.fullName') />
+
+        <!-- Role -->
+        <@form_select name="roleName" label=loc('account.role')>
+            <@form_select_option value="ROLE_ADMIN" text=loc('account.role.ROLE_ADMIN') />
+            <@form_select_option value="ROLE_CONTROLLER" text=loc('account.role.ROLE_CONTROLLER') />
+            <@form_select_option value="ROLE_USER" text=loc('account.role.ROLE_USER') />
+        </@form_select>
+
+        <div class="help-inline">
+            <p><@lh key="account.role.ROLE_ADMIN.help" /></p>
+            <p><@lh key="account.role.ROLE_CONTROLLER.help" /></p>
+            <p><@lh key="account.role.ROLE_USER.help" /></p>
+        </div>
+
+        <!-- Mode -->
+        <@form_select name="mode" label=loc('account.mode')>
+            <@form_select_option value="builtin" text=loc('account.mode.builtin') />
+            <@form_select_option value="ldap" text=loc('account.mode.ldap') />
+        </@form_select>
+
+        <!-- Password and confirmation if mode = builtin -->
+        <@form_password name="password" label=loc('account.password') />
+        <@form_password name="passwordConfirm" label=loc('account.password.confirm') />
+
+        <@dialog_button id="account-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+        <@dialog_button_cancel />
+    </@dialog>
+
 </@layout_std>
