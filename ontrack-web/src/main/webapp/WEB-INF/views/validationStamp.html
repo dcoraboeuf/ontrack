@@ -2,40 +2,33 @@
 
 <@layout_std page="validation_stamp" title=validationStamp.name modules=["projects","branches","builds","validation_stamps","audit"] breadcrumbs = {loc("home"): "", validationStamp.branch.project.name?html: "gui/project/${validationStamp.branch.project.name?html}", validationStamp.branch.name?html: "gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}"}>
 	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a>
+                    / <a href="gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
+                / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}</span>
+                <span class="action action-optional">
+                    <#if secAdmin()>
+                        <span onclick=""><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span onclick="ValidationStamps.editImage();"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
+                        <span onclick=""><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                    </#if>
+                    <span onclick="location='gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                </span>
+            </div>
+        </div>
+        <div id="validation_stamp-image-form" class="row-fluid x-dialog">
+            <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image">
+                <input id="validation_stamp.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
+                <p class="help-block"><@lh key="validation_stamp.image.help" /></p>
+                <button id="validation_stamp.image.submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
+                <button id="validation_stamp.image.cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>
+            </form>
+            <div class="span12 muted">${validationStamp.description?html}</div>
+        </div>
 		<div class="row-fluid">
-			<div class="span3">
-				<p>
-					<@lh key="model.project" />
-					<b><a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a></b>
-				</p>
-				<p>
-					<@lh key="model.branch" />
-					<b><a href="gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a></b>
-				</p>
-				<p>
-					<@lh key="model.validation_stamp" />
-					<b>${validationStamp.name?html}</b>
-				</p>
-				<p class="help-block">${validationStamp.description?html}</p>
-				<p>
-					<@lh key="validation_stamp.image" />
-					<i id="validation_stamp-image-link" class="icon-pencil action action-optional" title="<@lh key='validation_stamp.image.edit' />" onclick="ValidationStamps.editImage();"></i>
-				</p>
-				<p>
-					<i class="action" onclick="ValidationStamps.editImage();"><@validation_stamp_img validationStamp=validationStamp /></i>
-				</p>
-				<p>
-					<div id="validation_stamp-image-form" class="alert alert-info x-dialog" style="float:left">
-						<form method="POST" enctype="multipart/form-data" action="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image">
-							<input id="validation_stamp.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
-							<p class="help-block"><@lh key="validation_stamp.image.help" /></p>
-							<button id="validation_stamp.image.submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
-							<button id="validation_stamp.image.cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>
-						</form>
-					</div>
-				</p>
-			</div>
-			<div class="span4">
+			<div class="span12">
 				<@audit filter="&validationStamp=${validationStamp.id}" />
 			</div>
 		</div>
