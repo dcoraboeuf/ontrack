@@ -1,11 +1,11 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.service.AccountService;
 import net.ontrack.backend.ConfigurationCache;
 import net.ontrack.backend.ConfigurationCacheKey;
 import net.ontrack.backend.ConfigurationCacheSubscriber;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
                 String name = ldapAuthentication.getName();
                 Account account = accountService.getAccount("ldap", name);
                 if (account == null) {
-                    account = new Account(0, name, name, SecurityRoles.USER, "ldap");
+                    account = new Account(0, name, name, "", SecurityRoles.USER, "ldap");
                 }
                 // OK
                 return new AccountAuthentication(account);
