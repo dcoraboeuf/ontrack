@@ -375,6 +375,24 @@ validationRun.notRun
     en -> Not run
     fr -> Non exécuté
 
+[validationRunStatus]
+
+validationRunStatus.new
+    en -> Update status
+    fr -> Mettre à jour le statut
+
+validationRunStatus.status
+    en -> Status
+    fr -> Statut
+
+validationRunStatus.status.none
+    en -> Comment only
+    fr -> Commentaire
+
+validationRunStatus.description
+    en -> Comment
+    fr -> Commentaire
+
 [events]
 
 event.list

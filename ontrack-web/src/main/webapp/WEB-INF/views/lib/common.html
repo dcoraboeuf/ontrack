@@ -108,7 +108,9 @@
 <#macro form_field name label idPrefix="" help="">
 	<#assign id = idPrefix + name />
 	<div id="${id?html}-line" class="control-group">
-		<label class="control-label" for="${id?html}">${label?html}</label>
+        <#if label != "">
+		    <label class="control-label" for="${id?html}">${label?html}</label>
+        </#if>
 		<div class="controls">
 			<#nested />
 			<#if help != "">

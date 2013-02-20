@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validationRun" title="#${validationRun.indexNb?string}"
+<@layout_std page="validationRun" script=true title="#${validationRun.indexNb?string}"
     modules=["projects","branches","builds","validation_stamps","audit"]
     breadcrumbs = {
         loc("home"): "",
@@ -29,6 +29,24 @@
             </div>
             <div class="span12 muted">${validationRun.description?html}</div>
         </div>
+        <#if secLogged()>
+            <div class="row-fluid">
+                <div class="span12">
+                    <button class="btn btn-link" onclick="ValidationRun.updateStatus()"><i class="icon-comment"></i> <@lh key="validationRunStatus.new" /></button>
+                    <@dialog id="status-form">
+                        <@form_memo name="description" label="" placeholder=loc("validationRunStatus.description") maxlength=1000 />
+                        <@form_select name="status" label="">
+                        <@form_select_option value="" text=loc("validationRunStatus.status.none") />
+                            <#list modelStatusList() as status>
+                                <@form_select_option value=status text=status />
+                            </#list>
+                        </@form_select>
+                        <@dialog_button id="status-form-submit" class="btn-primary" text=loc('general.submit') />
+                        <@dialog_button_cancel />
+                    </@dialog>
+                </div>
+            </div>
+        </#if>
         <div class="row-fluid">
             <div class="span12">
                 <@panel title=loc("event.list")>
