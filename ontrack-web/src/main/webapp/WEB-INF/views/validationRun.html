@@ -11,6 +11,7 @@
         validationRun.validationStamp.name?html:
             "gui/validation_stamp/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.validationStamp.name?html}"}>
 	<div class="container-fluid">
+        <input id="validationRunId" type="hidden" value="${validationRun.id}" />
 		<div class="row-fluid">
             <div class="span12 page-title">
                 <span class="title">
@@ -33,17 +34,20 @@
             <div class="row-fluid">
                 <div class="span12">
                     <button class="btn btn-link" onclick="ValidationRun.updateStatus()"><i class="icon-comment"></i> <@lh key="validationRunStatus.new" /></button>
-                    <@dialog id="status-form">
-                        <@form_memo name="description" label="" placeholder=loc("validationRunStatus.description") maxlength=1000 />
+                    <@form id="status-form" class="x-dialog alert alert-info">
+                        <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
                         <@form_select name="status" label="">
                         <@form_select_option value="" text=loc("validationRunStatus.status.none") />
                             <#list modelStatusList() as status>
                                 <@form_select_option value=status text=status />
                             </#list>
                         </@form_select>
-                        <@dialog_button id="status-form-submit" class="btn-primary" text=loc('general.submit') />
-                        <@dialog_button_cancel />
-                    </@dialog>
+                        <div id="status-error" class="x-error alert alert-error"></div>
+                        <@form_buttons>
+                            <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                            <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()"><@lh key="general.cancel" /></button>
+                        </@form_buttons>
+                    </@form>
                 </div>
             </div>
         </#if>

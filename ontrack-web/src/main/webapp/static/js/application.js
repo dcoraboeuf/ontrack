@@ -92,11 +92,18 @@ var Application = function () {
 	 * Displays an error in a dialog. If the message is null or not defined, clears the error box.
 	 */
 	function dialogError (id, message) {
+	    error(id + '-error');
+	}
+
+	/**
+	 * Displays an error message in a container
+	 */
+	function error (id, message) {
 	    if (message && message != '') {
-            $('#' + id + '-error').html(message.htmlWithLines());
-            $('#' + id + '-error').show();
+            $('#' + id).html(message.htmlWithLines());
+            $('#' + id).show();
         } else {
-            $('#' + id + '-error').hide();
+            $('#' + id).hide();
         }
 	}
 	
@@ -347,6 +354,7 @@ var Application = function () {
 		submit: submit,
 		dialogAndSubmit: dialogAndSubmit,
 		dialogError: dialogError,
+		error: error,
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
