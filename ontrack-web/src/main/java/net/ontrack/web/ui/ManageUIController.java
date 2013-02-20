@@ -171,4 +171,10 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public @ResponseBody ValidationRunSummary getValidationRun(@PathVariable int runId) {
         return managementService.getValidationRun(runId);
     }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/validation_run/{runId:[0-9]+}/comment", method = RequestMethod.POST)
+    public @ResponseBody Ack addValidationRunComment(@PathVariable int runId, @RequestBody ValidationRunCommentCreationForm form) {
+        return managementService.addValidationRunComment(runId, form);
+    }
 }

@@ -6,6 +6,7 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.Each;
 import net.ontrack.core.support.ItemActionWithIndex;
 import net.ontrack.core.support.MapBuilder;
@@ -13,6 +14,7 @@ import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,9 +35,12 @@ import java.util.Map;
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
 
+    private final SecurityUtils securityUtils;
+
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils) {
         super(dataSource, validator, auditService);
+        this.securityUtils = securityUtils;
     }
 
     // Project groups
@@ -390,11 +395,78 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     };
 
+    @Override
+    @Transactional
+    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
+    public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
+        // Does not do anything if empty description
+        if (StringUtils.isBlank(form.getDescription())) {
+            return Ack.NOK;
+        }
+        // Checks the status
+        if (StringUtils.isBlank(form.getStatus())) {
+            // No status - it means that the user creates a comment
+            createComment(Entity.VALIDATION_RUN, runId, form.getDescription());
+            // OK
+            return Ack.OK;
+        } else {
+            // Tries to get a valid status
+            Status s = Status.valueOf(form.getStatus());
+            // Creates the new status
+            createValidationRunStatus(runId, new ValidationRunStatusCreationForm(s, form.getDescription()));
+            // OK
+            return Ack.OK;
+        }
+    }
+
+    @Override
+    @Transactional
+    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
+    public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
+        // TODO Validation of the status
+        // Author
+        Signature signature = securityUtils.getCurrentSignature();
+        // Creation
+        int id = dbCreate(SQL.VALIDATION_RUN_STATUS_CREATE,
+                MapBuilder.params("validationRun", validationRun)
+                        .with("status", validationRunStatus.getStatus().name())
+                        .with("description", validationRunStatus.getDescription())
+                        .with("author", signature.getName())
+                        .with("authorId", signature.getId())
+                        .with("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())).get());
+        // OK
+        return new ValidationRunStatusSummary(id, signature.getName(), validationRunStatus.getStatus(), validationRunStatus.getDescription());
+    }
+
     public ValidationRunStatusStub getLastValidationRunStatus(int validationRunId) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.VALIDATION_RUN_STATUS_LAST,
                 params("id", validationRunId),
                 validationRunStatusStubMapper);
+    }
+
+    // Comments
+
+    @Override
+    @Transactional
+    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
+    public ID createComment(Entity entity, int id, String content) {
+        // Does not do anything if empty content
+        if (StringUtils.isBlank(content)) {
+            return ID.failure();
+        }
+        // Author
+        Signature signature = securityUtils.getCurrentSignature();
+        // Insertion
+        int commentId = dbCreate(String.format(SQL.COMMENT_CREATE, entity.name()),
+                MapBuilder.params("content", content)
+                        .with("id", id)
+                        .with("author", signature.getName())
+                        .with("author_id", signature.getId())
+                        .with("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now()))
+                        .get());
+        // OK
+        return ID.success(commentId);
     }
 
     // Common
