@@ -434,6 +434,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         .with("author", signature.getName())
                         .with("authorId", signature.getId())
                         .with("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())).get());
+        // TODO Generates an event for the status
         // OK
         return new ValidationRunStatusSummary(id, signature.getName(), validationRunStatus.getStatus(), validationRunStatus.getDescription());
     }
@@ -465,6 +466,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         .with("author_id", signature.getId())
                         .with("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now()))
                         .get());
+        // TODO Generates an event for the comment
         // OK
         return ID.success(commentId);
     }
