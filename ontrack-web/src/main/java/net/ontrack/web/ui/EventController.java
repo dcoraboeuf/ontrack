@@ -164,6 +164,8 @@ public class EventController extends AbstractUIController {
         }
         // Entity
         else if ("entity".equals(key)) {
+            // The 'entity' value contains a reference to an entity to display
+            // This is used by comments
             String value = event.getValues().get(key);
             return expandEntityToken(event, value, alternative);
         }
