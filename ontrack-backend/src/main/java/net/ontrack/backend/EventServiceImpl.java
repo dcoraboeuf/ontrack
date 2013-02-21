@@ -149,7 +149,7 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
     @Transactional(readOnly = true)
     public String getEntityName(Entity entity, int entityId) {
         return getNamedParameterJdbcTemplate().queryForObject(
-                format(SQL.EVENT_NAME, entity.nameColumn(), entity.name()),
+                format(SQL.ENTITY_NAME, entity.nameColumn(), entity.name()),
                 new MapSqlParameterSource("id", entityId),
                 String.class);
 

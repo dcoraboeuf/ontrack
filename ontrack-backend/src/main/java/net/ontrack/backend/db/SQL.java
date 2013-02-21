@@ -66,7 +66,7 @@ public interface SQL {
 
 	// Audit
 	
-	String EVENT_NAME = "SELECT %s FROM %s WHERE ID = :id";
+	String ENTITY_NAME = "SELECT %s FROM %s WHERE ID = :id";
 
 	String EVENT_VALUE_INSERT = "INSERT INTO EVENT_VALUES (EVENT, PROP_NAME, PROP_VALUE) VALUES (:id, :name, :value)";
 	
