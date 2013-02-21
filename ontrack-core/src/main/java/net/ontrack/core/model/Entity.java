@@ -15,7 +15,7 @@ public enum Entity {
 	
 	VALIDATION_STAMP("NAME", list(PROJECT, BRANCH), list(BRANCH)),
 	
-	VALIDATION_RUN("ID", list(), list(BUILD, VALIDATION_STAMP));
+	VALIDATION_RUN("RUN_ORDER", list(PROJECT, BRANCH, BUILD, VALIDATION_STAMP), list(BUILD, VALIDATION_STAMP));
 	
 	private String nameColumn;
 	private List<Entity> context;
