@@ -60,7 +60,7 @@ public interface ManagementService {
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
 
-    ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus);
+    ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus);
 
     // Comments
 

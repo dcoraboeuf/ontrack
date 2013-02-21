@@ -60,7 +60,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
                         .with("validationStamp", validationStamp)
                         .with("description", validationRun.getDescription()).get());
         // First status
-        managementService.createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()));
+        managementService.createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()), true);
         // Summary
         ValidationRunSummary run = managementService.getValidationRun(id);
         // Event

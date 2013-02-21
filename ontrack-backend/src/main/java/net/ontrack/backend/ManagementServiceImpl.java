@@ -413,7 +413,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // Tries to get a valid status
             Status s = Status.valueOf(form.getStatus());
             // Creates the new status
-            createValidationRunStatus(runId, new ValidationRunStatusCreationForm(s, form.getDescription()));
+            createValidationRunStatus(runId, new ValidationRunStatusCreationForm(s, form.getDescription()), false);
             // OK
             return Ack.OK;
         }
@@ -422,7 +422,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
-    public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
+    public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus) {
         // TODO Validation of the status
         // Author
         Signature signature = securityUtils.getCurrentSignature();
@@ -434,7 +434,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         .with("author", signature.getName())
                         .with("authorId", signature.getId())
                         .with("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())).get());
-        // TODO Generates an event for the status
+        // Generates an event for the status
+        // Only when additional run
+        if (!initialStatus) {
+            // Validation run
+            ValidationRunSummary run = getValidationRun(validationRun);
+            // Generates an event
+            event(Event.of(EventType.VALIDATION_RUN_STATUS)
+                    .withProject(run.getBuild().getBranch().getProject().getId())
+                    .withBranch(run.getBuild().getBranch().getId())
+                    .withBuild(run.getBuild().getId())
+                    .withValidationStamp(run.getValidationStamp().getId())
+                    .withValidationRun(run.getId())
+                    .withValue("status", validationRunStatus.getStatus().name()));
+        }
         // OK
         return new ValidationRunStatusSummary(id, signature.getName(), validationRunStatus.getStatus(), validationRunStatus.getDescription());
     }

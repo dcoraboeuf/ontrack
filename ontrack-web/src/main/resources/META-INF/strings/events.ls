@@ -35,3 +35,7 @@ event.BUILD_CREATED
 event.VALIDATION_RUN_CREATED
 	en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ is $status$.
 	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est $status$.
+
+event.VALIDATION_RUN_STATUS
+    en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ has changed its status to $status$.
+	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est passée au statut $status$.
