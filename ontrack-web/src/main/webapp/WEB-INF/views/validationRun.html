@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validationRun" script=true title="#${validationRun.indexNb?string}"
+<@layout_std page="validationRun" script=true title="#${validationRun.runOrder?string}"
     modules=["projects","branches","builds","validation_stamps","audit"]
     breadcrumbs = {
         loc("home"): "",
@@ -19,7 +19,7 @@
                     / <a href="gui/branch/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}">${validationRun.build.branch.name?html}</a>
                     / <a href="gui/build/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.build.name?html}">${validationRun.build.name?html}</a>
                     / <a href="gui/validation_stamp/${validationRun.build.branch.project.name?html}/${validationRun.build.branch.name?html}/${validationRun.validationStamp.name?html}"><@validation_stamp_img validationStamp=validationRun.validationStamp /> ${validationRun.validationStamp.name?html}</a>
-                / #${validationRun.indexNb?html}</span>
+                / #${validationRun.runOrder?html}</span>
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span onclick=""><i class="icon-pencil"></i> <@lh key="general.modify" /></span>

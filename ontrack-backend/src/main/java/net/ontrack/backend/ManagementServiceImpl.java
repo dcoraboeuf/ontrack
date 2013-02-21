@@ -354,7 +354,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             int id = rs.getInt("id");
             return new ValidationRunSummary(
                     id,
-                    rs.getInt("indexNb"),
+                    rs.getInt("run_order"),
                     rs.getString("description"),
                     getBuild(rs.getInt("build")),
                     getValidationStamp(rs.getInt("validation_stamp")),
@@ -372,6 +372,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<BuildValidationStampRun> getValidationRuns(int buildId, int validationStampId) {
         List<Integer> runIds = getNamedParameterJdbcTemplate().queryForList(
                 SQL.VALIDATION_RUN_FOR_BUILD_AND_STAMP,
@@ -381,7 +383,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             @Override
             public BuildValidationStampRun apply(Integer runId) {
                 ValidationRunStatusStub runStatus = getLastValidationRunStatus(runId);
-                return new BuildValidationStampRun(runId, runStatus.getStatus(), runStatus.getDescription());
+                ValidationRunSummary run = getValidationRun(runId);
+                return new BuildValidationStampRun(runId, run.getRunOrder(), runStatus.getStatus(), runStatus.getDescription());
             }
         });
     }

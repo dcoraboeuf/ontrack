@@ -6,7 +6,7 @@ import lombok.Data;
 public class ValidationRunSummary {
 
 	private final int id;
-    private final int indexNb;
+    private final int runOrder;
 	private final String description;
 	private final BuildSummary build;
 	private final ValidationStampSummary validationStamp;

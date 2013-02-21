@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.Validator;
+import java.util.List;
 
 @Service
 public class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
@@ -54,11 +55,15 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     @Transactional
     @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun) {
+        // Numbers of runs for this build and validation stamps
+        List<BuildValidationStampRun> runs = managementService.getValidationRuns(build, validationStamp);
         // Run itself
         int id = dbCreate(SQL.VALIDATION_RUN_CREATE,
                 MapBuilder.params("build", build)
                         .with("validationStamp", validationStamp)
-                        .with("description", validationRun.getDescription()).get());
+                        .with("description", validationRun.getDescription())
+                        .with("runOrder", runs.size() + 1)
+                        .get());
         // First status
         managementService.createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()), true);
         // Summary
