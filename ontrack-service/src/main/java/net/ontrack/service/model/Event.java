@@ -1,13 +1,13 @@
 package net.ontrack.service.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EventType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -50,7 +50,7 @@ public class Event {
 		return withEntity (Entity.VALIDATION_STAMP, id);
 	}
 
-	private Event withEntity(Entity entity, int id) {
+	public Event withEntity(Entity entity, int id) {
 		entities.put(entity, id);
 		return this;
 	}

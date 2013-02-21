@@ -47,7 +47,9 @@ public class SecurityUtilsImpl implements SecurityUtils {
         } else {
             accountName = "Anonymous";
         }
-        Integer accountId = account != null ? account.getId() : null;
+        // Account ID = 0 means that the account was generated on the fly (probably though LDAP connection)
+        // without any actual Account row being there
+        Integer accountId = account != null ? (account.getId() != 0 ? account.getId() : null) : null;
         return new Signature(accountId, accountName);
     }
 

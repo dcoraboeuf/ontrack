@@ -32,6 +32,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.format;
+
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
 
@@ -472,14 +474,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Author
         Signature signature = securityUtils.getCurrentSignature();
         // Insertion
-        int commentId = dbCreate(String.format(SQL.COMMENT_CREATE, entity.name()),
+        int commentId = dbCreate(format(SQL.COMMENT_CREATE, entity.name()),
                 MapBuilder.params("content", content)
                         .with("id", id)
                         .with("author", signature.getName())
                         .with("author_id", signature.getId())
                         .with("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now()))
                         .get());
-        // TODO Generates an event for the comment
+        // Generates an event for the comment
+        Event event = Event.of(EventType.COMMENT);
+        event = collectEntityContext(event, entity, id);
+        event = event.withValue("comment", StringUtils.abbreviate(content, 100));
+        event = event.withValue("author", signature.getName());
+        event(event);
         // OK
         return ID.success(commentId);
     }
@@ -489,7 +496,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public int getEntityId(Entity entity, String name, final Map<Entity, Integer> parentIds) {
-        final StringBuilder sql = new StringBuilder(String.format(
+        final StringBuilder sql = new StringBuilder(format(
                 "SELECT ID FROM %s WHERE %s = :name",
                 entity.name(),
                 entity.nameColumn()));
@@ -510,8 +517,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     }
 
+    protected Event collectEntityContext(Event event, Entity entity, int id) {
+        Event e = event.withEntity(entity, id);
+        // Gets the entities in the content
+        List<Entity> parentEntities = entity.getParents();
+        for (Entity parentEntity : parentEntities) {
+            Integer parentEntityId = getFirstItem(
+                    format("SELECT %s FROM %s WHERE ID = :id", parentEntity.name(), entity.name()),
+                    params("id", id),
+                    Integer.class
+                    );
+            if (parentEntityId != null) {
+                e = collectEntityContext(e, parentEntity, parentEntityId);
+            }
+        }
+        // OK
+        return e;
+    }
+
     protected String getEntityName(Entity entity, int id) {
-        String sql = String.format(
+        String sql = format(
                 "SELECT %s FROM %s WHERE ID = :id",
                 entity.nameColumn(),
                 entity.name());

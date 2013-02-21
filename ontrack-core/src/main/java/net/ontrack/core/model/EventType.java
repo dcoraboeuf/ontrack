@@ -18,6 +18,8 @@ public enum EventType {
 	
 	VALIDATION_RUN_CREATED,
 
-    VALIDATION_RUN_STATUS;
+    VALIDATION_RUN_STATUS,
+
+    COMMENT;
 
 }
