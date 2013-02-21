@@ -57,6 +57,14 @@ public interface ManagementService {
 	// Validation runs
 	
 	ValidationRunSummary getValidationRun (int validationRunId);
+
+    Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
+
+    ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus);
+
+    // Comments
+
+    ID createComment (Entity entity, int id, String content);
 	
 	// Common
 

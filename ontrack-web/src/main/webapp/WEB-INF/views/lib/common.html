@@ -105,19 +105,25 @@
 	</form>
 </#macro>
 
+<#macro form_buttons>
+    <@form_field name="controls" label="">
+        <#nested />
+    </@form_field>
+</#macro>
+
 <#macro form_field name label idPrefix="" help="">
-	<#assign id = idPrefix + name />
-	<div id="${id?html}-line" class="control-group">
+    <#assign id = idPrefix + name />
+    <div id="${id?html}-line" class="control-group">
         <#if label != "">
-		    <label class="control-label" for="${id?html}">${label?html}</label>
+            <label class="control-label" for="${id?html}">${label?html}</label>
         </#if>
-		<div class="controls">
-			<#nested />
-			<#if help != "">
-				<span class="help-block">${help?html}</span>
-			</#if>
-		</div>
-	</div>
+        <div class="controls">
+            <#nested />
+            <#if help != "">
+                <span class="help-block">${help?html}</span>
+            </#if>
+        </div>
+    </div>
 </#macro>
 
 <#macro form_select name label idPrefix="" help="">

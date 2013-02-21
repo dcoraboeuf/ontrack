@@ -91,4 +91,8 @@ public interface SQL {
     String CONFIGURATION_DELETE = "DELETE FROM CONFIGURATION WHERE NAME = :name";
 
     String CONFIGURATION_INSERT = "INSERT INTO CONFIGURATION (NAME, VALUE) VALUES (:name, :value)";
+
+    // Comments
+
+    String COMMENT_CREATE = "INSERT INTO COMMENT (%s, CONTENT, AUTHOR, AUTHOR_ID, COMMENT_TIMESTAMP) VALUES (:id, :content, :author, :author_id, :comment_timestamp)";
 }

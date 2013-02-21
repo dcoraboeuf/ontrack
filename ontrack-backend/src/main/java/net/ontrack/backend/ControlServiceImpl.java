@@ -1,7 +1,6 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.db.SQL;
-import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
@@ -61,7 +60,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
                         .with("validationStamp", validationStamp)
                         .with("description", validationRun.getDescription()).get());
         // First status
-        createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()));
+        managementService.createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()));
         // Summary
         ValidationRunSummary run = managementService.getValidationRun(id);
         // Event
@@ -75,25 +74,6 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         );
         // Gets the summary
         return run;
-    }
-
-    // TODO @Override
-    @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
-    public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus) {
-        // TODO Validation of the status
-        // Author
-        Signature signature = securityUtils.getCurrentSignature();
-        // Creation
-        int id = dbCreate(SQL.VALIDATION_RUN_STATUS_CREATE,
-                MapBuilder.params("validationRun", validationRun)
-                        .with("status", validationRunStatus.getStatus().name())
-                        .with("description", validationRunStatus.getDescription())
-                        .with("author", signature.getName())
-                        .with("authorId", signature.getId())
-                        .with("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())).get());
-        // OK
-        return new ValidationRunStatusSummary(id, signature.getName(), validationRunStatus.getStatus(), validationRunStatus.getDescription());
     }
 
 }

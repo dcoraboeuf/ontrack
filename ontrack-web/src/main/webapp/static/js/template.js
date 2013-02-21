@@ -182,6 +182,7 @@ var Template = function () {
 	    config: config,
 	    init: init,
 	    more: more,
+	    reload: reload,
 
 	    asTable: asTable,
 	    asLink: asLink,
