@@ -486,6 +486,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         event = collectEntityContext(event, entity, id);
         event = event.withValue("comment", StringUtils.abbreviate(content, 100));
         event = event.withValue("author", signature.getName());
+        event = event.withValue("entity", entity.name());
         event(event);
         // OK
         return ID.success(commentId);

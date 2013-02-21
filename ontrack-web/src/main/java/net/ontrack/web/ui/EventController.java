@@ -1,21 +1,16 @@
 package net.ontrack.web.ui;
 
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.ontrack.core.model.*;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EntityStub;
+import net.ontrack.core.model.EventFilter;
+import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.ui.EventUI;
 import net.ontrack.web.gui.model.GUIEvent;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -29,8 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
 @Controller
 @RequestMapping("/gui/event")
@@ -158,29 +159,43 @@ public class EventController extends AbstractUIController {
 		}
 		// Looks for an entity stub
 		if (entityPattern.matcher(key).matches()) {
-			// Gets the entity
-			Entity entity = Entity.valueOf(key);
-			EntityStub entityStub = event.getEntities().get(entity);
-			if (entityStub == null) {
-				// TODO Uses a proper exception
-				throw new IllegalStateException("Could not find entity " + key + " in event " + event.getId());
-			} else {
-				return createLink (entity, entityStub, alternative, event.getId(), event.getEntities());
-			}
-		}
+            return expandEntityToken(event, key, alternative);
+
+        }
+        // Entity
+        else if ("entity".equals(key)) {
+            String value = event.getValues().get(key);
+            return expandEntityToken(event, value, alternative);
+        }
 		// Looks for a fixed value
 		else {
-			String value = event.getValues().get(key);
-			if (value == null) {
-				// TODO Uses a proper exception
-				throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
-			} else {
-				return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
-			}
+            return expandValueToken(event, key);
 		}
 	}
 
-	protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity,EntityStub> contextEntities) {
+    private String expandValueToken(ExpandedEvent event, String key) {
+        String value = event.getValues().get(key);
+        if (value == null) {
+            // TODO Uses a proper exception
+            throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
+        } else {
+            return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
+        }
+    }
+
+    private String expandEntityToken(ExpandedEvent event, String key, String alternative) {
+        // Gets the entity
+        Entity entity = Entity.valueOf(key);
+        EntityStub entityStub = event.getEntities().get(entity);
+        if (entityStub == null) {
+            // TODO Uses a proper exception
+            throw new IllegalStateException("Could not find entity " + key + " in event " + event.getId());
+        } else {
+            return createLink (entity, entityStub, alternative, event.getId(), event.getEntities());
+        }
+    }
+
+    protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity,EntityStub> contextEntities) {
 		// Text
 		String text = alternative != null ? alternative : entityStub.getName();
 		text = StringEscapeUtils.escapeHtml4(text);
