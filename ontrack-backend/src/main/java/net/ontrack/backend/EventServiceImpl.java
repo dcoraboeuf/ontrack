@@ -1,22 +1,11 @@
 package net.ontrack.backend;
 
-import static java.lang.String.format;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
-
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,6 +14,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 @Service
 public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements EventService {
@@ -148,7 +145,9 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
         }
     }
 
-    protected String getEntityName(Entity entity, int entityId) {
+    @Override
+    @Transactional(readOnly = true)
+    public String getEntityName(Entity entity, int entityId) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 format(SQL.EVENT_NAME, entity.nameColumn(), entity.name()),
                 new MapSqlParameterSource("id", entityId),

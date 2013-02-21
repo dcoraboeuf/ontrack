@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.validation.ValidationException;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
@@ -95,6 +96,10 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
         }
         // Complete message
         return new LocalizableMessage("validation.field", new LocalizableMessage(code), oMessage);
+    }
+
+    protected String getEntityName(Entity entity, int id) {
+        return eventService.getEntityName(entity, id);
     }
 
 }

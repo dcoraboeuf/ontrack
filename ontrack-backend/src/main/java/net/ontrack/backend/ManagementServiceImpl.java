@@ -535,17 +535,4 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // OK
         return e;
     }
-
-    protected String getEntityName(Entity entity, int id) {
-        String sql = format(
-                "SELECT %s FROM %s WHERE ID = :id",
-                entity.nameColumn(),
-                entity.name());
-        String name = getFirstItem(sql, params("id", id), String.class);
-        if (name == null) {
-            throw new EntityIdNotFoundException(entity, id);
-        } else {
-            return name;
-        }
-    }
 }
