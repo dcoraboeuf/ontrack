@@ -162,13 +162,6 @@ public class EventController extends AbstractUIController {
             return expandEntityToken(event, key, alternative);
 
         }
-        // Entity
-        else if ("entity".equals(key)) {
-            // The 'entity' value contains a reference to an entity to display
-            // This is used by comments
-            String value = event.getValues().get(key);
-            return expandEntityToken(event, value, alternative);
-        }
 		// Looks for a fixed value
 		else {
             return expandValueToken(event, key);
@@ -176,12 +169,17 @@ public class EventController extends AbstractUIController {
 	}
 
     private String expandValueToken(ExpandedEvent event, String key) {
-        String value = event.getValues().get(key);
-        if (value == null) {
-            // TODO Uses a proper exception
-            throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
+        // Special values
+        if ("author".equals(key)) {
+            return format("<span class=\"event-author\">%s</span>", escapeHtml4(event.getAuthor()));
         } else {
-            return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
+            String value = event.getValues().get(key);
+            if (value == null) {
+                // TODO Uses a proper exception
+                throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
+            } else {
+                return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
+            }
         }
     }
 

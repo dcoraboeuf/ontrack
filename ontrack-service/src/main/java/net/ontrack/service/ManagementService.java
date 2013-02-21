@@ -64,7 +64,7 @@ public interface ManagementService {
 
     // Comments
 
-    ID createComment (Entity entity, int id, String content);
+    CommentStub createComment (Entity entity, int id, String content);
 	
 	// Common
 

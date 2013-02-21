@@ -40,6 +40,6 @@ event.VALIDATION_RUN_STATUS
     en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ has changed its status to $status$.
 	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est passée au statut $status$.
 
-event.COMMENT
-    en -> $author$ commented on $entity$: $comment$
-    fr -> $author$ a ajouté un commentaire pour $entity$ : $comment$
+event.VALIDATION_RUN_COMMENT
+    en -> $author$ has added a comment on run #$VALIDATION_RUN$ of $VALIDATION_STAMP$ of build $BUILD$ of branch $BRANCH$ of project $PROJECT$: $comment$
+    fr -> $author$ a ajouté un commentaire pour l'éxecution #$VALIDATION_RUN$ de $VALIDATION_STAMP$ du build $BUILD$ de la branche $BRANCH$ du projet $PROJECT$ : $comment$

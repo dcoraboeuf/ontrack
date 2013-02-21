@@ -44,7 +44,11 @@
 
 /* Events */
 .event-value {
-	color: #7AB1CC;
+    font-weight: bold;
+    font-style: italic;
+}
+.event-author {
+    font-weight: bold;
 }
 .event-icon {
 	padding-right: 1em;

@@ -20,6 +20,6 @@ public enum EventType {
 
     VALIDATION_RUN_STATUS,
 
-    COMMENT;
+    VALIDATION_RUN_COMMENT;
 
 }

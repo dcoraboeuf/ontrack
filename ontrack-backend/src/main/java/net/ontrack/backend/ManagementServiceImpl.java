@@ -408,7 +408,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Checks the status
         if (StringUtils.isBlank(form.getStatus())) {
             // No status - it means that the user creates a comment
-            createComment(Entity.VALIDATION_RUN, runId, form.getDescription());
+            CommentStub comment = createComment(Entity.VALIDATION_RUN, runId, form.getDescription());
+            // Gets the validation run
+            ValidationRunSummary run = getValidationRun(runId);
+            // Registers an event for this comment
+            event(
+                    collectEntityContext(Event.of(EventType.VALIDATION_RUN_COMMENT), Entity.VALIDATION_RUN, runId)
+                        .withComment(comment.getComment()));
             // OK
             return Ack.OK;
         } else {
@@ -466,10 +472,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
-    public ID createComment(Entity entity, int id, String content) {
+    public CommentStub createComment(Entity entity, int id, String content) {
         // Does not do anything if empty content
         if (StringUtils.isBlank(content)) {
-            return ID.failure();
+            return null;
         }
         // Author
         Signature signature = securityUtils.getCurrentSignature();
@@ -481,15 +487,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         .with("author_id", signature.getId())
                         .with("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now()))
                         .get());
-        // Generates an event for the comment
-        Event event = Event.of(EventType.COMMENT);
-        event = collectEntityContext(event, entity, id);
-        event = event.withValue("comment", StringUtils.abbreviate(content, 100));
-        event = event.withValue("author", signature.getName());
-        event = event.withValue("entity", entity.name());
-        event(event);
         // OK
-        return ID.success(commentId);
+        return new CommentStub(commentId, content);
     }
 
     // Common
