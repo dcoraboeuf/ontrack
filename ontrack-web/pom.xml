@@ -259,12 +259,15 @@
 							            <name>spring.profiles.active</name>
 							            <value>prod</value>
 						            </systemProperty>
+                                    <!--
 						            <systemProperty>
 							            <name>dbinit.profile</name>
 							            <value>mysql</value>
 						            </systemProperty>
+						            -->
 						        </systemProperties>
 							</configuration>
+                            <!--
 							<dependencies>
 								<dependency>
 								    <groupId>mysql</groupId>
@@ -272,6 +275,7 @@
 								    <version>5.1.21</version>
 								</dependency>
 							</dependencies>
+							-->
 						</plugin>
 					</plugins>
 				</pluginManagement>
