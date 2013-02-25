@@ -29,7 +29,7 @@ event.VALIDATION_STAMP_CREATED
 	fr -> La validation $VALIDATION_STAMP$ a été créée pour la branche $BRANCH$ du projet $PROJECT$.
 
 event.PROMOTION_LEVEL_CREATED
-	en -> The PROMOTION_LEVEL$ promotion level has been created for the $BRANCH$ branch of the $PROJECT$ project.
+	en -> The $PROMOTION_LEVEL$ promotion level has been created for the $BRANCH$ branch of the $PROJECT$ project.
 	fr -> Le niveau de promotion $PROMOTION_LEVEL$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.
 
 event.BUILD_CREATED

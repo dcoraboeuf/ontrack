@@ -71,6 +71,40 @@ public class GUIController extends AbstractGUIController {
         return "validationStamp";
     }
 
+    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getPromotionLevel(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("promotionLevel", manageUI.getPromotionLevel(project, branch, name));
+        // OK
+        return "promotionLevel";
+    }
+
+    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    public String imagePromotionLevel(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
+        try {
+            // TODO Custom (global) error handler for the upload exceptions
+            // Upload
+            manageUI.setImagePromotionLevel(project, branch, name, image);
+            // Success
+            model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "promotion_level.image.success")));
+        } catch (InputException ex) {
+            // Error
+            model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
+        }
+        // OK
+        return getValidationStamp(model, project, branch, name);
+    }
+
+    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    public void getImagePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
+        byte[] content = manageUI.imagePromotionLevel(project, branch, name);
+        if (content == null) {
+            // TODO Default image for promotion levels
+            content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
+        }
+        renderImage(response, content);
+    }
+
     @RequestMapping(value = "/gui/validation_run/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{build:[A-Za-z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{run:[0-9]+}", method = RequestMethod.GET)
     public String getValidationRun(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
         // Loads the details
@@ -99,13 +133,18 @@ public class GUIController extends AbstractGUIController {
 	public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
 		byte[] content = manageUI.imageValidationStamp(project, branch, name);
 		if (content == null) {
+            // TODO Default image for validation stamps
 			content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
 		}
-		response.setContentType("image/png");
-		response.setContentLength(content.length);
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.getOutputStream().write(content);
-		response.getOutputStream().flush();
+        renderImage(response, content);
 	}
+
+    protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
+        response.setContentType("image/png");
+        response.setContentLength(content.length);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getOutputStream().write(content);
+        response.getOutputStream().flush();
+    }
 
 }
