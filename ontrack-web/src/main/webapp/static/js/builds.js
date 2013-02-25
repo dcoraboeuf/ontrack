@@ -1,10 +1,17 @@
 var Builds = function () {
 
-    function runs(buildValidationStamp) {
+    function runs(project, branch, buildCompleteStatus, buildValidationStamp) {
         var html = '';
         $.each(buildValidationStamp.runs, function (index, run) {
             html += ' <p class="validation-run status-{0}">'.format(run.status);
-            html += '<a href="gui/validation_run/{0}"><i class="icon-play"></i> <span class="validation-run-status">{1}</span></a>'.format(run.runId, run.status.html());
+            html += '<a href="gui/validation_run/{0}/{1}/{2}/{3}/{4}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
+                .format(
+                    project.html(),
+                    branch.html(),
+                    buildCompleteStatus.name.html(),
+                    buildValidationStamp.name.html(),
+                    run.runOrder,
+                    run.status.html());
             html += ' <span class="validation-run-description">{0}</span>'.format(run.statusDescription.html());
             html += '</p>';
         });
@@ -23,7 +30,7 @@ var Builds = function () {
                     html += '<td>';
                     if (buildValidationStamp) {
                         if (buildValidationStamp.run) {
-                            html += runs(buildValidationStamp);
+                            html += runs(project, branch, buildCompleteStatus, buildValidationStamp);
                         } else {
                             html += '<span class="muted">{0}</span>'.format(loc('validationRun.notRun'));
                         }
