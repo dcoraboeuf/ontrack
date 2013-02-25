@@ -1,0 +1,16 @@
+<script type="text/javascript" src="${base}/js/promotion_levels.js"></script>
+
+<#macro promotion_levels project branch id="promotion_levels" create=true>
+	<@dynamicsection id=id template="PromotionLevels.promotionLevelTemplate('${project?html}','${branch?html}')">
+		<#if create>
+			<@dialog id="promotion_levels-create-dialog">
+				<@form_text name="name" label=loc('promotion_levels.name') />
+				<@form_memo name="description" label=loc('promotion_levels.description') required=false />
+				
+				<@dialog_button_cancel />
+				<@dialog_button id="promotion_levels-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+			</@dialog>
+			<button id="promotion_levels-create-button" type="button" class="btn" onclick="PromotionLevels.createValidationStamp('${project?html}','${branch?html}')"><@lh key="validation_stamp.create" /></button>
+		</#if>
+	</@dynamicsection>
+</#macro>
