@@ -358,7 +358,36 @@ validation_stamp.image.help
 validation_stamp.image.success
 	en -> Successful upload of the image.
 	fr -> L'image a été chargée correctement.
-	
+
+[promotion_level]
+
+promotion_level.empty
+    en -> No promotion level has been created yet.
+    fr -> Aucun niveau de promotion n'a encore été créé.
+
+promotion_level.create
+	en -> New promotion level
+	fr -> Nouveau niveau de promotion
+
+promotion_level.name
+	en,fr -> @[model.name]
+promotion_level.description
+	en,fr -> @[model.description]
+promotion_level.image
+	en,fr -> Image
+promotion_level.image.edit
+	en -> Change image
+	fr -> Changer l'image
+promotion_level.image.placeholder
+	en -> Select an image
+	fr -> Sélectionnez une image
+promotion_level.image.help
+	en -> PNG image, max. 4K
+	fr -> Image PNG, max. 4K
+promotion_level.image.success
+	en -> Successful upload of the image.
+	fr -> L'image a été chargée correctement.
+
 [builds]
 
 build.validation_stamps
