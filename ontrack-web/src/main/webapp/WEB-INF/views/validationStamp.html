@@ -17,6 +17,7 @@
                     <span onclick="location='gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
                 </span>
             </div>
+            <div class="muted">${validationStamp.description?html}</div>
         </div>
         <div id="validation_stamp-image-form" class="row-fluid x-dialog">
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image">
