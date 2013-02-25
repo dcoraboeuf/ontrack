@@ -46,6 +46,10 @@ public interface ManagementService {
 
 	byte[] imageValidationStamp(int validationStampId);
 
+    Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
+
+    Ack unlinkValidationStampToPromotionLevel(int validationStampId);
+
     // Promotion levels
 
     List<PromotionLevelSummary> getPromotionLevelList(int branchId);
@@ -58,9 +62,9 @@ public interface ManagementService {
 
     byte[] imagePromotionLevel(int promotionLevelId);
 
-    Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
+    Ack upPromotionLevel(int promotionLevelId);
 
-    Ack unlinkValidationStampToPromotionLevel(int validationStampId);
+    Ack downPromotionLevel(int promotionLevelId);
 	
 	// Builds
 

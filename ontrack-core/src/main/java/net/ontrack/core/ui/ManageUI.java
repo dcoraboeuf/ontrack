@@ -45,6 +45,10 @@ public interface ManageUI {
 
     byte[] imageValidationStamp(String project, String branch, String name);
 
+    Ack linkValidationStampToPromotionLevel (String project, String branch, String validationStamp, String promotionLevel);
+
+    Ack unlinkValidationStampToPromotionLevel (String project, String branch, String validationStamp);
+
     // Promotion levels
 
     PromotionLevelSummary getPromotionLevel(String project, String branch, String name);
@@ -57,9 +61,9 @@ public interface ManageUI {
 
     List<PromotionLevelSummary> getPromotionLevelList(String project, String branch);
 
-    Ack linkValidationStampToPromotionLevel (String project, String branch, String validationStamp, String promotionLevel);
+    Ack upPromotionLevel(String project, String branch, String promotionLevel);
 
-    Ack unlinkValidationStampToPromotionLevel (String project, String branch, String validationStamp);
+    Ack downPromotionLevel(String project, String branch, String promotionLevel);
 
     // Builds
 

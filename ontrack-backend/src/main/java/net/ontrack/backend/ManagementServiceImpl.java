@@ -369,6 +369,23 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack upPromotionLevel(int promotionLevelId) {
+        String higherId = getFirstItem(SQL.PROMOTION_LEVEL_HIGHER, params("promotionLevel", promotionLevelId), Integer.class);
+        if (higherId != null) {
+            return swapPromotionLevelNb(promotionLevelId, higherId);
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    public Ack downPromotionLevel(int promotionLevelId) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imagePromotionLevel(int promotionLevelId, MultipartFile image) {
         return setImage(promotionLevelId, image, SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE, SQL.PROMOTION_LEVEL_IMAGE_UPDATE);
     }
