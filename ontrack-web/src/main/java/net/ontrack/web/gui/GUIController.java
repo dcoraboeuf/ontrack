@@ -23,45 +23,45 @@ import java.util.Locale;
 @Controller
 public class GUIController extends AbstractGUIController {
 
-	private final Strings strings;
-	private final ManageUI manageUI;
+    private final Strings strings;
+    private final ManageUI manageUI;
 
-	@Autowired
-	public GUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
-		super(errorHandler);
-		this.manageUI = manageUI;
-		this.strings = strings;
-	}
+    @Autowired
+    public GUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
+        super(errorHandler);
+        this.manageUI = manageUI;
+        this.strings = strings;
+    }
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home() {
-		// OK
-		return "home";
-	}
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String home() {
+        // OK
+        return "home";
+    }
 
-	@RequestMapping(value = "/gui/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public String getProject(Model model, @PathVariable String name) {
-		// Loads the project details
-		model.addAttribute("project", manageUI.getProject(name));
-		// OK
-		return "project";
-	}
+    @RequestMapping(value = "/gui/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getProject(Model model, @PathVariable String name) {
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // OK
+        return "project";
+    }
 
-	@RequestMapping(value = "/gui/branch/{project:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public String getBranch(Model model, @PathVariable String project, @PathVariable String name) {
-		// Loads the details
-		model.addAttribute("branch", manageUI.getBranch(project, name));
-		// OK
-		return "branch";
-	}
+    @RequestMapping(value = "/gui/branch/{project:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getBranch(Model model, @PathVariable String project, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("branch", manageUI.getBranch(project, name));
+        // OK
+        return "branch";
+    }
 
-	@RequestMapping(value = "/gui/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-	public String getBranch(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
-		// Loads the details
-		model.addAttribute("build", manageUI.getBuild(project, branch, name));
-		// OK
-		return "build";
-	}
+    @RequestMapping(value = "/gui/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getBranch(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("build", manageUI.getBuild(project, branch, name));
+        // OK
+        return "build";
+    }
 
     @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
     public String getValidationStamp(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -92,7 +92,7 @@ public class GUIController extends AbstractGUIController {
             model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
         }
         // OK
-        return getValidationStamp(model, project, branch, name);
+        return getPromotionLevel(model, project, branch, name);
     }
 
     @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
@@ -113,31 +113,31 @@ public class GUIController extends AbstractGUIController {
         return "validationRun";
     }
 
-	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
-	public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
-		try {
-			// TODO Custom (global) error handler for the upload exceptions
-			// Upload
-			manageUI.setImageValidationStamp(project, branch, name, image);
-			// Success
-			model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "validation_stamp.image.success")));
-		} catch (InputException ex) {
-			// Error
-			model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
-		}
-		// OK
-		return getValidationStamp(model, project, branch, name);
-	}
-	
-	@RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
-	public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
-		byte[] content = manageUI.imageValidationStamp(project, branch, name);
-		if (content == null) {
+    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
+        try {
+            // TODO Custom (global) error handler for the upload exceptions
+            // Upload
+            manageUI.setImageValidationStamp(project, branch, name, image);
+            // Success
+            model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "validation_stamp.image.success")));
+        } catch (InputException ex) {
+            // Error
+            model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
+        }
+        // OK
+        return getValidationStamp(model, project, branch, name);
+    }
+
+    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
+        byte[] content = manageUI.imageValidationStamp(project, branch, name);
+        if (content == null) {
             // TODO Default image for validation stamps
-			content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
-		}
+            content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
+        }
         renderImage(response, content);
-	}
+    }
 
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
         response.setContentType("image/png");
