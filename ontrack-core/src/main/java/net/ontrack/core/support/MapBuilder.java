@@ -9,7 +9,7 @@ import java.util.Map;
 public class MapBuilder<K, V> {
 
     public static <K, V> Map<K, V> build(@SuppressWarnings("unchecked") Pair<K, V>... elements) {
-        Map<K, V> map = new LinkedHashMap<>();
+        Map<K, V> map = new LinkedHashMap<K, V>();
         for (Pair<K, V> element : elements) {
             map.put(element.getLeft(), element.getValue());
         }
@@ -36,7 +36,7 @@ public class MapBuilder<K, V> {
         return MapBuilder.<K, V>create().with(key, value);
     }
 
-    private final Map<K, V> map = new LinkedHashMap<>();
+    private final Map<K, V> map = new LinkedHashMap<K, V>();
 
     public MapBuilder<K, V> with(K key, V value) {
         map.put(key, value);
