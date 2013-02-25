@@ -14,3 +14,7 @@
 		</#if>
 	</@dynamicsection>
 </#macro>
+
+<#macro promotion_level_img promotionLevel>
+    <img width="24" title="${promotionLevel.name?html}" src="gui/promotion_level/${promotionLevel.branch.project.name?html}/${promotionLevel.branch.name?html}/${promotionLevel.name?html}/image" />
+</#macro>
