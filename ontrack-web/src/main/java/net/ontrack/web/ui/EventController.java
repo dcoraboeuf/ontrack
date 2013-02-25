@@ -110,13 +110,22 @@ public class EventController extends AbstractUIController {
 		
 		// Stamp --> icon
 		Map<Entity, EntityStub> entities = event.getEntities();
-		EntityStub stamp = entities.get(Entity.VALIDATION_STAMP);
-		if (stamp != null) {
+		EntityStub entity = entities.get(Entity.VALIDATION_STAMP);
+		if (entity != null) {
 			icon = String.format("gui/validation_stamp/%s/%s/%s/image",
-					entities.get(Entity.PROJECT).getName(),
-					entities.get(Entity.BRANCH).getName(),
-					stamp.getName());
-		}
+                    entities.get(Entity.PROJECT).getName(),
+                    entities.get(Entity.BRANCH).getName(),
+                    entity.getName());
+		} else {
+            // Promotion level --> icon
+            entity = entities.get(Entity.PROMOTION_LEVEL);
+            if (entity != null) {
+                icon = String.format("gui/promotion_level/%s/%s/%s/image",
+                        entities.get(Entity.PROJECT).getName(),
+                        entities.get(Entity.BRANCH).getName(),
+                        entity.getName());
+            }
+        }
 
         // Status --> status class
         String statusValue = event.getValues().get("status");
