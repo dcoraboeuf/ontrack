@@ -1,6 +1,6 @@
 var Builds = function () {
 
-    function runs(project, branch, buildCompleteStatus, buildValidationStamp) {
+    function runs(project, branch, build, buildValidationStamp) {
         var html = '';
         $.each(buildValidationStamp.runs, function (index, run) {
             html += ' <p class="validation-run status-{0}">'.format(run.status);
@@ -8,7 +8,7 @@ var Builds = function () {
                 .format(
                     project.html(),
                     branch.html(),
-                    buildCompleteStatus.name.html(),
+                    build.html(),
                     buildValidationStamp.name.html(),
                     run.runOrder,
                     run.status.html());
@@ -30,7 +30,7 @@ var Builds = function () {
                     html += '<td>';
                     if (buildValidationStamp) {
                         if (buildValidationStamp.run) {
-                            html += runs(project, branch, buildCompleteStatus, buildValidationStamp);
+                            html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp);
                         } else {
                             html += '<span class="muted">{0}</span>'.format(loc('validationRun.notRun'));
                         }
@@ -111,7 +111,7 @@ var Builds = function () {
                 html += ValidationStamps.validationStampImage(project, branch, stamp);
                 html += ' <a href="gui/validation_stamp/{0}/{1}/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
-                    html += runs(stamp);
+                    html += runs(project, branch, build, stamp);
                 }
                 html += '</div>';
                 return html;
