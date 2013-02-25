@@ -214,6 +214,25 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.imagePromotionLevel(promotionLevelId);
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/link/{promotionLevel:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack linkValidationStampToPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @PathVariable String promotionLevel) {
+        int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+        int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, promotionLevel);
+        return managementService.linkValidationStampToPromotionLevel(validationStampId, promotionLevelId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/unlink", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack unlinkValidationStampToPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+        return managementService.unlinkValidationStampToPromotionLevel(validationStampId);
+    }
+
     // Builds
 
     @Override

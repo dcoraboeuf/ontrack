@@ -57,6 +57,10 @@ public interface ManageUI {
 
     List<PromotionLevelSummary> getPromotionLevelList(String project, String branch);
 
+    Ack linkValidationStampToPromotionLevel (String project, String branch, String validationStamp, String promotionLevel);
+
+    Ack unlinkValidationStampToPromotionLevel (String project, String branch, String validationStamp);
+
     // Builds
 
     BranchBuilds getBuildList(String project, String branch, int offset, int count);

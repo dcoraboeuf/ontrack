@@ -315,9 +315,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 promotionLevelSummaryMapper);
     }
 
-
-    // Builds
-
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
@@ -344,6 +341,29 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 .withPromotionLevel(id));
         // OK
         return new PromotionLevelSummary(id, form.getName(), form.getDescription(), levelNb, theBranch);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
+        int count = getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
+                params("validationStamp", validationStampId).addValue("promotionLevel", promotionLevelId)
+        );
+        return Ack.one(count);
+    }
+
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
+        int count = getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
+                params("validationStamp", validationStampId).addValue("promotionLevel", null)
+        );
+        return Ack.one(count);
     }
 
     @Override

@@ -57,6 +57,10 @@ public interface ManagementService {
     Ack imagePromotionLevel(int promotionLevelId, MultipartFile image);
 
     byte[] imagePromotionLevel(int promotionLevelId);
+
+    Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
+
+    Ack unlinkValidationStampToPromotionLevel(int validationStampId);
 	
 	// Builds
 
