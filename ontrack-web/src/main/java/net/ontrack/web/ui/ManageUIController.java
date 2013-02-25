@@ -233,6 +233,18 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.unlinkValidationStampToPromotionLevel(validationStampId);
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{promotionLevel:[A-Z0-9_\\.]+}/up", method = RequestMethod.GET)
+    public Ack upPromotionLevel(String project, String branch, String promotionLevel) {
+        return managementService.upPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{promotionLevel:[A-Z0-9_\\.]+}/down", method = RequestMethod.GET)
+    public Ack downPromotionLevel(String project, String branch, String promotionLevel) {
+        return managementService.downPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
+    }
+
     // Builds
 
     @Override
