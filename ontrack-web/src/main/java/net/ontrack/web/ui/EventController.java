@@ -54,7 +54,8 @@ public class EventController extends AbstractUIController {
 			final Locale locale,
 			@RequestParam(required = false, defaultValue = "0") int project,
 			@RequestParam(required = false, defaultValue = "0") int branch,
-			@RequestParam(required = false, defaultValue = "0") int validationStamp,
+            @RequestParam(required = false, defaultValue = "0") int validationStamp,
+            @RequestParam(required = false, defaultValue = "0") int promotionLevel,
             @RequestParam(required = false, defaultValue = "0") int build,
             @RequestParam(required = false, defaultValue = "0") int validationRun,
             @RequestParam(required = false, defaultValue = "0") int offset,
@@ -66,6 +67,7 @@ public class EventController extends AbstractUIController {
 		filter.withEntity(Entity.PROJECT, project);
 		filter.withEntity(Entity.BRANCH, branch);
 		filter.withEntity(Entity.VALIDATION_STAMP, validationStamp);
+        filter.withEntity(Entity.PROMOTION_LEVEL, promotionLevel);
         filter.withEntity(Entity.BUILD, build);
         filter.withEntity(Entity.VALIDATION_RUN, validationRun);
 		// Gets the raw events
