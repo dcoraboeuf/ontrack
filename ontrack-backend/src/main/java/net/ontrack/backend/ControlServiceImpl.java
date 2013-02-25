@@ -91,7 +91,31 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     @Transactional
     @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun) {
-        // FIXME createPromotedRun
-        return null;
+        // Gets the promoted run for the build and promotion, if any
+        PromotedRunSummary run = managementService.getPromotedRun(buildId, promotionLevel);
+        // If none, creates one
+        if (run == null) {
+            // TODO Checks if the promotion level is eligible for control
+            dbCreate(SQL.PROMOTED_RUN_CREATE,
+                    MapBuilder.params("build", buildId)
+                            .with("promotionLevel", promotionLevel)
+                            .with("description", promotedRun.getDescription())
+                            .get());
+            // Gets the newly created run
+            run = managementService.getPromotedRun(buildId, promotionLevel);
+            // Event
+            event(Event.of(EventType.PROMOTED_RUN_CREATED)
+                    .withProject(run.getBuild().getBranch().getProject().getId())
+                    .withBranch(run.getBuild().getBranch().getId())
+                    .withPromotionLevel(promotionLevel)
+                    .withBuild(run.getBuild().getId())
+            );
+            // OK
+            return run;
+        }
+        // If already existing, returns it
+        else {
+            return run;
+        }
     }
 }

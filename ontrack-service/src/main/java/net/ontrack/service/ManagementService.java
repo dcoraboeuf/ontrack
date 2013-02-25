@@ -76,6 +76,10 @@ public interface ManagementService {
 
     List<BuildValidationStampRun> getValidationRuns(int buildId, int validationStampId);
 
+    // Promoted runs
+
+    PromotedRunSummary getPromotedRun(int buildId, int promotionLevel);
+
     // Comments
 
     CommentStub createComment (Entity entity, int id, String content);

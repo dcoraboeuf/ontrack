@@ -17,6 +17,7 @@ import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.security.access.annotation.Secured;
@@ -43,6 +44,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
         }
     };
+
     protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
         @Override
         public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -50,13 +52,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     };
 
-    // Project groups
     protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
         @Override
         public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
         }
     };
+
     protected final RowMapper<PromotionLevelSummary> promotionLevelSummaryMapper = new RowMapper<PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -64,13 +66,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     };
 
-    // Projects
     protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
         @Override
         public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
         }
     };
+
     protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
         @Override
         public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -84,6 +86,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     getLastValidationRunStatus(id));
         }
     };
+
     protected final RowMapper<ValidationRunStatusStub> validationRunStatusStubMapper = new RowMapper<ValidationRunStatusStub>() {
         @Override
         public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -92,6 +95,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // TODO Timestamp
         }
     };
+
+    protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
+        @Override
+        public PromotedRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new PromotedRunSummary(
+                    rs.getInt("id"),
+                    rs.getString("description"),
+                    getBuild(rs.getInt("build")),
+                    getPromotionLevel(rs.getInt("promotion_level"))
+            );
+        }
+    };
+
     private final SecurityUtils securityUtils;
 
     @Autowired
@@ -497,6 +513,23 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 params("id", validationRunId),
                 validationRunStatusStubMapper);
     }
+
+    // Promoted runs
+
+    @Override
+    @Transactional(readOnly = true)
+    public PromotedRunSummary getPromotedRun(int buildId, int promotionLevel) {
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    SQL.PROMOTED_RUN,
+                    params("build", buildId).addValue("promotionLevel", promotionLevel),
+                    promotedRunSummaryRowMapper
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
 
     // Comments
 

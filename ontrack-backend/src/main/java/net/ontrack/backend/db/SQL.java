@@ -78,6 +78,12 @@ public interface SQL {
 
     String VALIDATION_RUN_STATUS_LAST = "SELECT * FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = :id ORDER BY ID DESC LIMIT 1";
 
+    // Promoted runs
+
+    String PROMOTED_RUN_CREATE = "INSERT INTO PROMOTED_RUN (PROMOTION_LEVEL, BUILD, DESCRIPTION) VALUES (:promotionLevel, :build, :description)";
+
+    String PROMOTED_RUN = "SELECT ID, PROMOTION_LEVEL, BUILD, DESCRIPTION FROM PROMOTED_RUN WHERE BUILD = :build AND PROMOTION_LEVEL = :promotionLevel";
+
 	// Audit
 	
 	String ENTITY_NAME = "SELECT %s FROM %s WHERE ID = :id";
@@ -109,4 +115,5 @@ public interface SQL {
     // Comments
 
     String COMMENT_CREATE = "INSERT INTO COMMENT (%s, CONTENT, AUTHOR, AUTHOR_ID, COMMENT_TIMESTAMP) VALUES (:id, :content, :author, :author_id, :comment_timestamp)";
+
 }
