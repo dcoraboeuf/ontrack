@@ -81,4 +81,17 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         return run;
     }
 
+    /**
+     * Creates a promoted run for the given build and promotion level. If the promoted
+     * run is already defined, returns it. If the promotion level is automatic (not
+     * implemented yet), it returns null. If any other case, it creates the
+     * promoted run and returns it.
+     */
+    @Override
+    @Transactional
+    @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
+    public PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun) {
+        // FIXME createPromotedRun
+        return null;
+    }
 }

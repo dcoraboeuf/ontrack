@@ -1,9 +1,6 @@
 package net.ontrack.service;
 
-import net.ontrack.core.model.BuildCreationForm;
-import net.ontrack.core.model.BuildSummary;
-import net.ontrack.core.model.ValidationRunCreationForm;
-import net.ontrack.core.model.ValidationRunSummary;
+import net.ontrack.core.model.*;
 
 public interface ControlService {
 
@@ -11,4 +8,5 @@ public interface ControlService {
 
 	ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun);
 
+    PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun);
 }
