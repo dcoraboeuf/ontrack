@@ -3,14 +3,14 @@
 <#macro promotion_levels project branch id="promotion_levels" create=true>
 	<@dynamicsection id=id template="PromotionLevels.promotionLevelTemplate('${project?html}','${branch?html}')">
 		<#if create>
-			<@dialog id="promotion_levels-create-dialog">
-				<@form_text name="name" label=loc('promotion_levels.name') />
-				<@form_memo name="description" label=loc('promotion_levels.description') required=false />
-				
-				<@dialog_button_cancel />
-				<@dialog_button id="promotion_levels-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+			<@dialog id="promotion_level-create-dialog">
+				<@form_text name="name" label=loc('promotion_level.name') />
+				<@form_memo name="description" label=loc('promotion_level.description') required=false />
+
+				<@dialog_button id="promotion_level-create-dialog-submit" class="btn-primary" text=loc('general.create') />
+                <@dialog_button_cancel />
 			</@dialog>
-			<button id="promotion_levels-create-button" type="button" class="btn" onclick="PromotionLevels.createValidationStamp('${project?html}','${branch?html}')"><@lh key="validation_stamp.create" /></button>
+			<button id="promotion_level-create-button" type="button" class="btn" onclick="PromotionLevels.createPromotionLevel('${project?html}','${branch?html}')"><@lh key="promotion_level.create" /></button>
 		</#if>
 	</@dynamicsection>
 </#macro>

@@ -3,7 +3,7 @@ var PromotionLevels = function () {
 	function createPromotionLevel (project, branch) {
 		Application.dialogAndSubmit({
 			id: 'promotion_level-create-dialog',
-			title: loc('promotion_level.create.title'),
+			title: loc('promotion_level.create'),
 			url: 'ui/manage/promotion_level/{0}/{1}'.format(project,branch),
 			successFn: function (data) {
 				location = 'gui/promotion_level/{0}/{1}/{2}'.format(project,branch,data.name);
