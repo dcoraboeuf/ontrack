@@ -45,6 +45,18 @@ public interface ManageUI {
 
     byte[] imageValidationStamp(String project, String branch, String name);
 
+    // Promotion levels
+
+    PromotionLevelSummary getPromotionLevel(String project, String branch, String name);
+
+    PromotionLevelSummary createPromotionLevel(String project, String branch, PromotionLevelCreationForm form);
+
+    Ack setImagePromotionLevel(String project, String branch, String name, MultipartFile image);
+
+    byte[] imagePromotionLevel(String project, String branch, String name);
+
+    List<PromotionLevelSummary> getPromotionLevelList(String project, String branch);
+
     // Builds
 
     BranchBuilds getBuildList(String project, String branch, int offset, int count);

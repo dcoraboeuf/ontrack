@@ -45,6 +45,18 @@ public interface ManagementService {
 	Ack imageValidationStamp(int validationStampId, MultipartFile image);
 
 	byte[] imageValidationStamp(int validationStampId);
+
+    // Promotion levels
+
+    List<PromotionLevelSummary> getPromotionLevelList(int branchId);
+
+    PromotionLevelSummary getPromotionLevel(int promotionLevelId);
+
+    PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form);
+
+    Ack imagePromotionLevel(int promotionLevelId, MultipartFile image);
+
+    byte[] imagePromotionLevel(int promotionLevelId);
 	
 	// Builds
 
@@ -71,5 +83,4 @@ public interface ManagementService {
 	// Common
 
 	int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
-
 }

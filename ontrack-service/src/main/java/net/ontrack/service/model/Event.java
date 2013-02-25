@@ -51,6 +51,10 @@ public class Event {
         return withEntity(Entity.VALIDATION_STAMP, id);
     }
 
+    public Event withPromotionLevel(int id) {
+        return withEntity(Entity.PROMOTION_LEVEL, id);
+    }
+
     public Event withEntity(Entity entity, int id) {
         entities.put(entity, id);
         return this;

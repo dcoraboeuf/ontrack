@@ -37,6 +37,61 @@ import static java.lang.String.format;
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
 
+    protected final RowMapper<ProjectSummary> projectSummaryMapper = new RowMapper<ProjectSummary>() {
+        @Override
+        public ProjectSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
+        }
+    };
+    protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
+        @Override
+        public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getProject(rs.getInt("project")));
+        }
+    };
+
+    // Project groups
+    protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
+        @Override
+        public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
+        }
+    };
+    protected final RowMapper<PromotionLevelSummary> promotionLevelSummaryMapper = new RowMapper<PromotionLevelSummary>() {
+        @Override
+        public PromotionLevelSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new PromotionLevelSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), rs.getInt("levelNb"), getBranch(rs.getInt("branch")));
+        }
+    };
+
+    // Projects
+    protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
+        @Override
+        public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
+        }
+    };
+    protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
+        @Override
+        public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
+            int id = rs.getInt("id");
+            return new ValidationRunSummary(
+                    id,
+                    rs.getInt("run_order"),
+                    rs.getString("description"),
+                    getBuild(rs.getInt("build")),
+                    getValidationStamp(rs.getInt("validation_stamp")),
+                    getLastValidationRunStatus(id));
+        }
+    };
+    protected final RowMapper<ValidationRunStatusStub> validationRunStatusStubMapper = new RowMapper<ValidationRunStatusStub>() {
+        @Override
+        public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new ValidationRunStatusStub(rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"));
+            // TODO Author
+            // TODO Timestamp
+        }
+    };
     private final SecurityUtils securityUtils;
 
     @Autowired
@@ -45,7 +100,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.securityUtils = securityUtils;
     }
 
-    // Project groups
+    // Branches
 
     @Override
     @Transactional(readOnly = true)
@@ -75,15 +130,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // OK
         return new ProjectGroupSummary(id, form.getName(), form.getDescription());
     }
-
-    // Projects
-
-    protected final RowMapper<ProjectSummary> projectSummaryMapper = new RowMapper<ProjectSummary>() {
-        @Override
-        public ProjectSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
-        }
-    };
 
     @Override
     @Transactional(readOnly = true)
@@ -116,6 +162,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new ProjectSummary(id, form.getName(), form.getDescription());
     }
 
+    // Validation stamps
+
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
@@ -127,15 +175,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
         return ack;
     }
-
-    // Branches
-
-    protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
-        @Override
-        public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getProject(rs.getInt("project")));
-        }
-    };
 
     @Override
     @Transactional(readOnly = true)
@@ -186,15 +225,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return ack;
     }
 
-    // Validation stamps
-
-    protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
-        @Override
-        public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
-        }
-    };
-
     @Override
     @Transactional(readOnly = true)
     public List<ValidationStampSummary> getValidationStampList(int branch) {
@@ -203,6 +233,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 params("branch", branch),
                 validationStampSummaryMapper);
     }
+
+    // Promotion levels
 
     @Override
     @Transactional(readOnly = true)
@@ -240,57 +272,76 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imageValidationStamp(int validationStampId, MultipartFile image) {
-        // Checks the image type
-        String contentType = image.getContentType();
-        if (!"image/png".equals(contentType)) {
-            throw new ImageIncorrectMIMETypeException(contentType, "image/png");
-        }
-        // Checks the size
-        long imageSize = image.getSize();
-        if (imageSize > SQL.VALIDATION_STAMP_IMAGE_MAXSIZE) {
-            throw new ImageTooBigException(imageSize, SQL.VALIDATION_STAMP_IMAGE_MAXSIZE);
-        }
-        // Gets the bytes
-        byte[] content = new byte[0];
-        try {
-            content = image.getBytes();
-        } catch (IOException e) {
-            throw new ImageCannotReadException(e);
-        }
-        // Updates the content
-        int count = getNamedParameterJdbcTemplate().update(
-                SQL.VALIDATIONSTAMP_IMAGE_UPDATE,
-                params("id", validationStampId).addValue("image", content));
-        // OK
-        return Ack.one(count);
+        return setImage(validationStampId, image, SQL.VALIDATION_STAMP_IMAGE_MAXSIZE, SQL.VALIDATIONSTAMP_IMAGE_UPDATE);
+
     }
 
     @Override
     public byte[] imageValidationStamp(int validationStampId) {
-        List<byte[]> list = getNamedParameterJdbcTemplate().query(
-                SQL.VALIDATIONSTAMP_IMAGE,
-                params("id", validationStampId),
-                new RowMapper<byte[]>() {
-                    @Override
-                    public byte[] mapRow(ResultSet rs, int row) throws SQLException, DataAccessException {
-                        return rs.getBytes("image");
-                    }
-                });
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list.get(0);
-        }
+        return getImage(validationStampId, SQL.VALIDATIONSTAMP_IMAGE);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PromotionLevelSummary> getPromotionLevelList(int branch) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.PROMOTION_LEVEL_LIST,
+                params("branch", branch),
+                promotionLevelSummaryMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PromotionLevelSummary getPromotionLevel(int promotionLevelId) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                SQL.PROMOTION_LEVEL,
+                params("id", promotionLevelId),
+                promotionLevelSummaryMapper);
+    }
+
 
     // Builds
 
-    protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
-        @Override
-        public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
-        }
-    };
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Count of existing promotion levels
+        int count = getPromotionLevelList(branchId).size();
+        int levelNb = count + 1;
+        // Query
+        int id = dbCreate(
+                SQL.PROMOTION_LEVEL_CREATE,
+                MapBuilder.params("branch", branchId)
+                        .with("name", form.getName())
+                        .with("description", form.getDescription())
+                        .with("levelNb", levelNb)
+                        .get());
+        // Branch summary
+        BranchSummary theBranch = getBranch(branchId);
+        // Audit
+        event(Event.of(EventType.PROMOTION_LEVEL_CREATED)
+                .withProject(theBranch.getProject().getId())
+                .withBranch(theBranch.getId())
+                .withPromotionLevel(id));
+        // OK
+        return new PromotionLevelSummary(id, form.getName(), form.getDescription(), levelNb, theBranch);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack imagePromotionLevel(int promotionLevelId, MultipartFile image) {
+        return setImage(promotionLevelId, image, SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE, SQL.PROMOTION_LEVEL_IMAGE_UPDATE);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] imagePromotionLevel(int promotionLevelId) {
+        return getImage(promotionLevelId, SQL.PROMOTION_LEVEL_IMAGE);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -313,6 +364,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 )
         );
     }
+
+    // Validation runs
 
     @Override
     @Transactional(readOnly = true)
@@ -346,22 +399,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 });
     }
 
-    // Validation runs
-
-    protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
-        @Override
-        public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            int id = rs.getInt("id");
-            return new ValidationRunSummary(
-                    id,
-                    rs.getInt("run_order"),
-                    rs.getString("description"),
-                    getBuild(rs.getInt("build")),
-                    getValidationStamp(rs.getInt("validation_stamp")),
-                    getLastValidationRunStatus(id));
-        }
-    };
-
     @Override
     @Transactional(readOnly = true)
     public ValidationRunSummary getValidationRun(int id) {
@@ -371,6 +408,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 validationRunSummaryMapper
         );
     }
+
+    // Validation run status
 
     @Override
     @Transactional(readOnly = true)
@@ -389,17 +428,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         });
     }
 
-    // Validation run status
-
-    protected final RowMapper<ValidationRunStatusStub> validationRunStatusStubMapper = new RowMapper<ValidationRunStatusStub>() {
-        @Override
-        public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ValidationRunStatusStub(rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"));
-            // TODO Author
-            // TODO Timestamp
-        }
-    };
-
     @Override
     @Transactional
     @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
@@ -417,7 +445,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // Registers an event for this comment
             event(
                     collectEntityContext(Event.of(EventType.VALIDATION_RUN_COMMENT), Entity.VALIDATION_RUN, runId)
-                        .withComment(comment.getComment()));
+                            .withComment(comment.getComment()));
             // OK
             return Ack.OK;
         } else {
@@ -529,12 +557,55 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     format("SELECT %s FROM %s WHERE ID = :id", parentEntity.name(), entity.name()),
                     params("id", id),
                     Integer.class
-                    );
+            );
             if (parentEntityId != null) {
                 e = collectEntityContext(e, parentEntity, parentEntityId);
             }
         }
         // OK
         return e;
+    }
+
+    protected Ack setImage(int id, MultipartFile image, long maxSize, String imageUpdateSql) {
+        // Checks the image type
+        String contentType = image.getContentType();
+        if (!"image/png".equals(contentType)) {
+            throw new ImageIncorrectMIMETypeException(contentType, "image/png");
+        }
+        // Checks the size
+        long imageSize = image.getSize();
+        if (imageSize > maxSize) {
+            throw new ImageTooBigException(imageSize, maxSize);
+        }
+        // Gets the bytes
+        byte[] content = new byte[0];
+        try {
+            content = image.getBytes();
+        } catch (IOException e) {
+            throw new ImageCannotReadException(e);
+        }
+        // Updates the content
+        int count = getNamedParameterJdbcTemplate().update(
+                imageUpdateSql,
+                params("id", id).addValue("image", content));
+        // OK
+        return Ack.one(count);
+    }
+
+    private byte[] getImage(int id, String sql) {
+        List<byte[]> list = getNamedParameterJdbcTemplate().query(
+                sql,
+                params("id", id),
+                new RowMapper<byte[]>() {
+                    @Override
+                    public byte[] mapRow(ResultSet rs, int row) throws SQLException, DataAccessException {
+                        return rs.getBytes("image");
+                    }
+                });
+        if (list.isEmpty()) {
+            return null;
+        } else {
+            return list.get(0);
+        }
     }
 }
