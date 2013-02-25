@@ -167,8 +167,9 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Validation runs
 
     @Override
-    @RequestMapping(value = "/ui/manage/validation_run/{runId:[0-9]+}", method = RequestMethod.GET)
-    public @ResponseBody ValidationRunSummary getValidationRun(@PathVariable int runId) {
+    @RequestMapping(value = "/ui/manage/validation_run/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{build:[A-Za-z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{run:[0-9]+}", method = RequestMethod.GET)
+    public @ResponseBody ValidationRunSummary getValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
+        int runId = entityConverter.getValidationRunId(project, branch, build, validationStamp, run);
         return managementService.getValidationRun(runId);
     }
 

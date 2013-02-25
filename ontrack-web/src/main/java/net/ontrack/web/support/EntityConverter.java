@@ -10,4 +10,5 @@ public interface EntityConverter {
 
 	int getProjectId(String project);
 
+    int getValidationRunId(String project, String branch, String build, String validationStamp, int run);
 }

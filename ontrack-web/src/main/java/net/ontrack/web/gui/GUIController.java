@@ -1,17 +1,11 @@
 package net.ontrack.web.gui;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletResponse;
-
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
-
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
 
 @Controller
 public class GUIController extends AbstractGUIController {
@@ -73,10 +71,10 @@ public class GUIController extends AbstractGUIController {
         return "validationStamp";
     }
 
-    @RequestMapping(value = "/gui/validation_run/{id:[0-9]+}", method = RequestMethod.GET)
-    public String getValidationRun(Model model, @PathVariable int id) {
+    @RequestMapping(value = "/gui/validation_run/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{build:[A-Za-z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{run:[0-9]+}", method = RequestMethod.GET)
+    public String getValidationRun(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
         // Loads the details
-        model.addAttribute("validationRun", manageUI.getValidationRun(id));
+        model.addAttribute("validationRun", manageUI.getValidationRun(project, branch, build, validationStamp, run));
         // OK
         return "validationRun";
     }
