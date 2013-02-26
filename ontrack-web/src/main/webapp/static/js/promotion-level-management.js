@@ -42,7 +42,7 @@ var PromotionLevelManagement = function () {
         });
         // Initializes all promotion drop zones
         $('.promotionLevelStamps').each(function (index, promotionLevelItem) {
-            if ($(promotionLevelItem).has('span.validationStamp')) {
+            if ($(promotionLevelItem).find('span.validationStamp').length > 0) {
                 $('#dropzone-label-' + $(promotionLevelItem).attr('data-promotionLevel')).hide();
             }
         });

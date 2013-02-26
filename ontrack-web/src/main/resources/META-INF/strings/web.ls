@@ -396,6 +396,10 @@ promotion_level.management.dropzone
     en -> Drop validation stamps here
     fr -> Ajouter les validations içi
 
+promotion_level.management.dropzone.free
+    en -> Drop free validation stamps here
+    fr -> Ajouter les validations libres içi
+
 promotion_level.management.dndhelp
     en -> Drag and drop validation stamps into the promotion levels to associate them.
     fr -> Déplacez les validations vers les niveaux de promotion pour les associer.

@@ -35,7 +35,7 @@
                                 </td>
                                 <td>
                                     <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
-                                        <span class="dropzone-label" id="dropzone-label-${promotionLevelAndStamps.promotionLevel.name?html}"><@lh key="promotion_level.management.dropzone" /></span>
+                                        <span class="dropzone-label muted" id="dropzone-label-${promotionLevelAndStamps.promotionLevel.name?html}"><@lh key="promotion_level.management.dropzone" /></span>
                                         <#list promotionLevelAndStamps.validationStamps as validationStamp>
                                             <@stamp mode="promotion" validationStamp=validationStamp />
                                         </#list>
@@ -49,6 +49,7 @@
                 <div class="help-block"><@lh key="promotion_level.management.dndhelp" /></div>
 			</div>
             <div id="freeValidationStamps" class="span2">
+                <span class="dropzone-label muted" id="dropzone-label-free"><@lh key="promotion_level.management.dropzone.free" /></span>
                 <#list management.freeValidationStampList as validationStamp>
                     <@stamp mode="free" validationStamp=validationStamp />
                 </#list>
