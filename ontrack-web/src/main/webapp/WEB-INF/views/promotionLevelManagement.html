@@ -33,10 +33,11 @@
                         </#list>
                     </tbody>
                 </table>
+                <div class="help-block"><@lh key="promotion_level.management.dndhelp" /></div>
 			</div>
-            <div class="span2">
+            <div id="freeValidationStamps" class="span2">
                 <#list management.freeValidationStampList as validationStamp>
-                    <span class="label action validationStamp free">
+                    <span class="label action validationStamp free" validationStamp="${validationStamp.name?html}">
                         <@validation_stamp_img validationStamp=validationStamp />
                         ${validationStamp.name?html}
                     </span>

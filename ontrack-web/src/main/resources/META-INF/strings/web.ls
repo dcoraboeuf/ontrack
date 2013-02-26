@@ -392,6 +392,14 @@ promotion_level.image.success
 	en -> Successful upload of the image.
 	fr -> L'image a été chargée correctement.
 
+promotion_level.management.dropzone
+    en -> Drop validation stamps here
+    fr -> Ajouter les validations içi
+
+promotion_level.management.dndhelp
+    en -> Drag and drop validation stamps into the promotion levels to associate them.
+    fr -> Déplacez les validations vers les niveaux de promotion pour les associer.
+
 [builds]
 
 build.validation_stamps
