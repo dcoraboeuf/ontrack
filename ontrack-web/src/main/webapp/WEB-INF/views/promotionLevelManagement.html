@@ -1,5 +1,12 @@
 <#include "/lib/layout.html">
 
+<#macro stamp mode validationStamp>
+    <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}">
+        <@validation_stamp_img validationStamp=validationStamp />
+        ${validationStamp.name?html}
+    </span>
+</#macro>
+
 <@layout_std page="promotion-level-management" script=true style=true title=loc('branch.promotion_levels') modules=["projects","branches","builds","validation_stamps","promotion_levels"] breadcrumbs = {loc("home"): "", management.branch.project.name?html: "gui/project/${management.branch.project.name?html}", management.branch.name?html: "gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
@@ -29,6 +36,9 @@
                                 <td>
                                     <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
                                         <span class="dropzone-label" id="dropzone-label-${promotionLevelAndStamps.promotionLevel.name?html}"><@lh key="promotion_level.management.dropzone" /></span>
+                                        <#list promotionLevelAndStamps.validationStamps as validationStamp>
+                                            <@stamp mode="promotion" validationStamp=validationStamp />
+                                        </#list>
                                     </div>
                                     <div id="loading-indicator-${promotionLevelAndStamps.promotionLevel.name?html}"></div>
                                 </td>
@@ -40,10 +50,7 @@
 			</div>
             <div id="freeValidationStamps" class="span2">
                 <#list management.freeValidationStampList as validationStamp>
-                    <span class="label action validationStamp free" data-validationStamp="${validationStamp.name?html}">
-                        <@validation_stamp_img validationStamp=validationStamp />
-                        ${validationStamp.name?html}
-                    </span>
+                    <@stamp mode="free" validationStamp=validationStamp />
                 </#list>
             </div>
 		</div>

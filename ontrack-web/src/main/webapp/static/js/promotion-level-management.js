@@ -35,10 +35,16 @@ var PromotionLevelManagement = function () {
     }
 
     function init () {
-        // Free validation stamps are draggable
-        $('span.validationStamp.free').draggable({
+        // All validation stamps are draggable
+        $('span.validationStamp').draggable({
             revert: "invalid",
             cursor: "move"
+        });
+        // Initializes all promotion drop zones
+        $('.promotionLevelStamps').each(function (index, promotionLevelItem) {
+            if ($(promotionLevelItem).has('span.validationStamp')) {
+                $('#dropzone-label-' + $(promotionLevelItem).attr('data-promotionLevel')).hide();
+            }
         });
         // Droppable zones for the promotion levels
         $('.promotionLevelStamps').droppable({
