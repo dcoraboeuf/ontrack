@@ -23,8 +23,10 @@ var PromotionLevelManagement = function () {
                     validationStampItem.removeAttr('style');
                     // Appends the validation stamp item to the promotion level
                     validationStampItem.appendTo(promotionLevelItem);
-                    // Clears the drop zone label
-                    $('#dropzone-label-' + promotionLevel).hide();
+                    // Attaches the promotion level to this stamp
+                    validationStampItem.attr('data-promotionLevel', promotionLevel);
+                    // Initializes all promotion drop zones
+                    initDropZones();
                 }
             },
             function (message) {
@@ -34,6 +36,17 @@ var PromotionLevelManagement = function () {
         );
     }
 
+    function initDropZones () {
+        $('.promotionLevelStamps').each(function (index, promotionLevelItem) {
+            var dropZone = $('#dropzone-label-' + $(promotionLevelItem).attr('data-promotionLevel'));
+            if ($(promotionLevelItem).find('span.validationStamp').length > 0) {
+                dropZone.hide();
+            } else {
+                dropZone.show();
+            }
+        });
+    }
+
     function init () {
         // All validation stamps are draggable
         $('span.validationStamp').draggable({
@@ -41,11 +54,7 @@ var PromotionLevelManagement = function () {
             cursor: "move"
         });
         // Initializes all promotion drop zones
-        $('.promotionLevelStamps').each(function (index, promotionLevelItem) {
-            if ($(promotionLevelItem).find('span.validationStamp').length > 0) {
-                $('#dropzone-label-' + $(promotionLevelItem).attr('data-promotionLevel')).hide();
-            }
-        });
+        initDropZones();
         // Droppable zones for the promotion levels
         $('.promotionLevelStamps').droppable({
             activeClass: "ui-state-hover",
