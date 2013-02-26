@@ -25,9 +25,10 @@
                                    <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
                                 </td>
                                 <td>
-                                    <div id="${promotionLevelAndStamps.promotionLevel.id}" class="promotionLevelStamps">
+                                    <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
 
                                     </div>
+                                    <div id="loading-indicator-${promotionLevelAndStamps.promotionLevel.name?html}"></div>
                                 </td>
                             </tr>
                         </#list>
@@ -37,7 +38,7 @@
 			</div>
             <div id="freeValidationStamps" class="span2">
                 <#list management.freeValidationStampList as validationStamp>
-                    <span class="label action validationStamp free" validationStamp="${validationStamp.name?html}">
+                    <span class="label action validationStamp free" data-validationStamp="${validationStamp.name?html}">
                         <@validation_stamp_img validationStamp=validationStamp />
                         ${validationStamp.name?html}
                     </span>

@@ -1,5 +1,14 @@
 var PromotionLevelManagement = function () {
 
+    function link (validationStampItem, promotionLevelItem) {
+        var promotionLevel = promotionLevelItem.attr('data-promotionLevel');
+        // TODO Starts indicating the loading
+        // TODO Ajax to perform the link
+        // TODO Clears the DnD style for the validation stamp item
+        // TODO Appends the validation stamp item to the promotion level
+        // TODO Clears the drop zone label
+    }
+
     function init () {
         // Free validation stamps are draggable
         $('span.validationStamp.free').draggable({
@@ -16,8 +25,9 @@ var PromotionLevelManagement = function () {
             activeClass: "ui-state-hover",
             hoverClass: "ui-state-active",
             drop: function( event, ui ) {
-                alert(ui.draggable.attr('validationStamp'));
-                ui.draggable.appendTo($(this));
+                var promotionLevelItem = $(this);
+                var validationStampItem = ui.draggable;
+                link(validationStampItem, promotionLevelItem);
                 return false;
             }
         });
@@ -26,7 +36,7 @@ var PromotionLevelManagement = function () {
             activeClass: "ui-state-hover",
             hoverClass: "ui-state-active",
             drop: function( event, ui ) {
-                alert(ui.draggable.attr('validationStamp'));
+                alert(ui.draggable.attr('data-validationStamp'));
                 return false;
             }
         });
