@@ -21,14 +21,7 @@ var PromotionLevelManagement = function () {
                 function (data) {
                     Application.loading(promotionLevelLoadingIndicator, false);
                     if (data.success) {
-                        // Clears the DnD style for the validation stamp item
-                        validationStampItem.removeAttr('style');
-                        // Appends the validation stamp item to the free zone
-                        validationStampItem.appendTo($('#freeValidationStamps'));
-                        // Removes the promotion level from this stamp
-                        validationStampItem.removeAttr('data-promotionLevel');
-                        // Initializes all promotion drop zones
-                        initDropZones();
+                        postDnD(validationStampItem, $('#freeValidationStamps'), false);
                     }
                 },
                 function (message) {
@@ -37,6 +30,21 @@ var PromotionLevelManagement = function () {
                 }
             );
         }
+    }
+
+    function postDnD (validationStampItem, target, promotionLevel) {
+        // Prepares for alignment
+        validationStampItem.removeAttr('style');
+        // Appends the validation stamp item to the target
+        validationStampItem.appendTo(target);
+        // Set-ups the promotion level to this stamp
+        if (promotionLevel) {
+            validationStampItem.attr('data-promotionLevel', promotionLevel);
+        } else {
+            validationStampItem.removeAttr('data-promotionLevel');
+        }
+        // Initializes all promotion drop zones
+        initDropZones();
     }
 
     function link (validationStampItem, promotionLevelItem) {
@@ -59,13 +67,7 @@ var PromotionLevelManagement = function () {
                 Application.loading(promotionLevelLoadingIndicator, false);
                 if (data.success) {
                     // Clears the DnD style for the validation stamp item
-                    validationStampItem.removeAttr('style');
-                    // Appends the validation stamp item to the promotion level
-                    validationStampItem.appendTo(promotionLevelItem);
-                    // Attaches the promotion level to this stamp
-                    validationStampItem.attr('data-promotionLevel', promotionLevel);
-                    // Initializes all promotion drop zones
-                    initDropZones();
+                    postDnD(validationStampItem, promotionLevelItem, promotionLevel);
                 }
             },
             function (message) {
