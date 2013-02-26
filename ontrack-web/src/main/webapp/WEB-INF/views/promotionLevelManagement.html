@@ -1,7 +1,7 @@
 <#include "/lib/layout.html">
 
-<#macro stamp mode validationStamp>
-    <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}">
+<#macro stamp mode validationStamp promotionLevel="">
+    <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}" data-promotionLevel="${promotionLevel?html}">
         <@validation_stamp_img validationStamp=validationStamp />
         ${validationStamp.name?html}
     </span>
@@ -37,7 +37,7 @@
                                     <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
                                         <span class="dropzone-label muted" id="dropzone-label-${promotionLevelAndStamps.promotionLevel.name?html}"><@lh key="promotion_level.management.dropzone" /></span>
                                         <#list promotionLevelAndStamps.validationStamps as validationStamp>
-                                            <@stamp mode="promotion" validationStamp=validationStamp />
+                                            <@stamp mode="promotion" validationStamp=validationStamp promotionLevel=promotionLevelAndStamps.promotionLevel.name />
                                         </#list>
                                     </div>
                                     <div id="loading-indicator-${promotionLevelAndStamps.promotionLevel.name?html}"></div>
