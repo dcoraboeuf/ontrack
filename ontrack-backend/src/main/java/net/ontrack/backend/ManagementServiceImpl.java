@@ -342,7 +342,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
         int count = getNamedParameterJdbcTemplate().update(
                 SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
-                params("validationStamp", validationStampId).addValue("promotionLevel", promotionLevelId)
+                params("id", validationStampId).addValue("promotionLevel", promotionLevelId)
         );
         return Ack.one(count);
     }
@@ -353,7 +353,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
         int count = getNamedParameterJdbcTemplate().update(
                 SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
-                params("validationStamp", validationStampId).addValue("promotionLevel", null)
+                params("id", validationStampId).addValue("promotionLevel", null)
         );
         return Ack.one(count);
     }
