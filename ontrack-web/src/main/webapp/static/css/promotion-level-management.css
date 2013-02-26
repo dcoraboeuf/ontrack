@@ -3,3 +3,11 @@
     margin-left: 2px;
     height: 24px;
 }
+
+i.order {
+    opacity: 0.5;
+}
+
+i.order:hover {
+    opacity: 1.0;
+}

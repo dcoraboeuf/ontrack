@@ -28,7 +28,11 @@
                     <tbody>
                         <#list management.promotionLevelAndStampsList as promotionLevelAndStamps>
                             <tr>
-                                <td>${promotionLevelAndStamps.promotionLevel.levelNb}</td>
+                                <td>
+                                    ${promotionLevelAndStamps.promotionLevel.levelNb}
+                                    <i class="icon-arrow-up action order"></i>
+                                    <i class="icon-arrow-down action order"></i>
+                                </td>
                                 <td>
                                     <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
                                     <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
