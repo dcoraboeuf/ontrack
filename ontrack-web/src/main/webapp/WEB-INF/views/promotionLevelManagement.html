@@ -55,6 +55,7 @@
                 </#list>
             </div>
 		</div>
-        <a class="btn" href="gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"><@lh key="general.close" /></a>
+        <@promotion_level_create project=management.branch.project.name branch=management.branch.name />
+        <a class="btn btn-link" href="gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"><@lh key="general.close" /></a>
 	</div>
 </@layout_std>
