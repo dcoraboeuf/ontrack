@@ -30,8 +30,10 @@
                             <tr>
                                 <td>${promotionLevelAndStamps.promotionLevel.levelNb}</td>
                                 <td>
-                                   <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
-                                   <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                    <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                    <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                    <br/>
+                                    <span class="muted">${promotionLevelAndStamps.promotionLevel.description?html}</span>
                                 </td>
                                 <td>
                                     <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
