@@ -235,19 +235,19 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 
     @Override
     @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{promotionLevel:[A-Z0-9_\\.]+}/up", method = RequestMethod.GET)
-    public Ack upPromotionLevel(String project, String branch, String promotionLevel) {
+    public @ResponseBody Ack upPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.upPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{promotionLevel:[A-Z0-9_\\.]+}/down", method = RequestMethod.GET)
-    public Ack downPromotionLevel(String project, String branch, String promotionLevel) {
+    public @ResponseBody Ack downPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.downPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/manage", method = RequestMethod.GET)
-    public PromotionLevelManagementData getPromotionLevelManagementData(String project, String branch) {
+    public @ResponseBody PromotionLevelManagementData getPromotionLevelManagementData(@PathVariable String project, @PathVariable String branch) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.getPromotionLevelManagementData(branchId);
     }

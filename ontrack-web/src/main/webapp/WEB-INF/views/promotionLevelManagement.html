@@ -33,10 +33,10 @@
                                     <#if promotionLevelAndStamps_index == 0>
                                         <i class="icon-arrow-up order disabled"></i>
                                     <#else>
-                                        <i class="icon-arrow-up action order enabled"></i>
+                                        <i class="icon-arrow-up action order enabled" onclick="PromotionLevelManagement.up('${promotionLevelAndStamps.promotionLevel.name?html}')"></i>
                                     </#if>
                                     <#if promotionLevelAndStamps_has_next>
-                                        <i class="icon-arrow-down action order enabled"></i>
+                                        <i class="icon-arrow-down action order enabled" onclick="PromotionLevelManagement.down('${promotionLevelAndStamps.promotionLevel.name?html}')"></i>
                                     <#else>
                                         <i class="icon-arrow-down order disabled"></i>
                                     </#if>

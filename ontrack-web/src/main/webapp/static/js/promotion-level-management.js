@@ -1,5 +1,39 @@
 var PromotionLevelManagement = function () {
 
+    function up (promotionLevel) {
+        order('up', promotionLevel);
+    }
+
+    function down (promotionLevel) {
+        order('down', promotionLevel);
+    }
+
+    function order (direction, promotionLevel) {
+        var promotionLevelLoadingIndicator = '#loading-indicator-' + promotionLevel;
+        var project = $('#project').val();
+        var branch = $('#branch').val();
+        Application.loading(promotionLevelLoadingIndicator, true);
+        // Ajax to perform the re-ordering
+        Application.ajaxGet(
+            'ui/manage/promotion_level/{0}/{1}/{2}/{3}'.format(
+                project.html(),
+                branch.html(),
+                promotionLevel.html(),
+                direction
+            ),
+            function (data) {
+                Application.loading(promotionLevelLoadingIndicator, false);
+                if (data.success) {
+                    location.reload();
+                }
+            },
+            function (message) {
+                Application.loading(promotionLevelLoadingIndicator, false);
+                Application.displayError(message);
+            }
+        );
+    }
+
     function unlink (validationStampItem) {
         // The validation stamp
         var validationStamp = validationStampItem.attr('data-validationStamp');
@@ -121,7 +155,9 @@ var PromotionLevelManagement = function () {
 
     return {
 
-        init: init
+        init: init,
+        up: up,
+        down: down
 
     };
 
