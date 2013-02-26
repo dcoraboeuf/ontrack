@@ -34,7 +34,7 @@ var PromotionLevelManagement = function () {
 
     function postDnD (validationStampItem, target, promotionLevel) {
         // Prepares for alignment
-        validationStampItem.removeAttr('style');
+        validationStampItem.css('left', '').css('top', '');
         // Appends the validation stamp item to the target
         validationStampItem.appendTo(target);
         // Set-ups the promotion level to this stamp
@@ -104,7 +104,7 @@ var PromotionLevelManagement = function () {
                 var promotionLevelItem = $(this);
                 var validationStampItem = ui.draggable;
                 link(validationStampItem, promotionLevelItem);
-                return false;
+                return true;
             }
         });
         // Droppable zone for the free validation stamps
@@ -114,7 +114,7 @@ var PromotionLevelManagement = function () {
             drop: function( event, ui ) {
                 var validationStampItem = ui.draggable;
                 unlink(validationStampItem);
-                return false;
+                return true;
             }
         });
     }
