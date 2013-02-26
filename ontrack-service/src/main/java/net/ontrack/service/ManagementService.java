@@ -65,6 +65,8 @@ public interface ManagementService {
     Ack upPromotionLevel(int promotionLevelId);
 
     Ack downPromotionLevel(int promotionLevelId);
+
+    PromotionLevelManagementData getPromotionLevelManagementData(int branchId);
 	
 	// Builds
 

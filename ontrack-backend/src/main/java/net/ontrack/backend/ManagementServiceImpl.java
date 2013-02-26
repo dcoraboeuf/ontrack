@@ -45,35 +45,30 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
         }
     };
-
     protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
         @Override
         public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getProject(rs.getInt("project")));
         }
     };
-
     protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
         @Override
         public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
         }
     };
-
     protected final RowMapper<PromotionLevelSummary> promotionLevelSummaryMapper = new RowMapper<PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new PromotionLevelSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), rs.getInt("levelNb"), getBranch(rs.getInt("branch")));
         }
     };
-
     protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
         @Override
         public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
         }
     };
-
     protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
         @Override
         public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -87,7 +82,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     getLastValidationRunStatus(id));
         }
     };
-
     protected final RowMapper<ValidationRunStatusStub> validationRunStatusStubMapper = new RowMapper<ValidationRunStatusStub>() {
         @Override
         public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -96,7 +90,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // TODO Timestamp
         }
     };
-
     protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
         @Override
         public PromotedRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -108,7 +101,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
-
     private final SecurityUtils securityUtils;
 
     @Autowired
@@ -355,7 +347,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return Ack.one(count);
     }
 
-
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
@@ -423,6 +414,44 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional(readOnly = true)
     public byte[] imagePromotionLevel(int promotionLevelId) {
         return getImage(promotionLevelId, SQL.PROMOTION_LEVEL_IMAGE);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public PromotionLevelManagementData getPromotionLevelManagementData(int branchId) {
+        // List of validation stamps for this branch, without any promotion level
+        List<ValidationStampSummary> freeValidationStampList = getValidationStampWithoutPromotionLevel(branchId);
+        // List of promotion levels for this branch
+        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
+        // List of promotion levels with stamps
+        List<PromotionLevelAndStamps> promotionLevelAndStampsList = Lists.transform(promotionLevelList, new Function<PromotionLevelSummary, PromotionLevelAndStamps>() {
+            @Override
+            public PromotionLevelAndStamps apply(PromotionLevelSummary promotionLevelSummary) {
+                // Gets the list of stamps for this promotion level
+                List<ValidationStampSummary> stamps = getValidationStampForPromotionLevel(promotionLevelSummary.getId());
+                // OK
+                return new PromotionLevelAndStamps(promotionLevelSummary).withStamps(stamps);
+            }
+        });
+        // OK
+        return new PromotionLevelManagementData(freeValidationStampList, promotionLevelAndStampsList);
+    }
+
+    protected List<ValidationStampSummary> getValidationStampForPromotionLevel(int promotionLevelId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.VALIDATION_STAMP_FOR_PROMOTION_LEVEL,
+                params("promotionLevel", promotionLevelId),
+                validationStampSummaryMapper
+        );
+    }
+
+    protected List<ValidationStampSummary> getValidationStampWithoutPromotionLevel(int branchId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.VALIDATION_STAMP_WITHOUT_PROMOTION_LEVEL,
+                params("branch", branchId),
+                validationStampSummaryMapper
+        );
     }
 
     @Override

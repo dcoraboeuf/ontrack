@@ -245,6 +245,13 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.downPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/manage", method = RequestMethod.GET)
+    public PromotionLevelManagementData getPromotionLevelManagementData(String project, String branch) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.getPromotionLevelManagementData(branchId);
+    }
+
     // Builds
 
     @Override

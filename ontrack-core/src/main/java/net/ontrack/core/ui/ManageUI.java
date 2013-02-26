@@ -65,6 +65,8 @@ public interface ManageUI {
 
     Ack downPromotionLevel(String project, String branch, String promotionLevel);
 
+    PromotionLevelManagementData getPromotionLevelManagementData (String project, String branch);
+
     // Builds
 
     BranchBuilds getBuildList(String project, String branch, int offset, int count);
