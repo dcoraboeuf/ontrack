@@ -30,8 +30,16 @@
                             <tr>
                                 <td>
                                     ${promotionLevelAndStamps.promotionLevel.levelNb}
-                                    <i class="icon-arrow-up action order"></i>
-                                    <i class="icon-arrow-down action order"></i>
+                                    <#if promotionLevelAndStamps_index == 0>
+                                        <i class="icon-arrow-up order disabled"></i>
+                                    <#else>
+                                        <i class="icon-arrow-up action order enabled"></i>
+                                    </#if>
+                                    <#if promotionLevelAndStamps_has_next>
+                                        <i class="icon-arrow-down action order enabled"></i>
+                                    <#else>
+                                        <i class="icon-arrow-down order disabled"></i>
+                                    </#if>
                                 </td>
                                 <td>
                                     <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />

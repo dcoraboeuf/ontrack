@@ -4,10 +4,14 @@
     height: 24px;
 }
 
-i.order {
-    opacity: 0.5;
+i.order.disabled {
+    opacity: 0.0;
 }
 
-i.order:hover {
+i.order.enabled {
+    opacity: 0.25;
+}
+
+i.order.enabled:hover {
     opacity: 1.0;
 }
