@@ -105,6 +105,12 @@ public class GUIController extends AbstractGUIController {
         renderImage(response, content);
     }
 
+    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/manage", method = RequestMethod.GET)
+    public String managePromotionLevels(@PathVariable String project, @PathVariable String branch, Model model)  {
+        model.addAttribute("management", manageUI.getPromotionLevelManagementData(project, branch));
+        return "promotionLevelManagement";
+    }
+
     @RequestMapping(value = "/gui/validation_run/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{build:[A-Za-z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{run:[0-9]+}", method = RequestMethod.GET)
     public String getValidationRun(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
         // Loads the details

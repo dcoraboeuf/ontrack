@@ -6,7 +6,7 @@ var PromotionLevels = function () {
 			title: loc('promotion_level.create'),
 			url: 'ui/manage/promotion_level/{0}/{1}'.format(project,branch),
 			successFn: function (data) {
-				location = 'gui/promotion_level/{0}/{1}/{2}'.format(project,branch,data.name);
+				location = 'gui/promotion_level/{0}/{1}/manage'.format(project,branch);
 			}
 		});
 	}

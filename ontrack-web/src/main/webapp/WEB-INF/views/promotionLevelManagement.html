@@ -1,0 +1,46 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="promotion-level-management" style=true title=loc('branch.promotion_levels') modules=["projects","branches","builds","validation_stamps","promotion_levels"] breadcrumbs = {loc("home"): "", management.branch.project.name?html: "gui/project/${management.branch.project.name?html}", management.branch.name?html: "gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"}>
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${management.branch.project.name?html}">${management.branch.project.name?html}</a>
+                    / <a href="gui/branch/${management.branch.project.name?html}/${management.branch.name?html}">${management.branch.name?html}</a>
+                / <@lh key="branch.promotion_levels" /></span>
+                <span class="action action-optional">
+                    <span onclick="location='gui/branch/${management.branch.project.name?html}/${management.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                </span>
+            </div>
+        </div>
+		<div class="row-fluid">
+			<div class="span9">
+                <table class="table">
+                    <tbody>
+                        <#list management.promotionLevelAndStampsList as promotionLevelAndStamps>
+                            <tr>
+                                <td>${promotionLevelAndStamps.promotionLevel.levelNb}</td>
+                                <td>
+                                   <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                   <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                </td>
+                                <td>
+                                    TODO List of validation stamps
+                                </td>
+                            </tr>
+                        </#list>
+                    </tbody>
+                </table>
+			</div>
+            <div class="span2">
+                <#list management.freeValidationStampList as validationStamp>
+                    <span class="label action validationStamp">
+                        <@validation_stamp_img validationStamp=validationStamp />
+                        ${validationStamp.name?html}
+                    </span>
+                </#list>
+            </div>
+		</div>
+        <a class="btn" href="gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"><@lh key="general.close" /></a>
+	</div>
+</@layout_std>

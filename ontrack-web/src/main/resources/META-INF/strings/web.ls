@@ -361,6 +361,10 @@ validation_stamp.image.success
 
 [promotion_level]
 
+promotion_level.manage
+    en -> Manage promotion levels
+    fr -> Gérer les niveaux de promotion
+
 promotion_level.empty
     en -> No promotion level has been created yet.
     fr -> Aucun niveau de promotion n'a encore été créé.

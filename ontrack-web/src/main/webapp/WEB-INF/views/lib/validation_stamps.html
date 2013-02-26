@@ -18,3 +18,7 @@
 <#macro validation_stamp_img validationStamp>
 	<img width="24" title="${validationStamp.name?html}" src="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}/image" />
 </#macro>
+
+<#macro validation_stamp_link validationStamp>
+    <a href="gui/validation_stamp/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/${validationStamp.name?html}">${validationStamp.name?html}</a>
+</#macro>

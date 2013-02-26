@@ -420,6 +420,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional(readOnly = true)
     @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelManagementData getPromotionLevelManagementData(int branchId) {
+        // Gets the branch
+        BranchSummary branch = getBranch(branchId);
         // List of validation stamps for this branch, without any promotion level
         List<ValidationStampSummary> freeValidationStampList = getValidationStampWithoutPromotionLevel(branchId);
         // List of promotion levels for this branch
@@ -435,7 +437,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             }
         });
         // OK
-        return new PromotionLevelManagementData(freeValidationStampList, promotionLevelAndStampsList);
+        return new PromotionLevelManagementData(branch, freeValidationStampList, promotionLevelAndStampsList);
     }
 
     protected List<ValidationStampSummary> getValidationStampForPromotionLevel(int promotionLevelId) {
