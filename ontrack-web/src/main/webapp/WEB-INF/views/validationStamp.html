@@ -12,6 +12,7 @@
                     <#if secAdmin()>
                         <span onclick=""><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="ValidationStamps.editImage();"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
+                        <span onclick="location='gui/promotion_level/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}/manage'"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></span>
                         <span onclick="ValidationStamps.deleteValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
                     <span onclick="location='gui/branch/${validationStamp.branch.project.name?html}/${validationStamp.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
