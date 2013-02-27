@@ -41,6 +41,8 @@ public interface ManageUI {
 
     ValidationStampSummary createValidationStamp(String project, String branch, ValidationStampCreationForm form);
 
+    Ack deleteValidationStamp(String project, String branch, String validationStamp);
+
     Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image);
 
     byte[] imageValidationStamp(String project, String branch, String name);

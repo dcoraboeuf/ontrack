@@ -280,6 +280,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack deleteValidationStamp(int validationStampId) {
+        ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
+        Ack ack = dbDelete(SQL.VALIDATION_STAMP_DELETE, validationStampId);
+        if (ack.isSuccess()) {
+            event(Event.of(EventType.VALIDATION_STAMP_DELETED)
+                    .withValue("project", validationStamp.getBranch().getProject().getName())
+                    .withValue("branch", validationStamp.getBranch().getName())
+                    .withValue("validationStamp", validationStamp.getName()));
+        }
+        return ack;
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imageValidationStamp(int validationStampId, MultipartFile image) {
         return setImage(validationStampId, image, SQL.VALIDATION_STAMP_IMAGE_MAXSIZE, SQL.VALIDATIONSTAMP_IMAGE_UPDATE);
 

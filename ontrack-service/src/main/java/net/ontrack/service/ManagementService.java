@@ -50,6 +50,8 @@ public interface ManagementService {
 
     Ack unlinkValidationStampToPromotionLevel(int validationStampId);
 
+    Ack deleteValidationStamp(int validationStampId);
+
     // Promotion levels
 
     List<PromotionLevelSummary> getPromotionLevelList(int branchId);

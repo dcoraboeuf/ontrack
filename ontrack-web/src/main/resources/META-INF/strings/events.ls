@@ -51,3 +51,7 @@ event.VALIDATION_RUN_COMMENT
 event.PROMOTED_RUN_CREATED
     en -> Build $BUILD$ of branch $BRANCH$ of project $PROJECT$ has been promoted to $PROMOTION_LEVEL$.
     fr -> Le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ a été promu vers $PROMOTION_LEVEL$.
+
+event.VALIDATION_STAMP_DELETED
+    en -> The $validationStamp$ validation stamp of $branch$ of the $project$ project has been deleted.
+    fr -> La validation $validationStamp$ de la branche $branch$ du projet $project$ a été supprimée.

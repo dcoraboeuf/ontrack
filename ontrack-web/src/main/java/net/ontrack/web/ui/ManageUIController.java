@@ -150,6 +150,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack deleteValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        int validationStampId = entityConverter.getValidationStampId(project, branch, name);
+        return managementService.deleteValidationStamp(validationStampId);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
     public
     @ResponseBody

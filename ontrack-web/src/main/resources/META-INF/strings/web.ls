@@ -339,7 +339,11 @@ validation_stamp.create
 	
 validation_stamp.create.title
 	en,fr -> @[validation_stamp.create]
-	
+
+validation_stamp.delete.prompt
+	en -> Are you sure to delete the "{0}" validation stamp and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer la validation "{0}" et toutes ses informations associées?
+
 validation_stamp.name
 	en,fr -> @[model.name]
 validation_stamp.description
