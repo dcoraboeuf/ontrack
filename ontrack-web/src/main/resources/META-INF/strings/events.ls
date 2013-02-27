@@ -55,3 +55,11 @@ event.PROMOTED_RUN_CREATED
 event.VALIDATION_STAMP_DELETED
     en -> The $validationStamp$ validation stamp of $branch$ of the $project$ project has been deleted.
     fr -> La validation $validationStamp$ de la branche $branch$ du projet $project$ a été supprimée.
+
+event.VALIDATION_STAMP_LINKED
+    en -> $VALIDATION_STAMP$ validation stamp of branch $BRANCH$ of project $PROJECT$ has been linked to the $PROMOTION_LEVEL$ promotion level.
+    fr -> La validation $VALIDATION_STAMP$ de la branche $BRANCH$ de $PROJECT$ a été associée avec le niveau de promotion $PROMOTION_LEVEL$.
+
+event.VALIDATION_STAMP_UNLINKED
+    en -> $VALIDATION_STAMP$ validation stamp of branch $BRANCH$ of project $PROJECT$ has been unlinked from any promotion level.
+    fr -> La validation $VALIDATION_STAMP$ de la branche $BRANCH$ de $PROJECT$ a été dissociée de tout niveau de promotion.

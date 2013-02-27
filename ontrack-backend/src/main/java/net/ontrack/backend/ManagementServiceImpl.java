@@ -359,7 +359,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
                 params("id", validationStampId).addValue("promotionLevel", promotionLevelId)
         );
-        return Ack.one(count);
+        if (count == 1) {
+            Event event = Event.of(EventType.VALIDATION_STAMP_LINKED);
+            event = collectEntityContext(event, Entity.VALIDATION_STAMP, validationStampId);
+            event = collectEntityContext(event, Entity.PROMOTION_LEVEL, promotionLevelId);
+            event(event);
+            return Ack.OK;
+        } else {
+            return Ack.NOK;
+        }
     }
 
     @Override
@@ -370,7 +378,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
                 params("id", validationStampId).addValue("promotionLevel", null)
         );
-        return Ack.one(count);
+        if (count == 1) {
+            Event event = Event.of(EventType.VALIDATION_STAMP_UNLINKED);
+            event = collectEntityContext(event, Entity.VALIDATION_STAMP, validationStampId);
+            event(event);
+            return Ack.OK;
+        } else {
+            return Ack.NOK;
+        }
     }
 
     @Override
