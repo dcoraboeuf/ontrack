@@ -501,7 +501,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                             @Override
                             public BuildCompleteStatus apply(BuildSummary summary) {
                                 List<BuildValidationStamp> stamps = getBuildValidationStamps(summary.getId());
-                                return new BuildCompleteStatus(summary, stamps);
+                                List<PromotionLevelSummary> promotionLevels = getBuildPromotionLevels(summary.getId());
+                                return new BuildCompleteStatus(summary, stamps, promotionLevels);
                             }
                         }
                 )
@@ -540,6 +541,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return buildStamp.withRuns(runStatuses);
                     }
                 });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PromotionLevelSummary> getBuildPromotionLevels(int buildId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.PROMOTION_LEVEL_FOR_BUILD,
+                params("build", buildId),
+                promotionLevelSummaryMapper
+        );
     }
 
     @Override

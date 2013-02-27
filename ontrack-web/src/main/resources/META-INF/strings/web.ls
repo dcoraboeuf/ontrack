@@ -414,6 +414,14 @@ build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
 
+build.promotion_levels
+    en -> Promotions
+    fr -> Promotions
+
+build.promotion_levels.none
+    en -> No promotion
+    fr -> Aucune promotion
+
 [runs]
 
 validationRun

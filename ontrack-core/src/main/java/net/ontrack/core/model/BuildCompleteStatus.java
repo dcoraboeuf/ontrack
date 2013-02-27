@@ -18,20 +18,21 @@ public class BuildCompleteStatus {
     private final int id;
     private final String name;
     private final String description;
-
     // List of validation stamps with their associated runs for this build
-    private final Map<String,BuildValidationStamp> validationStamps;
+    private final Map<String, BuildValidationStamp> validationStamps;
+    // List of promotion levels for this build
+    private final List<PromotionLevelSummary> promotionLevels;
 
-    public BuildCompleteStatus (BuildSummary summary, List<BuildValidationStamp> stamps) {
+    public BuildCompleteStatus(BuildSummary summary, List<BuildValidationStamp> stamps, List<PromotionLevelSummary> promotionLevels) {
         this(summary.getId(), summary.getName(), summary.getDescription(),
-            new TreeMap<String, BuildValidationStamp>(
-                Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
-                    @Override
-                    public String apply(BuildValidationStamp stamp) {
-                        return stamp.getName();
-                    }
-                })
-            ));
+                new TreeMap<String, BuildValidationStamp>(
+                        Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
+                            @Override
+                            public String apply(BuildValidationStamp stamp) {
+                                return stamp.getName();
+                            }
+                        })
+                ), promotionLevels);
     }
 
 }

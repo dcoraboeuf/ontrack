@@ -77,6 +77,8 @@ public interface ManageUI {
 
     List<BuildValidationStamp> getBuildValidationStamps(String project, String branch, String name);
 
+    List<PromotionLevelSummary> getBuildPromotionLevels(String project, String branch, String name);
+
     // Validation runs
 
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);

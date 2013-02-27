@@ -118,10 +118,47 @@ var Builds = function () {
 	        })
 	    });
 	}
+
+	function buildPromotionLevelsTemplate (project, branch, build) {
+        return Template.config({
+            url: 'ui/manage/build/{0}/{1}/{2}/promotionLevels'.format(project, branch, build),
+            refresh: true,
+            render: Template.fill(function (data, append) {
+                var html = '';
+                var count = data.length;
+                if (count == 0) {
+                    html += '<span class="muted">{0}</span>'.format(loc('build.promotion_levels.none'));
+                } else {
+                    for (var i = 0 ; i < count ; i++) {
+                        // Promotion
+                        var promotion = data[i];
+                        // Separator
+                        if (i > 0) {
+                            html += ' <i class="icon-arrow-right"></i> ';
+                        }
+                        // Image of the promotion level
+                        html += '<img width="24" src="gui/promotion_level/{0}/{1}/{2}/image" />'.format(
+                            project.html(),
+                            branch.html(),
+                            promotion.name
+                        );
+                        // Link to the promotion level
+                        html += ' <a href="gui/promotion_level/{0}/{1}/{2}">{2}</a>'.format(
+                            project.html(),
+                            branch.html(),
+                            promotion.name
+                        );
+                    }
+                }
+                return html;
+            })
+        });
+	}
 	
 	return {
 		buildTemplate: buildTemplate,
-		buildValidationStampTemplate: buildValidationStampTemplate
+		buildValidationStampTemplate: buildValidationStampTemplate,
+		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate
 	};
 	
 } ();

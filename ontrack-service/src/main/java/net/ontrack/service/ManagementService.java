@@ -77,6 +77,8 @@ public interface ManagementService {
 	BuildSummary getBuild(int buildId);
 
     List<BuildValidationStamp> getBuildValidationStamps(int buildId);
+
+    List<PromotionLevelSummary> getBuildPromotionLevels(int buildId);
 	
 	// Validation runs
 	
