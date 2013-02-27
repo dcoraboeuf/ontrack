@@ -24,6 +24,8 @@ var Builds = function () {
             html += '<tr>';
                 html += '<td class="branch-build">';
                     html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
+                html += '</td><td>';
+                    html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
                 html += '</td>';
                 $.each(branchBuilds.validationStamps, function (index, validationStamp) {
                     var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
@@ -49,6 +51,7 @@ var Builds = function () {
         // Header
         html += '<tr>';
             html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
+            html += '<th rowspan="2">{0}</th>'.format(loc('branch.promotion_levels'));
             html += '<th colspan="{1}">{0}</th>'.format(loc('branch.validation_stamps'), branchBuilds.validationStamps.length);
         html += '</tr>';
         html += '<tr>';
@@ -119,39 +122,43 @@ var Builds = function () {
 	    });
 	}
 
+	function generateBuildPromotionLevels (project, branch) {
+	    return function (promotionLevels) {
+            var html = '';
+            var count = promotionLevels.length;
+            if (count == 0) {
+                html += '<span class="muted">{0}</span>'.format(loc('build.promotion_levels.none'));
+            } else {
+                for (var i = 0 ; i < count ; i++) {
+                    // Promotion
+                    var promotion = promotionLevels[i];
+                    // Separator
+                    if (i > 0) {
+                        html += ' <i class="icon-arrow-right"></i> ';
+                    }
+                    // Image of the promotion level
+                    html += '<img width="24" src="gui/promotion_level/{0}/{1}/{2}/image" />'.format(
+                        project.html(),
+                        branch.html(),
+                        promotion.name
+                    );
+                    // Link to the promotion level
+                    html += ' <a href="gui/promotion_level/{0}/{1}/{2}">{2}</a>'.format(
+                        project.html(),
+                        branch.html(),
+                        promotion.name
+                    );
+                }
+            }
+            return html;
+        };
+	}
+
 	function buildPromotionLevelsTemplate (project, branch, build) {
         return Template.config({
             url: 'ui/manage/build/{0}/{1}/{2}/promotionLevels'.format(project, branch, build),
             refresh: true,
-            render: Template.fill(function (data, append) {
-                var html = '';
-                var count = data.length;
-                if (count == 0) {
-                    html += '<span class="muted">{0}</span>'.format(loc('build.promotion_levels.none'));
-                } else {
-                    for (var i = 0 ; i < count ; i++) {
-                        // Promotion
-                        var promotion = data[i];
-                        // Separator
-                        if (i > 0) {
-                            html += ' <i class="icon-arrow-right"></i> ';
-                        }
-                        // Image of the promotion level
-                        html += '<img width="24" src="gui/promotion_level/{0}/{1}/{2}/image" />'.format(
-                            project.html(),
-                            branch.html(),
-                            promotion.name
-                        );
-                        // Link to the promotion level
-                        html += ' <a href="gui/promotion_level/{0}/{1}/{2}">{2}</a>'.format(
-                            project.html(),
-                            branch.html(),
-                            promotion.name
-                        );
-                    }
-                }
-                return html;
-            })
+            render: Template.fill(generateBuildPromotionLevels(project,branch))
         });
 	}
 	
