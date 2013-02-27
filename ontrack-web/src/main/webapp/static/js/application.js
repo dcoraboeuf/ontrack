@@ -159,7 +159,7 @@ var Application = function () {
 			var value = field.value;
 			data[name] = value;
 		});
-		console.log(JSON.stringify(data));
+		// console.log(JSON.stringify(data));
 		return data;
 	}
 	

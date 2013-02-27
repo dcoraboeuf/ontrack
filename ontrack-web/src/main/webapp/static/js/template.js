@@ -121,7 +121,7 @@ var Template = function () {
 		        url += '&count=' + config.count;
 		    }
 		    // Logging
-		    console.log('Template.load id={0},url={1},more={2},append={3}'.format(id, url, config.more, append));
+		    // console.log('Template.load id={0},url={1},more={2},append={3}'.format(id, url, config.more, append));
 			// Starts loading
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
