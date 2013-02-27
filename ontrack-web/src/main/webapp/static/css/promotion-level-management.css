@@ -4,6 +4,10 @@
     height: 24px;
 }
 
+span.validationStamp > a {
+    text-decoration: none;
+}
+
 i.order.disabled {
     opacity: 0.0;
 }

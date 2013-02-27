@@ -3,7 +3,7 @@
 <#macro stamp mode validationStamp promotionLevel="">
     <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}" data-promotionLevel="${promotionLevel?html}">
         <@validation_stamp_img validationStamp=validationStamp />
-        ${validationStamp.name?html}
+        <@validation_stamp_link validationStamp=validationStamp />
     </span>
 </#macro>
 
