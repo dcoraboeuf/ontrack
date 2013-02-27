@@ -20,7 +20,7 @@
                 </span>
             </div>
         </div>
-		<div class="row-fluid">
+        <div class="row-fluid">
 			<div class="span9">
                 <input id="project" type="hidden" value="${management.branch.project.name?html}" />
                 <input id="branch" type="hidden" value="${management.branch.name?html}" />
@@ -59,6 +59,13 @@
                             </tr>
                         </#list>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">
+                                <@promotion_level_create project=management.branch.project.name branch=management.branch.name />
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
                 <div class="help-block"><@lh key="promotion_level.management.dndhelp" /></div>
 			</div>
@@ -69,7 +76,5 @@
                 </#list>
             </div>
 		</div>
-        <@promotion_level_create project=management.branch.project.name branch=management.branch.name />
-        <a class="btn btn-link" href="gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"><@lh key="general.close" /></a>
 	</div>
 </@layout_std>
