@@ -2,6 +2,9 @@
 
 <@layout_std page="login" showSecurity=false>
     <form action="j_spring_security_check" method="POST" class="form-horizontal">
+        <#if callbackUrl??>
+            <input name="callbackUrl" type="hidden" value="${callbackUrl?html}" />
+        </#if>
         <div class="control-group">
             <label class="control-label" for="j_username"><@lh key="login.user" /></label>
             <div class="controls">

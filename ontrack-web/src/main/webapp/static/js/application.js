@@ -42,6 +42,10 @@ function loc () {
 
 var Application = function () {
 
+    function login() {
+        location = 'login?callbackUrl={0}'.format(encodeURIComponent(location.href));
+    }
+
 	/**
 	 * Opens a dialog and manages the submit through a AJAX request.
 	 * Configuration:
@@ -350,6 +354,7 @@ var Application = function () {
 	}
 	
 	return {
+	    login: login,
 		dialog: dialog,
 		submit: submit,
 		dialogAndSubmit: dialogAndSubmit,
