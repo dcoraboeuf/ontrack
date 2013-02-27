@@ -87,9 +87,9 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
     }
 
     @Extension
-    public static final class OntrackBuildDescriptorImpl extends BuildStepDescriptor<Publisher> {
+    public static final class OntrackValidationRunDescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        public OntrackBuildDescriptorImpl() {
+        public OntrackValidationRunDescriptorImpl() {
             super(OntrackValidationRunNotifier.class);
         }
 
