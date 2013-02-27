@@ -18,6 +18,7 @@
                     <span onclick="location='gui/branch/${promotionLevel.branch.project.name?html}/${promotionLevel.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
                 </span>
             </div>
+            <div class="muted">${promotionLevel.description?html}</div>
         </div>
         <div id="promotion_level-image-form" class="row-fluid x-dialog">
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/promotion_level/${promotionLevel.branch.project.name?html}/${promotionLevel.branch.name?html}/${promotionLevel.name?html}/image">
