@@ -1,5 +1,8 @@
 package net.ontrack.client.support;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.client.Client;
 import net.ontrack.core.model.Ack;
@@ -14,6 +17,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -58,6 +62,32 @@ public abstract class AbstractClient implements Client {
         return request(new HttpGet(getUrl(path)), returnType);
     }
 
+    protected <T> List<T> list(final String path, final Class<T> elementType) {
+        return request(new HttpGet(getUrl(path)), new ResponseParser<List<T>>() {
+            @Override
+            public List<T> parse(final String content) throws IOException {
+                final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+                JsonNode node = mapper.readTree(content);
+                if (node.isArray()) {
+                    return Lists.newArrayList(
+                            Iterables.transform(node, new Function<JsonNode, T>() {
+                                @Override
+                                public T apply(JsonNode input) {
+                                    try {
+                                        return mapper.readValue(content, elementType);
+                                    } catch (IOException e) {
+                                        throw new ClientGeneralException(path, e);
+                                    }
+                                }
+                            })
+                    );
+                } else {
+                    throw new IOException("Did not receive a JSON array");
+                }
+            }
+        });
+    }
+
     protected <T> T put(String path, Class<T> returnType) {
         return request(new HttpPut(getUrl(path)), returnType);
     }
@@ -99,23 +129,18 @@ public abstract class AbstractClient implements Client {
         return url + path;
     }
 
-    protected <T> T request(HttpRequestBase request, final Class<T> returnType) {
+    protected <T> T request(HttpRequestBase request, Class<T> returnType) {
+        return request(request, new SimpleTypeResponseParser<T>(returnType));
+    }
+
+    protected <T> T request(HttpRequestBase request, final ResponseParser<T> responseParser) {
         return request(request, new BaseResponseHandler<T>() {
             @Override
             protected T handleEntity(HttpEntity entity) throws ParseException, IOException {
                 // Gets the content as a JSON string
                 String content = EntityUtils.toString(entity, "UTF-8");
                 // Parses the response
-                if (returnType == null) {
-                    return null;
-                } else if (String.class.isAssignableFrom(returnType)) {
-                    @SuppressWarnings("unchecked")
-                    T value = (T) content;
-                    return value;
-                } else {
-                    ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
-                    return mapper.readValue(content, returnType);
-                }
+                return responseParser.parse(content);
             }
         });
     }
@@ -138,10 +163,52 @@ public abstract class AbstractClient implements Client {
         }
     }
 
+    protected static interface ResponseParser<T> {
+
+        T parse(String content) throws IOException;
+
+    }
+
     protected static interface ResponseHandler<T> {
 
         T handleResponse(HttpRequestBase request, HttpResponse response, HttpEntity entity) throws ParseException, IOException;
 
+    }
+
+    protected static class NullResponseParser<T> implements ResponseParser<Object> {
+
+        public static final NullResponseParser<Object> INSTANCE = new NullResponseParser<Object>();
+
+        @Override
+        public Object parse(String content) throws IOException {
+            return null;
+        }
+    }
+
+    protected static class StringResponseParser<T> implements ResponseParser<String> {
+
+        public static final StringResponseParser INSTANCE = new StringResponseParser();
+
+        @Override
+        public String parse(String content) throws IOException {
+            return content;
+        }
+    }
+
+    protected static class SimpleTypeResponseParser<T> implements ResponseParser<T> {
+
+        private final Class<T> type;
+
+
+        public SimpleTypeResponseParser(Class<T> type) {
+            this.type = type;
+        }
+
+        @Override
+        public T parse(String content) throws IOException {
+            ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+            return mapper.readValue(content, type);
+        }
     }
 
     protected static class NOPResponseHandler implements ResponseHandler<Void> {
