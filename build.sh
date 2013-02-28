@@ -63,25 +63,12 @@ git checkout -- .
 ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 
 # Maven build
-${MVN} clean install
+${MVN} clean deploy -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
 if [ $? -ne 0 ]
 then
 	echo Build failed.
 	exit 1
 fi
-
-###############################
-# Upload the archive into Nexus
-###############################
-
-echo Uploading to Nexus @ ${NEXUS_URL} with id = ${NEXUS_ID}
-${MVN} -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL} deploy:deploy
-if [ $? -ne 0 ]
-then
-	echo Deployment failed.
-	exit 1
-fi
-
 
 ##################################################################
 # After the build is complete, create the tag in Git and pushes it
