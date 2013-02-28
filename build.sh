@@ -62,6 +62,9 @@ git checkout -- .
 # Changing the versions
 ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 
+# Special case for Jenkins
+sed -i "s/${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
+
 # Maven build
 ${MVN} clean deploy -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
 if [ $? -ne 0 ]
