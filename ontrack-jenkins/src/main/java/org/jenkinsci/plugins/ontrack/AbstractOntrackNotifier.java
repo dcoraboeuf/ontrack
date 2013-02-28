@@ -38,7 +38,7 @@ public abstract class AbstractOntrackNotifier extends Notifier {
             throw new IllegalStateException("ontrack Password global parameter must be defined");
         }
         // Creates the client
-        ControlUIClient client = ControlUIClientFactory.create(url).build();
+        ControlUIClient client = ControlUIClientFactory.create(url).control();
         // Login
         client.login(user, password);
         try {

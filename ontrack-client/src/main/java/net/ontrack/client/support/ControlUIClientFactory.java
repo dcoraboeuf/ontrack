@@ -1,6 +1,7 @@
 package net.ontrack.client.support;
 
 import net.ontrack.client.ControlUIClient;
+import net.ontrack.client.ManageUIClient;
 
 public class ControlUIClientFactory {
 
@@ -10,12 +11,16 @@ public class ControlUIClientFactory {
         this.url = url;
     }
 
-    public ControlUIClient build() {
+    public static ControlUIClientFactory create(String url) {
+        return new ControlUIClientFactory(url);
+    }
+
+    public ControlUIClient control() {
         return new DefaultControlUIClient(url);
     }
 
-    public static ControlUIClientFactory create(String url) {
-        return new ControlUIClientFactory(url);
+    public ManageUIClient manage() {
+        return new DefaultManageUIClient(url);
     }
 
 }
