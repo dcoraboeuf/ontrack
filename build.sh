@@ -75,7 +75,7 @@ fi
 ###############################
 
 echo Uploading to Nexus @ ${NEXUS_URL} with id = ${NEXUS_ID}
-${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${RELEASE} -DgeneratePom=true -Dpackaging=war
+${MVN} -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL} deploy:deploy
 if [ $? -ne 0 ]
 then
 	echo Deployment failed.
