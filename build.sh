@@ -16,23 +16,23 @@ then
 	exit 1
 fi
 
-# if [ "$NEXUS_URL" == "" ]
-# then
-        # echo NEXUS_URL is required.
-        # exit 1
-# fi
+if [ "$NEXUS_URL" == "" ]
+then
+        echo NEXUS_URL is required.
+        exit 1
+fi
 
-# if [ "$NEXUS_ID" == "" ]
-# then
-        # echo NEXUS_ID is required.
-        # exit 1
-# fi
+if [ "$NEXUS_ID" == "" ]
+then
+        echo NEXUS_ID is required.
+        exit 1
+fi
 
 # Listing environment
 echo "BUILD_NUMBER = ${BUILD_NUMBER}"
 echo "MVN          = ${MVN}"
-# echo "NEXUS_URL    = ${NEXUS_URL}"
-# echo "NEXUS_ID     = ${NEXUS_ID}"
+echo "NEXUS_URL    = ${NEXUS_URL}"
+echo "NEXUS_ID     = ${NEXUS_ID}"
 
 ##########################
 # General MVN options
@@ -74,13 +74,13 @@ fi
 # Upload the archive into Nexus
 ###############################
 
-# echo Uploading to Nexus @ ${NEXUS_URL} with id = ${NEXUS_ID}
-# ${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${RELEASE} -DgeneratePom=true -Dpackaging=war
-# if [ $? -ne 0 ]
-# then
-	# echo Deployment failed.
-	# exit 1
-# fi
+echo Uploading to Nexus @ ${NEXUS_URL} with id = ${NEXUS_ID}
+${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${RELEASE} -DgeneratePom=true -Dpackaging=war
+if [ $? -ne 0 ]
+then
+	echo Deployment failed.
+	exit 1
+fi
 
 
 ##################################################################
