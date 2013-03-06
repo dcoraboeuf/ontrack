@@ -27,6 +27,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public String getProjectURL(String project) {
+        return getUrl(format("/gui/project/%s", project));
+    }
+
+    @Override
+    public String getBranchURL(String project, String branch) {
+        return getUrl(format("/gui/branch/%s/%s", project, branch));
+    }
+
+    @Override
     public List<ProjectSummary> getProjectList() {
         return list("/ui/manage/project/all", ProjectSummary.class);
     }
