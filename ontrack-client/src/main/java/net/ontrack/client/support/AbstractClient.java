@@ -74,7 +74,7 @@ public abstract class AbstractClient implements Client {
                                 @Override
                                 public T apply(JsonNode input) {
                                     try {
-                                        return mapper.readValue(content, elementType);
+                                        return mapper.readValue(input, elementType);
                                     } catch (IOException e) {
                                         throw new ClientGeneralException(path, e);
                                     }
