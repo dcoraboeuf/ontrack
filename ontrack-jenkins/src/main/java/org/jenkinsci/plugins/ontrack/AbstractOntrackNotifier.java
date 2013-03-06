@@ -6,7 +6,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import jenkins.model.Jenkins;
 import net.ontrack.client.ControlUIClient;
-import net.ontrack.client.support.ControlUIClientFactory;
+import net.ontrack.client.support.ClientFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -38,7 +38,7 @@ public abstract class AbstractOntrackNotifier extends Notifier {
             throw new IllegalStateException("ontrack Password global parameter must be defined");
         }
         // Creates the client
-        ControlUIClient client = ControlUIClientFactory.create(url).control();
+        ControlUIClient client = ClientFactory.create(url).control();
         // Login
         client.login(user, password);
         try {

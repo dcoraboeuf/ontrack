@@ -3,16 +3,16 @@ package net.ontrack.client.support;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
 
-public class ControlUIClientFactory {
+public class ClientFactory {
 
     private final String url;
 
-    private ControlUIClientFactory(String url) {
+    private ClientFactory(String url) {
         this.url = url;
     }
 
-    public static ControlUIClientFactory create(String url) {
-        return new ControlUIClientFactory(url);
+    public static ClientFactory create(String url) {
+        return new ClientFactory(url);
     }
 
     public ControlUIClient control() {
