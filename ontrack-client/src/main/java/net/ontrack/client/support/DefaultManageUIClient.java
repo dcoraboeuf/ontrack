@@ -37,6 +37,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public String getPromotionLevelImageURL(String project, String branch, String name) {
+        return getUrl(format("/ui/manage/promotion_level/%s/%s/%s/image", project, branch, name));
+    }
+
+    @Override
+    public String getValidationStampImageURL(String project, String branch, String name) {
+        return getUrl(format("/ui/manage/validation_stamp/%s/%s/%s/image", project, branch, name));
+    }
+
+    @Override
     public List<ProjectSummary> getProjectList() {
         return list("/ui/manage/project/all", ProjectSummary.class);
     }
@@ -181,8 +191,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public BuildSummary getBuild(String project, String branch, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getBuild
-        return null;
+        return get(format("/ui/manage/build/%s/%s/%s", project, branch, name), BuildSummary.class);
     }
 
     @Override

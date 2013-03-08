@@ -8,4 +8,8 @@ public interface ManageUIClient extends Client, ManageUI {
 
     String getBranchURL (String project, String branch);
 
+    String getPromotionLevelImageURL(String project, String branch, String name);
+
+    String getValidationStampImageURL(String project, String branch, String name);
+
 }
