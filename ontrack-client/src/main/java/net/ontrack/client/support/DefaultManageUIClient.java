@@ -82,8 +82,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<ValidationStampSummary> getValidationStampList(String project, String branch) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getValidationStampList
-        return null;
+        return list(format("/ui/manage/validation_stamp/%s/%s/all", project, branch), ValidationStampSummary.class);
     }
 
     @Override
@@ -154,8 +153,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<PromotionLevelSummary> getPromotionLevelList(String project, String branch) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getPromotionLevelList
-        return null;
+        return list(format("/ui/manage/promotion_level/%s/%s/all", project, branch), PromotionLevelSummary.class);
     }
 
     @Override
