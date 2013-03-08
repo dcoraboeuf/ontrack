@@ -15,6 +15,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
@@ -33,7 +34,7 @@ public abstract class AbstractClient implements Client {
 
     public AbstractClient(String url) {
         this.url = url;
-        this.client = new DefaultHttpClient();
+        this.client = new DefaultHttpClient(new PoolingClientConnectionManager());
     }
 
     public String getUrl() {
