@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 // FIXME Caching
@@ -21,6 +23,15 @@ public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
             return null;
         } else {
             return items.get(0);
+        }
+    }
+
+    protected Integer getInteger(ResultSet rs, String name) throws SQLException {
+        int i = rs.getInt(name);
+        if (rs.wasNull()) {
+            return null;
+        } else {
+            return i;
         }
     }
 

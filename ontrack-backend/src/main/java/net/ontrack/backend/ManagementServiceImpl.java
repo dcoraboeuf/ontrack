@@ -5,9 +5,11 @@ import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.ProjectGroupDao;
+import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBranch;
 import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.dao.model.TProjectGroup;
+import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
@@ -45,12 +47,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
-        @Override
-        public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ValidationStampSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
-        }
-    };
     protected final RowMapper<PromotionLevelSummary> promotionLevelSummaryMapper = new RowMapper<PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -98,6 +94,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
+    private final ValidationStampDao validationStampDao;
+
+    // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
         @Override
         public ProjectSummary apply(TProject t) {
@@ -115,14 +114,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
+    private final Function<TValidationStamp, ValidationStampSummary> validationStampSummaryFunction = new Function<TValidationStamp, ValidationStampSummary>() {
+        @Override
+        public ValidationStampSummary apply(TValidationStamp t) {
+            return new ValidationStampSummary(
+                    t.getId(),
+                    t.getName(),
+                    t.getDescription(),
+                    getBranch(t.getBranch())
+            );
+        }
+    };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
+        this.validationStampDao = validationStampDao;
     }
 
     // Branches
@@ -252,10 +263,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ValidationStampSummary> getValidationStampList(int branch) {
-        return getNamedParameterJdbcTemplate().query(
-                SQL.VALIDATION_STAMP_LIST,
-                params("branch", branch),
-                validationStampSummaryMapper);
+        return Lists.transform(
+                validationStampDao.findByBranch(branch),
+                validationStampSummaryFunction
+        );
     }
 
     // Promotion levels
@@ -263,10 +274,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public ValidationStampSummary getValidationStamp(int id) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.VALIDATION_STAMP,
-                params("id", id),
-                validationStampSummaryMapper);
+        return validationStampSummaryFunction.apply(
+                validationStampDao.getById(id)
+        );
     }
 
     @Override
@@ -276,11 +286,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Validation
         validate(form, NameDescription.class);
         // Query
-        int id = dbCreate(
-                SQL.VALIDATION_STAMP_CREATE,
-                MapBuilder.params("branch", branch)
-                        .with("name", form.getName())
-                        .with("description", form.getDescription()).get());
+        int id = validationStampDao.createValidationStamp(branch, form.getName(), form.getDescription());
         // Branch summary
         BranchSummary theBranch = getBranch(branch);
         // Audit
@@ -297,7 +303,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationStamp(int validationStampId) {
         ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
-        Ack ack = dbDelete(SQL.VALIDATION_STAMP_DELETE, validationStampId);
+        Ack ack = validationStampDao.deleteValidationStamp(validationStampId);
         if (ack.isSuccess()) {
             event(Event.of(EventType.VALIDATION_STAMP_DELETED)
                     .withValue("project", validationStamp.getBranch().getProject().getName())
@@ -486,18 +492,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     protected List<ValidationStampSummary> getValidationStampForPromotionLevel(int promotionLevelId) {
-        return getNamedParameterJdbcTemplate().query(
-                SQL.VALIDATION_STAMP_FOR_PROMOTION_LEVEL,
-                params("promotionLevel", promotionLevelId),
-                validationStampSummaryMapper
+        return Lists.transform(
+                validationStampDao.findByPromotionLevel(promotionLevelId),
+                validationStampSummaryFunction
         );
     }
 
     protected List<ValidationStampSummary> getValidationStampWithoutPromotionLevel(int branchId) {
-        return getNamedParameterJdbcTemplate().query(
-                SQL.VALIDATION_STAMP_WITHOUT_PROMOTION_LEVEL,
-                params("branch", branchId),
-                validationStampSummaryMapper
+        return Lists.transform(
+                validationStampDao.findByNoPromotionLevel(branchId),
+                validationStampSummaryFunction
         );
     }
 
