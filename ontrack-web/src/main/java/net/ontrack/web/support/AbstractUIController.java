@@ -1,6 +1,7 @@
 package net.ontrack.web.support;
 
 import net.ontrack.core.support.InputException;
+import net.ontrack.core.support.NotFoundException;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +29,15 @@ public abstract class AbstractUIController extends AbstractController {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "text/plain; charset=utf-8");
         // OK
-        return new ResponseEntity<String>(message, responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(message, responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> onNotFoundException(HttpServletRequest request, Locale locale, InputException ex) {
+        // Returns a message to display to the user
+        String message = ex.getLocalizedMessage(strings, locale);
+        // OK
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InputException.class)
@@ -43,7 +52,7 @@ public abstract class AbstractUIController extends AbstractController {
     public ResponseEntity<String> onException(HttpServletRequest request, Locale locale, Exception ex) throws Exception {
         // Ignores access errors
         if (ex instanceof AccessDeniedException) {
-            return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Error message
         ErrorMessage error = errorHandler.handleError(request, locale, ex);
