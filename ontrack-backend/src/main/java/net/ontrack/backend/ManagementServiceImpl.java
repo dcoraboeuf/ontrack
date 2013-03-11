@@ -2,6 +2,10 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import net.ontrack.backend.dao.ProjectDao;
+import net.ontrack.backend.dao.ProjectGroupDao;
+import net.ontrack.backend.dao.model.TProject;
+import net.ontrack.backend.dao.model.TProjectGroup;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
@@ -39,13 +43,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-
-    protected final RowMapper<ProjectSummary> projectSummaryMapper = new RowMapper<ProjectSummary>() {
-        @Override
-        public ProjectSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ProjectSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
-        }
-    };
     protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
         @Override
         public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -88,8 +85,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         @Override
         public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new ValidationRunStatusStub(rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"));
-            // TODO Author
-            // TODO Timestamp
         }
     };
     protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
@@ -104,11 +99,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     };
     private final SecurityUtils securityUtils;
+    private final ProjectGroupDao projectGroupDao;
+    private final ProjectDao projectDao;
+    private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
+        @Override
+        public ProjectSummary apply(TProject t) {
+            return new ProjectSummary(t.getId(), t.getName(), t.getDescription());
+        }
+    };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
+        this.projectGroupDao = projectGroupDao;
+        this.projectDao = projectDao;
     }
 
     // Branches
@@ -116,14 +121,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ProjectGroupSummary> getProjectGroupList() {
-        return getJdbcTemplate().query(
-                SQL.PROJECT_GROUP_LIST,
-                new RowMapper<ProjectGroupSummary>() {
+        return Lists.transform(
+                projectGroupDao.findAll(),
+                new Function<TProjectGroup, ProjectGroupSummary>() {
                     @Override
-                    public ProjectGroupSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new ProjectGroupSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
+                    public ProjectGroupSummary apply(TProjectGroup t) {
+                        return new ProjectGroupSummary(
+                                t.getId(),
+                                t.getName(),
+                                t.getDescription()
+                        );
                     }
-                });
+                }
+        );
     }
 
     @Override
@@ -133,9 +143,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Validation
         validate(form, NameDescription.class);
         // Query
-        int id = getNamedParameterJdbcTemplate().update(
-                SQL.PROJECT_GROUP_CREATE,
-                params("name", form.getName()).addValue("description", form.getDescription()));
+        int id = projectGroupDao.createGroup(form.getName(), form.getDescription());
         // Audit
         event(Event.of(EventType.PROJECT_GROUP_CREATED).withProjectGroup(id));
         // OK
@@ -145,16 +153,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ProjectSummary> getProjectList() {
-        return getJdbcTemplate().query(SQL.PROJECT_LIST, projectSummaryMapper);
+        return Lists.transform(
+                projectDao.findAll(),
+                projectSummaryFunction
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProjectSummary getProject(int id) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.PROJECT,
-                params("id", id),
-                projectSummaryMapper);
+        return projectSummaryFunction.apply(projectDao.getById(id));
     }
 
     @Override
@@ -164,9 +172,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Validation
         validate(form, NameDescription.class);
         // Query
-        int id = dbCreate(
-                SQL.PROJECT_CREATE,
-                MapBuilder.params("name", form.getName()).with("description", form.getDescription()).get());
+        int id = projectDao.createProject(form.getName(), form.getDescription());
         // Audit
         event(Event.of(EventType.PROJECT_CREATED).withProject(id));
         // OK
@@ -180,7 +186,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteProject(int id) {
         String name = getEntityName(Entity.PROJECT, id);
-        Ack ack = dbDelete(SQL.PROJECT_DELETE, id);
+        Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
             event(Event.of(EventType.PROJECT_DELETED).withValue("project", name));
         }

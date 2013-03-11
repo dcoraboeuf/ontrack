@@ -46,6 +46,7 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
         return eventService.getDatedSignature (locale, eventType, entities);
     }
 
+    @Deprecated
     protected <T> T getFirstItem(String sql, MapSqlParameterSource criteria, Class<T> type) {
         List<T> items = getNamedParameterJdbcTemplate().queryForList(sql, criteria, type);
         if (items.isEmpty()) {
@@ -55,17 +56,20 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
         }
     }
 
+    @Deprecated
     protected int dbCreate(String sql, Map<String, ?> parameters) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         getNamedParameterJdbcTemplate().update(sql, new MapSqlParameterSource(parameters), keyHolder);
         return keyHolder.getKey().intValue();
     }
 
+    @Deprecated
     protected Ack dbDelete(String sql, int id) {
         int count = getNamedParameterJdbcTemplate().update(sql, params("id", id));
         return Ack.one(count);
     }
 
+    @Deprecated
     protected MapSqlParameterSource params(String name, Object value) {
         return new MapSqlParameterSource(name, value);
     }
