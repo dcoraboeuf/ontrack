@@ -18,4 +18,8 @@ public interface ValidationStampDao {
     List<TValidationStamp> findByPromotionLevel(int promotionLevel);
 
     List<TValidationStamp> findByNoPromotionLevel(int branch);
+
+    Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
+
+    Ack unlinkValidationStampToPromotionLevel(int validationStampId);
 }

@@ -372,11 +372,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
-        int count = getNamedParameterJdbcTemplate().update(
-                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
-                params("id", validationStampId).addValue("promotionLevel", promotionLevelId)
-        );
-        if (count == 1) {
+        Ack ack = validationStampDao.linkValidationStampToPromotionLevel(validationStampId, promotionLevelId);
+        if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_LINKED);
             event = collectEntityContext(event, Entity.VALIDATION_STAMP, validationStampId);
             event = collectEntityContext(event, Entity.PROMOTION_LEVEL, promotionLevelId);
@@ -391,11 +388,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
-        int count = getNamedParameterJdbcTemplate().update(
-                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
-                params("id", validationStampId).addValue("promotionLevel", null)
-        );
-        if (count == 1) {
+        Ack ack = validationStampDao.unlinkValidationStampToPromotionLevel(validationStampId);
+        if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_UNLINKED);
             event = collectEntityContext(event, Entity.VALIDATION_STAMP, validationStampId);
             event(event);

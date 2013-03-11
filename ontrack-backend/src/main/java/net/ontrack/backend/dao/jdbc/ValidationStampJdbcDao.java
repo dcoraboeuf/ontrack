@@ -90,4 +90,22 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                 )
         );
     }
+
+    @Override
+    @Transactional
+    public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
+        return Ack.one(getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
+                params("id", validationStampId).addValue("promotionLevel", promotionLevelId)
+        ));
+    }
+
+    @Override
+    @Transactional
+    public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
+        return Ack.one(getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_PROMOTION_LEVEL,
+                params("id", validationStampId).addValue("promotionLevel", null)
+        ));
+    }
 }
