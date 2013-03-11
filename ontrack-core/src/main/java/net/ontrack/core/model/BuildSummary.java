@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class BuildSummary {
 
-	private final int id;
-	private final String name;
-	private final String description;
-	private final BranchSummary branch;
+    private final int id;
+    private final String name;
+    private final String description;
+    private final DatedSignature signature;
+    private final BranchSummary branch;
 
 }

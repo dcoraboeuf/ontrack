@@ -4,7 +4,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.DatedSignature;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EventType;
 import net.ontrack.core.validation.ValidationException;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
@@ -34,6 +36,10 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
 
     protected void event(Event event) {
         eventService.event(event);
+    }
+
+    protected DatedSignature getDatedSignature (EventType eventType, Entity entity, int entityId) {
+        return eventService.getDatedSignature (eventType, entity, entityId);
     }
 
     protected <T> T getFirstItem(String sql, MapSqlParameterSource criteria, Class<T> type) {

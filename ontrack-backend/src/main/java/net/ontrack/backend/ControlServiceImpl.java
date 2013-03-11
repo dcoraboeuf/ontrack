@@ -48,7 +48,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // Audit
         event(Event.of(EventType.BUILD_CREATED).withProject(theBranch.getProject().getId()).withBranch(theBranch.getId()).withBuild(id));
         // OK
-        return new BuildSummary(id, form.getName(), form.getDescription(), theBranch);
+        return managementService.getBuild(id);
     }
 
     @Override

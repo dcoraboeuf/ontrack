@@ -155,4 +155,28 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public DatedSignature getDatedSignature(EventType eventType, Entity entity, int entityId) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                format(SQL.EVENT_DATED_SIGNATURE, entity.name()),
+                new MapSqlParameterSource("entityId", entityId).addValue("eventType", eventType.name()),
+                new RowMapper<DatedSignature>() {
+                    @Override
+                    public DatedSignature mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Integer id = rs.getInt("author_id");
+                        if (rs.wasNull()) {
+                            id = null;
+                        }
+                        return new DatedSignature(
+                                new Signature(
+                                        id,
+                                        rs.getString("author")
+                                ),
+                                SQLUtils.getDateTime(rs, "event_timestamp")
+                        );
+                    }
+                }
+        );
+    }
 }

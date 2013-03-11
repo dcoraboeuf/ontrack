@@ -66,7 +66,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
         @Override
         public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new BuildSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
+            int id = rs.getInt("id");
+            DatedSignature signature = getDatedSignature (EventType.BUILD_CREATED, Entity.BUILD, id);
+            return new BuildSummary(id, rs.getString("name"), rs.getString("description"), signature, getBranch(rs.getInt("branch")));
         }
     };
     protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
