@@ -162,10 +162,18 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
     @Override
     @Transactional(readOnly = true)
-    public DatedSignature getDatedSignature(final Locale locale, EventType eventType, Entity entity, int entityId) {
+    public DatedSignature getDatedSignature(final Locale locale, EventType eventType, Map<Entity, Integer> entities) {
+        StringBuilder sql = new StringBuilder("SELECT AUTHOR, AUTHOR_ID, EVENT_TIMESTAMP FROM EVENTS WHERE EVENT_TYPE = :eventType ");
+        MapSqlParameterSource params = new MapSqlParameterSource("eventType", eventType.name());
+        for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
+            String entityName = entry.getKey().name();
+            sql.append(format(" AND %1$s = :entry%1$s", entityName));
+            params.addValue("entry" + entityName, entry.getValue());
+        }
+        sql.append(" ORDER BY ID DESC LIMIT 1");
         return getNamedParameterJdbcTemplate().queryForObject(
-                format(SQL.EVENT_DATED_SIGNATURE, entity.name()),
-                new MapSqlParameterSource("entityId", entityId).addValue("eventType", eventType.name()),
+                sql.toString(),
+                params,
                 new RowMapper<DatedSignature>() {
                     @Override
                     public DatedSignature mapRow(ResultSet rs, int rowNum) throws SQLException {

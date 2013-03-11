@@ -77,7 +77,7 @@ public interface ManagementService {
 
 	BuildSummary getBuild(int buildId);
 
-    List<BuildValidationStamp> getBuildValidationStamps(int buildId);
+    List<BuildValidationStamp> getBuildValidationStamps(Locale locale, int buildId);
 
     List<PromotionLevelSummary> getBuildPromotionLevels(int buildId);
 	
@@ -89,7 +89,7 @@ public interface ManagementService {
 
     ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus);
 
-    List<BuildValidationStampRun> getValidationRuns(int buildId, int validationStampId);
+    List<BuildValidationStampRun> getValidationRuns(Locale locale, int buildId, int validationStampId);
 
     // Promoted runs
 

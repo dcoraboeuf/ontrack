@@ -39,7 +39,11 @@ public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
     }
 
     protected DatedSignature getDatedSignature (Locale locale, EventType eventType, Entity entity, int entityId) {
-        return eventService.getDatedSignature (locale, eventType, entity, entityId);
+        return getDatedSignature (locale, eventType, Collections.singletonMap(entity, entityId));
+    }
+
+    protected DatedSignature getDatedSignature (Locale locale, EventType eventType, Map<Entity, Integer> entities) {
+        return eventService.getDatedSignature (locale, eventType, entities);
     }
 
     protected <T> T getFirstItem(String sql, MapSqlParameterSource criteria, Class<T> type) {

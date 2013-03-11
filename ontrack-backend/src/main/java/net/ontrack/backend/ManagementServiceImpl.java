@@ -502,7 +502,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         new Function<BuildSummary, BuildCompleteStatus>() {
                             @Override
                             public BuildCompleteStatus apply(BuildSummary summary) {
-                                List<BuildValidationStamp> stamps = getBuildValidationStamps(summary.getId());
+                                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, summary.getId());
                                 List<PromotionLevelSummary> promotionLevels = getBuildPromotionLevels(summary.getId());
                                 DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, summary.getId());
                                 return new BuildCompleteStatus(summary, signature, stamps, promotionLevels);
@@ -526,7 +526,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public List<BuildValidationStamp> getBuildValidationStamps(final int buildId) {
+    public List<BuildValidationStamp> getBuildValidationStamps(final Locale locale, final int buildId) {
         // Gets the build details
         BuildSummary build = getBuild(buildId);
         // Gets all the stamps for the branch
@@ -539,7 +539,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     public BuildValidationStamp apply(ValidationStampSummary stamp) {
                         BuildValidationStamp buildStamp = BuildValidationStamp.of(stamp);
                         // Gets the latest runs with their status for this build and this stamp
-                        List<BuildValidationStampRun> runStatuses = getValidationRuns(buildId, stamp.getId());
+                        List<BuildValidationStampRun> runStatuses = getValidationRuns(locale, buildId, stamp.getId());
                         // OK
                         return buildStamp.withRuns(runStatuses);
                     }
@@ -570,7 +570,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public List<BuildValidationStampRun> getValidationRuns(int buildId, int validationStampId) {
+    public List<BuildValidationStampRun> getValidationRuns(final Locale locale, final int buildId, final int validationStampId) {
         List<Integer> runIds = getNamedParameterJdbcTemplate().queryForList(
                 SQL.VALIDATION_RUN_FOR_BUILD_AND_STAMP,
                 params("build", buildId).addValue("validationStamp", validationStampId),
@@ -580,7 +580,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             public BuildValidationStampRun apply(Integer runId) {
                 ValidationRunStatusStub runStatus = getLastValidationRunStatus(runId);
                 ValidationRunSummary run = getValidationRun(runId);
-                return new BuildValidationStampRun(runId, run.getRunOrder(), runStatus.getStatus(), runStatus.getDescription());
+                DatedSignature signature = getDatedSignature(locale, EventType.VALIDATION_RUN_CREATED, MapBuilder.of(Entity.BUILD, buildId).with(Entity.VALIDATION_STAMP, validationStampId).get());
+                return new BuildValidationStampRun(runId, run.getRunOrder(), signature, runStatus.getStatus(), runStatus.getDescription());
             }
         });
     }

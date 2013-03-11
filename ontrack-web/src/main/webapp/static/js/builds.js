@@ -13,6 +13,7 @@ var Builds = function () {
                     run.runOrder,
                     run.status.html());
             html += ' <span class="validation-run-description">{0}</span>'.format(run.statusDescription.html());
+            html += ' - <span class="validation-run-description" title="{1}">{0}</span>'.format(run.signature.elapsedTime, run.signature.formattedTime);
             html += '</p>';
         });
         return html;

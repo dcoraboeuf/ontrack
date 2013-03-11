@@ -76,9 +76,9 @@ public interface ManageUI {
 
     BuildSummary getBuild(String project, String branch, String name);
 
-    List<BuildValidationStamp> getBuildValidationStamps(String project, String branch, String name);
+    List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name);
 
-    List<PromotionLevelSummary> getBuildPromotionLevels(String project, String branch, String name);
+    List<PromotionLevelSummary> getBuildPromotionLevels(Locale locale, String project, String branch, String name);
 
     // Validation runs
 

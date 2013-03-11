@@ -197,12 +197,14 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public List<BuildValidationStamp> getBuildValidationStamps(String project, String branch, String name) {
+    public List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name) {
+        // TODO Locale management
         return list(format("/ui/manage/build/%s/%s/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
     }
 
     @Override
-    public List<PromotionLevelSummary> getBuildPromotionLevels(String project, String branch, String name) {
+    public List<PromotionLevelSummary> getBuildPromotionLevels(Locale locale, String project, String branch, String name) {
+        // TODO Locale management
         return list(format("/ui/manage/build/%s/%s/%s/promotionLevels", project, branch, name), PromotionLevelSummary.class);
     }
 
