@@ -24,6 +24,8 @@ var Builds = function () {
             html += '<tr>';
                 html += '<td class="branch-build">';
                     html += '<a href="gui/build/{0}/{1}/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
+                    html += '<br/><span class="signature">{0}</span>'.format(buildCompleteStatus.signature.signature.name);
+                    html += '<br/><span class="signature">{0}</span>'.format(new Date(buildCompleteStatus.signature.timestamp));
                 html += '</td><td>';
                     html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
                 html += '</td>';
