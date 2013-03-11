@@ -22,7 +22,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -403,45 +402,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack upPromotionLevel(int promotionLevelId) {
-        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
-        Integer higherId = getFirstItem(
-                SQL.PROMOTION_LEVEL_HIGHER,
-                params("branch", promotionLevel.getBranch().getId()).addValue("levelNb", promotionLevel.getLevelNb()),
-                Integer.class);
-        if (higherId != null) {
-            return swapPromotionLevelNb(promotionLevelId, higherId);
-        } else {
-            return Ack.NOK;
-        }
+        return promotionLevelDao.upPromotionLevel(promotionLevelId);
     }
 
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack downPromotionLevel(int promotionLevelId) {
-        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
-        Integer lowerId = getFirstItem(
-                SQL.PROMOTION_LEVEL_LOWER,
-                params("branch", promotionLevel.getBranch().getId()).addValue("levelNb", promotionLevel.getLevelNb()),
-                Integer.class);
-        if (lowerId != null) {
-            return swapPromotionLevelNb(promotionLevelId, lowerId);
-        } else {
-            return Ack.NOK;
-        }
-    }
-
-    protected Ack swapPromotionLevelNb(int aId, Integer bId) {
-        // Loads the level numbers
-        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
-        // Gets the order values
-        int ordera = t.queryForInt(SQL.PROMOTION_LEVEL_LEVELNB, params("id", aId));
-        int orderb = t.queryForInt(SQL.PROMOTION_LEVEL_LEVELNB, params("id", bId));
-        // Changes the order
-        t.update(SQL.PROMOTION_LEVEL_SET_LEVELNB, params("id", aId).addValue("levelNb", orderb));
-        t.update(SQL.PROMOTION_LEVEL_SET_LEVELNB, params("id", bId).addValue("levelNb", ordera));
-        // OK
-        return Ack.OK;
+        return promotionLevelDao.downPromotionLevel(promotionLevelId);
     }
 
     @Override

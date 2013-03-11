@@ -15,5 +15,7 @@ public interface PromotionLevelDao {
 
     List<TPromotionLevel> findByBuild(int build);
 
+    Ack upPromotionLevel(int promotionLevelId);
 
+    Ack downPromotionLevel(int promotionLevelId);
 }

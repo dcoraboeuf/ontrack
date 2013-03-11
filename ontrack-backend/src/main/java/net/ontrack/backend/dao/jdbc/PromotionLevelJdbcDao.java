@@ -3,8 +3,10 @@ package net.ontrack.backend.dao.jdbc;
 import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.model.TPromotionLevel;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.core.model.Ack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,5 +75,48 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
                 params("build", build),
                 promotionLevelMapper
         );
+    }
+
+    @Override
+    @Transactional
+    public Ack upPromotionLevel(int promotionLevelId) {
+        TPromotionLevel promotionLevel = getById(promotionLevelId);
+        Integer higherId = getFirstItem(
+                SQL.PROMOTION_LEVEL_HIGHER,
+                params("branch", promotionLevel.getBranch()).addValue("levelNb", promotionLevel.getLevelNb()),
+                Integer.class);
+        if (higherId != null) {
+            return swapPromotionLevelNb(promotionLevelId, higherId);
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    @Transactional
+    public Ack downPromotionLevel(int promotionLevelId) {
+        TPromotionLevel promotionLevel = getById(promotionLevelId);
+        Integer lowerId = getFirstItem(
+                SQL.PROMOTION_LEVEL_LOWER,
+                params("branch", promotionLevel.getBranch()).addValue("levelNb", promotionLevel.getLevelNb()),
+                Integer.class);
+        if (lowerId != null) {
+            return swapPromotionLevelNb(promotionLevelId, lowerId);
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    protected Ack swapPromotionLevelNb(int aId, int bId) {
+        // Loads the level numbers
+        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
+        // Gets the order values
+        int ordera = t.queryForInt(SQL.PROMOTION_LEVEL_LEVELNB, params("id", aId));
+        int orderb = t.queryForInt(SQL.PROMOTION_LEVEL_LEVELNB, params("id", bId));
+        // Changes the order
+        t.update(SQL.PROMOTION_LEVEL_SET_LEVELNB, params("id", aId).addValue("levelNb", orderb));
+        t.update(SQL.PROMOTION_LEVEL_SET_LEVELNB, params("id", bId).addValue("levelNb", ordera));
+        // OK
+        return Ack.OK;
     }
 }
