@@ -4,8 +4,10 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.support.TimeUtils;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
+import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,6 +21,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -27,10 +30,12 @@ import static java.lang.String.format;
 public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements EventService {
 
     private final SecurityUtils securityUtils;
+    private final Strings strings;
 
     @Autowired
-    public EventServiceImpl(DataSource dataSource, SecurityUtils securityUtils) {
+    public EventServiceImpl(DataSource dataSource, SecurityUtils securityUtils, Strings strings) {
         this.securityUtils = securityUtils;
+        this.strings = strings;
         setDataSource(dataSource);
     }
 
@@ -157,7 +162,7 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
     @Override
     @Transactional(readOnly = true)
-    public DatedSignature getDatedSignature(EventType eventType, Entity entity, int entityId) {
+    public DatedSignature getDatedSignature(final Locale locale, EventType eventType, Entity entity, int entityId) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 format(SQL.EVENT_DATED_SIGNATURE, entity.name()),
                 new MapSqlParameterSource("entityId", entityId).addValue("eventType", eventType.name()),
@@ -168,12 +173,13 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
                         if (rs.wasNull()) {
                             id = null;
                         }
+                        DateTime timestamp = SQLUtils.getDateTime(rs, "event_timestamp");
+                        String authorName = rs.getString("author");
                         return new DatedSignature(
-                                new Signature(
-                                        id,
-                                        rs.getString("author")
-                                ),
-                                SQLUtils.getDateTime(rs, "event_timestamp")
+                                new Signature(id, authorName),
+                                timestamp,
+                                TimeUtils.elapsed(strings, locale, timestamp, TimeUtils.now(), authorName),
+                                TimeUtils.format(locale, timestamp)
                         );
                     }
                 }

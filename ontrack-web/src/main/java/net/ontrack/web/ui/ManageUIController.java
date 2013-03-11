@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 @Controller
@@ -267,11 +268,11 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
-    BranchBuilds getBuildList(@PathVariable String project, @PathVariable String branch,
+    BranchBuilds getBuildList(Locale locale, @PathVariable String project, @PathVariable String branch,
                               @RequestParam(required = false, defaultValue = "0") int offset,
                               @RequestParam(required = false, defaultValue = "10") int count) {
         int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.getBuildList(branchId, offset, count);
+        return managementService.getBuildList(locale, branchId, offset, count);
     }
 
     @Override

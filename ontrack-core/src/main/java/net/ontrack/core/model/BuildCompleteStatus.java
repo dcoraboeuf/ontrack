@@ -24,10 +24,10 @@ public class BuildCompleteStatus {
     // List of promotion levels for this build
     private final List<PromotionLevelSummary> promotionLevels;
 
-    public BuildCompleteStatus(BuildSummary summary, List<BuildValidationStamp> stamps, List<PromotionLevelSummary> promotionLevels) {
+    public BuildCompleteStatus(BuildSummary summary, DatedSignature signature,  List<BuildValidationStamp> stamps, List<PromotionLevelSummary> promotionLevels) {
         this(
                 summary.getId(), summary.getName(), summary.getDescription(),
-                summary.getSignature(),
+                signature,
                 new TreeMap<String, BuildValidationStamp>(
                         Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
                             @Override

@@ -5,6 +5,7 @@ import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.String.format;
 
@@ -185,7 +186,8 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public BranchBuilds getBuildList(String project, String branch, int offset, int count) {
+    public BranchBuilds getBuildList(Locale locale, String project, String branch, int offset, int count) {
+        // TODO Locale management
         return get(format("/ui/manage/build/%s/%s?offset=%d&count=%d", project, branch, offset, count), BranchBuilds.class);
     }
 

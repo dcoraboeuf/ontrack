@@ -4,6 +4,7 @@ import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface ManageUI {
 
@@ -71,7 +72,7 @@ public interface ManageUI {
 
     // Builds
 
-    BranchBuilds getBuildList(String project, String branch, int offset, int count);
+    BranchBuilds getBuildList(Locale locale, String project, String branch, int offset, int count);
 
     BuildSummary getBuild(String project, String branch, String name);
 

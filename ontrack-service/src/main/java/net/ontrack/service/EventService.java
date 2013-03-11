@@ -4,6 +4,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.service.model.Event;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface EventService {
 
@@ -13,5 +14,5 @@ public interface EventService {
 
     String getEntityName(Entity entity, int entityId);
 
-    DatedSignature getDatedSignature(EventType eventType, Entity entity, int entityId);
+    DatedSignature getDatedSignature(Locale locale, EventType eventType, Entity entity, int entityId);
 }

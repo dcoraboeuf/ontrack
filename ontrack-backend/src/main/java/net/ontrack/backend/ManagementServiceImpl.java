@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -67,8 +68,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         @Override
         public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
             int id = rs.getInt("id");
-            DatedSignature signature = getDatedSignature (EventType.BUILD_CREATED, Entity.BUILD, id);
-            return new BuildSummary(id, rs.getString("name"), rs.getString("description"), signature, getBranch(rs.getInt("branch")));
+            return new BuildSummary(id, rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
         }
     };
     protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
@@ -490,7 +490,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public BranchBuilds getBuildList(int branch, int offset, int count) {
+    public BranchBuilds getBuildList(final Locale locale, int branch, int offset, int count) {
         List<BuildSummary> builds = getNamedParameterJdbcTemplate().query(
                 SQL.BUILD_LIST,
                 params("branch", branch).addValue("offset", offset).addValue("count", count),
@@ -504,7 +504,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                             public BuildCompleteStatus apply(BuildSummary summary) {
                                 List<BuildValidationStamp> stamps = getBuildValidationStamps(summary.getId());
                                 List<PromotionLevelSummary> promotionLevels = getBuildPromotionLevels(summary.getId());
-                                return new BuildCompleteStatus(summary, stamps, promotionLevels);
+                                DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, summary.getId());
+                                return new BuildCompleteStatus(summary, signature, stamps, promotionLevels);
                             }
                         }
                 )
@@ -596,8 +597,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         if (StringUtils.isBlank(form.getStatus())) {
             // No status - it means that the user creates a comment
             CommentStub comment = createComment(Entity.VALIDATION_RUN, runId, form.getDescription());
-            // Gets the validation run
-            ValidationRunSummary run = getValidationRun(runId);
             // Registers an event for this comment
             event(
                     collectEntityContext(Event.of(EventType.VALIDATION_RUN_COMMENT), Entity.VALIDATION_RUN, runId)

@@ -4,6 +4,7 @@ import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public interface ManagementService {
@@ -72,7 +73,7 @@ public interface ManagementService {
 	
 	// Builds
 
-    BranchBuilds getBuildList(int branchId, int offset, int count);
+    BranchBuilds getBuildList(Locale locale, int branchId, int offset, int count);
 
 	BuildSummary getBuild(int buildId);
 
