@@ -10,6 +10,13 @@
 	font-style: italic;
 }
 
+/* Signature */
+.signature {
+	font-size: 0.75em;
+	color: gray;
+	font-style: italic;
+}
+
 /* Page title */
 
 .page-title {

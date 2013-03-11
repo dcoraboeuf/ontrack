@@ -297,9 +297,9 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/promotionLevels", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<PromotionLevelSummary> getBuildPromotionLevels(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+    List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         int buildId = entityConverter.getBuildId(project, branch, name);
-        return managementService.getBuildPromotionLevels(buildId);
+        return managementService.getBuildPromotionLevels(locale, buildId);
     }
 
     // Validation runs

@@ -79,7 +79,7 @@ public interface ManagementService {
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, int buildId);
 
-    List<PromotionLevelSummary> getBuildPromotionLevels(int buildId);
+    List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, int buildId);
 	
 	// Validation runs
 	

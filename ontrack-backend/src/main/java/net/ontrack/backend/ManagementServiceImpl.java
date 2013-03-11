@@ -503,7 +503,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                             @Override
                             public BuildCompleteStatus apply(BuildSummary summary) {
                                 List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, summary.getId());
-                                List<PromotionLevelSummary> promotionLevels = getBuildPromotionLevels(summary.getId());
+                                List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, summary.getId());
                                 DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, summary.getId());
                                 return new BuildCompleteStatus(summary, signature, stamps, promotionLevels);
                             }
@@ -548,11 +548,28 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public List<PromotionLevelSummary> getBuildPromotionLevels(int buildId) {
-        return getNamedParameterJdbcTemplate().query(
+    public List<BuildPromotionLevel> getBuildPromotionLevels(final Locale locale, final int buildId) {
+        // Gets all the promotion levels that were run for this build
+        List<PromotionLevelSummary> promotionLevels = getNamedParameterJdbcTemplate().query(
                 SQL.PROMOTION_LEVEL_FOR_BUILD,
                 params("build", buildId),
                 promotionLevelSummaryMapper
+        );
+        // Conversion
+        return Lists.transform(
+                promotionLevels,
+                new Function<PromotionLevelSummary, BuildPromotionLevel>() {
+                    @Override
+                    public BuildPromotionLevel apply(PromotionLevelSummary level) {
+                        return new BuildPromotionLevel(
+                                getDatedSignature(locale, EventType.PROMOTED_RUN_CREATED,
+                                        MapBuilder.of(Entity.BUILD, buildId).with(Entity.PROMOTION_LEVEL, level.getId()).get()),
+                                level.getName(),
+                                level.getDescription(),
+                                level.getLevelNb()
+                        );
+                    }
+                }
         );
     }
 

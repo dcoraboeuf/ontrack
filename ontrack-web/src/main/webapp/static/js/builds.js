@@ -4,16 +4,17 @@ var Builds = function () {
         var html = '';
         $.each(buildValidationStamp.runs, function (index, run) {
             html += ' <p class="validation-run status-{0}">'.format(run.status);
-            html += '<a href="gui/validation_run/{0}/{1}/{2}/{3}/{4}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
+            html += '<a href="gui/validation_run/{0}/{1}/{2}/{3}/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
                 .format(
                     project.html(),
                     branch.html(),
                     build.html(),
                     buildValidationStamp.name.html(),
                     run.runOrder,
-                    run.status.html());
-            html += ' <span class="validation-run-description">{0}</span>'.format(run.statusDescription.html());
-            html += ' - <span class="validation-run-description" title="{1}">{0}</span>'.format(run.signature.elapsedTime, run.signature.formattedTime);
+                    run.status.html(),
+                    run.signature.elapsedTime,
+                    run.signature.formattedTime,
+                    run.statusDescription.html());
             html += '</p>';
         });
         return html;
@@ -145,10 +146,12 @@ var Builds = function () {
                         promotion.name
                     );
                     // Link to the promotion level
-                    html += ' <a href="gui/promotion_level/{0}/{1}/{2}">{2}</a>'.format(
+                    html += ' <a href="gui/promotion_level/{0}/{1}/{2}" title="{3} - {4}">{2}</a>'.format(
                         project.html(),
                         branch.html(),
-                        promotion.name
+                        promotion.name,
+                        promotion.signature.elapsedTime,
+                        promotion.signature.formattedTime
                     );
                 }
             }

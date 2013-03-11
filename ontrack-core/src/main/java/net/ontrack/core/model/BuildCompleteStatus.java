@@ -22,9 +22,9 @@ public class BuildCompleteStatus {
     // List of validation stamps with their associated runs for this build
     private final Map<String, BuildValidationStamp> validationStamps;
     // List of promotion levels for this build
-    private final List<PromotionLevelSummary> promotionLevels;
+    private final List<BuildPromotionLevel> promotionLevels;
 
-    public BuildCompleteStatus(BuildSummary summary, DatedSignature signature,  List<BuildValidationStamp> stamps, List<PromotionLevelSummary> promotionLevels) {
+    public BuildCompleteStatus(BuildSummary summary, DatedSignature signature,  List<BuildValidationStamp> stamps, List<BuildPromotionLevel> promotionLevels) {
         this(
                 summary.getId(), summary.getName(), summary.getDescription(),
                 signature,

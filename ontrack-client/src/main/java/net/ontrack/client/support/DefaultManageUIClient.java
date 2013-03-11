@@ -203,9 +203,9 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public List<PromotionLevelSummary> getBuildPromotionLevels(Locale locale, String project, String branch, String name) {
+    public List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name) {
         // TODO Locale management
-        return list(format("/ui/manage/build/%s/%s/%s/promotionLevels", project, branch, name), PromotionLevelSummary.class);
+        return list(format("/ui/manage/build/%s/%s/%s/promotionLevels", project, branch, name), BuildPromotionLevel.class);
     }
 
     @Override

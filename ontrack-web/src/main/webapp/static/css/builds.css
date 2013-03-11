@@ -2,9 +2,3 @@ td.branch-build a {
     font-weight: bold;
     font-size: 120%;
 }
-
-td.branch-build .signature {
-	font-size: 0.75em;
-	color: gray;
-	font-style: italic;
-}
