@@ -22,4 +22,8 @@ public interface ValidationStampDao {
     Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
 
     Ack unlinkValidationStampToPromotionLevel(int validationStampId);
+
+    Ack updateImage(int id, byte[] image);
+
+    byte[] getImage(int id);
 }

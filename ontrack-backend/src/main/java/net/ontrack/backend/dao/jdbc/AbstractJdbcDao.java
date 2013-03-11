@@ -1,5 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -32,6 +34,23 @@ public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
             return null;
         } else {
             return i;
+        }
+    }
+
+    protected byte[] getImage(String sql, int id) {
+        List<byte[]> list = getNamedParameterJdbcTemplate().query(
+                sql,
+                params("id", id),
+                new RowMapper<byte[]>() {
+                    @Override
+                    public byte[] mapRow(ResultSet rs, int row) throws SQLException, DataAccessException {
+                        return rs.getBytes("image");
+                    }
+                });
+        if (list.isEmpty()) {
+            return null;
+        } else {
+            return list.get(0);
         }
     }
 

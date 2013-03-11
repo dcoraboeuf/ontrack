@@ -119,4 +119,21 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
         // OK
         return Ack.OK;
     }
+
+    @Override
+    @Transactional
+    public Ack updateImage(int id, byte[] image) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.PROMOTION_LEVEL_IMAGE_UPDATE,
+                        params("id", id).addValue("image", image)
+                )
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getImage(int id) {
+        return getImage(SQL.PROMOTION_LEVEL_IMAGE, id);
+    }
 }

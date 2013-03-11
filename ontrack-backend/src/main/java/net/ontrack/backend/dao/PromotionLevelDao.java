@@ -18,4 +18,8 @@ public interface PromotionLevelDao {
     Ack upPromotionLevel(int promotionLevelId);
 
     Ack downPromotionLevel(int promotionLevelId);
+
+    Ack updateImage(int promotionLevelId, byte[] image);
+
+    byte[] getImage(int id);
 }

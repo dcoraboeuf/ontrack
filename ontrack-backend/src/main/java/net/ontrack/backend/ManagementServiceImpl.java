@@ -18,7 +18,6 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -317,14 +316,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack imageValidationStamp(int validationStampId, MultipartFile image) {
-        return setImage(validationStampId, image, SQL.VALIDATION_STAMP_IMAGE_MAXSIZE, SQL.VALIDATIONSTAMP_IMAGE_UPDATE);
+    public Ack imageValidationStamp(final int validationStampId, MultipartFile image) {
+        return setImage(
+                image,
+                SQL.VALIDATION_STAMP_IMAGE_MAXSIZE,
+                new Function<byte[], Ack>() {
+                    @Override
+                    public Ack apply(byte[] image) {
+                        return validationStampDao.updateImage(validationStampId, image);
+                    }
+                });
 
     }
 
     @Override
     public byte[] imageValidationStamp(int validationStampId) {
-        return getImage(validationStampId, SQL.VALIDATIONSTAMP_IMAGE);
+        return validationStampDao.getImage(validationStampId);
     }
 
     @Override
@@ -415,14 +422,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack imagePromotionLevel(int promotionLevelId, MultipartFile image) {
-        return setImage(promotionLevelId, image, SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE, SQL.PROMOTION_LEVEL_IMAGE_UPDATE);
+    public Ack imagePromotionLevel(final int promotionLevelId, MultipartFile image) {
+        return setImage(
+                image,
+                SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE,
+                new Function<byte[], Ack>() {
+                    @Override
+                    public Ack apply(byte[] image) {
+                        return promotionLevelDao.updateImage(promotionLevelId, image);
+                    }
+                });
     }
 
     @Override
     @Transactional(readOnly = true)
     public byte[] imagePromotionLevel(int promotionLevelId) {
-        return getImage(promotionLevelId, SQL.PROMOTION_LEVEL_IMAGE);
+        return promotionLevelDao.getImage(promotionLevelId);
     }
 
     @Override
@@ -727,7 +742,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return e;
     }
 
-    protected Ack setImage(int id, MultipartFile image, long maxSize, String imageUpdateSql) {
+    protected Ack setImage(MultipartFile image, long maxSize, Function<byte[], Ack> imageUpdateFn) {
         // Checks the image type
         String contentType = image.getContentType();
         if (!"image/png".equals(contentType)) {
@@ -746,27 +761,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             throw new ImageCannotReadException(e);
         }
         // Updates the content
-        int count = getNamedParameterJdbcTemplate().update(
-                imageUpdateSql,
-                params("id", id).addValue("image", content));
-        // OK
-        return Ack.one(count);
-    }
-
-    private byte[] getImage(int id, String sql) {
-        List<byte[]> list = getNamedParameterJdbcTemplate().query(
-                sql,
-                params("id", id),
-                new RowMapper<byte[]>() {
-                    @Override
-                    public byte[] mapRow(ResultSet rs, int row) throws SQLException, DataAccessException {
-                        return rs.getBytes("image");
-                    }
-                });
-        if (list.isEmpty()) {
-            return null;
-        } else {
-            return list.get(0);
-        }
+        return imageUpdateFn.apply(content);
     }
 }

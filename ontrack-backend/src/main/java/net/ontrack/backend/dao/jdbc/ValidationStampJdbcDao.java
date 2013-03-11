@@ -108,4 +108,21 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                 params("id", validationStampId).addValue("promotionLevel", null)
         ));
     }
+
+    @Override
+    @Transactional
+    public Ack updateImage(int id, byte[] image) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATIONSTAMP_IMAGE_UPDATE,
+                        params("id", id).addValue("image", image)
+                )
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getImage(int id) {
+        return getImage(SQL.VALIDATIONSTAMP_IMAGE, id);
+    }
 }
