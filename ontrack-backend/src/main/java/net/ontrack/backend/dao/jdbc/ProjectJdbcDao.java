@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
 
-    protected final RowMapper<TProject> projectSummaryMapper = new RowMapper<TProject>() {
+    protected final RowMapper<TProject> projectMapper = new RowMapper<TProject>() {
         @Override
         public TProject mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TProject(rs.getInt("id"), rs.getString("name"), rs.getString("description"));
@@ -34,7 +34,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
     public List<TProject> findAll() {
         return getJdbcTemplate().query(
                 SQL.PROJECT_LIST,
-                projectSummaryMapper
+                projectMapper
         );
     }
 
@@ -44,7 +44,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.PROJECT,
                 params("id", id),
-                projectSummaryMapper
+                projectMapper
         );
     }
 

@@ -2,8 +2,10 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.ProjectGroupDao;
+import net.ontrack.backend.dao.model.TBranch;
 import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.dao.model.TProjectGroup;
 import net.ontrack.backend.db.SQL;
@@ -43,12 +45,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<BranchSummary> branchSummaryMapper = new RowMapper<BranchSummary>() {
-        @Override
-        public BranchSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new BranchSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), getProject(rs.getInt("project")));
-        }
-    };
     protected final RowMapper<ValidationStampSummary> validationStampSummaryMapper = new RowMapper<ValidationStampSummary>() {
         @Override
         public ValidationStampSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -101,19 +97,32 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final SecurityUtils securityUtils;
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
+    private final BranchDao branchDao;
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
         @Override
         public ProjectSummary apply(TProject t) {
             return new ProjectSummary(t.getId(), t.getName(), t.getDescription());
         }
     };
+    private final Function<TBranch, BranchSummary> branchSummaryFunction = new Function<TBranch, BranchSummary>() {
+        @Override
+        public BranchSummary apply(TBranch t) {
+            return new BranchSummary(
+                    t.getId(),
+                    t.getName(),
+                    t.getDescription(),
+                    getProject(t.getId())
+            );
+        }
+    };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
+        this.branchDao = branchDao;
     }
 
     // Branches
@@ -196,20 +205,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<BranchSummary> getBranchList(int project) {
-        return getNamedParameterJdbcTemplate().query(
-                SQL.BRANCH_LIST,
-                params("project", project),
-                branchSummaryMapper
+        return Lists.transform(
+                branchDao.findByProject(project),
+                branchSummaryFunction
         );
     }
 
     @Override
     @Transactional(readOnly = true)
     public BranchSummary getBranch(int id) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.BRANCH,
-                params("id", id),
-                branchSummaryMapper);
+        return branchSummaryFunction.apply(branchDao.getById(id));
     }
 
     @Override
@@ -219,9 +224,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Validation
         validate(form, NameDescription.class);
         // Query
-        int id = dbCreate(
-                SQL.BRANCH_CREATE,
-                MapBuilder.params("project", project).with("name", form.getName()).with("description", form.getDescription()).get());
+        int id = branchDao.createBranch(
+                project,
+                form.getName(),
+                form.getDescription()
+        );
         // Audit
         event(Event.of(EventType.BRANCH_CREATED).withProject(project).withBranch(id));
         // OK
@@ -233,7 +240,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBranch(int branchId) {
         BranchSummary branch = getBranch(branchId);
-        Ack ack = dbDelete(SQL.BRANCH_DELETE, branchId);
+        Ack ack = branchDao.deleteBranch(branchId);
         if (ack.isSuccess()) {
             event(Event.of(EventType.BRANCH_DELETED)
                     .withValue("project", branch.getProject().getName())
