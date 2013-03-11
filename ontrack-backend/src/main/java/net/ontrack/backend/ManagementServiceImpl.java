@@ -2,14 +2,8 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import net.ontrack.backend.dao.BranchDao;
-import net.ontrack.backend.dao.ProjectDao;
-import net.ontrack.backend.dao.ProjectGroupDao;
-import net.ontrack.backend.dao.ValidationStampDao;
-import net.ontrack.backend.dao.model.TBranch;
-import net.ontrack.backend.dao.model.TProject;
-import net.ontrack.backend.dao.model.TProjectGroup;
-import net.ontrack.backend.dao.model.TValidationStamp;
+import net.ontrack.backend.dao.*;
+import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
@@ -47,12 +41,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<PromotionLevelSummary> promotionLevelSummaryMapper = new RowMapper<PromotionLevelSummary>() {
-        @Override
-        public PromotionLevelSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PromotionLevelSummary(rs.getInt("id"), rs.getString("name"), rs.getString("description"), rs.getInt("levelNb"), getBranch(rs.getInt("branch")));
-        }
-    };
     protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
         @Override
         public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -95,6 +83,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
     private final ValidationStampDao validationStampDao;
+    private final PromotionLevelDao promotionLevelDao;
 
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
@@ -125,15 +114,28 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
+    private final Function<TPromotionLevel, PromotionLevelSummary> promotionLevelSummaryFunction = new Function<TPromotionLevel, PromotionLevelSummary>() {
+        @Override
+        public PromotionLevelSummary apply(TPromotionLevel t) {
+            return new PromotionLevelSummary(
+                    t.getId(),
+                    getBranch(t.getBranch()),
+                    t.getLevelNb(),
+                    t.getName(),
+                    t.getDescription()
+            );
+        }
+    };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.validationStampDao = validationStampDao;
+        this.promotionLevelDao = promotionLevelDao;
     }
 
     // Branches
@@ -329,19 +331,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<PromotionLevelSummary> getPromotionLevelList(int branch) {
-        return getNamedParameterJdbcTemplate().query(
-                SQL.PROMOTION_LEVEL_LIST,
-                params("branch", branch),
-                promotionLevelSummaryMapper);
+        return Lists.transform(
+                promotionLevelDao.findByBranch(branch),
+                promotionLevelSummaryFunction
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
     public PromotionLevelSummary getPromotionLevel(int promotionLevelId) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.PROMOTION_LEVEL,
-                params("id", promotionLevelId),
-                promotionLevelSummaryMapper);
+        return promotionLevelSummaryFunction.apply(
+                promotionLevelDao.getById(promotionLevelId)
+        );
     }
 
     @Override
@@ -350,17 +351,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     public PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form) {
         // Validation
         validate(form, NameDescription.class);
-        // Count of existing promotion levels
-        int count = getPromotionLevelList(branchId).size();
-        int levelNb = count + 1;
         // Query
-        int id = dbCreate(
-                SQL.PROMOTION_LEVEL_CREATE,
-                MapBuilder.params("branch", branchId)
-                        .with("name", form.getName())
-                        .with("description", form.getDescription())
-                        .with("levelNb", levelNb)
-                        .get());
+        int id = promotionLevelDao.createPromotionLevel(
+                branchId,
+                form.getName(),
+                form.getDescription()
+        );
         // Branch summary
         BranchSummary theBranch = getBranch(branchId);
         // Audit
@@ -369,7 +365,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 .withBranch(theBranch.getId())
                 .withPromotionLevel(id));
         // OK
-        return new PromotionLevelSummary(id, form.getName(), form.getDescription(), levelNb, theBranch);
+        return getPromotionLevel(id);
     }
 
     @Override
@@ -567,17 +563,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional(readOnly = true)
     public List<BuildPromotionLevel> getBuildPromotionLevels(final Locale locale, final int buildId) {
         // Gets all the promotion levels that were run for this build
-        List<PromotionLevelSummary> promotionLevels = getNamedParameterJdbcTemplate().query(
-                SQL.PROMOTION_LEVEL_FOR_BUILD,
-                params("build", buildId),
-                promotionLevelSummaryMapper
-        );
+        List<TPromotionLevel> tPromotionLevels = promotionLevelDao.findByBuild(buildId);
         // Conversion
         return Lists.transform(
-                promotionLevels,
-                new Function<PromotionLevelSummary, BuildPromotionLevel>() {
+                tPromotionLevels,
+                new Function<TPromotionLevel, BuildPromotionLevel>() {
                     @Override
-                    public BuildPromotionLevel apply(PromotionLevelSummary level) {
+                    public BuildPromotionLevel apply(TPromotionLevel level) {
                         return new BuildPromotionLevel(
                                 getDatedSignature(locale, EventType.PROMOTED_RUN_CREATED,
                                         MapBuilder.of(Entity.BUILD, buildId).with(Entity.PROMOTION_LEVEL, level.getId()).get()),

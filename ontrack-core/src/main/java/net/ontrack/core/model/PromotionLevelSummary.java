@@ -6,9 +6,9 @@ import lombok.Data;
 public class PromotionLevelSummary {
 
 	private final int id;
+    private final BranchSummary branch;
+    private final int levelNb;
 	private final String name;
 	private final String description;
-    private final int levelNb;
-	private final BranchSummary branch;
 
 }
