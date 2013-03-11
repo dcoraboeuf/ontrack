@@ -33,8 +33,12 @@ public abstract class AbstractClient implements Client {
     private final DefaultHttpClient client;
 
     public AbstractClient(String url) {
+        this(url, new DefaultHttpClient(new PoolingClientConnectionManager()));
+    }
+
+    public AbstractClient(String url, DefaultHttpClient client) {
+        this.client = client;
         this.url = url;
-        this.client = new DefaultHttpClient(new PoolingClientConnectionManager());
     }
 
     public String getUrl() {
@@ -139,7 +143,7 @@ public abstract class AbstractClient implements Client {
             @Override
             protected T handleEntity(HttpEntity entity) throws ParseException, IOException {
                 // Gets the content as a JSON string
-                String content = EntityUtils.toString(entity, "UTF-8");
+                String content = entity != null ? EntityUtils.toString(entity, "UTF-8") : null;
                 // Parses the response
                 return responseParser.parse(content);
             }
@@ -207,8 +211,12 @@ public abstract class AbstractClient implements Client {
 
         @Override
         public T parse(String content) throws IOException {
-            ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
-            return mapper.readValue(content, type);
+            if (content != null) {
+                ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+                return mapper.readValue(content, type);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -233,6 +241,8 @@ public abstract class AbstractClient implements Client {
                 throw new ClientCannotLoginException(request);
             } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
                 throw new ClientForbiddenException(request);
+            } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
+                return handleEntity(null);
             } else if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 String content = EntityUtils.toString(response.getEntity(), "UTF-8");
                 if (StringUtils.isNotBlank(content)) {
