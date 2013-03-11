@@ -99,7 +99,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     t.getId(),
                     t.getName(),
                     t.getDescription(),
-                    getProject(t.getId())
+                    getProject(t.getProject())
             );
         }
     };
