@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
@@ -36,6 +35,8 @@ import static java.lang.String.format;
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
 
+    // TODO Split the service in different parts
+
     private final SecurityUtils securityUtils;
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
@@ -46,6 +47,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final PromotedRunDao promotedRunDao;
     private final ValidationRunDao validationRunDao;
     private final ValidationRunStatusDao validationRunStatusDao;
+    private final CommentDao commentDao;
 
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
@@ -90,7 +92,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -102,6 +104,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.promotedRunDao = promotedRunDao;
         this.validationRunDao = validationRunDao;
         this.validationRunStatusDao = validationRunStatusDao;
+        this.commentDao = commentDao;
     }
 
     // Branches
@@ -669,13 +672,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Author
         Signature signature = securityUtils.getCurrentSignature();
         // Insertion
-        int commentId = dbCreate(format(SQL.COMMENT_CREATE, entity.name()),
-                MapBuilder.params("content", content)
-                        .with("id", id)
-                        .with("author", signature.getName())
-                        .with("author_id", signature.getId())
-                        .with("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now()))
-                        .get());
+        int commentId = commentDao.createComment(
+                entity,
+                id,
+                content,
+                signature.getName(),
+                signature.getId()
+        );
         // OK
         return new CommentStub(commentId, content);
     }
