@@ -39,19 +39,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
-        @Override
-        public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            int id = rs.getInt("id");
-            return new ValidationRunSummary(
-                    id,
-                    rs.getInt("run_order"),
-                    rs.getString("description"),
-                    getBuild(rs.getInt("build")),
-                    getValidationStamp(rs.getInt("validation_stamp")),
-                    getLastValidationRunStatus(id));
-        }
-    };
     protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
         @Override
         public PromotedRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -70,6 +57,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationStampDao validationStampDao;
     private final PromotionLevelDao promotionLevelDao;
     private final BuildDao buildDao;
+    private final ValidationRunDao validationRunDao;
     private final ValidationRunStatusDao validationRunStatusDao;
 
     // Dao -> Summary converters
@@ -115,7 +103,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, ValidationRunStatusDao validationRunStatusDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -124,6 +112,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationStampDao = validationStampDao;
         this.promotionLevelDao = promotionLevelDao;
         this.buildDao = buildDao;
+        this.validationRunDao = validationRunDao;
         this.validationRunStatusDao = validationRunStatusDao;
     }
 
@@ -560,10 +549,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public ValidationRunSummary getValidationRun(int id) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.VALIDATION_RUN,
-                params("id", id),
-                validationRunSummaryMapper
+        TValidationRun t = validationRunDao.getById(id);
+        int runId = t.getId();
+        return new ValidationRunSummary(
+                runId,
+                t.getRunOrder(),
+                t.getDescription(),
+                getBuild(t.getBuild()),
+                getValidationStamp(t.getValidationStamp()),
+                getLastValidationRunStatus(runId)
         );
     }
 
@@ -572,19 +566,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<BuildValidationStampRun> getValidationRuns(final Locale locale, final int buildId, final int validationStampId) {
-        List<Integer> runIds = getNamedParameterJdbcTemplate().queryForList(
-                SQL.VALIDATION_RUN_FOR_BUILD_AND_STAMP,
-                params("build", buildId).addValue("validationStamp", validationStampId),
-                Integer.class);
-        return Lists.transform(runIds, new Function<Integer, BuildValidationStampRun>() {
-            @Override
-            public BuildValidationStampRun apply(Integer runId) {
-                ValidationRunStatusStub runStatus = getLastValidationRunStatus(runId);
-                ValidationRunSummary run = getValidationRun(runId);
-                DatedSignature signature = getDatedSignature(locale, EventType.VALIDATION_RUN_CREATED, MapBuilder.of(Entity.BUILD, buildId).with(Entity.VALIDATION_STAMP, validationStampId).get());
-                return new BuildValidationStampRun(runId, run.getRunOrder(), signature, runStatus.getStatus(), runStatus.getDescription());
-            }
-        });
+        // Lists of runs for the build and validation stamp
+        List<TValidationRun> runs = validationRunDao.findByBuildAndValidationStamp(buildId, validationStampId);
+        return Lists.transform(
+                runs,
+                new Function<TValidationRun, BuildValidationStampRun>() {
+                    @Override
+                    public BuildValidationStampRun apply(TValidationRun t) {
+                        int runId = t.getId();
+                        ValidationRunStatusStub runStatus = getLastValidationRunStatus(runId);
+                        ValidationRunSummary run = getValidationRun(runId);
+                        DatedSignature signature = getDatedSignature(locale, EventType.VALIDATION_RUN_CREATED, MapBuilder.of(Entity.BUILD, buildId).with(Entity.VALIDATION_STAMP, validationStampId).get());
+                        return new BuildValidationStampRun(runId, run.getRunOrder(), signature, runStatus.getStatus(), runStatus.getDescription());
+                    }
+                }
+        );
     }
 
     @Override
