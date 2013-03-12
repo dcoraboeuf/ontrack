@@ -82,6 +82,9 @@ var Template = function () {
 	    var containerId = id + '-list';
 	    if (config.render) {
             config.render(containerId, append, config, data);
+            if (config.postRenderFn) {
+                config.postRenderFn();
+            }
 	    } else {
 	        throw "{0} template has no 'render' function.".format(id);
 	    }

@@ -8,7 +8,7 @@ var Builds = function () {
                 // Gets the first run only
                 var run = buildValidationStamp.runs[0];
                 // Status 'ball'
-                html += '<a href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><img width="24" src="static/images/status-{5}.png" /></a>'.format(
+                html += '<a class="tooltip-source" data-toggle="tooltip" href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><img width="24" src="static/images/status-{5}.png" /></a>'.format(
                     project.html(), // 0
                     branch.html(), // 1
                     build.html(), // 2
@@ -20,13 +20,13 @@ var Builds = function () {
                     run.statusDescription.html() // 8
                 );
             } else {
-                html += '<img width="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
+                html += '<img class="tooltip-source" width="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
             }
         } else {
             $.each(buildValidationStamp.runs, function (index, run) {
                 html += ' <p class="validation-run status-{0}">'.format(run.status);
                 // /gui/project/{project:[A-Z0-9_\.]+}/branch/{branch:[A-Z0-9_\.]+}/build/{build:[A-Za-z0-9_\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\.]+}/validation_run/{run:[0-9]+}
-                html += '<a href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
+                html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
                     .format(
                         project.html(), // 0
                         branch.html(), // 1
@@ -48,7 +48,7 @@ var Builds = function () {
         $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
             html += '<tr>';
                 html += '<td class="branch-build">';
-                    html += '<a href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
+                    html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
                         project.html(), // 0
                         branch.html(), // 1
                         buildCompleteStatus.name.html(), // 2
@@ -85,7 +85,7 @@ var Builds = function () {
         html += '<tr>';
         $.each(branchBuilds.validationStamps, function (index, validationStamp) {
             html += '<th align="center">';
-            html += '<a href="gui/project/{0}/branch/{1}/validation_stamp/{2}" title="{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
+            html += '<a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
             html += ValidationStamps.validationStampImage(project, branch, validationStamp);
             html += '</a>';
             html += '</th>';
@@ -125,7 +125,8 @@ var Builds = function () {
                         $(containerSelector).append('<div class="alert">{0}</div>'.format(loc('branch.nobuild')));
                     }
                 }
-	        }
+	        },
+	        postRenderFn: Application.tooltips
          });
 	}
 
@@ -140,13 +141,14 @@ var Builds = function () {
                 }
                 var html = '<div class="{0}">'.format(pClass);
                 html += ValidationStamps.validationStampImage(project, branch, stamp);
-                html += ' <a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
+                html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
                     html += runs(project, branch, build, stamp, false);
                 }
                 html += '</div>';
                 return html;
-	        })
+	        }),
+	        postRenderFn: Application.tooltips
 	    });
 	}
 
@@ -171,7 +173,7 @@ var Builds = function () {
                         promotion.name
                     );
                     // Link to the promotion level
-                    html += ' <a href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{3} - {4}">{2}</a>'.format(
+                    html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{3} - {4}">{2}</a>'.format(
                         project.html(),
                         branch.html(),
                         promotion.name,

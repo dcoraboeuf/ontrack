@@ -16,7 +16,7 @@ var ValidationStamps = function () {
 	}
 
 	function validationStampImage (project, branch, stamp) {
-	    return '<img width="24" title="{2}" src="gui/project/{0}/branch/{1}/validation_stamp/{2}/image" />'.format(
+	    return '<img class="tooltip-source" width="24" title="{2}" src="gui/project/{0}/branch/{1}/validation_stamp/{2}/image" />'.format(
                					project.html(),
                					branch.html(),
                					stamp.name.html()
