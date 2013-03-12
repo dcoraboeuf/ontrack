@@ -8,8 +8,6 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.core.support.Each;
-import net.ontrack.core.support.ItemActionWithIndex;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.EventService;
@@ -17,7 +15,6 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +26,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -48,6 +43,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationRunDao validationRunDao;
     private final ValidationRunStatusDao validationRunStatusDao;
     private final CommentDao commentDao;
+    private final EntityDao entityDao;
 
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
@@ -92,7 +88,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao, EntityDao entityDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -105,6 +101,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationRunDao = validationRunDao;
         this.validationRunStatusDao = validationRunStatusDao;
         this.commentDao = commentDao;
+        this.entityDao = entityDao;
     }
 
     // Branches
@@ -688,25 +685,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public int getEntityId(Entity entity, String name, final Map<Entity, Integer> parentIds) {
-        final StringBuilder sql = new StringBuilder(format(
-                "SELECT ID FROM %s WHERE %s = :name",
-                entity.name(),
-                entity.nameColumn()));
-        final MapSqlParameterSource sqlParams = params("name", name);
-        Each.withIndex(entity.getParents(), new ItemActionWithIndex<Entity>() {
-            @Override
-            public void apply(Entity parent, int index) {
-                Integer parentId = parentIds.get(parent);
-                sql.append(" AND ").append(parent.name()).append(" = :parent").append(index);
-                sqlParams.addValue("parent" + index, parentId);
-            }
-        });
-        Integer id = getFirstItem(sql.toString(), sqlParams, Integer.class);
-        if (id == null) {
-            throw new EntityNameNotFoundException(entity, name);
-        } else {
-            return id;
-        }
+        return entityDao.getEntityId(entity, name, parentIds);
     }
 
     protected Event collectEntityContext(Event event, Entity entity, int id) {
@@ -714,11 +693,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Gets the entities in the content
         List<Entity> parentEntities = entity.getParents();
         for (Entity parentEntity : parentEntities) {
-            Integer parentEntityId = getFirstItem(
-                    format("SELECT %s FROM %s WHERE ID = :id", parentEntity.name(), entity.name()),
-                    params("id", id),
-                    Integer.class
-            );
+            Integer parentEntityId = entityDao.getParentEntityId(parentEntity, entity, id);
             if (parentEntityId != null) {
                 e = collectEntityContext(e, parentEntity, parentEntityId);
             }
@@ -739,7 +714,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             throw new ImageTooBigException(imageSize, maxSize);
         }
         // Gets the bytes
-        byte[] content = new byte[0];
+        byte[] content;
         try {
             content = image.getBytes();
         } catch (IOException e) {
