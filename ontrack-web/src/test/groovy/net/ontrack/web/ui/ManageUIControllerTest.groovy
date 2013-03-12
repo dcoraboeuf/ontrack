@@ -19,7 +19,7 @@ class ManageUIControllerTest extends AbstractWebTest {
 	@Test
 	void createProjectGroup() {
 		this.mockMvc.perform(
-			post("/ui/manage/projectgroup")
+			post("/ui/manage/project_group")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(new ProjectGroupCreationForm("GRP1", "My first group")))
 				.accept(MediaType.APPLICATION_JSON))
@@ -30,7 +30,7 @@ class ManageUIControllerTest extends AbstractWebTest {
 			.andExpect(jsonPath('$.name').value("GRP1"))
 			.andExpect(jsonPath('$.description').value("My first group"))
 		// Gets the resulting list
-		String content = this.mockMvc.perform(get("/ui/manage/projectgroup").accept(MediaType.APPLICATION_JSON))
+		String content = this.mockMvc.perform(get("/ui/manage/project_group").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))

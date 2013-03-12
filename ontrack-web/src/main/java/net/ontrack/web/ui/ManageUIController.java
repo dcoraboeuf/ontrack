@@ -30,7 +30,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Project groups
 
     @Override
-    @RequestMapping(value = "/ui/manage/projectgroup", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project_group", method = RequestMethod.GET)
     public
     @ResponseBody
     List<ProjectGroupSummary> getProjectGroupList() {
@@ -38,7 +38,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/projectgroup", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project_group", method = RequestMethod.POST)
     public
     @ResponseBody
     ProjectGroupSummary createProjectGroup(@RequestBody ProjectGroupCreationForm form) {
