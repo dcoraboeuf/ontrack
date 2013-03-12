@@ -1,23 +1,19 @@
 package net.ontrack.backend;
 
-import net.ontrack.backend.db.SQL;
-import net.ontrack.service.EventService;
+import net.ontrack.backend.dao.ConfigurationDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import javax.validation.Validator;
-
 @Service
-public class ConfigurationServiceImpl extends AbstractServiceImpl implements ConfigurationService {
+public class ConfigurationServiceImpl implements ConfigurationService {
+
+    private final ConfigurationDao configurationDao;
 
     @Autowired
-    public ConfigurationServiceImpl(DataSource dataSource, Validator validator, EventService eventService) {
-        super(dataSource, validator, eventService);
+    public ConfigurationServiceImpl(ConfigurationDao configurationDao) {
+        this.configurationDao = configurationDao;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class ConfigurationServiceImpl extends AbstractServiceImpl implements Con
     }
 
     protected String get(ConfigurationKey key) {
-        return getFirstItem(SQL.CONFIGURATION_GET, params("name", key.name()), String.class);
+        return configurationDao.getValue(key.name());
     }
 
     @Override
@@ -68,13 +64,6 @@ public class ConfigurationServiceImpl extends AbstractServiceImpl implements Con
     @Override
     @Transactional
     public void set(ConfigurationKey key, String value) {
-        MapSqlParameterSource params = params("name", key.name());
-        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
-        // Removes the key
-        t.update(SQL.CONFIGURATION_DELETE, params);
-        // Insert the key again
-        if (value != null) {
-            t.update(SQL.CONFIGURATION_INSERT, params.addValue("value", value));
-        }
+        configurationDao.setValue(key.name(), value);
     }
 }
