@@ -26,8 +26,14 @@ var Builds = function () {
         $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
             html += '<tr>';
                 html += '<td class="branch-build">';
-                    html += '<a href="gui/project/{0}/branch/{1}/build/{2}">{2}</a>'.format(project.html(),branch.html(),buildCompleteStatus.name.html());
-                    html += '<br/><span class="signature" title="{1}">{0}</span>'.format(buildCompleteStatus.signature.elapsedTime, buildCompleteStatus.signature.formattedTime);
+                    html += '<a href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
+                        project.html(), // 0
+                        branch.html(), // 1
+                        buildCompleteStatus.name.html(), // 2
+                        buildCompleteStatus.description.html(), // 3
+                        buildCompleteStatus.signature.elapsedTime, // 4
+                        buildCompleteStatus.signature.formattedTime // 5
+                        );
                 html += '</td><td>';
                     html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
                 html += '</td>';
