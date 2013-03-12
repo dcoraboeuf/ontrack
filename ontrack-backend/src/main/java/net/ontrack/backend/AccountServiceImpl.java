@@ -1,92 +1,80 @@
 package net.ontrack.backend;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import net.ontrack.backend.db.SQL;
+import com.google.common.collect.Lists;
+import net.ontrack.backend.dao.AccountDao;
+import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.EventService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.token.Sha512DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.Validator;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class AccountServiceImpl extends AbstractServiceImpl implements AccountService {
 
-    private final RowMapper<Account> accountRowMapper = new RowMapper<Account>() {
+    private final AccountDao accountDao;
+    private final Function<TAccount, Account> accountFunction = new Function<TAccount, Account>() {
         @Override
-        public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Account(rs.getInt("id"), rs.getString("name"), rs.getString("fullName"), rs.getString("email"), rs.getString("roleName"), rs.getString("mode"));
+        public Account apply(TAccount t) {
+            return new Account(
+                    t.getId(),
+                    t.getName(),
+                    t.getFullName(),
+                    t.getEmail(),
+                    t.getRoleName(),
+                    t.getMode()
+            );
         }
     };
 
     @Autowired
-    public AccountServiceImpl(DataSource dataSource, Validator validator, EventService eventService) {
+    public AccountServiceImpl(DataSource dataSource, Validator validator, EventService eventService, AccountDao accountDao) {
         super(dataSource, validator, eventService);
+        this.accountDao = accountDao;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Account authenticate(String user, String password) {
-        try {
-            return getNamedParameterJdbcTemplate().queryForObject(
-                    SQL.ACCOUNT_AUTHENTICATE,
-                    params("user", user).addValue("password", encodePassword(password)),
-                    accountRowMapper
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            return null;
-        }
-    }
-
-    private String encodePassword(String password) {
-        return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
+        return accountFunction.apply(accountDao.findByNameAndPassword(user, password));
     }
 
     @Override
     @Transactional(readOnly = true)
     public String getRole(String mode, String user) {
-        return getFirstItem(SQL.ACCOUNT_ROLE, params("mode", mode).addValue("user", user), String.class);
+        return accountDao.getRoleByModeAndName(mode, user);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(String mode, String user) {
-        try {
-            return getNamedParameterJdbcTemplate().queryForObject(
-                    SQL.ACCOUNT,
-                    params("user", user).addValue("mode", mode),
-                    accountRowMapper
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            return null;
-        }
+        return accountFunction.apply(
+                accountDao.findByModeAndName(mode, user)
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
     @Secured(SecurityRoles.ADMINISTRATOR)
     public List<Account> getAccounts() {
-        return getJdbcTemplate().query(
-                SQL.ACCOUNT_LIST,
-                accountRowMapper
+        return Lists.transform(
+                accountDao.findAll(),
+                accountFunction
         );
     }
 
@@ -116,20 +104,14 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                 return !"builtin".equals(form.getMode()) || StringUtils.isNotBlank(input);
             }
         }, "net.ontrack.core.model.Account.password.requiredForBuiltin");
-        // Encoding of the password
-        String password = encodePassword(form.getPassword());
-        // Creation
-        int count = dbCreate(
-                SQL.ACCOUNT_CREATE,
-                MapBuilder.params("name", form.getName())
-                        .with("fullName", form.getFullName())
-                        .with("roleName", form.getRoleName())
-                        .with("email", form.getEmail())
-                        .with("mode", form.getMode())
-                        .with("password", password)
-                        .get()
-        );
         // OK
-        return Ack.one(count);
+        return accountDao.createAccount(
+                form.getName(),
+                form.getFullName(),
+                form.getEmail(),
+                form.getRoleName(),
+                form.getMode(),
+                form.getPassword()
+        );
     }
 }
