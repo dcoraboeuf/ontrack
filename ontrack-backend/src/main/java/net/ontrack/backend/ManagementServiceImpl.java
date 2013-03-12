@@ -18,8 +18,6 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -29,8 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.DataSource;
 import javax.validation.Validator;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,17 +35,7 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
-        @Override
-        public PromotedRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new PromotedRunSummary(
-                    rs.getInt("id"),
-                    rs.getString("description"),
-                    getBuild(rs.getInt("build")),
-                    getPromotionLevel(rs.getInt("promotion_level"))
-            );
-        }
-    };
+
     private final SecurityUtils securityUtils;
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
@@ -57,6 +43,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationStampDao validationStampDao;
     private final PromotionLevelDao promotionLevelDao;
     private final BuildDao buildDao;
+    private final PromotedRunDao promotedRunDao;
     private final ValidationRunDao validationRunDao;
     private final ValidationRunStatusDao validationRunStatusDao;
 
@@ -103,7 +90,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -112,6 +99,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationStampDao = validationStampDao;
         this.promotionLevelDao = promotionLevelDao;
         this.buildDao = buildDao;
+        this.promotedRunDao = promotedRunDao;
         this.validationRunDao = validationRunDao;
         this.validationRunStatusDao = validationRunStatusDao;
     }
@@ -658,15 +646,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public PromotedRunSummary getPromotedRun(int buildId, int promotionLevel) {
-        try {
-            return getNamedParameterJdbcTemplate().queryForObject(
-                    SQL.PROMOTED_RUN,
-                    params("build", buildId).addValue("promotionLevel", promotionLevel),
-                    promotedRunSummaryRowMapper
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            return null;
-        }
+        TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(buildId, promotionLevel);
+        return new PromotedRunSummary(
+                t.getId(),
+                t.getDescription(),
+                getBuild(t.getBuild()),
+                getPromotionLevel(t.getPromotionLevel())
+        );
     }
 
 
