@@ -36,6 +36,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 public class EventController extends AbstractUIController {
 
     private final Pattern replacementPattern = Pattern.compile("(\\$[^$.]+\\$)");
+    private final Pattern entityUriPattern = Pattern.compile("\\{([a-z_]+)\\}");
     private final Pattern entityPattern = Pattern.compile("[A-Z_]+");
     private final EventUI eventUI;
 
@@ -107,7 +108,7 @@ public class EventController extends AbstractUIController {
         Map<Entity, EntityStub> entities = event.getEntities();
         EntityStub entity = entities.get(Entity.VALIDATION_STAMP);
         if (entity != null) {
-            icon = String.format("gui/validation_stamp/%s/%s/%s/image",
+            icon = String.format("gui/project/%s/branch/%s/validation_stamp/%s/image",
                     entities.get(Entity.PROJECT).getName(),
                     entities.get(Entity.BRANCH).getName(),
                     entity.getName());
@@ -115,7 +116,7 @@ public class EventController extends AbstractUIController {
             // Promotion level --> icon
             entity = entities.get(Entity.PROMOTION_LEVEL);
             if (entity != null) {
-                icon = String.format("gui/promotion_level/%s/%s/%s/image",
+                icon = String.format("gui/project/%s/branch/%s/promotion_level/%s/image",
                         entities.get(Entity.PROJECT).getName(),
                         entities.get(Entity.BRANCH).getName(),
                         entity.getName());
@@ -192,23 +193,36 @@ public class EventController extends AbstractUIController {
     }
 
     protected String createLinkHref(Entity entity, EntityStub entityStub, int eventId, Map<Entity, EntityStub> contextEntities) {
-        // Start of the URI
-        StringBuilder uri = new StringBuilder("gui/").append(entity.name().toLowerCase());
-        // For each context entity
-        for (Entity contextEntity : entity.getContext()) {
-            // Gets the context stub
-            EntityStub contextStub = contextEntities.get(contextEntity);
-            if (contextStub == null) {
-                // TODO Uses a proper exception
-                throw new IllegalStateException("Could not find entity " + contextEntity + " in event " + eventId);
-            }
-            // Adds it to the URI
-            uri.append("/").append(contextStub.getName());
+        // Gets the URI pattern of the entity
+        String uriPattern = entity.getUriPattern();
+        // Looks for replacements
+        Matcher m = entityUriPattern.matcher(uriPattern);
+        StringBuffer uri = new StringBuffer();
+        while (m.find()) {
+            String name = m.group(1);
+            String value = getEntityName(entityStub, contextEntities, name);
+            m.appendReplacement(uri, value);
         }
-        // Appends this entity to the URI
-        uri.append("/").append(entityStub.getName());
+        m.appendTail(uri);
+
+        // Start of the URL
+        String url = "gui/" + uri;
         // OK
-        return uri.toString();
+        return url;
+    }
+
+    private String getEntityName(EntityStub entityStub, Map<Entity, EntityStub> contextEntities, String name) {
+        if ("this".equals(name)) {
+            return entityStub.getName();
+        } else {
+            EntityStub stub = contextEntities.get(Entity.valueOf(StringUtils.upperCase(name)));
+            if (stub == null) {
+                // TODO Uses a proper exception
+                throw new IllegalStateException("Could not find entity " + name);
+            } else {
+                return stub.getName();
+            }
+        }
     }
 
 }

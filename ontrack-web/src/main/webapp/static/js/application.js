@@ -352,6 +352,12 @@ var Application = function () {
 			},
 			displayError);
 	}
+
+	function tooltips () {
+        $('.tooltip-source').tooltip({
+            placement: 'bottom'
+        });
+    }
 	
 	return {
 	    login: login,
@@ -383,7 +389,8 @@ var Application = function () {
 		},
 		loading: loading,
 		deleteEntity: deleteEntity,
-		ajaxGet: ajaxGet
+		ajaxGet: ajaxGet,
+		tooltips: tooltips
 	};
 	
 } ();

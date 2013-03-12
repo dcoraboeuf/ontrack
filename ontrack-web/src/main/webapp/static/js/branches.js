@@ -4,20 +4,20 @@ var Branches = function () {
 		Application.dialogAndSubmit({
 			id: 'branch-create-dialog',
 			title: loc('branch.create.title'),
-			url: 'ui/manage/branch/' + project,
+			url: 'ui/manage/project/' + project + '/branch',
 			successFn: function (data) {
-				location = 'gui/branch/' + project + '/' + data.name;
+				location = 'gui/project/{0}/branch/{1}'.format(project, data.name);
 			}
 	    });
 	}
 	
 	function deleteBranch (project,name) {
-		Application.deleteEntity('branch/' + project, name, '');
+		Application.deleteEntity('project/{0}/branch'.format(project), name, '');
 	}
 	
 	function branchTemplate (project) {
 	    return function (containerId, append, items) {
-	        return Template.table(containerId, append, items, Template.tableRowLink('gui/branch/' + project));
+	        return Template.table(containerId, append, items, Template.tableRowLink('gui/project/{0}/branch'.format(project.html())));
 	    };
 	}
 	
@@ -26,8 +26,8 @@ var Branches = function () {
 		deleteBranch: deleteBranch,
 		branchTemplate: function (project) {
 		    return Template.config({
-		        url: 'ui/manage/branch/{0}/all'.format(project.html()),
-		        render: Template.asTable(Template.asLink('gui/branch/{0}'.format(project.html()))),
+		        url: 'ui/manage/project/{0}/branch'.format(project.html()),
+		        render: Template.asTable(Template.asLink('gui/project/{0}/branch/'.format(project.html()))),
 		        placeholder: loc('branch.empty')
 		    });
 		}

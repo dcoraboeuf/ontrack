@@ -4,19 +4,19 @@ var PromotionLevels = function () {
 		Application.dialogAndSubmit({
 			id: 'promotion_level-create-dialog',
 			title: loc('promotion_level.create'),
-			url: 'ui/manage/promotion_level/{0}/{1}'.format(project,branch),
+			url: 'ui/manage/project/{0}/branch/{1}/promotion_level'.format(project,branch),
 			successFn: function (data) {
-				location = 'gui/promotion_level/{0}/{1}/manage'.format(project,branch);
+				location = 'gui/project/{0}/branch/{1}/promotion_level_manage'.format(project,branch);
 			}
 		});
 	}
 	
 	function deletePromotionLevel(project, branch, name) {
-		Application.deleteEntity('promotion_level/{0}/{1}'.format(project,branch), name, '');
+		Application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project,branch), name, '');
 	}
 
 	function promotionLevelImage (project, branch, promotionLevel) {
-	    return '<img width="24" title="{2}" src="gui/promotion_level/{0}/{1}/{2}/image" />'.format(
+	    return '<img width="24" title="{2}" src="gui/project/{0}/branch/{1}/promotion_level/{2}/image" />'.format(
                					project.html(),
                					branch.html(),
                					promotionLevel.name.html()
@@ -25,11 +25,11 @@ var PromotionLevels = function () {
 	
 	function promotionLevelTemplate (project, branch) {
 	    return Template.config({
-	        url: 'ui/manage/promotion_level/{0}/{1}/all'.format(project,branch),
+	        url: 'ui/manage/project/{0}/branch/{1}/promotion_level'.format(project,branch),
 	        render: Template.asTable(function (stamp) {
                 var html = '';
                 html += promotionLevelImage (project, branch, stamp);
-                html += ' <a href="gui/promotion_level/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
+                html += ' <a href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 return html;
 	        })
 	    });

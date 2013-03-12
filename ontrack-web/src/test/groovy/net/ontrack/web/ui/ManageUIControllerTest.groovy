@@ -2,31 +2,24 @@
 
 package net.ontrack.web.ui
 
-import static org.hamcrest.Matchers.*
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-
-import java.lang.invoke.MethodHandleImpl.BindCaller.T
-
-import net.ontrack.core.model.EventType
-import net.ontrack.core.model.ProjectCreationForm
-import net.ontrack.core.model.ProjectGroupCreationForm
-import net.ontrack.core.model.ProjectGroupSummary
-import net.ontrack.core.model.ProjectSummary
+import net.ontrack.core.model.*
 import net.ontrack.web.gui.model.GUIEvent
 import net.ontrack.web.test.AbstractWebTest
-
 import org.junit.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
+
+import static org.hamcrest.Matchers.greaterThan
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 class ManageUIControllerTest extends AbstractWebTest {
 	
 	@Test
 	void createProjectGroup() {
 		this.mockMvc.perform(
-			post("/ui/manage/projectgroup")
+			post("/ui/manage/project_group")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json(new ProjectGroupCreationForm("GRP1", "My first group")))
 				.accept(MediaType.APPLICATION_JSON))
@@ -37,7 +30,7 @@ class ManageUIControllerTest extends AbstractWebTest {
 			.andExpect(jsonPath('$.name').value("GRP1"))
 			.andExpect(jsonPath('$.description').value("My first group"))
 		// Gets the resulting list
-		String content = this.mockMvc.perform(get("/ui/manage/projectgroup/all").accept(MediaType.APPLICATION_JSON))
+		String content = this.mockMvc.perform(get("/ui/manage/project_group").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -61,7 +54,7 @@ class ManageUIControllerTest extends AbstractWebTest {
 			.andExpect(jsonPath('$.name').value("PRJ1"))
 			.andExpect(jsonPath('$.description').value("My first project"))
 		// Gets the resulting list
-		String json = this.mockMvc.perform(get("/ui/manage/project/all").accept(MediaType.APPLICATION_JSON))
+		String json = this.mockMvc.perform(get("/ui/manage/project").accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))

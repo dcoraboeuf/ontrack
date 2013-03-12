@@ -47,7 +47,7 @@ public class GUIController extends AbstractGUIController {
         return "project";
     }
 
-    @RequestMapping(value = "/gui/branch/{project:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
     public String getBranch(Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
         model.addAttribute("branch", manageUI.getBranch(project, name));
@@ -55,15 +55,15 @@ public class GUIController extends AbstractGUIController {
         return "branch";
     }
 
-    @RequestMapping(value = "/gui/build/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
-    public String getBranch(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    public String getBuild(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         // Loads the details
         model.addAttribute("build", manageUI.getBuild(project, branch, name));
         // OK
         return "build";
     }
 
-    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
     public String getValidationStamp(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         // Loads the details
         model.addAttribute("validationStamp", manageUI.getValidationStamp(project, branch, name));
@@ -71,7 +71,7 @@ public class GUIController extends AbstractGUIController {
         return "validationStamp";
     }
 
-    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
     public String getPromotionLevel(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         // Loads the details
         model.addAttribute("promotionLevel", manageUI.getPromotionLevel(project, branch, name));
@@ -79,7 +79,7 @@ public class GUIController extends AbstractGUIController {
         return "promotionLevel";
     }
 
-    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
     public String imagePromotionLevel(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
         try {
             // TODO Custom (global) error handler for the upload exceptions
@@ -95,7 +95,7 @@ public class GUIController extends AbstractGUIController {
         return getPromotionLevel(model, project, branch, name);
     }
 
-    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
     public void getImagePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
         byte[] content = manageUI.imagePromotionLevel(project, branch, name);
         if (content == null) {
@@ -105,13 +105,13 @@ public class GUIController extends AbstractGUIController {
         renderImage(response, content);
     }
 
-    @RequestMapping(value = "/gui/promotion_level/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/manage", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level_manage", method = RequestMethod.GET)
     public String managePromotionLevels(@PathVariable String project, @PathVariable String branch, Model model)  {
         model.addAttribute("management", manageUI.getPromotionLevelManagementData(project, branch));
         return "promotionLevelManagement";
     }
 
-    @RequestMapping(value = "/gui/validation_run/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{build:[A-Za-z0-9_\\.]+}/{validationStamp:[A-Z0-9_\\.]+}/{run:[0-9]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{build:[A-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\\.]+}/validation_run/{run:[0-9]+}", method = RequestMethod.GET)
     public String getValidationRun(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
         // Loads the details
         model.addAttribute("validationRun", manageUI.getValidationRun(project, branch, build, validationStamp, run));
@@ -119,7 +119,7 @@ public class GUIController extends AbstractGUIController {
         return "validationRun";
     }
 
-    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
     public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
         try {
             // TODO Custom (global) error handler for the upload exceptions
@@ -135,7 +135,7 @@ public class GUIController extends AbstractGUIController {
         return getValidationStamp(model, project, branch, name);
     }
 
-    @RequestMapping(value = "/gui/validation_stamp/{project:[A-Z0-9_\\.]+}/{branch:[A-Z0-9_\\.]+}/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
     public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
         byte[] content = manageUI.imageValidationStamp(project, branch, name);
         if (content == null) {
