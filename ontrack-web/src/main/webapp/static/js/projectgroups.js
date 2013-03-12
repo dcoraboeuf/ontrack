@@ -15,7 +15,7 @@ var ProjectGroups = function () {
 		createProjectGroup: createProjectGroup,
 		// Template for the list of groups
 		projectGroupTemplate: Template.config({
-            url: 'ui/manage/projectgroup/all',
+            url: 'ui/manage/projectgroup',
             render: Template.asTable(Template.asLink('gui/projectgroup')),
             placeholder: loc('projectgroup.empty')
 		})

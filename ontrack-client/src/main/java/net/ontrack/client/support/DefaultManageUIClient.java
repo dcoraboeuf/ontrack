@@ -34,22 +34,22 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public String getBranchURL(String project, String branch) {
-        return getUrl(format("/gui/branch/%s/%s", project, branch));
+        return getUrl(format("/gui/project/%s/branch/%s", project, branch));
     }
 
     @Override
     public String getPromotionLevelImageURL(String project, String branch, String name) {
-        return getUrl(format("/ui/manage/promotion_level/%s/%s/%s/image", project, branch, name));
+        return getUrl(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name));
     }
 
     @Override
     public String getValidationStampImageURL(String project, String branch, String name) {
-        return getUrl(format("/ui/manage/validation_stamp/%s/%s/%s/image", project, branch, name));
+        return getUrl(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name));
     }
 
     @Override
     public List<ProjectSummary> getProjectList() {
-        return list("/ui/manage/project/all", ProjectSummary.class);
+        return list("/ui/manage/project", ProjectSummary.class);
     }
 
     @Override
@@ -71,12 +71,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<BranchSummary> getBranchList(String project) {
-        return list(format("/ui/manage/branch/%s/all", project), BranchSummary.class);
+        return list(format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }
 
     @Override
     public BranchSummary getBranch(String project, String name) {
-        return get(format("/ui/manage/branch/%s/%s", project, name), BranchSummary.class);
+        return get(format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<ValidationStampSummary> getValidationStampList(String project, String branch) {
-        return list(format("/ui/manage/validation_stamp/%s/%s/all", project, branch), ValidationStampSummary.class);
+        return list(format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<PromotionLevelSummary> getPromotionLevelList(String project, String branch) {
-        return list(format("/ui/manage/promotion_level/%s/%s/all", project, branch), PromotionLevelSummary.class);
+        return list(format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class);
     }
 
     @Override
@@ -188,24 +188,24 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     @Override
     public BranchBuilds getBuildList(Locale locale, String project, String branch, int offset, int count) {
         // TODO Locale management
-        return get(format("/ui/manage/build/%s/%s?offset=%d&count=%d", project, branch, offset, count), BranchBuilds.class);
+        return get(format("/ui/manage/project/%s/branch/%s/build?offset=%d&count=%d", project, branch, offset, count), BranchBuilds.class);
     }
 
     @Override
     public BuildSummary getBuild(String project, String branch, String name) {
-        return get(format("/ui/manage/build/%s/%s/%s", project, branch, name), BuildSummary.class);
+        return get(format("/ui/manage/project/%s/branch/%s/build/%s", project, branch, name), BuildSummary.class);
     }
 
     @Override
     public List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name) {
         // TODO Locale management
-        return list(format("/ui/manage/build/%s/%s/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
+        return list(format("/ui/manage/project/%s/branch/%s/build/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
     }
 
     @Override
     public List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name) {
         // TODO Locale management
-        return list(format("/ui/manage/build/%s/%s/%s/promotionLevels", project, branch, name), BuildPromotionLevel.class);
+        return list(format("/ui/manage/project/%s/branch/%s/build/%s/promotionLevels", project, branch, name), BuildPromotionLevel.class);
     }
 
     @Override
