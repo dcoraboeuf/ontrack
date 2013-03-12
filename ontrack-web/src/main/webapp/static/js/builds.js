@@ -1,12 +1,14 @@
 var Builds = function () {
 
-    function runs(project, branch, build, buildValidationStamp) {
+    function runs(project, branch, build, buildValidationStamp, compact) {
         var html = '';
-        $.each(buildValidationStamp.runs, function (index, run) {
-            html += ' <p class="validation-run status-{0}">'.format(run.status);
-            // /gui/project/{project:[A-Z0-9_\.]+}/branch/{branch:[A-Z0-9_\.]+}/build/{build:[A-Za-z0-9_\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\.]+}/validation_run/{run:[0-9]+}
-            html += '<a href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
-                .format(
+        if (compact) {
+            // Run?
+            if (buildValidationStamp.run) {
+                // Gets the first run only
+                var run = buildValidationStamp.runs[0];
+                // Status 'ball'
+                html += '<a href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><img width="24" src="static/images/status-{5}.png" /></a>'.format(
                     project.html(), // 0
                     branch.html(), // 1
                     build.html(), // 2
@@ -15,9 +17,29 @@ var Builds = function () {
                     run.status.html(), // 5
                     run.signature.elapsedTime, // 6
                     run.signature.formattedTime, // 7
-                    run.statusDescription.html()); // 8
-            html += '</p>';
-        });
+                    run.statusDescription.html() // 8
+                );
+            } else {
+                html += '<img width="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
+            }
+        } else {
+            $.each(buildValidationStamp.runs, function (index, run) {
+                html += ' <p class="validation-run status-{0}">'.format(run.status);
+                // /gui/project/{project:[A-Z0-9_\.]+}/branch/{branch:[A-Z0-9_\.]+}/build/{build:[A-Za-z0-9_\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\.]+}/validation_run/{run:[0-9]+}
+                html += '<a href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
+                    .format(
+                        project.html(), // 0
+                        branch.html(), // 1
+                        build.html(), // 2
+                        buildValidationStamp.name.html(), // 3
+                        run.runOrder, // 4
+                        run.status.html(), // 5
+                        run.signature.elapsedTime, // 6
+                        run.signature.formattedTime, // 7
+                        run.statusDescription.html()); // 8
+                html += '</p>';
+            });
+        }
         return html;
     }
 
@@ -41,11 +63,7 @@ var Builds = function () {
                     var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
                     html += '<td>';
                     if (buildValidationStamp) {
-                        if (buildValidationStamp.run) {
-                            html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp);
-                        } else {
-                            html += '<span class="muted">{0}</span>'.format(loc('validationRun.notRun'));
-                        }
+                        html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp, true);
                     } else {
                         html += '-';
                     }
@@ -124,7 +142,7 @@ var Builds = function () {
                 html += ValidationStamps.validationStampImage(project, branch, stamp);
                 html += ' <a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
-                    html += runs(project, branch, build, stamp);
+                    html += runs(project, branch, build, stamp, false);
                 }
                 html += '</div>';
                 return html;
