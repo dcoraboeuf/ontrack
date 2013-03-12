@@ -8,7 +8,7 @@ BUILD=$5
 PROMOTION_LEVEL=$6
 DESCRIPTION=$8
 
-URL=http://localhost:8080/ontrack/ui/control/promote/${PROJECT}/${BRANCH}/${BUILD}/${PROMOTION_LEVEL}
+URL=http://localhost:8080/ontrack/ui/control/project/${PROJECT}/branch/${BRANCH}/build/${BUILD}/promotion_level/${PROMOTION_LEVEL}
 DATA="{\"description\":\"${DESCRIPTION}\"}"
 
 echo POST to $URL
