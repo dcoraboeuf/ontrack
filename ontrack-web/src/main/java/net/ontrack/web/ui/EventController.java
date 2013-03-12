@@ -36,7 +36,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 public class EventController extends AbstractUIController {
 
     private final Pattern replacementPattern = Pattern.compile("(\\$[^$.]+\\$)");
-    private final Pattern entityUriPattern = Pattern.compile("\\{([a-z]+)\\}");
+    private final Pattern entityUriPattern = Pattern.compile("\\{([a-z_]+)\\}");
     private final Pattern entityPattern = Pattern.compile("[A-Z_]+");
     private final EventUI eventUI;
 
