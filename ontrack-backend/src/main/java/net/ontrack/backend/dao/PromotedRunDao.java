@@ -6,4 +6,5 @@ public interface PromotedRunDao {
 
     TPromotedRun findByBuildAndPromotionLevel(int build, int promotionLevel);
 
+    int createPromotedRun(int build, int promotionLevel, String description);
 }

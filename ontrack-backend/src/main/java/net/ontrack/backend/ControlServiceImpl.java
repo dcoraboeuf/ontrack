@@ -1,10 +1,10 @@
 package net.ontrack.backend;
 
-import net.ontrack.backend.db.SQL;
+import net.ontrack.backend.dao.BuildDao;
+import net.ontrack.backend.dao.PromotedRunDao;
+import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.EventService;
@@ -24,13 +24,17 @@ import java.util.Locale;
 public class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 
     private final ManagementService managementService;
-    private final SecurityUtils securityUtils;
+    private final BuildDao buildDao;
+    private final ValidationRunDao validationRunDao;
+    private final PromotedRunDao promotedRunDao;
 
     @Autowired
-    public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, SecurityUtils securityUtils) {
+    public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
         super(dataSource, validator, auditService);
         this.managementService = managementService;
-        this.securityUtils = securityUtils;
+        this.buildDao = buildDao;
+        this.validationRunDao = validationRunDao;
+        this.promotedRunDao = promotedRunDao;
     }
 
     @Override
@@ -40,10 +44,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // Validation
         validate(form, NameDescription.class);
         // Query
-        int id = dbCreate(SQL.BUILD_CREATE,
-                MapBuilder.params("branch", branch)
-                        .with("name", form.getName())
-                        .with("description", form.getDescription()).get());
+        int id = buildDao.createBuild(branch, form.getName(), form.getDescription());
         // Branch summary
         BranchSummary theBranch = managementService.getBranch(branch);
         // Audit
@@ -60,23 +61,27 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // TODO Uses DAO
         List<BuildValidationStampRun> runs = managementService.getValidationRuns(Locale.ENGLISH, build, validationStamp);
         // Run itself
-        int id = dbCreate(SQL.VALIDATION_RUN_CREATE,
-                MapBuilder.params("build", build)
-                        .with("validationStamp", validationStamp)
-                        .with("description", validationRun.getDescription())
-                        .with("runOrder", runs.size() + 1)
-                        .get());
+        int validationRunId = validationRunDao.createValidationRun(
+                build,
+                validationStamp,
+                validationRun.getDescription()
+        );
         // First status
-        managementService.createValidationRunStatus(id, new ValidationRunStatusCreationForm(validationRun.getStatus(), validationRun.getDescription()), true);
+        managementService.createValidationRunStatus(
+                validationRunId,
+                new ValidationRunStatusCreationForm(
+                        validationRun.getStatus(),
+                        validationRun.getDescription()),
+                true);
         // Summary
-        ValidationRunSummary run = managementService.getValidationRun(id);
+        ValidationRunSummary run = managementService.getValidationRun(validationRunId);
         // Event
         event(Event.of(EventType.VALIDATION_RUN_CREATED)
                 .withProject(run.getBuild().getBranch().getProject().getId())
                 .withBranch(run.getBuild().getBranch().getId())
                 .withValidationStamp(validationStamp)
                 .withBuild(build)
-                .withValidationRun(id)
+                .withValidationRun(validationRunId)
                 .withValue("status", validationRun.getStatus().name())
         );
         // Gets the summary
@@ -98,11 +103,11 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // If none, creates one
         if (run == null) {
             // TODO Checks if the promotion level is eligible for control
-            dbCreate(SQL.PROMOTED_RUN_CREATE,
-                    MapBuilder.params("build", buildId)
-                            .with("promotionLevel", promotionLevel)
-                            .with("description", promotedRun.getDescription())
-                            .get());
+            promotedRunDao.createPromotedRun(
+                    buildId,
+                    promotionLevel,
+                    promotedRun.getDescription()
+            );
             // Gets the newly created run
             run = managementService.getPromotedRun(buildId, promotionLevel);
             // Event

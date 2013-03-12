@@ -46,4 +46,14 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
             return null;
         }
     }
+
+    @Override
+    @Transactional
+    public int createPromotedRun(int build, int promotionLevel, String description) {
+        return dbCreate(
+                SQL.PROMOTED_RUN_CREATE,
+                params("build", build)
+                        .addValue("promotionLevel", promotionLevel)
+                        .addValue("description", description));
+    }
 }

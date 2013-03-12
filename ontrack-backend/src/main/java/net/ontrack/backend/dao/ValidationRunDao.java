@@ -9,4 +9,6 @@ public interface ValidationRunDao {
     TValidationRun getById(int id);
 
     List<TValidationRun> findByBuildAndValidationStamp(int build, int validationStamp);
+
+    int createValidationRun(int build, int validationStamp, String description);
 }

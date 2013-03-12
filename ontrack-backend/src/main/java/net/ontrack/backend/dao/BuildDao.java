@@ -9,4 +9,6 @@ public interface BuildDao {
     List<TBuild> findByBranch(int branch, int offset, int count);
 
     TBuild getById(int id);
+
+    int createBuild(int branch, String name, String description);
 }

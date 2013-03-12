@@ -52,4 +52,19 @@ public class ValidationRunJdbcDao extends AbstractJdbcDao implements ValidationR
                 params("build", build).addValue("validationStamp", validationStamp),
                 validationRunRowMapper);
     }
+
+    @Override
+    @Transactional
+    public int createValidationRun(int build, int validationStamp, String description) {
+        int count = getNamedParameterJdbcTemplate().queryForInt(
+                SQL.VALIDATION_RUN_COUNT_FOR_BUILD_AND_STAMP,
+                params("build", build).addValue("validationStamp", validationStamp)
+        );
+        return dbCreate(
+                SQL.VALIDATION_RUN_CREATE,
+                params("build", build)
+                        .addValue("validationStamp", validationStamp)
+                        .addValue("description", description)
+                        .addValue("runOrder", count + 1));
+    }
 }

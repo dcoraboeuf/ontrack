@@ -51,4 +51,14 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 params("branch", branch).addValue("offset", offset).addValue("count", count),
                 buildRowMapper);
     }
+
+    @Override
+    @Transactional
+    public int createBuild(int branch, String name, String description) {
+        return dbCreate(
+                SQL.BUILD_CREATE,
+                params("branch", branch)
+                        .addValue("name", name)
+                        .addValue("description", description));
+    }
 }

@@ -647,12 +647,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional(readOnly = true)
     public PromotedRunSummary getPromotedRun(int buildId, int promotionLevel) {
         TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(buildId, promotionLevel);
-        return new PromotedRunSummary(
-                t.getId(),
-                t.getDescription(),
-                getBuild(t.getBuild()),
-                getPromotionLevel(t.getPromotionLevel())
-        );
+        if (t != null) {
+            return new PromotedRunSummary(
+                    t.getId(),
+                    t.getDescription(),
+                    getBuild(t.getBuild()),
+                    getPromotionLevel(t.getPromotionLevel())
+            );
+        } else {
+            return null;
+        }
     }
 
 
