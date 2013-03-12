@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.Validator;
-import java.util.List;
-import java.util.Locale;
 
 @Service
 public class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
@@ -30,7 +28,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
 
     @Autowired
     public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
-        super(dataSource, validator, auditService);
+        super(validator, auditService);
         this.managementService = managementService;
         this.buildDao = buildDao;
         this.validationRunDao = validationRunDao;
@@ -57,9 +55,6 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     @Transactional
     @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun) {
-        // Numbers of runs for this build and validation stamps
-        // TODO Uses DAO
-        List<BuildValidationStampRun> runs = managementService.getValidationRuns(Locale.ENGLISH, build, validationStamp);
         // Run itself
         int validationRunId = validationRunDao.createValidationRun(
                 build,

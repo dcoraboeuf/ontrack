@@ -10,7 +10,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import javax.validation.Validator;
 
 @Service
@@ -20,8 +19,8 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
     private final ConfigurationCache configurationCache;
 
     @Autowired
-    public AdminServiceImpl(DataSource dataSource, Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationCache configurationCache) {
-        super(dataSource, validator, eventService);
+    public AdminServiceImpl(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationCache configurationCache) {
+        super(validator, eventService);
         this.configurationService = configurationService;
         this.configurationCache = configurationCache;
     }

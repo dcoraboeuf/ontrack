@@ -89,7 +89,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Autowired
     public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao, EntityDao entityDao) {
-        super(dataSource, validator, auditService);
+        super(validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;

@@ -44,7 +44,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Autowired
     public AccountServiceImpl(DataSource dataSource, Validator validator, EventService eventService, AccountDao accountDao) {
-        super(dataSource, validator, eventService);
+        super(validator, eventService);
         this.accountDao = accountDao;
     }
 
