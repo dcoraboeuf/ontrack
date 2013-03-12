@@ -32,7 +32,7 @@ public interface SQL {
 	
 	String BUILD = "SELECT * FROM BUILD WHERE ID = :id";
 	
-	String BUILD_LIST = "SELECT ID, BRANCH, NAME, DESCRIPTION FROM BUILD WHERE BRANCH = :branch ORDER BY ID DESC LIMIT :count OFFSET :offset";
+	String BUILD_LIST = "SELECT * FROM BUILD WHERE BRANCH = :branch ORDER BY ID DESC LIMIT :count OFFSET :offset";
 	
 	String BUILD_CREATE = "INSERT INTO BUILD (BRANCH, NAME, DESCRIPTION) VALUES (:branch, :name, :description)";
 	

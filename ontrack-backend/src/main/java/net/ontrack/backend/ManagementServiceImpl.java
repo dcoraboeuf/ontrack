@@ -39,13 +39,6 @@ import static java.lang.String.format;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
-    protected final RowMapper<BuildSummary> buildSummaryMapper = new RowMapper<BuildSummary>() {
-        @Override
-        public BuildSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
-            int id = rs.getInt("id");
-            return new BuildSummary(id, rs.getString("name"), rs.getString("description"), getBranch(rs.getInt("branch")));
-        }
-    };
     protected final RowMapper<ValidationRunSummary> validationRunSummaryMapper = new RowMapper<ValidationRunSummary>() {
         @Override
         public ValidationRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -82,6 +75,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final BranchDao branchDao;
     private final ValidationStampDao validationStampDao;
     private final PromotionLevelDao promotionLevelDao;
+    private final BuildDao buildDao;
 
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
@@ -126,7 +120,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -134,6 +128,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.branchDao = branchDao;
         this.validationStampDao = validationStampDao;
         this.promotionLevelDao = promotionLevelDao;
+        this.buildDao = buildDao;
     }
 
     // Branches
@@ -481,21 +476,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public BranchBuilds getBuildList(final Locale locale, int branch, int offset, int count) {
-        List<BuildSummary> builds = getNamedParameterJdbcTemplate().query(
-                SQL.BUILD_LIST,
-                params("branch", branch).addValue("offset", offset).addValue("count", count),
-                buildSummaryMapper);
         return new BranchBuilds(
+                // Validation stamps for the branch
                 getValidationStampList(branch),
+                // Builds for the branch and their complete status
                 Lists.transform(
-                        builds,
-                        new Function<BuildSummary, BuildCompleteStatus>() {
+                        buildDao.findByBranch(branch, offset, count),
+                        new Function<TBuild, BuildCompleteStatus>() {
                             @Override
-                            public BuildCompleteStatus apply(BuildSummary summary) {
-                                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, summary.getId());
-                                List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, summary.getId());
-                                DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, summary.getId());
-                                return new BuildCompleteStatus(summary, signature, stamps, promotionLevels);
+                            public BuildCompleteStatus apply(TBuild t) {
+                                int buildId = t.getId();
+                                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
+                                List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
+                                DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
+                                return new BuildCompleteStatus(
+                                        buildId,
+                                        t.getName(),
+                                        t.getDescription(),
+                                        signature,
+                                        stamps,
+                                        promotionLevels);
                             }
                         }
                 )
@@ -507,10 +507,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public BuildSummary getBuild(int id) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.BUILD,
-                params("id", id),
-                buildSummaryMapper
+        TBuild t = buildDao.getById(id);
+        return new BuildSummary(
+                t.getId(),
+                t.getName(),
+                t.getDescription(),
+                getBranch(t.getBranch())
         );
     }
 

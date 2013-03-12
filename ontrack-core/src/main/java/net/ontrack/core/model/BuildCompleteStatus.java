@@ -24,9 +24,9 @@ public class BuildCompleteStatus {
     // List of promotion levels for this build
     private final List<BuildPromotionLevel> promotionLevels;
 
-    public BuildCompleteStatus(BuildSummary summary, DatedSignature signature,  List<BuildValidationStamp> stamps, List<BuildPromotionLevel> promotionLevels) {
+    public BuildCompleteStatus(int id, String name, String description, DatedSignature signature, List<BuildValidationStamp> stamps, List<BuildPromotionLevel> promotionLevels) {
         this(
-                summary.getId(), summary.getName(), summary.getDescription(),
+                id, name, description,
                 signature,
                 new TreeMap<String, BuildValidationStamp>(
                         Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
