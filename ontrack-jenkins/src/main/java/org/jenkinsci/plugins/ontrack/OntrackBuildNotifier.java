@@ -5,6 +5,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import net.ontrack.core.model.BuildCreationForm;
@@ -44,20 +45,23 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        // Expands the expressions into actual values
-        final String projectName = expand(project, theBuild, listener);
-        final String branchName = expand(branch, theBuild, listener);
-        final String buildName = expand(build, theBuild, listener);
-        // TODO Build description
-        final String buildDescription = String.format("Build %s", theBuild);
-        // Logging of parameters
-        listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
-        // Calling ontrack UI
-        BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
-            public BuildSummary onCall(ControlUI ui) {
-                return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
-            }
-        });
+        // Only triggers in case of success
+        if (theBuild.getResult().isBetterOrEqualTo(Result.SUCCESS)) {
+            // Expands the expressions into actual values
+            final String projectName = expand(project, theBuild, listener);
+            final String branchName = expand(branch, theBuild, listener);
+            final String buildName = expand(build, theBuild, listener);
+            // TODO Build description
+            final String buildDescription = String.format("Build %s", theBuild);
+            // Logging of parameters
+            listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
+            // Calling ontrack UI
+            BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
+                public BuildSummary onCall(ControlUI ui) {
+                    return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
+                }
+            });
+        }
         // OK
         return true;
     }
