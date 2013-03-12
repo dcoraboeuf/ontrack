@@ -15,7 +15,7 @@ var PromotionLevelManagement = function () {
         Application.loading(promotionLevelLoadingIndicator, true);
         // Ajax to perform the re-ordering
         Application.ajaxGet(
-            'ui/manage/promotion_level/{0}/{1}/{2}/{3}'.format(
+            'ui/manage/project/{0}/branch/{1}/promotion_level/{2}/{3}'.format(
                 project.html(),
                 branch.html(),
                 promotionLevel.html(),
@@ -47,7 +47,7 @@ var PromotionLevelManagement = function () {
             Application.loading(promotionLevelLoadingIndicator, true);
             // Ajax to perform the unlink
             Application.ajaxGet(
-                'ui/manage/promotion_level/{0}/{1}/{2}/unlink'.format(
+                'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/unlink'.format(
                     project.html(),
                     branch.html(),
                     validationStamp.html()
@@ -91,7 +91,7 @@ var PromotionLevelManagement = function () {
         Application.loading(promotionLevelLoadingIndicator, true);
         // Ajax to perform the link
         Application.ajaxGet(
-            'ui/manage/promotion_level/{0}/{1}/{2}/link/{3}'.format(
+            'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/link/{3}'.format(
                 project.html(),
                 branch.html(),
                 validationStamp.html(),

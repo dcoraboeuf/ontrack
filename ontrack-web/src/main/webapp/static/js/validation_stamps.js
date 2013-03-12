@@ -4,19 +4,19 @@ var ValidationStamps = function () {
 		Application.dialogAndSubmit({
 			id: 'validation_stamp-create-dialog',
 			title: loc('validation_stamp.create.title'),
-			url: 'ui/manage/validation_stamp/{0}/{1}'.format(project,branch),
+			url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
 			successFn: function (data) {
-				location = 'gui/validation_stamp/{0}/{1}/{2}'.format(project,branch,data.name);
+				location = 'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(project,branch,data.name);
 			}
 		});
 	}
 	
 	function deleteValidationStamp(project, branch, name) {
-		Application.deleteEntity('validation_stamp/{0}/{1}'.format(project,branch), name, '');
+		Application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project,branch), name, '');
 	}
 
 	function validationStampImage (project, branch, stamp) {
-	    return '<img width="24" title="{2}" src="gui/validation_stamp/{0}/{1}/{2}/image" />'.format(
+	    return '<img width="24" title="{2}" src="gui/project/{0}/branch/{1}/validation_stamp/{2}/image" />'.format(
                					project.html(),
                					branch.html(),
                					stamp.name.html()
@@ -25,11 +25,11 @@ var ValidationStamps = function () {
 	
 	function validationStampTemplate (project, branch) {
 	    return Template.config({
-	        url: 'ui/manage/validation_stamp/{0}/{1}/all'.format(project,branch),
+	        url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
 	        render: Template.asTable(function (stamp) {
                 var html = '';
                 html += validationStampImage (project, branch, stamp);
-                html += ' <a href="gui/validation_stamp/{0}/{1}/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
+                html += ' <a href="gui/project/{0}/branch/{1}/validation_stamp/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 return html;
 	        })
 	    });
