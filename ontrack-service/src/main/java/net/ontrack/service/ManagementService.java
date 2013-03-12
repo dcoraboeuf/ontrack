@@ -13,7 +13,7 @@ public interface ManagementService {
 
 	ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form);
 
-	List getProjectGroupList();
+	List<ProjectGroupSummary> getProjectGroupList();
 	
 	// Projects
 

@@ -13,12 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
 
-    private final Pattern numeric = Pattern.compile("[0-9]+");
     private final ManagementService managementService;
 
     @Autowired
@@ -69,10 +67,6 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     ProjectSummary getProject(@PathVariable String name) {
         return managementService.getProject(entityConverter.getProjectId(name));
-    }
-
-    protected boolean isNumeric(String value) {
-        return numeric.matcher(value).matches();
     }
 
     @Override
