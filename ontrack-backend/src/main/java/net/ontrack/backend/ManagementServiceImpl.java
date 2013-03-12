@@ -52,12 +52,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     getLastValidationRunStatus(id));
         }
     };
-    protected final RowMapper<ValidationRunStatusStub> validationRunStatusStubMapper = new RowMapper<ValidationRunStatusStub>() {
-        @Override
-        public ValidationRunStatusStub mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new ValidationRunStatusStub(rs.getInt("id"), SQLUtils.getEnum(Status.class, rs, "status"), rs.getString("description"));
-        }
-    };
     protected final RowMapper<PromotedRunSummary> promotedRunSummaryRowMapper = new RowMapper<PromotedRunSummary>() {
         @Override
         public PromotedRunSummary mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -76,6 +70,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationStampDao validationStampDao;
     private final PromotionLevelDao promotionLevelDao;
     private final BuildDao buildDao;
+    private final ValidationRunStatusDao validationRunStatusDao;
 
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
@@ -120,7 +115,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, ValidationRunStatusDao validationRunStatusDao) {
         super(dataSource, validator, auditService);
         this.securityUtils = securityUtils;
         this.projectGroupDao = projectGroupDao;
@@ -129,6 +124,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationStampDao = validationStampDao;
         this.promotionLevelDao = promotionLevelDao;
         this.buildDao = buildDao;
+        this.validationRunStatusDao = validationRunStatusDao;
     }
 
     // Branches
@@ -627,13 +623,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Author
         Signature signature = securityUtils.getCurrentSignature();
         // Creation
-        int id = dbCreate(SQL.VALIDATION_RUN_STATUS_CREATE,
-                MapBuilder.params("validationRun", validationRun)
-                        .with("status", validationRunStatus.getStatus().name())
-                        .with("description", validationRunStatus.getDescription())
-                        .with("author", signature.getName())
-                        .with("authorId", signature.getId())
-                        .with("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())).get());
+        int id = validationRunStatusDao.createValidationRunStatus(
+                validationRun,
+                validationRunStatus.getStatus(),
+                validationRunStatus.getDescription(),
+                signature.getName(),
+                signature.getId()
+        );
         // Generates an event for the status
         // Only when additional run
         if (!initialStatus) {
@@ -653,10 +649,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     public ValidationRunStatusStub getLastValidationRunStatus(int validationRunId) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.VALIDATION_RUN_STATUS_LAST,
-                params("id", validationRunId),
-                validationRunStatusStubMapper);
+        TValidationRunStatus t = validationRunStatusDao.findLastForValidationRun(validationRunId);
+        return new ValidationRunStatusStub(
+                t.getId(),
+                t.getStatus(),
+                t.getDescription()
+        );
     }
 
     // Promoted runs
