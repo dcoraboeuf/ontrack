@@ -18,7 +18,7 @@ public class DefaultControlUIClient extends AbstractClient implements ControlUIC
 
     @Override
     public ValidationRunSummary createValidationRun(String project, String branch, String build, String validationStamp, ValidationRunCreationForm validationRun) {
-        return post(format("/ui/control/project/%s/branch/%s/build/%s/validation_stamp/%s", project, branch, validationStamp, build), ValidationRunSummary.class, validationRun);
+        return post(format("/ui/control/project/%s/branch/%s/build/%s/validation_stamp/%s", project, branch, build, validationStamp), ValidationRunSummary.class, validationRun);
     }
 
     @Override
