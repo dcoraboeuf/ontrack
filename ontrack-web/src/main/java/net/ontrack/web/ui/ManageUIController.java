@@ -62,7 +62,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     ProjectSummary getProject(@PathVariable String name) {
@@ -70,7 +70,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/ui/manage/project/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody
     Ack deleteProject(@PathVariable String name) {
@@ -80,7 +80,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Branches
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch", method = RequestMethod.GET)
     public
     @ResponseBody
     List<BranchSummary> getBranchList(@PathVariable String project) {
@@ -89,7 +89,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     BranchSummary getBranch(@PathVariable String project, @PathVariable String name) {
@@ -98,7 +98,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch", method = RequestMethod.POST)
     public
     @ResponseBody
     BranchSummary createBranch(@PathVariable String project, @RequestBody BranchCreationForm form) {
@@ -107,7 +107,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody
     Ack deleteBranch(@PathVariable String project, @PathVariable String name) {
@@ -118,7 +118,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Validation stamps
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp", method = RequestMethod.GET)
     public
     @ResponseBody
     List<ValidationStampSummary> getValidationStampList(@PathVariable String project, @PathVariable String branch) {
@@ -127,7 +127,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     ValidationStampSummary getValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -136,7 +136,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp", method = RequestMethod.POST)
     public
     @ResponseBody
     ValidationStampSummary createValidationStamp(@PathVariable String project, @PathVariable String branch, @RequestBody ValidationStampCreationForm form) {
@@ -145,7 +145,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody
     Ack deleteValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -154,7 +154,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{name:[A-Za-z0-9_\\.]+}/image", method = RequestMethod.POST)
     public
     @ResponseBody
     Ack setImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
@@ -163,7 +163,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{name:[A-Za-z0-9_\\.]+}/image", method = RequestMethod.GET)
     public
     @ResponseBody
     byte[] imageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -174,7 +174,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Promotion levels
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level", method = RequestMethod.GET)
     public
     @ResponseBody
     List<PromotionLevelSummary> getPromotionLevelList(@PathVariable String project, @PathVariable String branch) {
@@ -183,7 +183,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     PromotionLevelSummary getPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -192,7 +192,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level", method = RequestMethod.POST)
     public
     @ResponseBody
     PromotionLevelSummary createPromotionLevel(@PathVariable String project, @PathVariable String branch, @RequestBody PromotionLevelCreationForm form) {
@@ -201,7 +201,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.POST)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{name:[A-Za-z0-9_\\.]+}/image", method = RequestMethod.POST)
     public
     @ResponseBody
     Ack setImagePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
@@ -210,7 +210,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{name:[A-Z0-9_\\.]+}/image", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{name:[A-Za-z0-9_\\.]+}/image", method = RequestMethod.GET)
     public
     @ResponseBody
     byte[] imagePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -219,7 +219,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\\.]+}/link/{promotionLevel:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.]+}/link/{promotionLevel:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     Ack linkValidationStampToPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @PathVariable String promotionLevel) {
@@ -229,7 +229,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\\.]+}/unlink", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.]+}/unlink", method = RequestMethod.GET)
     public
     @ResponseBody
     Ack unlinkValidationStampToPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
@@ -238,19 +238,19 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Z0-9_\\.]+}/up", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.]+}/up", method = RequestMethod.GET)
     public @ResponseBody Ack upPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.upPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Z0-9_\\.]+}/down", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.]+}/down", method = RequestMethod.GET)
     public @ResponseBody Ack downPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.downPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/promotion_level_manage", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level_manage", method = RequestMethod.GET)
     public @ResponseBody PromotionLevelManagementData getPromotionLevelManagementData(@PathVariable String project, @PathVariable String branch) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.getPromotionLevelManagementData(branchId);
@@ -259,7 +259,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Builds
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build", method = RequestMethod.GET)
     public
     @ResponseBody
     BranchBuilds getBuildList(Locale locale, @PathVariable String project, @PathVariable String branch,
@@ -270,7 +270,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{name:[A-Z0-9_\\.]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{name:[A-Za-z0-9_\\.]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     BuildSummary getBuild(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -279,7 +279,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{name:[A-Z0-9_\\.]+}/validationStamps", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{name:[A-Za-z0-9_\\.]+}/validationStamps", method = RequestMethod.GET)
     public
     @ResponseBody
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -288,7 +288,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{name:[A-Z0-9_\\.]+}/promotionLevels", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{name:[A-Za-z0-9_\\.]+}/promotionLevels", method = RequestMethod.GET)
     public
     @ResponseBody
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
@@ -299,7 +299,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Validation runs
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Z0-9_\\.]+}/branch/{branch:[A-Z0-9_\\.]+}/build/{build:[A-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\\.]+}/validation_run/{run:[0-9]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{build:[A-ZA-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.]+}/validation_run/{run:[0-9]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     ValidationRunSummary getValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {

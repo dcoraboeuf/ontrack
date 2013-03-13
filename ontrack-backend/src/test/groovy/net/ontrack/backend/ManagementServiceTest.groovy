@@ -84,7 +84,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 
     @Test
     void createProject_name_format() {
-        validateNOK(""" - Name: must match "[A-Z0-9_.]*"\n""") {
+        validateNOK(""" - Name: must match "[A-Za-z0-9_.]*"\n""") {
             service.createProject(new ProjectCreationForm("Project1", "My description"))
         }
     }

@@ -25,7 +25,6 @@ var Builds = function () {
         } else {
             $.each(buildValidationStamp.runs, function (index, run) {
                 html += ' <p class="validation-run status-{0}">'.format(run.status);
-                // /gui/project/{project:[A-Z0-9_\.]+}/branch/{branch:[A-Z0-9_\.]+}/build/{build:[A-Za-z0-9_\.]+}/validation_stamp/{validationStamp:[A-Z0-9_\.]+}/validation_run/{run:[0-9]+}
                 html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
                     .format(
                         project.html(), // 0
