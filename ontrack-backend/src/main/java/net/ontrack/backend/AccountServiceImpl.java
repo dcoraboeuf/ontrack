@@ -30,14 +30,18 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     private final Function<TAccount, Account> accountFunction = new Function<TAccount, Account>() {
         @Override
         public Account apply(TAccount t) {
-            return new Account(
-                    t.getId(),
-                    t.getName(),
-                    t.getFullName(),
-                    t.getEmail(),
-                    t.getRoleName(),
-                    t.getMode()
-            );
+            if (t == null) {
+                return null;
+            } else {
+                return new Account(
+                        t.getId(),
+                        t.getName(),
+                        t.getFullName(),
+                        t.getEmail(),
+                        t.getRoleName(),
+                        t.getMode()
+                );
+            }
         }
     };
 
