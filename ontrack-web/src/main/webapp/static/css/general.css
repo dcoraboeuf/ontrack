@@ -118,6 +118,11 @@
     padding-left: 1em;
 }
 
+.status-FIXED {
+    border-left: solid 0.5em #CCED47;
+    padding-left: 1em;
+}
+
 .status-DEFECTIVE {
     border-left: solid 0.5em #FA8219;
     padding-left: 1em;
