@@ -13,13 +13,12 @@ import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.MultiLocalizable;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.*;
 
-public abstract class AbstractServiceImpl extends NamedParameterJdbcDaoSupport {
+public abstract class AbstractServiceImpl {
 
     private final Validator validator;
     private final EventService eventService;
