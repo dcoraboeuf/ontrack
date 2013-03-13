@@ -20,7 +20,7 @@ var Builds = function () {
                     run.statusDescription.html() // 8
                 );
             } else {
-                html += '<img class="tooltip-source" width="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
+                html += '<img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
             }
         } else {
             $.each(buildValidationStamp.runs, function (index, run) {
