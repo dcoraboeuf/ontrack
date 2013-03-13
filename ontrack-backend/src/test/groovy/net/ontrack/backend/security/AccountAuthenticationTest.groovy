@@ -8,7 +8,7 @@ class AccountAuthenticationTest {
 
     @Test
     void admin () {
-        Account account = new Account(1, 'admin', 'Administrator', 'ROLE_ADMIN', 'builtin')
+        Account account = new Account(1, 'admin', 'Administrator', 'admin@ontrack.net', 'ROLE_ADMIN', 'builtin')
         AccountAuthentication a = new AccountAuthentication(account)
         assert account == a.details
         assert a.authenticated

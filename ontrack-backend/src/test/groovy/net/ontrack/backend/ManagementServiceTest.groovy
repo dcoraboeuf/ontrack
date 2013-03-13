@@ -25,7 +25,7 @@ class ManagementServiceTest extends AbstractValidationTest {
 
     @Before
     public void asAdmin() {
-        def authentication = new AccountAuthentication(new Account(1, "admin", "Administrator", SecurityRoles.ADMINISTRATOR, "builtin"))
+        def authentication = new AccountAuthentication(new Account(1, "admin", "Administrator", "admin@ontrack.net", SecurityRoles.ADMINISTRATOR, "builtin"))
         def securityContext = mock(SecurityContext)
         when(securityContext.getAuthentication()).thenReturn(authentication)
         SecurityContextHolder.setContext(securityContext)
@@ -130,7 +130,7 @@ class ManagementServiceTest extends AbstractValidationTest {
     @Test
     void getBranchList() {
         def branches = service.getBranchList(1)
-        assert branches != null && branches.size == 2
+        assert branches != null && branches.size() == 2
         assert ["BRANCH1", "BRANCH2"] == branches*.name
         assert ["Project 1 branch 1", "Project 1 branch 2"] == branches*.description
         assert ["PROJECT1", "PROJECT1"] == branches*.project*.name
