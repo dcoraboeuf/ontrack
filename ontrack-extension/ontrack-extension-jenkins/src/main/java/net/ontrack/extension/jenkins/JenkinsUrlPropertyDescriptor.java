@@ -31,7 +31,7 @@ public class JenkinsUrlPropertyDescriptor extends AbstractPropertyExtensionDescr
      */
     @Override
     public String toHTML(String value) {
-        return String.format("<img src=\"jenkins\" /> <a href=\"%1$s\">%1$s</a>",
+        return String.format("<img src=\"extension/jenkins.png\" /> <a href=\"%1$s\">%1$s</a>",
                 value);
     }
 }

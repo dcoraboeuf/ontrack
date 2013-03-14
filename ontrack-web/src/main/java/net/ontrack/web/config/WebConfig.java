@@ -88,6 +88,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		String version = env.getProperty("app.version");
 		registry.addResourceHandler(String.format("/resources/v%s/**", version)).addResourceLocations("/static/");
+        registry.addResourceHandler("/extension/**").addResourceLocations("classpath:/META-INF/extension/");
 	}
 
 	@Override
