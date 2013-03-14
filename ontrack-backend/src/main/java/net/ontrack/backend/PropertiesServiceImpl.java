@@ -1,15 +1,21 @@
 package net.ontrack.backend;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.PropertyDao;
+import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
+import net.ontrack.core.model.PropertyValue;
 import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.PropertyExtensionManager;
 import net.ontrack.service.PropertiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class PropertiesServiceImpl implements PropertiesService {
@@ -21,6 +27,31 @@ public class PropertiesServiceImpl implements PropertiesService {
     public PropertiesServiceImpl(PropertyExtensionManager propertyExtensionManager, PropertyDao propertyDao) {
         this.propertyExtensionManager = propertyExtensionManager;
         this.propertyDao = propertyDao;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PropertyValue> getPropertyValues(Entity entity, int entityId) {
+        return Lists.transform(
+                propertyDao.findAll(entity, entityId),
+                new Function<TProperty, PropertyValue>() {
+                    @Override
+                    public PropertyValue apply(TProperty p) {
+                        return new PropertyValue(
+                                p.getExtension(),
+                                p.getName(),
+                                p.getValue()
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getPropertyValue(Entity entity, int entityId, String extension, String name) {
+        TProperty p = propertyDao.findByExtensionAndName(entity, entityId, extension, name);
+        return p != null ? p.getValue() : null;
     }
 
     @Override
