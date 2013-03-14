@@ -1,13 +1,17 @@
 package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.extension.api.support.AbstractPropertyExtensionDescriptor;
+import net.ontrack.extension.api.support.AbstractLinkPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
 
 @Component
-public class JenkinsUrlPropertyDescriptor extends AbstractPropertyExtensionDescriptor {
+public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionDescriptor {
+
+    public JenkinsUrlPropertyDescriptor() {
+        super("jenkins.url", "jenkins.png");
+    }
 
     @Override
     public EnumSet<Entity> getScope() {
@@ -22,16 +26,5 @@ public class JenkinsUrlPropertyDescriptor extends AbstractPropertyExtensionDescr
     @Override
     public String getName() {
         return "url";
-    }
-
-    /**
-     * Renders a link, prefixed with an icon
-     * @param value Value to render (link)
-     * @return Image + Link
-     */
-    @Override
-    public String toHTML(String value) {
-        return String.format("<img src=\"extension/jenkins.png\" /> <a href=\"%1$s\">%1$s</a>",
-                value);
     }
 }

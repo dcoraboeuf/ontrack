@@ -2,8 +2,10 @@ package net.ontrack.extension.api;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.InputException;
+import net.sf.jstring.Strings;
 
 import java.util.EnumSet;
+import java.util.Locale;
 
 public interface PropertyExtensionDescriptor {
 
@@ -39,8 +41,10 @@ public interface PropertyExtensionDescriptor {
     /**
      * Given a value, renders it as HTML.
      *
+     * @param strings Localization
+     * @param locale Locale to render into
      * @param value Value to render
      * @return HTML to display
      */
-    String toHTML(String value);
+    String toHTML(Strings strings, Locale locale, String value);
 }

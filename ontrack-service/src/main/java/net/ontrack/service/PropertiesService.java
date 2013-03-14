@@ -3,8 +3,10 @@ package net.ontrack.service;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyValue;
+import net.sf.jstring.Strings;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface PropertiesService {
 
@@ -17,5 +19,5 @@ public interface PropertiesService {
     /**
      * Renders HTML for a property value
      */
-    String toHTML(String extension, String name, String value);
+    String toHTML(Strings strings, Locale locale, String extension, String name, String value);
 }

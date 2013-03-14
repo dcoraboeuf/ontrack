@@ -12,12 +12,14 @@ import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.PropertyExtensionManager;
 import net.ontrack.extension.api.PropertyExtensionNotFoundException;
 import net.ontrack.service.PropertiesService;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class PropertiesServiceImpl implements PropertiesService {
@@ -57,10 +59,10 @@ public class PropertiesServiceImpl implements PropertiesService {
     }
 
     @Override
-    public String toHTML(String extension, String name, String value) {
+    public String toHTML(Strings strings, Locale locale, String extension, String name, String value) {
         try {
             PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
-            return descriptor.toHTML(value);
+            return descriptor.toHTML(strings, locale, value);
         } catch (PropertyExtensionNotFoundException e) {
             return StringEscapeUtils.escapeHtml4(value);
         }

@@ -112,7 +112,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         variables.put("modelStatusList", new FnModelStatusList());
         // Properties
-        variables.put("propertyDisplay", new FnPropertyDisplay(propertiesService));
+        variables.put("propertyDisplay", new FnPropertyDisplay(strings(), propertiesService));
         // OK
         c.setFreemarkerVariables(variables);
 		// OK
