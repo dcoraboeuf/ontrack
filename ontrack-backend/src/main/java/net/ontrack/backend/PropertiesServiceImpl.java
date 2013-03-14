@@ -31,7 +31,7 @@ public class PropertiesServiceImpl implements PropertiesService {
             // Gets the property extension descriptor
             PropertyExtensionDescriptor propertyExtensionDescriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
             // Checks the entity scope
-            if (propertyExtensionDescriptor.getScope().contains(entity)) {
+            if (!propertyExtensionDescriptor.getScope().contains(entity)) {
                 throw new PropertyScopeException(extension, name, entity);
             }
             // Validates the value
