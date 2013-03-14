@@ -1,5 +1,6 @@
 package net.ontrack.backend;
 
+import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
@@ -14,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PropertiesServiceImpl implements PropertiesService {
 
     private final PropertyExtensionManager propertyExtensionManager;
+    private final PropertyDao propertyDao;
 
     @Autowired
-    public PropertiesServiceImpl(PropertyExtensionManager propertyExtensionManager) {
+    public PropertiesServiceImpl(PropertyExtensionManager propertyExtensionManager, PropertyDao propertyDao) {
         this.propertyExtensionManager = propertyExtensionManager;
+        this.propertyDao = propertyDao;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class PropertiesServiceImpl implements PropertiesService {
             // Validates the value
             propertyExtensionDescriptor.validate(value);
             // Saves the value
-            // FIXME Uses a DAO
+            propertyDao.saveProperty(entity, entityId, extension, name, value);
         }
     }
 

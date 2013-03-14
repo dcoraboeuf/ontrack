@@ -138,4 +138,9 @@ public interface SQL {
 
     String COMMENT_CREATE = "INSERT INTO COMMENT (%s, CONTENT, AUTHOR, AUTHOR_ID, COMMENT_TIMESTAMP) VALUES (:id, :content, :author, :author_id, :comment_timestamp)";
 
+    // Properties
+
+    String PROPERTY_DELETE = "DELETE FROM PROPERTIES WHERE %s = :entityId AND EXTENSION = :extension AND NAME = :name";
+
+    String PROPERTY_INSERT = "INSERT INTO PROPERTIES (EXTENSION, NAME, VALUE, %s) VALUES (:extension, :name, :value, :entityId)";
 }
