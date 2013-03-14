@@ -127,3 +127,11 @@
     border-left: solid 0.5em #FA8219;
     padding-left: 1em;
 }
+
+/* Properties display */
+
+ul.properties {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}

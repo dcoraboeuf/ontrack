@@ -128,24 +128,43 @@ var Template = function () {
 			// Starts loading
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
-			// Call
-			Application.ajaxGet (
-				url,
-				function (data) {
-					// Loading done
-					Application.loading("#" + id + '-loading', false);
-					// Uses the data
-					// try {
-					    display(id, append, config, data);
-					    // Management of the 'more'
-					    moreStatus(id, config, data);
-					// } catch (message) {
-				    //     error(id, message);
-					// }
-				},
-				function (message) {
-				    error(id, message);
-				});
+	  		// Type: json
+	  		if ('json' == config.type) {
+                // Call
+                Application.ajaxGet (
+                    url,
+                    function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Uses the data
+                        // try {
+                            display(id, append, config, data);
+                            // Management of the 'more'
+                            moreStatus(id, config, data);
+                        // } catch (message) {
+                        //     error(id, message);
+                        // }
+                    },
+                    function (message) {
+                        error(id, message);
+                    });
+            } else if ('html' == config.type) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Loads the HTML
+                        $('#' + id + '-list').html(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
+                    }
+                });
+            } else {
+                throw 'Type "{0}" is not supported for templating'.format(config.type);
+            }
 		} else {
 		    throw 'No "url" is defined for dynamic section "{0}"'.format(id);
 		}
@@ -173,6 +192,7 @@ var Template = function () {
             offset: 0,
             count: 10,
             more: false,
+            type: 'json',
             render: defaultRender,
             dataLength: function (data) {
                 return data.length;
