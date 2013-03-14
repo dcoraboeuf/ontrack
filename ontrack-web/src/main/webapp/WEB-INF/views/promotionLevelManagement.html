@@ -7,7 +7,7 @@
     </span>
 </#macro>
 
-<@layout_std page="promotion-level-management" script=true style=true title=loc('branch.promotion_levels') modules=["audit","projects","branches","builds","validation_stamps","promotion_levels"] breadcrumbs = {loc("home"): "", management.branch.project.name?html: "gui/project/${management.branch.project.name?html}", management.branch.name?html: "gui/branch/${management.branch.project.name?html}/${management.branch.name?html}"}>
+<@layout_std page="promotion-level-management" script=true style=true title=loc('branch.promotion_levels') modules=["audit","projects","branches","builds","validation_stamps","promotion_levels"] breadcrumbs = {loc("home"): "", management.branch.project.name?html: "gui/project/${management.branch.project.name?html}", management.branch.name?html: "gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
