@@ -35,4 +35,12 @@ public interface PropertyExtensionDescriptor {
      * @return Property name
      */
     String getName();
+
+    /**
+     * Given a value, renders it as HTML.
+     *
+     * @param value Value to render
+     * @return HTML to display
+     */
+    String toHTML(String value);
 }

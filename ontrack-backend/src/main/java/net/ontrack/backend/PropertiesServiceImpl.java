@@ -10,7 +10,9 @@ import net.ontrack.core.model.PropertyCreationForm;
 import net.ontrack.core.model.PropertyValue;
 import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.PropertyExtensionManager;
+import net.ontrack.extension.api.PropertyExtensionNotFoundException;
 import net.ontrack.service.PropertiesService;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,16 @@ public class PropertiesServiceImpl implements PropertiesService {
     public String getPropertyValue(Entity entity, int entityId, String extension, String name) {
         TProperty p = propertyDao.findByExtensionAndName(entity, entityId, extension, name);
         return p != null ? p.getValue() : null;
+    }
+
+    @Override
+    public String toHTML(String extension, String name, String value) {
+        try {
+            PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+            return descriptor.toHTML(value);
+        } catch (PropertyExtensionNotFoundException e) {
+            return StringEscapeUtils.escapeHtml4(value);
+        }
     }
 
     @Override

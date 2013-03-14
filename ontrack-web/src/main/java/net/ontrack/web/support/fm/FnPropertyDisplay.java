@@ -2,7 +2,6 @@ package net.ontrack.web.support.fm;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
-import net.ontrack.core.model.Entity;
 import net.ontrack.service.PropertiesService;
 import org.apache.commons.lang3.Validate;
 
@@ -20,11 +19,12 @@ public class FnPropertyDisplay implements TemplateMethodModel {
     public Object exec(@SuppressWarnings("rawtypes") List list) throws TemplateModelException {
         // Checks
         Validate.notNull(list, "List of arguments is required");
-        Validate.isTrue(list.size() == 2, "List of arguments must contain 2 elements");
+        Validate.isTrue(list.size() == 3, "List of arguments must contain 3 elements");
         // Input
-        Entity entity = Entity.valueOf((String) list.get(0));
-        int entityId = Integer.parseInt((String) list.get(1), 10);
-        // List of values
-        return propertiesService.getPropertyValues(entity, entityId);
+        String extension = (String) list.get(0);
+        String name = (String) list.get(1);
+        String value = (String) list.get(2);
+        // Rendering
+        return propertiesService.toHTML(extension, name, value);
     }
 }

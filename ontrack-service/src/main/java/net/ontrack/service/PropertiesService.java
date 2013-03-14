@@ -13,4 +13,9 @@ public interface PropertiesService {
     List<PropertyValue> getPropertyValues(Entity entity, int entityId);
 
     String getPropertyValue(Entity entity, int entityId, String extension, String name);
+
+    /**
+     * Renders HTML for a property value
+     */
+    String toHTML(String extension, String name, String value);
 }

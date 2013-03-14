@@ -23,4 +23,15 @@ public class JenkinsUrlPropertyDescriptor extends AbstractPropertyExtensionDescr
     public String getName() {
         return "url";
     }
+
+    /**
+     * Renders a link, prefixed with an icon
+     * @param value Value to render (link)
+     * @return Image + Link
+     */
+    @Override
+    public String toHTML(String value) {
+        return String.format("<img src=\"jenkins\" /> <a href=\"%1$s\">%1$s</a>",
+                value);
+    }
 }
