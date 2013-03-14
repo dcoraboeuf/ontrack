@@ -1,0 +1,9 @@
+<dataset>
+
+    <PROJECT id="1" name="PROJ1" description="Project 1" />
+
+    <BRANCH id="1" project="1" name="BRANCH1" description="Branch 1" />
+
+    <BUILD id="1" branch="1" name="1" description="Build 1" />
+
+</dataset>

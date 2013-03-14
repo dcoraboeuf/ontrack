@@ -26,3 +26,6 @@ net.ontrack.backend.ImageTooBigException
 net.ontrack.backend.ImageCannotReadException
     en -> Cannot read image content.
     fr -> Impossible de lire le contenu de l'image.
+net.ontrack.backend.PropertyScopeException
+    en -> Property {0}.{1} cannot be applied to {2}.
+    fr -> La propriété {0}.{1} n'est pas applicable à {2}.
