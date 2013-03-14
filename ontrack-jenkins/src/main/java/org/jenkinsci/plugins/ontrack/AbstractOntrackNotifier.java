@@ -16,6 +16,16 @@ public abstract class AbstractOntrackNotifier extends Notifier {
 
     public static final String REGEX_ENV_VARIABLE = "\\$\\{([a-zA-Z0-9_]+)\\}";
 
+    /**
+     * Name of the 'jenkins' extension for ontrack
+     */
+    public static final String EXTENSION_JENKINS = "jenkins";
+
+    /**
+     * Name of the 'url' property for the 'jenkins' extension in ontrack
+     */
+    public static final String PROPERTY_URL = "url";
+
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
     }

@@ -8,5 +8,6 @@ public class BuildCreationForm implements NameDescription {
 	
 	private final String name;
 	private final String description;
+    private final PropertiesCreationForm properties;
 
 }
