@@ -1,0 +1,7 @@
+<ul class="properties">
+    <#list properties as property>
+        <li>
+            ${property.extension?html}: ${property.name?html}: ${property.value?html}
+        </li>
+    </#list>
+</ul>
