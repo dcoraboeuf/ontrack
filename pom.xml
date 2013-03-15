@@ -52,6 +52,8 @@
         <module>ontrack-testutils</module>
         <module>ontrack-jenkins</module>
         <module>ontrack-client</module>
+        <module>ontrack-extension-api</module>
+        <module>ontrack-extension</module>
     </modules>
 
 	<dependencyManagement>

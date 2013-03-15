@@ -9,6 +9,7 @@ import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
+import net.ontrack.service.PropertiesService;
 import net.ontrack.service.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -22,14 +23,16 @@ import javax.validation.Validator;
 public class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 
     private final ManagementService managementService;
+    private final PropertiesService propertiesService;
     private final BuildDao buildDao;
     private final ValidationRunDao validationRunDao;
     private final PromotedRunDao promotedRunDao;
 
     @Autowired
-    public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
+    public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
         super(validator, auditService);
         this.managementService = managementService;
+        this.propertiesService = propertiesService;
         this.buildDao = buildDao;
         this.validationRunDao = validationRunDao;
         this.promotedRunDao = promotedRunDao;
@@ -43,6 +46,8 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         validate(form, NameDescription.class);
         // Query
         int id = buildDao.createBuild(branch, form.getName(), form.getDescription());
+        // Associated properties
+        propertiesService.createProperties(Entity.BUILD, id, form.getProperties());
         // Branch summary
         BranchSummary theBranch = managementService.getBranch(branch);
         // Audit

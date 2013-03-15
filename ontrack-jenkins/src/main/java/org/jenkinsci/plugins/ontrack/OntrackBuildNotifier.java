@@ -8,8 +8,11 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import jenkins.model.Jenkins;
 import net.ontrack.core.model.BuildCreationForm;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.PropertiesCreationForm;
+import net.ontrack.core.model.PropertyCreationForm;
 import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -55,10 +58,25 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
             final String buildDescription = String.format("Build %s", theBuild);
             // Logging of parameters
             listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
+            // URL for this build
+            final String url = Jenkins.getInstance().getRootUrl() + theBuild.getUrl();
             // Calling ontrack UI
             BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
                 public BuildSummary onCall(ControlUI ui) {
-                    return ui.createBuild(projectName, branchName, new BuildCreationForm(buildName, buildDescription));
+                    return ui.createBuild(
+                            projectName,
+                            branchName,
+                            new BuildCreationForm(
+                                    buildName,
+                                    buildDescription,
+                                    PropertiesCreationForm.create().with(
+                                            new PropertyCreationForm(
+                                                    EXTENSION_JENKINS, // Jenkins extension
+                                                    PROPERTY_URL, // Jenkins related URL
+                                                    url // URL to this build
+                                            )
+                                    )
+                                    ));
                 }
             });
         }

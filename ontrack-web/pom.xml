@@ -17,11 +17,11 @@
 	
 	<dependencies>
 		<!-- This -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ontrack-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ontrack-backend</artifactId>
@@ -101,6 +101,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+        <!-- Extensions -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-jenkins</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 		<!-- Testing -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>

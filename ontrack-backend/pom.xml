@@ -16,11 +16,16 @@
 	
 	<dependencies>
 		<!-- This -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ontrack-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -104,6 +109,12 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-jenkins</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>

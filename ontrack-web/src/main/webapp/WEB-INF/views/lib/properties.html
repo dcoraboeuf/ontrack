@@ -1,0 +1,6 @@
+<script type="text/javascript" src="${base}/js/properties.js"></script>
+
+<#macro properties entity entityId id="properties">
+    <@dynamicsection id=id template="Properties.propertiesTemplate('${entity?html}',${entityId?c})">
+    </@dynamicsection>
+</#macro>
