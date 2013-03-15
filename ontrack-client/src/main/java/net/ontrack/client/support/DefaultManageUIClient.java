@@ -192,6 +192,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BranchBuilds queryBuilds(Locale locale, String project, String branch, BuildFilter filter) {
+        // TODO Locale management
+        return post(format("/ui/manage/project/%s/branch/%s/query", project, branch), BranchBuilds.class, filter);
+    }
+
+    @Override
     public BuildSummary getBuild(String project, String branch, String name) {
         return get(format("/ui/manage/project/%s/branch/%s/build/%s", project, branch, name), BuildSummary.class);
     }

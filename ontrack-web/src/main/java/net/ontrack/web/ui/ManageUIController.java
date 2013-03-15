@@ -239,19 +239,25 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.]+}/up", method = RequestMethod.GET)
-    public @ResponseBody Ack upPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+    public
+    @ResponseBody
+    Ack upPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.upPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.]+}/down", method = RequestMethod.GET)
-    public @ResponseBody Ack downPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+    public
+    @ResponseBody
+    Ack downPromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         return managementService.downPromotionLevel(entityConverter.getPromotionLevelId(project, branch, promotionLevel));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/promotion_level_manage", method = RequestMethod.GET)
-    public @ResponseBody PromotionLevelManagementData getPromotionLevelManagementData(@PathVariable String project, @PathVariable String branch) {
+    public
+    @ResponseBody
+    PromotionLevelManagementData getPromotionLevelManagementData(@PathVariable String project, @PathVariable String branch) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.getPromotionLevelManagementData(branchId);
     }
@@ -267,6 +273,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
                               @RequestParam(required = false, defaultValue = "10") int count) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.getBuildList(locale, branchId, offset, count);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/query", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    BranchBuilds queryBuilds(Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.queryBuilds(locale, branchId, filter);
     }
 
     @Override

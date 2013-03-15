@@ -75,6 +75,8 @@ public interface ManagementService {
 
     BranchBuilds getBuildList(Locale locale, int branchId, int offset, int count);
 
+    BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
+
 	BuildSummary getBuild(int buildId);
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, int buildId);

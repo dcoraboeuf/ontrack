@@ -80,6 +80,8 @@ public interface ManageUI {
 
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name);
 
+    BranchBuilds queryBuilds(Locale locale, String project, String branch, BuildFilter filter);
+
     // Validation runs
 
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);

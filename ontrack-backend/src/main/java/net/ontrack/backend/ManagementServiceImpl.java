@@ -449,30 +449,44 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public BranchBuilds getBuildList(final Locale locale, int branch, int offset, int count) {
+        return getBranchBuilds(locale, branch, buildDao.findByBranch(branch, offset, count));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BranchBuilds queryBuilds(final Locale locale, int branch, BuildFilter filter) {
+        return getBranchBuilds(locale, branch, buildDao.query(branch, filter));
+    }
+
+    private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
                 getValidationStampList(branch),
                 // Builds for the branch and their complete status
                 Lists.transform(
-                        buildDao.findByBranch(branch, offset, count),
-                        new Function<TBuild, BuildCompleteStatus>() {
-                            @Override
-                            public BuildCompleteStatus apply(TBuild t) {
-                                int buildId = t.getId();
-                                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
-                                List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
-                                DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
-                                return new BuildCompleteStatus(
-                                        buildId,
-                                        t.getName(),
-                                        t.getDescription(),
-                                        signature,
-                                        stamps,
-                                        promotionLevels);
-                            }
-                        }
+                        tlist,
+                        getBuildCompleteStatusFn(locale)
                 )
         );
+    }
+
+    private Function<TBuild, BuildCompleteStatus> getBuildCompleteStatusFn(final Locale locale) {
+        return new Function<TBuild, BuildCompleteStatus>() {
+            @Override
+            public BuildCompleteStatus apply(TBuild t) {
+                int buildId = t.getId();
+                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
+                List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
+                DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
+                return new BuildCompleteStatus(
+                        buildId,
+                        t.getName(),
+                        t.getDescription(),
+                        signature,
+                        stamps,
+                        promotionLevels);
+            }
+        };
     }
 
     // Validation runs
