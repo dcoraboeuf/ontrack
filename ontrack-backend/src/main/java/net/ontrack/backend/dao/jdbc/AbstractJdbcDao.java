@@ -28,6 +28,15 @@ public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
         }
     }
 
+    protected <T> T getFirstItem(String sql, MapSqlParameterSource criteria, RowMapper<T> rowMapper) {
+        List<T> items = getNamedParameterJdbcTemplate().query(sql, criteria, rowMapper);
+        if (items.isEmpty()) {
+            return null;
+        } else {
+            return items.get(0);
+        }
+    }
+
     protected Integer getInteger(ResultSet rs, String name) throws SQLException {
         int i = rs.getInt(name);
         if (rs.wasNull()) {

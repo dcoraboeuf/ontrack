@@ -147,4 +147,8 @@ public interface SQL {
     String PROPERTY_ALL = "SELECT * FROM PROPERTIES WHERE %s = :entityId";
 
     String PROPERTY_VALUE = "SELECT * FROM PROPERTIES WHERE %s = :entityId AND EXTENSION = :extension AND NAME = :name";
+    String BUILD_BY_PROMOTION_LEVEL = "SELECT B.* FROM BUILD B\n" +
+            "LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID\n" +
+            "LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL\n" +
+            "WHERE B.BRANCH = :branch";
 }

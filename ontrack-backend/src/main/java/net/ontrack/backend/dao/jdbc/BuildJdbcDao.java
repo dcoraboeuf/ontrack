@@ -59,17 +59,23 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Transactional(readOnly = true)
     public List<TBuild> query(int branch, BuildFilter filter) {
         // Query root
-        StringBuilder sql = new StringBuilder("SELECT B.* FROM BUILD B\n" +
-                "LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID\n" +
-                "LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL\n" +
-                "WHERE B.BRANCH = :branch");
+        StringBuilder sql = new StringBuilder(SQL.BUILD_BY_PROMOTION_LEVEL);
         MapSqlParameterSource params = new MapSqlParameterSource("branch", branch);
-        // TODO Since last promotion level
-        // With promotion level
-        String sincePromotionLevel = filter.getWithPromotionLevel();
+        // Since last promotion level
+        String sincePromotionLevel = filter.getSincePromotionLevel();
         if (StringUtils.isNotBlank(sincePromotionLevel)) {
-            sql.append(" AND PL.NAME = :sincePromotionLevel");
-            params.addValue("sincePromotionLevel", sincePromotionLevel);
+            // Gets the last build having this promotion level
+            TBuild build = getFindLastBuildWithPromotionLevel(branch, sincePromotionLevel);
+            if (build != null) {
+                sql.append(" AND B.ID <= :lastPromotedBuild");
+                params.addValue("lastPromotedBuild", build.getId());
+            }
+        }
+        // With promotion level
+        String withPromotionLevel = filter.getWithPromotionLevel();
+        if (StringUtils.isNotBlank(withPromotionLevel)) {
+            sql.append(" AND PL.NAME = :withPromotionLevel");
+            params.addValue("withPromotionLevel", withPromotionLevel);
         }
         // TODO Since validation stamp
         // TODO With validation stamp
@@ -82,6 +88,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         return getNamedParameterJdbcTemplate().query(
                 sql.toString(),
                 params,
+                buildRowMapper
+        );
+    }
+
+    // TODO Could be promoted up, up, up as a UI service
+    private TBuild getFindLastBuildWithPromotionLevel(int branch, String promotionLevel) {
+        return getFirstItem(
+                SQL.BUILD_BY_PROMOTION_LEVEL + " AND PL.NAME = :name",
+                params("branch", branch)
+                        .addValue("name", promotionLevel),
                 buildRowMapper
         );
     }
