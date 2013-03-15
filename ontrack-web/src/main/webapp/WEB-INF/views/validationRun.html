@@ -26,9 +26,8 @@
             </div>
             <div class="span12 muted">${validationRun.description?html}</div>
             <div class="span12">
-                <img src="${base}/images/status-${validationRun.validationRunStatus.status}.png" />
-                ${validationRun.validationRunStatus.status}
-                ${validationRun.validationRunStatus.description?html}
+                <img id="current-status-img" src="${base}/images/status-${validationRun.validationRunStatus.status}.png" />
+                <span id="current-status-label">${validationRun.validationRunStatus.status}</span>
             </div>
         </div>
         <#if secLogged()>
@@ -37,15 +36,15 @@
                     <button class="btn btn-link" onclick="ValidationRun.updateStatus()"><i class="icon-comment"></i> <@lh key="validationRunStatus.new" /></button>
                     <@form id="status-form" class="x-dialog alert alert-info">
                         <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
-                        <@form_select name="status" label="">
-                        <@form_select_option value="" text=loc("validationRunStatus.status.none") />
-                            <#list modelStatusList() as status>
-                                <@form_select_option value=status text=status />
-                            </#list>
-                        </@form_select>
                         <div id="status-error" class="x-error alert alert-error"></div>
                         <@form_buttons>
-                            <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                            <!-- Comment -->
+                            <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="${base}/images/comment.png" /> <@lh key="validationRunStatus.status.none" /></button>
+                            <!-- Available statuses -->
+                            <#list validationRun.validationRunStatus.status.next as status>
+                                <button type="button" class="btn" onclick="ValidationRun.sendStatus('${status}')"><img src="${base}/images/status-${status}.png" /> ${status}</button>
+                            </#list>
+                            <!-- Cancel -->
                             <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()"><@lh key="general.cancel" /></button>
                         </@form_buttons>
                     </@form>

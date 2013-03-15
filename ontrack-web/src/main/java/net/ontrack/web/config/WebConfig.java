@@ -110,7 +110,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
-        variables.put("modelStatusList", new FnModelStatusList());
         // Properties
         variables.put("propertyDisplay", new FnPropertyDisplay(strings(), propertiesService));
         // OK

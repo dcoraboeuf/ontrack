@@ -390,6 +390,7 @@ var Application = function () {
 		loading: loading,
 		deleteEntity: deleteEntity,
 		ajaxGet: ajaxGet,
+		ajax: ajax,
 		tooltips: tooltips
 	};
 	
