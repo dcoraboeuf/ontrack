@@ -97,6 +97,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new WebInterceptor());
     }
 
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false).favorParameter(true);
+    }
+
     @Bean
     public FreeMarkerConfig freemarkerConfig() {
         FreeMarkerConfigurer c = new FreeMarkerConfigurer();
