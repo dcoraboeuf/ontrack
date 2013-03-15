@@ -327,6 +327,10 @@ branch.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
 
+branch.actions
+    en -> Branch actions
+    fr -> Actions sur la branche
+
 [validation_stamps]
 
 validation_stamp.empty
@@ -449,6 +453,14 @@ validationRunStatus.status.none
 validationRunStatus.description
     en -> Comment
     fr -> Commentaire
+
+[build.log]
+
+build.log
+    en -> Build log
+    fr -> Build log
+
+
 
 [events]
 

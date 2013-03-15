@@ -24,6 +24,13 @@
             </div>
         </div>
         <div class="row-fluid">
+            <div class="span12">
+                <@panel title=loc('branch.actions')>
+                    <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/query" class="btn"><@lh key="build.log" /></a>
+                </@panel>
+            </div>
+        </div>
+        <div class="row-fluid">
 			<div class="span3">
 				<@panel title=loc("branch.promotion_levels")>
                     <@promotion_levels project=branch.project.name branch=branch.name create=secAdmin() />
