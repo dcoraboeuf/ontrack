@@ -72,20 +72,22 @@ public class PropertiesServiceImpl implements PropertiesService {
     @Transactional
     public void createProperties(Entity entity, int entityId, PropertiesCreationForm properties) {
         // For all properties
-        for (PropertyCreationForm propertyCreationForm : properties.getList()) {
-            String extension = propertyCreationForm.getExtension();
-            String name = propertyCreationForm.getName();
-            String value = propertyCreationForm.getValue();
-            // Gets the property extension descriptor
-            PropertyExtensionDescriptor propertyExtensionDescriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
-            // Checks the entity scope
-            if (!propertyExtensionDescriptor.getScope().contains(entity)) {
-                throw new PropertyScopeException(extension, name, entity);
+        if (properties != null) {
+            for (PropertyCreationForm propertyCreationForm : properties.getList()) {
+                String extension = propertyCreationForm.getExtension();
+                String name = propertyCreationForm.getName();
+                String value = propertyCreationForm.getValue();
+                // Gets the property extension descriptor
+                PropertyExtensionDescriptor propertyExtensionDescriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+                // Checks the entity scope
+                if (!propertyExtensionDescriptor.getScope().contains(entity)) {
+                    throw new PropertyScopeException(extension, name, entity);
+                }
+                // Validates the value
+                propertyExtensionDescriptor.validate(value);
+                // Saves the value
+                propertyDao.saveProperty(entity, entityId, extension, name, value);
             }
-            // Validates the value
-            propertyExtensionDescriptor.validate(value);
-            // Saves the value
-            propertyDao.saveProperty(entity, entityId, extension, name, value);
         }
     }
 
