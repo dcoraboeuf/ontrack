@@ -134,8 +134,12 @@
     </@form_field>
 </#macro>
 
-<#macro form_select_option value text>
-    <option value="${value?html}">${text?html}</option>
+<#macro form_select_option value text selection="">
+    <#if value == selection>
+        <option value="${value?html}" selected="selected">${text?html}</option>
+    <#else>
+        <option value="${value?html}">${text?html}</option>
+    </#if>
 </#macro>
 
 <#macro form_checkbox name label idPrefix="" help="" checked=false>

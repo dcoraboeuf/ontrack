@@ -1,23 +1,23 @@
 <#include "/lib/layout.html">
 
-<#macro promotion_level_options>
+<#macro promotion_level_options selection>
     <@form_select_option value="" text="" />
     <#list promotionLevels as promotionLevel>
-        <@form_select_option value=promotionLevel.name text=promotionLevel.name />
+        <@form_select_option value=promotionLevel.name text=promotionLevel.name selection=selection />
     </#list>
 </#macro>
 
-<#macro validation_stamp_options>
+<#macro validation_stamp_options selection>
     <@form_select_option value="" text="" />
     <#list validationStamps as validationStamp>
-        <@form_select_option value=validationStamp.name text=validationStamp.name />
+        <@form_select_option value=validationStamp.name text=validationStamp.name selection=selection />
     </#list>
 </#macro>
 
-<#macro statuses>
+<#macro statuses selection>
     <@form_select_option value="" text="" />
     <#list statusList as status>
-        <@form_select_option value=status text=status />
+        <@form_select_option value=status text=status selection=selection />
     </#list>
 </#macro>
 
@@ -38,7 +38,7 @@
                                 <td>
                                     <@lh key="build.log.withPromotionLevel" />
                                     <select name="withPromotionLevel" class="input-small">
-                                        <@promotion_level_options />
+                                        <@promotion_level_options selection="${query.withPromotionLevel!''?html}" />
                                     </select>
                                 </td>
                             </tr>
@@ -46,7 +46,7 @@
                                 <td>
                                     <@lh key="build.log.sincePromotionLevel" />
                                     <select name="sincePromotionLevel" class="input-small">
-                                        <@promotion_level_options />
+                                        <@promotion_level_options selection="${query.sincePromotionLevel!''?html}" />
                                     </select>
                                 </td>
                             </tr>
@@ -54,11 +54,11 @@
                                 <td>
                                     <@lh key="build.log.withValidationStamp" />
                                     <select name="withValidationStamp" class="input-large">
-                                        <@validation_stamp_options />
+                                        <@validation_stamp_options selection="${query.withValidationStamp!''?html}" />
                                     </select>
                                     <@lh key="build.log.withValidationStamp.status" />
                                     <select name="withValidationStampStatus" class="input-medium">
-                                        <@statuses />
+                                        <@statuses selection="${query.withValidationStampStatus!''?html}" />
                                     </select>
                                 </td>
                             </tr>
@@ -66,18 +66,18 @@
                                 <td>
                                     <@lh key="build.log.sinceValidationStamp" />
                                     <select name="sinceValidationStamp" class="input-large">
-                                        <@validation_stamp_options />
+                                        <@validation_stamp_options selection="${query.sinceValidationStamp!''?html}" />
                                     </select>
                                     <@lh key="build.log.sinceValidationStamp.status" />
                                     <select name="sinceValidationStampStatus" class="input-medium">
-                                        <@statuses />
+                                        <@statuses selection="${query.sinceValidationStampStatus!''?html}" />
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <@lh key="build.log.limit" />
-                                    <input name="limit" type="number" class="input-mini" min="1" value="20" max="100" maxlength="3" />
+                                    <input name="limit" type="number" class="input-mini" min="1" value="${query.limit?c}" max="100" maxlength="3" />
                                 </td>
                             </tr>
                             <tr>

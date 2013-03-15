@@ -2,6 +2,7 @@ package net.ontrack.web.gui;
 
 import net.ontrack.core.model.Status;
 import net.ontrack.core.ui.ManageUI;
+import net.ontrack.web.gui.model.BuildLogForm;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,9 @@ public class BuildLogController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/query", method = RequestMethod.GET)
-    public String queryForm(@PathVariable String project, @PathVariable String branch, Model model) {
+    public String query(@PathVariable String project, @PathVariable String branch, BuildLogForm query, Model model) {
+
+
         // Branch summary
         model.addAttribute("branch", manageUI.getBranch(project, branch));
         // Gets the list of promotion levels
@@ -34,6 +37,13 @@ public class BuildLogController extends AbstractGUIController {
         model.addAttribute("validationStamps", manageUI.getValidationStampList(project, branch));
         // Gets the list of statuses
         model.addAttribute("statusList", Arrays.asList(Status.values()));
+
+        // Form data
+        if (query.getLimit() < 0) {
+            query.setLimit(20);
+        }
+        model.addAttribute("query", query);
+
         // OK
         return "query";
     }
