@@ -4,6 +4,8 @@ import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.model.TBuild;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.BuildFilter;
+import net.ontrack.core.model.BuildValidationStampFilter;
+import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,6 +17,9 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
+
+import static java.lang.String.format;
 
 @Component
 public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
@@ -59,7 +64,13 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Transactional(readOnly = true)
     public List<TBuild> query(int branch, BuildFilter filter) {
         // Query root
-        StringBuilder sql = new StringBuilder(SQL.BUILD_BY_PROMOTION_LEVEL);
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*), PL.NAME, VS.NAME, VRS.STATUS FROM BUILD B\n" +
+                "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID\n" +
+                "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL\n" +
+                "                LEFT JOIN VALIDATION_RUN VR ON VR.BUILD = B.ID\n" +
+                "                LEFT JOIN VALIDATION_STAMP VS ON VS.ID = VR.VALIDATION_STAMP\n" +
+                "                LEFT JOIN VALIDATION_RUN_STATUS VRS ON VRS.VALIDATION_RUN = VR.ID\n" +
+                "                WHERE B.BRANCH = :branch");
         MapSqlParameterSource params = new MapSqlParameterSource("branch", branch);
         // Since last promotion level
         String sincePromotionLevel = filter.getSincePromotionLevel();
@@ -78,7 +89,29 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
             params.addValue("withPromotionLevel", withPromotionLevel);
         }
         // TODO Since validation stamp
-        // TODO With validation stamp
+        // With validation stamp
+        List<BuildValidationStampFilter> withValidationStamps = filter.getWithValidationStamps();
+        if (withValidationStamps != null && !withValidationStamps.isEmpty()) {
+            int index = 0;
+            sql.append(" AND (");
+            for (BuildValidationStampFilter validationStamp : withValidationStamps) {
+                Set<Status> statuses = validationStamp.getStatuses();
+                if (statuses != null && !statuses.isEmpty()) {
+                    if (index > 0) {
+                        sql.append(" OR ");
+                    }
+                    // Validation stamp name
+                    sql.append(format("(VS.NAME = :withValidationStamp%d AND VRS.STATUS IN (%s))",
+                            index,
+                            getStatusesForSQLInClause(statuses)
+                            ));
+                    params.addValue(format("withValidationStamp%d", index), validationStamp.getValidationStamp());
+                    // Next
+                    index++;
+                }
+            }
+            sql.append(")");
+        }
         // Ordering
         sql.append(" ORDER BY B.ID DESC");
         // Limit

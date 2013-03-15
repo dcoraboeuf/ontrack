@@ -1,5 +1,9 @@
 package net.ontrack.backend.dao.jdbc;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import net.ontrack.core.model.Status;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,11 +13,19 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 // FIXME Caching
 
 public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
+
+    private final Function<Object, String> quoteFn = new Function<Object, String>() {
+        @Override
+        public String apply(Object o) {
+            return "'" + o + "'";
+        }
+    };
 
     public AbstractJdbcDao(DataSource dataSource) {
         setDataSource(dataSource);
@@ -61,6 +73,13 @@ public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
         } else {
             return list.get(0);
         }
+    }
+
+    protected String getStatusesForSQLInClause(Collection<Status> statuses) {
+        return StringUtils.join(
+                Collections2.transform(statuses, quoteFn),
+                ","
+        );
     }
 
     protected int dbCreate(String sql, MapSqlParameterSource params) {
