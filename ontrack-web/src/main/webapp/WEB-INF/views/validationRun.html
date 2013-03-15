@@ -25,6 +25,11 @@
                 </span>
             </div>
             <div class="span12 muted">${validationRun.description?html}</div>
+            <div class="span12">
+                <img src="${base}/images/status-${validationRun.validationRunStatus.status}.png" />
+                ${validationRun.validationRunStatus.status}
+                ${validationRun.validationRunStatus.description?html}
+            </div>
         </div>
         <#if secLogged()>
             <div class="row-fluid">
