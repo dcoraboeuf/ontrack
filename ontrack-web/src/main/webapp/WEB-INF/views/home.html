@@ -1,23 +1,18 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" modules=["projectgroups","projects","audit"]>
+<@layout_std page="home" modules=["projects","audit"]>
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<div class="span12">
-				<@audit />
-			</div>
-		</div>
-        <div class="row-fluid">
-            <div class="span6">
+            <div class="span3">
                 <@panel title=loc("home.projects")>
                     <@projects create=secAdmin() />
                 </@panel>
             </div>
-            <div class="span6">
-                <@panel title=loc("home.projectgroups")>
-                    <@projectgroups create=secAdmin() />
+			<div class="span9">
+                <@panel title=loc("event.list")>
+                    <@audit />
                 </@panel>
-            </div>
-        </div>
+			</div>
+		</div>
 	</div>
 </@layout_std>
