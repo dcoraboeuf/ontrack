@@ -1,5 +1,21 @@
 var Query = function () {
 
+    function clear () {
+        // Hides the error
+        $('#query-error').hide();
+        // Clears the hash
+        location.hash = '';
+        // Clears the form
+        $('#withPromotionLevel').val('');
+        $('#sincePromotionLevel').val('');
+        $('#withValidationStamp').val('');
+        $('#withValidationStampStatus').val('');
+        $('#sinceValidationStamp').val('');
+        $('#sinceValidationStampStatus').val('');
+        $('#limit').val('20');
+
+    }
+
     function adaptLocation (form) {
         // Form as parameters
         var params = $.param(form);
@@ -107,7 +123,8 @@ var Query = function () {
 
     return {
         init: init,
-        launch: launch
+        launch: launch,
+        clear: clear
     };
 
 } ();

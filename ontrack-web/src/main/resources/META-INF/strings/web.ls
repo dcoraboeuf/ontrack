@@ -464,6 +464,10 @@ query.submit
     en -> Search
     fr -> Rechercher
 
+query.clear
+    en -> Clear
+    fr -> Effacer
+
 query.limit
     en -> Limit
     fr -> Limite
