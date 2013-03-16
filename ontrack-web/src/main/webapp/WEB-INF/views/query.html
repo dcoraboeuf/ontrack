@@ -41,7 +41,7 @@
                             <tr>
                                 <td>
                                     <@lh key="query.withPromotionLevel" />
-                                    <select name="withPromotionLevel" class="input-small">
+                                    <select id="withPromotionLevel" name="withPromotionLevel" class="input-medium">
                                         <@promotion_level_options selection="${query.withPromotionLevel!''?html}" />
                                     </select>
                                 </td>
@@ -49,7 +49,7 @@
                             <tr>
                                 <td>
                                     <@lh key="query.sincePromotionLevel" />
-                                    <select name="sincePromotionLevel" class="input-small">
+                                    <select id="sincePromotionLevel" name="sincePromotionLevel" class="input-medium">
                                         <@promotion_level_options selection="${query.sincePromotionLevel!''?html}" />
                                     </select>
                                 </td>
@@ -57,11 +57,11 @@
                             <tr>
                                 <td>
                                     <@lh key="query.withValidationStamp" />
-                                    <select name="withValidationStamp" class="input-large">
+                                    <select id="withValidationStamp" name="withValidationStamp" class="input-large">
                                         <@validation_stamp_options selection="${query.withValidationStamp!''?html}" />
                                     </select>
                                     <@lh key="query.withValidationStamp.status" />
-                                    <select name="withValidationStampStatus" class="input-medium">
+                                    <select id="withValidationStampStatus" name="withValidationStampStatus" class="input-medium">
                                         <@statuses selection="${query.withValidationStampStatus!''?html}" />
                                     </select>
                                 </td>
@@ -69,11 +69,11 @@
                             <tr>
                                 <td>
                                     <@lh key="query.sinceValidationStamp" />
-                                    <select name="sinceValidationStamp" class="input-large">
+                                    <select id="sinceValidationStamp" name="sinceValidationStamp" class="input-large">
                                         <@validation_stamp_options selection="${query.sinceValidationStamp!''?html}" />
                                     </select>
                                     <@lh key="query.sinceValidationStamp.status" />
-                                    <select name="sinceValidationStampStatus" class="input-medium">
+                                    <select id="sinceValidationStampStatus" name="sinceValidationStampStatus" class="input-medium">
                                         <@statuses selection="${query.sinceValidationStampStatus!''?html}" />
                                     </select>
                                 </td>
@@ -81,7 +81,7 @@
                             <tr>
                                 <td>
                                     <@lh key="query.limit" />
-                                    <input name="limit" type="number" class="input-mini" min="1" value="${query.limit?c}" max="100" maxlength="3" />
+                                    <input id="limit" name="limit" type="number" class="input-mini" min="1" value="${query.limit?c}" max="100" maxlength="3" />
                                 </td>
                             </tr>
                             <tr>

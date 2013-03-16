@@ -73,6 +73,24 @@ var Query = function () {
         return false;
     }
 
+    function load () {
+        var hash = location.hash;
+        if (hash && hash != '' && hash != '#') {
+            // Parses the hash (starts with the
+            var form = $.deparam(hash.substring(1));
+            // Initializes the form
+            $('#withPromotionLevel').val(form.withPromotionLevel);
+            $('#sincePromotionLevel').val(form.sincePromotionLevel);
+            $('#withValidationStamp').val(form.withValidationStamp);
+            $('#withValidationStampStatus').val(form.withValidationStampStatus);
+            $('#sinceValidationStamp').val(form.sinceValidationStamp);
+            $('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
+            $('#limit').val(form.limit);
+            // Launches the search
+            launch();
+        }
+    }
+
     /**
      * Initialization of the page
      */
@@ -83,7 +101,8 @@ var Query = function () {
         $('#query-result').hide();
         // Hides the error
         $('#query-error').hide();
-        // TODO Launches a search if form initialized
+        // Launches a search if form initialized
+        load();
     }
 
     return {
