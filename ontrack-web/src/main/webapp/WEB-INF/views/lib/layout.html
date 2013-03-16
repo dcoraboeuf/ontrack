@@ -45,7 +45,7 @@
 			</#if>
 			
 			<#list scripts as scriptfile>
-				<script src="${base}/scripts/${scriptfile}" type="text/javascript"></script>
+				<script src="${base}/js/${scriptfile}.js" type="text/javascript"></script>
 			</#list>
 			
 			<title><@lh key="app.title"/> - <@lh key="app.version" /> - <@layout_title page=page title=title /></title>
@@ -56,8 +56,8 @@
 	</html>
 </#macro>
 
-<#macro layout_basic page style=false script=false modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
-	<@layout_root page=page style=style script=script modules=modules title=title>
+<#macro layout_basic page style=false script=false scripts=[] modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
+	<@layout_root page=page style=style script=script scripts=scripts modules=modules title=title>
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
@@ -82,8 +82,8 @@
 	</@layout_root>
 </#macro>
 
-<#macro layout_std page style=false script=false modules=[] title="" showSecurity=true breadcrumbs = {}>
-	<@layout_basic page=page style=style script=script modules=modules title=title showSecurity=showSecurity>
+<#macro layout_std page style=false script=false scripts=[] modules=[] title="" showSecurity=true breadcrumbs = {}>
+	<@layout_basic page=page style=style script=script scripts=scripts modules=modules title=title showSecurity=showSecurity>
 		<ul class="breadcrumb">
 			<#list breadcrumbs?keys as key>
 				<#assign link = breadcrumbs[key]>

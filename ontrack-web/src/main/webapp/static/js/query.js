@@ -1,5 +1,12 @@
 var Query = function () {
 
+    function adaptLocation (form) {
+        // Form as parameters
+        var params = $.param(form);
+        // Sets as hash
+        location.hash = params;
+    }
+
     /**
      * Launches the query asynchronously
      */
@@ -52,6 +59,8 @@ var Query = function () {
                 // Display
                 $('#query-result').html(Builds.generateTableBranchBuilds(project, branch, branchBuilds));
                 $('#query-result').show();
+                // Adjust the location according to this form
+                adaptLocation(form);
             },
             function (message) {
                 // Error
