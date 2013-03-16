@@ -54,6 +54,15 @@ public class ValidationRunJdbcDao extends AbstractJdbcDao implements ValidationR
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public TValidationRun findLastByBuildAndValidationStamp(int build, int validationStamp) {
+        return getFirstItem(
+                SQL.VALIDATION_RUN_LAST_FOR_BUILD_AND_STAMP,
+                params("build", build).addValue("validationStamp", validationStamp),
+                validationRunRowMapper);
+    }
+
+    @Override
     @Transactional
     public int createValidationRun(int build, int validationStamp, String description) {
         int count = getNamedParameterJdbcTemplate().queryForInt(

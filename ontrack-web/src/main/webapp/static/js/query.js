@@ -18,16 +18,24 @@ var Query = function () {
         };
         // sinceValidationStamps
         if (form.sinceValidationStamp != '') {
+            var statuses = [];
+            if (form.sinceValidationStampStatus != '') {
+                statuses.push(form.sinceValidationStampStatus);
+            }
             filter.sinceValidationStamps = [{
                 validationStamp: form.sinceValidationStamp,
-                statuses: [ form.sinceValidationStampStatus ]
+                statuses: statuses
             }];
         }
         // withValidationStamps
         if (form.withValidationStamp != '') {
+            var statuses = [];
+            if (form.withValidationStampStatus != '') {
+                statuses.push(form.withValidationStampStatus);
+            }
             filter.withValidationStamps = [{
                 validationStamp: form.withValidationStamp,
-                statuses: [ form.withValidationStampStatus ]
+                statuses: statuses
             }];
         }
         // Branch

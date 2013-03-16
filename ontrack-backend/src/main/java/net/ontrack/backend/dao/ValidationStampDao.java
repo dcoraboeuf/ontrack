@@ -26,4 +26,6 @@ public interface ValidationStampDao {
     Ack updateImage(int id, byte[] image);
 
     byte[] getImage(int id);
+
+    TValidationStamp getByBranchAndName(int branch, String validationStamp);
 }

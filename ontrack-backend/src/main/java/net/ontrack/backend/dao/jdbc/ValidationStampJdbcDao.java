@@ -44,6 +44,15 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional(readOnly = true)
+    public TValidationStamp getByBranchAndName(int branch, String name) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
+                params("branch", branch).addValue("name", name),
+                validationStampMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public TValidationStamp getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.VALIDATION_STAMP,

@@ -1,11 +1,12 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.dao.BuildDao;
+import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
+import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
-import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -40,9 +40,12 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         }
     };
 
+    private final ValidationStampDao validationStampDao;
+
     @Autowired
-    public BuildJdbcDao(DataSource dataSource) {
+    public BuildJdbcDao(DataSource dataSource, ValidationStampDao validationStampDao) {
         super(dataSource);
+        this.validationStampDao = validationStampDao;
     }
 
     @Override
@@ -71,9 +74,12 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
                 "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
                 "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
-                "                LEFT JOIN VALIDATION_RUN VR ON VR.BUILD = B.ID" +
-                "                LEFT JOIN VALIDATION_STAMP VS ON VS.ID = VR.VALIDATION_STAMP" +
-                "                LEFT JOIN VALIDATION_RUN_STATUS VRS ON VRS.VALIDATION_RUN = VR.ID" +
+                "                LEFT JOIN (" +
+                "                    SELECT R.BUILD,  R.VALIDATION_STAMP, VRS .STATUS " +
+                "                    FROM VALIDATION_RUN R" +
+                "                    INNER JOIN VALIDATION_RUN_STATUS VRS ON VRS.ID = (SELECT ID FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = R.ID ORDER BY ID DESC LIMIT 1)" +
+                "                    AND R.RUN_ORDER = (SELECT MAX(RUN_ORDER) FROM VALIDATION_RUN WHERE BUILD = R.BUILD AND VALIDATION_STAMP = R.VALIDATION_STAMP)" +
+                "                    ) S ON S.BUILD = B.ID" +
                 "                WHERE B.BRANCH = :branch");
         MapSqlParameterSource params = new MapSqlParameterSource("branch", branch);
         // Since last promotion level
@@ -93,6 +99,25 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
             params.addValue("withPromotionLevel", withPromotionLevel);
         }
         // FIXME Since validation stamp
+        // With validation stamp
+        List<BuildValidationStampFilter> withValidationStamps = filter.getWithValidationStamps();
+        if (withValidationStamps != null && !withValidationStamps.isEmpty()) {
+            sql.append(" AND (");
+            int index = 0;
+            for (BuildValidationStampFilter stamp : withValidationStamps) {
+                if (index > 0) {
+                    sql.append(" OR ");
+                }
+                TValidationStamp tstamp = validationStampDao.getByBranchAndName(branch, stamp.getValidationStamp());
+                sql.append(format("(S.VALIDATION_STAMP = :validationStamp%d", index));
+                params.addValue(format("validationStamp%d", index), tstamp.getId());
+                // FIXME Status criteria
+                // OK for this validation stamp
+                sql.append(")");
+                index++;
+            }
+            sql.append(")");
+        }
         // Ordering
         sql.append(" ORDER BY B.ID DESC");
         // Limit
@@ -109,7 +134,6 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 params,
                 buildRowMapper
         );
-        // FIXME With validation stamp
         // OK
         return builds;
     }
