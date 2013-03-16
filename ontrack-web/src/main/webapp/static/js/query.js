@@ -30,18 +30,20 @@ var Query = function () {
                 statuses: [ form.withValidationStampStatus ]
             }];
         }
+        // Branch
+        var project = $('#project').val();
+        var branch = $('#branch').val();
         // Ajax call
         Application.ajax (
             'POST',
-            'ui/manage/project/{0}/branch/{1}/query'.format(
-                                             $('#project').val(),
-                                             $('#branch').val()
-                                         ),
+            'ui/manage/project/{0}/branch/{1}/query'.format(project, branch),
             filter,
-            function (data) {
+            function (branchBuilds) {
                 // Loading...
                 $('#query-loading').hide();
-                // TODO Display
+                // Display
+                $('#query-result').html(Builds.generateTableBranchBuilds(project, branch, branchBuilds));
+                $('#query-result').show();
             },
             function (message) {
                 // Error

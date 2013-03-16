@@ -196,7 +196,8 @@ var Builds = function () {
 	return {
 		buildTemplate: buildTemplate,
 		buildValidationStampTemplate: buildValidationStampTemplate,
-		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate
+		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate,
+		generateTableBranchBuilds: generateTableBranchBuilds
 	};
 	
 } ();
