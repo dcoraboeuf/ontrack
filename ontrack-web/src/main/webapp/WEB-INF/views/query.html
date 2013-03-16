@@ -1,20 +1,20 @@
 <#include "/lib/layout.html">
 
-<#macro promotion_level_options selection>
+<#macro promotion_level_options selection="">
     <@form_select_option value="" text="" />
     <#list promotionLevels as promotionLevel>
         <@form_select_option value=promotionLevel.name text=promotionLevel.name selection=selection />
     </#list>
 </#macro>
 
-<#macro validation_stamp_options selection>
+<#macro validation_stamp_options selection="">
     <@form_select_option value="" text="" />
     <#list validationStamps as validationStamp>
         <@form_select_option value=validationStamp.name text=validationStamp.name selection=selection />
     </#list>
 </#macro>
 
-<#macro statuses selection>
+<#macro statuses selection="">
     <@form_select_option value="" text="" />
     <#list statusList as status>
         <@form_select_option value=status text=status selection=selection />
@@ -42,7 +42,7 @@
                                 <td>
                                     <@lh key="query.withPromotionLevel" />
                                     <select id="withPromotionLevel" name="withPromotionLevel" class="input-medium">
-                                        <@promotion_level_options selection="${query.withPromotionLevel!''?html}" />
+                                        <@promotion_level_options />
                                     </select>
                                 </td>
                             </tr>
@@ -50,7 +50,7 @@
                                 <td>
                                     <@lh key="query.sincePromotionLevel" />
                                     <select id="sincePromotionLevel" name="sincePromotionLevel" class="input-medium">
-                                        <@promotion_level_options selection="${query.sincePromotionLevel!''?html}" />
+                                        <@promotion_level_options />
                                     </select>
                                 </td>
                             </tr>
@@ -58,11 +58,11 @@
                                 <td>
                                     <@lh key="query.withValidationStamp" />
                                     <select id="withValidationStamp" name="withValidationStamp" class="input-large">
-                                        <@validation_stamp_options selection="${query.withValidationStamp!''?html}" />
+                                        <@validation_stamp_options />
                                     </select>
                                     <@lh key="query.withValidationStamp.status" />
                                     <select id="withValidationStampStatus" name="withValidationStampStatus" class="input-medium">
-                                        <@statuses selection="${query.withValidationStampStatus!''?html}" />
+                                        <@statuses />
                                     </select>
                                 </td>
                             </tr>
@@ -70,18 +70,18 @@
                                 <td>
                                     <@lh key="query.sinceValidationStamp" />
                                     <select id="sinceValidationStamp" name="sinceValidationStamp" class="input-large">
-                                        <@validation_stamp_options selection="${query.sinceValidationStamp!''?html}" />
+                                        <@validation_stamp_options />
                                     </select>
                                     <@lh key="query.sinceValidationStamp.status" />
                                     <select id="sinceValidationStampStatus" name="sinceValidationStampStatus" class="input-medium">
-                                        <@statuses selection="${query.sinceValidationStampStatus!''?html}" />
+                                        <@statuses />
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <@lh key="query.limit" />
-                                    <input id="limit" name="limit" type="number" class="input-mini" min="1" value="${query.limit?c}" max="100" maxlength="3" />
+                                    <input id="limit" name="limit" type="number" class="input-mini" min="1" value="20" max="100" maxlength="3" />
                                 </td>
                             </tr>
                             <tr>

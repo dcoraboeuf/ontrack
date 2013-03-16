@@ -9,8 +9,6 @@ import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -27,8 +25,6 @@ import static java.lang.String.format;
 
 @Component
 public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
-
-    private final Logger logger = LoggerFactory.getLogger(BuildDao.class);
 
     private final RowMapper<TBuild> buildRowMapper = new RowMapper<TBuild>() {
         @Override
@@ -148,11 +144,6 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         // Limit
         sql.append(" LIMIT :limit");
         params.addValue("limit", filter.getLimit());
-        // Logging
-        if (logger.isDebugEnabled()) {
-            logger.debug("[query] SQL    -> {}", sql);
-            logger.debug("[query] Params -> {}", params.getValues());
-        }
         // List of builds
         return getNamedParameterJdbcTemplate().query(
                 sql.toString(),

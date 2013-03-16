@@ -27,7 +27,7 @@ public class BuildLogController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/query", method = RequestMethod.GET)
-    public String query(Locale locale, @PathVariable String project, @PathVariable String branch, BuildLogForm query, Model model) {
+    public String query(Locale locale, @PathVariable String project, @PathVariable String branch, Model model) {
 
 
         // Branch summary
@@ -38,12 +38,6 @@ public class BuildLogController extends AbstractGUIController {
         model.addAttribute("validationStamps", manageUI.getValidationStampList(project, branch));
         // Gets the list of statuses
         model.addAttribute("statusList", Arrays.asList(Status.values()));
-
-        // Form data
-        if (query.getLimit() < 0) {
-            query.setLimit(20);
-        }
-        model.addAttribute("query", query);
 
         // OK
         return "query";
