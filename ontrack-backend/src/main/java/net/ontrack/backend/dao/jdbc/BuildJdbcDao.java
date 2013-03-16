@@ -7,6 +7,8 @@ import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -23,6 +25,8 @@ import static java.lang.String.format;
 
 @Component
 public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
+
+    private final Logger logger = LoggerFactory.getLogger(BuildDao.class);
 
     private final RowMapper<TBuild> buildRowMapper = new RowMapper<TBuild>() {
         @Override
@@ -64,12 +68,12 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Transactional(readOnly = true)
     public List<TBuild> query(int branch, BuildFilter filter) {
         // Query root
-        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*), PL.NAME, VS.NAME, VRS.STATUS FROM BUILD B\n" +
-                "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID\n" +
-                "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL\n" +
-                "                LEFT JOIN VALIDATION_RUN VR ON VR.BUILD = B.ID\n" +
-                "                LEFT JOIN VALIDATION_STAMP VS ON VS.ID = VR.VALIDATION_STAMP\n" +
-                "                LEFT JOIN VALIDATION_RUN_STATUS VRS ON VRS.VALIDATION_RUN = VR.ID\n" +
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
+                "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
+                "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
+                "                LEFT JOIN VALIDATION_RUN VR ON VR.BUILD = B.ID" +
+                "                LEFT JOIN VALIDATION_STAMP VS ON VS.ID = VR.VALIDATION_STAMP" +
+                "                LEFT JOIN VALIDATION_RUN_STATUS VRS ON VRS.VALIDATION_RUN = VR.ID" +
                 "                WHERE B.BRANCH = :branch");
         MapSqlParameterSource params = new MapSqlParameterSource("branch", branch);
         // Since last promotion level
@@ -78,7 +82,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
             // Gets the last build having this promotion level
             TBuild build = getFindLastBuildWithPromotionLevel(branch, sincePromotionLevel);
             if (build != null) {
-                sql.append(" AND B.ID <= :lastPromotedBuild");
+                sql.append(" AND B.ID >= :lastPromotedBuild");
                 params.addValue("lastPromotedBuild", build.getId());
             }
         }
@@ -88,47 +92,37 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
             sql.append(" AND PL.NAME = :withPromotionLevel");
             params.addValue("withPromotionLevel", withPromotionLevel);
         }
-        // TODO Since validation stamp
-        // With validation stamp
-        List<BuildValidationStampFilter> withValidationStamps = filter.getWithValidationStamps();
-        if (withValidationStamps != null && !withValidationStamps.isEmpty()) {
-            int index = 0;
-            sql.append(" AND (");
-            for (BuildValidationStampFilter validationStamp : withValidationStamps) {
-                Set<Status> statuses = validationStamp.getStatuses();
-                if (statuses != null && !statuses.isEmpty()) {
-                    if (index > 0) {
-                        sql.append(" OR ");
-                    }
-                    // Validation stamp name
-                    sql.append(format("(VS.NAME = :withValidationStamp%d AND VRS.STATUS IN (%s))",
-                            index,
-                            getStatusesForSQLInClause(statuses)
-                            ));
-                    params.addValue(format("withValidationStamp%d", index), validationStamp.getValidationStamp());
-                    // Next
-                    index++;
-                }
-            }
-            sql.append(")");
-        }
+        // FIXME Since validation stamp
         // Ordering
         sql.append(" ORDER BY B.ID DESC");
         // Limit
         sql.append(" LIMIT :limit");
         params.addValue("limit", filter.getLimit());
-        // OK
-        return getNamedParameterJdbcTemplate().query(
+        // Logging
+        if (logger.isDebugEnabled()) {
+            logger.debug("[query] SQL    -> {}", sql);
+            logger.debug("[query] Params -> {}", params);
+        }
+        // List of builds
+        List<TBuild> builds = getNamedParameterJdbcTemplate().query(
                 sql.toString(),
                 params,
                 buildRowMapper
         );
+        // FIXME With validation stamp
+        // OK
+        return builds;
     }
 
     // TODO Could be promoted up, up, up as a UI service
     private TBuild getFindLastBuildWithPromotionLevel(int branch, String promotionLevel) {
         return getFirstItem(
-                SQL.BUILD_BY_PROMOTION_LEVEL + " AND PL.NAME = :name",
+                "SELECT B.* FROM BUILD B" +
+                        " LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
+                        " LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
+                        " WHERE B.BRANCH = :branch AND PL.NAME = :name" +
+                        " ORDER BY B.ID DESC" +
+                        " LIMIT 1",
                 params("branch", branch)
                         .addValue("name", promotionLevel),
                 buildRowMapper
