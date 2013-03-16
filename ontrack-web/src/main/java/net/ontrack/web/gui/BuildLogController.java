@@ -1,14 +1,10 @@
 package net.ontrack.web.gui;
 
-import net.ontrack.core.model.BranchBuilds;
-import net.ontrack.core.model.BuildFilter;
-import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.web.gui.model.BuildLogForm;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Locale;
 
 @Controller
 public class BuildLogController extends AbstractGUIController {
@@ -42,24 +39,6 @@ public class BuildLogController extends AbstractGUIController {
         // Gets the list of statuses
         model.addAttribute("statusList", Arrays.asList(Status.values()));
 
-        // Query
-        if (query.getLimit() > 0) {
-            // Query
-            BranchBuilds branchBuilds = manageUI.queryBuilds(locale, project, branch, new BuildFilter(
-                    query.getLimit(),
-                    query.getSincePromotionLevel(),
-                    query.getWithPromotionLevel(),
-                    getBuildValidationStampFilters(
-                            query.getSinceValidationStamp(),
-                            query.getSinceValidationStampStatus()),
-                    getBuildValidationStampFilters(
-                            query.getWithValidationStamp(),
-                            query.getWithValidationStampStatus())
-            ));
-            // OK
-            model.addAttribute("branchBuilds", branchBuilds);
-        }
-
         // Form data
         if (query.getLimit() < 0) {
             query.setLimit(20);
@@ -68,26 +47,5 @@ public class BuildLogController extends AbstractGUIController {
 
         // OK
         return "query";
-    }
-
-    private List<BuildValidationStampFilter> getBuildValidationStampFilters(String validationStamp, String validationStampStatus) {
-        List<BuildValidationStampFilter> sinceValidationStamps = null;
-        if (StringUtils.isNotBlank(validationStamp)) {
-            sinceValidationStamps = Collections.singletonList(
-                    new BuildValidationStampFilter(
-                            validationStamp,
-                            statuses(validationStampStatus)
-                    )
-            );
-        }
-        return sinceValidationStamps;
-    }
-
-    private Set<Status> statuses(String status) {
-        if (StringUtils.isNotBlank(status)) {
-            return EnumSet.of(Status.valueOf(status));
-        } else {
-            return EnumSet.allOf(Status.class);
-        }
     }
 }

@@ -454,41 +454,41 @@ validationRunStatus.description
     en -> Comment
     fr -> Commentaire
 
-[build.log]
+[query]
 
-build.log
+query
     en -> Build log
     fr -> Build log
 
-build.log.submit
+query.submit
     en -> Search
     fr -> Rechercher
 
-build.log.limit
+query.limit
     en -> Limit
     fr -> Limite
 
-build.log.sincePromotionLevel
+query.sincePromotionLevel
     en -> Since last promotion level
     fr -> Depuis le dernier niveau de promotion
 
-build.log.withPromotionLevel
+query.withPromotionLevel
     en -> With promotion level
     fr -> Avec le niveau de promotion
 
-build.log.withValidationStamp
+query.withValidationStamp
     en -> With validation stamp
     fr -> Avec la validation
 
-build.log.withValidationStamp.status
+query.withValidationStamp.status
     en -> with status
     fr -> avec le statut
 
-build.log.sinceValidationStamp
+query.sinceValidationStamp
     en -> Since last validation stamp
     fr -> Depuis la dernière validation
 
-build.log.sinceValidationStamp.status
+query.sinceValidationStamp.status
     en -> with status
     fr -> avec le statut
 

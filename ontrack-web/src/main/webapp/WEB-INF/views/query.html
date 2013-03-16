@@ -22,8 +22,9 @@
 </#macro>
 
 <@layout_std
-    page="build.log"
+    page="query"
     modules=["projects","branches","builds","validation_stamps","promotion_levels","audit"]
+    script=true
     breadcrumbs = {
         loc("home"): "",
         branch.project.name?html: "gui/project/${branch.project.name?html}",
@@ -31,12 +32,14 @@
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12">
-                <form class="alert alert-info">
+                <form id="query-form" class="alert alert-info" onsubmit="return Query.launch();">
+                    <input id="project" name="project" type="hidden" value="${branch.project.name?html}" />
+                    <input id="branch" name="branch" type="hidden" value="${branch.name?html}" />
                     <table>
                         <tbody>
                             <tr>
                                 <td>
-                                    <@lh key="build.log.withPromotionLevel" />
+                                    <@lh key="query.withPromotionLevel" />
                                     <select name="withPromotionLevel" class="input-small">
                                         <@promotion_level_options selection="${query.withPromotionLevel!''?html}" />
                                     </select>
@@ -44,7 +47,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <@lh key="build.log.sincePromotionLevel" />
+                                    <@lh key="query.sincePromotionLevel" />
                                     <select name="sincePromotionLevel" class="input-small">
                                         <@promotion_level_options selection="${query.sincePromotionLevel!''?html}" />
                                     </select>
@@ -52,11 +55,11 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <@lh key="build.log.withValidationStamp" />
+                                    <@lh key="query.withValidationStamp" />
                                     <select name="withValidationStamp" class="input-large">
                                         <@validation_stamp_options selection="${query.withValidationStamp!''?html}" />
                                     </select>
-                                    <@lh key="build.log.withValidationStamp.status" />
+                                    <@lh key="query.withValidationStamp.status" />
                                     <select name="withValidationStampStatus" class="input-medium">
                                         <@statuses selection="${query.withValidationStampStatus!''?html}" />
                                     </select>
@@ -64,11 +67,11 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <@lh key="build.log.sinceValidationStamp" />
+                                    <@lh key="query.sinceValidationStamp" />
                                     <select name="sinceValidationStamp" class="input-large">
                                         <@validation_stamp_options selection="${query.sinceValidationStamp!''?html}" />
                                     </select>
-                                    <@lh key="build.log.sinceValidationStamp.status" />
+                                    <@lh key="query.sinceValidationStamp.status" />
                                     <select name="sinceValidationStampStatus" class="input-medium">
                                         <@statuses selection="${query.sinceValidationStampStatus!''?html}" />
                                     </select>
@@ -76,13 +79,13 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <@lh key="build.log.limit" />
+                                    <@lh key="query.limit" />
                                     <input name="limit" type="number" class="input-mini" min="1" value="${query.limit?c}" max="100" maxlength="3" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <button type="submit" class="btn btn-primary"><@lh key="build.log.submit" /></button>
+                                    <button type="submit" class="btn btn-primary"><@lh key="query.submit" /></button>
                                     <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}" class="btn btn-link"><@lh key="general.close" /></a>
                                 </td>
                             </tr>
@@ -92,8 +95,15 @@
             </div>
         </div>
         <div class="row-fluid">
-            <div id="builds" class="span12 hidden">
-
+            <div id="query-container" class="span12">
+                <div id="query-loading" class="progress progress-striped active">
+                    <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
+                </div>
+                <div id="query-error" class="alert alert-error">
+                    <div id="query-error-message"></div>
+                </div>
+                <div id="query-result">
+                </div>
             </div>
         </div>
 	</div>
