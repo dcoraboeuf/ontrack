@@ -7,6 +7,7 @@ import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
+import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -75,7 +77,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
                 "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
                 "                LEFT JOIN (" +
-                "                    SELECT R.BUILD,  R.VALIDATION_STAMP, VRS .STATUS " +
+                "                    SELECT R.BUILD,  R.VALIDATION_STAMP, VRS.STATUS " +
                 "                    FROM VALIDATION_RUN R" +
                 "                    INNER JOIN VALIDATION_RUN_STATUS VRS ON VRS.ID = (SELECT ID FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = R.ID ORDER BY ID DESC LIMIT 1)" +
                 "                    AND R.RUN_ORDER = (SELECT MAX(RUN_ORDER) FROM VALIDATION_RUN WHERE BUILD = R.BUILD AND VALIDATION_STAMP = R.VALIDATION_STAMP)" +
@@ -111,7 +113,11 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 TValidationStamp tstamp = validationStampDao.getByBranchAndName(branch, stamp.getValidationStamp());
                 sql.append(format("(S.VALIDATION_STAMP = :validationStamp%d", index));
                 params.addValue(format("validationStamp%d", index), tstamp.getId());
-                // FIXME Status criteria
+                // Status criteria
+                Set<Status> statuses = stamp.getStatuses();
+                if (statuses != null && !statuses.isEmpty()) {
+                    sql.append(format(" AND S.STATUS IN (%s)", getStatusesForSQLInClause(statuses)));
+                }
                 // OK for this validation stamp
                 sql.append(")");
                 index++;
@@ -126,16 +132,14 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         // Logging
         if (logger.isDebugEnabled()) {
             logger.debug("[query] SQL    -> {}", sql);
-            logger.debug("[query] Params -> {}", params);
+            logger.debug("[query] Params -> {}", params.getValues());
         }
         // List of builds
-        List<TBuild> builds = getNamedParameterJdbcTemplate().query(
+        return getNamedParameterJdbcTemplate().query(
                 sql.toString(),
                 params,
                 buildRowMapper
         );
-        // OK
-        return builds;
     }
 
     // TODO Could be promoted up, up, up as a UI service
