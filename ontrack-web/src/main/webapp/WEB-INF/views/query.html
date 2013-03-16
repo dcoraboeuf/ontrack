@@ -32,9 +32,9 @@
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12">
+                <input id="project" name="project" type="hidden" value="${branch.project.name?html}" />
+                <input id="branch" name="branch" type="hidden" value="${branch.name?html}" />
                 <form id="query-form" class="alert alert-info" onsubmit="return Query.launch();">
-                    <input id="project" name="project" type="hidden" value="${branch.project.name?html}" />
-                    <input id="branch" name="branch" type="hidden" value="${branch.name?html}" />
                     <table>
                         <tbody>
                             <tr>

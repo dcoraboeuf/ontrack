@@ -151,7 +151,10 @@ var Application = function () {
 			modal: true
 		});
 	}
-	
+
+	/**
+	 * Collects all values in a form
+	 */
 	function values (baseId) {
 		var data = {};
 		$('#' + baseId + ' input,textarea,select').each (function (index, field) {
@@ -363,6 +366,7 @@ var Application = function () {
 	    login: login,
 		dialog: dialog,
 		submit: submit,
+		values: values,
 		dialogAndSubmit: dialogAndSubmit,
 		dialogError: dialogError,
 		error: error,

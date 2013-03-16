@@ -8,24 +8,48 @@ var Query = function () {
         $('#query-error').hide();
         // Loading...
         $('#query-loading').show();
+        // Form values
+        var form = Application.values('query-form');
+        // Conversion into a BuildFilter
+        var filter = {
+            sincePromotionLevel: form.sincePromotionLevel,
+            withPromotionLevel: form.withPromotionLevel,
+            limit: form.limit
+        };
+        // sinceValidationStamps
+        if (form.sinceValidationStamp != '') {
+            filter.sinceValidationStamps = [{
+                validationStamp: form.sinceValidationStamp,
+                statuses: [ form.sinceValidationStampStatus ]
+            }];
+        }
+        // withValidationStamps
+        if (form.withValidationStamp != '') {
+            filter.withValidationStamps = [{
+                validationStamp: form.withValidationStamp,
+                statuses: [ form.withValidationStampStatus ]
+            }];
+        }
         // Ajax call
-        Application.submit({
-            id: 'query-form',
-            url: 'ui/manage/project/{0}/branch/{1}/query'.format(
-                                 $('#project').val(),
-                                 $('#branch').val()
-                             ),
-            successFn: function (data) {
-                alert(JSON.stringify(data));
+        Application.ajax (
+            'POST',
+            'ui/manage/project/{0}/branch/{1}/query'.format(
+                                             $('#project').val(),
+                                             $('#branch').val()
+                                         ),
+            filter,
+            function (data) {
+                // Loading...
+                $('#query-loading').hide();
+                // TODO Display
             },
-            errorMessageFn: function (message) {
+            function (message) {
                 // Error
                 $('#query-error-message').text(message);
                 $('#query-error').show();
                 // Loading...
                 $('#query-loading').hide();
-            }
-        });
+            });
         // No submit
         return false;
     }
