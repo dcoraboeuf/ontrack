@@ -30,6 +30,10 @@ public abstract class AbstractOntrackNotifier extends Notifier {
         return BuildStepMonitor.BUILD;
     }
 
+    protected String getBuildUrl(AbstractBuild<?, ?> theBuild) {
+        return Jenkins.getInstance().getRootUrl() + theBuild.getUrl();
+    }
+
     protected <T> T call(ClientCall<T> clientCall) {
         // Gets the configuration
         OntrackConfiguration configuration = (OntrackConfiguration) Jenkins.getInstance().getDescriptor(OntrackConfiguration.class);

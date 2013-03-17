@@ -7,5 +7,6 @@ public class ValidationRunCreationForm {
 	
 	private final Status status;
 	private final String description;
+    private final PropertiesCreationForm properties;
 
 }

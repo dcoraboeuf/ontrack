@@ -8,9 +8,7 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
-import net.ontrack.core.model.Status;
-import net.ontrack.core.model.ValidationRunCreationForm;
-import net.ontrack.core.model.ValidationRunSummary;
+import net.ontrack.core.model.*;
 import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -62,7 +60,17 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
         // TODO Run description
         String runDescription = String.format("Run %s", theBuild);
         // Run creation form
-        final ValidationRunCreationForm runCreationForm = new ValidationRunCreationForm(runStatus, runDescription);
+        final ValidationRunCreationForm runCreationForm = new ValidationRunCreationForm(
+                runStatus,
+                runDescription,
+                PropertiesCreationForm.create().with(
+                        new PropertyCreationForm(
+                                EXTENSION_JENKINS, // Jenkins extension
+                                PROPERTY_URL, // Jenkins related URL
+                                getBuildUrl(theBuild) // URL to this build
+                        )
+                )
+        );
         // Logging of parameters
         listener.getLogger().format("Running %s with status %s for build %s of branch %s of project %s%n", validationStampName, runStatus, buildName, branchName, projectName);
         // Calling ontrack UI

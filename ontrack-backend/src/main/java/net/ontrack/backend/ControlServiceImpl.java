@@ -73,6 +73,8 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
                         validationRun.getStatus(),
                         validationRun.getDescription()),
                 true);
+        // Associated properties
+        propertiesService.createProperties(Entity.VALIDATION_RUN, validationRunId, validationRun.getProperties());
         // Summary
         ValidationRunSummary run = managementService.getValidationRun(validationRunId);
         // Event

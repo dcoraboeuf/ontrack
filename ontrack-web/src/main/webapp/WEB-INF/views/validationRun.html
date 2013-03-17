@@ -1,7 +1,7 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="validationRun" script=true title="#${validationRun.runOrder?string}"
-    modules=["projects","branches","builds","validation_stamps","audit"]
+    modules=["projects","branches","builds","validation_stamps","audit","properties"]
     breadcrumbs = {
         loc("home"): "",
         validationRun.build.branch.project.name?html:
@@ -26,8 +26,11 @@
             </div>
             <div class="span12 muted">${validationRun.description?html}</div>
             <div class="span12">
+                <@properties entity="VALIDATION_RUN" entityId=validationRun.id />
+            </div>
+            <div class="span12">
                 <img id="current-status-img" src="${base}/images/status-${validationRun.validationRunStatus.status}.png" />
-                <span id="current-status-label">${validationRun.validationRunStatus.status}</span>
+                <span id="current-status-label"><b>${validationRun.validationRunStatus.status}</b></span>
             </div>
         </div>
         <#if secLogged()>

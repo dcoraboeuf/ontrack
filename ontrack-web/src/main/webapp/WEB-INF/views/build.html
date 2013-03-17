@@ -13,8 +13,10 @@
                     <span onclick="location='gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
                 </span>
             </div>
-            <div class="muted">${build.description?html}</div>
-            <@properties entity="BUILD" entityId=build.id />
+            <div class="span12 muted">${build.description?html}</div>
+            <div class="span12">
+                <@properties entity="BUILD" entityId=build.id />
+            </div>
         </div>
 		<div class="row-fluid">
             <div class="span4">
