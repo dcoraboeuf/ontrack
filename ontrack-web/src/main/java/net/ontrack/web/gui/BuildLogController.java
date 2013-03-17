@@ -2,7 +2,6 @@ package net.ontrack.web.gui;
 
 import net.ontrack.core.model.Status;
 import net.ontrack.core.ui.ManageUI;
-import net.ontrack.web.gui.model.BuildLogForm;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;

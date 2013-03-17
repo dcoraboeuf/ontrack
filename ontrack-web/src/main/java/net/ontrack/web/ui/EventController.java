@@ -72,14 +72,13 @@ public class EventController extends AbstractUIController {
         // Gets the raw events
         List<ExpandedEvent> events = eventUI.list(filter);
         // Localizes them
-        List<GUIEvent> guiEvents = Lists.transform(events, new Function<ExpandedEvent, GUIEvent>() {
+        // OK
+        return Lists.transform(events, new Function<ExpandedEvent, GUIEvent>() {
             @Override
             public GUIEvent apply(ExpandedEvent event) {
                 return toGUIEvent(event, locale, now);
             }
         });
-        // OK
-        return guiEvents;
     }
 
     protected GUIEvent toGUIEvent(ExpandedEvent event, Locale locale, DateTime now) {
@@ -178,21 +177,21 @@ public class EventController extends AbstractUIController {
             // TODO Uses a proper exception
             throw new IllegalStateException("Could not find entity " + key + " in event " + event.getId());
         } else {
-            return createLink(entity, entityStub, alternative, event.getId(), event.getEntities());
+            return createLink(entity, entityStub, alternative, event.getEntities());
         }
     }
 
-    protected String createLink(Entity entity, EntityStub entityStub, String alternative, int eventId, Map<Entity, EntityStub> contextEntities) {
+    protected String createLink(Entity entity, EntityStub entityStub, String alternative, Map<Entity, EntityStub> contextEntities) {
         // Text
         String text = alternative != null ? alternative : entityStub.getName();
         text = StringEscapeUtils.escapeHtml4(text);
         // Href
-        String href = createLinkHref(entity, entityStub, eventId, contextEntities);
+        String href = createLinkHref(entity, entityStub, contextEntities);
         // Link
         return format("<a class=\"event-entity\" href=\"%s\">%s</a>", href, text);
     }
 
-    protected String createLinkHref(Entity entity, EntityStub entityStub, int eventId, Map<Entity, EntityStub> contextEntities) {
+    protected String createLinkHref(Entity entity, EntityStub entityStub, Map<Entity, EntityStub> contextEntities) {
         // Gets the URI pattern of the entity
         String uriPattern = entity.getUriPattern();
         // Looks for replacements
@@ -206,9 +205,7 @@ public class EventController extends AbstractUIController {
         m.appendTail(uri);
 
         // Start of the URL
-        String url = "gui/" + uri;
-        // OK
-        return url;
+        return "gui/" + uri;
     }
 
     private String getEntityName(EntityStub entityStub, Map<Entity, EntityStub> contextEntities, String name) {
