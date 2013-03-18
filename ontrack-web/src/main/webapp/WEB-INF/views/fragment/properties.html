@@ -1,7 +1,13 @@
 <ul class="properties">
     <#list properties as property>
         <li>
-            ${ propertyDisplay(property.descriptor.extension, property.descriptor.name, property.value) }
+            ${ propertyDisplay(
+                    property.property.descriptor.extension,
+                    property.property.descriptor.name,
+                    property.property.value) }
+            <#if property.editable>
+                <i class="icon-pencil"></i>
+            </#if>
         </li>
     </#list>
 </ul>
