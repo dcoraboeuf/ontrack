@@ -2,6 +2,7 @@ package net.ontrack.extension.api;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.InputException;
+import net.sf.jstring.Localizable;
 import net.sf.jstring.Strings;
 
 import java.util.EnumSet;
@@ -37,6 +38,11 @@ public interface PropertyExtensionDescriptor {
      * @return Property name
      */
     String getName();
+
+    /**
+     * Key for the display name
+     */
+    String getDisplayNameKey();
 
     /**
      * Given a value, renders it as HTML.

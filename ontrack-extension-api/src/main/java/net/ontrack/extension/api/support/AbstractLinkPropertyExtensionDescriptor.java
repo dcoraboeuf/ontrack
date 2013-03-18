@@ -14,6 +14,14 @@ public abstract class AbstractLinkPropertyExtensionDescriptor extends AbstractPr
         this.iconName = iconName;
     }
 
+    /**
+     * Returns the key for the name.
+     */
+    @Override
+    public String getDisplayNameKey() {
+        return nameKey;
+    }
+
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
         return String.format("<span title=\"%3$s\"><img src=\"extension/%2$s\" /> <a href=\"%1$s\">%1$s</a></span>",

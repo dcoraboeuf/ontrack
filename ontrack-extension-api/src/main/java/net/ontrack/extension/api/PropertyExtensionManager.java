@@ -1,5 +1,9 @@
 package net.ontrack.extension.api;
 
+import net.ontrack.core.model.Entity;
+
+import java.util.List;
+
 public interface PropertyExtensionManager {
 
     /**
@@ -12,4 +16,9 @@ public interface PropertyExtensionManager {
      *          If not found
      */
     PropertyExtensionDescriptor getPropertyExtensionDescriptor(String extension, String name) throws PropertyExtensionNotFoundException;
+
+    /**
+     * Returns the list of properties applicable for this entity
+     */
+    List<PropertyExtensionDescriptor> getPropertyExtensionDescriptors(Entity entity);
 }

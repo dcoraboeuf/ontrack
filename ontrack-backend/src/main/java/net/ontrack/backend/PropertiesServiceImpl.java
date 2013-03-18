@@ -31,6 +31,11 @@ public class PropertiesServiceImpl implements PropertiesService {
     }
 
     @Override
+    public List<PropertyExtensionDescriptor> getProperties(Entity entity) {
+        return propertyExtensionManager.getPropertyExtensionDescriptors(entity);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<PropertyValue> getPropertyValues(Entity entity, int entityId) {
         return Lists.transform(

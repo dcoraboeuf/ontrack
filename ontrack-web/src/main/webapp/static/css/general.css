@@ -3,6 +3,11 @@
 	cursor: pointer;
 }
 
+/* Hidden */
+.hidden {
+	display: none;
+}
+
 /* Time elapsed */
 .elapsed {
 	font-size: 0.75em;

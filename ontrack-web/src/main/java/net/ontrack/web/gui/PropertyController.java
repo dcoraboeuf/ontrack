@@ -1,6 +1,8 @@
 package net.ontrack.web.gui;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityUtils;
@@ -14,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/gui/property")
@@ -51,19 +55,28 @@ public class PropertyController {
                         }
                 ));
         // List of editable properties for this entity
+        List<PropertyExtensionDescriptor> properties = propertiesService.getProperties(entity);
+        // Filter on editable state
+        List<PropertyExtensionDescriptor> editableProperties =
+                Lists.newArrayList(
+                        Iterables.filter(
+                                properties,
+                                new Predicate<PropertyExtensionDescriptor>() {
+                                    @Override
+                                    public boolean apply(PropertyExtensionDescriptor property) {
+                                        return isPropertyEditable(property, entity);
+                                    }
+                                }
+                        )
+                );
+        model.addAttribute("editableProperties", editableProperties);
         // The view
         return "fragment/properties";
     }
 
     private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity) {
-        // Gets the role needed for this property
         String role = descriptor.getRoleForEdition(entity);
-        if (role == null) {
-            // Not editable
-            return false;
-        } else {
-            return securityUtils.hasRole(role);
-        }
+        return role != null && securityUtils.hasRole(role);
     }
 
 }

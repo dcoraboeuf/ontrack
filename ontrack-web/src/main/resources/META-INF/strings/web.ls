@@ -501,3 +501,9 @@ query.sinceValidationStamp.status
 event.list
 	en -> Activity
 	fr -> Activité
+
+[properties]
+
+properties.add
+    en -> Add a property
+    fr -> Ajouter une propriété

@@ -22,4 +22,11 @@ public interface PropertiesService {
      * Renders HTML for a property value
      */
     String toHTML(Strings strings, Locale locale, String extension, String name, String value);
+
+    /**
+     * List all possible properties for this entity
+     * @param entity Entity to get the possible properties for
+     * @return List of properties (never null, but can be empty)
+     */
+    List<PropertyExtensionDescriptor> getProperties(Entity entity);
 }

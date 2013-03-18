@@ -1,3 +1,4 @@
+<!-- List of already defined properties -->
 <ul class="properties">
     <#list properties as property>
         <li>
@@ -6,8 +7,18 @@
                     property.property.descriptor.name,
                     property.property.value) }
             <#if property.editable>
+                <!-- TODO Edition of an existing property -->
                 <i class="icon-pencil"></i>
             </#if>
         </li>
     </#list>
 </ul>
+<!-- List of properties that can be added on this entity -->
+<#if editableProperties?size gt 0>
+    <i class="icon-plus-sign action" onclick="Properties.addProperties()" title="<lh key='properties.add' />"></i>
+    <span id="add-properties" class="hidden">
+        <#list editableProperties as property>
+            ${ property }
+        </#list>
+    </span>
+</#if>
