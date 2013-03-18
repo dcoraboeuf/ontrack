@@ -86,6 +86,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
+    private final Function<TBuild,BuildSummary> buildSummaryFunction = new Function<TBuild, BuildSummary>() {
+
+        @Override
+        public BuildSummary apply(TBuild t) {
+            return new BuildSummary(
+                    t.getId(),
+                    t.getName(),
+                    t.getDescription(),
+                    getBranch(t.getBranch())
+            );
+        }
+    };
 
     @Autowired
     public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao, EntityDao entityDao) {
@@ -489,18 +501,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         };
     }
 
-    // Validation runs
+    @Override
+    @Transactional(readOnly = true)
+    public BuildSummary getLastBuild(int branch) {
+        TBuild t = buildDao.findLastByBranch(branch);
+        if (t != null) {
+            return buildSummaryFunction.apply(t);
+        } else {
+            throw new BranchNoBuildFoundException();
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
     public BuildSummary getBuild(int id) {
         TBuild t = buildDao.getById(id);
-        return new BuildSummary(
-                t.getId(),
-                t.getName(),
-                t.getDescription(),
-                getBranch(t.getBranch())
-        );
+        return buildSummaryFunction.apply(t);
     }
 
     @Override

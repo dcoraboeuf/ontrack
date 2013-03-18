@@ -285,6 +285,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/last", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BuildSummary getLastBuild(@PathVariable String project, @PathVariable String branch) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.getLastBuild(branchId);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody

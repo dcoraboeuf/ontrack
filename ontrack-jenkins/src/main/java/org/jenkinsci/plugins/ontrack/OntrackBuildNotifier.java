@@ -58,7 +58,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
             // Logging of parameters
             listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
             // Calling ontrack UI
-            BuildSummary buildSummary = call(new ClientCall<BuildSummary>() {
+            BuildSummary buildSummary = call(new ControlClientCall<BuildSummary>() {
                 public BuildSummary onCall(ControlUI ui) {
                     return ui.createBuild(
                             projectName,

@@ -5,8 +5,6 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import jenkins.model.Jenkins;
-import net.ontrack.client.ControlUIClient;
-import net.ontrack.client.support.ClientFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -34,33 +32,8 @@ public abstract class AbstractOntrackNotifier extends Notifier {
         return Jenkins.getInstance().getRootUrl() + theBuild.getUrl();
     }
 
-    protected <T> T call(ClientCall<T> clientCall) {
-        // Gets the configuration
-        OntrackConfiguration configuration = (OntrackConfiguration) Jenkins.getInstance().getDescriptor(OntrackConfiguration.class);
-        // Gets the configuration data
-        String url = configuration.getOntrackUrl();
-        String user = configuration.getOntrackUser();
-        String password = configuration.getOntrackPassword();
-        // Controls the data
-        if (StringUtils.isBlank(url)) {
-            throw new IllegalStateException("ontrack URL global parameter must be defined");
-        }
-        if (StringUtils.isBlank(user)) {
-            throw new IllegalStateException("ontrack User global parameter must be defined");
-        }
-        if (StringUtils.isBlank(password)) {
-            throw new IllegalStateException("ontrack Password global parameter must be defined");
-        }
-        // Creates the client
-        ControlUIClient client = ClientFactory.create(url).control();
-        // Login
-        client.login(user, password);
-        try {
-            // Performs the call
-            return clientCall.onCall(client);
-        } finally {
-            client.logout();
-        }
+    protected <T> T call(ControlClientCall<T> controlClientCall) {
+        return OntrackClient.control(controlClientCall);
     }
 
     protected String expand(String template, AbstractBuild<?, ?> theBuild, BuildListener listener) {
@@ -84,7 +57,7 @@ public abstract class AbstractOntrackNotifier extends Notifier {
     }
 
     protected String getParameter(String name, AbstractBuild<?, ?> theBuild, BuildListener listener) {
-        String value = (String) theBuild.getBuildVariableResolver().resolve(name);
+        String value = theBuild.getBuildVariableResolver().resolve(name);
         if (value != null) {
             return value;
         } else {

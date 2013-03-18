@@ -74,7 +74,7 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
         // Logging of parameters
         listener.getLogger().format("Running %s with status %s for build %s of branch %s of project %s%n", validationStampName, runStatus, buildName, branchName, projectName);
         // Calling ontrack UI
-        ValidationRunSummary summary = call(new ClientCall<ValidationRunSummary>() {
+        ValidationRunSummary summary = call(new ControlClientCall<ValidationRunSummary>() {
             public ValidationRunSummary onCall(ControlUI ui) {
                 return ui.createValidationRun(projectName, branchName, buildName, validationStampName, runCreationForm);
             }
