@@ -1,4 +1,4 @@
-package net.ontrack.service;
+package net.ontrack.extension.api;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
@@ -13,6 +13,8 @@ public interface PropertiesService {
     void createProperties(Entity entity, int entityId, PropertiesCreationForm properties);
 
     List<PropertyValue> getPropertyValues(Entity entity, int entityId);
+
+    List<PropertyValueWithDescriptor> getPropertyValuesWithDescriptor(Entity entity, int entityId);
 
     String getPropertyValue(Entity entity, int entityId, String extension, String name);
 

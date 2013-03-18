@@ -1,7 +1,7 @@
 package net.ontrack.web.gui;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.service.PropertiesService;
+import net.ontrack.extension.api.PropertiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,7 @@ public class PropertyController {
         // Model
         model.addAttribute("entity", entity);
         model.addAttribute("entityId", entityId);
-        model.addAttribute("properties", propertiesService.getPropertyValues(entity, entityId));
+        model.addAttribute("properties", propertiesService.getPropertyValuesWithDescriptor(entity, entityId));
         // The view
         return "fragment/properties";
     }

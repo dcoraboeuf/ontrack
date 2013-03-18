@@ -8,10 +8,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
 import net.ontrack.core.model.PropertyValue;
-import net.ontrack.extension.api.PropertyExtensionDescriptor;
-import net.ontrack.extension.api.PropertyExtensionManager;
-import net.ontrack.extension.api.PropertyExtensionNotFoundException;
-import net.ontrack.service.PropertiesService;
+import net.ontrack.extension.api.*;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,25 @@ public class PropertiesServiceImpl implements PropertiesService {
                                 p.getExtension(),
                                 p.getName(),
                                 p.getValue()
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PropertyValueWithDescriptor> getPropertyValuesWithDescriptor(Entity entity, int entityId) {
+        return Lists.transform(
+                getPropertyValues(entity, entityId),
+                new Function<PropertyValue, PropertyValueWithDescriptor>() {
+                    @Override
+                    public PropertyValueWithDescriptor apply(PropertyValue value) {
+                        return new PropertyValueWithDescriptor(
+                                propertyExtensionManager.getPropertyExtensionDescriptor(
+                                        value.getExtension(),
+                                        value.getName()),
+                                value.getValue()
                         );
                     }
                 }

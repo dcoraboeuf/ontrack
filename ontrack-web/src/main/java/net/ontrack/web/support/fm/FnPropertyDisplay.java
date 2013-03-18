@@ -2,7 +2,7 @@ package net.ontrack.web.support.fm;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
-import net.ontrack.service.PropertiesService;
+import net.ontrack.extension.api.PropertiesService;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.Validate;
 import org.springframework.context.i18n.LocaleContextHolder;
