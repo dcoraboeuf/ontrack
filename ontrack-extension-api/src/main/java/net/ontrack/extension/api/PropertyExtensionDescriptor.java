@@ -47,4 +47,14 @@ public interface PropertyExtensionDescriptor {
      * @return HTML to display
      */
     String toHTML(Strings strings, Locale locale, String value);
+
+    /**
+     * Can this property be directly edited by a used on the given
+     * associated entity.
+     * @param entity Entity where to edit the property
+     * @return Role needed to edit this property; <code>null</code> when
+     * not editable at all.
+     * @see net.ontrack.core.security.SecurityRoles
+     */
+    String getRoleForEdition(Entity entity);
 }

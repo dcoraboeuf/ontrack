@@ -1,6 +1,7 @@
 package net.ontrack.extension.link;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.support.AbstractLinkPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +27,13 @@ public class LinkPropertyDescriptor extends AbstractLinkPropertyExtensionDescrip
     @Override
     public String getName() {
         return "url";
+    }
+
+    /**
+     * Editable by administrators on all entities
+     */
+    @Override
+    public String getRoleForEdition(Entity entity) {
+        return SecurityRoles.ADMINISTRATOR;
     }
 }

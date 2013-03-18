@@ -1,5 +1,6 @@
 package net.ontrack.extension.api.support;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
@@ -27,5 +28,13 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
         return StringEscapeUtils.escapeHtml4(value);
+    }
+
+    /**
+     * Not editable by default; returns <code>null</code>.
+     */
+    @Override
+    public String getRoleForEdition(Entity entity) {
+        return null;
     }
 }
