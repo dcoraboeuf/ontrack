@@ -13,6 +13,14 @@ var Properties = function () {
         $('#property-add-section').show();
     }
 
+    function editProperty (extension, name) {
+        var entity = $('#entity').val();
+        var entityId = $('#entityId').val();
+        addProperties();
+        $('#property-add-select').val('{0}#{1}'.format(extension, name));
+        onPropertySelected($('#property-add-select'));
+    }
+
     function addProperty () {
         var property = $('#property-add-select').val();
         var hash = property.indexOf('#');
@@ -124,6 +132,7 @@ var Properties = function () {
         addProperties: addProperties,
         cancelAddProperties: cancelAddProperties,
         addProperty: addProperty,
+        editProperty: editProperty,
         onPropertySelected: onPropertySelected
     };
 

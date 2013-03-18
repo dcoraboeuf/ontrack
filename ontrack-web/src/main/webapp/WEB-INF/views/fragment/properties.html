@@ -11,8 +11,7 @@
                     property.property.descriptor.name,
                     property.property.value) }
             <#if property.editable>
-                <!-- TODO Edition of an existing property -->
-                <i class="icon-pencil"></i>
+                <i class="icon-pencil action" onclick="Properties.editProperty('${property.property.descriptor.extension}','${property.property.descriptor.name}')"></i>
             </#if>
         </li>
     </#list>

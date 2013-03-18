@@ -33,9 +33,11 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     @Override
     public String editHTML(Strings strings, Locale locale, String value) {
         return format(
-                "<input id=\"extension-%1$s-%2$s\" name=\"extension-%1$s-%2$s\" type=\"text\" maxlength=\"200\" class=\"input-xxlarge\" />",
-                getExtension(),
-                getName());
+                "<input id=\"extension-%1$s-%2$s\" name=\"extension-%1$s-%2$s\" type=\"text\" maxlength=\"200\" class=\"input-xxlarge\" value=\"%3$s\" />",
+                getExtension(), // 1
+                getName(), // 2
+                StringEscapeUtils.escapeHtml4(value) // 3
+        );
     }
 
     /**
