@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Entity;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -77,9 +78,11 @@ public class PropertyJdbcDao extends AbstractJdbcDao implements PropertyDao {
                 params
         );
         // Inserts the value
-        getNamedParameterJdbcTemplate().update(
-                format(SQL.PROPERTY_INSERT, entity.name()),
-                params
-        );
+        if (StringUtils.isNotBlank(value)) {
+            getNamedParameterJdbcTemplate().update(
+                    format(SQL.PROPERTY_INSERT, entity.name()),
+                    params
+            );
+        }
     }
 }

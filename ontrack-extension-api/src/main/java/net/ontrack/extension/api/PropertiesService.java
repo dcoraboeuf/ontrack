@@ -1,5 +1,6 @@
 package net.ontrack.extension.api;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyValue;
@@ -35,4 +36,16 @@ public interface PropertiesService {
      * Gets the HTML fragment that allows for the edition of the property
      */
     String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name);
+
+    /**
+     * Saves a property value
+     *
+     * @param entity    Entity to save the property for
+     * @param entityId  Entity to save the property for
+     * @param extension Extension of the property to save
+     * @param name      Property name
+     * @param value     Value in this property (null or blank to delete)
+     * @return Acknowledgment
+     */
+    Ack saveProperty(Entity entity, int entityId, String extension, String name, String value);
 }

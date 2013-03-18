@@ -4,10 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.PropertiesCreationForm;
-import net.ontrack.core.model.PropertyCreationForm;
-import net.ontrack.core.model.PropertyValue;
+import net.ontrack.core.model.*;
 import net.ontrack.extension.api.*;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -15,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +96,25 @@ public class PropertiesServiceImpl implements PropertiesService {
         PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
         // OK
         return descriptor.editHTML(strings, locale, value);
+    }
+
+    @Override
+    @Transactional
+    public Ack saveProperty(Entity entity, int entityId, String extension, String name, String value) {
+        createProperties(
+                entity,
+                entityId,
+                new PropertiesCreationForm(
+                        Collections.singletonList(
+                                new PropertyCreationForm(
+                                        extension,
+                                        name,
+                                        value
+                                )
+                        )
+                )
+        );
+        return Ack.OK;
     }
 
     @Override

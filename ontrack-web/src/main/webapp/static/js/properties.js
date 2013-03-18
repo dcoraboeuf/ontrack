@@ -30,9 +30,9 @@ var Properties = function () {
 			type: 'POST',
 			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(entity, entityId, extension, name),
 			contentType: 'application/json',
-			data: {
+			data: JSON.stringify({
 			    value: value
-			},
+			}),
 			dataType: 'json',
 			success: function () {
                 // Loading...
