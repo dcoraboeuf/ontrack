@@ -90,6 +90,17 @@ public class PropertiesServiceImpl implements PropertiesService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name) {
+        // Gets the property value
+        String value = getPropertyValue(entity, entityId, extension, name);
+        // Gets the descriptor for this property
+        PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+        // OK
+        return descriptor.editHTML(strings, locale, value);
+    }
+
+    @Override
     @Transactional
     public void createProperties(Entity entity, int entityId, PropertiesCreationForm properties) {
         // For all properties

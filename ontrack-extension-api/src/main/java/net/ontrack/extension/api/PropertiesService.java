@@ -25,8 +25,14 @@ public interface PropertiesService {
 
     /**
      * List all possible properties for this entity
+     *
      * @param entity Entity to get the possible properties for
      * @return List of properties (never null, but can be empty)
      */
     List<PropertyExtensionDescriptor> getProperties(Entity entity);
+
+    /**
+     * Gets the HTML fragment that allows for the edition of the property
+     */
+    String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name);
 }

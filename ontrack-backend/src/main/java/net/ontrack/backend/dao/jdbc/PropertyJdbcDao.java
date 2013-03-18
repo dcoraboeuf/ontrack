@@ -5,6 +5,7 @@ import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
@@ -40,13 +41,17 @@ public class PropertyJdbcDao extends AbstractJdbcDao implements PropertyDao {
     @Override
     @Transactional(readOnly = true)
     public TProperty findByExtensionAndName(Entity entity, int entityId, String extension, String name) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                format(SQL.PROPERTY_VALUE, entity.name()),
-                params("entityId", entityId)
-                        .addValue("extension", extension)
-                        .addValue("name", name),
-                propertyRowMapper
-        );
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    format(SQL.PROPERTY_VALUE, entity.name()),
+                    params("entityId", entityId)
+                            .addValue("extension", extension)
+                            .addValue("name", name),
+                    propertyRowMapper
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
     }
 
     @Override

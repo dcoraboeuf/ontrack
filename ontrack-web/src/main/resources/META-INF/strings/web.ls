@@ -507,3 +507,7 @@ event.list
 properties.add
     en -> Add a property
     fr -> Ajouter une propriété
+
+properties.add.choice
+    en -> Choose a property to add
+    fr -> Choisissez la propriété à ajouter

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.Locale;
 
+import static java.lang.String.format;
+
 public abstract class AbstractPropertyExtensionDescriptor implements PropertyExtensionDescriptor {
 
     /**
@@ -19,15 +21,21 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
 
     /**
      * Returns an escaped value
-     *
-     * @param strings Localization
-     * @param locale Locale to render into
-     * @param value  Value to render
-     * @return Escaped HTML value
      */
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
         return StringEscapeUtils.escapeHtml4(value);
+    }
+
+    /**
+     * Just a text field
+     */
+    @Override
+    public String editHTML(Strings strings, Locale locale, String value) {
+        return format(
+                "<input id=\"extension-%1$s-%2$s\" name=\"extension-%1$s-%2$s\" type=\"text\" maxlength=\"200\" class=\"input-xxlarge\" />",
+                getExtension(),
+                getName());
     }
 
     /**

@@ -126,9 +126,9 @@
     </div>
 </#macro>
 
-<#macro form_select name label idPrefix="" help="" class="">
+<#macro form_select name label idPrefix="" help="" class="" onchange="">
     <@form_field name=name label=label idPrefix=idPrefix help=help>
-        <select id="${id?html}" name="${name?html}" class="${class?html}">
+        <select id="${id?html}" name="${name?html}" class="${class?html}" onchange="${onchange}">
             <#nested/>
         </select>
     </@form_field>

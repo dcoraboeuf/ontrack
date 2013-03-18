@@ -1,3 +1,7 @@
+<#include "/lib/common.html" >
+<!-- Entity -->
+<input id="entity" type="hidden" value="${entity?html}" />
+<input id="entityId" type="hidden" value="${entityId?c}" />
 <!-- List of already defined properties -->
 <ul class="properties">
     <#list properties as property>
@@ -15,10 +19,24 @@
 </ul>
 <!-- List of properties that can be added on this entity -->
 <#if editableProperties?size gt 0>
-    <i class="icon-plus-sign action" onclick="Properties.addProperties()" title="<lh key='properties.add' />"></i>
-    <span id="add-properties" class="hidden">
-        <#list editableProperties as property>
-            ${ property }
-        </#list>
-    </span>
+    <i class="icon-plus-sign action" onclick="Properties.addProperties()" title="<@lh key='properties.add' />"></i>
+    <div id="property-add-section" class="hidden alert alert-info">
+        <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
+            <option value=""></option>
+            <#list editableProperties as property>
+                <option value="${property.extension}#${property.name}"><@lh key=property.displayNameKey /></option>
+            </#list>
+        </select>
+        <span id="property-add-field"></span>
+        <div>
+            <button type="button" class="btn btn-primary"><@lh key="general.submit" /></button>
+            <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()"><@lh key="general.cancel" /></button>
+        </div>
+        <div id="property-add-loading" class="progress progress-striped active">
+            <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
+        </div>
+        <div id="property-add-error" class="alert alert-error">
+            <div id="property-add-error-message"></div>
+        </div>
+    </div>
 </#if>

@@ -10,6 +10,8 @@ import net.ontrack.extension.api.PropertiesService;
 import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.PropertyValueWithDescriptor;
 import net.ontrack.web.gui.model.GUIPropertyValue;
+import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.ErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,13 +23,14 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/gui/property")
-public class PropertyController {
+public class PropertyController extends AbstractGUIController {
 
     private final PropertiesService propertiesService;
     private final SecurityUtils securityUtils;
 
     @Autowired
-    public PropertyController(PropertiesService propertiesService, SecurityUtils securityUtils) {
+    public PropertyController(ErrorHandler errorHandler, PropertiesService propertiesService, SecurityUtils securityUtils) {
+        super(errorHandler);
         this.propertiesService = propertiesService;
         this.securityUtils = securityUtils;
     }
