@@ -140,3 +140,7 @@ ul.properties {
     padding: 0;
     margin: 0;
 }
+
+ul.properties li {
+    margin-top: 4px;
+}
