@@ -50,7 +50,7 @@ public class ManagementServiceTest extends AbstractValidationTest {
 
     @Test
     public void createProject_name_format() {
-        validateNOK(" - Name: must match \"[A-Za-z0-9_.]*\"\n", new Runnable() {
+        validateNOK(" - Name: must match \"[A-Za-z0-9_.-]*\"\n", new Runnable() {
             @Override
             public void run() {
                 service.createProject(new ProjectCreationForm("Project 1", "My description"));
