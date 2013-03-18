@@ -25,7 +25,7 @@ public class BuildLogController extends AbstractGUIController {
         this.manageUI = manageUI;
     }
 
-    @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/query", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/query", method = RequestMethod.GET)
     public String query(Locale locale, @PathVariable String project, @PathVariable String branch, Model model) {
 
 

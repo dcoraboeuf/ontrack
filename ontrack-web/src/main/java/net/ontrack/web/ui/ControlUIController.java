@@ -23,7 +23,7 @@ public class ControlUIController extends AbstractEntityUIController implements C
     }
 
     @Override
-    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build", method = RequestMethod.POST)
     public
     @ResponseBody
     BuildSummary createBuild(@PathVariable String project, @PathVariable String branch, @RequestBody BuildCreationForm build) {
@@ -32,7 +32,7 @@ public class ControlUIController extends AbstractEntityUIController implements C
     }
 
     @Override
-    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{build:[A-Za-z0-9_\\.]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.]+}", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.POST)
     public
     @ResponseBody
     ValidationRunSummary createValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @RequestBody ValidationRunCreationForm validationRun) {
@@ -42,7 +42,7 @@ public class ControlUIController extends AbstractEntityUIController implements C
     }
 
     @Override
-    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.]+}/branch/{branch:[A-Za-z0-9_\\.]+}/build/{build:[A-Za-z0-9_\\.]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.]+}", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.POST)
     public
     @ResponseBody
     PromotedRunSummary createPromotedRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String promotionLevel, @RequestBody PromotedRunCreationForm form) {
