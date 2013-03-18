@@ -13,6 +13,46 @@ var Properties = function () {
         $('#property-add-section').show();
     }
 
+    function addProperty () {
+        var property = $('#property-add-select').val();
+        var hash = property.indexOf('#');
+        var extension = property.substring(0, hash);
+        var name = property.substring(hash + 1);
+        var value = $('#extension-{0}-{1}'.format(extension, name)).val();
+        var entity = $('#entity').val();
+        var entityId = $('#entityId').val();
+        // No error
+        $('#property-add-error').hide();
+        // Loading
+        $('#property-add-loading').show();
+        // Loading the edition box
+		$.ajax({
+			type: 'POST',
+			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(entity, entityId, extension, name),
+			contentType: 'application/json',
+			data: {
+			    value: value
+			},
+			dataType: 'json',
+			success: function () {
+                // Loading...
+                $('#property-add-loading').hide();
+                // OK - reloads the property container
+                cancelAddProperties();
+                Template.reload('properties');
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				Application.onAjaxError(jqXHR, textStatus, errorThrown, function (message) {
+                    // Error
+                    $('#property-add-error-message').text(message);
+                    $('#property-add-error').show();
+                    // Loading...
+                    $('#property-add-loading').hide();
+				});
+			}
+		});
+    }
+
     function cancelAddProperties () {
         hideEditionBox('property-add');
         $('#property-add-section').hide();
@@ -83,6 +123,7 @@ var Properties = function () {
         propertiesTemplate: propertiesTemplate,
         addProperties: addProperties,
         cancelAddProperties: cancelAddProperties,
+        addProperty: addProperty,
         onPropertySelected: onPropertySelected
     };
 
