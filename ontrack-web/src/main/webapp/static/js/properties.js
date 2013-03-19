@@ -2,8 +2,23 @@ var Properties = function () {
 
     function propertiesTemplate (entity, entityId) {
         return Template.config({
-            url: 'gui/property/{0}/{1}'.format(entity, entityId),
-            type: 'html'
+            url: 'ui/property/{0}/{1}'.format(entity, entityId),
+            render: Template.fill(function (properties, append) {
+                var html = '<ul class="properties">';
+                $.each (properties, function (index, property) {
+                    html += '<li>';
+                    html += property.html;
+                    if (property.editable) {
+                        html += '<i class="icon-pencil action" onclick="Properties.editProperty(\'{0}\',\'{1}\')"></i>'.format(
+                            property.extension.html(),
+                            property.name.html()
+                        );
+                    }
+                    html += '</li>';
+                });
+                html += '</ul>';
+                return html;
+            })
         });
     }
 
