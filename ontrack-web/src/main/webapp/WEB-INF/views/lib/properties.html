@@ -5,6 +5,18 @@
     <@dynamicsection id="property-values" template="Properties.propertiesTemplate('${entity?html}',${entityId?c})" />
     <!-- Edition of properties -->
     <@dynamicsection id="property-edition" template="Properties.editablePropertiesTemplate('${entity?html}',${entityId?c})" />
+    <script id="property-values-template" type="text/html">
+        <ul class="properties">
+            {{#properties}}
+                <li>
+                    {{{html}}}
+                    {{#editable}}
+                        <i class="icon-pencil action" onclick="Properties.editProperty(\'{{extension}}\',\'{{name}}\')"></i>
+                    {{/editable}}
+                </li>
+            {{/properties}}
+        </ul>
+    </script>
     <script id="property-edition-template" type="text/hml">
         <input id="entity" type="hidden" value="${entity?html}" />
         <input id="entityId" type="hidden" value="${entityId?c}" />
