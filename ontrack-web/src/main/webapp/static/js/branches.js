@@ -16,21 +16,17 @@ var Branches = function () {
 	}
 	
 	function branchTemplate (project) {
-	    return function (containerId, append, items) {
-	        return Template.table(containerId, append, items, Template.tableRowLink('gui/project/{0}/branch'.format(project.html())));
-	    };
+        return Template.config({
+            url: 'ui/manage/project/{0}/branch'.format(project.html()),
+            render: Template.asTableTemplate('branchTemplate'),
+            placeholder: loc('branch.empty')
+        });
 	}
 	
 	return {
 		createBranch: createBranch,
 		deleteBranch: deleteBranch,
-		branchTemplate: function (project) {
-		    return Template.config({
-		        url: 'ui/manage/project/{0}/branch'.format(project.html()),
-		        render: Template.asTable(Template.asLink('gui/project/{0}/branch/'.format(project.html()))),
-		        placeholder: loc('branch.empty')
-		    });
-		}
+		branchTemplate: branchTemplate
 	};
 	
 } ();
