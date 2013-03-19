@@ -138,13 +138,13 @@ var Builds = function () {
                 if (!stamp.run) {
                     pClass = 'validation-stamp-norun';
                 }
-                var html = '<div class="{0}">'.format(pClass);
+                var html = '<tr><td><div class="{0}">'.format(pClass);
                 html += ValidationStamps.validationStampImage(project, branch, stamp);
                 html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
                     html += runs(project, branch, build, stamp, false);
                 }
-                html += '</div>';
+                html += '</div></td></tr>';
                 return html;
 	        }),
 	        postRenderFn: Application.tooltips
