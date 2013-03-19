@@ -13,6 +13,18 @@
 			<button id="validation_stamp-create-button" type="button" class="btn" onclick="ValidationStamps.createValidationStamp('${project?html}','${branch?html}')"><@lh key="validation_stamp.create" /></button>
 		</#if>
 	</@dynamicsection>
+    <script id="validationStampTemplate" type="text/html">
+        <tr>
+            <td>
+                <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
+                {{#description}}
+                    <br/>
+                    <span class="description">{{description}}</span>
+                {{/description}}
+            </td>
+        </tr>
+    </script>
 </#macro>
 
 <#macro validation_stamp_img validationStamp>
