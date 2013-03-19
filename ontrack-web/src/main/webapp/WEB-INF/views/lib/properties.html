@@ -5,7 +5,7 @@
     <@dynamicsection id="property-values" template="Properties.propertiesTemplate('${entity?html}',${entityId?c})" />
     <!-- Edition of properties -->
     <@dynamicsection id="property-edition" template="Properties.editablePropertiesTemplate('${entity?html}',${entityId?c})" />
-    <div id="property-edition-template" class="template">
+    <script id="property-edition-template" type="text/hml">
         <input id="entity" type="hidden" value="${entity?html}" />
         <input id="entityId" type="hidden" value="${entityId?c}" />
         <i class="icon-plus-sign action" onclick="Properties.addProperties()" title="<@lh key='properties.add' />"></i>
@@ -28,5 +28,5 @@
                 <div id="property-add-error-message"></div>
             </div>
         </div>
-    </div>
+    </script>
 </#macro>

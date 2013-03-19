@@ -3,16 +3,7 @@ var Properties = function () {
     function editablePropertiesTemplate (entity, entityId) {
         return Template.config({
             url: 'ui/property/{0}/{1}/editable'.format(entity, entityId),
-            render: Template.fill(function (properties, append) {
-                var html = '';
-                if (properties.length > 0) {
-                    html += $.mustache(
-                        $('#property-edition-template').html(),
-                        {properties: properties}
-                    );
-                }
-                return html;
-            })
+            render: Template.asSimpleTemplate('property-edition-template', 'properties')
         });
     }
 
