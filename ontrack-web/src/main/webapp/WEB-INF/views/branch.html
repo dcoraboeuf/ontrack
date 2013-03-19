@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="branch" title=branch.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
+<@layout_std page="branch" title=branch.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -15,6 +15,9 @@
                 </span>
             </div>
             <div class="muted">${branch.description?html}</div>
+            <div class="span12">
+                <@properties entity="BRANCH" entityId=branch.id />
+            </div>
         </div>
         <div class="row-fluid">
             <div class="span12">

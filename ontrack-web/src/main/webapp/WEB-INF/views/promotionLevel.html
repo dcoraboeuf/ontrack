@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="promotion_level" title=promotionLevel.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit"] breadcrumbs = {loc("home"): "", promotionLevel.branch.project.name?html: "gui/project/${promotionLevel.branch.project.name?html}", promotionLevel.branch.name?html: "gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"}>
+<@layout_std page="promotion_level" title=promotionLevel.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"] breadcrumbs = {loc("home"): "", promotionLevel.branch.project.name?html: "gui/project/${promotionLevel.branch.project.name?html}", promotionLevel.branch.name?html: "gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -19,6 +19,9 @@
                 </span>
             </div>
             <div class="muted">${promotionLevel.description?html}</div>
+            <div class="span12">
+                <@properties entity="PROMOTION_LEVEL" entityId=promotionLevel.id />
+            </div>
         </div>
         <div id="promotion_level-image-form" class="row-fluid x-dialog">
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image">
