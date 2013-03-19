@@ -5,6 +5,8 @@ import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +55,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(DaoCache.VALIDATION_STAMP)
     public TValidationStamp getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.VALIDATION_STAMP,
@@ -91,6 +94,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
+    @CacheEvict(DaoCache.VALIDATION_STAMP)
     public Ack deleteValidationStamp(int id) {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(

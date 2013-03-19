@@ -10,6 +10,7 @@ import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(DaoCache.BUILD)
     public TBuild getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.BUILD,

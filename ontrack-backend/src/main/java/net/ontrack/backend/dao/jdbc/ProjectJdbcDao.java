@@ -5,6 +5,8 @@ import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(DaoCache.PROJECT)
     public TProject getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.PROJECT,
@@ -58,6 +61,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
 
     @Override
     @Transactional
+    @CacheEvict(DaoCache.PROJECT)
     public Ack deleteProject(int id) {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(
