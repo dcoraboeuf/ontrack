@@ -5,7 +5,7 @@ import net.ontrack.core.model.EntityStub;
 import net.ontrack.core.model.EventType;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.support.MapBuilder;
-import net.ontrack.web.gui.model.GUIEvent;
+import net.ontrack.web.ui.model.GUIEvent;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
 import org.joda.time.DateTime;
