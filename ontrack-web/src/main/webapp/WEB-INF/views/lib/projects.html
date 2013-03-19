@@ -13,4 +13,15 @@
 			<button id="project-create-button" type="button" class="btn" onclick="Projects.createProject()"><@lh key="project.create" /></button>
 		</#if>
 	</@dynamicsection>
+    <script id="projectTemplate" type="text/html">
+        <tr>
+            <td>
+                <a>{{name}}</a>
+                {{#description}}
+                    <br/>
+                    <span class="description">{{description}}</span>
+                {{/description}}
+            </td>
+        </tr>
+    </script>
 </#macro>

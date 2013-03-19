@@ -20,8 +20,7 @@ var Projects = function () {
 		deleteProject: deleteProject,
 		projectTemplate: Template.config({
 		    url: 'ui/manage/project',
-		    render: Template.asTable(Template.asLink('gui/project')),
-            placeholder: loc('project.empty')
+		    render: Template.asTableTemplate('projectTemplate')
 		})
 	};
 	
