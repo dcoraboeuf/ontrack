@@ -18,6 +18,7 @@
     <modules>
         <module>ontrack-extension-jenkins</module>
         <module>ontrack-extension-link</module>
+        <module>ontrack-extension-jira</module>
     </modules>
 
     <dependencies>
