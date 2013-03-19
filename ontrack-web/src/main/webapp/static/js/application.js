@@ -125,7 +125,8 @@ var Application = function () {
 	    config = $.extend({
 	        submitFn: function (closeFn) {
 	            closeFn();
-	        }
+	        },
+	        openFn: $.noop
 	    }, config);
 		// Sets the submit function
 		$('#' + config.id).unbind('submit');
@@ -374,6 +375,7 @@ var Application = function () {
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
 		displayAjaxError: displayAjaxError,
+		onAjaxError: onAjaxError,
 		getAjaxError: getAjaxError,
 		changeLanguage: changeLanguage,
 		validateTextAsName: function (selector) {

@@ -203,6 +203,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BuildSummary getLastBuild(String project, String branch) {
+        return get(format("/ui/manage/project/%s/branch/%s/build/last", project, branch), BuildSummary.class);
+    }
+
+    @Override
     public List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name) {
         // TODO Locale management
         return list(format("/ui/manage/project/%s/branch/%s/build/%s/validationStamps", project, branch, name), BuildValidationStamp.class);

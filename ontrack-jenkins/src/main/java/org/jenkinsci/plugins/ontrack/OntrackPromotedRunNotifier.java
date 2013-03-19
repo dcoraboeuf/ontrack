@@ -62,7 +62,7 @@ public class OntrackPromotedRunNotifier extends AbstractOntrackNotifier {
         // Logging of parameters
         listener.getLogger().format("Promoting build %s of branch %s of project %s for %s%n", buildName, branchName, projectName, promotionLevelName);
         // Calling ontrack UI
-        PromotedRunSummary summary = call(new ClientCall<PromotedRunSummary>() {
+        PromotedRunSummary summary = call(new ControlClientCall<PromotedRunSummary>() {
             public PromotedRunSummary onCall(ControlUI ui) {
                 return ui.createPromotedRun(projectName, branchName, buildName, promotionLevelName, runCreationForm);
             }

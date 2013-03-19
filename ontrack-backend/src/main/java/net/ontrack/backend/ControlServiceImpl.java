@@ -9,7 +9,7 @@ import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
-import net.ontrack.service.PropertiesService;
+import net.ontrack.extension.api.PropertiesService;
 import net.ontrack.service.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

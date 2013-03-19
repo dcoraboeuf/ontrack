@@ -37,7 +37,6 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
             );
         }
     };
-
     private final ValidationStampDao validationStampDao;
 
     @Autowired
@@ -52,6 +51,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.BUILD,
                 params("id", id),
+                buildRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TBuild findLastByBranch(int branch) {
+        return getFirstItem(
+                SQL.BUILD_LAST_BY_BRANCH,
+                params("branch", branch),
                 buildRowMapper
         );
     }

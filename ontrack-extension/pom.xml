@@ -17,6 +17,7 @@
 
     <modules>
         <module>ontrack-extension-jenkins</module>
+        <module>ontrack-extension-link</module>
     </modules>
 
     <dependencies>

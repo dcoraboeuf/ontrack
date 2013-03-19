@@ -1,4 +1,4 @@
-package net.ontrack.web.gui;
+package net.ontrack.web.ui;
 
 import net.ontrack.core.model.AccountCreationForm;
 import net.ontrack.core.model.Ack;

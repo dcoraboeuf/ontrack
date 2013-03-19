@@ -4,20 +4,15 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.PropertiesCreationForm;
-import net.ontrack.core.model.PropertyCreationForm;
-import net.ontrack.core.model.PropertyValue;
-import net.ontrack.extension.api.PropertyExtensionDescriptor;
-import net.ontrack.extension.api.PropertyExtensionManager;
-import net.ontrack.extension.api.PropertyExtensionNotFoundException;
-import net.ontrack.service.PropertiesService;
+import net.ontrack.core.model.*;
+import net.ontrack.extension.api.*;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +26,11 @@ public class PropertiesServiceImpl implements PropertiesService {
     public PropertiesServiceImpl(PropertyExtensionManager propertyExtensionManager, PropertyDao propertyDao) {
         this.propertyExtensionManager = propertyExtensionManager;
         this.propertyDao = propertyDao;
+    }
+
+    @Override
+    public List<PropertyExtensionDescriptor> getProperties(Entity entity) {
+        return propertyExtensionManager.getPropertyExtensionDescriptors(entity);
     }
 
     @Override
@@ -53,6 +53,25 @@ public class PropertiesServiceImpl implements PropertiesService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<PropertyValueWithDescriptor> getPropertyValuesWithDescriptor(Entity entity, int entityId) {
+        return Lists.transform(
+                getPropertyValues(entity, entityId),
+                new Function<PropertyValue, PropertyValueWithDescriptor>() {
+                    @Override
+                    public PropertyValueWithDescriptor apply(PropertyValue value) {
+                        return new PropertyValueWithDescriptor(
+                                propertyExtensionManager.getPropertyExtensionDescriptor(
+                                        value.getExtension(),
+                                        value.getName()),
+                                value.getValue()
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public String getPropertyValue(Entity entity, int entityId, String extension, String name) {
         TProperty p = propertyDao.findByExtensionAndName(entity, entityId, extension, name);
         return p != null ? p.getValue() : null;
@@ -66,6 +85,36 @@ public class PropertiesServiceImpl implements PropertiesService {
         } catch (PropertyExtensionNotFoundException e) {
             return StringEscapeUtils.escapeHtml4(value);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name) {
+        // Gets the property value
+        String value = getPropertyValue(entity, entityId, extension, name);
+        // Gets the descriptor for this property
+        PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+        // OK
+        return descriptor.editHTML(strings, locale, value);
+    }
+
+    @Override
+    @Transactional
+    public Ack saveProperty(Entity entity, int entityId, String extension, String name, String value) {
+        createProperties(
+                entity,
+                entityId,
+                new PropertiesCreationForm(
+                        Collections.singletonList(
+                                new PropertyCreationForm(
+                                        extension,
+                                        name,
+                                        value
+                                )
+                        )
+                )
+        );
+        return Ack.OK;
     }
 
     @Override

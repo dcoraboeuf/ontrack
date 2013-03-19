@@ -1,5 +1,6 @@
 package net.ontrack.backend.extension;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.PropertyExtensionManager;
 import net.ontrack.extension.api.PropertyExtensionNotFoundException;
@@ -8,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of the property extension manager.
@@ -46,6 +45,19 @@ public class DefaultPropertyExtensionManager implements PropertyExtensionManager
             }
             extensionIndex.put(name, descriptor);
         }
+    }
+
+    @Override
+    public List<PropertyExtensionDescriptor> getPropertyExtensionDescriptors(Entity entity) {
+        List<PropertyExtensionDescriptor> list = new ArrayList<>();
+        for (Map<String, PropertyExtensionDescriptor> extensionIndex : index.values()) {
+            for (PropertyExtensionDescriptor descriptor : extensionIndex.values()) {
+                if (descriptor.getScope().contains(entity)) {
+                    list.add(descriptor);
+                }
+            }
+        }
+        return list;
     }
 
     @Override

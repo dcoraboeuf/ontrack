@@ -22,12 +22,17 @@
             <artifactId>ontrack-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>ontrack-backend</artifactId>
-			<version>${project.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-backend</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -105,6 +110,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ontrack-extension-jenkins</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-link</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>

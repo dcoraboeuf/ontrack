@@ -58,4 +58,23 @@ public class SecurityUtilsImpl implements SecurityUtils {
         Account account = getCurrentAccount();
         return account != null && SecurityRoles.ADMINISTRATOR.equals(account.getRoleName());
     }
+
+    @Override
+    public boolean hasRole(String role) {
+        Account account = getCurrentAccount();
+        if (account != null) {
+            switch (account.getRoleName()) {
+                case SecurityRoles.ADMINISTRATOR:
+                    return true;
+                case SecurityRoles.CONTROLLER:
+                    return SecurityRoles.CONTROLLER.equals(role) || SecurityRoles.USER.equals(role);
+                case SecurityRoles.USER:
+                    return SecurityRoles.USER.equals(role);
+                default:
+                    return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

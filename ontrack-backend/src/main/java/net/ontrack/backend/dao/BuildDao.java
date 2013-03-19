@@ -14,4 +14,6 @@ public interface BuildDao {
     int createBuild(int branch, String name, String description);
 
     List<TBuild> query(int branch, BuildFilter filter);
+
+    TBuild findLastByBranch(int branch);
 }

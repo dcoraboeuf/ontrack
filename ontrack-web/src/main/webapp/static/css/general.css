@@ -3,6 +3,16 @@
 	cursor: pointer;
 }
 
+/* Hidden */
+.hidden {
+	display: none;
+}
+
+/* Template */
+.template {
+	display: none;
+}
+
 /* Time elapsed */
 .elapsed {
 	font-size: 0.75em;
@@ -134,4 +144,8 @@ ul.properties {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+ul.properties li {
+    margin-top: 4px;
 }
