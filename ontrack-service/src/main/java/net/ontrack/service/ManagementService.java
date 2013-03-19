@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public interface ManagementService {
 	
@@ -76,6 +77,10 @@ public interface ManagementService {
     BranchBuilds getBuildList(Locale locale, int branchId, int offset, int count);
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
+
+	BuildSummary queryLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
+
+	BuildSummary queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
 
     BuildSummary getLastBuild(int branch);
 

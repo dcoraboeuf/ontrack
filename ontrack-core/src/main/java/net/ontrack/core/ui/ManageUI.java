@@ -78,6 +78,10 @@ public interface ManageUI {
 
     BuildSummary getLastBuild(String project, String branch);
 
+    BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);
+
+	BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
+
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name);
 
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name);
