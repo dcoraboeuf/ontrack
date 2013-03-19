@@ -8,6 +8,11 @@
 	display: none;
 }
 
+/* Template */
+.template {
+	display: none;
+}
+
 /* Time elapsed */
 .elapsed {
 	font-size: 0.75em;

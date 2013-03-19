@@ -36,7 +36,7 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
                 "<input id=\"extension-%1$s-%2$s\" name=\"extension-%1$s-%2$s\" type=\"text\" maxlength=\"200\" class=\"input-xxlarge\" value=\"%3$s\" />",
                 getExtension(), // 1
                 getName(), // 2
-                StringEscapeUtils.escapeHtml4(value) // 3
+                value != null ? StringEscapeUtils.escapeHtml4(value) : "" // 3
         );
     }
 

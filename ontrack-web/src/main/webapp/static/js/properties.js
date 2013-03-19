@@ -1,5 +1,21 @@
 var Properties = function () {
 
+    function editablePropertiesTemplate (entity, entityId) {
+        return Template.config({
+            url: 'ui/property/{0}/{1}/editable'.format(entity, entityId),
+            render: Template.fill(function (properties, append) {
+                var html = '';
+                if (properties.length > 0) {
+                    html += $.mustache(
+                        $('#property-edition-template').html(),
+                        {properties: properties}
+                    );
+                }
+                return html;
+            })
+        });
+    }
+
     function propertiesTemplate (entity, entityId) {
         return Template.config({
             url: 'ui/property/{0}/{1}'.format(entity, entityId),
@@ -62,7 +78,7 @@ var Properties = function () {
                 $('#property-add-loading').hide();
                 // OK - reloads the property container
                 cancelAddProperties();
-                Template.reload('properties');
+                Template.reload('property-values');
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				Application.onAjaxError(jqXHR, textStatus, errorThrown, function (message) {
@@ -144,6 +160,7 @@ var Properties = function () {
 
     return {
         propertiesTemplate: propertiesTemplate,
+        editablePropertiesTemplate: editablePropertiesTemplate,
         addProperties: addProperties,
         cancelAddProperties: cancelAddProperties,
         addProperty: addProperty,
