@@ -23,9 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.DataSource;
 import javax.validation.Validator;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -470,7 +472,25 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return getBranchBuilds(locale, branch, buildDao.query(branch, filter));
     }
 
-    private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
+	@Override
+	public BuildSummary queryLastBuildWithValidationStamps(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
+		TBuild tBuild = buildDao.findLastBuildWithValidationStamp(branch, validationStamp, statuses);
+
+		if (tBuild != null) {
+			return buildSummaryFunction.apply(tBuild);
+		}
+
+		throw new BranchNoBuildFoundException();
+	}
+
+	@Override
+	public BranchBuilds queryLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
+		return getBranchBuilds(locale, branch, new ArrayList<TBuild>() {{
+			buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
+		}});
+	}
+
+	private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
                 getValidationStampList(branch),

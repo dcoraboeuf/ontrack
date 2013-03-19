@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -291,6 +292,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     BuildSummary getLastBuild(@PathVariable String project, @PathVariable String branch) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.getLastBuild(branchId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/withValidationStamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BuildSummary getLastBuildWithValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.queryLastBuildWithValidationStamps(locale, branchId, validationStamp, new HashSet<Status>() {{
+			add(Status.PASSED);
+		}});
     }
 
     @Override
