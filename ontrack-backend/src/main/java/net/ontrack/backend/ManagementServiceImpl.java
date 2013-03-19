@@ -473,7 +473,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
 	@Override
-	public BuildSummary queryLastBuildWithValidationStamps(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
+	public BuildSummary queryLastBuildWithValidationStamp(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
 		TBuild tBuild = buildDao.findLastBuildWithValidationStamp(branch, validationStamp, statuses);
 
 		if (tBuild != null) {
@@ -484,10 +484,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 	}
 
 	@Override
-	public BranchBuilds queryLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
-		return getBranchBuilds(locale, branch, new ArrayList<TBuild>() {{
-			buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
-		}});
+	public BuildSummary queryLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
+		TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
+
+		if (tBuild != null) {
+			return buildSummaryFunction.apply(tBuild);
+		}
+
+		throw new BranchNoBuildFoundException();
 	}
 
 	private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {

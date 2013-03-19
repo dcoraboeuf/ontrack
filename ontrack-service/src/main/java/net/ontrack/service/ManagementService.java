@@ -78,9 +78,9 @@ public interface ManagementService {
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
 
-	BuildSummary queryLastBuildWithValidationStamps(Locale locale, int branch, String validationStamp, Set<Status> statuses);
+	BuildSummary queryLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
 
-	BranchBuilds queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
+	BuildSummary queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
 
     BuildSummary getLastBuild(int branch);
 
