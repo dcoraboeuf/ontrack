@@ -1,10 +1,13 @@
 package net.ontrack.backend.extension;
 
 import net.ontrack.backend.dao.ConfigurationDao;
+import net.ontrack.backend.db.StartupService;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +16,9 @@ import java.util.Collection;
 import java.util.Map;
 
 @Service
-public class DefaultConfigurationExtensionService implements ConfigurationExtensionService {
+public class DefaultConfigurationExtensionService implements ConfigurationExtensionService, StartupService {
+
+    private final Logger logger = LoggerFactory.getLogger(ConfigurationExtensionService.class);
 
     private final ExtensionManager extensionManager;
     private final ConfigurationDao configurationDao;
@@ -27,6 +32,12 @@ public class DefaultConfigurationExtensionService implements ConfigurationExtens
     @Override
     public Collection<? extends ConfigurationExtension> getConfigurationExtensions() {
         return extensionManager.getConfigurationExtensions();
+    }
+
+    @Override
+    @Transactional
+    public void start() {
+        logger.info("Loading all configurations");
     }
 
     // FIXME Loads all the configurations at start-up
