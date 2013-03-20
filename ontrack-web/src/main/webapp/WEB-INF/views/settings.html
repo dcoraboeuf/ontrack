@@ -43,7 +43,20 @@
                 </div>
                 <div id="section-${extension.extension?html}-${extension.name?html}" class="accordion-body collapse">
                     <div class="accordion-inner">
-                        <form action="" method="POST" class="form-horizontal">
+                        <form action="gui/admin/settings/extension/${extension.extension?html}/${extension.name?html}" method="POST" class="form-horizontal">
+                            <#list extension.fields as field>
+                                <div class="control-group">
+                                    <#assign fieldId = "extension-${extension.extension}-${extension.name}-${field.name}" />
+                                    <label class="control-label" for="${fieldId?html}">${field.displayName?html}</label>
+                                    <div class="controls">
+                                        <#if field.type == "password">
+                                            <input id="${fieldId?html}" name="${field.name?html}" type="password" class="input-large" maxlength="200" value="${field.value!''?html}" />
+                                        <#else>
+                                            <input id="${fieldId?html}" name="${field.name?html}" type="text" class="input-large" maxlength="200" value="${field.value!''?html}" />
+                                        </#if>
+                                    </div>
+                                </div>
+                            </#list>
                             <div class="control-group">
                                 <div class="controls">
                                     <button type="submit" class="btn">
