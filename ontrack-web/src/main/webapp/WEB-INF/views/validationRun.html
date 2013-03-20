@@ -55,7 +55,7 @@
             </div>
         </#if>
         <div class="row-fluid">
-            <div class="span12">
+            <div class="span7">
                 <@panel title=loc("validationRun.history")>
                     <@dynamicsection id="history" template="ValidationRun.historyTemplate(${validationRun.id?c})" />
                     <script id="historyItemTemplate" type="text/html">
@@ -76,9 +76,7 @@
                     </script>
                 </@panel>
             </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12">
+            <div class="span5">
                 <@panel title=loc("event.list")>
                     <@audit filter="&validationRun=${validationRun.id?c}" />
                 </@panel>
