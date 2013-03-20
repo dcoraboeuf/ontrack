@@ -26,12 +26,7 @@ var ValidationStamps = function () {
 	function validationStampTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
-	        render: Template.asTable(function (stamp) {
-                var html = '';
-                html += validationStampImage (project, branch, stamp);
-                html += ' <a href="gui/project/{0}/branch/{1}/validation_stamp/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
-                return html;
-	        })
+	        render: Template.asTableTemplate('validationStampTemplate')
 	    });
 	}
 	

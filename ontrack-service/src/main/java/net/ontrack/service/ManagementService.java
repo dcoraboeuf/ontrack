@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public interface ManagementService {
 	
@@ -77,6 +78,10 @@ public interface ManagementService {
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
 
+	BuildSummary queryLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
+
+	BuildSummary queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
+
     BuildSummary getLastBuild(int branch);
 
 	BuildSummary getBuild(int build);
@@ -94,6 +99,8 @@ public interface ManagementService {
     ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus);
 
     List<BuildValidationStampRun> getValidationRuns(Locale locale, int buildId, int validationStampId);
+
+    List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
 
     // Promoted runs
 

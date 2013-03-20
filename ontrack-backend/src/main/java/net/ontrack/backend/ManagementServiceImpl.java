@@ -9,10 +9,12 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
+import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -33,6 +36,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     // TODO Split the service in different parts
 
     private final SecurityUtils securityUtils;
+    private final Strings strings;
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
@@ -42,9 +46,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final PromotedRunDao promotedRunDao;
     private final ValidationRunDao validationRunDao;
     private final ValidationRunStatusDao validationRunStatusDao;
+    private final ValidationRunEventDao validationRunEventDao;
     private final CommentDao commentDao;
     private final EntityDao entityDao;
-
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
         @Override
@@ -86,7 +90,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
-    private final Function<TBuild,BuildSummary> buildSummaryFunction = new Function<TBuild, BuildSummary>() {
+    private final Function<TBuild, BuildSummary> buildSummaryFunction = new Function<TBuild, BuildSummary>() {
 
         @Override
         public BuildSummary apply(TBuild t) {
@@ -100,9 +104,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, CommentDao commentDao, EntityDao entityDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao) {
         super(validator, auditService);
         this.securityUtils = securityUtils;
+        this.strings = strings;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
@@ -112,6 +117,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.promotedRunDao = promotedRunDao;
         this.validationRunDao = validationRunDao;
         this.validationRunStatusDao = validationRunStatusDao;
+        this.validationRunEventDao = validationRunEventDao;
         this.commentDao = commentDao;
         this.entityDao = entityDao;
     }
@@ -470,6 +476,28 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return getBranchBuilds(locale, branch, buildDao.query(branch, filter));
     }
 
+    @Override
+    public BuildSummary queryLastBuildWithValidationStamp(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
+        TBuild tBuild = buildDao.findLastBuildWithValidationStamp(branch, validationStamp, statuses);
+
+        if (tBuild != null) {
+            return buildSummaryFunction.apply(tBuild);
+        }
+
+        throw new BranchNoBuildFoundException();
+    }
+
+    @Override
+    public BuildSummary queryLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
+        TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
+
+        if (tBuild != null) {
+            return buildSummaryFunction.apply(tBuild);
+        }
+
+        throw new BranchNoBuildFoundException();
+    }
+
     private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
@@ -576,6 +604,33 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 getBuild(t.getBuild()),
                 getValidationStamp(t.getValidationStamp()),
                 getLastValidationRunStatus(runId)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ValidationRunEvent> getValidationRunHistory(final Locale locale, int validationRunId, int offset, int count) {
+        List<TValidationRunEvent> list = validationRunEventDao.findByValidationRun(validationRunId, offset, count);
+        return Lists.transform(
+                list,
+                new Function<TValidationRunEvent, ValidationRunEvent>() {
+                    @Override
+                    public ValidationRunEvent apply(TValidationRunEvent t) {
+                        return new ValidationRunEvent(
+                                new DatedSignature(
+                                        new Signature(
+                                                t.getAuthorId(),
+                                                t.getAuthor()
+                                        ),
+                                        t.getTimestamp(),
+                                        TimeUtils.elapsed(strings, locale, t.getTimestamp(), TimeUtils.now(), t.getAuthor()),
+                                        TimeUtils.format(locale, t.getTimestamp())
+                                ),
+                                t.getStatus(),
+                                t.getContent()
+                        );
+                    }
+                }
         );
     }
 

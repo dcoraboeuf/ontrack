@@ -1,3 +1,8 @@
+/* General width for the container */
+.container {
+    width: 85%;
+}
+
 /* Pointer */
 .action {
 	cursor: pointer;
@@ -8,9 +13,10 @@
 	display: none;
 }
 
-/* Template */
-.template {
-	display: none;
+/* Description test */
+.description {
+    font-style: italic;
+    color: #AAAAAA;
 }
 
 /* Time elapsed */

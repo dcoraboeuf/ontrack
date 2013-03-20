@@ -98,6 +98,16 @@ public interface SQL {
 
     String VALIDATION_RUN_COUNT_FOR_BUILD_AND_STAMP = "SELECT COUNT(*) FROM VALIDATION_RUN WHERE BUILD = :build AND VALIDATION_STAMP = :validationStamp";
 
+    String VALIDATION_RUN_HISTORY = "(SELECT NULL AS STATUS, CONTENT, AUTHOR, AUTHOR_ID, COMMENT_TIMESTAMP AS EVENT_TIMESTAMP\n" +
+            "FROM COMMENT\n" +
+            "WHERE VALIDATION_RUN = :validationRun)\n" +
+            "UNION\n" +
+            "(SELECT STATUS, DESCRIPTION AS CONTENT, AUTHOR, AUTHOR_ID, STATUS_TIMESTAMP AS EVENT_TIMESTAMP\n" +
+            "FROM VALIDATION_RUN_STATUS \n" +
+            "WHERE VALIDATION_RUN = :validationRun)\n" +
+            "ORDER BY EVENT_TIMESTAMP DESC\n" +
+            "LIMIT :count OFFSET :offset";
+
     // Validation run statuses
 
     String VALIDATION_RUN_STATUS_CREATE = "INSERT INTO VALIDATION_RUN_STATUS (VALIDATION_RUN, STATUS, DESCRIPTION, AUTHOR, AUTHOR_ID, STATUS_TIMESTAMP) VALUES (:validationRun, :status, :description, :author, :authorId, :statusTimestamp)";

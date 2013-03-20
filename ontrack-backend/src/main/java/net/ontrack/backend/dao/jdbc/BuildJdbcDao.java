@@ -163,8 +163,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-    // TODO Could be promoted up, up, up as a UI service
-    private TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
+	@Override
+	public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
         int validationStampId = validationStampDao.getByBranchAndName(branch, validationStamp).getId();
         StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
                 "                LEFT JOIN (" +
@@ -191,8 +191,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-    // TODO Could be promoted up, up, up as a UI service
-    private TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel) {
+	@Override
+    public TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel) {
         return getFirstItem(
                 "SELECT B.* FROM BUILD B" +
                         " LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +

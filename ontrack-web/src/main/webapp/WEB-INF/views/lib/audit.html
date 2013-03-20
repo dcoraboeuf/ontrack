@@ -3,4 +3,17 @@
 <#macro audit id="audit" filter="">
 	<@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
 	</@dynamicsection>
+    <script id="auditTemplate" type="text/html">
+        <tr>
+            <td>
+                <div class="status-{{status}}">
+                    {{#icon}}
+                        <img width="24" src="{{icon}}" class="event-icon" />
+                    {{/icon}}
+                    {{{html}}}
+                    <span class="elapsed">- <span title="{{timestamp}}">{{elapsed}}</span></span>
+                </div>
+            </td>
+        </tr>
+    </script>
 </#macro>

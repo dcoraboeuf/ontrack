@@ -13,4 +13,15 @@
 			<button id="branch-create-button" type="button" class="btn" onclick="Branches.createBranch('${project?html}')"><@lh key="branch.create" /></button>
 		</#if>
 	</@dynamicsection>
+    <script id="branchTemplate" type="text/html">
+        <tr>
+            <td>
+                <a href="gui/project/{{project.name}}/branch/{{name}}">{{name}}</a>
+                {{#description}}
+                    <br/>
+                    <span class="description">{{description}}</span>
+                {{/description}}
+            </td>
+        </tr>
+    </script>
 </#macro>

@@ -26,12 +26,7 @@ var PromotionLevels = function () {
 	function promotionLevelTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/promotion_level'.format(project,branch),
-	        render: Template.asTable(function (stamp) {
-                var html = '';
-                html += promotionLevelImage (project, branch, stamp);
-                html += ' <a href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
-                return html;
-	        })
+	        render: Template.asTableTemplate('promotionLevelTemplate')
 	    });
 	}
 	

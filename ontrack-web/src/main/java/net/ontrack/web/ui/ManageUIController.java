@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -294,6 +295,24 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/withValidationStamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BuildSummary getLastBuildWithValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.queryLastBuildWithValidationStamp(locale, branchId, validationStamp, Collections.singleton(Status.PASSED));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/withPromotionLevel/{promotionLevel:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BuildSummary getLastBuildWithPromotionLevel(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.queryLastBuildWithPromotionLevel(locale, branchId, promotionLevel);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -329,6 +348,18 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     ValidationRunSummary getValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int run) {
         int runId = entityConverter.getValidationRunId(project, branch, build, validationStamp, run);
         return managementService.getValidationRun(runId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/history", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ValidationRunEvent> getValidationRunHistory(
+            Locale locale,
+            @PathVariable int validationRunId,
+            @RequestParam(required = false, defaultValue = "0") int offset,
+            @RequestParam(required = false, defaultValue = "10") int count) {
+        return managementService.getValidationRunHistory(locale, validationRunId, offset, count);
     }
 
     @Override

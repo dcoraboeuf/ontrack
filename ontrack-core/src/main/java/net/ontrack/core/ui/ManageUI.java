@@ -78,6 +78,10 @@ public interface ManageUI {
 
     BuildSummary getLastBuild(String project, String branch);
 
+    BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);
+
+	BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
+
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name);
 
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name);
@@ -85,6 +89,8 @@ public interface ManageUI {
     BranchBuilds queryBuilds(Locale locale, String project, String branch, BuildFilter filter);
 
     // Validation runs
+
+    List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
 
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);
 

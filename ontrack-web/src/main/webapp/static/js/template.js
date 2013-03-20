@@ -3,9 +3,7 @@ var Template = function () {
 	function generateTableRows (items, rowFn) {
 		var html = '';
 		$.each (items, function (index, item) {
-			html += '<tr><td>';
-				html += rowFn(item);
-			html += '</td></tr>';
+			html += rowFn(item);
 		});
 		return html;
 	}
@@ -27,6 +25,37 @@ var Template = function () {
         return function (containerId, append, config, data) {
             table(containerId, append, config, data, itemFn);
         };
+	}
+
+	/**
+	 * Uses a {{mustache}} template for rendering. The template
+	 * is contained by an element whose ID is <code>templateId</code>.
+	 * If <code>container</code> is defined, the data provided
+	 * for the template will be hold into a property of the same name.
+	 */
+	function asSimpleTemplate (templateId, container) {
+        return fill (function (items, append) {
+            var data;
+            if (container) {
+                data = {};
+                data[container] = items;
+            } else {
+                data = items;
+            }
+            return $.mustache (
+                $('#' + templateId).html(),
+                data
+            );
+        });
+	}
+
+	function asTableTemplate (rowTemplateId) {
+	    return asTable (function (item) {
+            return $.mustache(
+                $('#' + rowTemplateId).html(),
+                item
+            );
+	    });
 	}
 
 	function table (containerId, append, config, items, itemFn) {
@@ -188,6 +217,8 @@ var Template = function () {
 	    more: more,
 	    reload: reload,
 
+        asSimpleTemplate: asSimpleTemplate,
+        asTableTemplate: asTableTemplate,
 	    asTable: asTable,
 	    asLink: asLink,
 	    fill: fill

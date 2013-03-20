@@ -14,11 +14,23 @@
 
 <#macro promotion_levels project branch id="promotion_levels" create=true>
     <@dynamicsection id=id template="PromotionLevels.promotionLevelTemplate('${project?html}','${branch?html}')">
-    <#if create>
-        <@promotion_level_create project=project branch=branch />
-        <a href="gui/project/${project?html}/branch/${branch?html}/promotion_level_manage" class="btn btn-link"><@lh key="promotion_level.manage" /></a>
+        <#if create>
+            <@promotion_level_create project=project branch=branch />
+            <a href="gui/project/${project?html}/branch/${branch?html}/promotion_level_manage" class="btn btn-link"><@lh key="promotion_level.manage" /></a>
         </#if>
     </@dynamicsection>
+    <script id="promotionLevelTemplate" type="text/html">
+        <tr>
+            <td>
+                <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/promotion_level/{{name}}/image" />
+                <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/promotion_level/{{name}}">{{name}}</a>
+                {{#description}}
+                    <br/>
+                    <span class="description">{{description}}</span>
+                {{/description}}
+            </td>
+        </tr>
+    </script>
 </#macro>
 
 <#macro promotion_level_img promotionLevel>

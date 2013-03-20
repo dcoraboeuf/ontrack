@@ -46,7 +46,7 @@ var Builds = function () {
         var html = '';
         $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
             html += '<tr>';
-                html += '<td class="branch-build">';
+                html += '<td class="branch-build build_header" build="{0}">'.format(buildCompleteStatus.name.html());
                     html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
                         project.html(), // 0
                         branch.html(), // 1
@@ -55,12 +55,15 @@ var Builds = function () {
                         buildCompleteStatus.signature.elapsedTime, // 4
                         buildCompleteStatus.signature.formattedTime // 5
                         );
-                html += '</td><td>';
+                html += '</td><td class="build_promotion_level" build="{0}">'.format(buildCompleteStatus.name.html());
                     html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
                 html += '</td>';
                 $.each(branchBuilds.validationStamps, function (index, validationStamp) {
                     var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
-                    html += '<td>';
+                    html += '<td class="build_validation_stamp" build="{0}" validation_stamp="{1}">'.format(
+                        buildCompleteStatus.name.html(),
+                        buildValidationStamp.name.html()
+                        );
                     if (buildValidationStamp) {
                         html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp, true);
                     } else {
@@ -74,7 +77,7 @@ var Builds = function () {
     }
 
     function generateTableBranchBuilds (project, branch, branchBuilds) {
-        var html = '<table class="table table-hover"><thead>';
+        var html = '<table class="table"><thead>';
         // Header
         html += '<tr>';
             html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
@@ -83,7 +86,7 @@ var Builds = function () {
         html += '</tr>';
         html += '<tr>';
         $.each(branchBuilds.validationStamps, function (index, validationStamp) {
-            html += '<th align="center">';
+            html += '<th align="center" class="validation_stamp_header" validation_stamp="{0}">'.format(validationStamp.name.html());
             html += '<a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
             html += ValidationStamps.validationStampImage(project, branch, validationStamp);
             html += '</a>';
@@ -96,6 +99,34 @@ var Builds = function () {
         // End
         html += '</tbody></table>';
         return html;
+    }
+
+    function gridHoverSetup () {
+        // Clean-up
+        $('td[build]').off('mouseenter mouseleave');
+        $('td[validation_stamp]').off('mouseenter mouseleave');
+        // Build hovering
+        $('td[build]').hover(
+            function (e) {
+                var build = $(e.currentTarget).attr('build');
+                $("td[build='{0}']".format(build)).addClass('build-hover');
+            },
+            function (e) {
+                var build = $(e.currentTarget).attr('build');
+                $("td[build='{0}']".format(build)).removeClass('build-hover');
+            }
+        );
+        // Build hovering
+        $('td[validation_stamp]').hover(
+            function (e) {
+                var validation_stamp = $(e.currentTarget).attr('validation_stamp');
+                $("td[validation_stamp='{0}']".format(validation_stamp)).addClass('validation-stamp-hover');
+            },
+            function (e) {
+                var validation_stamp = $(e.currentTarget).attr('validation_stamp');
+                $("td[validation_stamp='{0}']".format(validation_stamp)).removeClass('validation-stamp-hover');
+            }
+        );
     }
 	
 	function buildTemplate (project, branch) {
@@ -125,7 +156,10 @@ var Builds = function () {
                     }
                 }
 	        },
-	        postRenderFn: Application.tooltips
+	        postRenderFn: function () {
+	            Application.tooltips();
+	            gridHoverSetup();
+	        }
          });
 	}
 
@@ -138,13 +172,13 @@ var Builds = function () {
                 if (!stamp.run) {
                     pClass = 'validation-stamp-norun';
                 }
-                var html = '<div class="{0}">'.format(pClass);
+                var html = '<tr><td><div class="{0}">'.format(pClass);
                 html += ValidationStamps.validationStampImage(project, branch, stamp);
                 html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
                 if (stamp.run) {
                     html += runs(project, branch, build, stamp, false);
                 }
-                html += '</div>';
+                html += '</div></td></tr>';
                 return html;
 	        }),
 	        postRenderFn: Application.tooltips
