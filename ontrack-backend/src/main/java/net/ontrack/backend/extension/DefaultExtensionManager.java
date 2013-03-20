@@ -88,12 +88,12 @@ public class DefaultExtensionManager implements ExtensionManager {
     }
 
     @Override
-    public Collection<ConfigurationExtension> getConfigurationExtensions() {
+    public Collection<? extends ConfigurationExtension> getConfigurationExtensions() {
         return configurationExtensions;
     }
 
     @Override
-    public Collection<Extension> getExtensions() {
+    public Collection<? extends Extension> getExtensions() {
         return extensionIndex.values();
     }
 
@@ -108,12 +108,12 @@ public class DefaultExtensionManager implements ExtensionManager {
     }
 
     @Override
-    public PropertyExtensionDescriptor getPropertyExtensionDescriptor(String extension, String name) throws PropertyExtensionNotFoundException {
+    public <T extends PropertyExtensionDescriptor> T getPropertyExtensionDescriptor(String extension, String name) throws PropertyExtensionNotFoundException {
         Map<String, PropertyExtensionDescriptor> extensionIndex = propertyIndex.get(extension);
         if (extensionIndex != null) {
             PropertyExtensionDescriptor descriptor = extensionIndex.get(name);
             if (descriptor != null) {
-                return descriptor;
+                return (T) descriptor;
             }
         }
         throw new PropertyExtensionNotFoundException(extension, name);

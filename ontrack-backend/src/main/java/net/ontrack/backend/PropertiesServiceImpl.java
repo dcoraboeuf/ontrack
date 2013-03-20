@@ -33,7 +33,7 @@ public class PropertiesServiceImpl implements PropertiesService {
     }
 
     @Override
-    public List<PropertyExtensionDescriptor> getProperties(Entity entity) {
+    public List<? extends PropertyExtensionDescriptor> getProperties(Entity entity) {
         return extensionManager.getPropertyExtensionDescriptors(entity);
     }
 

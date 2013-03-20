@@ -30,7 +30,7 @@ public interface PropertiesService {
      * @param entity Entity to get the possible properties for
      * @return List of properties (never null, but can be empty)
      */
-    List<PropertyExtensionDescriptor> getProperties(Entity entity);
+    List<? extends PropertyExtensionDescriptor> getProperties(Entity entity);
 
     /**
      * Gets the HTML fragment that allows for the edition of the property

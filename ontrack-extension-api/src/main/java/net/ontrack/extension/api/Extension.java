@@ -9,7 +9,7 @@ public interface Extension {
 
     String getName();
 
-    List<PropertyExtensionDescriptor> getPropertyExtensionDescriptors();
+    List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors();
 
-    List<ConfigurationExtension> getConfigurationExtensions();
+    List<? extends ConfigurationExtension> getConfigurationExtensions();
 }

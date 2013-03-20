@@ -107,7 +107,7 @@ public class PropertyUIController extends AbstractUIController {
             @PathVariable final Entity entity,
             @PathVariable int entityId) {
         // List of editable properties for this entity
-        List<PropertyExtensionDescriptor> properties = propertiesService.getProperties(entity);
+        List<? extends PropertyExtensionDescriptor> properties = propertiesService.getProperties(entity);
         // Filter on editable state
         ArrayList<PropertyExtensionDescriptor> editablePropertyDescriptors = Lists.newArrayList(
                 Iterables.filter(

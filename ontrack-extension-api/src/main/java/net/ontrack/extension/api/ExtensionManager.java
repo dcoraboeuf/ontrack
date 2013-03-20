@@ -13,7 +13,7 @@ public interface ExtensionManager {
     /**
      * Gets the list of extensions
      */
-    Collection<Extension> getExtensions();
+    Collection<? extends Extension> getExtensions();
 
     /**
      * Gets an extension by its name
@@ -30,15 +30,15 @@ public interface ExtensionManager {
      * @throws net.ontrack.extension.api.property.PropertyExtensionNotFoundException
      *          If not found
      */
-    PropertyExtensionDescriptor getPropertyExtensionDescriptor(String extension, String name) throws PropertyExtensionNotFoundException;
+    <T extends PropertyExtensionDescriptor> T getPropertyExtensionDescriptor(String extension, String name) throws PropertyExtensionNotFoundException;
 
     /**
      * Returns the list of properties applicable for this entity
      */
-    List<PropertyExtensionDescriptor> getPropertyExtensionDescriptors(Entity entity);
+    List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors(Entity entity);
 
     /**
      * Gets the list of all configuration extensions
      */
-    Collection<ConfigurationExtension> getConfigurationExtensions();
+    Collection<? extends ConfigurationExtension> getConfigurationExtensions();
 }
