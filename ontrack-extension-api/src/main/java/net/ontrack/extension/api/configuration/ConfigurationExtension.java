@@ -8,4 +8,14 @@ public interface ConfigurationExtension {
      * @return Extension ID
      */
     String getExtension();
+
+    /**
+     * Name for this configuration
+     */
+    String getName();
+
+    /**
+     * Localization key for the title of this configuration
+     */
+    String getTitleKey();
 }

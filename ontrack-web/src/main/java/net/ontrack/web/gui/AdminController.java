@@ -49,7 +49,8 @@ public class AdminController extends AbstractGUIController {
      * Settings page
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
-    public String settings(Model model) {
+    public String settings(final Locale locale,
+                           Model model) {
         // Gets the LDAP configuration
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
@@ -59,7 +60,11 @@ public class AdminController extends AbstractGUIController {
                 new Function<ConfigurationExtension, GUIConfigurationExtension>() {
                     @Override
                     public GUIConfigurationExtension apply(ConfigurationExtension extension) {
-                        return new GUIConfigurationExtension();
+                        return new GUIConfigurationExtension(
+                                extension.getExtension(),
+                                extension.getName(),
+                                strings.get(locale, extension.getTitleKey())
+                        );
                     }
                 }
         );

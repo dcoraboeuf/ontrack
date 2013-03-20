@@ -3,6 +3,7 @@
 <@layout_std page="settings" script=true>
     <@usermessage />
     <div class="accordion" id="accordion-container">
+        <!-- Security settings -->
         <div class="accordion-group">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-container" href="#section-security">
@@ -32,6 +33,30 @@
                 </div>
             </div>
         </div>
+        <!-- Extensions -->
+        <#list extensions as extension>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-container" href="#section-${extension.extension?html}-${extension.name?html}">
+                        ${extension.title?html}
+                    </a>
+                </div>
+                <div id="section-${extension.extension?html}-${extension.name?html}" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <form action="" method="POST" class="form-horizontal">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn">
+                                        <@lh key="general.submit" />
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </#list>
     </div>
+    <!-- Going back to the home page -->
     <a href="" class="btn btn-info"><@lh key="general.close"/></a>
 </@layout_std>

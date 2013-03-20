@@ -24,7 +24,6 @@ public class JIRAExtension extends ExtensionAdapter {
 
     @Override
     public List<? extends ConfigurationExtension> getConfigurationExtensions() {
-        // FIXME Implement net.ontrack.extension.jira.JIRAExtension.getConfigurationExtensions
-        return super.getConfigurationExtensions();
+        return Collections.singletonList(new JIRAConfiguration());
     }
 }
