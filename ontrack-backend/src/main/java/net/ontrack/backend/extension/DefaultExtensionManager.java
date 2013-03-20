@@ -37,13 +37,13 @@ public class DefaultExtensionManager implements ExtensionManager {
         configurationExtensions = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
+            logger.info("[extension] Extension={}", extensionName);
             extensionIndex.put(extensionName, extension);
 
             /**
              * Indexation of properties
              */
 
-            logger.info("[extension] Indexing property extensions");
             for (PropertyExtensionDescriptor descriptor : extension.getPropertyExtensionDescriptors()) {
                 String name = descriptor.getName();
                 // Logging
@@ -64,7 +64,6 @@ public class DefaultExtensionManager implements ExtensionManager {
             /**
              * Indexation of configurations
              */
-            logger.info("[extension] Indexing configuration extensions");
             for (ConfigurationExtension configurationExtension : extension.getConfigurationExtensions()) {
                 // Logging
                 logger.info("[extension] Configuration extension={}, configuration={}", extensionName, configurationExtension);
