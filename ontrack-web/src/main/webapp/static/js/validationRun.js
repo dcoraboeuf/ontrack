@@ -2,7 +2,7 @@ var ValidationRun = function () {
 
     function historyTemplate (validationRunId) {
         return Template.config({
-            url: 'ui/manage/validation_run/{0}/history'.format(validationRunId),
+            url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
             more: true,
             render: Template.asTableTemplate('historyItemTemplate')
         });

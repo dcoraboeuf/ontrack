@@ -212,12 +212,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
         return get(format("/ui/manage/project/%s/branch/%s/build/withValidationStamp/%s", project, branch, validationStamp), BuildSummary.class);
     }
 
-	@Override
-	public BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel) {
-		return get(format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), BuildSummary.class);
-	}
+    @Override
+    public BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel) {
+        return get(format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), BuildSummary.class);
+    }
 
-	@Override
+    @Override
     public List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name) {
         // TODO Locale management
         return list(format("/ui/manage/project/%s/branch/%s/build/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
@@ -233,6 +233,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     public ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getValidationRun
         return null;
+    }
+
+    @Override
+    public List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count) {
+        // TODO Locale management
+        return list(format("/ui/manage/validation_run/%d/history?offset=%d&count=%d", validationRunId, offset, count), ValidationRunEvent.class);
     }
 
     @Override

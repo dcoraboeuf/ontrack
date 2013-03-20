@@ -90,6 +90,8 @@ public interface ManageUI {
 
     // Validation runs
 
+    List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
+
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);

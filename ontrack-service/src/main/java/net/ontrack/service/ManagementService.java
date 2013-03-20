@@ -100,6 +100,8 @@ public interface ManagementService {
 
     List<BuildValidationStampRun> getValidationRuns(Locale locale, int buildId, int validationStampId);
 
+    List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
+
     // Promoted runs
 
     PromotedRunSummary getPromotedRun(int buildId, int promotionLevel);
