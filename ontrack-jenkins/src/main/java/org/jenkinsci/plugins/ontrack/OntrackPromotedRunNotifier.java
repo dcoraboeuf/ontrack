@@ -85,7 +85,7 @@ public class OntrackPromotedRunNotifier extends AbstractOntrackNotifier {
 
         @Override
         public String getDisplayName() {
-            return "ontrack Promoted run creation";
+            return "Ontrack: Promoted run creation";
         }
     }
 }

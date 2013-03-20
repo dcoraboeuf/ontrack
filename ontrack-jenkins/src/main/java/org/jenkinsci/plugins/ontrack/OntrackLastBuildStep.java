@@ -75,7 +75,7 @@ public class OntrackLastBuildStep extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "ontrack Last build";
+            return "Ontrack: Last build";
         }
     }
 }
