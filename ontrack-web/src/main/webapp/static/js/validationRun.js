@@ -1,5 +1,13 @@
 var ValidationRun = function () {
 
+    function historyTemplate (validationRunId) {
+        return Template.config({
+            url: 'ui/manage/validation_run/{0}/history'.format(validationRunId),
+            more: true,
+            render: Template.asTableTemplate('historyItemTemplate')
+        });
+    }
+
     function sendStatus (status) {
         // Run ID stored as a hidden field
         var runId = $('#validationRunId').val();
@@ -40,8 +48,8 @@ var ValidationRun = function () {
     return {
         sendStatus: sendStatus,
         updateStatus: updateStatus,
-        cancelUpdateStatus: cancelUpdateStatus
-
+        cancelUpdateStatus: cancelUpdateStatus,
+        historyTemplate: historyTemplate
     };
 
 } ();

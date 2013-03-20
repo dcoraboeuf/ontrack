@@ -436,6 +436,10 @@ validationRun.notRun
     en -> Not run
     fr -> Non exécuté
 
+validationRun.history
+    en -> History
+    fr -> Historique
+
 [validationRunStatus]
 
 validationRunStatus.new
