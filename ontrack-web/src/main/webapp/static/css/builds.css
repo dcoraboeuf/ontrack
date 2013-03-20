@@ -2,3 +2,11 @@ td.branch-build a {
     font-weight: bold;
     font-size: 120%;
 }
+
+td.build-hover {
+    background-color: #FFEEEE;
+}
+
+td.validation-stamp-hover {
+    background-color: #FFFFEE;
+}

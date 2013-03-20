@@ -100,6 +100,34 @@ var Builds = function () {
         html += '</tbody></table>';
         return html;
     }
+
+    function gridHoverSetup () {
+        // Clean-up
+        $('td[build]').off('mouseenter mouseleave');
+        $('td[validation_stamp]').off('mouseenter mouseleave');
+        // Build hovering
+        $('td[build]').hover(
+            function (e) {
+                var build = $(e.currentTarget).attr('build');
+                $("td[build='{0}']".format(build)).addClass('build-hover');
+            },
+            function (e) {
+                var build = $(e.currentTarget).attr('build');
+                $("td[build='{0}']".format(build)).removeClass('build-hover');
+            }
+        );
+        // Build hovering
+        $('td[validation_stamp]').hover(
+            function (e) {
+                var validation_stamp = $(e.currentTarget).attr('validation_stamp');
+                $("td[validation_stamp='{0}']".format(validation_stamp)).addClass('validation-stamp-hover');
+            },
+            function (e) {
+                var validation_stamp = $(e.currentTarget).attr('validation_stamp');
+                $("td[validation_stamp='{0}']".format(validation_stamp)).removeClass('validation-stamp-hover');
+            }
+        );
+    }
 	
 	function buildTemplate (project, branch) {
 	    return Template.config({
@@ -128,7 +156,10 @@ var Builds = function () {
                     }
                 }
 	        },
-	        postRenderFn: Application.tooltips
+	        postRenderFn: function () {
+	            Application.tooltips();
+	            gridHoverSetup();
+	        }
          });
 	}
 
