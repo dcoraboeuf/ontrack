@@ -2,7 +2,7 @@ var ValidationRun = function () {
 
     function updateStatusTemplate (validationRunId) {
         return Template.config({
-            url: 'ui/manage/validation_run/{0}/statusUpdate'.format(validationRunId),
+            url: 'ui/manage/validation_run/{0}/statusUpdateData'.format(validationRunId),
             render: Template.asSimpleTemplate('updateStatusTemplate')
         });
     }

@@ -1,7 +1,6 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.Status;
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 
@@ -16,13 +15,6 @@ public interface PropertyExtensionDescriptor {
      * @return List of {@link Entity} this property can apply to
      */
     EnumSet<Entity> getScope();
-
-    /**
-     * List of statuses the property can be added with. This list
-     * would be used only if the scope of this property contains
-     * VALIDATION_RUN.
-     */
-    EnumSet<Status> getStatuses();
 
     /**
      * Validates a value

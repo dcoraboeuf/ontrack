@@ -1,12 +1,10 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.Status;
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.util.EnumSet;
 import java.util.Locale;
 
 import static java.lang.String.format;
@@ -18,14 +16,6 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
      */
     @Override
     public void validate(String value) throws InputException {
-    }
-
-    /**
-     * Not associated to any status by default
-     */
-    @Override
-    public EnumSet<Status> getStatuses() {
-        return EnumSet.noneOf(Status.class);
     }
 
     /**

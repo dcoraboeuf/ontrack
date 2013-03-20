@@ -5,15 +5,16 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.EditableProperty;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyValueWithDescriptor;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.ui.model.DisplayablePropertyValue;
-import net.ontrack.web.ui.model.EditableProperty;
 import net.ontrack.web.ui.model.PropertyForm;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.Locale;
 
 @Controller
 @RequestMapping("/ui/property")
-public class PropertyUIController extends AbstractUIController {
+public class PropertyUIController extends AbstractUIController implements PropertyUI {
 
     private final PropertiesService propertiesService;
     private final SecurityUtils securityUtils;
@@ -99,6 +100,7 @@ public class PropertyUIController extends AbstractUIController {
     /**
      * Getting the list of properties for an entity
      */
+    @Override
     @RequestMapping(value = "/{entity}/{entityId:\\d+}/editable", method = RequestMethod.GET)
     public
     @ResponseBody
