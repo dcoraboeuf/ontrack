@@ -1,9 +1,9 @@
 package net.ontrack.extension.api.configuration;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ConfigurationExtensionService {
 
-    List<ConfigurationExtension> getConfigurationExtensions();
+    Collection<? extends ConfigurationExtension> getConfigurationExtensions();
 
 }

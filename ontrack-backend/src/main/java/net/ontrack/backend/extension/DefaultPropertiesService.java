@@ -1,7 +1,8 @@
-package net.ontrack.backend;
+package net.ontrack.backend.extension;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import net.ontrack.backend.PropertyScopeException;
 import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.core.model.*;
@@ -21,13 +22,13 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class PropertiesServiceImpl implements PropertiesService {
+public class DefaultPropertiesService implements PropertiesService {
 
     private final ExtensionManager extensionManager;
     private final PropertyDao propertyDao;
 
     @Autowired
-    public PropertiesServiceImpl(ExtensionManager extensionManager, PropertyDao propertyDao) {
+    public DefaultPropertiesService(ExtensionManager extensionManager, PropertyDao propertyDao) {
         this.extensionManager = extensionManager;
         this.propertyDao = propertyDao;
     }

@@ -1,7 +1,7 @@
 package net.ontrack.web.gui;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Collections2;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 
 @Controller
@@ -54,7 +54,7 @@ public class AdminController extends AbstractGUIController {
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
         // Gets the list of configuration extensions
-        List<GUIConfigurationExtension> extensions = Lists.transform(
+        Collection<GUIConfigurationExtension> extensions = Collections2.transform(
                 configurationExtensionService.getConfigurationExtensions(),
                 new Function<ConfigurationExtension, GUIConfigurationExtension>() {
                     @Override
