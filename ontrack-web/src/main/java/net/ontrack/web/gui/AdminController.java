@@ -2,13 +2,16 @@ package net.ontrack.web.gui;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
+import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.web.gui.model.GUIConfigurationExtension;
+import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -63,7 +66,22 @@ public class AdminController extends AbstractGUIController {
                         return new GUIConfigurationExtension(
                                 extension.getExtension(),
                                 extension.getName(),
-                                strings.get(locale, extension.getTitleKey())
+                                strings.get(locale, extension.getTitleKey()),
+                                Lists.transform(
+                                        extension.getFields(),
+                                        new Function<ConfigurationExtensionField, GUIConfigurationExtensionField>() {
+                                            @Override
+                                            public GUIConfigurationExtensionField apply(ConfigurationExtensionField f) {
+                                                return new GUIConfigurationExtensionField(
+                                                        f.getName(),
+                                                        strings.get(locale, f.getDisplayNameKey()),
+                                                        f.getType(),
+                                                        f.getDefaultValue(),
+                                                        f.getValue()
+                                                );
+                                            }
+                                        }
+                                )
                         );
                     }
                 }
