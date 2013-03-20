@@ -1,3 +1,8 @@
+/* General width for the container */
+.container {
+    width: 85%;
+}
+
 /* Pointer */
 .action {
 	cursor: pointer;
