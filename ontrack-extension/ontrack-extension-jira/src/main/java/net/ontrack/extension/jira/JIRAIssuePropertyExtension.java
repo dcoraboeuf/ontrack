@@ -1,6 +1,7 @@
 package net.ontrack.extension.jira;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.Status;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
@@ -30,6 +31,14 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     @Override
     public EnumSet<Entity> getScope() {
         return EnumSet.of(Entity.VALIDATION_RUN);
+    }
+
+    /**
+     * A user can enter an issue for the DEFECTIVE status
+     */
+    @Override
+    public EnumSet<Status> getStatuses() {
+        return EnumSet.of(Status.DEFECTIVE);
     }
 
     @Override
