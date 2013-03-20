@@ -1,4 +1,4 @@
-package net.ontrack.extension.jenkins;
+package net.ontrack.extension.link;
 
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
@@ -8,16 +8,16 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class JenkinsExtension extends ExtensionAdapter {
+public class LinkExtension extends ExtensionAdapter {
 
-    public static final String EXTENSION = "jenkins";
+    public static final String EXTENSION = "link";
 
-    public JenkinsExtension() {
+    public LinkExtension() {
         super(EXTENSION);
     }
 
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
-        return Collections.singletonList(new JenkinsUrlPropertyDescriptor());
+        return Collections.singletonList(new LinkPropertyDescriptor());
     }
 }

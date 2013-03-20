@@ -19,7 +19,7 @@ public class LinkPropertyDescriptor extends AbstractLinkPropertyExtensionDescrip
 
     @Override
     public String getExtension() {
-        return "link";
+        return LinkExtension.EXTENSION;
     }
 
     @Override
