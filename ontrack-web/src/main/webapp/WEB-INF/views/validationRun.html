@@ -58,6 +58,22 @@
             <div class="span12">
                 <@panel title=loc("validationRun.history")>
                     <@dynamicsection id="history" template="ValidationRun.historyTemplate(${validationRun.id?c})" />
+                    <script id="historyItemTemplate" type="text/html">
+                        <tr>
+                            <td>
+                                {{#status}}
+                                    <img width="24" height="24" src="static/images/status-{{status}}.png" />
+                                    <b>{{status}}</b>
+                                    - {{content}}
+                                {{/status}}
+                                {{^status}}
+                                    <img width="24" height="24" src="static/images/comment.png" />
+                                    {{content}}
+                                {{/status}}
+                                <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
+                            </td>
+                        </tr>
+                    </script>
                 </@panel>
             </div>
         </div>
