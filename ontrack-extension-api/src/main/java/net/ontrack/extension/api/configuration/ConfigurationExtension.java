@@ -25,4 +25,9 @@ public interface ConfigurationExtension {
      * List of fields for the configuration
      */
     List<? extends ConfigurationExtensionField> getFields();
+
+    /**
+     * Fills the configuration
+     */
+    void configure(String name, String value);
 }

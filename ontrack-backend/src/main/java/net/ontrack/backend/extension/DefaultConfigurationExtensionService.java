@@ -19,7 +19,6 @@ import java.util.Map;
 public class DefaultConfigurationExtensionService implements ConfigurationExtensionService, StartupService {
 
     private final Logger logger = LoggerFactory.getLogger(ConfigurationExtensionService.class);
-
     private final ExtensionManager extensionManager;
     private final ConfigurationDao configurationDao;
 
@@ -35,12 +34,26 @@ public class DefaultConfigurationExtensionService implements ConfigurationExtens
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void start() {
         logger.info("Loading all configurations");
+        // Gets the list of configurations
+        Collection<? extends ConfigurationExtension> extensions = getConfigurationExtensions();
+        for (ConfigurationExtension extension : extensions) {
+            load(extension);
+        }
     }
 
-    // FIXME Loads all the configurations at start-up
+    protected void load(ConfigurationExtension extension) {
+        for (ConfigurationExtensionField field : extension.getFields()) {
+            // Configuration key
+            String key = String.format("x-%s-%s-%s", extension.getExtension(), extension.getName(), field.getName());
+            // Gets the value
+            String value = configurationDao.getValue(key);
+            // Sets the value
+            extension.configure(field.getName(), value);
+        }
+    }
 
     @Override
     @Transactional
@@ -58,7 +71,8 @@ public class DefaultConfigurationExtensionService implements ConfigurationExtens
             // Saves the value
             configurationDao.setValue(key, value);
         }
-        // FIXME Updates the configuration in memory
+        // Updates the configuration in memory
+        load(configurationExtension);
         // OK
         return configurationExtension.getTitleKey();
     }
