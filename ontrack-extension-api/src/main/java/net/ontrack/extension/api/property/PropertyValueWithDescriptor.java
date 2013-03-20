@@ -1,4 +1,4 @@
-package net.ontrack.extension.api;
+package net.ontrack.extension.api.property;
 
 import lombok.Data;
 

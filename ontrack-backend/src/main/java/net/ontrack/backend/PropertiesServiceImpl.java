@@ -5,7 +5,11 @@ import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.core.model.*;
-import net.ontrack.extension.api.*;
+import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
+import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
+import net.ontrack.extension.api.property.PropertyValueWithDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +23,18 @@ import java.util.Locale;
 @Service
 public class PropertiesServiceImpl implements PropertiesService {
 
-    private final PropertyExtensionManager propertyExtensionManager;
+    private final ExtensionManager extensionManager;
     private final PropertyDao propertyDao;
 
     @Autowired
-    public PropertiesServiceImpl(PropertyExtensionManager propertyExtensionManager, PropertyDao propertyDao) {
-        this.propertyExtensionManager = propertyExtensionManager;
+    public PropertiesServiceImpl(ExtensionManager extensionManager, PropertyDao propertyDao) {
+        this.extensionManager = extensionManager;
         this.propertyDao = propertyDao;
     }
 
     @Override
     public List<PropertyExtensionDescriptor> getProperties(Entity entity) {
-        return propertyExtensionManager.getPropertyExtensionDescriptors(entity);
+        return extensionManager.getPropertyExtensionDescriptors(entity);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class PropertiesServiceImpl implements PropertiesService {
                     @Override
                     public PropertyValueWithDescriptor apply(PropertyValue value) {
                         return new PropertyValueWithDescriptor(
-                                propertyExtensionManager.getPropertyExtensionDescriptor(
+                                extensionManager.getPropertyExtensionDescriptor(
                                         value.getExtension(),
                                         value.getName()),
                                 value.getValue()
@@ -80,7 +84,7 @@ public class PropertiesServiceImpl implements PropertiesService {
     @Override
     public String toHTML(Strings strings, Locale locale, String extension, String name, String value) {
         try {
-            PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+            PropertyExtensionDescriptor descriptor = extensionManager.getPropertyExtensionDescriptor(extension, name);
             return descriptor.toHTML(strings, locale, value);
         } catch (PropertyExtensionNotFoundException e) {
             return StringEscapeUtils.escapeHtml4(value);
@@ -93,7 +97,7 @@ public class PropertiesServiceImpl implements PropertiesService {
         // Gets the property value
         String value = getPropertyValue(entity, entityId, extension, name);
         // Gets the descriptor for this property
-        PropertyExtensionDescriptor descriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+        PropertyExtensionDescriptor descriptor = extensionManager.getPropertyExtensionDescriptor(extension, name);
         // OK
         return descriptor.editHTML(strings, locale, value);
     }
@@ -127,7 +131,7 @@ public class PropertiesServiceImpl implements PropertiesService {
                 String name = propertyCreationForm.getName();
                 String value = propertyCreationForm.getValue();
                 // Gets the property extension descriptor
-                PropertyExtensionDescriptor propertyExtensionDescriptor = propertyExtensionManager.getPropertyExtensionDescriptor(extension, name);
+                PropertyExtensionDescriptor propertyExtensionDescriptor = extensionManager.getPropertyExtensionDescriptor(extension, name);
                 // Checks the entity scope
                 if (!propertyExtensionDescriptor.getScope().contains(entity)) {
                     throw new PropertyScopeException(extension, name, entity);

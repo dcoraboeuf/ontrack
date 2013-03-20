@@ -4,7 +4,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
 import net.ontrack.core.model.PropertyValue;
-import net.ontrack.extension.api.PropertiesService;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.test.AbstractIntegrationTest;
 import net.sf.jstring.Strings;
 import org.junit.Test;

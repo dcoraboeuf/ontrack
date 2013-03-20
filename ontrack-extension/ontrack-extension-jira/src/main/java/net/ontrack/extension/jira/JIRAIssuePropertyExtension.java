@@ -3,10 +3,9 @@ package net.ontrack.extension.jira;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.support.InputException;
-import net.ontrack.extension.api.support.AbstractPropertyExtensionDescriptor;
+import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
 import java.util.Locale;
@@ -14,7 +13,6 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
-@Component
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     private final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");

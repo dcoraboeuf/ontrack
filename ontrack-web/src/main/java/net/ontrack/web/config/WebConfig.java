@@ -2,7 +2,7 @@ package net.ontrack.web.config;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.extension.api.PropertiesService;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;

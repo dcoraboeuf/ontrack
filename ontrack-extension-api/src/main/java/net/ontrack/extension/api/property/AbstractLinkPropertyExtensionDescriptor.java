@@ -1,4 +1,4 @@
-package net.ontrack.extension.api.support;
+package net.ontrack.extension.api.property;
 
 import net.sf.jstring.Strings;
 

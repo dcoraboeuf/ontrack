@@ -1,12 +1,10 @@
 package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.extension.api.support.AbstractLinkPropertyExtensionDescriptor;
-import org.springframework.stereotype.Component;
+import net.ontrack.extension.api.property.AbstractLinkPropertyExtensionDescriptor;
 
 import java.util.EnumSet;
 
-@Component
 public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionDescriptor {
 
     public JenkinsUrlPropertyDescriptor() {

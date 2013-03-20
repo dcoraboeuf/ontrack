@@ -1,8 +1,7 @@
-package net.ontrack.extension.api.support;
+package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.InputException;
-import net.ontrack.extension.api.PropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
 
