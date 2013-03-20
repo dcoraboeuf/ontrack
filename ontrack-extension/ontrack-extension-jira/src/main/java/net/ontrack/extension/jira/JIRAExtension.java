@@ -24,6 +24,6 @@ public class JIRAExtension extends ExtensionAdapter {
 
     @Override
     public List<? extends ConfigurationExtension> getConfigurationExtensions() {
-        return Collections.singletonList(new JIRAConfiguration());
+        return Collections.singletonList(new JIRAConfigurationExtension());
     }
 }

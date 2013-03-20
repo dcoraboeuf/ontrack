@@ -2,7 +2,7 @@ package net.ontrack.extension.jira;
 
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 
-public class JIRAConfiguration implements ConfigurationExtension {
+public class JIRAConfigurationExtension implements ConfigurationExtension {
     @Override
     public String getExtension() {
         return JIRAExtension.EXTENSION;
