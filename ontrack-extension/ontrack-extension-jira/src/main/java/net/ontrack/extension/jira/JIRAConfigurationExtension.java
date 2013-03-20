@@ -5,9 +5,12 @@ import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.PasswordConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.TextConfigurationExtensionField;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class JIRAConfigurationExtension implements ConfigurationExtension {
 
     public static final String URL = "url";
@@ -52,6 +55,15 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
             case PASSWORD:
                 configuration.setPassword(value);
                 break;
+        }
+    }
+
+    public String getIssueURL(String issue) {
+        String base = configuration.getUrl();
+        if (StringUtils.isNotBlank(base)) {
+            return String.format("%s/browse/%s", base, issue);
+        } else {
+            return issue;
         }
     }
 }

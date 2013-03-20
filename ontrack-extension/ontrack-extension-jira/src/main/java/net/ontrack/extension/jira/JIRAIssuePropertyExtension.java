@@ -6,6 +6,8 @@ import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
 import java.util.Locale;
@@ -13,9 +15,17 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
+@Component
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     private final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
+
+    private final JIRAConfigurationExtension jiraConfigurationExtension;
+
+    @Autowired
+    public JIRAIssuePropertyExtension(JIRAConfigurationExtension jiraConfigurationExtension) {
+        this.jiraConfigurationExtension = jiraConfigurationExtension;
+    }
 
     @Override
     public EnumSet<Entity> getScope() {
@@ -46,10 +56,11 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
 
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
+        String issueUrl = jiraConfigurationExtension.getIssueURL(value);
         return String.format("<span title=\"%s\"><img src=\"extension/%s\" /> <a href=\"%s\">%s</a></span>",
                 strings.get(locale, getDisplayNameKey()),
                 "jira.png",
-                value, // FIXME Href to the issue
+                issueUrl,
                 value
         );
     }
