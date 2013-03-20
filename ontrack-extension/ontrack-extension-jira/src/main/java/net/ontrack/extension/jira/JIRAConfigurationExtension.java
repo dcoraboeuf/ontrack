@@ -30,8 +30,8 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
         JIRAConfiguration c = new JIRAConfiguration();
         // Converts to fields
         return Lists.newArrayList(
-                new TextConfigurationExtensionField("url", "jira.configuration.url", c.getUrl()),
-                new TextConfigurationExtensionField("user", "jira.configuration.user", c.getUser()),
+                new TextConfigurationExtensionField("url", "jira.configuration.url", "http://jira", c.getUrl()),
+                new TextConfigurationExtensionField("user", "jira.configuration.user", "", c.getUser()),
                 new PasswordConfigurationExtensionField("password", "jira.configuration.password", c.getPassword())
         );
     }

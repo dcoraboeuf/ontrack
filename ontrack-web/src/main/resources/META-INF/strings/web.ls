@@ -132,6 +132,10 @@ settings.security
     en -> Security settings
     fr -> Configuration de la sécurité
 
+settings.extension.saved
+    en -> {0} saved.
+    fr -> {0} sauvegardée.
+
 [security.ldap]
 
 ldap.enabled

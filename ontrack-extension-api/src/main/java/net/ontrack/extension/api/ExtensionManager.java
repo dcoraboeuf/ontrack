@@ -41,4 +41,9 @@ public interface ExtensionManager {
      * Gets the list of all configuration extensions
      */
     Collection<? extends ConfigurationExtension> getConfigurationExtensions();
+
+    /**
+     * Gets a configuration extension by its extension ID and name
+     */
+    <T extends ConfigurationExtension> T getConfigurationExtension(String extension, String name);
 }

@@ -5,6 +5,7 @@ import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
+import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class DefaultExtensionManager implements ExtensionManager {
 
     private final Map<String, Extension> extensionIndex;
     private final Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
-    private final Collection<ConfigurationExtension> configurationExtensions;
+    private final Map<String, Map<String, ConfigurationExtension>> configurationIndex;
 
     @Autowired
     public DefaultExtensionManager(Collection<Extension> extensions) {
@@ -34,7 +35,7 @@ public class DefaultExtensionManager implements ExtensionManager {
         logger.info("[extension] Indexing extensions");
         extensionIndex = new TreeMap<>();
         propertyIndex = new HashMap<>();
-        configurationExtensions = new ArrayList<>();
+        configurationIndex = new HashMap<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
             logger.info("[extension] Extension={}", extensionName);
@@ -67,8 +68,14 @@ public class DefaultExtensionManager implements ExtensionManager {
             for (ConfigurationExtension configurationExtension : extension.getConfigurationExtensions()) {
                 // Logging
                 logger.info("[extension] Configuration extension={}, configuration={}", extensionName, configurationExtension);
+                // Index per extension
+                Map<String, ConfigurationExtension> extensionConfigurationIndex = configurationIndex.get(extensionName);
+                if (extensionConfigurationIndex == null) {
+                    extensionConfigurationIndex = new TreeMap<>();
+                    configurationIndex.put(extensionName, extensionConfigurationIndex);
+                }
                 // Adds to the list
-                configurationExtensions.add(configurationExtension);
+                extensionConfigurationIndex.put(configurationExtension.getName(), configurationExtension);
             }
         }
     }
@@ -88,7 +95,25 @@ public class DefaultExtensionManager implements ExtensionManager {
 
     @Override
     public Collection<? extends ConfigurationExtension> getConfigurationExtensions() {
-        return configurationExtensions;
+        Collection<ConfigurationExtension> list = new ArrayList<>();
+        for (Map<String, ConfigurationExtension> index : configurationIndex.values()) {
+            for (ConfigurationExtension configurationExtension : index.values()) {
+                list.add(configurationExtension);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public <T extends ConfigurationExtension> T getConfigurationExtension(String extension, String name) {
+        Map<String, ConfigurationExtension> extensionIndex = configurationIndex.get(extension);
+        if (extension != null) {
+            ConfigurationExtension configurationExtension = extensionIndex.get(name);
+            if (configurationExtension != null) {
+                return (T) configurationExtension;
+            }
+        }
+        throw new ConfigurationExtensionNotFoundException(extension, name);
     }
 
     @Override

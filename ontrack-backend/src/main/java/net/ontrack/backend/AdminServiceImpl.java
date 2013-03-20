@@ -1,6 +1,7 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -11,18 +12,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Validator;
+import java.util.Map;
 
 @Service
 public class AdminServiceImpl extends AbstractServiceImpl implements AdminService {
 
     private final ConfigurationService configurationService;
     private final ConfigurationCache configurationCache;
+    private final ConfigurationExtensionService configurationExtensionService;
 
     @Autowired
-    public AdminServiceImpl(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationCache configurationCache) {
+    public AdminServiceImpl(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationCache configurationCache, ConfigurationExtensionService configurationExtensionService) {
         super(validator, eventService);
         this.configurationService = configurationService;
         this.configurationCache = configurationCache;
+        this.configurationExtensionService = configurationExtensionService;
     }
 
     @Override
@@ -64,5 +68,12 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
         }
         // Notifies the configuration listeners
         configurationCache.putConfiguration(ConfigurationCacheKey.LDAP, configuration);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public String saveExtensionConfiguration(String extension, String name, Map<String, String> parameters) {
+        return configurationExtensionService.saveExtensionConfiguration(extension, name, parameters);
     }
 }

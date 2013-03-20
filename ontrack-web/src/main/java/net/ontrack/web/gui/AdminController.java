@@ -14,16 +14,21 @@ import net.ontrack.web.gui.model.GUIConfigurationExtension;
 import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/gui/admin")
@@ -100,6 +105,33 @@ public class AdminController extends AbstractGUIController {
         adminService.saveLDAPConfiguration(configuration);
         // Success
         redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "ldap.saved")));
+        // OK
+        return "redirect:/gui/admin/settings";
+    }
+
+    /**
+     * Extension settings
+     */
+    @RequestMapping(value = "/settings/extension/{extension}/{name}", method = RequestMethod.POST)
+    public String extensionSettings(
+            Locale locale,
+            @PathVariable String extension,
+            @PathVariable String name,
+            WebRequest request,
+            RedirectAttributes redirectAttributes) {
+        // Parameters
+        Map<String, String> parameters = new HashMap<>();
+        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+            String pName = entry.getKey();
+            String[] pValues = entry.getValue();
+            if (pValues != null && pValues.length == 1) {
+                parameters.put(pName, pValues[0]);
+            }
+        }
+        // Saves the configuration
+        String displayNameKey = adminService.saveExtensionConfiguration(extension, name, parameters);
+        // Success
+        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "settings.extension.saved", new LocalizableMessage(displayNameKey))));
         // OK
         return "redirect:/gui/admin/settings";
     }
