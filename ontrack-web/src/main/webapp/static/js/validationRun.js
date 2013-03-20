@@ -1,5 +1,12 @@
 var ValidationRun = function () {
 
+    function updateStatusTemplate (validationRunId) {
+        return Template.config({
+            url: 'ui/manage/validation_run/{0}/statusUpdate'.format(validationRunId),
+            render: Template.asSimpleTemplate('updateStatusTemplate')
+        });
+    }
+
     function historyTemplate (validationRunId) {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
@@ -49,7 +56,8 @@ var ValidationRun = function () {
         sendStatus: sendStatus,
         updateStatus: updateStatus,
         cancelUpdateStatus: cancelUpdateStatus,
-        historyTemplate: historyTemplate
+        historyTemplate: historyTemplate,
+        updateStatusTemplate: updateStatusTemplate
     };
 
 } ();

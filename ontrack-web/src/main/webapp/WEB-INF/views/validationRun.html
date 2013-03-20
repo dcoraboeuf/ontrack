@@ -37,6 +37,8 @@
             <div class="row-fluid">
                 <div class="span12">
                     <button class="btn btn-link" onclick="ValidationRun.updateStatus()"><i class="icon-comment"></i> <@lh key="validationRunStatus.new" /></button>
+                    <@dynamicsection id="updateStatus" template="ValidationRun.updateStatusTemplate(${validationRun.id?c})">
+                    </@dynamicsection>
                     <@form id="status-form" class="x-dialog alert alert-info">
                         <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
                         <div id="status-error" class="x-error alert alert-error"></div>
