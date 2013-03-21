@@ -160,7 +160,7 @@ public interface SQL {
 
     String PROPERTY_INSERT = "INSERT INTO PROPERTIES (EXTENSION, NAME, VALUE, %s) VALUES (:extension, :name, :value, :entityId)";
 
-    String PROPERTY_ALL = "SELECT * FROM PROPERTIES WHERE %s = :entityId";
+    String PROPERTY_ALL = "SELECT * FROM PROPERTIES WHERE %s = :entityId ORDER BY EXTENSION, NAME";
 
     String PROPERTY_VALUE = "SELECT * FROM PROPERTIES WHERE %s = :entityId AND EXTENSION = :extension AND NAME = :name";
 }
