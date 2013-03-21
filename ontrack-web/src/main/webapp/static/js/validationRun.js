@@ -1,9 +1,9 @@
 var ValidationRun = function () {
 
-    function updateStatusTemplate (validationRunId) {
+    function statusUpdateDataTemplate (validationRunId) {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/statusUpdateData'.format(validationRunId),
-            render: Template.asSimpleTemplate('updateStatusTemplate')
+            render: Template.asSimpleTemplate('statusUpdateDataTemplate')
         });
     }
 
@@ -41,15 +41,15 @@ var ValidationRun = function () {
     }
 
     function updateStatus () {
-        $('#status-error').hide();
-        $('#status-form').toggle();
-        if ($('#status-form').is(':visible')) {
+        $('#statusUpdate-error').hide();
+        $('#statusUpdate-form').show();
+        if ($('#statusUpdate-form').is(':visible')) {
             $('#description').focus();
         }
     }
 
     function cancelUpdateStatus () {
-        $('#status-form').toggle();
+        $('#statusUpdate-form').hide();
     }
 
     return {
@@ -57,7 +57,7 @@ var ValidationRun = function () {
         updateStatus: updateStatus,
         cancelUpdateStatus: cancelUpdateStatus,
         historyTemplate: historyTemplate,
-        updateStatusTemplate: updateStatusTemplate
+        statusUpdateDataTemplate: statusUpdateDataTemplate
     };
 
 } ();

@@ -24,7 +24,9 @@
                     <span onclick="location='gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
                 </span>
             </div>
-            <div class="span12 muted">${validationRun.description?html}</div>
+            <#if validationRun.description != "">
+                <div class="span12 muted">${validationRun.description?html}</div>
+            </#if>
             <div class="span12">
                 <@properties entity="VALIDATION_RUN" entityId=validationRun.id />
             </div>
@@ -37,22 +39,24 @@
             <div class="row-fluid">
                 <div class="span12">
                     <button class="btn btn-link" onclick="ValidationRun.updateStatus()"><i class="icon-comment"></i> <@lh key="validationRunStatus.new" /></button>
-                    <@dynamicsection id="updateStatus" template="ValidationRun.updateStatusTemplate(${validationRun.id?c})">
+                    <@dynamicsection id="updateStatus" template="ValidationRun.statusUpdateDataTemplate(${validationRun.id?c})">
                     </@dynamicsection>
-                    <@form id="status-form" class="x-dialog alert alert-info">
-                        <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
-                        <div id="status-error" class="x-error alert alert-error"></div>
-                        <@form_buttons>
-                            <!-- Comment -->
-                            <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="${base}/images/comment.png" /> <@lh key="validationRunStatus.status.none" /></button>
-                            <!-- Available statuses -->
-                            <#list validationRun.validationRunStatus.status.next as status>
-                                <button type="button" class="btn" onclick="ValidationRun.sendStatus('${status}')"><img src="${base}/images/status-${status}.png" /> ${status}</button>
-                            </#list>
-                            <!-- Cancel -->
-                            <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()"><@lh key="general.cancel" /></button>
-                        </@form_buttons>
-                    </@form>
+                    <script id="statusUpdateDataTemplate" type="text/html">
+                        <form id="statusUpdate-form" class="hidden alert alert-info">
+                            <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
+                            <div id="statusUpdate-error" class="hidden alert alert-error"></div>
+                            <@form_buttons>
+                                <!-- Comment -->
+                                <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="${base}/images/comment.png" /> <@lh key="validationRunStatus.status.none" /></button>
+                                <!-- Available statuses -->
+                                {{#nextStatusList}}
+                                    <button type="button" class="btn" onclick="ValidationRun.sendStatus('{{.}}')"><img src="${base}/images/status-{{.}}.png" /> {{.}}</button>
+                                {{/nextStatusList}}
+                                <!-- Cancel -->
+                                <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()"><@lh key="general.cancel" /></button>
+                            </@form_buttons>
+                        </form>
+                    </script>
                 </div>
             </div>
         </#if>
