@@ -44,6 +44,22 @@
                     <script id="statusUpdateDataTemplate" type="text/html">
                         <form id="statusUpdate-form" class="hidden alert alert-info">
                             <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
+                            {{#editableProperties.length}}
+                                <table>
+                                    <tbody>
+                                        {{#editableProperties}}
+                                            <tr>
+                                                <td style="padding-right:1em;">
+                                                    <label class="control-label" for="{{extension}}-{{name}}-field">{{displayName}}</label>
+                                                </td>
+                                                <td>
+                                                    <input id="{{extension}}-{{name}}-field" name="{{extension}}-{{name}}" type="text" class="input-xxlarge" />
+                                                </td>
+                                            </tr>
+                                        {{/editableProperties}}
+                                    </tbody>
+                                </table>
+                            {{/editableProperties.length}}
                             <div id="statusUpdate-error" class="hidden alert alert-error"></div>
                             <@form_buttons>
                                 <!-- Comment -->
