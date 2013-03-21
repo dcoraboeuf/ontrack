@@ -16,6 +16,13 @@ var ValidationRun = function () {
     }
 
     function sendStatus (status) {
+        // Checks the description
+        var description = $('#description').val();
+        if (description.trim() == '') {
+            $('#description').focus();
+            $('#description-line').addClass('error');
+            return false;
+        }
         // Run ID stored as a hidden field
         var runId = $('#validationRunId').val();
         // Collects the properties and their values
@@ -38,7 +45,7 @@ var ValidationRun = function () {
             'ui/manage/validation_run/{0}/comment'.format(runId),
             {
                 status: status,
-                description: $('#description').val(),
+                description: description,
                 properties: properties
             },
             function (data) {

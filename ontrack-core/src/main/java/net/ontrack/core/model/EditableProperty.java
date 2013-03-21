@@ -8,5 +8,6 @@ public class EditableProperty {
     private final String extension;
     private final String name;
     private final String displayName;
+    private final String value;
 
 }

@@ -107,7 +107,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
     List<EditableProperty> getEditableProperties(
             final Locale locale,
             @PathVariable final Entity entity,
-            @PathVariable int entityId) {
+            @PathVariable final int entityId) {
         // List of editable properties for this entity
         List<? extends PropertyExtensionDescriptor> properties = propertiesService.getProperties(entity);
         // Filter on editable state
@@ -128,10 +128,17 @@ public class PropertyUIController extends AbstractUIController implements Proper
                 new Function<PropertyExtensionDescriptor, EditableProperty>() {
                     @Override
                     public EditableProperty apply(PropertyExtensionDescriptor descriptor) {
+                        String extension = descriptor.getExtension();
+                        String propertyName = descriptor.getName();
                         return new EditableProperty(
-                                descriptor.getExtension(),
-                                descriptor.getName(),
-                                strings.get(locale, descriptor.getDisplayNameKey())
+                                extension,
+                                propertyName,
+                                strings.get(locale, descriptor.getDisplayNameKey()),
+                                propertiesService.getPropertyValue(
+                                        entity,
+                                        entityId,
+                                        extension,
+                                        propertyName)
                         );
                     }
                 }
