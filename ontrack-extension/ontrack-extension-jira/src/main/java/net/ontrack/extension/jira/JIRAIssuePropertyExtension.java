@@ -19,7 +19,6 @@ import static java.lang.String.format;
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     private final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
-
     private final JIRAConfigurationExtension jiraConfigurationExtension;
 
     @Autowired

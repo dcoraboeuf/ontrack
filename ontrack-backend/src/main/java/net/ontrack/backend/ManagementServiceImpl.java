@@ -11,6 +11,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
@@ -49,6 +50,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationRunEventDao validationRunEventDao;
     private final CommentDao commentDao;
     private final EntityDao entityDao;
+    private final PropertiesService propertiesService;
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
         @Override
@@ -104,7 +106,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao) {
+    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService) {
         super(validator, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
@@ -120,6 +122,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationRunEventDao = validationRunEventDao;
         this.commentDao = commentDao;
         this.entityDao = entityDao;
+        this.propertiesService = propertiesService;
     }
 
     // Branches
@@ -663,6 +666,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Does not do anything if empty description
         if (StringUtils.isBlank(form.getDescription())) {
             return Ack.NOK;
+        }
+        // Properties
+        List<PropertyCreationForm> properties = form.getProperties();
+        if (properties != null) {
+            for (PropertyCreationForm propertyForm : properties) {
+                String propertyValue = propertyForm.getValue();
+                if (StringUtils.isNotBlank(propertyValue)) {
+                    propertiesService.saveProperty(
+                            Entity.VALIDATION_RUN,
+                            runId,
+                            propertyForm.getExtension(),
+                            propertyForm.getName(),
+                            propertyValue
+                    );
+                }
+            }
         }
         // Checks the status
         if (StringUtils.isBlank(form.getStatus())) {

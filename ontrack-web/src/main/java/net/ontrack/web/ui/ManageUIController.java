@@ -1,10 +1,13 @@
 package net.ontrack.web.ui;
 
+import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.core.ui.ManageUI;
+import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
+import net.ontrack.web.ui.model.ValidationRunStatusUpdateData;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +22,13 @@ import java.util.Locale;
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
 
     private final ManagementService managementService;
+    private final PropertyUI propertyUI;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, PropertyUI propertyUI) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
+        this.propertyUI = propertyUI;
     }
 
     // Project groups
@@ -368,5 +373,21 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     Ack addValidationRunComment(@PathVariable int runId, @RequestBody ValidationRunCommentCreationForm form) {
         return managementService.addValidationRunComment(runId, form);
+    }
+
+    @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/statusUpdateData", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ValidationRunStatusUpdateData getValidationRunStatusUpdateData(Locale locale, @PathVariable int validationRunId) {
+        // Gets the validation run
+        ValidationRunSummary validationRun = managementService.getValidationRun(validationRunId);
+        Status currentStatus = validationRun.getValidationRunStatus().getStatus();
+        // Gets the properties for this run
+        List<EditableProperty> editableProperties = propertyUI.getEditableProperties(locale, Entity.VALIDATION_RUN, validationRunId);
+        // OK
+        return new ValidationRunStatusUpdateData(
+                Lists.newArrayList(currentStatus.getNext()),
+                editableProperties
+        );
     }
 }
