@@ -1,24 +1,28 @@
 package net.ontrack.extension.jira;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static java.lang.String.format;
-
 @Component
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
-    private final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
+    private static final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
+    private static final String ISSUE_SEPARATORS = ",; ";
+
     private final JIRAConfigurationExtension jiraConfigurationExtension;
 
     @Autowired
@@ -46,32 +50,47 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
         return "jira.issue";
     }
 
+    protected String[] parseIssues(String value) {
+        return StringUtils.split(value, ISSUE_SEPARATORS);
+    }
+
     @Override
     public void validate(String value) throws InputException {
-        if (!ISSUE_PATTERN.matcher(value).matches()) {
-            throw new JIRAIssuePatternException(value);
+        String[] issues = parseIssues(value);
+        for (String issue : issues) {
+            if (!ISSUE_PATTERN.matcher(issue).matches()) {
+                throw new JIRAIssuePatternException(issue);
+            }
         }
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
-        String issueUrl = jiraConfigurationExtension.getIssueURL(value);
-        return String.format("<span title=\"%s\"><img src=\"extension/%s\" /> <a href=\"%s\">%s</a></span>",
-                strings.get(locale, getDisplayNameKey()),
-                "jira.png",
-                issueUrl,
-                value
+    public String toHTML(final Strings strings, final Locale locale, String value) {
+        StringBuilder html = new StringBuilder(
+                String.format("<span title=\"%s\"><img src=\"extension/%s\" /> ",
+                        strings.get(locale, getDisplayNameKey()),
+                        "jira.png"));
+        // For each issue
+        html.append(
+                StringUtils.join(
+                        Iterables.transform(
+                                Arrays.asList(parseIssues(value)),
+                                new Function<String, String>() {
+                                    @Override
+                                    public String apply(String issue) {
+                                        return String.format("<a href=\"%s\">%s</a>",
+                                                jiraConfigurationExtension.getIssueURL(issue),
+                                                StringEscapeUtils.escapeHtml4(issue)
+                                        );
+                                    }
+                                }
+                        ),
+                        ", "
+                )
         );
-    }
-
-    @Override
-    public String editHTML(Strings strings, Locale locale, String value) {
-        return format(
-                "<input id=\"extension-%1$s-%2$s\" name=\"extension-%1$s-%2$s\" type=\"text\" maxlength=\"200\" class=\"input-small\" value=\"%3$s\" />",
-                getExtension(), // 1
-                getName(), // 2
-                value != null ? StringEscapeUtils.escapeHtml4(value) : "" // 3
-        );
+        // End
+        html.append("</span>");
+        return html.toString();
     }
 
     @Override
