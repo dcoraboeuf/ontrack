@@ -18,13 +18,25 @@ var ValidationRun = function () {
     function sendStatus (status) {
         // Run ID stored as a hidden field
         var runId = $('#validationRunId').val();
+        // Collects the properties and their values
+        var properties = [];
+        $('.update-status-property').each (function (index, input) {
+            var extension = $(input).attr('extension');
+            var name = $(input).attr('property');
+            properties.push({
+                extension: extension,
+                name: name,
+                value: $(input).val()
+            });
+        });
         // Sends the form
         Application.ajax (
             'POST',
             'ui/manage/validation_run/{0}/comment'.format(runId),
             {
                 status: status,
-                description: $('#description').val()
+                description: $('#description').val(),
+                properties: properties
             },
             function (data) {
                 // Closes the dialog
