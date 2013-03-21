@@ -96,8 +96,12 @@ var Builds = function () {
         // Items
         html += '</thead><tbody>';
         html += generateTableBuildRows(project, branch, branchBuilds);
+        // Footer
+        html += '</tbody><tfoot><tr><td colspan="{0}">'.format(branchBuilds.validationStamps.length + 2);
+        // More button
+        html += '<button id="more-builds" type="button" class="btn" onclick="Template.more(\'builds\')">{0}</button>'.format(loc('general.more'));
         // End
-        html += '</tbody></table>';
+        html += '</td></tr></tfoot></table>';
         return html;
     }
 
@@ -132,7 +136,13 @@ var Builds = function () {
 	function buildTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/build?u=1'.format(project, branch),
-	        more: true,
+	        more: function (id, config, data, hasMore) {
+	            if (hasMore) {
+	                $('#more-builds').show();
+	            } else {
+	                $('#more-builds').hide();
+	            }
+	        },
 	        refresh: true,
 	        dataLength: function (branchBuilds) {
 	            return branchBuilds.builds.length;

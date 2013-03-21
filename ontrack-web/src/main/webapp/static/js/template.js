@@ -99,11 +99,15 @@ var Template = function () {
 	        var dataCount = config.dataLength(data);
 	        config.offset += dataCount;
 	        var hasMore = (dataCount >= config.count);
-	        if (hasMore) {
-	            $('#'+ id + '-more-section').show();
+	        if ($.isFunction(config.more)) {
+	            config.more(id, config, data, hasMore);
 	        } else {
-	            $('#'+ id + '-more-section').hide();
-	        }
+                if (hasMore) {
+                    $('#'+ id + '-more-section').show();
+                } else {
+                    $('#'+ id + '-more-section').hide();
+                }
+            }
 	    }
 	}
 
