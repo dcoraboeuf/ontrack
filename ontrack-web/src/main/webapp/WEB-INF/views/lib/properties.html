@@ -21,7 +21,12 @@
         {{#properties.length}}
             <input id="entity" type="hidden" value="${entity?html}" />
             <input id="entityId" type="hidden" value="${entityId?c}" />
-            <i class="icon-plus-sign action" onclick="Properties.addProperties()" title="<@lh key='properties.add' />"></i>
+            <ul class="properties">
+                <button type="button" class="btn" onclick="Properties.addProperties()" style="margin-top:0.5em;margin-bottom:0.5em;">
+                    <i class="icon-plus-sign action"></i>
+                    <@lh key="properties.add" />
+                </button>
+            </ul>
             <div id="property-add-section" class="hidden alert alert-info">
                 <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
                     <option value=""></option>
