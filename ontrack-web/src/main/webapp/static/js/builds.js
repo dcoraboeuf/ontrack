@@ -85,7 +85,6 @@ var Builds = function () {
                 if (cookie) {
                     var json = eval(cookie);
                     filter = $.parseJSON(json);
-                    console.log(filter);
                     $('#builds').data('filter', filter);
                     return filter;
                 } else {
@@ -214,13 +213,42 @@ var Builds = function () {
         withFilter(filter);
 	}
 
-	function showFilter () {
+	function showFilter (project, branch) {
         Application.dialog({
             id: 'filter-form',
             title: loc('query'),
             width: 800,
             openFn: function () {
-                // TODO Preselection of fields
+                // Gets the current filter
+                var filter = getCurrentFilter(project, branch)();
+                // Converts into a form (best effort)
+                var form = {
+                    limit: filter.limit,
+                    withPromotionLevel: filter.withPromotionLevel,
+                    sincePromotionLevel: filter.sincePromotionLevel
+                };
+                // Since validation stamp
+                if (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0) {
+                    form.sinceValidationStamp = filter.sinceValidationStamps[0].validationStamp;
+                    if (filter.sinceValidationStamps[0].statuses && filter.sinceValidationStamps[0].statuses.length > 0) {
+                        form.sinceValidationStampStatus = filter.sinceValidationStamps[0].statuses[0];
+                    }
+                }
+                // With validation stamp
+                if (filter.withValidationStamps && filter.withValidationStamps.length > 0) {
+                    form.withValidationStamp = filter.withValidationStamps[0].validationStamp;
+                    if (filter.withValidationStamps[0].statuses && filter.withValidationStamps[0].statuses.length > 0) {
+                        form.withValidationStampStatus = filter.withValidationStamps[0].statuses[0];
+                    }
+                }
+                // Initialization of fields
+                $('#withPromotionLevel').val(form.withPromotionLevel);
+                $('#sincePromotionLevel').val(form.sincePromotionLevel);
+                $('#withValidationStamp').val(form.withValidationStamp);
+                $('#withValidationStampStatus').val(form.withValidationStampStatus);
+                $('#sinceValidationStamp').val(form.sinceValidationStamp);
+                $('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
+                $('#limit').val(form.limit);
             },
             submitFn: function (closeFn) {
                 // Gets the values
@@ -245,7 +273,7 @@ var Builds = function () {
         $('#withValidationStampStatus').val('');
         $('#sinceValidationStamp').val('');
         $('#sinceValidationStampStatus').val('');
-        $('#limit').val('20');
+        $('#limit').val('10');
 	}
 	
 	return {
