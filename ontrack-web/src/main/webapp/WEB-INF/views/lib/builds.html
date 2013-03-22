@@ -4,4 +4,36 @@
 <#macro builds project branch id="builds">
 	<@dynamicsection id=id template="Builds.buildTemplate('${project?html}','${branch?html}')">
 	</@dynamicsection>
+
+    <script id="branchBuildsTemplate" type="text/html">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th rowspan="2"><@lh key="model.build" /></th>
+                    <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
+                    <th colspan="{{branchBuilds.validationStamps.length}}"><@lh key="branch.validation_stamps" /></th>
+                </tr>
+                <tr>
+                    {{#branchBuilds.validationStamps}}
+                        <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
+                            <a href="gui/project/{{project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
+                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                            </a>
+                        </th>
+                    {{/branchBuilds.validationStamps}}
+                </tr>
+            </thead>
+            <tbody>
+                {{{rowFn}}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="{{totalColspan}}">
+                        <button id="more-builds" type="button" class="btn" onclick="Template.more('builds')"><@lh key="general.more" /></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </script>
+
 </#macro>

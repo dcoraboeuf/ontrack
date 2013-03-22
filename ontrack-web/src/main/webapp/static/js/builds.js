@@ -77,32 +77,18 @@ var Builds = function () {
     }
 
     function generateTableBranchBuilds (project, branch, branchBuilds) {
-        var html = '<table class="table"><thead>';
-        // Header
-        html += '<tr>';
-            html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
-            html += '<th rowspan="2">{0}</th>'.format(loc('branch.promotion_levels'));
-            html += '<th colspan="{1}">{0}</th>'.format(loc('branch.validation_stamps'), branchBuilds.validationStamps.length);
-        html += '</tr>';
-        html += '<tr>';
-        $.each(branchBuilds.validationStamps, function (index, validationStamp) {
-            html += '<th align="center" class="validation_stamp_header" validation_stamp="{0}">'.format(validationStamp.name.html());
-            html += '<a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
-            html += ValidationStamps.validationStampImage(project, branch, validationStamp);
-            html += '</a>';
-            html += '</th>';
-        });
-        html += '</tr>';
-        // Items
-        html += '</thead><tbody>';
-        html += generateTableBuildRows(project, branch, branchBuilds);
-        // Footer
-        html += '</tbody><tfoot><tr><td colspan="{0}">'.format(branchBuilds.validationStamps.length + 2);
-        // More button
-        html += '<button id="more-builds" type="button" class="btn" onclick="Template.more(\'builds\')">{0}</button>'.format(loc('general.more'));
-        // End
-        html += '</td></tr></tfoot></table>';
-        return html;
+        return $.mustache(
+            $('#branchBuildsTemplate').html(),
+            {
+                project: project,
+                branch: branch,
+                branchBuilds: branchBuilds,
+                totalColspan: branchBuilds.validationStamps.length + 2,
+                rowFn: function (text, renderFn) {
+                    return generateTableBuildRows (project, branch, branchBuilds);
+                }
+            }
+        );
     }
 
     function gridHoverSetup () {
