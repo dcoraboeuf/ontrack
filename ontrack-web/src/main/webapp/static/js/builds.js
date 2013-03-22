@@ -78,24 +78,27 @@ var Builds = function () {
     function getCurrentFilter (project, branch) {
         return function () {
             var filter = $('#builds').data('filter');
+            var hash = location.hash;
+            var cookie = getCookie('{0}|{1}|filter'.format(project, branch));
             if (filter) {
                 return filter;
+            } else if (hash && hash != '' && hash != '#') {
+                filter = $.deparam(hash.substring(1));
+                $('#builds').data('filter', filter);
+                return filter;
+            } else if (cookie) {
+                var json = eval(cookie);
+                filter = $.parseJSON(json);
+                $('#builds').data('filter', filter);
+                return filter;
             } else {
-                var cookie = getCookie('{0}|{1}|filter'.format(project, branch));
-                if (cookie) {
-                    var json = eval(cookie);
-                    filter = $.parseJSON(json);
-                    $('#builds').data('filter', filter);
-                    return filter;
-                } else {
-                    return {
-                        limit: 10,
-                        sincePromotionLevel: '',
-                        withPromotionLevel: '',
-                        sinceValidationStamps: [],
-                        withValidationStamps: []
-                    };
-                }
+                return {
+                    limit: 10,
+                    sincePromotionLevel: '',
+                    withPromotionLevel: '',
+                    sinceValidationStamps: [],
+                    withValidationStamps: []
+                };
             }
         }
     }
@@ -176,6 +179,10 @@ var Builds = function () {
 	function withFilter (buildFilter) {
         // Associates the filter with the build section
         $('#builds').data('filter', buildFilter);
+        // Fills the hash
+        var params = $.param(buildFilter);
+        // Sets as hash
+        location.hash = params;
         // Reloads
         Template.reload('builds');
 	}
