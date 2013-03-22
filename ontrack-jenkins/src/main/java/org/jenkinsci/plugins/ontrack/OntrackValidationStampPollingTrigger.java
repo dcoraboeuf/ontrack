@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.ontrack;
 
 import antlr.ANTLRException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.model.*;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.core.model.BuildSummary;
@@ -19,7 +20,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	private final String branch;
 	private final String validationStamp;
 	private String lastBuildNr;
-	private File lastBuildNrFile;
+	private FilePath lastBuildNrFile;
 
 	@DataBoundConstructor
 	public OntrackValidationStampPollingTrigger(String cronTabSpec, String triggerLabel, String project, String branch,
@@ -70,6 +71,8 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 				}
 			} catch (IOException e) {
 				logException(xTriggerLog, e);
+			} catch (InterruptedException e) {
+				logException(xTriggerLog, e);
 			}
 		}
 
@@ -78,7 +81,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 
 	@Override
 	protected void start(Node pollingNode, BuildableItem project, boolean newInstance, XTriggerLog xTriggerLog) throws XTriggerException {
-		this.lastBuildNrFile = new File(project.getRootDir().getAbsolutePath() + "/lastBuildNr");
+		this.lastBuildNrFile = new FilePath(pollingNode.getRootPath(), "lastBuildNr");
 
 		try {
 			loadLastBuildNr(xTriggerLog);
@@ -112,27 +115,13 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		this.lastBuildNr = lastBuildNr;
 	}
 
-	private void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog) throws IOException {
-		if (!lastBuildNrFile.exists()) {
-			lastBuildNrFile.createNewFile();
-		}
-
-		FileWriter fw = new FileWriter(lastBuildNrFile);
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(lastBuildNr);
-		bw.close();
-		fw.close();
+	private void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog) throws IOException, InterruptedException {
+		lastBuildNrFile.write(null, lastBuildNr);
 		xTriggerLog.info(String.format("Wrote buildNr: %s", lastBuildNr));
 	}
 
 	private void loadLastBuildNr(XTriggerLog xTriggerLog) throws IOException {
-		FileReader fr = new FileReader(lastBuildNrFile);
-		BufferedReader br = new BufferedReader(fr);
-
-		lastBuildNr = br.readLine();
-
-		br.close();
-		fr.close();
+		lastBuildNr = lastBuildNrFile.readToString();
 
 		xTriggerLog.info(String.format("Loaded buildNr: %s", lastBuildNr));
 	}
@@ -164,7 +153,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		});
 	}
 
-	private void logException(XTriggerLog xTriggerLog, IOException e) {
+	private void logException(XTriggerLog xTriggerLog, Exception e) {
 		e.printStackTrace();
 		xTriggerLog.error(e.getMessage());
 		for (StackTraceElement se : e.getStackTrace()) {
