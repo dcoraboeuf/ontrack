@@ -158,7 +158,7 @@ var Application = function () {
 	 */
 	function values (baseId) {
 		var data = {};
-		$('#' + baseId + ' input,textarea,select').each (function (index, field) {
+		$('#' + baseId).find('input,textarea,select').each (function (index, field) {
 			var name = field.getAttribute('name');
 			var value = field.value;
 			data[name] = value;
