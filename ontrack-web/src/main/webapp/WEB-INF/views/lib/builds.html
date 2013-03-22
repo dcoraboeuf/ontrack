@@ -49,13 +49,14 @@
                         <!-- TODO Changes the button appearance if filter is active -->
                         <button id="filter-button" type="button" class="btn" onclick="Builds.showFilter()"><@lh key="query" /></button>
 
-                        <!-- Filter data -->
-                        <@dynamicsection id="filter-form-section" template="Builds.filterFormTemplate('{{project}}', '{{branch}}')" />
                     </td>
                 </tr>
             </tfoot>
         </table>
     </script>
+
+    <!-- Filter data -->
+    <@dynamicsection id="filter-form-section" template="Builds.filterFormTemplate('${project?html}', '${branch?html}')" />
 
     <script id="filterFormTemplate" type="text/html">
         <form id="filter-form" class="hidden">
