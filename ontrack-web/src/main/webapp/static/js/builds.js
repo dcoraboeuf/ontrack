@@ -43,37 +43,14 @@ var Builds = function () {
     }
 
     function generateTableBuildRows (project, branch, branchBuilds) {
-        var html = '';
-        $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
-            html += '<tr>';
-                html += '<td class="branch-build build_header" build="{0}">'.format(buildCompleteStatus.name.html());
-                    html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
-                        project.html(), // 0
-                        branch.html(), // 1
-                        buildCompleteStatus.name.html(), // 2
-                        buildCompleteStatus.description.html(), // 3
-                        buildCompleteStatus.signature.elapsedTime, // 4
-                        buildCompleteStatus.signature.formattedTime // 5
-                        );
-                html += '</td><td class="build_promotion_level" build="{0}">'.format(buildCompleteStatus.name.html());
-                    html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
-                html += '</td>';
-                $.each(branchBuilds.validationStamps, function (index, validationStamp) {
-                    var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
-                    html += '<td class="build_validation_stamp" build="{0}" validation_stamp="{1}">'.format(
-                        buildCompleteStatus.name.html(),
-                        buildValidationStamp.name.html()
-                        );
-                    if (buildValidationStamp) {
-                        html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp, true);
-                    } else {
-                        html += '-';
-                    }
-                    html += '</td>';
-                });
-            html += '</tr>';
-        });
-        return html;
+        return $.mustache(
+            $('#branchBuildsRowTemplate').html(),
+            {
+                project: project,
+                branch: branch,
+                branchBuilds: branchBuilds
+            }
+        );
     }
 
     function generateTableBranchBuilds (project, branch, branchBuilds) {

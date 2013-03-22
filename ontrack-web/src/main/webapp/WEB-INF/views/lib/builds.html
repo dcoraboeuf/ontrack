@@ -36,4 +36,35 @@
         </table>
     </script>
 
+    <script id="branchBuildsRowTemplate" type="text/html">
+        {{#branchBuilds.builds}}
+            <tr>
+                <td class="branch-build build_header" build="{{name}}">
+                    <a
+                            class="tooltip-source"
+                            href="gui/project/{{project}}/branch/{{branch}}/build/{{name}}"
+                            title="{{description}} - {{signature.elapsedTime}} - {{formattedTime}}">
+                        {{name}}
+                    </a>
+                </td>
+                <td class="build_promotion_level" build="{{name}}">
+                    {{#promotionLevels.length}}
+                        <ul class="promotions">
+                            {{#promotionLevels}}
+                                <li>
+                                    <i class="icon-arrow-right"></i>
+                                    <img width="24" src="gui/project/{{project}}/branch/{{branch}}/promotion_level/{{name}}/image" />
+                                    <a class="tooltip-source" href="gui/project/{{project}}/branch/{{branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
+                                </li>
+                            {{/promotionLevels}}
+                        </ul>
+                    {{/promotionLevels.length}}
+                    {{^promotionLevels.length}}
+                        <span class="muted"><@lh key="build.promotion_levels.none" /></span>
+                    {{/promotionLevels.length}}
+                </td>
+            </tr>
+        {{/branchBuilds.builds}}
+    </script>
+
 </#macro>
