@@ -43,9 +43,7 @@ var Builds = function () {
     }
 
     function generateTableBuildRows (project, branch, branchBuilds) {
-        return $.mustache(
-            $('#branchBuildsRowTemplate').html(),
-            {
+        return Template.render('branchBuildsRowTemplate', {
                 project: project,
                 branch: branch,
                 branchBuilds: branchBuilds
@@ -54,9 +52,7 @@ var Builds = function () {
     }
 
     function generateTableBranchBuilds (project, branch, branchBuilds) {
-        return $.mustache(
-            $('#branchBuildsTemplate').html(),
-            {
+        return Template.render('branchBuildsTemplate', {
                 project: project,
                 branch: branch,
                 branchBuilds: branchBuilds,

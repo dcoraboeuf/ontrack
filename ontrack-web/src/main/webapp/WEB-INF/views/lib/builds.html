@@ -16,8 +16,8 @@
                 <tr>
                     {{#branchBuilds.validationStamps}}
                         <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
-                            <a href="gui/project/{{project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
-                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                            <a href="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
+                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
                             </a>
                         </th>
                     {{/branchBuilds.validationStamps}}
@@ -42,26 +42,25 @@
                 <td class="branch-build build_header" build="{{name}}">
                     <a
                             class="tooltip-source"
-                            href="gui/project/{{project}}/branch/{{branch}}/build/{{name}}"
+                            href="gui/project/{{../project}}/branch/{{../branch}}/build/{{name}}"
                             title="{{description}} - {{signature.elapsedTime}} - {{formattedTime}}">
                         {{name}}
                     </a>
                 </td>
                 <td class="build_promotion_level" build="{{name}}">
-                    {{#promotionLevels.length}}
+                    {{#if promotionLevels.length}}
                         <ul class="promotions">
                             {{#promotionLevels}}
                                 <li>
                                     <i class="icon-arrow-right"></i>
-                                    <img width="24" src="gui/project/{{project}}/branch/{{branch}}/promotion_level/{{name}}/image" />
-                                    <a class="tooltip-source" href="gui/project/{{project}}/branch/{{branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
+                                    <img width="24" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}/image" />
+                                    <a class="tooltip-source" href="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
                                 </li>
                             {{/promotionLevels}}
                         </ul>
-                    {{/promotionLevels.length}}
-                    {{^promotionLevels.length}}
+                    {{else}}
                         <span class="muted"><@lh key="build.promotion_levels.none" /></span>
-                    {{/promotionLevels.length}}
+                    {{/if}}
                 </td>
             </tr>
         {{/branchBuilds.builds}}
