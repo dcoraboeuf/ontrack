@@ -43,6 +43,9 @@ var Builds = function () {
     }
 
     function generateTableBuildRows (project, branch, branchBuilds) {
+        Handlebars.registerHelper('promotionLevelsFn', function(options) {
+            return generateBuildPromotionLevels(project,branch)(this.promotionLevels);
+        });
         return Template.render('branchBuildsRowTemplate', {
                 project: project,
                 branch: branch,
@@ -156,35 +159,11 @@ var Builds = function () {
 
 	function generateBuildPromotionLevels (project, branch) {
 	    return function (promotionLevels) {
-            var html = '';
-            var count = promotionLevels.length;
-            if (count == 0) {
-                html += '<span class="muted">{0}</span>'.format(loc('build.promotion_levels.none'));
-            } else {
-                for (var i = 0 ; i < count ; i++) {
-                    // Promotion
-                    var promotion = promotionLevels[i];
-                    // Separator
-                    if (i > 0) {
-                        html += ' <i class="icon-arrow-right"></i> ';
-                    }
-                    // Image of the promotion level
-                    html += '<img width="24" src="gui/project/{0}/branch/{1}/promotion_level/{2}/image" />'.format(
-                        project.html(),
-                        branch.html(),
-                        promotion.name
-                    );
-                    // Link to the promotion level
-                    html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{3} - {4}">{2}</a>'.format(
-                        project.html(),
-                        branch.html(),
-                        promotion.name,
-                        promotion.signature.elapsedTime,
-                        promotion.signature.formattedTime
-                    );
-                }
-            }
-            return html;
+	        return Template.render('promotionLevelsTemplate', {
+	            project: project,
+	            branch: branch,
+	            promotionLevels: promotionLevels
+	        });
         };
 	}
 
