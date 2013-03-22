@@ -42,9 +42,19 @@ var Builds = function () {
                 totalColspan: branchBuilds.validationStamps.length + 2,
                 rowFn: function (text, renderFn) {
                     return generateTableBuildRows (project, branch, branchBuilds);
-                }
+                },
+                filterActive: isFilterActive(project, branch)
             }
         );
+    }
+
+    function isFilterActive (project, branch) {
+        var filter = getCurrentFilter(project, branch)();
+        return filter.limit != 10
+            || filter.withPromotionLevel != ''
+            || filter.sincePromotionLevel != ''
+            || (filter.withValidationStamps && filter.withValidationStamps.length > 0)
+            || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0);
     }
 
     function gridHoverSetup () {

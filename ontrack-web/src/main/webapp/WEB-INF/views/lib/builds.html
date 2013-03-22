@@ -46,9 +46,7 @@
                 <tr>
                     <td colspan="{{totalColspan}}">
                         <!-- Filter -->
-                        <!-- TODO Changes the button appearance if filter is active -->
-                        <button id="filter-button" type="button" class="btn" onclick="Builds.showFilter('${project?html}', '${branch?html}')"><@lh key="query" /></button>
-
+                        <button id="filter-button" type="button" class="btn {{#filterActive}}btn-warning{{/filterActive}}" onclick="Builds.showFilter('${project?html}', '${branch?html}')"><@lh key="query" /></button>
                     </td>
                 </tr>
             </tfoot>
