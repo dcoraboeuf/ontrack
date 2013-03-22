@@ -81,7 +81,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public BranchFilterData getBranchFilterData(String project, String branch) {
-        return get(format("/ui/manage/project/%s/branch/%s/filter"), BranchFilterData.class);
+        return get(format("/ui/manage/project/%s/branch/%s/filter", project, branch), BranchFilterData.class);
     }
 
     @Override
@@ -191,13 +191,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public BranchBuilds getBuildList(Locale locale, String project, String branch, int offset, int count) {
-        // TODO Locale management
-        return get(format("/ui/manage/project/%s/branch/%s/build?offset=%d&count=%d", project, branch, offset, count), BranchBuilds.class);
-    }
-
-    @Override
-    public BranchBuilds queryBuilds(Locale locale, String project, String branch, BuildFilter filter) {
+    public BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
         // TODO Locale management
         return post(format("/ui/manage/project/%s/branch/%s/query", project, branch), BranchBuilds.class, filter);
     }

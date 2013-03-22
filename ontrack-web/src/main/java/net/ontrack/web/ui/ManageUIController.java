@@ -281,24 +281,11 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.getPromotionLevelManagementData(branchId);
     }
 
-    // Builds
-
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build", method = RequestMethod.POST)
     public
     @ResponseBody
-    BranchBuilds getBuildList(Locale locale, @PathVariable String project, @PathVariable String branch,
-                              @RequestParam(required = false, defaultValue = "0") int offset,
-                              @RequestParam(required = false, defaultValue = "10") int count) {
-        int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.getBuildList(locale, branchId, offset, count);
-    }
-
-    @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/query", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    BranchBuilds queryBuilds(Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) {
+    BranchBuilds getBuilds(Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.queryBuilds(locale, branchId, filter);
     }

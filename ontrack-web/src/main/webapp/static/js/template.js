@@ -163,24 +163,53 @@ var Template = function () {
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
             // Call
-            Application.ajaxGet (
-                url,
-                function (data) {
-                    // Loading done
-                    Application.loading("#" + id + '-loading', false);
-                    // Uses the data
-                    // try {
-                        display(id, append, config, data);
-                        // Management of the 'more'
-                        moreStatus(id, config, data);
-                    // } catch (message) {
-                    //     error(id, message);
-                    // }
-                },
-                function (message) {
-                    error(id, message);
+            if (config.data) {
+                var postData;
+                if ($.isFunction(config.data)) {
+                    postData = config.data();
+                } else {
+                    postData = config.data;
                 }
-            );
+                Application.ajax (
+                    'POST',
+                    url,
+                    postData,
+                    function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Uses the data
+                        try {
+                            display(id, append, config, data);
+                            // Management of the 'more'
+                            moreStatus(id, config, data);
+                        } catch (message) {
+                             error(id, message);
+                        }
+                    },
+                    function (message) {
+                        error(id, message);
+                    }
+                );
+            } else {
+                Application.ajaxGet (
+                    url,
+                    function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Uses the data
+                        try {
+                            display(id, append, config, data);
+                            // Management of the 'more'
+                            moreStatus(id, config, data);
+                        } catch (message) {
+                             error(id, message);
+                        }
+                    },
+                    function (message) {
+                        error(id, message);
+                    }
+                );
+            }
 		} else {
 		    throw 'No "url" is defined for dynamic section "{0}"'.format(id);
 		}

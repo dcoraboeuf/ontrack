@@ -74,8 +74,6 @@ public interface ManageUI {
 
     // Builds
 
-    BranchBuilds getBuildList(Locale locale, String project, String branch, int offset, int count);
-
     BuildSummary getBuild(String project, String branch, String name);
 
     BuildSummary getLastBuild(String project, String branch);
@@ -88,7 +86,7 @@ public interface ManageUI {
 
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name);
 
-    BranchBuilds queryBuilds(Locale locale, String project, String branch, BuildFilter filter);
+    BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter);
 
     // Validation runs
 

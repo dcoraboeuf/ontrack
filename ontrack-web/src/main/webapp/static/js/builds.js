@@ -74,15 +74,28 @@ var Builds = function () {
             }
         );
     }
+
+    function getCurrentFilter () {
+        var filter = $('#builds').data('filter');
+        if (filter) {
+            return filter;
+        } else {
+            return {
+                limit: 10,
+                sincePromotionLevel: '',
+                withPromotionLevel: '',
+                sinceValidationStamps: [],
+                withValidationStamps: []
+            };
+        }
+    }
 	
 	function buildTemplate (project, branch) {
 	    return Template.config({
-	        url: 'ui/manage/project/{0}/branch/{1}/build?u=1'.format(project, branch),
+	        url: 'ui/manage/project/{0}/branch/{1}/build'.format(project, branch),
 	        more: false, // Managed by the filter
 	        refresh: true,
-	        dataLength: function (branchBuilds) {
-	            return branchBuilds.builds.length;
-	        },
+	        data: getCurrentFilter,
 	        render: function (containerId, append, config, branchBuilds) {
                 var containerSelector = '#' + containerId;
                 if (append === true && $(containerSelector).has("tbody").length) {
