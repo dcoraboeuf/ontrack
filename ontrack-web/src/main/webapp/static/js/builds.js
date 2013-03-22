@@ -46,6 +46,28 @@ var Builds = function () {
         Handlebars.registerHelper('promotionLevelsFn', function(options) {
             return generateBuildPromotionLevels(project,branch)(this.promotionLevels);
         });
+        Handlebars.registerHelper('compactValidationStampFn', function(build, context) {
+            // Looks for the build
+            var oBuild = $.grep(branchBuilds.builds, function (aBuild) {
+                return aBuild.name == build;
+            })[0];
+            // Looks for the validation stamp build
+            var oBuildValidationStamp = oBuild.validationStamps[this.name];
+            // First run
+            var firstRun;
+            if (oBuildValidationStamp.run) {
+                firstRun = oBuildValidationStamp.runs[0];
+            }
+            // Rendering
+            return Template.render('compactValidationStampTemplate', {
+                validationStamp: this,
+                project: project,
+                branch: branch,
+                build: build,
+                buildValidationStamp: oBuildValidationStamp,
+                firstRun: firstRun
+            });
+        });
         return Template.render('branchBuildsRowTemplate', {
                 project: project,
                 branch: branch,

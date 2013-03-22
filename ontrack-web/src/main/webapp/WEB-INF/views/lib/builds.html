@@ -48,8 +48,13 @@
                     </a>
                 </td>
                 <td class="build_promotion_level" build="{{name}}">
-                    {{#promotionLevelsFn}}{{/promotionLevelsFn}}
+                    {{{promotionLevelsFn}}}
                 </td>
+                {{#../branchBuilds.validationStamps}}
+                    <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{name}}">
+                        {{{compactValidationStampFn ../name this}}}
+                    </td>
+                {{/../branchBuilds.validationStamps}}
             </tr>
         {{/branchBuilds.builds}}
     </script>
@@ -67,6 +72,22 @@
             </ul>
         {{else}}
             <span class="muted"><@lh key="build.promotion_levels.none" /></span>
+        {{/if}}
+    </script>
+
+    <script id="compactValidationStampTemplate" type="text/html">
+        {{#if buildValidationStamp.run}}
+            {{#firstRun}}
+                <a
+                        class="tooltip-source"
+                        data-toggle="tooltip"
+                        href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../buildValidationStamp/name}}/validation_run/{{runOrder}}"
+                        title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
+                    <img width="24" src="static/images/status-{{status}}.png" />
+                </a>
+            {{/firstRun}}
+        {{else}}
+            <img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="<@lh key='validationRun.notRun'/>" />
         {{/if}}
     </script>
 
