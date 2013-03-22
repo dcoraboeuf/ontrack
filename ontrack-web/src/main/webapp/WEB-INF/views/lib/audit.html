@@ -7,9 +7,9 @@
         <tr>
             <td>
                 <div class="status-{{status}}">
-                    {{#icon}}
+                    {{#if icon}}
                         <img width="24" src="{{icon}}" class="event-icon" />
-                    {{/icon}}
+                    {{/if}}
                     {{{html}}}
                     <span class="elapsed">- <span title="{{timestamp}}">{{elapsed}}</span></span>
                 </div>

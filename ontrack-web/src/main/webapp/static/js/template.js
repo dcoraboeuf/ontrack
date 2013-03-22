@@ -28,7 +28,14 @@ var Template = function () {
 	}
 
 	/**
-	 * Uses a {{mustache}} template for rendering. The template
+	 * Utility method to render a {{handlebars.js}} template
+	 */
+	function render (templateId, model) {
+	    return Handlebars.compile($('#' + templateId).html())(model);
+	}
+
+	/**
+	 * Uses a {{handleBars}} template for rendering. The template
 	 * is contained by an element whose ID is <code>templateId</code>.
 	 * If <code>container</code> is defined, the data provided
 	 * for the template will be hold into a property of the same name.
@@ -42,19 +49,13 @@ var Template = function () {
             } else {
                 data = items;
             }
-            return $.mustache (
-                $('#' + templateId).html(),
-                data
-            );
+	        return render (templateId, data);
         });
 	}
 
 	function asTableTemplate (rowTemplateId) {
 	    return asTable (function (item) {
-            return $.mustache(
-                $('#' + rowTemplateId).html(),
-                item
-            );
+	        return render (rowTemplateId, item);
 	    });
 	}
 
@@ -99,11 +100,15 @@ var Template = function () {
 	        var dataCount = config.dataLength(data);
 	        config.offset += dataCount;
 	        var hasMore = (dataCount >= config.count);
-	        if (hasMore) {
-	            $('#'+ id + '-more-section').show();
+	        if ($.isFunction(config.more)) {
+	            config.more(id, config, data, hasMore);
 	        } else {
-	            $('#'+ id + '-more-section').hide();
-	        }
+                if (hasMore) {
+                    $('#'+ id + '-more-section').show();
+                } else {
+                    $('#'+ id + '-more-section').hide();
+                }
+            }
 	    }
 	}
 
@@ -158,24 +163,53 @@ var Template = function () {
 			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
             // Call
-            Application.ajaxGet (
-                url,
-                function (data) {
-                    // Loading done
-                    Application.loading("#" + id + '-loading', false);
-                    // Uses the data
-                    // try {
-                        display(id, append, config, data);
-                        // Management of the 'more'
-                        moreStatus(id, config, data);
-                    // } catch (message) {
-                    //     error(id, message);
-                    // }
-                },
-                function (message) {
-                    error(id, message);
+            if (config.data) {
+                var postData;
+                if ($.isFunction(config.data)) {
+                    postData = config.data();
+                } else {
+                    postData = config.data;
                 }
-            );
+                Application.ajax (
+                    'POST',
+                    url,
+                    postData,
+                    function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Uses the data
+                        try {
+                            display(id, append, config, data);
+                            // Management of the 'more'
+                            moreStatus(id, config, data);
+                        } catch (message) {
+                             error(id, message);
+                        }
+                    },
+                    function (message) {
+                        error(id, message);
+                    }
+                );
+            } else {
+                Application.ajaxGet (
+                    url,
+                    function (data) {
+                        // Loading done
+                        Application.loading("#" + id + '-loading', false);
+                        // Uses the data
+                        try {
+                            display(id, append, config, data);
+                            // Management of the 'more'
+                            moreStatus(id, config, data);
+                        } catch (message) {
+                             error(id, message);
+                        }
+                    },
+                    function (message) {
+                        error(id, message);
+                    }
+                );
+            }
 		} else {
 		    throw 'No "url" is defined for dynamic section "{0}"'.format(id);
 		}
@@ -216,6 +250,8 @@ var Template = function () {
 	    init: init,
 	    more: more,
 	    reload: reload,
+
+	    render: render,
 
         asSimpleTemplate: asSimpleTemplate,
         asTableTemplate: asTableTemplate,

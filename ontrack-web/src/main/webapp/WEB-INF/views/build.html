@@ -25,6 +25,27 @@
                         id="build-validation-stamp-list"
                         template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')">
                     </@dynamicsection>
+                    <script id="buildValidationStampsTemplate" type="text/html">
+                        <tr>
+                            <td>
+                                <div class="{{^stamp.run}}validation-stamp-norun{{/stamp.run}}">
+                                    <img class="tooltip-source" width="24" title="{{stamp.name}}" src="gui/project/{{project}}/branch/{{branch}}/validation_stamp/{{stamp.name}}/image" />
+                                    <a class="tooltip-source" href="gui/project/{{project}}/branch/{{branch}}/validation_stamp/{{stamp.name}}">{{stamp.name}}</a>
+                                    {{#stamp.runs}}
+                                        <p class="validation-run status-{{status}}">
+                                            <a
+                                                    class="tooltip-source"
+                                                    href="gui/project/{{../project}}/branch/{{../branch}}/build/{{../build}}/validation_stamp/{{stamp.name}}/validation_run/{{runOrder}}"
+                                                    title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
+                                                <i class="icon-play"></i>
+                                                <span class="validation-run-status">{{status}}</span>
+                                            </a>
+                                        </p>
+                                    {{/stamp.runs}}
+                                </div>
+                            </td>
+                        </tr>
+                    </script>
                 </@panel>
             </div>
             <div class="span4">

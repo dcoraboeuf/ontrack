@@ -465,8 +465,8 @@ validationRunStatus.description
 [query]
 
 query
-    en -> Build log
-    fr -> Build log
+    en -> Filter
+    fr -> Filtrer
 
 query.submit
     en -> Search
