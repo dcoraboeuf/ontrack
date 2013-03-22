@@ -143,6 +143,13 @@ var Builds = function () {
         });
 	}
 
+	function filterFormTemplate (project, branch) {
+	    return Template.config({
+	        url: 'ui/manage/project/{0}/branch/{1}/filter'.format(project, branch),
+	        render: Template.asSimpleTemplate('filterFormTemplate')
+	    });
+	}
+
 	function showFilter () {
 
 	}
@@ -154,7 +161,8 @@ var Builds = function () {
 		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate,
 		generateTableBranchBuilds: generateTableBranchBuilds,
 		// Filter management
-		showFilter: showFilter
+		showFilter: showFilter,
+		filterFormTemplate: filterFormTemplate
 	};
 	
 } ();

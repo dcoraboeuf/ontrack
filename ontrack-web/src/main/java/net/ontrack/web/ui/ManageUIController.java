@@ -105,10 +105,10 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.GET)
     public
     @ResponseBody
-    BranchFilterData getBranchFilterData(String project, String branch) {
+    BranchFilterData getBranchFilterData(@PathVariable String project, @PathVariable String branch) {
         return new BranchFilterData(
                 getPromotionLevelList(project, branch),
                 getValidationStampList(project, branch),
