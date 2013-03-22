@@ -78,13 +78,7 @@ var Builds = function () {
 	function buildTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/build?u=1'.format(project, branch),
-	        more: function (id, config, data, hasMore) {
-	            if (hasMore) {
-	                $('#more-builds').show();
-	            } else {
-	                $('#more-builds').hide();
-	            }
-	        },
+	        more: false, // Managed by the filter
 	        refresh: true,
 	        dataLength: function (branchBuilds) {
 	            return branchBuilds.builds.length;
