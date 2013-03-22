@@ -80,6 +80,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BranchFilterData getBranchFilterData(String project, String branch) {
+        return get(format("/ui/manage/project/%s/branch/%s/filter"), BranchFilterData.class);
+    }
+
+    @Override
     public BranchSummary createBranch(String project, BranchCreationForm form) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createBranch
         return null;

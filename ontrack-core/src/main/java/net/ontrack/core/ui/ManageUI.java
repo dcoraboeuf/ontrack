@@ -34,6 +34,8 @@ public interface ManageUI {
 
     Ack deleteBranch(String project, String name);
 
+    BranchFilterData getBranchFilterData(String project, String branch);
+
     // Validation stamps
 
     List<ValidationStampSummary> getValidationStampList(String project, String branch);

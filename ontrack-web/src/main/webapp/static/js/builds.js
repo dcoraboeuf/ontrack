@@ -142,12 +142,19 @@ var Builds = function () {
             render: Template.fill(generateBuildPromotionLevels(project,branch))
         });
 	}
+
+	function showFilter () {
+
+	}
 	
 	return {
+	    // Templating
 		buildTemplate: buildTemplate,
 		buildValidationStampTemplate: buildValidationStampTemplate,
 		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate,
-		generateTableBranchBuilds: generateTableBranchBuilds
+		generateTableBranchBuilds: generateTableBranchBuilds,
+		// Filter management
+		showFilter: showFilter
 	};
 	
 } ();

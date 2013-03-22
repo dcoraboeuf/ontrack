@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -101,6 +102,18 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     BranchSummary getBranch(@PathVariable String project, @PathVariable String name) {
         int branchId = entityConverter.getBranchId(project, name);
         return managementService.getBranch(branchId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BranchFilterData getBranchFilterData(String project, String branch) {
+        return new BranchFilterData(
+                getPromotionLevelList(project, branch),
+                getValidationStampList(project, branch),
+                Arrays.asList(Status.values())
+        );
     }
 
     @Override
