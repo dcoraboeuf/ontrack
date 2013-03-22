@@ -16,6 +16,11 @@
 
     <name>ontrack Jenkins plug-in</name>
 
+	<properties>
+		<xtrigger.lib.version>0.19</xtrigger.lib.version>
+	</properties>
+
+
     <dependencies>
         <!-- This -->
         <dependency>
@@ -23,6 +28,13 @@
             <artifactId>ontrack-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+
+		<dependency>
+			<groupId>org.jenkins-ci.lib</groupId>
+			<artifactId>xtrigger-lib</artifactId>
+			<version>${xtrigger.lib.version}</version>
+		</dependency>
     </dependencies>
 	
 	<build>
