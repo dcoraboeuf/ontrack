@@ -154,12 +154,31 @@ var Builds = function () {
         Application.dialog({
             id: 'filter-form',
             title: loc('query'),
-            width: 800
+            width: 800,
+            openFn: function () {
+                // TODO Preselection of fields
+            },
+            submitFn: function (closeFn) {
+                // TODO Submitting the query
+                // OK
+                closeFn();
+            }
         });
 	}
 
 	function closeFilter () {
 	    $('#filter-form').dialog('close');
+	}
+
+	function clearFilter () {
+        // Clears the form
+        $('#withPromotionLevel').val('');
+        $('#sincePromotionLevel').val('');
+        $('#withValidationStamp').val('');
+        $('#withValidationStampStatus').val('');
+        $('#sinceValidationStamp').val('');
+        $('#sinceValidationStampStatus').val('');
+        $('#limit').val('20');
 	}
 	
 	return {
@@ -171,7 +190,8 @@ var Builds = function () {
 		// Filter management
 		showFilter: showFilter,
 		filterFormTemplate: filterFormTemplate,
-		closeFilter: closeFilter
+		closeFilter: closeFilter,
+		clearFilter: clearFilter
 	};
 	
 } ();
