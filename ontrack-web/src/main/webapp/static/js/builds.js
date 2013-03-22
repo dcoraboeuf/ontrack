@@ -150,6 +150,46 @@ var Builds = function () {
 	    });
 	}
 
+	function withFilter (buildFilter) {
+        // Associates the filter with the build section
+        $('#builds').data('filter', buildFilter);
+        // Reloads
+        Template.reload('builds');
+	}
+
+	function filterWithForm (form) {
+        // Conversion into a BuildFilter
+        var filter = {
+            sincePromotionLevel: form.sincePromotionLevel,
+            withPromotionLevel: form.withPromotionLevel,
+            limit: form.limit
+        };
+        // sinceValidationStamps
+        if (form.sinceValidationStamp != '') {
+            var statuses = [];
+            if (form.sinceValidationStampStatus != '') {
+                statuses.push(form.sinceValidationStampStatus);
+            }
+            filter.sinceValidationStamps = [{
+                validationStamp: form.sinceValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // withValidationStamps
+        if (form.withValidationStamp != '') {
+            var statuses = [];
+            if (form.withValidationStampStatus != '') {
+                statuses.push(form.withValidationStampStatus);
+            }
+            filter.withValidationStamps = [{
+                validationStamp: form.withValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // Filter
+        withFilter(filter);
+	}
+
 	function showFilter () {
         Application.dialog({
             id: 'filter-form',
@@ -159,7 +199,10 @@ var Builds = function () {
                 // TODO Preselection of fields
             },
             submitFn: function (closeFn) {
-                // TODO Submitting the query
+                // Gets the values
+                var form = Application.values('filter-form');
+                // Submitting the query
+                filterWithForm(form);
                 // OK
                 closeFn();
             }
