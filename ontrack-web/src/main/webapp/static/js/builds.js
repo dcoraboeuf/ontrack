@@ -75,18 +75,29 @@ var Builds = function () {
         );
     }
 
-    function getCurrentFilter () {
-        var filter = $('#builds').data('filter');
-        if (filter) {
-            return filter;
-        } else {
-            return {
-                limit: 10,
-                sincePromotionLevel: '',
-                withPromotionLevel: '',
-                sinceValidationStamps: [],
-                withValidationStamps: []
-            };
+    function getCurrentFilter (project, branch) {
+        return function () {
+            var filter = $('#builds').data('filter');
+            if (filter) {
+                return filter;
+            } else {
+                var cookie = getCookie('{0}|{1}|filter'.format(project, branch));
+                if (cookie) {
+                    var json = eval(cookie);
+                    filter = $.parseJSON(json);
+                    console.log(filter);
+                    $('#builds').data('filter', filter);
+                    return filter;
+                } else {
+                    return {
+                        limit: 10,
+                        sincePromotionLevel: '',
+                        withPromotionLevel: '',
+                        sinceValidationStamps: [],
+                        withValidationStamps: []
+                    };
+                }
+            }
         }
     }
 	
@@ -95,7 +106,7 @@ var Builds = function () {
 	        url: 'ui/manage/project/{0}/branch/{1}/build'.format(project, branch),
 	        more: false, // Managed by the filter
 	        refresh: true,
-	        data: getCurrentFilter,
+	        data: getCurrentFilter(project, branch),
 	        render: function (containerId, append, config, branchBuilds) {
                 var containerSelector = '#' + containerId;
                 if (append === true && $(containerSelector).has("tbody").length) {
