@@ -9,11 +9,15 @@ import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.ui.model.ValidationRunStatusUpdateData;
 import net.sf.jstring.Strings;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.CookieGenerator;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +28,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 
     private final ManagementService managementService;
     private final PropertyUI propertyUI;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, PropertyUI propertyUI) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, PropertyUI propertyUI, ObjectMapper objectMapper) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
         this.propertyUI = propertyUI;
+        this.objectMapper = objectMapper;
     }
 
     // Project groups
@@ -282,12 +288,25 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    public
+    BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
+        int branchId = entityConverter.getBranchId(project, branch);
+        return managementService.queryBuilds(locale, branchId, filter);
+    }
+
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build", method = RequestMethod.POST)
     public
     @ResponseBody
-    BranchBuilds getBuilds(Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) {
-        int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.queryBuilds(locale, branchId, filter);
+    BranchBuilds getBuilds(HttpServletResponse response, Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) throws IOException {
+        // Performs the query
+        BranchBuilds builds = getBuilds(locale, project, branch, filter);
+        // Setting the cookie for the filter
+        CookieGenerator cookie = new CookieGenerator();
+        cookie.setCookieMaxAge(365 * 24 * 60 * 60); // 1 year
+        cookie.setCookieName(String.format("%s|%s|filter", project, branch));
+        cookie.addCookie(response, objectMapper.writeValueAsString(filter));
+        // OK
+        return builds;
     }
 
     @Override
