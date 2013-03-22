@@ -1,104 +1,60 @@
 var Builds = function () {
 
-    function runs(project, branch, build, buildValidationStamp, compact) {
-        var html = '';
-        if (compact) {
-            // Run?
-            if (buildValidationStamp.run) {
-                // Gets the first run only
-                var run = buildValidationStamp.runs[0];
-                // Status 'ball'
-                html += '<a class="tooltip-source" data-toggle="tooltip" href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><img width="24" src="static/images/status-{5}.png" /></a>'.format(
-                    project.html(), // 0
-                    branch.html(), // 1
-                    build.html(), // 2
-                    buildValidationStamp.name.html(), // 3
-                    run.runOrder, // 4
-                    run.status.html(), // 5
-                    run.signature.elapsedTime, // 6
-                    run.signature.formattedTime, // 7
-                    run.statusDescription.html() // 8
-                );
-            } else {
-                html += '<img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="{0}" />'.format(loc('validationRun.notRun'));
-            }
-        } else {
-            $.each(buildValidationStamp.runs, function (index, run) {
-                html += ' <p class="validation-run status-{0}">'.format(run.status);
-                html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}/validation_stamp/{3}/validation_run/{4}" title="{8} - {6} - {7}"><i class="icon-play"></i> <span class="validation-run-status">{5}</span></a>'
-                    .format(
-                        project.html(), // 0
-                        branch.html(), // 1
-                        build.html(), // 2
-                        buildValidationStamp.name.html(), // 3
-                        run.runOrder, // 4
-                        run.status.html(), // 5
-                        run.signature.elapsedTime, // 6
-                        run.signature.formattedTime, // 7
-                        run.statusDescription.html()); // 8
-                html += '</p>';
-            });
-        }
-        return html;
-    }
-
     function generateTableBuildRows (project, branch, branchBuilds) {
-        var html = '';
-        $.each (branchBuilds.builds, function (index, buildCompleteStatus) {
-            html += '<tr>';
-                html += '<td class="branch-build build_header" build="{0}">'.format(buildCompleteStatus.name.html());
-                    html += '<a class="tooltip-source" href="gui/project/{0}/branch/{1}/build/{2}" title="{3} - {4} - {5}">{2}</a>'.format(
-                        project.html(), // 0
-                        branch.html(), // 1
-                        buildCompleteStatus.name.html(), // 2
-                        buildCompleteStatus.description.html(), // 3
-                        buildCompleteStatus.signature.elapsedTime, // 4
-                        buildCompleteStatus.signature.formattedTime // 5
-                        );
-                html += '</td><td class="build_promotion_level" build="{0}">'.format(buildCompleteStatus.name.html());
-                    html += generateBuildPromotionLevels(project,branch)(buildCompleteStatus.promotionLevels);
-                html += '</td>';
-                $.each(branchBuilds.validationStamps, function (index, validationStamp) {
-                    var buildValidationStamp = buildCompleteStatus.validationStamps[validationStamp.name];
-                    html += '<td class="build_validation_stamp" build="{0}" validation_stamp="{1}">'.format(
-                        buildCompleteStatus.name.html(),
-                        buildValidationStamp.name.html()
-                        );
-                    if (buildValidationStamp) {
-                        html += runs(project, branch, buildCompleteStatus.name, buildValidationStamp, true);
-                    } else {
-                        html += '-';
-                    }
-                    html += '</td>';
-                });
-            html += '</tr>';
+        Handlebars.registerHelper('promotionLevelsFn', function(options) {
+            return generateBuildPromotionLevels(project,branch)(this.promotionLevels);
         });
-        return html;
+        Handlebars.registerHelper('compactValidationStampFn', function(build, context) {
+            // Looks for the build
+            var oBuild = $.grep(branchBuilds.builds, function (aBuild) {
+                return aBuild.name == build;
+            })[0];
+            // Looks for the validation stamp build
+            var oBuildValidationStamp = oBuild.validationStamps[this.name];
+            // First run
+            var firstRun;
+            if (oBuildValidationStamp.run) {
+                firstRun = oBuildValidationStamp.runs[0];
+            }
+            // Rendering
+            return Template.render('compactValidationStampTemplate', {
+                validationStamp: this,
+                project: project,
+                branch: branch,
+                build: build,
+                buildValidationStamp: oBuildValidationStamp,
+                firstRun: firstRun
+            });
+        });
+        return Template.render('branchBuildsRowTemplate', {
+                project: project,
+                branch: branch,
+                branchBuilds: branchBuilds
+            }
+        );
     }
 
     function generateTableBranchBuilds (project, branch, branchBuilds) {
-        var html = '<table class="table"><thead>';
-        // Header
-        html += '<tr>';
-            html += '<th rowspan="2">{0}</th>'.format(loc('model.build'));
-            html += '<th rowspan="2">{0}</th>'.format(loc('branch.promotion_levels'));
-            html += '<th colspan="{1}">{0}</th>'.format(loc('branch.validation_stamps'), branchBuilds.validationStamps.length);
-        html += '</tr>';
-        html += '<tr>';
-        $.each(branchBuilds.validationStamps, function (index, validationStamp) {
-            html += '<th align="center" class="validation_stamp_header" validation_stamp="{0}">'.format(validationStamp.name.html());
-            html += '<a href="gui/project/{0}/branch/{1}/validation_stamp/{2}">'.format(project.html(), branch.html(), validationStamp.name.html());
-            html += ValidationStamps.validationStampImage(project, branch, validationStamp);
-            html += '</a>';
-            html += '</th>';
-        });
-        html += '</tr>';
-        // Items
-        html += '</thead><tbody>';
-        html += generateTableBuildRows(project, branch, branchBuilds);
-        // End
-        html += '</tbody></table>';
-        return html;
+        return Template.render('branchBuildsTemplate', {
+                project: project,
+                branch: branch,
+                branchBuilds: branchBuilds,
+                totalColspan: branchBuilds.validationStamps.length + 2,
+                rowFn: function (text, renderFn) {
+                    return generateTableBuildRows (project, branch, branchBuilds);
+                },
+                filterActive: isFilterActive(project, branch)
+            }
+        );
+    }
+
+    function isFilterActive (project, branch) {
+        var filter = getCurrentFilter(project, branch)();
+        return filter.limit != 10
+            || filter.withPromotionLevel != ''
+            || filter.sincePromotionLevel != ''
+            || (filter.withValidationStamps && filter.withValidationStamps.length > 0)
+            || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0);
     }
 
     function gridHoverSetup () {
@@ -128,15 +84,41 @@ var Builds = function () {
             }
         );
     }
+
+    function getCurrentFilter (project, branch) {
+        return function () {
+            var filter = $('#builds').data('filter');
+            var hash = location.hash;
+            var cookie = getCookie('{0}|{1}|filter'.format(project, branch));
+            if (filter) {
+                return filter;
+            } else if (hash && hash != '' && hash != '#') {
+                filter = $.deparam(hash.substring(1));
+                $('#builds').data('filter', filter);
+                return filter;
+            } else if (cookie) {
+                var json = eval(cookie);
+                filter = $.parseJSON(json);
+                $('#builds').data('filter', filter);
+                return filter;
+            } else {
+                return {
+                    limit: 10,
+                    sincePromotionLevel: '',
+                    withPromotionLevel: '',
+                    sinceValidationStamps: [],
+                    withValidationStamps: []
+                };
+            }
+        }
+    }
 	
 	function buildTemplate (project, branch) {
 	    return Template.config({
-	        url: 'ui/manage/project/{0}/branch/{1}/build?u=1'.format(project, branch),
-	        more: true,
+	        url: 'ui/manage/project/{0}/branch/{1}/build'.format(project, branch),
+	        more: false, // Managed by the filter
 	        refresh: true,
-	        dataLength: function (branchBuilds) {
-	            return branchBuilds.builds.length;
-	        },
+	        data: getCurrentFilter(project, branch),
 	        render: function (containerId, append, config, branchBuilds) {
                 var containerSelector = '#' + containerId;
                 if (append === true && $(containerSelector).has("tbody").length) {
@@ -168,18 +150,12 @@ var Builds = function () {
 	        url: 'ui/manage/project/{0}/branch/{1}/build/{2}/validationStamps'.format(project, branch, build),
 	        refresh: true,
 	        render: Template.asTable(function (stamp) {
-                var pClass;
-                if (!stamp.run) {
-                    pClass = 'validation-stamp-norun';
-                }
-                var html = '<tr><td><div class="{0}">'.format(pClass);
-                html += ValidationStamps.validationStampImage(project, branch, stamp);
-                html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/validation_stamp/{2}">{2}</a>'.format(project.html(), branch.html(), stamp.name.html());
-                if (stamp.run) {
-                    html += runs(project, branch, build, stamp, false);
-                }
-                html += '</div></td></tr>';
-                return html;
+	            return Template.render('buildValidationStampsTemplate', {
+                    project: project,
+                    branch: branch,
+                    build: build,
+                    stamp: stamp
+	            });
 	        }),
 	        postRenderFn: Application.tooltips
 	    });
@@ -187,35 +163,11 @@ var Builds = function () {
 
 	function generateBuildPromotionLevels (project, branch) {
 	    return function (promotionLevels) {
-            var html = '';
-            var count = promotionLevels.length;
-            if (count == 0) {
-                html += '<span class="muted">{0}</span>'.format(loc('build.promotion_levels.none'));
-            } else {
-                for (var i = 0 ; i < count ; i++) {
-                    // Promotion
-                    var promotion = promotionLevels[i];
-                    // Separator
-                    if (i > 0) {
-                        html += ' <i class="icon-arrow-right"></i> ';
-                    }
-                    // Image of the promotion level
-                    html += '<img width="24" src="gui/project/{0}/branch/{1}/promotion_level/{2}/image" />'.format(
-                        project.html(),
-                        branch.html(),
-                        promotion.name
-                    );
-                    // Link to the promotion level
-                    html += ' <a class="tooltip-source" href="gui/project/{0}/branch/{1}/promotion_level/{2}" title="{3} - {4}">{2}</a>'.format(
-                        project.html(),
-                        branch.html(),
-                        promotion.name,
-                        promotion.signature.elapsedTime,
-                        promotion.signature.formattedTime
-                    );
-                }
-            }
-            return html;
+	        return Template.render('promotionLevelsTemplate', {
+	            project: project,
+	            branch: branch,
+	            promotionLevels: promotionLevels
+	        });
         };
 	}
 
@@ -226,12 +178,132 @@ var Builds = function () {
             render: Template.fill(generateBuildPromotionLevels(project,branch))
         });
 	}
+
+	function filterFormTemplate (project, branch) {
+	    return Template.config({
+	        url: 'ui/manage/project/{0}/branch/{1}/filter'.format(project, branch),
+	        render: Template.asSimpleTemplate('filterFormTemplate')
+	    });
+	}
+
+	function withFilter (buildFilter) {
+        // Associates the filter with the build section
+        $('#builds').data('filter', buildFilter);
+        // Fills the hash
+        var params = $.param(buildFilter);
+        // Sets as hash
+        location.hash = params;
+        // Reloads
+        Template.reload('builds');
+	}
+
+	function filterWithForm (form) {
+        // Conversion into a BuildFilter
+        var filter = {
+            sincePromotionLevel: form.sincePromotionLevel,
+            withPromotionLevel: form.withPromotionLevel,
+            limit: form.limit
+        };
+        // sinceValidationStamps
+        if (form.sinceValidationStamp != '') {
+            var statuses = [];
+            if (form.sinceValidationStampStatus != '') {
+                statuses.push(form.sinceValidationStampStatus);
+            }
+            filter.sinceValidationStamps = [{
+                validationStamp: form.sinceValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // withValidationStamps
+        if (form.withValidationStamp != '') {
+            var statuses = [];
+            if (form.withValidationStampStatus != '') {
+                statuses.push(form.withValidationStampStatus);
+            }
+            filter.withValidationStamps = [{
+                validationStamp: form.withValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // Filter
+        withFilter(filter);
+	}
+
+	function showFilter (project, branch) {
+        Application.dialog({
+            id: 'filter-form',
+            title: loc('query'),
+            width: 800,
+            openFn: function () {
+                // Gets the current filter
+                var filter = getCurrentFilter(project, branch)();
+                // Converts into a form (best effort)
+                var form = {
+                    limit: filter.limit,
+                    withPromotionLevel: filter.withPromotionLevel,
+                    sincePromotionLevel: filter.sincePromotionLevel
+                };
+                // Since validation stamp
+                if (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0) {
+                    form.sinceValidationStamp = filter.sinceValidationStamps[0].validationStamp;
+                    if (filter.sinceValidationStamps[0].statuses && filter.sinceValidationStamps[0].statuses.length > 0) {
+                        form.sinceValidationStampStatus = filter.sinceValidationStamps[0].statuses[0];
+                    }
+                }
+                // With validation stamp
+                if (filter.withValidationStamps && filter.withValidationStamps.length > 0) {
+                    form.withValidationStamp = filter.withValidationStamps[0].validationStamp;
+                    if (filter.withValidationStamps[0].statuses && filter.withValidationStamps[0].statuses.length > 0) {
+                        form.withValidationStampStatus = filter.withValidationStamps[0].statuses[0];
+                    }
+                }
+                // Initialization of fields
+                $('#withPromotionLevel').val(form.withPromotionLevel);
+                $('#sincePromotionLevel').val(form.sincePromotionLevel);
+                $('#withValidationStamp').val(form.withValidationStamp);
+                $('#withValidationStampStatus').val(form.withValidationStampStatus);
+                $('#sinceValidationStamp').val(form.sinceValidationStamp);
+                $('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
+                $('#limit').val(form.limit);
+            },
+            submitFn: function (closeFn) {
+                // Gets the values
+                var form = Application.values('filter-form');
+                // Submitting the query
+                filterWithForm(form);
+                // OK
+                closeFn();
+            }
+        });
+	}
+
+	function closeFilter () {
+	    $('#filter-form').dialog('close');
+	}
+
+	function clearFilter () {
+        // Clears the form
+        $('#withPromotionLevel').val('');
+        $('#sincePromotionLevel').val('');
+        $('#withValidationStamp').val('');
+        $('#withValidationStampStatus').val('');
+        $('#sinceValidationStamp').val('');
+        $('#sinceValidationStampStatus').val('');
+        $('#limit').val('10');
+	}
 	
 	return {
+	    // Templating
 		buildTemplate: buildTemplate,
 		buildValidationStampTemplate: buildValidationStampTemplate,
 		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate,
-		generateTableBranchBuilds: generateTableBranchBuilds
+		generateTableBranchBuilds: generateTableBranchBuilds,
+		// Filter management
+		showFilter: showFilter,
+		filterFormTemplate: filterFormTemplate,
+		closeFilter: closeFilter,
+		clearFilter: clearFilter
 	};
 	
 } ();

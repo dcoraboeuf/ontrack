@@ -38,6 +38,19 @@ function loc () {
 	}
 }
 
+// source: http://www.w3schools.com/js/js_cookies.asp
+function getCookie(c_name) {
+    var i,x,y,ARRcookies=document.cookie.split(";");
+    for (i=0;i<ARRcookies.length;i++) {
+        x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+        y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+        x=x.replace(/^\s+|\s+$/g,"");
+        if (x==c_name) {
+            return unescape(y);
+        }
+    }
+}
+
 // Application singleton
 
 var Application = function () {
@@ -61,6 +74,7 @@ var Application = function () {
 	function dialogAndSubmit (config) {
 	    config = $.extend({
 	        method: 'POST',
+	        width: 450,
 	        openFn: $.noop,
 	        validateFn: function () {
 	            return true;
@@ -71,6 +85,7 @@ var Application = function () {
 	        id: config.id,
 	        title: config.title,
 	        openFn: config.openFn,
+	        width: config.width,
 	        submitFn: function (closeFn) {
 	            if (config.validateFn()) {
                     submit ({
@@ -126,7 +141,8 @@ var Application = function () {
 	        submitFn: function (closeFn) {
 	            closeFn();
 	        },
-	        openFn: $.noop
+	        openFn: $.noop,
+	        width: 450
 	    }, config);
 		// Sets the submit function
 		$('#' + config.id).unbind('submit');
@@ -148,7 +164,7 @@ var Application = function () {
 		// Shows the dialog
 		$('#' + config.id).dialog({
 			title: config.title,
-			width: 450, // TODO In configuration
+			width: config.width,
 			modal: true
 		});
 	}

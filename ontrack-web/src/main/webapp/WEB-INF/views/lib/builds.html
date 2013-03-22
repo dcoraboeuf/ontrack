@@ -1,7 +1,160 @@
 <script type="text/javascript" src="${base}/js/builds.js"></script>
 <link rel="stylesheet" type="text/css" href="${base}/css/builds.css" />
 
+<script id="promotionLevelsTemplate" type="type/html">
+    {{#if promotionLevels.length}}
+    <ul class="promotions">
+        {{#promotionLevels}}
+        <li>
+            <i class="icon-arrow-right"></i>
+            <img width="24" src="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}/image" />
+            <a class="tooltip-source" href="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
+        </li>
+        {{/promotionLevels}}
+    </ul>
+    {{else}}
+    <span class="muted"><@lh key="build.promotion_levels.none" /></span>
+    {{/if}}
+</script>
+
 <#macro builds project branch id="builds">
 	<@dynamicsection id=id template="Builds.buildTemplate('${project?html}','${branch?html}')">
 	</@dynamicsection>
+
+    <script id="branchBuildsTemplate" type="text/html">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th rowspan="2"><@lh key="model.build" /></th>
+                    <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
+                    <th colspan="{{branchBuilds.validationStamps.length}}"><@lh key="branch.validation_stamps" /></th>
+                </tr>
+                <tr>
+                    {{#branchBuilds.validationStamps}}
+                        <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
+                            <a href="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
+                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                            </a>
+                        </th>
+                    {{/branchBuilds.validationStamps}}
+                </tr>
+            </thead>
+            <tbody>
+                {{{rowFn}}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="{{totalColspan}}">
+                        <!-- Filter -->
+                        <button id="filter-button" type="button" class="btn {{#filterActive}}btn-warning{{/filterActive}}" onclick="Builds.showFilter('${project?html}', '${branch?html}')"><@lh key="query" /></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </script>
+
+    <!-- Filter data -->
+    <@dynamicsection id="filter-form-section" template="Builds.filterFormTemplate('${project?html}', '${branch?html}')" />
+
+    <script id="filterFormTemplate" type="text/html">
+        <form id="filter-form" class="hidden">
+            <p>
+                <@lh key="query.withPromotionLevel" />
+                <select id="withPromotionLevel" name="withPromotionLevel" class="input-medium">
+                    <option value="">&nbsp;</option>
+                    {{#promotionLevels}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/promotionLevels}}
+                </select>
+                <@lh key="query.sincePromotionLevel" />
+                <select id="sincePromotionLevel" name="sincePromotionLevel" class="input-medium">
+                    <option value="">&nbsp;</option>
+                    {{#promotionLevels}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/promotionLevels}}
+                </select>
+            </p>
+            <p>
+                <@lh key="query.withValidationStamp" />
+                <select id="withValidationStamp" name="withValidationStamp" class="input-large">
+                    <option value="">&nbsp;</option>
+                    {{#validationStamps}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/validationStamps}}
+                </select>
+                <@lh key="query.withValidationStamp.status" />
+                <select id="withValidationStampStatus" name="withValidationStampStatus" class="input-medium">
+                    <option value="">&nbsp;</option>
+                    {{#statuses}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{/statuses}}
+                </select>
+            </p>
+            <p>
+                <@lh key="query.sinceValidationStamp" />
+                <select id="sinceValidationStamp" name="sinceValidationStamp" class="input-large">
+                    <option value="">&nbsp;</option>
+                    {{#validationStamps}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/validationStamps}}
+                </select>
+                <@lh key="query.sinceValidationStamp.status" />
+                <select id="sinceValidationStampStatus" name="sinceValidationStampStatus" class="input-medium">
+                    <option value="">&nbsp;</option>
+                    {{#statuses}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{/statuses}}
+                </select>
+            </p>
+            <p>
+                <@lh key="query.limit" />
+                <input id="limit" name="limit" type="number" class="input-mini" min="1" value="10" max="100" maxlength="3" />
+            </p>
+            <p>
+                <button type="submit" class="btn btn-primary"><@lh key="query.submit" /></button>
+                <button type="button" class="btn" onclick="Builds.clearFilter()"><@lh key="query.clear" /></button>
+                <button type="button" class="btn btn-link" onclick="Builds.closeFilter()"><@lh key="general.close" /></button>
+            </p>
+        </form>
+    </script>
+
+    <script id="branchBuildsRowTemplate" type="text/html">
+        {{#branchBuilds.builds}}
+            <tr>
+                <td class="branch-build build_header" build="{{name}}">
+                    <a
+                            class="tooltip-source"
+                            href="gui/project/{{../project}}/branch/{{../branch}}/build/{{name}}"
+                            title="{{description}} - {{signature.elapsedTime}} - {{formattedTime}}">
+                        {{name}}
+                    </a>
+                </td>
+                <td class="build_promotion_level" build="{{name}}">
+                    {{{promotionLevelsFn}}}
+                </td>
+                {{#../branchBuilds.validationStamps}}
+                    <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{name}}">
+                        {{{compactValidationStampFn ../name this}}}
+                    </td>
+                {{/../branchBuilds.validationStamps}}
+            </tr>
+        {{/branchBuilds.builds}}
+    </script>
+
+    <script id="compactValidationStampTemplate" type="text/html">
+        {{#if buildValidationStamp.run}}
+            {{#firstRun}}
+                <a
+                        class="tooltip-source"
+                        data-toggle="tooltip"
+                        href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../buildValidationStamp/name}}/validation_run/{{runOrder}}"
+                        title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
+                    <img width="24" src="static/images/status-{{status}}.png" />
+                </a>
+            {{/firstRun}}
+        {{else}}
+            <img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="<@lh key='validationRun.notRun'/>" />
+        {{/if}}
+    </script>
+
 </#macro>

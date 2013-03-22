@@ -10,3 +10,17 @@ td.build-hover {
 td.validation-stamp-hover {
     background-color: #FFFFEE;
 }
+
+ul.promotions {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.promotions li {
+    display: inline;
+}
+
+ul.promotions li:first-child i {
+    display: none;
+}

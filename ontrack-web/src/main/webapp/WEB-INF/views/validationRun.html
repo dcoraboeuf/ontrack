@@ -44,7 +44,7 @@
                     <script id="statusUpdateDataTemplate" type="text/html">
                         <form id="statusUpdate-form" class="hidden alert alert-info">
                             <@form_memo name="description" label="" class="input-block-level" placeholder=loc("validationRunStatus.description") maxlength=1000 />
-                            {{#editableProperties.length}}
+                            {{#if editableProperties.length}}
                                 <table>
                                     <tbody>
                                         {{#editableProperties}}
@@ -59,7 +59,7 @@
                                         {{/editableProperties}}
                                     </tbody>
                                 </table>
-                            {{/editableProperties.length}}
+                            {{/if}}
                             <div id="statusUpdate-error" class="hidden alert alert-error"></div>
                             <@form_buttons>
                                 <!-- Comment -->
@@ -83,15 +83,14 @@
                     <script id="historyItemTemplate" type="text/html">
                         <tr>
                             <td>
-                                {{#status}}
+                                {{#if status}}
                                     <img width="24" height="24" src="static/images/status-{{status}}.png" />
                                     <b>{{status}}</b>
                                     - {{content}}
-                                {{/status}}
-                                {{^status}}
+                                {{else}}
                                     <img width="24" height="24" src="static/images/comment.png" />
                                     {{content}}
-                                {{/status}}
+                                {{/if}}
                                 <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
                             </td>
                         </tr>

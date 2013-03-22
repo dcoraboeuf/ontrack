@@ -18,7 +18,7 @@
         </ul>
     </script>
     <script id="property-edition-template" type="text/hml">
-        {{#properties.length}}
+        {{#if properties.length}}
             <input id="entity" type="hidden" value="${entity?html}" />
             <input id="entityId" type="hidden" value="${entityId?c}" />
             <ul class="properties">
@@ -46,6 +46,6 @@
                     <div id="property-add-error-message"></div>
                 </div>
             </div>
-        {{/properties.length}}
+        {{/if}}
     </script>
 </#macro>

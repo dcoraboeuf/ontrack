@@ -26,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.DataSource;
 import javax.validation.Validator;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
@@ -505,6 +502,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new BranchBuilds(
                 // Validation stamps for the branch
                 getValidationStampList(branch),
+                // Promotion levels for the branch
+                getPromotionLevelList(branch),
+                // Status list
+                Arrays.asList(Status.values()),
                 // Builds for the branch and their complete status
                 Lists.transform(
                         tlist,
