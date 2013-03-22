@@ -2,9 +2,7 @@ package org.jenkinsci.plugins.ontrack;
 
 import antlr.ANTLRException;
 import hudson.Extension;
-import hudson.model.Action;
-import hudson.model.Item;
-import hudson.model.Node;
+import hudson.model.*;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.core.model.BuildSummary;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
@@ -13,7 +11,7 @@ import org.jenkinsci.lib.xtrigger.XTriggerException;
 import org.jenkinsci.lib.xtrigger.XTriggerLog;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.io.File;
+import java.io.*;
 import java.util.logging.Logger;
 
 public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
@@ -21,6 +19,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	private final String branch;
 	private final String validationStamp;
 	private String lastBuildNr;
+	private File lastBuildNrFile;
 
 	@DataBoundConstructor
 	public OntrackValidationStampPollingTrigger(String cronTabSpec, String triggerLabel, String project, String branch,
@@ -53,36 +52,24 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 
 	@Override
 	protected boolean checkIfModified(Node node, XTriggerLog xTriggerLog) throws XTriggerException {
-		if (project == null || project.isEmpty()) {
-			xTriggerLog.info("Ontrack: No project configured");
-			return false;
-		}
-
-		if (branch == null || branch.isEmpty()) {
-			xTriggerLog.info("Ontrack: No branch configured");
-			return false;
-		}
-
-		if (validationStamp == null || validationStamp.isEmpty()) {
-			xTriggerLog.info("Ontrack: No validation stamp configured");
-			return false;
-		}
+		if (checkConfigs(xTriggerLog)) return false;
 
 		// Gets the last build
-		BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
-			@Override
-			public BuildSummary onCall(ManageUIClient ui) {
-				return ui.getLastBuildWithValidationStamp(null, project, branch, validationStamp);
-			}
-		});
+		BuildSummary lastBuild = getBuildSummary();
 
 		// Found
 		if (lastBuild != null) {
 			String name = lastBuild.getName();
 			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, branch, project, validationStamp));
-			if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
-				lastBuildNr = name;
-				return true;
+			try {
+				String _lastBuildNr = getLastBuildNr();
+				if (_lastBuildNr == null || _lastBuildNr.isEmpty() || !_lastBuildNr.equals(name)) {
+					setLastBuildNr(name);
+					saveLastBuildNr(getLastBuildNr(), xTriggerLog);
+					return true;
+				}
+			} catch (IOException e) {
+				logException(xTriggerLog, e);
 			}
 		}
 
@@ -90,8 +77,19 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	}
 
 	@Override
+	protected void start(Node pollingNode, BuildableItem project, boolean newInstance, XTriggerLog xTriggerLog) throws XTriggerException {
+		this.lastBuildNrFile = new File(project.getRootDir().getAbsolutePath() + "/lastBuildNr");
+
+		try {
+			loadLastBuildNr(xTriggerLog);
+		} catch (IOException e) {
+			logException(xTriggerLog, e);
+		}
+	}
+
+	@Override
 	protected String getCause() {
-		return "Some cause";
+		return String.format("New build found with validation stamp %s", validationStamp);
 	}
 
 	public String getProject() {
@@ -112,6 +110,66 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 
 	public void setLastBuildNr(String lastBuildNr) {
 		this.lastBuildNr = lastBuildNr;
+	}
+
+	private void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog) throws IOException {
+		if (!lastBuildNrFile.exists()) {
+			lastBuildNrFile.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(lastBuildNrFile);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(lastBuildNr);
+		bw.close();
+		fw.close();
+		xTriggerLog.info(String.format("Wrote buildNr: %s", lastBuildNr));
+	}
+
+	private void loadLastBuildNr(XTriggerLog xTriggerLog) throws IOException {
+		FileReader fr = new FileReader(lastBuildNrFile);
+		BufferedReader br = new BufferedReader(fr);
+
+		lastBuildNr = br.readLine();
+
+		br.close();
+		fr.close();
+
+		xTriggerLog.info(String.format("Loaded buildNr: %s", lastBuildNr));
+	}
+
+	private boolean checkConfigs(XTriggerLog xTriggerLog) {
+		if (project == null || project.isEmpty()) {
+			xTriggerLog.info("Ontrack: No project configured");
+			return true;
+		}
+
+		if (branch == null || branch.isEmpty()) {
+			xTriggerLog.info("Ontrack: No branch configured");
+			return true;
+		}
+
+		if (validationStamp == null || validationStamp.isEmpty()) {
+			xTriggerLog.info("Ontrack: No validation stamp configured");
+			return true;
+		}
+		return false;
+	}
+
+	private BuildSummary getBuildSummary() {
+		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+			@Override
+			public BuildSummary onCall(ManageUIClient ui) {
+				return ui.getLastBuildWithValidationStamp(null, project, branch, validationStamp);
+			}
+		});
+	}
+
+	private void logException(XTriggerLog xTriggerLog, IOException e) {
+		e.printStackTrace();
+		xTriggerLog.error(e.getMessage());
+		for (StackTraceElement se : e.getStackTrace()) {
+			xTriggerLog.error(se.toString());
+		}
 	}
 
 	@Extension
