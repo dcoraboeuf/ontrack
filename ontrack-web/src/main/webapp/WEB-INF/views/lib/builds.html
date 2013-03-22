@@ -50,7 +50,7 @@
                         <button id="filter-button" type="button" class="btn" onclick="Builds.showFilter()"><@lh key="query" /></button>
 
                         <!-- Filter data -->
-                        <@dynamicsection id="filter-form" template="Builds.filterFormTemplate('{{project}}', '{{branch}}')" />
+                        <@dynamicsection id="filter-form-section" template="Builds.filterFormTemplate('{{project}}', '{{branch}}')" />
                     </td>
                 </tr>
             </tfoot>
@@ -114,7 +114,7 @@
             <p>
                 <button type="submit" class="btn btn-primary"><@lh key="query.submit" /></button>
                 <button type="button" class="btn" onclick="Builds.clearFilter()"><@lh key="query.clear" /></button>
-                <button type="button" class="btn btn-link" onclick="alert('TODO')"><@lh key="general.close" /></button>
+                <button type="button" class="btn btn-link" onclick="Builds.closeFilter()"><@lh key="general.close" /></button>
             </p>
         </form>
     </script>

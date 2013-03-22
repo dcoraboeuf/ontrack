@@ -151,7 +151,15 @@ var Builds = function () {
 	}
 
 	function showFilter () {
+        Application.dialog({
+            id: 'filter-form',
+            title: loc('query'),
+            width: 800
+        });
+	}
 
+	function closeFilter () {
+	    $('#filter-form').dialog('close');
 	}
 	
 	return {
@@ -162,7 +170,8 @@ var Builds = function () {
 		generateTableBranchBuilds: generateTableBranchBuilds,
 		// Filter management
 		showFilter: showFilter,
-		filterFormTemplate: filterFormTemplate
+		filterFormTemplate: filterFormTemplate,
+		closeFilter: closeFilter
 	};
 	
 } ();
