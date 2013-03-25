@@ -121,7 +121,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ontrack-extension-reason</artifactId>
+            <artifactId>ontrack-extension-explanation</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
