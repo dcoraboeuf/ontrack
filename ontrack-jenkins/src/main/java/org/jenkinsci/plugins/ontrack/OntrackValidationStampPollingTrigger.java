@@ -19,9 +19,6 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	private final String project;
 	private final String branch;
 	private final String validationStamp;
-	private String lastBuildNr;
-	private FilePath lastBuildNrFile;
-	private Node lastNode;
 
 	@DataBoundConstructor
 	public OntrackValidationStampPollingTrigger(String cronTabSpec, String triggerLabel, String project, String branch,
@@ -56,11 +53,8 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	protected boolean checkIfModified(Node node, XTriggerLog xTriggerLog) throws XTriggerException {
 		if (checkConfigs(xTriggerLog)) return false;
 
-		if (this.lastBuildNrFile == null || lastNode == null || !lastNode.equals(node)) {
-			this.lastBuildNrFile = new FilePath(node.getRootPath(), String.format("%s-lastBuildNr", job.getName()));
-			loadLastBuildNr(xTriggerLog);
-			lastNode = node;
-		}
+		FilePath lastBuildNrFile = new FilePath(node.getRootPath(), String.format("%s-lastBuildNr", job.getName()));
+		String lastBuildNr = loadLastBuildNr(xTriggerLog, lastBuildNrFile);
 
 		// Gets the last build
 		BuildSummary lastBuild = getBuildSummary();
@@ -70,10 +64,8 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 			String name = lastBuild.getName();
 			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, branch, project, validationStamp));
 			try {
-				String _lastBuildNr = getLastBuildNr();
-				if (_lastBuildNr == null || _lastBuildNr.isEmpty() || !_lastBuildNr.equals(name)) {
-					setLastBuildNr(name);
-					saveLastBuildNr(getLastBuildNr(), xTriggerLog);
+				if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
+					saveLastBuildNr(lastBuildNr, xTriggerLog, lastBuildNrFile);
 					return true;
 				}
 			} catch (IOException e) {
@@ -103,20 +95,14 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		return validationStamp;
 	}
 
-	public String getLastBuildNr() {
-		return lastBuildNr;
-	}
-
-	public void setLastBuildNr(String lastBuildNr) {
-		this.lastBuildNr = lastBuildNr;
-	}
-
-	private void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog) throws IOException, InterruptedException {
+	private static void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog, FilePath lastBuildNrFile) throws IOException, InterruptedException {
 		lastBuildNrFile.write(lastBuildNr, "UTF-8");
 		xTriggerLog.info(String.format("Wrote buildNr: %s", lastBuildNr));
 	}
 
-	private void loadLastBuildNr(XTriggerLog xTriggerLog) {
+	private static String loadLastBuildNr(XTriggerLog xTriggerLog, FilePath lastBuildNrFile) {
+		String lastBuildNr = null;
+
 		try {
 			if (lastBuildNrFile.exists()) {
 				lastBuildNr = lastBuildNrFile.readToString();
@@ -128,6 +114,8 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		} catch (InterruptedException e) {
 			logException(xTriggerLog, e);
 		}
+
+		return lastBuildNr;
 	}
 
 	private boolean checkConfigs(XTriggerLog xTriggerLog) {
@@ -157,7 +145,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		});
 	}
 
-	private void logException(XTriggerLog xTriggerLog, Exception e) {
+	private static void logException(XTriggerLog xTriggerLog, Exception e) {
 		e.printStackTrace();
 		xTriggerLog.error(e.getMessage());
 		for (StackTraceElement se : e.getStackTrace()) {
