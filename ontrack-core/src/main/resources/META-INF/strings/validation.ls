@@ -7,6 +7,18 @@ validation.field
     en -> {0}: {1}
     fr -> {0} : {1}
 
+validation.notnumeric
+    en -> {0} is not numeric
+    fr -> {0} n'est pas un nombre entier
+
+validation.min
+    en -> must be greater or equal than {1}
+    fr -> doit être supérieur ou égal à {1}
+
+validation.max
+    en -> must be lower or equal than {1}
+    fr -> doit être inférieur ou égal à {1}
+
 [account]
 
 net.ontrack.core.model.AccountCreationForm.name
