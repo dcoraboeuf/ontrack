@@ -144,6 +144,11 @@
     padding-left: 1em;
 }
 
+.status-ANOMALY {
+    border-left: solid 0.5em #875624;
+    padding-left: 1em;
+}
+
 /* Properties display */
 
 ul.properties {

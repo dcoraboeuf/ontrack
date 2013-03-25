@@ -27,9 +27,13 @@ public enum Status {
      */
     DEFECTIVE(),
     /**
+     * Anomaly with the test environment
+     */
+    ANOMALY(),
+    /**
      * Run is under investigation
      */
-    INVESTIGATED(DEFECTIVE, FIXED),
+    INVESTIGATED(DEFECTIVE, ANOMALY, FIXED),
     /**
      * Run was interrupted
      */
