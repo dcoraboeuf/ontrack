@@ -3,6 +3,8 @@ package net.ontrack.extension.svn.service;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.svn.IndexationConfigurationExtension;
 import net.ontrack.extension.svn.IndexationService;
+import net.ontrack.extension.svn.SubversionConfiguration;
+import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.service.api.ScheduledService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import org.tmatesoft.svn.core.SVNURL;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,13 +23,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public class DefaultIndexationService implements IndexationService, ScheduledService {
 
     private final Logger logger = LoggerFactory.getLogger(IndexationService.class);
-    private final IndexationConfigurationExtension configurationExtension;
+    private final IndexationConfigurationExtension indexationConfigurationExtension;
+    private final SubversionConfigurationExtension subversionConfigurationExtension;
     // Current indexation
     private final AtomicReference<IndexationJob> currentIndexationJob = new AtomicReference<>();
 
     @Autowired
-    public DefaultIndexationService(IndexationConfigurationExtension configurationExtension) {
-        this.configurationExtension = configurationExtension;
+    public DefaultIndexationService(IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension) {
+        this.indexationConfigurationExtension = indexationConfigurationExtension;
+        this.subversionConfigurationExtension = subversionConfigurationExtension;
     }
 
     protected void indexTask() {
@@ -50,8 +55,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void indexFromLatest() {
-//        // Loads the repository information
-//        SVNURL url = SVNUtils.toURL(subversionConfiguration.getUrl());
+        // Loads the repository information
+        SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
 //        // Opens a SVN transaction
 //        Transaction transaction = tx();
 //        try {
@@ -69,6 +74,10 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 //        } finally {
 //            transaction.end();
 //        }
+    }
+
+    private SubversionConfiguration getSvnConfiguration() {
+        return subversionConfigurationExtension.getConfiguration();
     }
 
     @Override
@@ -108,7 +117,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             @Override
             public Date nextExecutionTime(TriggerContext triggerContext) {
                 // Configuration
-                int scanInterval = configurationExtension.getConfiguration().getScanInterval();
+                int scanInterval = indexationConfigurationExtension.getConfiguration().getScanInterval();
                 // No scan, tries again in one minute, in case the configuration has changed
                 if (scanInterval <= 0) {
                     return DateTime.now().plusMinutes(1).toDate();
