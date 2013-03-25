@@ -21,6 +21,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	private final String validationStamp;
 	private String lastBuildNr;
 	private FilePath lastBuildNrFile;
+	private Node lastNode;
 
 	@DataBoundConstructor
 	public OntrackValidationStampPollingTrigger(String cronTabSpec, String triggerLabel, String project, String branch,
@@ -55,6 +56,12 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	protected boolean checkIfModified(Node node, XTriggerLog xTriggerLog) throws XTriggerException {
 		if (checkConfigs(xTriggerLog)) return false;
 
+		if (this.lastBuildNrFile == null || lastNode == null || !lastNode.equals(node)) {
+			this.lastBuildNrFile = new FilePath(node.getRootPath(), String.format("%s-lastBuildNr", job.getName()));
+			loadLastBuildNr(xTriggerLog);
+			lastNode = node;
+		}
+
 		// Gets the last build
 		BuildSummary lastBuild = getBuildSummary();
 
@@ -77,17 +84,6 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		}
 
 		return false;
-	}
-
-	@Override
-	protected void start(Node pollingNode, BuildableItem project, boolean newInstance, XTriggerLog xTriggerLog) throws XTriggerException {
-		this.lastBuildNrFile = new FilePath(pollingNode.getRootPath(), "lastBuildNr");
-
-		try {
-			loadLastBuildNr(xTriggerLog);
-		} catch (IOException e) {
-			logException(xTriggerLog, e);
-		}
 	}
 
 	@Override
@@ -116,14 +112,22 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	}
 
 	private void saveLastBuildNr(String lastBuildNr, XTriggerLog xTriggerLog) throws IOException, InterruptedException {
-		lastBuildNrFile.write(null, lastBuildNr);
+		lastBuildNrFile.write(lastBuildNr, "UTF-8");
 		xTriggerLog.info(String.format("Wrote buildNr: %s", lastBuildNr));
 	}
 
-	private void loadLastBuildNr(XTriggerLog xTriggerLog) throws IOException {
-		lastBuildNr = lastBuildNrFile.readToString();
+	private void loadLastBuildNr(XTriggerLog xTriggerLog) {
+		try {
+			if (lastBuildNrFile.exists()) {
+				lastBuildNr = lastBuildNrFile.readToString();
 
-		xTriggerLog.info(String.format("Loaded buildNr: %s", lastBuildNr));
+				xTriggerLog.info(String.format("Loaded buildNr: %s", lastBuildNr));
+			}
+		} catch (IOException e) {
+			logException(xTriggerLog, e);
+		} catch (InterruptedException e) {
+			logException(xTriggerLog, e);
+		}
 	}
 
 	private boolean checkConfigs(XTriggerLog xTriggerLog) {
