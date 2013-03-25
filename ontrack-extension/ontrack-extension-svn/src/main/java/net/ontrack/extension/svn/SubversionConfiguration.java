@@ -11,5 +11,6 @@ public class SubversionConfiguration {
     private String branchPattern;
     private String tagPattern;
     private String tagFilterPattern;
+    private String browserForPath;
 
 }

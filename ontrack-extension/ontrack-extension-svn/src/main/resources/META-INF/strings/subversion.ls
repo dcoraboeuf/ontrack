@@ -26,6 +26,10 @@ subversion.configuration.tagFilterPattern
     en -> Tag filter pattern
     fr -> Expression régulière pour les tags à exclure
 
+subversion.configuration.browserForPath
+    en -> URL for browsing a path
+    fr -> URL pour la navigation vers un chemin
+
 subversion.path
     en -> Subversion path
     fr -> Chemin Subversion

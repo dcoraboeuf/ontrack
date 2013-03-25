@@ -18,6 +18,7 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
     public static final String BRANCH_PATTERN = "branchPattern";
     public static final String TAG_PATTERN = "tagPattern";
     public static final String TAG_FILTER_PATTERN = "tagFilterPattern";
+    public static final String BROWSER_FOR_PATH = "browserForPath";
     private final SubversionConfiguration configuration = new SubversionConfiguration();
 
     public SubversionConfiguration getConfiguration() {
@@ -48,7 +49,8 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
                 new PasswordConfigurationExtensionField(PASSWORD, "subversion.configuration.password", configuration.getPassword()),
                 new TextConfigurationExtensionField(BRANCH_PATTERN, "subversion.configuration.branchPattern", ".+/branches/[_\\.\\-0-9a-zA-Z]+", configuration.getBranchPattern()),
                 new TextConfigurationExtensionField(TAG_PATTERN, "subversion.configuration.tagPattern", ".+/(tags|int)/.+", configuration.getTagPattern()),
-                new TextConfigurationExtensionField(TAG_FILTER_PATTERN, "subversion.configuration.tagFilterPattern", "", configuration.getTagFilterPattern())
+                new TextConfigurationExtensionField(TAG_FILTER_PATTERN, "subversion.configuration.tagFilterPattern", "", configuration.getTagFilterPattern()),
+                new TextConfigurationExtensionField(BROWSER_FOR_PATH, "subversion.configuration.browserForPath", "", configuration.getBrowserForPath())
         );
     }
 
@@ -72,6 +74,9 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
                 break;
             case TAG_FILTER_PATTERN:
                 configuration.setTagFilterPattern(value);
+                break;
+            case BROWSER_FOR_PATH:
+                configuration.setBrowserForPath(value);
                 break;
         }
     }
