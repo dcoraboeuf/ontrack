@@ -5,3 +5,7 @@ explanation.configuration
 explanation.configuration.list
     en -> List of explanations
     fr -> Liste des explications
+
+explanation
+    en -> Explanation
+    fr -> Explication
