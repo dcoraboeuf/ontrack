@@ -15,12 +15,10 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 @Component
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
-    private static final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
     private static final String ISSUE_SEPARATORS = ",; ";
 
     private final JIRAConfigurationExtension jiraConfigurationExtension;
@@ -58,7 +56,7 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     public void validate(String value) throws InputException {
         String[] issues = parseIssues(value);
         for (String issue : issues) {
-            if (!ISSUE_PATTERN.matcher(issue).matches()) {
+            if (!JIRAExtension.ISSUE_PATTERN.matcher(issue).matches()) {
                 throw new JIRAIssuePatternException(issue);
             }
         }

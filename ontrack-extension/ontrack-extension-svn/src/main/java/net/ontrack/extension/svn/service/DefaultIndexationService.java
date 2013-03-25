@@ -2,7 +2,9 @@ package net.ontrack.extension.svn.service;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.svn.*;
+import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.support.SVNUtils;
@@ -26,10 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,21 +41,25 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final SubversionConfigurationExtension subversionConfigurationExtension;
     private final TransactionService transactionService;
     private final SubversionService subversionService;
+    private final JIRAService jiraService;
     private final RevisionDao revisionDao;
     private final SVNEventDao svnEventDao;
+    private final IssueRevisionDao issueRevisionDao;
     private final TransactionTemplate transactionTemplate;
     // Current indexation
     private final AtomicReference<IndexationJob> currentIndexationJob = new AtomicReference<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, RevisionDao revisionDao, SVNEventDao svnEventDao) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, JIRAService jiraService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao) {
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
         this.transactionService = transactionService;
         this.subversionService = subversionService;
+        this.jiraService = jiraService;
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
+        this.issueRevisionDao = issueRevisionDao;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -195,8 +198,26 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         }
         // Subversion events
         indexSVNEvents(logEntry);
-        // TODO Indexes the issues
-        // indexIssues(logEntry);
+        // Indexes the issues
+        indexIssues(logEntry);
+    }
+
+    private void indexIssues(SVNLogEntry logEntry) {
+        long revision = logEntry.getRevision();
+        String message = logEntry.getMessage();
+        // Cache for issues
+        Set<String> revisionIssues = new HashSet<>();
+        // Gets all issues
+        Set<String> issues = jiraService.extractIssueKeysFromMessage(message);
+        // For each issue in the message
+        for (String issueKey : issues) {
+            // Checks that the issue has not already been associated with this revision
+            if (!revisionIssues.contains(issueKey)) {
+                revisionIssues.add(issueKey);
+                // Indexes this issue
+                issueRevisionDao.link(revision, issueKey);
+            }
+        }
     }
 
     private void indexSVNEvents(SVNLogEntry logEntry) {
