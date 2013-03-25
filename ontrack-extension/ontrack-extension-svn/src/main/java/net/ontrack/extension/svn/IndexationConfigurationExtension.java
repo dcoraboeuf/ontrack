@@ -16,6 +16,10 @@ public class IndexationConfigurationExtension implements ConfigurationExtension 
     public static final String START_REVISION = "startRevision";
     private final IndexationConfiguration configuration = new IndexationConfiguration();
 
+    public IndexationConfiguration getConfiguration() {
+        return configuration;
+    }
+
     @Override
     public String getExtension() {
         return SubversionExtension.EXTENSION;
