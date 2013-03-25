@@ -5,8 +5,11 @@ import net.ontrack.extension.svn.IndexationConfigurationExtension;
 import net.ontrack.extension.svn.IndexationService;
 import net.ontrack.extension.svn.SubversionConfiguration;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.api.ScheduledService;
+import net.ontrack.tx.Transaction;
+import net.ontrack.tx.TransactionService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +29,17 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final Logger logger = LoggerFactory.getLogger(IndexationService.class);
     private final IndexationConfigurationExtension indexationConfigurationExtension;
     private final SubversionConfigurationExtension subversionConfigurationExtension;
+    private final TransactionService transactionService;
+    private final RevisionDao revisionDao;
     // Current indexation
     private final AtomicReference<IndexationJob> currentIndexationJob = new AtomicReference<>();
 
     @Autowired
-    public DefaultIndexationService(IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension) {
+    public DefaultIndexationService(IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, RevisionDao revisionDao) {
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
+        this.transactionService = transactionService;
+        this.revisionDao = revisionDao;
     }
 
     protected void indexTask() {
@@ -58,23 +65,23 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     public void indexFromLatest() {
         // Loads the repository information
         SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
-//        // Opens a SVN transaction
-//        Transaction transaction = tx();
-//        try {
-//            // Last scanned revision
-//            long lastScannedRevision = repositoryService.getLastScannedRevision();
-//            if (lastScannedRevision <= 0) {
-//                lastScannedRevision = indexationConfiguration.getStartRevision();
-//            }
-//            // Logging
-//            logger.info("Submitting indexation from latest scanned revision: " + lastScannedRevision);
+        // Opens a SVN transaction
+        Transaction transaction = transactionService.start();
+        try {
+            // Last scanned revision
+            long lastScannedRevision = revisionDao.getLast();
+            if (lastScannedRevision <= 0) {
+                lastScannedRevision = indexationConfigurationExtension.getConfiguration().getStartRevision();
+            }
+            // Logging
+            logger.info("Submitting indexation from latest scanned revision: " + lastScannedRevision);
 //            // HEAD revision
 //            long repositoryRevision = svnService.getRepositoryRevision(url);
 //            // Request index of the range
 //            indexRange(lastScannedRevision + 1, repositoryRevision);
-//        } finally {
-//            transaction.end();
-//        }
+        } finally {
+            transaction.end();
+        }
     }
 
     private SubversionConfiguration getSvnConfiguration() {

@@ -1,10 +1,10 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.db.SQL;
-import net.ontrack.backend.db.SQLUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
+import net.ontrack.dao.SQLUtils;
 import net.ontrack.service.EventService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
