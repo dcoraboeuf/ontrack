@@ -20,6 +20,7 @@
         <module>ontrack-extension-link</module>
         <module>ontrack-extension-jira</module>
         <module>ontrack-extension-svn</module>
+        <module>ontrack-extension-explanation</module>
     </modules>
 
     <dependencies>

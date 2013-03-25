@@ -138,7 +138,15 @@ public class PropertyUIController extends AbstractUIController implements Proper
                                         entity,
                                         entityId,
                                         extension,
-                                        propertyName)
+                                        propertyName),
+                                propertiesService.editHTML(
+                                        strings,
+                                        locale,
+                                        entity,
+                                        entityId,
+                                        extension,
+                                        propertyName
+                                )
                         );
                     }
                 }
