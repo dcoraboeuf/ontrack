@@ -1,16 +1,17 @@
 package net.ontrack.extension.svn.service;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.extension.svn.IndexationConfigurationExtension;
-import net.ontrack.extension.svn.IndexationService;
-import net.ontrack.extension.svn.SubversionConfiguration;
-import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.*;
 import net.ontrack.extension.svn.dao.RevisionDao;
+import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.api.ScheduledService;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,19 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
-import org.tmatesoft.svn.core.SVNURL;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -30,16 +41,23 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final IndexationConfigurationExtension indexationConfigurationExtension;
     private final SubversionConfigurationExtension subversionConfigurationExtension;
     private final TransactionService transactionService;
+    private final SubversionService subversionService;
     private final RevisionDao revisionDao;
+    private final SVNEventDao svnEventDao;
+    private final TransactionTemplate transactionTemplate;
     // Current indexation
     private final AtomicReference<IndexationJob> currentIndexationJob = new AtomicReference<>();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, RevisionDao revisionDao) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, RevisionDao revisionDao, SVNEventDao svnEventDao) {
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
         this.transactionService = transactionService;
+        this.subversionService = subversionService;
         this.revisionDao = revisionDao;
+        this.svnEventDao = svnEventDao;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     protected void indexTask() {
@@ -75,10 +93,10 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             }
             // Logging
             logger.info("Submitting indexation from latest scanned revision: " + lastScannedRevision);
-//            // HEAD revision
-//            long repositoryRevision = svnService.getRepositoryRevision(url);
-//            // Request index of the range
-//            indexRange(lastScannedRevision + 1, repositoryRevision);
+            // HEAD revision
+            long repositoryRevision = subversionService.getRepositoryRevision(url);
+            // Request index of the range
+            indexRange(lastScannedRevision + 1, repositoryRevision);
         } finally {
             transaction.end();
         }
@@ -103,10 +121,165 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             max = Math.max(from, to);
         }
         // Indexation job
-//        DefaultIndexationJob job = new DefaultIndexationJob(min, max);
-//        currentIndexationJob.set(job);
-//        // Schedule the scan
-//        executor.submit(job);
+        DefaultIndexationJob job = new DefaultIndexationJob(min, max);
+        currentIndexationJob.set(job);
+        // Schedule the scan
+        executor.submit(job);
+    }
+
+    /**
+     * Indexation of a range in a thread - since it is called by a single thread executor, we can be sure that only one
+     * call of this method is running at one time.
+     */
+    protected void index(long from, long to, IndexationListener indexationListener) {
+        // Ordering
+        if (from > to) {
+            long t = from;
+            from = to;
+            to = t;
+        }
+
+        // Opens a transaction
+        Transaction transaction = transactionService.start();
+        try {
+            // SVN URL
+            SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
+            // Filters the revision range using the repository configuration
+            long startRevision = indexationConfigurationExtension.getConfiguration().getStartRevision();
+            from = Math.max(startRevision, from);
+            // Filters the revision range using the SVN repository
+            long repositoryRevision = subversionService.getRepositoryRevision(url);
+            to = Math.min(to, repositoryRevision);
+            // Final check of range
+            if (from > to) {
+                throw new IllegalArgumentException(String.format("Cannot index range from %d to %d", from, to));
+            }
+            // Log
+            logger.info(String.format("[indexation] Indexing revisions from %d to %d", from, to));
+            // SVN range
+            SVNRevision fromRevision = SVNRevision.create(from);
+            SVNRevision toRevision = SVNRevision.create(to);
+            // Calls the indexer, including merge revisions
+            IndexationHandler handler = new IndexationHandler(indexationListener);
+            subversionService.log(url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
+        } finally {
+            transaction.end();
+        }
+    }
+
+    /**
+     * This method is executed within a transaction
+     */
+    private void indexInTransaction(SVNLogEntry logEntry) throws SVNException {
+        // Log values
+        long revision = logEntry.getRevision();
+        String author = logEntry.getAuthor();
+        // Date to date time
+        Date date = logEntry.getDate();
+        DateTime dateTime = new DateTime(date.getTime(), DateTimeZone.UTC);
+        // Message
+        String message = logEntry.getMessage();
+        // Branch for the revision
+        String branch = getBranchForRevision(logEntry);
+        // Logging
+        logger.info(String.format("Indexing revision %d", revision));
+        // Inserting or updating the revision
+        revisionDao.addRevision(revision, author, dateTime, message, branch);
+        // Merge relationships (using a nested SVN client)
+        Transaction svn = transactionService.start(true);
+        try {
+            List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(getSvnConfiguration().getUrl(), branch), revision);
+            revisionDao.addMergedRevisions(revision, mergedRevisions);
+        } finally {
+            svn.end();
+        }
+        // Subversion events
+        indexSVNEvents(logEntry);
+        // TODO Indexes the issues
+        // indexIssues(logEntry);
+    }
+
+    private void indexSVNEvents(SVNLogEntry logEntry) {
+        indexSVNCopyEvents(logEntry);
+        indexSVNStopEvents(logEntry);
+    }
+
+    private void indexSVNCopyEvents(SVNLogEntry logEntry) {
+        long revision = logEntry.getRevision();
+        // Looking for copy tags
+        @SuppressWarnings("unchecked")
+        Map<String, SVNLogEntryPath> changedPaths = logEntry.getChangedPaths();
+        // Copies
+        /*
+         * Looks through all changed paths and retains only copy operations toward branches or tags
+		 */
+        for (SVNLogEntryPath logEntryPath : changedPaths.values()) {
+            // Gets the copy path
+            String copyFromPath = logEntryPath.getCopyPath();
+            if (StringUtils.isNotBlank(copyFromPath) && logEntryPath.getType() == SVNLogEntryPath.TYPE_ADDED) {
+                // Registers the new history
+                String copyToPath = logEntryPath.getPath();
+                // Retains only branches and tags
+                if (subversionService.isTagOrBranch(copyToPath)) {
+                    long copyFromRevision = logEntryPath.getCopyRevision();
+                    logger.debug(String.format("\tCOPY %s@%d --> %s", copyFromPath, copyFromRevision, copyToPath));
+                    // Adds a copy event
+                    svnEventDao.createCopyEvent(revision, copyFromPath, copyFromRevision, copyToPath);
+                }
+            }
+        }
+    }
+
+    private void indexSVNStopEvents(SVNLogEntry logEntry) {
+        long revision = logEntry.getRevision();
+        // Looking for copy tags
+        @SuppressWarnings("unchecked")
+        Map<String, SVNLogEntryPath> changedPaths = logEntry.getChangedPaths();
+        // For all changes path
+        for (SVNLogEntryPath logEntryPath : changedPaths.values()) {
+            String path = logEntryPath.getPath();
+            if (logEntryPath.getType() == SVNLogEntryPath.TYPE_DELETED && subversionService.isTagOrBranch(path)) {
+                logger.debug(String.format("\tSTOP %s", path));
+                // Adds the stop event
+                svnEventDao.createStopEvent(revision, path);
+            }
+        }
+    }
+
+    private String getBranchForRevision(SVNLogEntry logEntry) {
+        // List of paths for this revision
+        @SuppressWarnings("unchecked")
+        Set<String> paths = logEntry.getChangedPaths().keySet();
+        // Finds the common path among all those paths
+        String commonPath = null;
+        for (String path : paths) {
+            if (commonPath == null) {
+                commonPath = path;
+            } else {
+                int diff = StringUtils.indexOfDifference(commonPath, path);
+                commonPath = StringUtils.left(commonPath, diff);
+            }
+        }
+        // Gets the branch for this path
+        if (commonPath != null) {
+            return extractBranch(commonPath);
+        } else {
+            // No path in the revision: no branch!
+            return null;
+        }
+    }
+
+    protected String extractBranch(String path) {
+        if (subversionService.isTrunkOrBranch(path)) {
+            return path;
+        } else {
+            String before = StringUtils.substringBeforeLast(path, "/");
+            if (StringUtils.isBlank(before)) {
+                return null;
+            } else {
+                return extractBranch(before);
+            }
+        }
     }
 
     @Override
@@ -142,5 +315,95 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 }
             }
         };
+    }
+
+    private static interface IndexationListener {
+
+        void setRevision(long revision);
+
+    }
+
+    private class IndexationHandler implements ISVNLogEntryHandler {
+
+        private final IndexationListener indexationListener;
+
+        public IndexationHandler(IndexationListener indexationListener) {
+            this.indexationListener = indexationListener;
+        }
+
+        @Override
+        public void handleLogEntry(final SVNLogEntry logEntry) throws SVNException {
+            // Transaction
+            transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+                @Override
+                protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+                    try {
+                        indexationListener.setRevision(logEntry.getRevision());
+                        indexInTransaction(logEntry);
+                    } catch (Exception ex) {
+                        logger.error("Cannot index revision " + logEntry.getRevision(), ex);
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        }
+    }
+
+    private class DefaultIndexationJob implements IndexationJob, Runnable, IndexationListener {
+
+        private final long min;
+        private final long max;
+        private boolean running;
+        private long current;
+
+        private DefaultIndexationJob(long min, long max) {
+            this.min = min;
+            this.max = max;
+            this.current = min;
+        }
+
+        @Override
+        public boolean isRunning() {
+            return running;
+        }
+
+        @Override
+        public long getMin() {
+            return min;
+        }
+
+        @Override
+        public long getMax() {
+            return max;
+        }
+
+        @Override
+        public long getCurrent() {
+            return current;
+        }
+
+        @Override
+        public int getProgress() {
+            double value = (current - min) / (double) (max - min);
+            return (int) (value * 100);
+        }
+
+        @Override
+        public void run() {
+            try {
+                running = true;
+                index(min, max, this);
+            } catch (Exception ex) {
+                logger.error(String.format("Could not index range from %s to %s", min, max), ex);
+            } finally {
+                currentIndexationJob.set(null);
+            }
+        }
+
+        @Override
+        public void setRevision(long revision) {
+            this.current = revision;
+        }
     }
 }

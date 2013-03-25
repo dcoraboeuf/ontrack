@@ -3,6 +3,7 @@ package net.ontrack.extension.svn.dao.jdbc;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
 import net.ontrack.extension.svn.dao.RevisionDao;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @Component
 public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
+
+    public static final int MESSAGE_LENGTH = 500;
 
     @Autowired
     public RevisionJdbcDao(DataSource dataSource) {
@@ -31,7 +34,7 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     @Transactional
     public void addRevision(long revision, String author, DateTime date, String dbMessage, String branch) {
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
-        // Getting rid of the revision (issues stay here)
+        // Getting rid of the revision
         MapSqlParameterSource params = params("revision", revision);
         t.update("DELETE FROM REVISION WHERE REVISION = :revision", params);
         // Creates the revision record
@@ -39,7 +42,7 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
                 params
                         .addValue("author", author)
                         .addValue("creation", SQLUtils.toTimestamp(date))
-                        .addValue("message", dbMessage)
+                        .addValue("message", StringUtils.abbreviate(dbMessage, MESSAGE_LENGTH))
                         .addValue("branch", branch)
         );
     }
