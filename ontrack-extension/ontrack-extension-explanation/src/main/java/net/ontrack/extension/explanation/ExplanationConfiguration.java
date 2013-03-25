@@ -29,7 +29,7 @@ public class ExplanationConfiguration implements ConfigurationExtension {
 
     @Override
     public String getTitleKey() {
-        return "reason.configuration";
+        return "explanation.configuration";
     }
 
     @Override
