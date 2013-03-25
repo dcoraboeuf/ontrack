@@ -20,6 +20,10 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
     public static final String TAG_FILTER_PATTERN = "tagFilterPattern";
     private final SubversionConfiguration configuration = new SubversionConfiguration();
 
+    public SubversionConfiguration getConfiguration() {
+        return configuration;
+    }
+
     @Override
     public String getExtension() {
         return SubversionExtension.EXTENSION;

@@ -25,3 +25,7 @@ subversion.configuration.tagPattern
 subversion.configuration.tagFilterPattern
     en -> Tag filter pattern
     fr -> Expression régulière pour les tags à exclure
+
+subversion.path
+    en -> Subversion path
+    fr -> Chemin Subversion
