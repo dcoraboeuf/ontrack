@@ -69,7 +69,7 @@ public class ExplanationPropertyExtension extends AbstractPropertyExtensionDescr
         // Options
         html.append("<option value=\"\"></option>");
         for (String explanation : explanationConfiguration.getExplanations()) {
-            html.append(format("<option value=\"%1$s\" %s>%1$s</option>",
+            html.append(format("<option value=\"%1$s\" %2$s>%1$s</option>",
                     StringEscapeUtils.escapeHtml4(explanation),
                     StringUtils.equals(explanation, value) ? "selected=\"selected\"" : ""));
         }
