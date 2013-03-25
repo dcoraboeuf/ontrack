@@ -48,7 +48,7 @@ public class ExplanationConfiguration implements ConfigurationExtension {
         switch (name) {
             case "explanations":
                 String text = value == null ? "" : value;
-                explanations = Arrays.asList(StringUtils.split(text, "\n"));
+                explanations = Arrays.asList(StringUtils.split(text, "\r\n"));
                 break;
         }
     }
