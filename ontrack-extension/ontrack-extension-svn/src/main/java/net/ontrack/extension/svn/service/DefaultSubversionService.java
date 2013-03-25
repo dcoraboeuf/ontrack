@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
@@ -25,6 +27,8 @@ public class DefaultSubversionService implements SubversionService {
     public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService) {
         this.configurationExtension = configurationExtension;
         this.transactionService = transactionService;
+        SVNRepositoryFactoryImpl.setup();
+        DAVRepositoryFactory.setup();
     }
 
     @Override
