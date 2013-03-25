@@ -14,4 +14,11 @@
     <artifactId>ontrack-extension-svn</artifactId>
     <name>ontrack Extension SVN</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.dbinit</groupId>
+            <artifactId>dbinit</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
