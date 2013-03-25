@@ -5,6 +5,7 @@ import net.ontrack.extension.svn.IndexationConfigurationExtension;
 import net.ontrack.extension.svn.IndexationService;
 import net.ontrack.extension.svn.SubversionConfiguration;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.api.ScheduledService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

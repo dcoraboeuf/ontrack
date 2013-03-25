@@ -1,4 +1,4 @@
-package net.ontrack.extension.svn.service;
+package net.ontrack.extension.svn.support;
 
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
