@@ -8,6 +8,7 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;

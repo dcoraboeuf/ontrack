@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

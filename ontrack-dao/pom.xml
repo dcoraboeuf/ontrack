@@ -6,23 +6,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>ontrack-extension</artifactId>
+        <artifactId>ontrack-parent</artifactId>
         <groupId>net.ontrack</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ontrack-extension-svn</artifactId>
-    <name>ontrack Extension SVN</name>
+    <artifactId>ontrack-dao</artifactId>
+    <name>ontrack DAO</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ontrack-dao</artifactId>
+            <artifactId>ontrack-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.dbinit</groupId>
-            <artifactId>dbinit</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
     </dependencies>
 

@@ -53,6 +53,7 @@
         <module>ontrack-client</module>
         <module>ontrack-extension-api</module>
         <module>ontrack-extension</module>
+        <module>ontrack-dao</module>
     </modules>
 
 	<dependencyManagement>
