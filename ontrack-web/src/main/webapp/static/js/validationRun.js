@@ -27,10 +27,11 @@ var ValidationRun = function () {
         var runId = $('#validationRunId').val();
         // Collects the properties and their values
         var properties = [];
-        $('.update-status-property').each (function (index, input) {
-            var extension = $(input).attr('extension');
-            var name = $(input).attr('property');
-            var value = $(input).val();
+        $('.update-status-property').each (function (index, cell) {
+            var extension = $(cell).attr('extension');
+            var name = $(cell).attr('property');
+            var inputId = 'extension-{0}-{1}'.format(extension, name);
+            var value = $('#' + inputId).val();
             if (value != '') {
                 properties.push({
                     extension: extension,
