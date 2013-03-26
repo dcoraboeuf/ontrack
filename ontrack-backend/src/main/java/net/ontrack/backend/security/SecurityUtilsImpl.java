@@ -5,6 +5,7 @@ import net.ontrack.core.model.Signature;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,6 +58,13 @@ public class SecurityUtilsImpl implements SecurityUtils {
     public boolean isAdmin() {
         Account account = getCurrentAccount();
         return account != null && SecurityRoles.ADMINISTRATOR.equals(account.getRoleName());
+    }
+
+    @Override
+    public void checkIsAdmin() {
+        if (!isAdmin()) {
+            throw new AccessDeniedException("Administrator right is required");
+        }
     }
 
     @Override

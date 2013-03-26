@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.UserMessage;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
@@ -38,6 +39,7 @@ public class AdminController extends AbstractGUIController {
     private final AdminService adminService;
     private final AccountService accountService;
     private final ConfigurationExtensionService configurationExtensionService;
+    private final SecurityUtils securityUtils;
     private final Strings strings;
 
     @Autowired
@@ -46,11 +48,12 @@ public class AdminController extends AbstractGUIController {
             AdminService adminService,
             AccountService accountService,
             ConfigurationExtensionService configurationExtensionService,
-            Strings strings) {
+            SecurityUtils securityUtils, Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
         this.configurationExtensionService = configurationExtensionService;
+        this.securityUtils = securityUtils;
         this.strings = strings;
     }
 
@@ -60,6 +63,8 @@ public class AdminController extends AbstractGUIController {
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public String settings(final Locale locale,
                            Model model) {
+        // Authorization
+        securityUtils.checkIsAdmin();
         // Gets the LDAP configuration
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
