@@ -10,6 +10,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
+import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.web.gui.model.GUIConfigurationExtension;
 import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
@@ -62,6 +63,8 @@ public class AdminController extends AbstractGUIController {
         // Gets the LDAP configuration
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
+        // Gets the mail configuration
+        model.addAttribute("mail", adminService.getMailConfiguration());
         // Gets the list of configuration extensions
         Collection<GUIConfigurationExtension> extensions = Collections2.transform(
                 configurationExtensionService.getConfigurationExtensions(),
@@ -105,6 +108,20 @@ public class AdminController extends AbstractGUIController {
         adminService.saveLDAPConfiguration(configuration);
         // Success
         redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "ldap.saved")));
+        // OK
+        return "redirect:/gui/admin/settings";
+    }
+
+    /**
+     * Mail settings
+     */
+    @RequestMapping(value = "/settings/mail", method = RequestMethod.POST)
+    public String mail(Locale locale, Model model, MailConfiguration configuration, RedirectAttributes redirectAttributes) {
+        // Saves the configuration
+        adminService.saveMailConfiguration(configuration);
+        // Success
+        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "" +
+                "")));
         // OK
         return "redirect:/gui/admin/settings";
     }
