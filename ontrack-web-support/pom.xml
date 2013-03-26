@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>ontrack-parent</artifactId>
+        <groupId>net.ontrack</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ontrack-web-support</artifactId>
+    <name>ontrack Web Support</name>
+
+    <dependencies>
+        <!-- This -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <!-- Localization -->
+        <dependency>
+            <groupId>net.sf.jstring</groupId>
+            <artifactId>jstring</artifactId>
+        </dependency>
+        <!-- J2EE -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

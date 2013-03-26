@@ -55,6 +55,7 @@
         <module>ontrack-extension</module>
         <module>ontrack-dao</module>
         <module>ontrack-tx</module>
+        <module>ontrack-web-support</module>
     </modules>
 
 	<dependencyManagement>

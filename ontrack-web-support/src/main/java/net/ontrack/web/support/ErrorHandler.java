@@ -1,10 +1,9 @@
 package net.ontrack.web.support;
 
-import java.util.Locale;
+import net.sf.jstring.support.CoreException;
 
 import javax.servlet.http.HttpServletRequest;
-
-import net.sf.jstring.support.CoreException;
+import java.util.Locale;
 
 public interface ErrorHandler {
 
