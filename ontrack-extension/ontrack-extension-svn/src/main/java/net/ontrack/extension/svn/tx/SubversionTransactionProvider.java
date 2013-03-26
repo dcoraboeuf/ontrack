@@ -24,8 +24,8 @@ public class SubversionTransactionProvider implements TransactionResourceProvide
         // Creates the client manager for SVN
         SVNClientManager clientManager = SVNClientManager.newInstance();
         // Authentication (if needed)
-        String svnUser = configurationExtension.getConfiguration().getUser();
-        String svnPassword = configurationExtension.getConfiguration().getPassword();
+        String svnUser = configurationExtension.getUser();
+        String svnPassword = configurationExtension.getPassword();
         if (StringUtils.isNotBlank(svnUser) && StringUtils.isNotBlank(svnPassword)) {
             clientManager.setAuthenticationManager(new BasicAuthenticationManager(svnUser, svnPassword));
         }

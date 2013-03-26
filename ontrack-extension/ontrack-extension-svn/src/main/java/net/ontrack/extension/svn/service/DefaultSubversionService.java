@@ -33,12 +33,12 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     public String getURL(String path) {
-        return configurationExtension.getConfiguration().getUrl() + path;
+        return configurationExtension.getUrl() + path;
     }
 
     @Override
     public String getBrowsingURL(String path) {
-        String browserForPath = configurationExtension.getConfiguration().getBrowserForPath();
+        String browserForPath = configurationExtension.getBrowserForPath();
         if (StringUtils.isNotBlank(browserForPath)) {
             return browserForPath.replace("*", path);
         } else {
@@ -148,7 +148,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     private boolean isTag(String path) {
-        return isPathOK(configurationExtension.getConfiguration().getTagPattern(), path);
+        return isPathOK(configurationExtension.getTagPattern(), path);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     private boolean isBranch(String path) {
-        return isPathOK(configurationExtension.getConfiguration().getBranchPattern(), path);
+        return isPathOK(configurationExtension.getBranchPattern(), path);
     }
 
     private boolean isPathOK(String pattern, String path) {

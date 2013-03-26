@@ -3,7 +3,10 @@ package net.ontrack.extension.svn.service;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.jira.JIRAService;
-import net.ontrack.extension.svn.*;
+import net.ontrack.extension.svn.IndexationConfigurationExtension;
+import net.ontrack.extension.svn.IndexationService;
+import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.SubversionService;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
@@ -85,7 +88,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void indexFromLatest() {
         // Loads the repository information
-        SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
+        SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
         // Opens a SVN transaction
         Transaction transaction = transactionService.start();
         try {
@@ -103,10 +106,6 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         } finally {
             transaction.end();
         }
-    }
-
-    private SubversionConfiguration getSvnConfiguration() {
-        return subversionConfigurationExtension.getConfiguration();
     }
 
     @Override
@@ -146,7 +145,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         Transaction transaction = transactionService.start();
         try {
             // SVN URL
-            SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
+            SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
             // Filters the revision range using the repository configuration
             long startRevision = indexationConfigurationExtension.getStartRevision();
             from = Math.max(startRevision, from);
@@ -191,7 +190,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         // Merge relationships (using a nested SVN client)
         Transaction svn = transactionService.start(true);
         try {
-            List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(getSvnConfiguration().getUrl(), branch), revision);
+            List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(subversionConfigurationExtension.getUrl(), branch), revision);
             revisionDao.addMergedRevisions(revision, mergedRevisions);
         } finally {
             svn.end();
