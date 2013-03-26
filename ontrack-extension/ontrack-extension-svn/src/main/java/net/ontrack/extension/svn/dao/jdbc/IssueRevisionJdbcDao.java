@@ -20,7 +20,7 @@ public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisi
     @Transactional
     public void link(long revision, String key) {
         getNamedParameterJdbcTemplate().update(
-                "INSERT INTO REVISION_ISSUE (REVISION, ISSUEKEY) VALUES (:revision, :key)",
+                "INSERT INTO REVISION_ISSUE (REVISION, ISSUE) VALUES (:revision, :key)",
                 params("revision", revision).addValue("key", key));
     }
 }
