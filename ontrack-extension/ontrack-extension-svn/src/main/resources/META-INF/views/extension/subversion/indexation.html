@@ -2,6 +2,8 @@
 
 <@layout_std page="subversion.indexation" script=true extension=true>
 
+    <@usermessage />
+
     <div class="page-header">
         <h1><small><@lh key="subversion.indexation.latest" /></small></h1>
         <@lh key="subversion.indexation.latest.message" /><br/>
@@ -13,9 +15,9 @@
         <@lh key="subversion.indexation.range.message" />
         <form class="form-inline" method="POST" action="gui/extension/subversion/indexation/range">
             <label for="indexation-range-from"><@lh key="subversion.indexation.range.from" /></label>
-            <input id="indexation-range-from" class="input-mini" name="from" type="text" size="7" max="7" />
+            <input id="indexation-range-from" class="input-mini" name="from" type="number" size="7" min="1" max="5000000" required="required"  />
             <label for="indexation-range-to"><@lh key="subversion.indexation.range.to" /></label>
-            <input id="indexation-range-to" class="input-mini" name="to" type="text" size="7" max="7" />
+            <input id="indexation-range-to" class="input-mini" name="to" type="number" size="7" min="1" max="5000000" required="required" />
             <button type="submit" class="btn btn-primary"><@lh key="subversion.indexation.range.button" /></button>
         </form>
     </div>

@@ -6,4 +6,7 @@ public interface IndexationService {
 
     void indexRange(Long from, Long to);
 
+    void reindex();
+
+    boolean isIndexationRunning();
 }

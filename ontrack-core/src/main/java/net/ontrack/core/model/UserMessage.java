@@ -15,6 +15,10 @@ public class UserMessage {
 	public static UserMessage error(Localizable message) {
 		return new UserMessage(UserMessageType.error, message);
 	}
+
+    public static UserMessage error(String code, Object... param) {
+        return error(new LocalizableMessage(code, param));
+    }
 	
 	public static UserMessage warning(Localizable message) {
 		return new UserMessage(UserMessageType.warning, message);
@@ -29,7 +33,7 @@ public class UserMessage {
     }
 
     public static UserMessage success(String code, Object... param) {
-        return new UserMessage(UserMessageType.success, new LocalizableMessage(code, param));
+        return success(new LocalizableMessage(code, param));
     }
 	
 	private final UserMessageType type;

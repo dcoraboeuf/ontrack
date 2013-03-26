@@ -83,7 +83,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         logger.info("[indexation] Indexation task stopped.");
     }
 
-    protected boolean isIndexationRunning() {
+    @Override
+    public boolean isIndexationRunning() {
         IndexationJob job = currentIndexationJob.get();
         return job != null && job.isRunning();
     }
@@ -148,6 +149,15 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         currentIndexationJob.set(job);
         // Schedule the scan
         executor.submit(job);
+    }
+
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public void reindex() {
+        // Clear all existing data
+        revisionDao.deleteAll();
+        // OK, launches a new indexation
+        indexFromLatest();
     }
 
     /**
