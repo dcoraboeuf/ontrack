@@ -132,6 +132,10 @@ settings.security
     en -> Security settings
     fr -> Configuration de la sécurité
 
+settings.mail
+    en -> Mail settings
+    fr -> Configuration du courriel
+
 settings.extension.saved
     en -> {0} saved.
     fr -> {0} sauvegardée.
@@ -169,6 +173,33 @@ ldap.password
 ldap.saved
     en -> LDAP configuration has been saved.
     fr -> La configuration LDAP a été sauvegardée.
+
+[mail]
+
+mail.saved
+    en -> Mail configuration has been saved.
+    fr -> La configuration du courriel a été sauvegardée.
+
+
+mail.host
+    en -> Mail server
+    fr -> Serveur de courriel
+
+mail.user
+    en -> User
+    fr -> Utilisateur
+
+mail.password
+    en -> Password
+    fr -> Mot de passe
+
+mail.authentication
+    en -> Authentication
+    fr -> Authentification
+
+mail.startTls
+    en -> Start TLS
+    fr -> Démarrer TLS
 
 [accounts]
 

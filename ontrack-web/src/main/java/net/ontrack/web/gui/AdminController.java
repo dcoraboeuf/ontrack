@@ -10,6 +10,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
+import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.web.gui.model.GUIConfigurationExtension;
 import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
@@ -62,6 +63,8 @@ public class AdminController extends AbstractGUIController {
         // Gets the LDAP configuration
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
+        // Gets the mail configuration
+        model.addAttribute("mail", adminService.getMailConfiguration());
         // Gets the list of configuration extensions
         Collection<GUIConfigurationExtension> extensions = Collections2.transform(
                 configurationExtensionService.getConfigurationExtensions(),
@@ -100,7 +103,7 @@ public class AdminController extends AbstractGUIController {
      * LDAP settings
      */
     @RequestMapping(value = "/settings/ldap", method = RequestMethod.POST)
-    public String ldap(Model model, LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
+    public String ldap(LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
         // Saves the configuration
         adminService.saveLDAPConfiguration(configuration);
         // Success
@@ -110,10 +113,24 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Mail settings
+     */
+    @RequestMapping(value = "/settings/mail", method = RequestMethod.POST)
+    public String mail(MailConfiguration configuration, RedirectAttributes redirectAttributes) {
+        // Saves the configuration
+        adminService.saveMailConfiguration(configuration);
+        // Success
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("mail.saved"));
+        // OK
+        return "redirect:/gui/admin/settings";
+    }
+
+    /**
      * Extension settings
      */
     @RequestMapping(value = "/settings/extension/{extension}/{name}", method = RequestMethod.POST)
     public String extensionSettings(
+            Locale locale,
             @PathVariable String extension,
             @PathVariable String name,
             WebRequest request,
@@ -130,7 +147,7 @@ public class AdminController extends AbstractGUIController {
         // Saves the configuration
         String displayNameKey = adminService.saveExtensionConfiguration(extension, name, parameters);
         // Success
-        redirectAttributes.addFlashAttribute("message", UserMessage.success("settings.extension.saved", new LocalizableMessage(displayNameKey)));
+        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "settings.extension.saved", new LocalizableMessage(displayNameKey))));
         // OK
         return "redirect:/gui/admin/settings";
     }
