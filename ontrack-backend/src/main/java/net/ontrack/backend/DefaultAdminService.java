@@ -74,7 +74,11 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
-    @CacheEvict(value = Caches.CONFIGURATION, key = "ldap")
+    @Caching(evict = {
+            @CacheEvict(value = Caches.CONFIGURATION, key = "ldap"),
+            @CacheEvict(value = Caches.LDAP, key = "0")
+    })
+
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
         // Validation
         validate(configuration, LDAPConfigurationValidation.class);
@@ -95,7 +99,7 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "mail"),
-            @CacheEvict(value = Caches.MAIL, key="0")
+            @CacheEvict(value = Caches.MAIL, key = "0")
     })
 
     public void saveMailConfiguration(MailConfiguration configuration) {
