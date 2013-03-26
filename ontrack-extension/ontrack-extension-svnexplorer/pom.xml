@@ -6,28 +6,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>ontrack-parent</artifactId>
+        <artifactId>ontrack-extension</artifactId>
         <groupId>net.ontrack</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ontrack-extension</artifactId>
-    <name>ontrack Extension Definition</name>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>ontrack-extension-jenkins</module>
-        <module>ontrack-extension-link</module>
-        <module>ontrack-extension-jira</module>
-        <module>ontrack-extension-svn</module>
-        <module>ontrack-extension-explanation</module>
-        <module>ontrack-extension-svnexplorer</module>
-    </modules>
+    <artifactId>ontrack-extension-svnexplorer</artifactId>
+    <name>ontrack Extension SVNExplorer</name>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ontrack-extension-api</artifactId>
+            <artifactId>ontrack-extension-svn</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

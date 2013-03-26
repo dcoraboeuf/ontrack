@@ -1,0 +1,1 @@
+# Localization for SVNExplorer
