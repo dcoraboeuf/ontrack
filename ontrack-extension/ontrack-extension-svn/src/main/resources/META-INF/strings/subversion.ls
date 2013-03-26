@@ -61,3 +61,7 @@ subversion.indexation.running
 subversion.indexation.pending
     en -> pending
     fr -> en attente
+
+subversion.indexation
+    en -> Indexation
+    fr -> Indexation

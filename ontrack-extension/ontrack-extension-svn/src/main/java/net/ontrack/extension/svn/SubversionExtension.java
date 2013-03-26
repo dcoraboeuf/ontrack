@@ -16,13 +16,17 @@ public class SubversionExtension extends ExtensionAdapter {
     public SubversionExtension(
             SubversionPathPropertyExtension subversionPathPropertyExtension,
             SubversionConfigurationExtension subversionConfigurationExtension,
-            IndexationConfigurationExtension indexationConfigurationExtension) {
+            IndexationConfigurationExtension indexationConfigurationExtension,
+            IndexationActionController indexationActionController) {
         super(
                 EXTENSION,
                 Collections.singletonList(subversionPathPropertyExtension),
                 Arrays.asList(
                         subversionConfigurationExtension,
                         indexationConfigurationExtension
+                ),
+                Arrays.asList(
+                        indexationActionController
                 ));
     }
 }

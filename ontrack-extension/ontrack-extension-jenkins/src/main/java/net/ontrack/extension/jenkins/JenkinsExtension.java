@@ -1,6 +1,5 @@
 package net.ontrack.extension.jenkins;
 
-import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ public class JenkinsExtension extends ExtensionAdapter {
     public JenkinsExtension() {
         super(
                 EXTENSION,
-                Collections.singletonList(new JenkinsUrlPropertyDescriptor()),
-                Collections.<ConfigurationExtension>emptyList());
+                Collections.singletonList(new JenkinsUrlPropertyDescriptor()));
     }
 }

@@ -4,6 +4,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
+import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
@@ -24,6 +25,7 @@ public class DefaultExtensionManager implements ExtensionManager {
     private final Map<String, Extension> extensionIndex;
     private final Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private final Map<String, Map<String, ConfigurationExtension>> configurationIndex;
+    private final Collection<ActionExtension> topLevelActions;
 
     @Autowired
     public DefaultExtensionManager(Collection<Extension> extensions) {
@@ -36,6 +38,7 @@ public class DefaultExtensionManager implements ExtensionManager {
         extensionIndex = new TreeMap<>();
         propertyIndex = new HashMap<>();
         configurationIndex = new HashMap<>();
+        topLevelActions = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
             logger.info("[extension] Extension={}", extensionName);
@@ -77,7 +80,17 @@ public class DefaultExtensionManager implements ExtensionManager {
                 // Adds to the list
                 extensionConfigurationIndex.put(configurationExtension.getName(), configurationExtension);
             }
+
+            /**
+             * Indexation of top level actions
+             */
+            topLevelActions.addAll(extension.getTopLevelActions());
         }
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getTopLevelActions() {
+        return topLevelActions;
     }
 
     @Override

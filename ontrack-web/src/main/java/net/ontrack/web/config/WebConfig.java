@@ -2,7 +2,7 @@ package net.ontrack.web.config;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
@@ -53,7 +53,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private SecurityUtils securityUtils;
 
     @Autowired
-    private PropertiesService propertiesService;
+    private ExtensionManager extensionManager;
 
     // TODO Moves this to the core
     @Bean
@@ -115,8 +115,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
-        // Properties
-        variables.put("propertyDisplay", new FnPropertyDisplay(strings(), propertiesService));
+        // Extensions
+        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings(), extensionManager, securityUtils));
         // OK
         c.setFreemarkerVariables(variables);
         // OK

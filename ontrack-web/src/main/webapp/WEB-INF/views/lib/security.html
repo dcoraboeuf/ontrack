@@ -17,6 +17,11 @@
                     <li><a href="gui/admin/accounts"><@lh key="accounts" /></a></li>
                     <li><a href="gui/admin/settings"><@lh key="settings" /></a></li>
                 </#if>
+                <!-- Extensions -->
+                <#list extensionTopLevelActions() as action>
+                    <li><a href="${action.path?html}">${action.title?html}</a></li>
+                </#list>
+                <!-- Signing out -->
                 <li><a href="logout"><@lh key="logout" /></a></li>
             </ul>
         </li>
