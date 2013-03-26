@@ -24,7 +24,7 @@ public class DefaultLDAPProviderFactory implements LDAPProviderFactory {
         this.authoritiesPopulator = authoritiesPopulator;
     }
 
-    @Cacheable(value = Caches.LDAP, key = "0")
+    @Cacheable(value = Caches.LDAP, key = "'0'")
     public LdapAuthenticationProvider getProvider() {
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         if (configuration.isEnabled()) {

@@ -28,7 +28,7 @@ public class DefaultMailService implements MailService {
     }
 
     @Override
-    @Cacheable(value = Caches.MAIL, key="0")
+    @Cacheable(value = Caches.MAIL, key="'0'")
     public JavaMailSender getMailSender() {
         MailConfiguration configuration = adminService.getMailConfiguration();
         logger.debug("[mail] Creating mail sender");

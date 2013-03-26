@@ -36,7 +36,7 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = Caches.CONFIGURATION, key = "ldap")
+    @Cacheable(value = Caches.CONFIGURATION, key = "'ldap'")
     public LDAPConfiguration getLDAPConfiguration() {
         LDAPConfiguration c = new LDAPConfiguration();
         boolean enabled = configurationService.getBoolean(ConfigurationKey.LDAP_ENABLED, false, false);
@@ -59,7 +59,7 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = Caches.CONFIGURATION, key = "mail")
+    @Cacheable(value = Caches.CONFIGURATION, key = "'mail'")
     public MailConfiguration getMailConfiguration() {
         MailConfiguration c = new MailConfiguration();
         c.setHost(configurationService.get(ConfigurationKey.MAIL_HOST, false, null));
@@ -75,8 +75,8 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
-            @CacheEvict(value = Caches.CONFIGURATION, key = "ldap"),
-            @CacheEvict(value = Caches.LDAP, key = "0")
+            @CacheEvict(value = Caches.CONFIGURATION, key = "'ldap'"),
+            @CacheEvict(value = Caches.LDAP, key = "'0'")
     })
 
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
@@ -98,8 +98,8 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
-            @CacheEvict(value = Caches.CONFIGURATION, key = "mail"),
-            @CacheEvict(value = Caches.MAIL, key = "0")
+            @CacheEvict(value = Caches.CONFIGURATION, key = "'mail'"),
+            @CacheEvict(value = Caches.MAIL, key = "'0'")
     })
 
     public void saveMailConfiguration(MailConfiguration configuration) {
