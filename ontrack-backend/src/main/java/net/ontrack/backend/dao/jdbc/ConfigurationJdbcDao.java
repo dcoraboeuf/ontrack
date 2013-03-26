@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.ConfigurationDao;
 import net.ontrack.backend.db.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,14 @@ public class ConfigurationJdbcDao extends AbstractJdbcDao implements Configurati
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(DaoCache.CONFIGURATION)
+    @Cacheable(Caches.CONFIGURATION_KEY)
     public String getValue(String name) {
         return getFirstItem(SQL.CONFIGURATION_GET, params("name", name), String.class);
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = DaoCache.CONFIGURATION, key = "#name")
+    @CacheEvict(value = Caches.CONFIGURATION_KEY, key = "#name")
     public void setValue(String name, String value) {
         MapSqlParameterSource params = params("name", name);
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();

@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.model.TBranch;
 import net.ontrack.backend.db.SQL;
@@ -43,7 +44,7 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(DaoCache.BRANCH)
+    @Cacheable(Caches.BRANCH)
     public TBranch getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.BRANCH,
@@ -62,7 +63,7 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
 
     @Override
     @Transactional
-    @CacheEvict(DaoCache.BRANCH)
+    @CacheEvict(Caches.BRANCH)
     public Ack deleteBranch(int id) {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(

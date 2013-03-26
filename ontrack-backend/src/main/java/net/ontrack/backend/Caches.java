@@ -1,6 +1,6 @@
-package net.ontrack.backend.dao.jdbc;
+package net.ontrack.backend;
 
-public interface DaoCache {
+public interface Caches {
 
     String PROJECT = "PROJECT";
 
@@ -9,6 +9,8 @@ public interface DaoCache {
     String VALIDATION_STAMP = "VALIDATION_STAMP";
 
     String BUILD = "BUILD";
+
+    String CONFIGURATION_KEY = "CONFIGURATION_KEY";
 
     String CONFIGURATION = "CONFIGURATION";
 

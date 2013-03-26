@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
@@ -48,7 +49,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(DaoCache.BUILD)
+    @Cacheable(Caches.BUILD)
     public TBuild getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.BUILD,

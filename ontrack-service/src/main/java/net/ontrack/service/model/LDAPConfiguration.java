@@ -6,6 +6,7 @@ import net.ontrack.service.validation.LDAPConfigurationValidation;
 @Data
 public class LDAPConfiguration implements LDAPConfigurationValidation {
 
+    private int sequence;
     private boolean enabled;
     private String host;
     private Integer port;

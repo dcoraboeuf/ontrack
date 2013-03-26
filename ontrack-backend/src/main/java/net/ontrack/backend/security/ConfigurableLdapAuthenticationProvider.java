@@ -1,8 +1,5 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.ConfigurationCache;
-import net.ontrack.backend.ConfigurationCacheKey;
-import net.ontrack.backend.ConfigurationCacheSubscriber;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.AccountService;
@@ -20,36 +17,30 @@ import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider, ConfigurationCacheSubscriber<LDAPConfiguration> {
+public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider {
 
     private final AdminService adminService;
     private final AccountService accountService;
     private final LdapAuthoritiesPopulator authoritiesPopulator;
-    private final ConfigurationCache configurationCache;
 
-    private AtomicBoolean init = new AtomicBoolean();
+    private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
     private LdapAuthenticationProvider ldapAuthenticationProvider;
 
     @Autowired
-    public ConfigurableLdapAuthenticationProvider(AdminService adminService, AccountService accountService, LdapAuthoritiesPopulator authoritiesPopulator, ConfigurationCache configurationCache) {
+    public ConfigurableLdapAuthenticationProvider(AdminService adminService, AccountService accountService, LdapAuthoritiesPopulator authoritiesPopulator) {
         this.adminService = adminService;
         this.accountService = accountService;
         this.authoritiesPopulator = authoritiesPopulator;
-        this.configurationCache = configurationCache;
     }
 
-    @PostConstruct
-    public void subscribeToConfigurationChanges() {
-        configurationCache.subscribe(ConfigurationCacheKey.LDAP, this);
-    }
-
-    protected void init() {
-        if (!init.compareAndSet(true, true)) {
-            onConfigurationChange(ConfigurationCacheKey.LDAP, adminService.getLDAPConfiguration());
+    protected synchronized void init() {
+        LDAPConfiguration ldapConfiguration = adminService.getLDAPConfiguration();
+        int sequence = ldapConfiguration.getSequence();
+        if (!ldapConfigurationSequence.compareAndSet(sequence, sequence)) {
+            initProvider(ldapConfiguration);
         }
     }
 
@@ -84,8 +75,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    @Override
-    public void onConfigurationChange(ConfigurationCacheKey key, LDAPConfiguration configuration) {
+    protected synchronized void initProvider(LDAPConfiguration configuration) {
         if (configuration.isEnabled()) {
             // LDAP URL
             String ldapUrl = String.format("ldap://%s:%s", configuration.getHost(), configuration.getPort());
@@ -108,9 +98,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
             BindAuthenticator bindAuthenticator = new BindAuthenticator(ldapContextSource);
             bindAuthenticator.setUserSearch(userSearch);
             // Provider
-            LdapAuthenticationProvider ldap = new LdapAuthenticationProvider(bindAuthenticator, authoritiesPopulator);
-            // OK
-            ldapAuthenticationProvider = ldap;
+            ldapAuthenticationProvider = new LdapAuthenticationProvider(bindAuthenticator, authoritiesPopulator);
         } else {
             ldapAuthenticationProvider = null;
         }

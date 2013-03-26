@@ -1,6 +1,5 @@
 package net.ontrack.backend;
 
-import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.RunProfile;
 import net.ontrack.core.model.Message;
 import net.ontrack.service.AdminService;
@@ -16,69 +15,56 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 @Component
 @Profile({RunProfile.DEV, RunProfile.PROD})
-public class MailPost extends AbstractMessagePost implements ConfigurationCacheSubscriber<MailConfiguration>, StartupService {
+public class MailPost extends AbstractMessagePost {
 
-	private final Logger logger = LoggerFactory.getLogger(MailPost.class);
+    private final Logger logger = LoggerFactory.getLogger(MailPost.class);
 
+    private final JavaMailSender mailSender;
     private final AdminService adminService;
-	private final JavaMailSender mailSender;
-    private final ConfigurationCache configurationCache;
 
-	@Autowired
-	public MailPost(AdminService adminService, JavaMailSender mailSender, ConfigurationCache configurationCache) {
-        this.adminService = adminService;
+    @Autowired
+    public MailPost(JavaMailSender mailSender, AdminService adminService) {
         this.mailSender = mailSender;
-        this.configurationCache = configurationCache;
-	}
-
-    @PostConstruct
-    public void subscribeToConfigurationChanges() {
-        configurationCache.subscribe(ConfigurationCacheKey.MAIL, this);
+        this.adminService = adminService;
     }
 
     @Override
-    public void onConfigurationChange(ConfigurationCacheKey key, MailConfiguration value) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public boolean supports(MessageChannel channel) {
+        return (channel == MessageChannel.EMAIL);
     }
 
     @Override
-	public boolean supports(MessageChannel channel) {
-		return (channel == MessageChannel.EMAIL);
-	}
+    public void post(final Message message, final String destination) {
 
-	@Override
-	public void post(final Message message, final String destination) {
-		
-		final String replyToAddress = configurationService.getConfigurationValue(ConfigurationKey.MAIL_REPLY_TO);
-		logger.debug("[mail] Sending message from: {}", replyToAddress);
+        MailConfiguration configuration = adminService.getMailConfiguration();
+        final String replyToAddress = configuration.getReplyToAddress();
+        logger.debug("[mail] Sending message from: {}", replyToAddress);
 
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
-			@Override
-			public void prepare(MimeMessage mimeMessage) throws Exception {
-				prepareMessage(mimeMessage, message, destination, replyToAddress);
-			}
-		};
-		try {
-			this.mailSender.send(preparator);
-		} catch (MailException ex) {
-			logger.error("[mail] Cannot send mail: {}", ExceptionUtils.getRootCauseMessage(ex));
-		}
-	}
+            @Override
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                prepareMessage(mimeMessage, message, destination, replyToAddress);
+            }
+        };
+        try {
+            this.mailSender.send(preparator);
+        } catch (MailException ex) {
+            logger.error("[mail] Cannot send mail: {}", ExceptionUtils.getRootCauseMessage(ex));
+        }
+    }
 
-	protected void prepareMessage(MimeMessage mimeMessage, Message message, String destination, String replyToAddress) throws MessagingException, AddressException {
-		mimeMessage.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(destination));
-		mimeMessage.setFrom(new InternetAddress(replyToAddress));
-		mimeMessage.setSubject(message.getTitle());
-		mimeMessage.setText(message.getContent().getText());
-	}
+    protected void prepareMessage(MimeMessage mimeMessage, Message message, String destination, String replyToAddress) throws MessagingException {
+        mimeMessage.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(destination));
+        mimeMessage.setFrom(new InternetAddress(replyToAddress));
+        mimeMessage.setSubject(message.getTitle());
+        mimeMessage.setText(message.getContent().getText());
+    }
 
 }

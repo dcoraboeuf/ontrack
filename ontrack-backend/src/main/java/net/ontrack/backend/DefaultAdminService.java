@@ -8,30 +8,34 @@ import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.service.validation.LDAPConfigurationValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Validator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class AdminServiceImpl extends AbstractServiceImpl implements AdminService {
+public class DefaultAdminService extends AbstractServiceImpl implements AdminService {
 
     private final ConfigurationService configurationService;
-    private final ConfigurationCache configurationCache;
     private final ConfigurationExtensionService configurationExtensionService;
 
+    private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
+
     @Autowired
-    public AdminServiceImpl(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationCache configurationCache, ConfigurationExtensionService configurationExtensionService) {
+    public DefaultAdminService(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationExtensionService configurationExtensionService) {
         super(validator, eventService);
         this.configurationService = configurationService;
-        this.configurationCache = configurationCache;
         this.configurationExtensionService = configurationExtensionService;
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = Caches.CONFIGURATION, key = "ldap")
     public LDAPConfiguration getLDAPConfiguration() {
         LDAPConfiguration c = new LDAPConfiguration();
         boolean enabled = configurationService.getBoolean(ConfigurationKey.LDAP_ENABLED, false, false);
@@ -48,11 +52,13 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
             c.setPort(389);
         }
         // OK
+        c.setSequence(ldapConfigurationSequence.incrementAndGet());
         return c;
     }
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = Caches.CONFIGURATION, key = "mail")
     public MailConfiguration getMailConfiguration() {
         MailConfiguration c = new MailConfiguration();
         c.setHost(configurationService.get(ConfigurationKey.MAIL_HOST, false, null));
@@ -67,6 +73,7 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    @CacheEvict(value = Caches.CONFIGURATION, key = "ldap")
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
         // Validation
         validate(configuration, LDAPConfigurationValidation.class);
@@ -80,13 +87,12 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
             configurationService.set(ConfigurationKey.LDAP_USER, configuration.getUser());
             configurationService.set(ConfigurationKey.LDAP_PASSWORD, configuration.getPassword());
         }
-        // Notifies the configuration listeners
-        configurationCache.putConfiguration(ConfigurationCacheKey.LDAP, configuration);
     }
 
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    @CacheEvict(value = Caches.CONFIGURATION, key = "mail")
     public void saveMailConfiguration(MailConfiguration configuration) {
         configurationService.set(ConfigurationKey.MAIL_HOST, configuration.getHost());
         configurationService.set(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, configuration.getReplyToAddress());
@@ -94,8 +100,6 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
         configurationService.set(ConfigurationKey.MAIL_PASSWORD, configuration.getPassword());
         configurationService.set(ConfigurationKey.MAIL_AUTHENTICATION, configuration.isAuthentication());
         configurationService.set(ConfigurationKey.MAIL_START_TLS, configuration.isStartTls());
-        // Notifies the configuration listeners
-        configurationCache.putConfiguration(ConfigurationCacheKey.MAIL, configuration);
     }
 
     @Override

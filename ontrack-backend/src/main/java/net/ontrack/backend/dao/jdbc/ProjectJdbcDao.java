@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.db.SQL;
@@ -42,7 +43,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(DaoCache.PROJECT)
+    @Cacheable(Caches.PROJECT)
     public TProject getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 SQL.PROJECT,
@@ -61,7 +62,7 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
 
     @Override
     @Transactional
-    @CacheEvict(DaoCache.PROJECT)
+    @CacheEvict(Caches.PROJECT)
     public Ack deleteProject(int id) {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(
