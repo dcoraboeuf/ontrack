@@ -65,3 +65,58 @@ subversion.indexation.pending
 subversion.indexation
     en -> Indexation
     fr -> Indexation
+
+subversion.indexation.latest
+    en -> Index
+    fr -> Indexer
+
+subversion.indexation.latest.button
+    en -> Index
+    fr -> Indexer
+
+subversion.indexation.latest.message
+    en -> Click on the following button to launch an indexation from the latest indexed revision.
+    fr -> Cliquer sur le bouton suivant pour lancer une indexation à partir de la dernière révision indexée.
+
+subversion.indexation.range
+    en -> Range re-indexation
+    fr -> Indexation d'un intervalle
+
+subversion.indexation.range.button
+    en -> Index
+    fr -> Indexer
+
+subversion.indexation.range.message
+    en -> Re-index a given range of revisions - all previous data attached to this range will be discarded.
+    fr -> Re-indexer un intervalle entre révisions - toutes les données associées à ces révisions seront ré-initialisées.
+
+subversion.indexation.range.from
+    en -> From
+    fr -> De
+
+subversion.indexation.range.to
+    en -> to
+    fr -> à
+
+subversion.indexation.full
+    en -> Full re-indexation
+    fr -> Re-indexation complète
+
+subversion.indexation.full.button
+    en,fr -> @[subversion.indexation.full]
+
+subversion.indexation.full.message
+    en -> Click on the following button to launch a full re-indexation of the repository.
+    fr -> Cliquer sur le bouton suivant lance une re-indexation complète du repository.
+
+subversion.indexation.full.warning
+    en -> Warning: you will lose all previously indexed data!
+    fr -> Attention : vous perdrez toute donnée déjà indexée !
+
+subversion.indexation.full.confirmation
+    en -> Are you sure to fully re-index the repository? All associated cached data (revisions, issues...) will be lost.
+    fr -> Etes-vous sûr de complètement ré-indexer le repository ? Toutes les données associées (révisions, tickets, ...) seront perdues.
+
+subversion.indexation.alreadyrunning
+    en -> An indexation is already running
+    fr -> Une opération d'indexation est déjà en cours

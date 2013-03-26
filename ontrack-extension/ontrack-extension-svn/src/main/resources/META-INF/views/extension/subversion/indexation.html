@@ -1,4 +1,29 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="subversion.indexation">
+<@layout_std page="subversion.indexation" script=true>
+
+    <div class="page-header">
+        <h1><small><@lh key="subversion.indexation.latest" /></small></h1>
+        <@lh key="subversion.indexation.latest.message" /><br/>
+        <a href="gui/extension/subversion/indexation/latest" class="btn btn-primary"><@lh key="subversion.indexation.latest.button" /></a>
+    </div>
+
+    <div class="page-header">
+        <h1><small><@lh key="subversion.indexation.range" /></small></h1>
+        <@lh key="subversion.indexation.range.message" />
+        <form class="form-inline" method="POST" action="gui/extension/subversion/indexation/range">
+            <label for="indexation-range-from"><@lh key="subversion.indexation.range.from" /></label>
+            <input id="indexation-range-from" class="input-mini" name="from" type="text" size="7" max="7" />
+            <label for="indexation-range-to"><@lh key="subversion.indexation.range.to" /></label>
+            <input id="indexation-range-to" class="input-mini" name="to" type="text" size="7" max="7" />
+            <button type="submit" class="btn btn-primary"><@lh key="subversion.indexation.range.button" /></button>
+        </form>
+    </div>
+
+    <div class="page-header">
+        <h1><small><@lh key="subversion.indexation.full" /></small></h1>
+        <p><@lh key="subversion.indexation.full.message" /></p>
+        <p class="alert alert-error"><@lh key="subversion.indexation.full.warning" /></p>
+        <button class="btn btn-danger" type="button" onclick="SVNIndexation.indexationFull()"><@lh key="subversion.indexation.full.button" /></button>
+    </div>
 </@layout_std>
