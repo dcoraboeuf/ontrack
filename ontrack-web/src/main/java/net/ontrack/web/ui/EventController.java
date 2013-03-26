@@ -2,12 +2,10 @@ package net.ontrack.web.ui;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.EntityStub;
-import net.ontrack.core.model.EventFilter;
-import net.ontrack.core.model.ExpandedEvent;
+import net.ontrack.core.model.*;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.ui.EventUI;
+import net.ontrack.service.EventService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.ui.model.GUIEvent;
@@ -39,11 +37,27 @@ public class EventController extends AbstractUIController {
     private final Pattern entityUriPattern = Pattern.compile("\\{([a-z_]+)\\}");
     private final Pattern entityPattern = Pattern.compile("[A-Z_]+");
     private final EventUI eventUI;
+    private final EventService auditService;
 
     @Autowired
-    public EventController(ErrorHandler errorHandler, Strings strings, EventUI eventUI) {
+    public EventController(ErrorHandler errorHandler, Strings strings, EventUI eventUI, EventService auditService) {
         super(errorHandler, strings);
         this.eventUI = eventUI;
+        this.auditService = auditService;
+    }
+
+    @RequestMapping(value = "subscribe", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack subscribe(
+            @RequestParam(required = false, defaultValue = "0") int project,
+            @RequestParam(required = false, defaultValue = "0") int branch,
+            @RequestParam(required = false, defaultValue = "0") int validationStamp,
+            @RequestParam(required = false, defaultValue = "0") int promotionLevel,
+            @RequestParam(required = false, defaultValue = "0") int build,
+            @RequestParam(required = false, defaultValue = "0") int validationRun) {
+        return auditService.subscribe(
+                getEventFilter(0, 0, project, branch, validationStamp, promotionLevel, build, validationRun));
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -62,13 +76,7 @@ public class EventController extends AbstractUIController {
         // Reference time
         final DateTime now = TimeUtils.now();
         // Filter
-        EventFilter filter = new EventFilter(offset, count);
-        filter.withEntity(Entity.PROJECT, project);
-        filter.withEntity(Entity.BRANCH, branch);
-        filter.withEntity(Entity.VALIDATION_STAMP, validationStamp);
-        filter.withEntity(Entity.PROMOTION_LEVEL, promotionLevel);
-        filter.withEntity(Entity.BUILD, build);
-        filter.withEntity(Entity.VALIDATION_RUN, validationRun);
+        EventFilter filter = getEventFilter(offset, count, project, branch, validationStamp, promotionLevel, build, validationRun);
         // Gets the raw events
         List<ExpandedEvent> events = eventUI.list(filter);
         // Localizes them
@@ -79,6 +87,17 @@ public class EventController extends AbstractUIController {
                 return toGUIEvent(event, locale, now);
             }
         });
+    }
+
+    private EventFilter getEventFilter(int offset, int count, int project, int branch, int validationStamp, int promotionLevel, int build, int validationRun) {
+        EventFilter filter = new EventFilter(offset, count);
+        filter.withEntity(Entity.PROJECT, project);
+        filter.withEntity(Entity.BRANCH, branch);
+        filter.withEntity(Entity.VALIDATION_STAMP, validationStamp);
+        filter.withEntity(Entity.PROMOTION_LEVEL, promotionLevel);
+        filter.withEntity(Entity.BUILD, build);
+        filter.withEntity(Entity.VALIDATION_RUN, validationRun);
+        return filter;
     }
 
     protected GUIEvent toGUIEvent(ExpandedEvent event, Locale locale, DateTime now) {

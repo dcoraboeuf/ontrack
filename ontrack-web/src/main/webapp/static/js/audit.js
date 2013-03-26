@@ -5,7 +5,7 @@ var Audit = function () {
             loading: {
                 el: '#subscription'
             },
-            url: 'ui/subscription/enable?u=1' + filter,
+            url: 'gui/event/subscribe?u=1' + filter,
             successFn: function (data) {
                 // TODO Changes the subscription icon
             }

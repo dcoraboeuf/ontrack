@@ -6,6 +6,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.service.EventService;
+import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
@@ -31,12 +32,20 @@ public class EventServiceImpl extends NamedParameterJdbcDaoSupport implements Ev
 
     private final SecurityUtils securityUtils;
     private final Strings strings;
+    private final SubscriptionService subscriptionService;
 
     @Autowired
-    public EventServiceImpl(DataSource dataSource, SecurityUtils securityUtils, Strings strings) {
+    public EventServiceImpl(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService) {
         this.securityUtils = securityUtils;
         this.strings = strings;
+        this.subscriptionService = subscriptionService;
         setDataSource(dataSource);
+    }
+
+    @Override
+    @Transactional
+    public Ack subscribe(EventFilter filter) {
+        return subscriptionService.subscribe(filter.getEntities());
     }
 
     @Override

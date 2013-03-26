@@ -5,6 +5,7 @@ import net.ontrack.core.model.EntityStub;
 import net.ontrack.core.model.EventType;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.support.MapBuilder;
+import net.ontrack.service.EventService;
 import net.ontrack.web.ui.model.GUIEvent;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
@@ -17,8 +18,11 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 public class EventControllerUnitTest {
+
+    private final EventService auditService = mock(EventService.class);
 
     @Test
     public void createLinkHref_project() {
@@ -160,7 +164,7 @@ public class EventControllerUnitTest {
     @Test
     public void toGUIEvent_one_entity() {
         Strings strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
-        EventController controller = new EventController(null, strings, null);
+        EventController controller = new EventController(null, strings, null, auditService);
         GUIEvent event = controller.toGUIEvent(
                 new ExpandedEvent(10, "Author", EventType.PROJECT_CREATED, new DateTime(2013, 1, 30, 10, 5, 30))
                         .withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ2")),
@@ -179,7 +183,7 @@ public class EventControllerUnitTest {
     @Test
     public void toGUIEvent_two_entities() {
         Strings strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
-        EventController controller = new EventController(null, strings, null);
+        EventController controller = new EventController(null, strings, null, auditService);
         GUIEvent event = controller.toGUIEvent(
                 new ExpandedEvent(10, "Author", EventType.BRANCH_CREATED,
                         new DateTime(2013, 1, 30, 10, 5, 30))
@@ -197,7 +201,7 @@ public class EventControllerUnitTest {
     }
 
     protected EventController dummy() {
-        return new EventController(null, null, null);
+        return new EventController(null, null, null, auditService);
     }
 
 }
