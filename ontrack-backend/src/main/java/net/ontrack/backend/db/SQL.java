@@ -163,4 +163,9 @@ public interface SQL {
     String PROPERTY_ALL = "SELECT * FROM PROPERTIES WHERE %s = :entityId ORDER BY EXTENSION, NAME";
 
     String PROPERTY_VALUE = "SELECT * FROM PROPERTIES WHERE %s = :entityId AND EXTENSION = :extension AND NAME = :name";
+
+    // Subscriptions
+
+    String SUBSCRIPTION_DELETE = "DELETE FROM SUBSCRIPTION WHERE ACCOUNT = :account AND %s = :entityId";
+    String SUBSCRIPTION_CREATE = "INSERT INTO SUBSCRIPTION (ACCOUNT, %s) VALUES (:account, :entityId)";
 }
