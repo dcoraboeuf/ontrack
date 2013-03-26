@@ -84,6 +84,9 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
             String value = entry.getValue();
             getNamedParameterJdbcTemplate().update(SQL.EVENT_VALUE_INSERT, params.addValue("name", name).addValue("value", value));
         }
+
+        // Subscription
+        subscriptionService.publish(event);
     }
 
     @Override

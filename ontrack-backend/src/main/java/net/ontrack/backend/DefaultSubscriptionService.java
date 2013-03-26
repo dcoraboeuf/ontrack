@@ -4,7 +4,10 @@ import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.service.MessageService;
 import net.ontrack.service.SubscriptionService;
+import net.ontrack.service.TemplateService;
+import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +21,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final SecurityUtils securityUtils;
     private final ConfigurationService configurationService;
     private final SubscriptionDao subscriptionDao;
+    private final MessageService messageService;
+    private final TemplateService templateService;
 
     @Autowired
-    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao) {
+    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, MessageService messageService, TemplateService templateService) {
         this.securityUtils = securityUtils;
         this.configurationService = configurationService;
         this.subscriptionDao = subscriptionDao;
+        this.messageService = messageService;
+        this.templateService = templateService;
     }
 
     @Override
@@ -51,5 +58,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
         } else {
             return Ack.NOK;
         }
+    }
+
+    /**
+     * Sends a message for this event
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public void publish(Event event) {
+        // All concerned entities
+        Map<Entity, Integer> entities = event.getEntities();
+        // FIXME Publication
     }
 }
