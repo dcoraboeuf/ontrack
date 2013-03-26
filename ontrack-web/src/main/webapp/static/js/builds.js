@@ -112,6 +112,19 @@ var Builds = function () {
             }
         }
     }
+
+    function buildRadioButtons () {
+        // Last of the froms
+        var froms = $('input[name="buildFrom"]');
+        if (froms.length > 0) {
+            froms[froms.length - 1].setAttribute('checked', 'checked');
+        }
+        // First of the tos
+        var tos = $('input[name="buildTo"]');
+        if (tos.length > 0) {
+            tos[0].setAttribute('checked', 'checked');
+        }
+    }
 	
 	function buildTemplate (project, branch) {
 	    return Template.config({
@@ -141,6 +154,7 @@ var Builds = function () {
 	        postRenderFn: function () {
 	            Application.tooltips();
 	            gridHoverSetup();
+	            buildRadioButtons();
 	        }
          });
 	}

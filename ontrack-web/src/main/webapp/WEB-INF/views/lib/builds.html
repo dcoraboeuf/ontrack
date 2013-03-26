@@ -25,6 +25,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th rowspan="2">&nbsp;</th>
                     <th rowspan="2"><@lh key="model.build" /></th>
                     <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
                     <th colspan="{{branchBuilds.validationStamps.length}}"><@lh key="branch.validation_stamps" /></th>
@@ -121,6 +122,10 @@
     <script id="branchBuildsRowTemplate" type="text/html">
         {{#branchBuilds.builds}}
             <tr>
+                <td build="{{name}}" style="width:4em;">
+                    <input type="radio" name="buildFrom" value="{{name}}" />
+                    <input type="radio" name="buildTo" value="{{name}}" />
+                </td>
                 <td class="branch-build build_header" build="{{name}}">
                     <a
                             class="tooltip-source"
