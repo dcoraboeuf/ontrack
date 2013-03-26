@@ -120,3 +120,23 @@ subversion.indexation.full.confirmation
 subversion.indexation.alreadyrunning
     en -> An indexation is already running
     fr -> Une opération d'indexation est déjà en cours
+
+subversion.indexation.last
+    en -> Last scanned revision
+    fr -> Dernière révision scannée
+
+subversion.indexation.last.revision
+    en -> Last revision
+    fr -> Dernière révision
+
+subversion.indexation.last.message
+    en -> Last message
+    fr -> Dernier message
+
+subversion.indexation.last.repositoryRevision
+    en -> Last revision in repository
+    fr -> Dernière révision dans le repository
+
+subversion.indexation.last.none
+    en -> None
+    fr -> Aucune

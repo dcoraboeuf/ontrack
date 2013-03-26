@@ -1,8 +1,8 @@
 package net.ontrack.tx;
 
-public interface Transaction {
+public interface Transaction extends AutoCloseable {
 
-	void end();
+	void close();
 
 	<T extends TransactionResource> T getResource(Class<T> resourceType);
 

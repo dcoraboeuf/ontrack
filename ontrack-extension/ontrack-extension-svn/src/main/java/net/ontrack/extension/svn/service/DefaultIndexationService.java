@@ -11,6 +11,8 @@ import net.ontrack.extension.svn.SubversionService;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
+import net.ontrack.extension.svn.dao.model.TRevision;
+import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.InfoProvider;
 import net.ontrack.service.api.ScheduledService;
@@ -109,11 +111,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void indexFromLatest() {
-        // Loads the repository information
-        SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
-        // Opens a SVN transaction
-        Transaction transaction = transactionService.start();
-        try {
+        try (Transaction ignored = transactionService.start()) {
+            // Loads the repository information
+            SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
             // Last scanned revision
             long lastScannedRevision = revisionDao.getLast();
             if (lastScannedRevision <= 0) {
@@ -125,8 +125,26 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             long repositoryRevision = subversionService.getRepositoryRevision(url);
             // Request index of the range
             indexRange(lastScannedRevision + 1, repositoryRevision);
-        } finally {
-            transaction.end();
+        }
+    }
+
+    @Override
+    public LastRevisionInfo getLastRevisionInfo() {
+        try (Transaction ignored = transactionService.start()) {
+            TRevision r = revisionDao.getLastRevision();
+            if (r != null) {
+                // Loads the repository information
+                SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
+                long repositoryRevision = subversionService.getRepositoryRevision(url);
+                // OK
+                return new LastRevisionInfo(
+                        r.getRevision(),
+                        r.getMessage(),
+                        repositoryRevision
+                );
+            } else {
+                return null;
+            }
         }
     }
 
@@ -196,7 +214,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             IndexationHandler handler = new IndexationHandler(indexationListener);
             subversionService.log(url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
         } finally {
-            transaction.end();
+            transaction.close();
         }
     }
 
@@ -224,7 +242,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(subversionConfigurationExtension.getUrl(), branch), revision);
             revisionDao.addMergedRevisions(revision, mergedRevisions);
         } finally {
-            svn.end();
+            svn.close();
         }
         // Subversion events
         indexSVNEvents(logEntry);

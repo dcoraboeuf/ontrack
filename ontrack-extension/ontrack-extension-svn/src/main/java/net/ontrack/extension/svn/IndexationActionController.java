@@ -3,6 +3,7 @@ package net.ontrack.extension.svn;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +40,11 @@ public class IndexationActionController implements ActionExtension {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getPage(Model model) {
+        // Gets the latest information
+        LastRevisionInfo info = indexationService.getLastRevisionInfo();
+        if (info != null) {
+            model.addAttribute("lastRevisionInfo", info);
+        }
         // OK
         return "extension/subversion/indexation";
     }

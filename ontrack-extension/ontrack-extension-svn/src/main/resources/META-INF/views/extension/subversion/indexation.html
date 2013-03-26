@@ -5,6 +5,19 @@
     <@usermessage />
 
     <div class="page-header">
+        <h1><small><@lh key="subversion.indexation.last" /></small></h1>
+        <#if lastRevisionInfo??>
+            <p><@lh key="subversion.indexation.last.revision" />: ${lastRevisionInfo.revision}</p>
+            <p><@lh key="subversion.indexation.last.message" />: ${lastRevisionInfo.message?html}</p>
+            <p><@lh key="subversion.indexation.last.repositoryRevision" />: ${lastRevisionInfo.repositoryRevision}</p>
+        <#else>
+            <div class="alert alert-warning">
+                <@lh key="subversion.indexation.last.none" />
+            </div>
+        </#if>
+    </div>
+
+    <div class="page-header">
         <h1><small><@lh key="subversion.indexation.latest" /></small></h1>
         <@lh key="subversion.indexation.latest.message" /><br/>
         <a href="gui/extension/subversion/indexation/latest" class="btn btn-primary"><@lh key="subversion.indexation.latest.button" /></a>

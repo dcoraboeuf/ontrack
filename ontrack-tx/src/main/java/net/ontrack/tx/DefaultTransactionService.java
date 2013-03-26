@@ -130,7 +130,7 @@ public class DefaultTransactionService implements TransactionService {
         }
 
         @Override
-        public void end() {
+        public void close() {
             int value = count.decrementAndGet();
             if (value == 0) {
                 // Removes the transaction

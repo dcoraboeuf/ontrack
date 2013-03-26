@@ -1,5 +1,7 @@
 package net.ontrack.extension.svn;
 
+import net.ontrack.extension.svn.service.model.LastRevisionInfo;
+
 public interface IndexationService {
 
     void indexFromLatest();
@@ -9,4 +11,6 @@ public interface IndexationService {
     void reindex();
 
     boolean isIndexationRunning();
+
+    LastRevisionInfo getLastRevisionInfo();
 }

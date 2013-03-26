@@ -58,14 +58,23 @@
 </node>
 </node>
 <node CREATED="1364206309546" ID="ID_1548145094" MODIFIED="1364295134005" TEXT="indexation control page">
-<node CREATED="1364206317880" ID="ID_1773801750" MODIFIED="1364206325101" TEXT="index since latest"/>
+<node CREATED="1364206317880" ID="ID_1773801750" MODIFIED="1364304522448" TEXT="index since latest">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1364206328393" ID="ID_908787462" MODIFIED="1364297472402" TEXT="current running job">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
 <node CREATED="1364206336633" ID="ID_1013277429" MODIFIED="1364206340766" TEXT="last revision scanned"/>
-<node CREATED="1364206341594" ID="ID_426469477" MODIFIED="1364206346558" TEXT="indexing a range"/>
-<node CREATED="1364206347241" ID="ID_739239476" MODIFIED="1364206352016" TEXT="full re-indexation"/>
+<node CREATED="1364206341594" ID="ID_426469477" MODIFIED="1364304522449" TEXT="indexing a range">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206347241" ID="ID_739239476" MODIFIED="1364304522448" TEXT="full re-indexation">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1364206413631" ID="ID_25830498" MODIFIED="1364298044402" TEXT="extract web controllers">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="bookmark"/>

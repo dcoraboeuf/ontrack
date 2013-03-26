@@ -3,21 +3,37 @@ package net.ontrack.extension.svn.dao.jdbc;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
 import net.ontrack.extension.svn.dao.RevisionDao;
+import net.ontrack.extension.svn.dao.model.TRevision;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
 public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     public static final int MESSAGE_LENGTH = 500;
+    private final RowMapper<TRevision> revisionRowMapper = new RowMapper<TRevision>() {
+        @Override
+        public TRevision mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new TRevision(
+                    rs.getLong("REVISION"),
+                    rs.getString("AUTHOR"),
+                    SQLUtils.getDateTime(rs, "CREATION"),
+                    rs.getString("MESSAGE"),
+                    rs.getString("BRANCH")
+            );
+        }
+    };
 
     @Autowired
     public RevisionJdbcDao(DataSource dataSource) {
@@ -28,6 +44,12 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     @Transactional(readOnly = true)
     public long getLast() {
         return getJdbcTemplate().queryForLong("SELECT MAX(REVISION) FROM REVISION");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TRevision getLastRevision() {
+        return getFirstItem("SELECT * FROM REVISION ORDER BY REVISION DESC LIMIT 1", new MapSqlParameterSource(), revisionRowMapper);
     }
 
     @Override

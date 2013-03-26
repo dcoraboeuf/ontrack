@@ -1,5 +1,6 @@
 package net.ontrack.extension.svn.dao;
 
+import net.ontrack.extension.svn.dao.model.TRevision;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -13,4 +14,7 @@ public interface RevisionDao {
     void deleteAll();
 
     void addMergedRevisions(long revision, List<Long> mergedRevisions);
+
+    TRevision getLastRevision();
+
 }
