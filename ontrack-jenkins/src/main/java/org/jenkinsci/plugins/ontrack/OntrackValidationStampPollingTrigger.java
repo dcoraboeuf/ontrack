@@ -65,7 +65,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, branch, project, validationStamp));
 			try {
 				if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
-					saveLastBuildNr(lastBuildNr, xTriggerLog, lastBuildNrFile);
+					saveLastBuildNr(name, xTriggerLog, lastBuildNrFile);
 					return true;
 				}
 			} catch (IOException e) {
