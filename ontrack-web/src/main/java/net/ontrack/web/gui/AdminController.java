@@ -100,11 +100,11 @@ public class AdminController extends AbstractGUIController {
      * LDAP settings
      */
     @RequestMapping(value = "/settings/ldap", method = RequestMethod.POST)
-    public String ldap(Locale locale, Model model, LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
+    public String ldap(Model model, LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
         // Saves the configuration
         adminService.saveLDAPConfiguration(configuration);
         // Success
-        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "ldap.saved")));
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("ldap.saved"));
         // OK
         return "redirect:/gui/admin/settings";
     }
@@ -114,7 +114,6 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/settings/extension/{extension}/{name}", method = RequestMethod.POST)
     public String extensionSettings(
-            Locale locale,
             @PathVariable String extension,
             @PathVariable String name,
             WebRequest request,
@@ -131,7 +130,7 @@ public class AdminController extends AbstractGUIController {
         // Saves the configuration
         String displayNameKey = adminService.saveExtensionConfiguration(extension, name, parameters);
         // Success
-        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "settings.extension.saved", new LocalizableMessage(displayNameKey))));
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("settings.extension.saved", new LocalizableMessage(displayNameKey)));
         // OK
         return "redirect:/gui/admin/settings";
     }

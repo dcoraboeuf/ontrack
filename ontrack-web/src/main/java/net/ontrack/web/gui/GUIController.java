@@ -5,6 +5,7 @@ import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,10 +87,10 @@ public class GUIController extends AbstractGUIController {
             // Upload
             manageUI.setImagePromotionLevel(project, branch, name, image);
             // Success
-            model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "promotion_level.image.success")));
+            model.addAttribute("imageMessage", UserMessage.success("promotion_level.image.success"));
         } catch (InputException ex) {
             // Error
-            model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
+            model.addAttribute("imageMessage", UserMessage.error(new NonLocalizable(errorHandler.displayableError(ex, locale))));
         }
         // OK
         return getPromotionLevel(model, project, branch, name);
@@ -126,10 +127,10 @@ public class GUIController extends AbstractGUIController {
             // Upload
             manageUI.setImageValidationStamp(project, branch, name, image);
             // Success
-            model.addAttribute("imageMessage", UserMessage.success(strings.get(locale, "validation_stamp.image.success")));
+            model.addAttribute("imageMessage", UserMessage.success("validation_stamp.image.success"));
         } catch (InputException ex) {
             // Error
-            model.addAttribute("imageMessage", UserMessage.error(errorHandler.displayableError(ex, locale)));
+            model.addAttribute("imageMessage", UserMessage.error(new NonLocalizable(errorHandler.displayableError(ex, locale))));
         }
         // OK
         return getValidationStamp(model, project, branch, name);

@@ -94,7 +94,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LocaleInterceptor(strings()));
-        registry.addInterceptor(new WebInterceptor());
+        registry.addInterceptor(new WebInterceptor(strings()));
     }
 
     @Override
