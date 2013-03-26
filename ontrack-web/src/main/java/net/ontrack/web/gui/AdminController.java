@@ -120,8 +120,7 @@ public class AdminController extends AbstractGUIController {
         // Saves the configuration
         adminService.saveMailConfiguration(configuration);
         // Success
-        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "" +
-                "")));
+        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "mail.saved")));
         // OK
         return "redirect:/gui/admin/settings";
     }
