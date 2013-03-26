@@ -3,7 +3,12 @@
 <#macro audit id="audit" filter="" title=loc("event.list")>
 
     <section class="panel" id="${id?html}">
-        <h4>${title?html}</h4>
+        <h4>
+            ${title?html}
+            <#if secSubscriber()>
+                <img src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
+            </#if>
+        </h4>
         <@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
         </@dynamicsection>
      </section>

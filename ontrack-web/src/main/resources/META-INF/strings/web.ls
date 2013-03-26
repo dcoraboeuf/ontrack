@@ -550,3 +550,13 @@ properties.add
 properties.add.choice
     en -> Choose a property to add
     fr -> Choisissez la propriété à ajouter
+
+[subscription]
+
+subscription.enable
+    en -> Subscribe to the events
+    fr -> S'abonner aux événements
+
+subscription.disable
+    en -> Unsubscribe from the events
+    fr -> Se désabonner des événements
