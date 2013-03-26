@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="subversion.indexation" script=true>
+<@layout_std page="subversion.indexation" script=true extension=true>
 
     <div class="page-header">
         <h1><small><@lh key="subversion.indexation.latest" /></small></h1>
@@ -26,4 +26,7 @@
         <p class="alert alert-error"><@lh key="subversion.indexation.full.warning" /></p>
         <button class="btn btn-danger" type="button" onclick="SVNIndexation.indexationFull()"><@lh key="subversion.indexation.full.button" /></button>
     </div>
+
+    <!-- Going back to the home page -->
+    <a href="" class="btn"><@lh key="general.close" /></a>
 </@layout_std>
