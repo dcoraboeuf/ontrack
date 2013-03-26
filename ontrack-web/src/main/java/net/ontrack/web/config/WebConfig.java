@@ -105,7 +105,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public FreeMarkerConfig freemarkerConfig() {
         FreeMarkerConfigurer c = new FreeMarkerConfigurer();
-        c.setTemplateLoaderPath("/WEB-INF/views");
+        c.setTemplateLoaderPaths(new String[]{
+                "/WEB-INF/views",
+                "classpath:META-INF/views"
+        });
         // Freemarker variables
         Map<String, Object> variables = new HashMap<>();
         variables.put("loc", new FnLoc(strings()));
