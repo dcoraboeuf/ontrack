@@ -6,7 +6,7 @@
         <h4>
             ${title?html}
             <#if secSubscriber()>
-                <img src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
+                <img id="subscription" src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
             </#if>
         </h4>
         <@dynamicsection id=id template="Audit.auditTemplate('${filter}')">

@@ -1,7 +1,18 @@
 var Audit = function () {
-	
-	return {
-		auditTemplate: function (filter) {
+
+    function subscribe (filter) {
+        AJAX.get({
+            loading: {
+                el: '#subscription'
+            },
+            url: 'ui/subscription/enable?u=1' + filter,
+            successFn: function (data) {
+                // TODO Changes the subscription icon
+            }
+        });
+    }
+
+    function auditTemplate (filter) {
 		    return Template.config({
 		        url: 'gui/event?u=1' + filter,
 		        more: true,
@@ -9,6 +20,10 @@ var Audit = function () {
 		        render: Template.asTableTemplate('auditTemplate')
 		    });
 		}
+	
+	return {
+	    subscribe: subscribe,
+		auditTemplate: auditTemplate
 	};
 	
 } ();
