@@ -51,6 +51,8 @@
                                     <div class="controls">
                                         <#if field.type == "password">
                                             <input id="${fieldId?html}" name="${field.name?html}" type="password" class="input-large" maxlength="200" value="${field.value!''?html}" />
+                                        <#elseif field.type == "memo">
+                                            <textarea id="${fieldId?html}" name="${field.name?html}" class="input-large" maxlength="200" rows="5">${field.value!''?html}</textarea>
                                         <#else>
                                             <input id="${fieldId?html}" name="${field.name?html}" type="text" class="input-large" maxlength="200" value="${field.value!''?html}" />
                                         </#if>
