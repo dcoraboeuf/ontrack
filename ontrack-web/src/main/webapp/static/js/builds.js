@@ -39,7 +39,7 @@ var Builds = function () {
                 project: project,
                 branch: branch,
                 branchBuilds: branchBuilds,
-                totalColspan: branchBuilds.validationStamps.length + 2,
+                totalColspan: branchBuilds.validationStamps.length + 4,
                 rowFn: function (text, renderFn) {
                     return generateTableBuildRows (project, branch, branchBuilds);
                 },
@@ -138,17 +138,8 @@ var Builds = function () {
                     $(containerSelector + " tbody").append(generateTableBuildRows(project, branch, branchBuilds));
                 } else {
                     // No table defined, or no need to append
-                    // Some items
-                    if (branchBuilds.builds.length > 0) {
-                        // Direct filling of the container
-                        $(containerSelector).empty();
-                        $(containerSelector).append(generateTableBranchBuilds(project, branch, branchBuilds));
-                    }
-                    // No items
-                    else {
-                        $(containerSelector).empty();
-                        $(containerSelector).append('<div class="alert">{0}</div>'.format(loc('branch.nobuild')));
-                    }
+                    $(containerSelector).empty();
+                    $(containerSelector).append(generateTableBranchBuilds(project, branch, branchBuilds));
                 }
 	        },
 	        postRenderFn: function () {

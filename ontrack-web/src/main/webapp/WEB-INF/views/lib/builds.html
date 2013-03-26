@@ -41,7 +41,15 @@
                 </tr>
             </thead>
             <tbody>
-                {{{rowFn}}}
+                {{#if branchBuilds.builds.length}}
+                    {{{rowFn}}}
+                {{else}}
+                    <tr>
+                        <td colspan="{{totalColspan}}">
+                            <div class="alert alert-warning"><@lh key="branch.nobuild" /> : {{totalColspan}}</div>
+                        </td>
+                    </tr>
+                {{/if}}
             </tbody>
             <tfoot>
                 <tr>
