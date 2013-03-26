@@ -14,4 +14,5 @@ public interface Caches {
 
     String CONFIGURATION = "CONFIGURATION";
 
+    String MAIL = "MAIL";
 }

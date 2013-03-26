@@ -16,6 +16,13 @@
            timeToLiveSeconds="36000"
            statistics="true"
            overflowToDisk="false" />
+    <cache name="MAIL"
+           maxElementsInMemory="1"
+           eternal="false"
+           timeToIdleSeconds="36000"
+           timeToLiveSeconds="36000"
+           statistics="true"
+           overflowToDisk="false" />
     <!-- DAO -->
     <cache name="CONFIGURATION_KEY"
            maxElementsInMemory="50"

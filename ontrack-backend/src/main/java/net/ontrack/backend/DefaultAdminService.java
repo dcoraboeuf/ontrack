@@ -10,6 +10,7 @@ import net.ontrack.service.validation.LDAPConfigurationValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +93,11 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
-    @CacheEvict(value = Caches.CONFIGURATION, key = "mail")
+    @Caching(evict = {
+            @CacheEvict(value = Caches.CONFIGURATION, key = "mail"),
+            @CacheEvict(value = Caches.MAIL, key="0")
+    })
+
     public void saveMailConfiguration(MailConfiguration configuration) {
         configurationService.set(ConfigurationKey.MAIL_HOST, configuration.getHost());
         configurationService.set(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, configuration.getReplyToAddress());

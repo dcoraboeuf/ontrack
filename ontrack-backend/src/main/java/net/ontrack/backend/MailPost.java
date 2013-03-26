@@ -11,14 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Properties;
 
 @Component
 @Profile({RunProfile.DEV, RunProfile.PROD})
@@ -26,10 +25,12 @@ public class MailPost extends AbstractMessagePost {
 
     private final Logger logger = LoggerFactory.getLogger(MailPost.class);
 
+    private final MailService mailService;
     private final AdminService adminService;
 
     @Autowired
-    public MailPost(AdminService adminService) {
+    public MailPost(MailService mailService, AdminService adminService) {
+        this.mailService = mailService;
         this.adminService = adminService;
     }
 
@@ -44,7 +45,7 @@ public class MailPost extends AbstractMessagePost {
         MailConfiguration configuration = adminService.getMailConfiguration();
 
         // Mail sender
-        JavaMailSenderImpl mailSender = getMailSender(configuration);
+        JavaMailSender mailSender = mailService.getMailSender();
 
         // Reply to address
         final String replyToAddress = configuration.getReplyToAddress();
@@ -63,20 +64,6 @@ public class MailPost extends AbstractMessagePost {
         } catch (MailException ex) {
             logger.error("[mail] Cannot send mail: {}", ExceptionUtils.getRootCauseMessage(ex));
         }
-    }
-
-    // FIXME Cache for the mail session (use AdminService)
-    private JavaMailSenderImpl getMailSender(MailConfiguration configuration) {
-        logger.debug("[mail] Creating mail sender");
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        Properties p = new Properties();
-        p.put("mail.smtp.host", configuration.getHost());
-        p.put("mail.smtp.auth", String.valueOf(configuration.isAuthentication()));
-        p.put("mail.smtp.starttls.required", String.valueOf(configuration.isStartTls()));
-        p.put("mail.user", configuration.getUser());
-        p.put("password", configuration.getPassword());
-        mailSender.setJavaMailProperties(p);
-        return mailSender;
     }
 
     protected void prepareMessage(MimeMessage mimeMessage, Message message, String destination, String replyToAddress) throws MessagingException {
