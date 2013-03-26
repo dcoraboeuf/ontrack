@@ -179,3 +179,13 @@
 <#macro input_required required=true>
 	<#if required>required="required"</#if>
 </#macro>
+
+<#macro information_message>
+    <@dynamicsection id="information_message" template="Application.informationMessageTemplate()">
+    </@dynamicsection>
+    <script id="informationMessageTemplate" type="text/html">
+        <div class="alert alert-{{info}}">
+            {{message}}
+        </div>
+    </script>
+</#macro>

@@ -378,6 +378,14 @@ var Application = function () {
             placement: 'bottom'
         });
     }
+
+    function informationMessageTemplate () {
+        return Template.config({
+            url: 'ui/info/message',
+            refresh: true,
+            render: Template.asSimpleTemplate('informationMessageTemplate')
+        });
+    }
 	
 	return {
 	    login: login,
@@ -413,7 +421,8 @@ var Application = function () {
 		deleteEntity: deleteEntity,
 		ajaxGet: ajaxGet,
 		ajax: ajax,
-		tooltips: tooltips
+		tooltips: tooltips,
+		informationMessageTemplate: informationMessageTemplate
 	};
 	
 } ();
