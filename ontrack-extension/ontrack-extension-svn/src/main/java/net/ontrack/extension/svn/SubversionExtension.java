@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 @Component
 public class SubversionExtension extends ExtensionAdapter {
@@ -15,12 +14,16 @@ public class SubversionExtension extends ExtensionAdapter {
     @Autowired
     public SubversionExtension(
             SubversionPathPropertyExtension subversionPathPropertyExtension,
+            SubversionBuildPathPropertyExtension subversionBuildPathPropertyExtension,
             SubversionConfigurationExtension subversionConfigurationExtension,
             IndexationConfigurationExtension indexationConfigurationExtension,
             IndexationActionController indexationActionController) {
         super(
                 EXTENSION,
-                Collections.singletonList(subversionPathPropertyExtension),
+                Arrays.asList(
+                        subversionPathPropertyExtension,
+                        subversionBuildPathPropertyExtension
+                ),
                 Arrays.asList(
                         subversionConfigurationExtension,
                         indexationConfigurationExtension

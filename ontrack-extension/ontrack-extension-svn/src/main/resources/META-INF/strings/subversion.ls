@@ -38,6 +38,12 @@ subversion.path
     en -> Subversion path
     fr -> Chemin Subversion
 
+[buildpath]
+
+subversion.buildPath
+    en -> Subversion build path
+    fr -> Chemin Subversion pour les builds
+
 [indexation]
 
 subversion.indexation.configuration

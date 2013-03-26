@@ -46,4 +46,12 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     public String getRoleForEdition(Entity entity) {
         return null;
     }
+
+    /**
+     * Visible by everybody by default
+     */
+    @Override
+    public String getRoleForView(Entity entity) {
+        return null;
+    }
 }

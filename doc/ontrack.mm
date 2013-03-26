@@ -18,7 +18,9 @@
 </node>
 <node CREATED="1364126326204" ID="ID_355507569" MODIFIED="1364152080680" POSITION="left" TEXT="svnexplorer">
 <node CREATED="1364126331044" ID="ID_1218677158" MODIFIED="1364145714379" TEXT="svn">
-<node CREATED="1364126340421" ID="ID_1328425960" MODIFIED="1364206394338" TEXT="indexation">
+<node CREATED="1364126340421" FOLDED="true" ID="ID_1328425960" MODIFIED="1364305704742" TEXT="indexation">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364145664679" ID="ID_1834006245" MODIFIED="1364292031676" TEXT="db extension">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -57,7 +59,9 @@
 <icon BUILTIN="button_ok"/>
 </node>
 </node>
-<node CREATED="1364206309546" ID="ID_1548145094" MODIFIED="1364295134005" TEXT="indexation control page">
+<node CREATED="1364206309546" FOLDED="true" ID="ID_1548145094" MODIFIED="1364305697298" TEXT="indexation control page">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364206317880" ID="ID_1773801750" MODIFIED="1364304522448" TEXT="index since latest">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -66,7 +70,10 @@
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node CREATED="1364206336633" ID="ID_1013277429" MODIFIED="1364206340766" TEXT="last revision scanned"/>
+<node CREATED="1364206336633" ID="ID_1013277429" MODIFIED="1364305694290" TEXT="last revision scanned">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1364206341594" ID="ID_426469477" MODIFIED="1364304522449" TEXT="indexing a range">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -91,26 +98,34 @@
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1364204497917" TEXT="svn browser">
-<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1364152304143" TEXT="url patterns">
-<font ITALIC="true" NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1364152306238" ID="ID_398618790" MODIFIED="1364152321333" TEXT="changeset"/>
+<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1364305737897" TEXT="svn browser">
 <node CREATED="1364204497919" ID="ID_1449025321" MODIFIED="1364292031674" TEXT="path browsing">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
+<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1364305740756" TEXT="other url patterns">
+<font ITALIC="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="help"/>
 </node>
 </node>
-<node CREATED="1364152359351" ID="ID_1601143387" MODIFIED="1364291557784" TEXT="svn properties">
-<node CREATED="1364152363732" ID="ID_1114034841" MODIFIED="1364291558550" TEXT="svn at branch level">
+</node>
+<node CREATED="1364152359351" ID="ID_1601143387" MODIFIED="1364307782896" TEXT="svn properties">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364152363732" ID="ID_1114034841" MODIFIED="1364307783633" TEXT="svn at branch level">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364152375593" HGAP="21" ID="ID_354877601" MODIFIED="1364292031674" TEXT="svn path" VSHIFT="6">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node CREATED="1364291560197" ID="ID_1782877584" MODIFIED="1364291567797" TEXT="svn build path pattern">
-<node CREATED="1364291971133" ID="ID_1165566567" MODIFIED="1364291990006" TEXT="visibility for properties">
+<node CREATED="1364291560197" ID="ID_1782877584" MODIFIED="1364307775227" TEXT="svn build path pattern">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364291971133" ID="ID_1165566567" MODIFIED="1364307771379" TEXT="visibility for properties">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="bookmark"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 </node>
