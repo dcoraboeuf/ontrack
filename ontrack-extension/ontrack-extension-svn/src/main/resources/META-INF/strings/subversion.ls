@@ -51,3 +51,13 @@ subversion.indexation.configuration.scanInterval
 subversion.indexation.configuration.startRevision
     en -> Start revision
     fr -> Révision de départ
+
+subversion.indexation.message
+    en -> Indexation is {0} ({1} to {2} - at {3} - {4}%)
+    fr -> Indexation {0} (de {1} à {2} - à {3} - {4}%)
+subversion.indexation.running
+    en -> running
+    fr -> en cours
+subversion.indexation.pending
+    en -> pending
+    fr -> en attente

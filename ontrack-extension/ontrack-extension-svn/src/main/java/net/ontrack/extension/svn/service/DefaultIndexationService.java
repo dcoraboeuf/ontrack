@@ -1,6 +1,7 @@
 package net.ontrack.extension.svn.service;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.svn.IndexationConfigurationExtension;
@@ -11,9 +12,12 @@ import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.service.InfoProvider;
 import net.ontrack.service.api.ScheduledService;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
+import net.sf.jstring.Localizable;
+import net.sf.jstring.LocalizableMessage;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -37,7 +41,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class DefaultIndexationService implements IndexationService, ScheduledService {
+public class DefaultIndexationService implements IndexationService, ScheduledService, InfoProvider {
 
     private final Logger logger = LoggerFactory.getLogger(IndexationService.class);
     private final IndexationConfigurationExtension indexationConfigurationExtension;
@@ -82,6 +86,23 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     protected boolean isIndexationRunning() {
         IndexationJob job = currentIndexationJob.get();
         return job != null && job.isRunning();
+    }
+
+    @Override
+    public UserMessage getInfo() {
+        // Gets the current job
+        IndexationJob job = currentIndexationJob.get();
+        if (job != null) {
+            Localizable message = new LocalizableMessage(
+                    "subversion.indexation.message",
+                    job.isRunning() ? new LocalizableMessage("subversion.indexation.running") : new LocalizableMessage("subversion.indexation.pending"),
+                    job.getMin(), job.getMax(),
+                    job.getCurrent(),
+                    job.getProgress());
+            return UserMessage.info(message);
+        } else {
+            return null;
+        }
     }
 
     @Override
