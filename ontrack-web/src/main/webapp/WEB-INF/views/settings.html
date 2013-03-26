@@ -46,8 +46,8 @@
                         <@form_text idPrefix="mail-" name="host" label=loc("mail.host") class="settings-mail" value=mail.host />
                         <@form_text idPrefix="mail-" name="user" label=loc("mail.user") class="settings-mail" value=mail.user />
                         <@form_password idPrefix="mail-" name="password" label=loc("mail.password") class="settings-mail" value=mail.password />
-                        <@form_checkbox idPrefix="mail-" name="authentication" label=loc("mail.authentication") checked=ldap.authentication/>
-                        <@form_checkbox idPrefix="mail-" name="startTls" label=loc("mail.startTls") checked=ldap.startTls/>
+                        <@form_checkbox idPrefix="mail-" name="authentication" label=loc("mail.authentication") checked=mail.authentication/>
+                        <@form_checkbox idPrefix="mail-" name="startTls" label=loc("mail.startTls") checked=mail.startTls/>
                         <div class="control-group">
                             <div class="controls">
                                 <button type="submit" class="btn">

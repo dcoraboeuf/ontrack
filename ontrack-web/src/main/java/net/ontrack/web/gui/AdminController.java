@@ -103,7 +103,7 @@ public class AdminController extends AbstractGUIController {
      * LDAP settings
      */
     @RequestMapping(value = "/settings/ldap", method = RequestMethod.POST)
-    public String ldap(Locale locale, Model model, LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
+    public String ldap(Locale locale, LDAPConfiguration configuration, RedirectAttributes redirectAttributes) {
         // Saves the configuration
         adminService.saveLDAPConfiguration(configuration);
         // Success
@@ -116,7 +116,7 @@ public class AdminController extends AbstractGUIController {
      * Mail settings
      */
     @RequestMapping(value = "/settings/mail", method = RequestMethod.POST)
-    public String mail(Locale locale, Model model, MailConfiguration configuration, RedirectAttributes redirectAttributes) {
+    public String mail(Locale locale, MailConfiguration configuration, RedirectAttributes redirectAttributes) {
         // Saves the configuration
         adminService.saveMailConfiguration(configuration);
         // Success
