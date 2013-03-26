@@ -56,6 +56,7 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
     public MailConfiguration getMailConfiguration() {
         MailConfiguration c = new MailConfiguration();
         c.setHost(configurationService.get(ConfigurationKey.MAIL_HOST, false, null));
+        c.setReplyToAddress(configurationService.get(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, false, null));
         c.setAuthentication(configurationService.getBoolean(ConfigurationKey.MAIL_AUTHENTICATION, false, false));
         c.setStartTls(configurationService.getBoolean(ConfigurationKey.MAIL_START_TLS, false, false));
         c.setUser(configurationService.get(ConfigurationKey.MAIL_USER, false, null));
@@ -88,6 +89,7 @@ public class AdminServiceImpl extends AbstractServiceImpl implements AdminServic
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void saveMailConfiguration(MailConfiguration configuration) {
         configurationService.set(ConfigurationKey.MAIL_HOST, configuration.getHost());
+        configurationService.set(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, configuration.getReplyToAddress());
         configurationService.set(ConfigurationKey.MAIL_USER, configuration.getUser());
         configurationService.set(ConfigurationKey.MAIL_PASSWORD, configuration.getPassword());
         configurationService.set(ConfigurationKey.MAIL_AUTHENTICATION, configuration.isAuthentication());
