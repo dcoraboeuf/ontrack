@@ -32,14 +32,15 @@
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="bookmark"/>
 </node>
-<node CREATED="1364153551013" ID="ID_313211043" MODIFIED="1364153556190" TEXT="indexation service">
+<node CREATED="1364153551013" ID="ID_313211043" MODIFIED="1364295122017" TEXT="indexation service">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364206394339" ID="ID_1684651082" MODIFIED="1364292007597" TEXT="extract dao">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="bookmark"/>
 <icon BUILTIN="button_ok"/>
 </node>
 </node>
-<node CREATED="1364153484332" ID="ID_12119863" MODIFIED="1364153563212" TEXT="indexation result service"/>
 <node CREATED="1364153565418" ID="ID_1394724399" MODIFIED="1364292031677" TEXT="indexation of issue keys">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -56,7 +57,7 @@
 <icon BUILTIN="button_ok"/>
 </node>
 </node>
-<node CREATED="1364206309546" ID="ID_1548145094" MODIFIED="1364206413631" TEXT="indexation control">
+<node CREATED="1364206309546" ID="ID_1548145094" MODIFIED="1364295134005" TEXT="indexation control page">
 <node CREATED="1364206317880" ID="ID_1773801750" MODIFIED="1364206325101" TEXT="index since latest"/>
 <node CREATED="1364206328393" ID="ID_908787462" MODIFIED="1364206335055" TEXT="current running job"/>
 <node CREATED="1364206336633" ID="ID_1013277429" MODIFIED="1364206340766" TEXT="last revision scanned"/>

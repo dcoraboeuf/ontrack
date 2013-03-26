@@ -92,7 +92,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             // Last scanned revision
             long lastScannedRevision = revisionDao.getLast();
             if (lastScannedRevision <= 0) {
-                lastScannedRevision = indexationConfigurationExtension.getConfiguration().getStartRevision();
+                lastScannedRevision = indexationConfigurationExtension.getStartRevision();
             }
             // Logging
             logger.info("Submitting indexation from latest scanned revision: " + lastScannedRevision);
@@ -148,7 +148,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             // SVN URL
             SVNURL url = SVNUtils.toURL(getSvnConfiguration().getUrl());
             // Filters the revision range using the repository configuration
-            long startRevision = indexationConfigurationExtension.getConfiguration().getStartRevision();
+            long startRevision = indexationConfigurationExtension.getStartRevision();
             from = Math.max(startRevision, from);
             // Filters the revision range using the SVN repository
             long repositoryRevision = subversionService.getRepositoryRevision(url);
@@ -319,7 +319,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             @Override
             public Date nextExecutionTime(TriggerContext triggerContext) {
                 // Configuration
-                int scanInterval = indexationConfigurationExtension.getConfiguration().getScanInterval();
+                int scanInterval = indexationConfigurationExtension.getScanInterval();
                 // No scan, tries again in one minute, in case the configuration has changed
                 if (scanInterval <= 0) {
                     return DateTime.now().plusMinutes(1).toDate();
