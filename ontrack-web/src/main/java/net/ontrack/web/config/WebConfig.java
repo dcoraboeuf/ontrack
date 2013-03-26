@@ -3,6 +3,7 @@ package net.ontrack.web.config;
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
@@ -51,6 +52,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     @Autowired
     private PropertiesService propertiesService;
@@ -115,6 +119,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
+        variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
         // Properties
         variables.put("propertyDisplay", new FnPropertyDisplay(strings(), propertiesService));
         // OK
