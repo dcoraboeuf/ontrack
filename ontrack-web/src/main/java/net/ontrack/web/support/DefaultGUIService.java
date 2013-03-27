@@ -22,6 +22,6 @@ public class DefaultGUIService implements GUIService {
      */
     public String getBaseURL() {
         // FIXME Returns a correct URL
-        return "http://localhost:8080/";
+        return "http://localhost:8080/ontrack/";
     }
 }
