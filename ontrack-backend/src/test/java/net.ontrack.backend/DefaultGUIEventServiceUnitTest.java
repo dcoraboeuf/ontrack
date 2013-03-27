@@ -1,15 +1,12 @@
-package net.ontrack.web.ui;
+package net.ontrack.backend;
 
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.EntityStub;
-import net.ontrack.core.model.EventType;
-import net.ontrack.core.model.ExpandedEvent;
+import net.ontrack.core.model.*;
 import net.ontrack.core.support.MapBuilder;
-import net.ontrack.service.EventService;
-import net.ontrack.web.ui.model.GUIEvent;
+import net.ontrack.service.GUIService;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
 import org.joda.time.DateTime;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -18,15 +15,21 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
-public class EventControllerUnitTest {
+public class DefaultGUIEventServiceUnitTest {
 
-    private final EventService auditService = mock(EventService.class);
+    private static Strings strings;
+    private static GUIService guiService;
+
+    @BeforeClass
+    public static void beforeClass() {
+        strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
+        guiService = new MockGUIService();
+    }
 
     @Test
     public void createLinkHref_project() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String href = controller.createLinkHref(
                 Entity.PROJECT,
                 new EntityStub(Entity.PROJECT, 1001, "PROJ5"),
@@ -37,7 +40,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void createLinkHref_branch() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String href = controller.createLinkHref(
                 Entity.BRANCH,
                 new EntityStub(Entity.BRANCH, 2001, "BRANCH1"),
@@ -49,7 +52,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void createLinkHref_build() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         Map<Entity, EntityStub> context =
                 MapBuilder.of(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ7"))
                         .with(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "BRANCH2"))
@@ -63,7 +66,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void createLink_project_no_alternative() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String href = controller.createLink(
                 Entity.PROJECT,
                 new EntityStub(Entity.PROJECT, 1001, "PROJ4"),
@@ -74,7 +77,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void createLink_project_alternative() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String href = controller.createLink(
                 Entity.PROJECT,
                 new EntityStub(Entity.PROJECT, 1001, "PROJ3"),
@@ -85,7 +88,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void createLink_branch() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String href = controller.createLink(
                 Entity.BRANCH,
                 new EntityStub(Entity.BRANCH, 2001, "1.x"),
@@ -99,7 +102,7 @@ public class EventControllerUnitTest {
     // TODO Use a proper exception
     @Test(expected = IllegalStateException.class)
     public void createLink_branch_no_project() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         controller.createLink(
                 Entity.BRANCH,
                 new EntityStub(Entity.BRANCH, 2001, "1.x"),
@@ -109,7 +112,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void expandToken_entity_project() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String value = controller.expandToken(
                 "$PROJECT$",
                 new ExpandedEvent(
@@ -125,7 +128,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void expandToken_entity_project_with_alternative() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String value = controller.expandToken(
                 "$PROJECT|this project$",
                 new ExpandedEvent(
@@ -141,7 +144,7 @@ public class EventControllerUnitTest {
 
     @Test(expected = IllegalStateException.class)
     public void expandToken_entity_project_not_found() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         controller.expandToken(
                 "$PROJECT$",
                 new ExpandedEvent(1, "Author", EventType.PROJECT_CREATED, new DateTime()));
@@ -149,7 +152,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void expandToken_value_only() {
-        EventController controller = dummy();
+        DefaultGUIEventService controller = dummy();
         String value = controller.expandToken(
                 "$project$",
                 new ExpandedEvent(
@@ -163,8 +166,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void toGUIEvent_one_entity() {
-        Strings strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
-        EventController controller = new EventController(null, strings, null, auditService);
+        DefaultGUIEventService controller = dummy();
         GUIEvent event = controller.toGUIEvent(
                 new ExpandedEvent(10, "Author", EventType.PROJECT_CREATED, new DateTime(2013, 1, 30, 10, 5, 30))
                         .withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ2")),
@@ -182,8 +184,7 @@ public class EventControllerUnitTest {
 
     @Test
     public void toGUIEvent_two_entities() {
-        Strings strings = StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
-        EventController controller = new EventController(null, strings, null, auditService);
+        DefaultGUIEventService controller = dummy();
         GUIEvent event = controller.toGUIEvent(
                 new ExpandedEvent(10, "Author", EventType.BRANCH_CREATED,
                         new DateTime(2013, 1, 30, 10, 5, 30))
@@ -200,8 +201,8 @@ public class EventControllerUnitTest {
                 event.getHtml());
     }
 
-    protected EventController dummy() {
-        return new EventController(null, null, null, auditService);
+    protected DefaultGUIEventService dummy() {
+        return new DefaultGUIEventService(guiService, strings);
     }
 
 }
