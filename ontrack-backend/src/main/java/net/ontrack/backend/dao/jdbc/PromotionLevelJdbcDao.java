@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.model.TPromotionLevel;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

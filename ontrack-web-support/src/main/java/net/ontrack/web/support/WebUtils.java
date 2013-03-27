@@ -1,8 +1,8 @@
 package net.ontrack.web.support;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class WebUtils {
 

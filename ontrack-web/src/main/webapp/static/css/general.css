@@ -13,6 +13,11 @@
 	display: none;
 }
 
+/* Alert (none) */
+.alert-none {
+	display: none;
+}
+
 /* Description test */
 .description {
     font-style: italic;

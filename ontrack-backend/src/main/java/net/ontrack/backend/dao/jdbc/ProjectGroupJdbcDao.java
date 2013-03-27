@@ -3,6 +3,7 @@ package net.ontrack.backend.dao.jdbc;
 import net.ontrack.backend.dao.ProjectGroupDao;
 import net.ontrack.backend.dao.model.TProjectGroup;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

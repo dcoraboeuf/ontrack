@@ -1,6 +1,7 @@
 package net.ontrack.extension.api;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
@@ -17,9 +18,10 @@ public interface ExtensionManager {
 
     /**
      * Gets an extension by its name
+     *
      * @throws ExtensionNotFoundException If no extension with this name is defined
      */
-    <T extends Extension> T getExtension (String name) throws ExtensionNotFoundException;
+    <T extends Extension> T getExtension(String name) throws ExtensionNotFoundException;
 
     /**
      * Gets a property extension descriptor associated with this extension and this name.
@@ -46,4 +48,15 @@ public interface ExtensionManager {
      * Gets a configuration extension by its extension ID and name
      */
     <T extends ConfigurationExtension> T getConfigurationExtension(String extension, String name);
+
+    /**
+     * Lists of actions that are available at the top level of the application. They are normally
+     * display in the contextual menu for the user.
+     */
+    Collection<? extends ActionExtension> getTopLevelActions();
+
+    /**
+     * Lists of actions that can be defined for the difference between two builds
+     */
+    Collection<? extends ActionExtension> getDiffActions();
 }

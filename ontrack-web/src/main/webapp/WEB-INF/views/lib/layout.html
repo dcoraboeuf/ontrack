@@ -9,7 +9,7 @@
 	</#if>
 </#macro>
 
-<#macro layout_root page style=false script=false scripts=[] modules=[] title="">
+<#macro layout_root page extension=false style=false script=false scripts=[] modules=[] title="">
 	<!DOCTYPE html>
 	<html lang="${locSelected()}">
 		<head>
@@ -25,7 +25,11 @@
 			</style>
 			<link href="${base}/css/general.css" rel="stylesheet" />
 			<#if style>
-				<link rel="stylesheet" type="text/css" href="${base}/css/${page}.css" />
+                <#if extension>
+                    <link rel="stylesheet" type="text/css" href="extension/${page}.css" />
+                <#else>
+				    <link rel="stylesheet" type="text/css" href="${base}/css/${page}.css" />
+                </#if>
 			</#if>
 
             <script src="${base}/jquery/jquery-1.9.0.min.js" type="text/javascript"></script>
@@ -44,7 +48,11 @@
 			</#list>
 			
 			<#if script>
-				<script src="${base}/js/${page}.js" type="text/javascript"></script>
+                <#if extension>
+                    <script src="extension/${page}.js" type="text/javascript"></script>
+                <#else>
+                    <script src="${base}/js/${page}.js" type="text/javascript"></script>
+                </#if>
 			</#if>
 			
 			<#list scripts as scriptfile>
@@ -59,8 +67,8 @@
 	</html>
 </#macro>
 
-<#macro layout_basic page style=false script=false scripts=[] modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
-	<@layout_root page=page style=style script=script scripts=scripts modules=modules title=title>
+<#macro layout_basic page extension=false style=false script=false scripts=[] modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
+	<@layout_root page=page extension=extension style=style script=script scripts=scripts modules=modules title=title>
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
@@ -85,8 +93,8 @@
 	</@layout_root>
 </#macro>
 
-<#macro layout_std page style=false script=false scripts=[] modules=[] title="" showSecurity=true breadcrumbs = {}>
-	<@layout_basic page=page style=style script=script scripts=scripts modules=modules title=title showSecurity=showSecurity>
+<#macro layout_std page extension=false style=false script=false scripts=[] modules=[] title="" showSecurity=true breadcrumbs = {}>
+	<@layout_basic page=page extension=extension style=style script=script scripts=scripts modules=modules title=title showSecurity=showSecurity>
 		<ul class="breadcrumb">
 			<#list breadcrumbs?keys as key>
 				<#assign link = breadcrumbs[key]>
@@ -95,6 +103,7 @@
 			<li class="active"><@layout_title page=page title=title /></li>
 		</ul>
 		<div class="container">
+            <@information_message />
 			<#nested>
 		</div>
 	</@layout_basic>

@@ -1,6 +1,5 @@
 package net.ontrack.extension.link;
 
-import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +13,6 @@ public class LinkExtension extends ExtensionAdapter {
     public LinkExtension() {
         super(
                 EXTENSION,
-                Collections.singletonList(new LinkPropertyDescriptor()),
-                Collections.<ConfigurationExtension>emptyList());
+                Collections.singletonList(new LinkPropertyDescriptor()));
     }
 }

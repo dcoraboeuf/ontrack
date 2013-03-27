@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

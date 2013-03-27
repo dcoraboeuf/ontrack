@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.PropertyDao;
 import net.ontrack.backend.dao.model.TProperty;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Entity;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

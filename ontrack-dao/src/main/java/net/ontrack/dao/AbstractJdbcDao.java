@@ -1,4 +1,4 @@
-package net.ontrack.backend.dao.jdbc;
+package net.ontrack.dao;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

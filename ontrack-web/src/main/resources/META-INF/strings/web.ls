@@ -351,8 +351,8 @@ branches.builds
 	en,fr -> Builds
 
 branch.nobuild
-    en -> No build has been done yet on this branch.
-    fr -> Aucun build n'a encore été exécuté sur cette branche.
+    en -> No build has been done yet on this branch or the filter is too restrictive.
+    fr -> Aucun build n'a encore été exécuté sur cette branche ou le filtre est trop restrictif.
 
 branch.promotion_levels
 	en -> Promotion levels

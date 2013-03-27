@@ -3,6 +3,7 @@ package net.ontrack.backend.dao.jdbc;
 import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.backend.dao.model.TValidationRun;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

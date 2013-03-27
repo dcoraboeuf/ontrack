@@ -25,6 +25,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th rowspan="2">&nbsp;</th>
                     <th rowspan="2"><@lh key="model.build" /></th>
                     <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
                     <th colspan="{{branchBuilds.validationStamps.length}}"><@lh key="branch.validation_stamps" /></th>
@@ -40,13 +41,37 @@
                 </tr>
             </thead>
             <tbody>
-                {{{rowFn}}}
+                {{#if branchBuilds.builds.length}}
+                    {{{rowFn}}}
+                {{else}}
+                    <tr>
+                        <td colspan="{{totalColspan}}">
+                            <div class="alert alert-warning"><@lh key="branch.nobuild" /> : {{totalColspan}}</div>
+                        </td>
+                    </tr>
+                {{/if}}
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="{{totalColspan}}">
                         <!-- Filter -->
                         <button id="filter-button" type="button" class="btn {{#filterActive}}btn-warning{{/filterActive}}" onclick="Builds.showFilter('${project?html}', '${branch?html}')"><@lh key="query" /></button>
+                        <!-- Diff actions -->
+                        <#list extensionDiffActions() as action>
+                            <button
+                                    id="diff-action-${action.extension}-${action.name}"
+                                    type="button"
+                                    class="btn"
+                                    extension="${action.extension}"
+                                    name="${action.name}"
+                                    path="${action.path?html}"
+                                    project="${project?html}"
+                                    branch="${branch?html}"
+                                    onclick="Builds.diffAction(this)"
+                                    >
+                                ${action.title?html}
+                            </button>
+                        </#list>
                     </td>
                 </tr>
             </tfoot>
@@ -121,6 +146,10 @@
     <script id="branchBuildsRowTemplate" type="text/html">
         {{#branchBuilds.builds}}
             <tr>
+                <td build="{{name}}" style="width:4em;">
+                    <input type="radio" name="buildFrom" value="{{name}}" />
+                    <input type="radio" name="buildTo" value="{{name}}" />
+                </td>
                 <td class="branch-build build_header" build="{{name}}">
                     <a
                             class="tooltip-source"

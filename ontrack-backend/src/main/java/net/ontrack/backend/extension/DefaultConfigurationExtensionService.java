@@ -51,7 +51,11 @@ public class DefaultConfigurationExtensionService implements ConfigurationExtens
             // Gets the value
             String value = configurationDao.getValue(key);
             // Sets the value
-            extension.configure(field.getName(), value);
+            if (value != null) {
+                extension.configure(field.getName(), value);
+            } else {
+                extension.configure(field.getName(), field.getDefaultValue());
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package net.ontrack.backend.dao.jdbc;
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.ConfigurationDao;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

@@ -2,6 +2,7 @@ package net.ontrack.web.ui;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,8 +82,19 @@ public class PropertyUIController extends AbstractUIController implements Proper
             @PathVariable final Entity entity,
             @PathVariable int entityId) {
         // List of defined properties with their value
-        return Lists.transform(
-                propertiesService.getPropertyValuesWithDescriptor(entity, entityId),
+        List<PropertyValueWithDescriptor> propertyValuesWithDescriptors = propertiesService.getPropertyValuesWithDescriptor(entity, entityId);
+        // Filter on visibility
+        Collection<PropertyValueWithDescriptor> filteredPropertyValueWithDescriptors = Collections2.filter(
+                propertyValuesWithDescriptors,
+                new Predicate<PropertyValueWithDescriptor>() {
+                    @Override
+                    public boolean apply(PropertyValueWithDescriptor propertyValueWithDescriptor) {
+                        return isPropertyViewable(propertyValueWithDescriptor.getDescriptor(), entity);
+                    }
+                }
+        );
+        Collection<DisplayablePropertyValue> displayablePropertyValues = Collections2.transform(
+                filteredPropertyValueWithDescriptors,
                 new Function<PropertyValueWithDescriptor, DisplayablePropertyValue>() {
                     @Override
                     public DisplayablePropertyValue apply(PropertyValueWithDescriptor property) {
@@ -95,6 +108,8 @@ public class PropertyUIController extends AbstractUIController implements Proper
                     }
                 }
         );
+        // OK
+        return Lists.newArrayList(displayablePropertyValues);
     }
 
     /**
@@ -151,6 +166,11 @@ public class PropertyUIController extends AbstractUIController implements Proper
                     }
                 }
         );
+    }
+
+    private boolean isPropertyViewable(PropertyExtensionDescriptor descriptor, Entity entity) {
+        String role = descriptor.getRoleForView(entity);
+        return role == null || securityUtils.hasRole(role);
     }
 
     private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity) {

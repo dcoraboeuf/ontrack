@@ -19,7 +19,9 @@
         <module>ontrack-extension-jenkins</module>
         <module>ontrack-extension-link</module>
         <module>ontrack-extension-jira</module>
+        <module>ontrack-extension-svn</module>
         <module>ontrack-extension-explanation</module>
+        <module>ontrack-extension-svnexplorer</module>
     </modules>
 
     <dependencies>

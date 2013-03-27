@@ -36,41 +36,138 @@
 </node>
 <node CREATED="1364126326204" ID="ID_355507569" MODIFIED="1364152080680" POSITION="left" TEXT="svnexplorer">
 <node CREATED="1364126331044" ID="ID_1218677158" MODIFIED="1364145714379" TEXT="svn">
-<node CREATED="1364126340421" ID="ID_1328425960" MODIFIED="1364153543185" TEXT="indexation">
-<node CREATED="1364145664679" ID="ID_1834006245" MODIFIED="1364145668636" TEXT="db extension"/>
-<node CREATED="1364145672983" ID="ID_897897585" MODIFIED="1364145678247" TEXT="task scheduler"/>
-<node CREATED="1364145680772" ID="ID_788616464" MODIFIED="1364152067757" TEXT="information service"/>
-<node CREATED="1364153551013" ID="ID_313211043" MODIFIED="1364153556190" TEXT="indexation service"/>
-<node CREATED="1364153484332" ID="ID_12119863" MODIFIED="1364153563212" TEXT="indexation result service"/>
-<node CREATED="1364153565418" ID="ID_1394724399" MODIFIED="1364153574387" TEXT="indexation of issue keys"/>
-<node CREATED="1364152009436" ID="ID_803177212" MODIFIED="1364152016157" TEXT="indexation configuration">
-<node CREATED="1364152025496" ID="ID_1113378877" MODIFIED="1364152031152" TEXT="start revision"/>
-<node CREATED="1364152033230" ID="ID_467967585" MODIFIED="1364152041312" TEXT="scan interval"/>
+<node CREATED="1364126340421" FOLDED="true" ID="ID_1328425960" MODIFIED="1364305704742" TEXT="indexation">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364145664679" ID="ID_1834006245" MODIFIED="1364292031676" TEXT="db extension">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364145672983" ID="ID_897897585" MODIFIED="1364291998430" TEXT="task scheduler">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="bookmark"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364145680772" ID="ID_788616464" MODIFIED="1364292005573" TEXT="information service">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="bookmark"/>
+</node>
+<node CREATED="1364153551013" ID="ID_313211043" MODIFIED="1364295122017" TEXT="indexation service">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364206394339" ID="ID_1684651082" MODIFIED="1364292007597" TEXT="extract dao">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="bookmark"/>
+<icon BUILTIN="button_ok"/>
+</node>
+</node>
+<node CREATED="1364153565418" ID="ID_1394724399" MODIFIED="1364292031677" TEXT="indexation of issue keys">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364152009436" ID="ID_803177212" MODIFIED="1364292031676" TEXT="indexation configuration">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364152025496" ID="ID_1113378877" MODIFIED="1364292031676" TEXT="start revision">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364152033230" ID="ID_467967585" MODIFIED="1364292031676" TEXT="scan interval">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+</node>
+<node CREATED="1364206309546" FOLDED="true" ID="ID_1548145094" MODIFIED="1364305697298" TEXT="indexation control page">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364206317880" ID="ID_1773801750" MODIFIED="1364304522448" TEXT="index since latest">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206328393" ID="ID_908787462" MODIFIED="1364297472402" TEXT="current running job">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206336633" ID="ID_1013277429" MODIFIED="1364305694290" TEXT="last revision scanned">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206341594" ID="ID_426469477" MODIFIED="1364304522449" TEXT="indexing a range">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206347241" ID="ID_739239476" MODIFIED="1364304522448" TEXT="full re-indexation">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364206413631" ID="ID_25830498" MODIFIED="1364298044402" TEXT="extract web controllers">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="bookmark"/>
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 </node>
 <node CREATED="1364145715639" ID="ID_929420536" MODIFIED="1364145726018" TEXT="svn configuration">
-<node CREATED="1364145727255" ID="ID_81192316" MODIFIED="1364145733401" TEXT="repository url"/>
-<node CREATED="1364145736102" ID="ID_501814319" MODIFIED="1364145747157" TEXT="svn user/password"/>
-<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1364152296174" TEXT="svn browser">
-<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1364152304143" TEXT="url patterns">
+<node CREATED="1364145727255" ID="ID_81192316" MODIFIED="1364292031675" TEXT="repository url">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364145736102" ID="ID_501814319" MODIFIED="1364292031674" TEXT="svn user/password">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1364305737897" TEXT="svn browser">
+<node CREATED="1364204497919" ID="ID_1449025321" MODIFIED="1364292031674" TEXT="path browsing">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1364305740756" TEXT="other url patterns">
 <font ITALIC="true" NAME="SansSerif" SIZE="12"/>
-</node>
-<node CREATED="1364152306238" ID="ID_398618790" MODIFIED="1364152321333" TEXT="changeset"/>
-</node>
-</node>
-<node CREATED="1364152359351" ID="ID_1601143387" MODIFIED="1364152362126" TEXT="svn properties">
-<node CREATED="1364152363732" ID="ID_1114034841" MODIFIED="1364152374595" TEXT="svn at branch level">
-<node CREATED="1364152375593" HGAP="21" ID="ID_354877601" MODIFIED="1364153619793" TEXT="svn path" VSHIFT="6"/>
+<icon BUILTIN="help"/>
 </node>
 </node>
-<node CREATED="1364153030146" ID="ID_977040921" MODIFIED="1364153032386" TEXT="svn service">
-<node CREATED="1364153033436" ID="ID_683059953" MODIFIED="1364153040953" TEXT="link to a change set"/>
+</node>
+<node CREATED="1364152359351" ID="ID_1601143387" MODIFIED="1364307782896" TEXT="svn properties">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364152363732" ID="ID_1114034841" MODIFIED="1364307783633" TEXT="svn at branch level">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364152375593" HGAP="21" ID="ID_354877601" MODIFIED="1364292031674" TEXT="svn path" VSHIFT="6">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364291560197" ID="ID_1782877584" MODIFIED="1364307775227" TEXT="svn build path pattern">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364291971133" ID="ID_1165566567" MODIFIED="1364307771379" TEXT="visibility for properties">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="bookmark"/>
+<icon BUILTIN="button_ok"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1364153030146" ID="ID_977040921" MODIFIED="1364204545847" TEXT="svn service">
+<node CREATED="1364153033436" ID="ID_683059953" MODIFIED="1364204557098" TEXT="link to a change set"/>
+<node CREATED="1364204545847" ID="ID_1862261879" MODIFIED="1364292031668" TEXT="path URL">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364204562055" ID="ID_1164260457" MODIFIED="1364292031671" TEXT="browsing URL">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 </node>
 <node CREATED="1364126335733" ID="ID_1914983365" MODIFIED="1364126337163" TEXT="jira">
-<node CREATED="1364145642606" ID="ID_1039263856" MODIFIED="1364145649356" TEXT="jira access service">
+<node CREATED="1364145642606" ID="ID_1039263856" MODIFIED="1364205033740" TEXT="jira access service">
 <node CREATED="1364145651307" ID="ID_903789381" MODIFIED="1364145656230" TEXT="jira rest client"/>
 <node CREATED="1364152999151" ID="ID_750204296" MODIFIED="1364153003910" TEXT="link to an issue"/>
+<node CREATED="1364205033740" ID="ID_1620413834" MODIFIED="1364292036828" TEXT="extract issues from a message">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 </node>
 <node CREATED="1364152082124" ID="ID_1234297002" MODIFIED="1364152105585" TEXT="change log">

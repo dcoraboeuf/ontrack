@@ -65,6 +65,11 @@ public interface PropertyExtensionDescriptor {
     String getRoleForEdition(Entity entity);
 
     /**
+     * Can this property be viewed by anybody?
+     */
+    String getRoleForView(Entity entity);
+
+    /**
      * Gets the HTML fragment that allows for the edition of this value.
      * The field that contains the value must have the HTML ID <code>extension-{extension}-{name}</code>
      * where {extension} and {name} identify this extension.

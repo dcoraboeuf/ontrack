@@ -4,6 +4,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
+import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
@@ -11,8 +12,10 @@ import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -21,13 +24,27 @@ import java.util.*;
 @Component
 public class DefaultExtensionManager implements ExtensionManager {
 
-    private final Map<String, Extension> extensionIndex;
-    private final Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
-    private final Map<String, Map<String, ConfigurationExtension>> configurationIndex;
+    private final ApplicationContext applicationContext;
+
+    private Map<String, Extension> extensionIndex;
+    private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
+    private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
+    private Collection<ActionExtension> topLevelActions;
+    private Collection<ActionExtension> diffActions;
 
     @Autowired
-    public DefaultExtensionManager(Collection<Extension> extensions) {
+    public DefaultExtensionManager(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @PostConstruct
+    public void init () {
         Logger logger = LoggerFactory.getLogger(ExtensionManager.class);
+
+        /**
+         * Gets the list of extensions
+         */
+        Collection<Extension> extensions = applicationContext.getBeansOfType(Extension.class).values();
 
         /**
          * Indexation of extensions
@@ -36,6 +53,8 @@ public class DefaultExtensionManager implements ExtensionManager {
         extensionIndex = new TreeMap<>();
         propertyIndex = new HashMap<>();
         configurationIndex = new HashMap<>();
+        topLevelActions = new ArrayList<>();
+        diffActions = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
             logger.info("[extension] Extension={}", extensionName);
@@ -77,7 +96,23 @@ public class DefaultExtensionManager implements ExtensionManager {
                 // Adds to the list
                 extensionConfigurationIndex.put(configurationExtension.getName(), configurationExtension);
             }
+
+            /**
+             * Indexation of actions
+             */
+            topLevelActions.addAll(extension.getTopLevelActions());
+            diffActions.addAll(extension.getDiffActions());
         }
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getTopLevelActions() {
+        return topLevelActions;
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getDiffActions() {
+        return diffActions;
     }
 
     @Override

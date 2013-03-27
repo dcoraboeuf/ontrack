@@ -39,7 +39,7 @@ var Builds = function () {
                 project: project,
                 branch: branch,
                 branchBuilds: branchBuilds,
-                totalColspan: branchBuilds.validationStamps.length + 2,
+                totalColspan: branchBuilds.validationStamps.length + 4,
                 rowFn: function (text, renderFn) {
                     return generateTableBuildRows (project, branch, branchBuilds);
                 },
@@ -112,6 +112,19 @@ var Builds = function () {
             }
         }
     }
+
+    function buildRadioButtons () {
+        // Last of the froms
+        var froms = $('input[name="buildFrom"]');
+        if (froms.length > 0) {
+            froms[froms.length - 1].setAttribute('checked', 'checked');
+        }
+        // First of the tos
+        var tos = $('input[name="buildTo"]');
+        if (tos.length > 0) {
+            tos[0].setAttribute('checked', 'checked');
+        }
+    }
 	
 	function buildTemplate (project, branch) {
 	    return Template.config({
@@ -125,22 +138,14 @@ var Builds = function () {
                     $(containerSelector + " tbody").append(generateTableBuildRows(project, branch, branchBuilds));
                 } else {
                     // No table defined, or no need to append
-                    // Some items
-                    if (branchBuilds.builds.length > 0) {
-                        // Direct filling of the container
-                        $(containerSelector).empty();
-                        $(containerSelector).append(generateTableBranchBuilds(project, branch, branchBuilds));
-                    }
-                    // No items
-                    else {
-                        $(containerSelector).empty();
-                        $(containerSelector).append('<div class="alert">{0}</div>'.format(loc('branch.nobuild')));
-                    }
+                    $(containerSelector).empty();
+                    $(containerSelector).append(generateTableBranchBuilds(project, branch, branchBuilds));
                 }
 	        },
 	        postRenderFn: function () {
 	            Application.tooltips();
 	            gridHoverSetup();
+	            buildRadioButtons();
 	        }
          });
 	}
@@ -292,6 +297,22 @@ var Builds = function () {
         $('#sinceValidationStampStatus').val('');
         $('#limit').val('10');
 	}
+
+	function diffAction (btn) {
+	    // Action attributes
+	    var project = $(btn).attr('project');
+	    var branch = $(btn).attr('branch');
+	    var path = $(btn).attr('path');
+	    // From & to
+	    var from = $('input[name="buildFrom"]:checked').val();
+	    var to = $('input[name="buildTo"]:checked').val();
+	    // Logging
+	    // console.log('project={0},branch={1},path={2},from={3},to={4}'.format(project, branch, path, from, to));
+	    // URL
+	    var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
+	    // Go
+	    location = url;
+	}
 	
 	return {
 	    // Templating
@@ -303,7 +324,9 @@ var Builds = function () {
 		showFilter: showFilter,
 		filterFormTemplate: filterFormTemplate,
 		closeFilter: closeFilter,
-		clearFilter: clearFilter
+		clearFilter: clearFilter,
+		// Actions
+		diffAction: diffAction
 	};
 	
 } ();

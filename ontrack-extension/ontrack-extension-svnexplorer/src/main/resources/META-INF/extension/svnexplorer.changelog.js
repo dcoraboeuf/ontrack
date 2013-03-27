@@ -1,0 +1,7 @@
+var ChangeLog = function () {
+
+    return {
+
+    };
+
+} ();

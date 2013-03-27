@@ -1,6 +1,8 @@
 package net.ontrack.core.model;
 
 public enum UserMessageType {
+
+    none,
 	
 	success,
 	
@@ -8,6 +10,6 @@ public enum UserMessageType {
 	
 	warning,
 	
-	error;
+	error
 
 }
