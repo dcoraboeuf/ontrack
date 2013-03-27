@@ -7,5 +7,7 @@ import net.ontrack.core.model.BranchSummary;
 public class ChangeLogSummary {
 
     private final BranchSummary branch;
+    private final SVNBuild buildFrom;
+    private final SVNBuild buildTo;
 
 }
