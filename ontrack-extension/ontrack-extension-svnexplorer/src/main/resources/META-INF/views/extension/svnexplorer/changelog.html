@@ -4,7 +4,22 @@
 
     <@usermessage />
 
-    <!-- Going back to the home page -->
-    <a href="" class="btn"><@lh key="general.close" /></a>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${summary.branch.project.name?html}">${summary.branch.project.name?html}</a>
+                    /
+                    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}">${summary.branch.name?html}</a>
+                </span>
+            </div>
+            <p>
+                <@lh key="svnexplorer.changelog.header" />
+            </p>
+        </div>
+    </div>
+
+    <!-- Going back to the branch page -->
+    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}" class="btn"><@lh key="general.close" /></a>
 
 </@layout_std>
