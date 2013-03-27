@@ -6,19 +6,28 @@ import net.ontrack.service.MessageService;
 import net.ontrack.service.model.MessageChannel;
 import net.ontrack.service.model.MessageDestination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.annotation.PostConstruct;
+import java.util.Collection;
 
 @Service
 public class DefaultMessageService implements MessageService {
 
-	private final List<MessagePost> posts;
+    private final ApplicationContext applicationContext;
 
-	@Autowired
-	public DefaultMessageService(List<MessagePost> posts) {
-		this.posts = posts;
-	}
+	private Collection<MessagePost> posts;
+
+    @Autowired
+    public DefaultMessageService(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @PostConstruct
+    public void init() {
+        posts = applicationContext.getBeansOfType(MessagePost.class).values();
+    }
 
 	@Override
 	public void sendMessage(Message message, MessageDestination messageDestination) {
