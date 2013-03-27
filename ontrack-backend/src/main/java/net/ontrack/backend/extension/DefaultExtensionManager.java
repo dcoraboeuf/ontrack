@@ -26,6 +26,7 @@ public class DefaultExtensionManager implements ExtensionManager {
     private final Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private final Map<String, Map<String, ConfigurationExtension>> configurationIndex;
     private final Collection<ActionExtension> topLevelActions;
+    private final Collection<ActionExtension> diffActions;
 
     @Autowired
     public DefaultExtensionManager(Collection<Extension> extensions) {
@@ -39,6 +40,7 @@ public class DefaultExtensionManager implements ExtensionManager {
         propertyIndex = new HashMap<>();
         configurationIndex = new HashMap<>();
         topLevelActions = new ArrayList<>();
+        diffActions = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
             logger.info("[extension] Extension={}", extensionName);
@@ -82,15 +84,21 @@ public class DefaultExtensionManager implements ExtensionManager {
             }
 
             /**
-             * Indexation of top level actions
+             * Indexation of actions
              */
             topLevelActions.addAll(extension.getTopLevelActions());
+            diffActions.addAll(extension.getDiffActions());
         }
     }
 
     @Override
     public Collection<? extends ActionExtension> getTopLevelActions() {
         return topLevelActions;
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getDiffActions() {
+        return diffActions;
     }
 
     @Override

@@ -54,4 +54,9 @@ public interface ExtensionManager {
      * display in the contextual menu for the user.
      */
     Collection<? extends ActionExtension> getTopLevelActions();
+
+    /**
+     * Lists of actions that can be defined for the difference between two builds
+     */
+    Collection<? extends ActionExtension> getDiffActions();
 }

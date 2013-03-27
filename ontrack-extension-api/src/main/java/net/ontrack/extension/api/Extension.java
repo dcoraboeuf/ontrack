@@ -16,4 +16,6 @@ public interface Extension {
     List<? extends ConfigurationExtension> getConfigurationExtensions();
 
     Collection<? extends ActionExtension> getTopLevelActions();
+
+    Collection<? extends ActionExtension> getDiffActions();
 }

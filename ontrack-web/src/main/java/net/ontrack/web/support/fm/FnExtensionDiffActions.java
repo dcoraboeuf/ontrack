@@ -7,14 +7,14 @@ import net.sf.jstring.Strings;
 
 import java.util.Collection;
 
-public class FnExtensionTopLevelActions extends AbstractFnExtensionActions {
+public class FnExtensionDiffActions extends AbstractFnExtensionActions {
 
-    public FnExtensionTopLevelActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils) {
+    public FnExtensionDiffActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils) {
         super(strings, extensionManager, securityUtils);
     }
 
     @Override
     protected Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager) {
-        return extensionManager.getTopLevelActions();
+        return extensionManager.getDiffActions();
     }
 }

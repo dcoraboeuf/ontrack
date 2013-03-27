@@ -120,6 +120,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         // Extensions
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings(), extensionManager, securityUtils));
+        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings(), extensionManager, securityUtils));
         // OK
         c.setFreemarkerVariables(variables);
         // OK

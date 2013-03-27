@@ -29,6 +29,16 @@ public class IndexationActionController implements ActionExtension {
     }
 
     @Override
+    public String getExtension() {
+        return SubversionExtension.EXTENSION;
+    }
+
+    @Override
+    public String getName() {
+        return "indexation";
+    }
+
+    @Override
     public String getPath() {
         return "gui/extension/subversion/indexation";
     }

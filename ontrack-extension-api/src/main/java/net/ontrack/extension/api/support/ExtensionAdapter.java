@@ -15,6 +15,7 @@ public abstract class ExtensionAdapter implements Extension {
     private final List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors;
     private final List<? extends ConfigurationExtension> configurationExtensions;
     private final Collection<? extends ActionExtension> topLevelActions;
+    private final Collection<? extends ActionExtension> diffActions;
 
     protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors) {
         this(name, propertyExtensionDescriptors, Collections.<ConfigurationExtension>emptyList());
@@ -25,10 +26,15 @@ public abstract class ExtensionAdapter implements Extension {
     }
 
     protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors, List<? extends ConfigurationExtension> configurationExtensions, Collection<? extends ActionExtension> topLevelActions) {
+        this(name, propertyExtensionDescriptors, configurationExtensions, topLevelActions, Collections.<ActionExtension>emptyList());
+    }
+
+    protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors, List<? extends ConfigurationExtension> configurationExtensions, Collection<? extends ActionExtension> topLevelActions, Collection<? extends ActionExtension> diffActions) {
         this.name = name;
         this.propertyExtensionDescriptors = propertyExtensionDescriptors;
         this.configurationExtensions = configurationExtensions;
         this.topLevelActions = topLevelActions;
+        this.diffActions = diffActions;
     }
 
     @Override
@@ -49,5 +55,10 @@ public abstract class ExtensionAdapter implements Extension {
     @Override
     public Collection<? extends ActionExtension> getTopLevelActions() {
         return topLevelActions;
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getDiffActions() {
+        return diffActions;
     }
 }
