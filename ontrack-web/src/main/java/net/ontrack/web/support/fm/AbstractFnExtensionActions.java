@@ -42,7 +42,8 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
                 new Predicate<ActionExtension>() {
                     @Override
                     public boolean apply(ActionExtension action) {
-                        return securityUtils.hasRole(action.getRole());
+                        String role = action.getRole();
+                        return role == null || securityUtils.hasRole(role);
                     }
                 }
         );
