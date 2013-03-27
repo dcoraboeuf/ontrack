@@ -1,9 +1,10 @@
 package net.ontrack.extension.svnexplorer.ui;
 
-import net.ontrack.core.model.BranchSummary;
+import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
+import net.ontrack.extension.svnexplorer.service.SVNExplorerService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -19,11 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SVNExplorerUIController extends AbstractUIController implements SVNExplorerUI {
 
     private final ManageUI manageUI;
+    private final SVNExplorerService svnExplorerService;
 
     @Autowired
-    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
+    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI, SVNExplorerService svnExplorerService) {
         super(errorHandler, strings);
         this.manageUI = manageUI;
+        this.svnExplorerService = svnExplorerService;
     }
 
     @Override
@@ -31,10 +34,10 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     public
     @ResponseBody
     ChangeLogSummary getChangeLogSummary(@RequestBody ChangeLogRequest request) {
-        // Branch information
-        BranchSummary branch = manageUI.getBranch(request.getProject(), request.getBranch());
-        // FIXME Implement net.ontrack.extension.svnexplorer.ui.SVNExplorerUIController.getChangeLogSummary
+        // Build information
+        BuildSummary buildFrom = manageUI.getBuild(request.getProject(), request.getBranch(), request.getFrom());
+        BuildSummary buildTo = manageUI.getBuild(request.getProject(), request.getBranch(), request.getTo());
         // OK
-        return new ChangeLogSummary(branch);
+        return svnExplorerService.getChangeLogSummary(buildFrom.getBranch().getId(), buildFrom.getId(), buildTo.getId());
     }
 }
