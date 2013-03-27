@@ -1,5 +1,7 @@
 package net.ontrack.extension.svnexplorer.ui;
 
+import net.ontrack.core.model.BranchSummary;
+import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
 import net.ontrack.web.support.AbstractUIController;
@@ -16,9 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/ui/extension/svnexplorer")
 public class SVNExplorerUIController extends AbstractUIController implements SVNExplorerUI {
 
+    private final ManageUI manageUI;
+
     @Autowired
-    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings) {
+    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
         super(errorHandler, strings);
+        this.manageUI = manageUI;
     }
 
     @Override
@@ -26,7 +31,10 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     public
     @ResponseBody
     ChangeLogSummary getChangeLogSummary(@RequestBody ChangeLogRequest request) {
+        // Branch information
+        BranchSummary branch = manageUI.getBranch(request.getProject(), request.getBranch());
         // FIXME Implement net.ontrack.extension.svnexplorer.ui.SVNExplorerUIController.getChangeLogSummary
-        return null;
+        // OK
+        return new ChangeLogSummary(branch);
     }
 }

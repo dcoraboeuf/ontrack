@@ -12,8 +12,10 @@ import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -22,15 +24,27 @@ import java.util.*;
 @Component
 public class DefaultExtensionManager implements ExtensionManager {
 
-    private final Map<String, Extension> extensionIndex;
-    private final Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
-    private final Map<String, Map<String, ConfigurationExtension>> configurationIndex;
-    private final Collection<ActionExtension> topLevelActions;
-    private final Collection<ActionExtension> diffActions;
+    private final ApplicationContext applicationContext;
+
+    private Map<String, Extension> extensionIndex;
+    private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
+    private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
+    private Collection<ActionExtension> topLevelActions;
+    private Collection<ActionExtension> diffActions;
 
     @Autowired
-    public DefaultExtensionManager(Collection<Extension> extensions) {
+    public DefaultExtensionManager(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    @PostConstruct
+    public void init () {
         Logger logger = LoggerFactory.getLogger(ExtensionManager.class);
+
+        /**
+         * Gets the list of extensions
+         */
+        Collection<Extension> extensions = applicationContext.getBeansOfType(Extension.class).values();
 
         /**
          * Indexation of extensions
