@@ -1,12 +1,9 @@
 package net.ontrack.web.support;
 
-import net.ontrack.core.RunProfile;
 import net.ontrack.service.GUIService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({RunProfile.IT, RunProfile.DEV, RunProfile.PROD})
 public class DefaultGUIService implements GUIService {
 
     @Override

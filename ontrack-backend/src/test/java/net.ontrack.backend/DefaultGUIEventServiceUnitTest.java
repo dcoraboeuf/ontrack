@@ -35,7 +35,7 @@ public class DefaultGUIEventServiceUnitTest {
                 new EntityStub(Entity.PROJECT, 1001, "PROJ5"),
                 Collections.<Entity, EntityStub>emptyMap()
         );
-        assertEquals("gui/project/PROJ5", href);
+        assertEquals("http://test/gui/project/PROJ5", href);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class DefaultGUIEventServiceUnitTest {
                 Collections.singletonMap(
                         Entity.PROJECT,
                         new EntityStub(Entity.PROJECT, 1001, "PROJ6")));
-        assertEquals("gui/project/PROJ6/branch/BRANCH1", href);
+        assertEquals("http://test/gui/project/PROJ6/branch/BRANCH1", href);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class DefaultGUIEventServiceUnitTest {
                 Entity.BUILD,
                 new EntityStub(Entity.BUILD, 3001, "BUILD1"),
                 context);
-        assertEquals("gui/project/PROJ7/branch/BRANCH2/build/BUILD1", href);
+        assertEquals("http://test/gui/project/PROJ7/branch/BRANCH2/build/BUILD1", href);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class DefaultGUIEventServiceUnitTest {
                 new EntityStub(Entity.PROJECT, 1001, "PROJ4"),
                 null,
                 Collections.<Entity, EntityStub>emptyMap());
-        assertEquals("<a class=\"event-entity\" href=\"gui/project/PROJ4\">PROJ4</a>", href);
+        assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ4\">PROJ4</a>", href);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class DefaultGUIEventServiceUnitTest {
                 new EntityStub(Entity.PROJECT, 1001, "PROJ3"),
                 "te>st",
                 Collections.<Entity, EntityStub>emptyMap());
-        assertEquals("<a class=\"event-entity\" href=\"gui/project/PROJ3\">te&gt;st</a>", href);
+        assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ3\">te&gt;st</a>", href);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DefaultGUIEventServiceUnitTest {
                 Collections.singletonMap(
                         Entity.PROJECT,
                         new EntityStub(Entity.PROJECT, 1001, "PROJ3")));
-        assertEquals("<a class=\"event-entity\" href=\"gui/project/PROJ3/branch/1.x\">1.x</a>", href);
+        assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ3/branch/1.x\">1.x</a>", href);
     }
 
     // TODO Use a proper exception
@@ -123,7 +123,7 @@ public class DefaultGUIEventServiceUnitTest {
                         .withEntity(
                                 Entity.PROJECT,
                                 new EntityStub(Entity.PROJECT, 1, "PROJ1")));
-        assertEquals("<a class=\"event-entity\" href=\"gui/project/PROJ1\">PROJ1</a>", value);
+        assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ1\">PROJ1</a>", value);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class DefaultGUIEventServiceUnitTest {
                 ).withEntity(
                         Entity.PROJECT,
                         new EntityStub(Entity.PROJECT, 1, "PROJ3")));
-        assertEquals("<a class=\"event-entity\" href=\"gui/project/PROJ3\">this project</a>", value);
+        assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ3\">this project</a>", value);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -178,7 +178,7 @@ public class DefaultGUIEventServiceUnitTest {
         assertEquals("Jan 30, 2013 10:05:30 AM", event.getTimestamp());
         assertEquals("1 hour ago by Author", event.getElapsed());
         assertEquals(
-                "Project <a class=\"event-entity\" href=\"gui/project/PROJ2\">PROJ2</a> has been created.",
+                "Project <a class=\"event-entity\" href=\"http://test/gui/project/PROJ2\">PROJ2</a> has been created.",
                 event.getHtml());
     }
 
@@ -197,7 +197,7 @@ public class DefaultGUIEventServiceUnitTest {
         assertEquals("Jan 30, 2013 10:05:30 AM", event.getTimestamp());
         assertEquals("1 hour ago by Author", event.getElapsed());
         assertEquals(
-                "Branch <a class=\"event-entity\" href=\"gui/project/PROJ1/branch/1.x\">1.x</a> has been created for the <a class=\"event-entity\" href=\"gui/project/PROJ1\">PROJ1</a> project.",
+                "Branch <a class=\"event-entity\" href=\"http://test/gui/project/PROJ1/branch/1.x\">1.x</a> has been created for the <a class=\"event-entity\" href=\"http://test/gui/project/PROJ1\">PROJ1</a> project.",
                 event.getHtml());
     }
 
