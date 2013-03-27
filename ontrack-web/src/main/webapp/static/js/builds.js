@@ -297,6 +297,22 @@ var Builds = function () {
         $('#sinceValidationStampStatus').val('');
         $('#limit').val('10');
 	}
+
+	function diffAction (btn) {
+	    // Action attributes
+	    var project = $(btn).attr('project');
+	    var branch = $(btn).attr('branch');
+	    var path = $(btn).attr('path');
+	    // From & to
+	    var from = $('input[name="buildFrom"]:checked').val();
+	    var to = $('input[name="buildTo"]:checked').val();
+	    // Logging
+	    // console.log('project={0},branch={1},path={2},from={3},to={4}'.format(project, branch, path, from, to));
+	    // URL
+	    var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
+	    // Go
+	    location = url;
+	}
 	
 	return {
 	    // Templating
@@ -308,7 +324,9 @@ var Builds = function () {
 		showFilter: showFilter,
 		filterFormTemplate: filterFormTemplate,
 		closeFilter: closeFilter,
-		clearFilter: clearFilter
+		clearFilter: clearFilter,
+		// Actions
+		diffAction: diffAction
 	};
 	
 } ();
