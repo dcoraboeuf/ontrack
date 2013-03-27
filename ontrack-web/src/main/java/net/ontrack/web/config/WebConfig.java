@@ -9,7 +9,6 @@ import net.ontrack.web.support.fm.*;
 import net.ontrack.web.support.json.LocalTimeDeserializer;
 import net.ontrack.web.support.json.LocalTimeSerializer;
 import net.sf.jstring.Strings;
-import net.sf.jstring.support.StringsLoader;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ext.JodaDeserializers.LocalDateDeserializer;
@@ -39,7 +38,10 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebMvc
@@ -55,11 +57,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ExtensionManager extensionManager;
 
-    // TODO Moves this to the core
-    @Bean
-    public Strings strings() {
-        return StringsLoader.auto(Locale.ENGLISH, Locale.FRENCH);
-    }
+    @Autowired
+    private Strings strings;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -75,7 +74,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public Object exporter() throws IOException {
         MBeanExporter exporter = new MBeanExporter();
-        exporter.setBeans(Collections.<String, Object>singletonMap("bean:name=strings", strings()));
+        exporter.setBeans(Collections.<String, Object>singletonMap("bean:name=strings", strings));
         return exporter;
     }
 
@@ -93,8 +92,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LocaleInterceptor(strings()));
-        registry.addInterceptor(new WebInterceptor(strings()));
+        registry.addInterceptor(new LocaleInterceptor(strings));
+        registry.addInterceptor(new WebInterceptor(strings));
     }
 
     @Override
@@ -111,16 +110,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         });
         // Freemarker variables
         Map<String, Object> variables = new HashMap<>();
-        variables.put("loc", new FnLoc(strings()));
+        variables.put("loc", new FnLoc(strings));
         variables.put("locSelected", new FnLocSelected());
-        variables.put("locFormatDate", new FnLocFormatDate(strings()));
-        variables.put("locFormatTime", new FnLocFormatTime(strings()));
+        variables.put("locFormatDate", new FnLocFormatDate(strings));
+        variables.put("locFormatTime", new FnLocFormatTime(strings));
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         // Extensions
-        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings(), extensionManager, securityUtils));
-        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings(), extensionManager, securityUtils));
+        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
+        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));
         // OK
         c.setFreemarkerVariables(variables);
         // OK
