@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
+import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
