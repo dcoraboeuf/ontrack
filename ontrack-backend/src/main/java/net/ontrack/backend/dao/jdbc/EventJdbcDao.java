@@ -83,6 +83,16 @@ public class EventJdbcDao extends AbstractJdbcDao implements EventDao {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public TEvent getById(int id) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                SQL.EVENT,
+                params("id", id),
+                eventRowMapper
+        );
+    }
+
+    @Override
     @Transactional
     public int createEvent(String author, Integer authorId, EventType eventType, Map<Entity, Integer> entities, Map<String, String> values) {
         MapSqlParameterSource params = new MapSqlParameterSource();

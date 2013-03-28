@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface EventDao {
+
     int createEvent(String author, Integer authorId, EventType eventType, Map<Entity, Integer> entities, Map<String, String> values);
 
     List<TEvent> list(int offset, int count, Map<Entity, Integer> entities);
+
+    TEvent getById(int id);
+
 }

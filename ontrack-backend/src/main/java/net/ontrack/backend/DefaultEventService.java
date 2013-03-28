@@ -38,6 +38,28 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     private final Strings strings;
     private final SubscriptionService subscriptionService;
     private final EventDao eventDao;
+    private final Function<TEvent, ExpandedEvent> expandedEventFunction = new Function<TEvent, ExpandedEvent>() {
+        @Override
+        public ExpandedEvent apply(TEvent t) {
+            return new ExpandedEvent(
+                    t.getId(),
+                    t.getAuthor(),
+                    t.getEventType(),
+                    t.getTimestamp(),
+                    Maps.transformEntries(
+                            t.getEntities(),
+                            new Maps.EntryTransformer<Entity, Integer, EntityStub>() {
+                                @Override
+                                public EntityStub transformEntry(Entity entity, Integer entityId) {
+                                    String entityName = getEntityName(entity, entityId);
+                                    return new EntityStub(entity, entityId, entityName);
+                                }
+                            }
+                    ),
+                    t.getValues()
+            );
+        }
+    };
 
     @Autowired
     public DefaultEventService(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService, EventDao eventDao) {
@@ -65,46 +87,24 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
                 event.getEntities(),
                 event.getValues()
         );
-        // TODO Gets the expanded version for this event
-        // FIXME Subscription
-        // subscriptionService.publish(event);
+        // Gets the expanded version for this event
+        ExpandedEvent expandedEvent = expandedEventFunction.apply(
+                eventDao.getById(eventId)
+        );
+        // Subscription
+        subscriptionService.publish(expandedEvent);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ExpandedEvent> list(EventFilter filter) {
-        List<TEvent> ts = eventDao.list(
-                filter.getOffset(),
-                filter.getCount(),
-                filter.getEntities()
-        );
         return Lists.transform(
-                ts,
-                new Function<TEvent, ExpandedEvent>() {
-                    @Override
-                    public ExpandedEvent apply(TEvent t) {
-                        // Event
-                        ExpandedEvent e = new ExpandedEvent(
-                                t.getId(),
-                                t.getAuthor(),
-                                t.getEventType(),
-                                t.getTimestamp(),
-                                Maps.transformEntries(
-                                        t.getEntities(),
-                                        new Maps.EntryTransformer<Entity, Integer, EntityStub>() {
-                                            @Override
-                                            public EntityStub transformEntry(Entity entity, Integer entityId) {
-                                                String entityName = getEntityName(entity, entityId);
-                                                return new EntityStub(entity, entityId, entityName);
-                                            }
-                                        }
-                                ),
-                                t.getValues()
-                        );
-                        // OK
-                        return e;
-                    }
-                }
+                eventDao.list(
+                        filter.getOffset(),
+                        filter.getCount(),
+                        filter.getEntities()
+                ),
+                expandedEventFunction
         );
     }
 
