@@ -40,7 +40,7 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Cacheable(value = Caches.CONFIGURATION, key = "'general'")
     public GeneralConfiguration getGeneralConfiguration() {
         GeneralConfiguration c = new GeneralConfiguration();
-        c.setBaseUrl(configurationService.get(ConfigurationKey.GENERAL_BASE_URL, false, "http://localhost:8080/"));
+        c.setBaseUrl(configurationService.get(ConfigurationKey.GENERAL_BASE_URL, false, "http://localhost:8080/ontrack/"));
         return c;
     }
 
@@ -86,7 +86,11 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Secured(SecurityRoles.ADMINISTRATOR)
     @CacheEvict(value = Caches.CONFIGURATION, key = "'general'")
     public void saveGeneralConfiguration(GeneralConfiguration configuration) {
-        configurationService.set(ConfigurationKey.GENERAL_BASE_URL, configuration.getBaseUrl());
+        String baseUrl = configuration.getBaseUrl();
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/";
+        }
+        configurationService.set(ConfigurationKey.GENERAL_BASE_URL, baseUrl);
     }
 
     @Override

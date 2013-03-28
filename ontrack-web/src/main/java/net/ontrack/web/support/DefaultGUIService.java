@@ -1,10 +1,19 @@
 package net.ontrack.web.support;
 
+import net.ontrack.service.AdminService;
 import net.ontrack.service.GUIService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultGUIService implements GUIService {
+
+    private final AdminService adminService;
+
+    @Autowired
+    public DefaultGUIService(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @Override
     public String toGUI(String uri) {
@@ -21,7 +30,6 @@ public class DefaultGUIService implements GUIService {
      * be a configuration parameter.
      */
     public String getBaseURL() {
-        // FIXME Returns a correct URL
-        return "http://localhost:8080/ontrack/";
+        return adminService.getGeneralConfiguration().getBaseUrl();
     }
 }
