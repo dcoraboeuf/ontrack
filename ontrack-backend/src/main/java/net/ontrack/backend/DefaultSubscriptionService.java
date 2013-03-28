@@ -4,16 +4,20 @@ import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ExpandedEvent;
+import net.ontrack.core.model.GUIEvent;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.GUIEventService;
 import net.ontrack.service.MessageService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.TemplateService;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -69,6 +73,15 @@ public class DefaultSubscriptionService implements SubscriptionService {
     @Override
     @Transactional(readOnly = true)
     public void publish(ExpandedEvent event) {
+        // TODO Collects all users that need to be notified for this event
+        // TODO Collects all the languages (not possible yet, see ticket #81)
+        // TODO Generates one message per language (see ticket #81)
+        // Gets the GUI version
+        GUIEvent guiEvent = guiEventService.toGUIEvent(event, Locale.ENGLISH, DateTime.now(DateTimeZone.UTC));
+        // TODO Creates a model for the template
+        // TODO Generates the message HTML content
+        // TODO Creates a HTML message
+        // TODO Sends for each user
         // FIXME Publication
     }
 }
