@@ -201,6 +201,10 @@ mail.startTls
     en -> Start TLS
     fr -> Démarrer TLS
 
+mail.replyToAddress
+    en -> Reply to address
+    fr -> Adresse de retour
+
 [accounts]
 
 accounts
