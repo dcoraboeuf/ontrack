@@ -140,6 +140,20 @@ settings.extension.saved
     en -> {0} saved.
     fr -> {0} sauvegardée.
 
+settings.general
+    en -> General configuration
+    fr -> Configuration générale
+
+[settings.general]
+
+settings.general.baseUrl
+    en -> Base URL
+    fr -> URL de référence
+
+settings.general.saved
+    en -> General configuration has been saved.
+    fr -> La configuration générale a été sauvegardée.
+
 [security.ldap]
 
 ldap.enabled

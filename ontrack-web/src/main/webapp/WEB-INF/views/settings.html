@@ -3,6 +3,28 @@
 <@layout_std page="settings" script=true>
     <@usermessage />
     <div class="accordion" id="accordion-container">
+        <!-- General settings -->
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-container" href="#section-general">
+                    <@lh key="settings.general" />
+                </a>
+            </div>
+            <div id="section-general" class="accordion-body collapse">
+                <div class="accordion-inner">
+                    <form action="gui/admin/settings/general" method="POST" class="form-horizontal">
+                        <@form_text idPrefix="general-" name="baseUrl" label=loc("settings.general.baseUrl") class="settings-general" value=general.baseUrl />
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn">
+                                    <@lh key="general.submit" />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- Security settings -->
         <div class="accordion-group">
             <div class="accordion-heading">

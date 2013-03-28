@@ -4,6 +4,7 @@ import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.EventService;
+import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.service.validation.LDAPConfigurationValidation;
@@ -32,6 +33,15 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
         super(validator, eventService);
         this.configurationService = configurationService;
         this.configurationExtensionService = configurationExtensionService;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = Caches.CONFIGURATION, key = "'general'")
+    public GeneralConfiguration getGeneralConfiguration() {
+        GeneralConfiguration c = new GeneralConfiguration();
+        c.setBaseUrl(configurationService.get(ConfigurationKey.GENERAL_BASE_URL, false, "http://localhost:8080/"));
+        return c;
     }
 
     @Override
@@ -74,11 +84,18 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    @CacheEvict(value = Caches.CONFIGURATION, key = "'general'")
+    public void saveGeneralConfiguration(GeneralConfiguration configuration) {
+        configurationService.set(ConfigurationKey.GENERAL_BASE_URL, configuration.getBaseUrl());
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "'ldap'"),
             @CacheEvict(value = Caches.LDAP, key = "'0'")
     })
-
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
         // Validation
         validate(configuration, LDAPConfigurationValidation.class);
@@ -101,7 +118,6 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
             @CacheEvict(value = Caches.CONFIGURATION, key = "'mail'"),
             @CacheEvict(value = Caches.MAIL, key = "'0'")
     })
-
     public void saveMailConfiguration(MailConfiguration configuration) {
         configurationService.set(ConfigurationKey.MAIL_HOST, configuration.getHost());
         configurationService.set(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, configuration.getReplyToAddress());
