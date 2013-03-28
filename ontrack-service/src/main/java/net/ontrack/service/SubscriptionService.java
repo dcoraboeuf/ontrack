@@ -2,7 +2,7 @@ package net.ontrack.service;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
-import net.ontrack.service.model.Event;
+import net.ontrack.core.model.ExpandedEvent;
 
 import java.util.Map;
 
@@ -12,5 +12,5 @@ public interface SubscriptionService {
 
     Ack subscribe(Map<Entity, Integer> entities);
 
-    void publish(Event event);
+    void publish(ExpandedEvent event);
 }

@@ -3,11 +3,11 @@ package net.ontrack.backend;
 import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.MessageService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.TemplateService;
-import net.ontrack.service.model.Event;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,9 +65,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
      */
     @Override
     @Transactional(readOnly = true)
-    public void publish(Event event) {
-        // All concerned entities
-        Map<Entity, Integer> entities = event.getEntities();
+    public void publish(ExpandedEvent event) {
         // FIXME Publication
     }
 }

@@ -1,16 +1,14 @@
 package net.ontrack.core.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.joda.time.DateTime;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import org.joda.time.DateTime;
-
 @Data
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ExpandedEvent {
 
 	private final int id;
