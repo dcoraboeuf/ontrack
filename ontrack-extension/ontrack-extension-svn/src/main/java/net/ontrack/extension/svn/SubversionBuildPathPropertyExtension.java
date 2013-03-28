@@ -25,7 +25,7 @@ public class SubversionBuildPathPropertyExtension extends AbstractPropertyExtens
 
     @Override
     public String getName() {
-        return "buildPath";
+        return SubversionExtension.SUBVERSION_BUILD_PATH;
     }
 
     @Override

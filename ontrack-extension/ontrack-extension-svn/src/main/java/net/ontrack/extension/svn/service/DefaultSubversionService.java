@@ -1,12 +1,15 @@
 package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
-import net.ontrack.extension.svn.SubversionService;
+import net.ontrack.extension.svn.service.model.SVNHistory;
+import net.ontrack.extension.svn.service.model.SVNReference;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
+import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svn.tx.SVNSession;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.*;
@@ -143,17 +146,48 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public boolean isTagOrBranch(String path) {
-        return isTag(path) || isBranch(path);
+    public SVNHistory getHistory(String path) {
+        // Gets the reference for this first path
+        SVNReference reference = getReference(path, SVNRevision.HEAD);
+        // Initializes the history
+        SVNHistory history = new SVNHistory(reference);
+        // FIXME Implement net.ontrack.extension.svn.service.DefaultSubversionService.getHistory
+        // OK
+        return history;
     }
 
-    private boolean isTag(String path) {
-        return isPathOK(configurationExtension.getTagPattern(), path);
+    private SVNReference getReference(String path, SVNRevision revision) {
+        String url = getURL(path);
+        SVNURL svnurl = SVNUtils.toURL(url);
+        SVNInfo info = getInfo(svnurl, revision);
+        return new SVNReference(
+                path,
+                url,
+                info.getRevision().getNumber(),
+                new DateTime(info.getCommittedDate())
+        );
+    }
+
+    private SVNInfo getInfo(SVNURL url, SVNRevision revision) {
+        try {
+            return getWCClient().doInfo(url, revision, revision);
+        } catch (SVNException e) {
+            throw translateSVNException(e);
+        }
+    }
+
+    @Override
+    public boolean isTagOrBranch(String path) {
+        return isTag(path) || isBranch(path);
     }
 
     @Override
     public boolean isTrunkOrBranch(String path) {
         return isTrunk(path) || isBranch(path);
+    }
+
+    private boolean isTag(String path) {
+        return isPathOK(configurationExtension.getTagPattern(), path);
     }
 
     private boolean isBranch(String path) {

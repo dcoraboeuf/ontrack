@@ -1,4 +1,4 @@
-package net.ontrack.extension.svnexplorer.model;
+package net.ontrack.extension.svn.service.model;
 
 import lombok.Data;
 import org.joda.time.DateTime;

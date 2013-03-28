@@ -1,4 +1,4 @@
-package net.ontrack.extension.svn;
+package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 

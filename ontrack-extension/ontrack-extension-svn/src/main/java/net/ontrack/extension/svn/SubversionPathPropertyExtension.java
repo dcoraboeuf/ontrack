@@ -3,6 +3,7 @@ package net.ontrack.extension.svn;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
+import net.ontrack.extension.svn.service.SubversionService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
