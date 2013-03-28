@@ -3,7 +3,6 @@ package net.ontrack.backend;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AdminService;
-import net.ontrack.service.EventService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
@@ -16,21 +15,21 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Validator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class DefaultAdminService extends AbstractServiceImpl implements AdminService {
+public class DefaultAdminService implements AdminService {
 
+    private final ValidatorService validatorService;
     private final ConfigurationService configurationService;
     private final ConfigurationExtensionService configurationExtensionService;
 
     private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
 
     @Autowired
-    public DefaultAdminService(Validator validator, EventService eventService, ConfigurationService configurationService, ConfigurationExtensionService configurationExtensionService) {
-        super(validator, eventService);
+    public DefaultAdminService(ValidatorService validatorService, ConfigurationService configurationService, ConfigurationExtensionService configurationExtensionService) {
+        this.validatorService = validatorService;
         this.configurationService = configurationService;
         this.configurationExtensionService = configurationExtensionService;
     }
@@ -102,7 +101,7 @@ public class DefaultAdminService extends AbstractServiceImpl implements AdminSer
     })
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
         // Validation
-        validate(configuration, LDAPConfigurationValidation.class);
+        validatorService.validate(configuration, LDAPConfigurationValidation.class);
         // Saving...
         configurationService.set(ConfigurationKey.LDAP_ENABLED, configuration.isEnabled());
         if (configuration.isEnabled()) {

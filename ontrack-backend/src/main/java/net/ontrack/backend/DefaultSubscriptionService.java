@@ -5,6 +5,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ExpandedEvent;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.service.GUIEventService;
 import net.ontrack.service.MessageService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.TemplateService;
@@ -21,14 +22,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final SecurityUtils securityUtils;
     private final ConfigurationService configurationService;
     private final SubscriptionDao subscriptionDao;
+    private final GUIEventService guiEventService;
     private final MessageService messageService;
     private final TemplateService templateService;
 
     @Autowired
-    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, MessageService messageService, TemplateService templateService) {
+    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, GUIEventService guiEventService, MessageService messageService, TemplateService templateService) {
         this.securityUtils = securityUtils;
         this.configurationService = configurationService;
         this.subscriptionDao = subscriptionDao;
+        this.guiEventService = guiEventService;
         this.messageService = messageService;
         this.templateService = templateService;
     }
