@@ -41,7 +41,7 @@ public enum Status {
     /**
      * Run has failed
      */
-    FAILED(INTERRUPTED, INVESTIGATED, DEFECTIVE);
+    FAILED(INTERRUPTED, INVESTIGATED, EXPLAINED, DEFECTIVE);
     /**
      * List of available next states
      */
