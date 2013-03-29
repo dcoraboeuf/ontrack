@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -20,6 +22,31 @@ public class SubscriptionJdbcDao extends AbstractJdbcDao implements Subscription
     @Autowired
     public SubscriptionJdbcDao(DataSource dataSource) {
         super(dataSource);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Integer> findAccountIds(Map<Entity, Integer> entities) {
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT(ACCOUNT) FROM SUBSCRIPTION S");
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        int count = 0;
+        for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
+            Entity entity = entry.getKey();
+            int entityId = entry.getValue();
+            if (count == 0) {
+                sql.append(" WHERE ");
+            } else {
+                sql.append(" OR ");
+            }
+            sql.append(String.format("(%s = :entity%d)", entity.name(), count));
+            params.addValue(String.format("entity%d", count), entityId);
+            count++;
+        }
+        return getNamedParameterJdbcTemplate().queryForList(
+                sql.toString(),
+                params,
+                Integer.class
+        );
     }
 
     @Override
