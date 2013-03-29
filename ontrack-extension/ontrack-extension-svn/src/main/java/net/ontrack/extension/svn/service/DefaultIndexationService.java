@@ -354,7 +354,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         return new Runnable() {
             @Override
             public void run() {
-                indexTask();
+                // Configuration
+                int scanInterval = indexationConfigurationExtension.getScanInterval();
+                if (scanInterval > 0) {
+                    indexTask();
+                }
             }
         };
     }
