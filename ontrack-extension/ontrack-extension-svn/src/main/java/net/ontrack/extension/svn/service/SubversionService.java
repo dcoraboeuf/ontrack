@@ -1,5 +1,6 @@
-package net.ontrack.extension.svn;
+package net.ontrack.extension.svn.service;
 
+import net.ontrack.extension.svn.service.model.SVNHistory;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -34,4 +35,14 @@ public interface SubversionService {
     boolean exists(SVNURL url, SVNRevision revision);
 
     boolean isTagOrBranch(String path);
+
+    /**
+     * Gets the Subversion history from a path
+     *
+     * @param path Path to start the history from. This path will be included
+     *             as the first item in the history.
+     * @return History of copy events. Never null and will at least contain the information
+     *         for the given <code>path</code>.
+     */
+    SVNHistory getHistory(String path);
 }

@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class SubversionExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "svn";
+    public static final String SUBVERSION_BUILD_PATH = "buildPath";
 
     @Autowired
     public SubversionExtension(

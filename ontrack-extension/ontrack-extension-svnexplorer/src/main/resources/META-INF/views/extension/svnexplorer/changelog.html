@@ -1,5 +1,17 @@
 <#include "/lib/layout.html">
 
+<#macro build_info build>
+    <h4><a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/build/${build.buildSummary.name?html}">${build.buildSummary.name}</a></h4>
+    <ul class="svn-history">
+        <#list build.history.references as reference>
+            <li>
+                <a href="${reference.url?html}">${reference.path?html} @ ${reference.revision?html}</a>
+                <span class="muted">${reference.time?html}</span>
+            </li>
+        </#list>
+    </ul>
+</#macro>
+
 <@layout_std page="svnexplorer.changelog" script=true extension=true>
 
     <@usermessage />
@@ -16,6 +28,16 @@
             <p>
                 <@lh key="svnexplorer.changelog.header" />
             </p>
+        </div>
+        <div class="row-fluid">
+            <!-- Build from -->
+            <div class="span6">
+                <@build_info build=summary.buildFrom />
+            </div>
+            <!-- Build to -->
+            <div class="span6">
+                <@build_info build=summary.buildTo />
+            </div>
         </div>
     </div>
 

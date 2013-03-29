@@ -3,6 +3,7 @@ package net.ontrack.extension.svn;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.svn.service.IndexationService;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
