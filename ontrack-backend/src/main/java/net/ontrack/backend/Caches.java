@@ -2,6 +2,8 @@ package net.ontrack.backend;
 
 public interface Caches {
 
+    String ACCOUNT = "ACCOUNT";
+
     String PROJECT = "PROJECT";
 
     String BRANCH = "BRANCH";

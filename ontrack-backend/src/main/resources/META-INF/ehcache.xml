@@ -38,6 +38,13 @@
            timeToLiveSeconds="3600"
            statistics="true"
            overflowToDisk="false" />
+    <cache name="ACCOUNT"
+           maxElementsInMemory="100"
+           eternal="false"
+           timeToIdleSeconds="36000"
+           timeToLiveSeconds="36000"
+           statistics="true"
+           overflowToDisk="false" />
     <cache name="PROJECT"
            maxElementsInMemory="10"
            eternal="false"
