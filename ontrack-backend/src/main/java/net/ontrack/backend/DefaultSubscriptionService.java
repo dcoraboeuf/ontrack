@@ -14,6 +14,9 @@ import net.ontrack.service.GUIEventService;
 import net.ontrack.service.MessageService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.TemplateService;
+import net.ontrack.service.model.MessageChannel;
+import net.ontrack.service.model.MessageDestination;
+import net.ontrack.service.model.TemplateModel;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -108,10 +111,29 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // TODO Generates one message per language (see ticket #81)
         // Gets the GUI version
         GUIEvent guiEvent = guiEventService.toGUIEvent(event, Locale.ENGLISH, DateTime.now(DateTimeZone.UTC));
-        // TODO Creates a model for the template
-        // TODO Generates the message HTML content
-        // TODO Creates a HTML message
-        // TODO Sends for each user
-        // FIXME Publication
+        // Initial template
+        TemplateModel model = new TemplateModel();
+        model.add("event", guiEvent);
+        // Sends for each user
+        for (TAccount account : accounts) {
+            // Completes the model for the account
+            model.add("account", account);
+            // Generates the message HTML content
+            String content = templateService.generate("event.html", Locale.ENGLISH, model);
+            // TODO Gets the title
+            String title = "TODO Event";
+            // TODO Creates a HTML message
+            Message message = new Message(
+                    title,
+                    new MessageContent(content));
+            // Publication
+            messageService.sendMessage(
+                    message,
+                    new MessageDestination(
+                            MessageChannel.EMAIL,
+                            account.getEmail()
+                    )
+            );
+        }
     }
 }
