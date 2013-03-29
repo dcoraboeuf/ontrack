@@ -1,6 +1,8 @@
 package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.dao.SVNEventDao;
+import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.service.model.SVNHistory;
 import net.ontrack.extension.svn.service.model.SVNReference;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
@@ -23,13 +25,16 @@ import java.util.regex.Pattern;
 @Service
 public class DefaultSubversionService implements SubversionService {
 
+    public static final int HISTORY_MAX_DEPTH = 6;
     private final SubversionConfigurationExtension configurationExtension;
     private final TransactionService transactionService;
+    private final SVNEventDao svnEventDao;
 
     @Autowired
-    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService) {
+    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, SVNEventDao svnEventDao) {
         this.configurationExtension = configurationExtension;
         this.transactionService = transactionService;
+        this.svnEventDao = svnEventDao;
         SVNRepositoryFactoryImpl.setup();
         DAVRepositoryFactory.setup();
     }
@@ -151,9 +156,33 @@ public class DefaultSubversionService implements SubversionService {
         SVNReference reference = getReference(path, SVNRevision.HEAD);
         // Initializes the history
         SVNHistory history = new SVNHistory(reference);
-        // FIXME Implement net.ontrack.extension.svn.service.DefaultSubversionService.getHistory
+        // Loops on copies
+        int depth = HISTORY_MAX_DEPTH;
+        while (reference != null && depth > 0) {
+            depth--;
+            // Gets the reference of the source
+            SVNReference origin = getOrigin(reference);
+            if (origin != null) {
+                // Adds to the history
+                history = history.add(origin);
+                // Going on
+                reference = origin;
+            } else {
+                reference = null;
+            }
+        }
         // OK
         return history;
+    }
+
+    private SVNReference getOrigin(SVNReference destination) {
+        // Gets the last copy event
+        TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(destination.getPath(), destination.getRevision());
+        if (copyEvent != null) {
+            return getReference(copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
+        } else {
+            return null;
+        }
     }
 
     private SVNReference getReference(String path, SVNRevision revision) {
