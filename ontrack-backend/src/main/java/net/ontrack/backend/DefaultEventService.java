@@ -16,6 +16,7 @@ import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -111,10 +112,14 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     @Override
     @Transactional(readOnly = true)
     public String getEntityName(Entity entity, int entityId) {
+        try {
         return getNamedParameterJdbcTemplate().queryForObject(
                 format(SQL.ENTITY_NAME, entity.nameColumn(), entity.name()),
                 new MapSqlParameterSource("id", entityId),
                 String.class);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityIdNotFoundException(entity, entityId);
+        }
 
     }
 

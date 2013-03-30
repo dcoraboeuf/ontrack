@@ -8,7 +8,11 @@
             ${event.html}
         </p>
         <p>
-            TODO Unsubscription link
+            <ul>
+                <#list links as link>
+                    <li><a href="${link.url?html}">${link.title?html}</a></li>
+                </#list>
+            </ul>
         </p>
         <p>
             the ontrack program.

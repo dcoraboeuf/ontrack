@@ -11,10 +11,7 @@ import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.service.GUIEventService;
-import net.ontrack.service.MessageService;
-import net.ontrack.service.SubscriptionService;
-import net.ontrack.service.TemplateService;
+import net.ontrack.service.*;
 import net.ontrack.service.model.MessageChannel;
 import net.ontrack.service.model.MessageDestination;
 import net.ontrack.service.model.TemplateModel;
@@ -34,6 +31,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static java.lang.String.format;
+
 @Service
 public class DefaultSubscriptionService implements SubscriptionService {
 
@@ -44,6 +43,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final SubscriptionDao subscriptionDao;
     private final AccountDao accountDao;
     private final GUIEventService guiEventService;
+    private final GUIService guiService;
     private final MessageService messageService;
     private final TemplateService templateService;
     private final Strings strings;
@@ -52,12 +52,13 @@ public class DefaultSubscriptionService implements SubscriptionService {
     );
 
     @Autowired
-    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, MessageService messageService, TemplateService templateService, Strings strings) {
+    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, GUIService guiService, MessageService messageService, TemplateService templateService, Strings strings) {
         this.securityUtils = securityUtils;
         this.configurationService = configurationService;
         this.subscriptionDao = subscriptionDao;
         this.accountDao = accountDao;
         this.guiEventService = guiEventService;
+        this.guiService = guiService;
         this.messageService = messageService;
         this.templateService = templateService;
         this.strings = strings;
@@ -99,20 +100,24 @@ public class DefaultSubscriptionService implements SubscriptionService {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
+                try {
                 doPublish(event);
+                } catch (Exception ex) {
+                    logger.error("[publish] Error on publishing", ex);
+                }
             }
         });
     }
 
     protected void doPublish(ExpandedEvent event) {
         logger.debug("[publish] event={}", event.getId());
+        // Gets the IDs of the entities
+        Map<Entity, Integer> entityIds = Maps.transformValues(
+                event.getEntities(),
+                EntityStub.FN_GET_ID);
         // Collects all users that need to be notified for this event
         Collection<TAccount> accounts = Lists.transform(
-                subscriptionDao.findAccountIds(
-                        Maps.transformValues(
-                                event.getEntities(),
-                                EntityStub.FN_GET_ID)
-                ),
+                subscriptionDao.findAccountIds(entityIds),
                 new Function<Integer, TAccount>() {
                     @Override
                     public TAccount apply(Integer id) {
@@ -147,8 +152,10 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the title
         String title = strings.get(locale, "event.message");
         model.add("title", title);
-        // FIXME Unsubscription link
+        // Unsubscription link
         // We actually need one distinct link per entity
+        Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values());
+        model.add("links", links);
         // Gets all the emails
         Collection<String> emails = Collections2.transform(
                 accounts,
@@ -176,5 +183,30 @@ public class DefaultSubscriptionService implements SubscriptionService {
                         emails
                 )
         );
+    }
+
+    private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities) {
+        return Collections2.transform(
+                entities,
+                new Function<EntityStub, NamedLink>() {
+                    @Override
+                    public NamedLink apply(EntityStub stub) {
+                        return new NamedLink(
+                                getUnsubscriptionLink(stub),
+                                strings.get(
+                                        locale,
+                                        format(
+                                                "event.unsubscription.%s",
+                                                stub.getEntity().name()),
+                                        stub.getName()
+                                )
+                        );
+                    }
+                }
+        );
+    }
+
+    private String getUnsubscriptionLink(EntityStub stub) {
+        return guiService.toGUI(format("admin/unsubscribe/%s/%d", stub.getEntity().name(), stub.getId()));
     }
 }

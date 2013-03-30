@@ -67,3 +67,32 @@ event.VALIDATION_STAMP_UNLINKED
 event.message
     en -> ontrack event
     fr -> Evènement ontrack
+
+event.unsubscription.PROJECT_GROUP
+    en -> Unsubscribe from the events on the {0} group.
+    fr -> Se désabonner des événements du groupe {0}.
+
+event.unsubscription.PROJECT
+    en -> Unsubscribe from the events on the {0} project.
+    fr -> Se désabonner des événements du projet {0}.
+
+event.unsubscription.BRANCH
+    en -> Unsubscribe from the events on the {0} branch.
+    fr -> Se désabonner des événements de la branche {0}.
+
+event.unsubscription.BUILD
+    en -> Unsubscribe from the events on the {0} build.
+    fr -> Se désabonner des événements du build {0}.
+
+event.unsubscription.PROMOTION_LEVEL
+    en -> Unsubscribe from the events on the {0} promotion level.
+    fr -> Se désabonner des événements du niveau de promotion {0}.
+
+event.unsubscription.VALIDATION_STAMP
+    en -> Unsubscribe from the events on the {0} validation stamp.
+    fr -> Se désabonner des événements de la validation {0}.
+
+event.unsubscription.VALIDATION_RUN
+    en -> Unsubscribe from the events on the {0} validation.
+    fr -> Se désabonner des événements de la validation {0}.
+
