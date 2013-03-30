@@ -79,6 +79,9 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     /**
      * Sends a message for this event
+     *
+     * TODO This should be done asynchronously
+     * TODO Add logging to the process to it can be monitored easily
      */
     @Override
     @Transactional(readOnly = true)
@@ -114,14 +117,15 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Initial template
         TemplateModel model = new TemplateModel();
         model.add("event", guiEvent);
+        // TODO Gets the title
+        String title = "TODO Event";
+        model.add("title", title);
         // Sends for each user
         for (TAccount account : accounts) {
             // Completes the model for the account
             model.add("account", account);
             // Generates the message HTML content
             String content = templateService.generate("event.html", Locale.ENGLISH, model);
-            // TODO Gets the title
-            String title = "TODO Event";
             // TODO Creates a HTML message
             Message message = new Message(
                     title,

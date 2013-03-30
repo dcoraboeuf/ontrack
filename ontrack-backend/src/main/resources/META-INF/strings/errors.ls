@@ -12,6 +12,12 @@ net.ontrack.backend.ConfigurationKeyMissingException
 net.ontrack.backend.security.CannotInitializeLDAPException
     en -> [E-004] Cannot initialize the LDAP.
 
+net.ontrack.backend.TemplateNotFoundException
+    en -> [E-005] Cannot find template with name {0}.
+
+net.ontrack.backend.TemplateMergeException
+    en -> [E-006] Error while merging template {0}.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException
