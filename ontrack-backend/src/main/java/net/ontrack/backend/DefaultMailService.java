@@ -27,6 +27,12 @@ public class DefaultMailService implements MailService {
         this.adminService = adminService;
     }
 
+    /**
+     * The mail session is created once and then cached. It will be re-initialised
+     * only if the mail configuration is changed.
+     *
+     * @see DefaultAdminService#saveMailConfiguration(net.ontrack.service.model.MailConfiguration)
+     */
     @Override
     @Cacheable(value = Caches.MAIL, key = "'0'")
     public JavaMailSender getMailSender() {
@@ -48,6 +54,7 @@ public class DefaultMailService implements MailService {
             boolean startTls = configuration.isStartTls();
             if (startTls) {
                 logger.debug("[mail] STARTTLS required");
+                p.put("mail.smtp.starttls.enable", "true");
                 p.put("mail.smtp.starttls.required", "true");
             }
         }
