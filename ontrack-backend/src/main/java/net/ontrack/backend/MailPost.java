@@ -66,6 +66,7 @@ public class MailPost extends AbstractMessagePost {
 
         try {
             mailSender.send(preparator);
+            logger.debug("[mail] Message sent from: {}", replyToAddress);
         } catch (MailException ex) {
             logger.error("[mail] Cannot send mail: {}", ExceptionUtils.getRootCauseMessage(ex));
         }

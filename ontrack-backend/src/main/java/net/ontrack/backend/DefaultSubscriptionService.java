@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.dao.model.TAccount;
@@ -21,6 +22,8 @@ import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +31,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class DefaultSubscriptionService implements SubscriptionService {
+
+    private final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
     private final SecurityUtils securityUtils;
     private final ConfigurationService configurationService;
@@ -40,6 +47,9 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final MessageService messageService;
     private final TemplateService templateService;
     private final Strings strings;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Subscription %s").build()
+    );
 
     @Autowired
     public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, MessageService messageService, TemplateService templateService, Strings strings) {
@@ -82,13 +92,20 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     /**
      * Sends a message for this event
-     * <p/>
-     * TODO This should be done asynchronously
-     * TODO Add logging to the process to it can be monitored easily
      */
     @Override
     @Transactional(readOnly = true)
-    public void publish(ExpandedEvent event) {
+    public void publish(final ExpandedEvent event) {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                doPublish(event);
+            }
+        });
+    }
+
+    protected void doPublish(ExpandedEvent event) {
+        logger.debug("[publish] event={}", event.getId());
         // Collects all users that need to be notified for this event
         Collection<TAccount> accounts = Lists.transform(
                 subscriptionDao.findAccountIds(
@@ -115,6 +132,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
         );
         // TODO Collects all the languages (not possible yet, see ticket #81)
         Locale locale = Locale.ENGLISH;
+        logger.debug("[publish] event={}, locale={}", event.getId(), locale);
         // TODO Generates one message per language (see ticket #81)
         // Gets the GUI version
         GUIEvent guiEvent = guiEventService.toGUIEvent(event, locale, DateTime.now(DateTimeZone.UTC));
@@ -137,6 +155,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
                             MessageContentType.HTML,
                             content));
             // Publication
+            logger.debug("[publish] event={}, locale={}, account={}", new Object[] {event.getId(), locale, account.getName()});
             messageService.sendMessage(
                     message,
                     new MessageDestination(
