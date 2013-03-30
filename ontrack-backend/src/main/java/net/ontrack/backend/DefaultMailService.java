@@ -3,6 +3,7 @@ package net.ontrack.backend;
 import net.ontrack.core.RunProfile;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.MailConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,20 @@ public class DefaultMailService implements MailService {
      * The mail session is created once and then cached. It will be re-initialised
      * only if the mail configuration is changed.
      *
+     * @return <code>null</code> if the mail cannot be configured (host being null or blank)
      * @see DefaultAdminService#saveMailConfiguration(net.ontrack.service.model.MailConfiguration)
      */
     @Override
     @Cacheable(value = Caches.MAIL, key = "'0'")
     public JavaMailSender getMailSender() {
         MailConfiguration configuration = adminService.getMailConfiguration();
+        String host = configuration.getHost();
+        if (StringUtils.isBlank(host)) {
+            logger.info("[mail] No host configured - mail is not available");
+            return null;
+        }
         logger.debug("[mail] Creating mail sender");
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        String host = configuration.getHost();
         logger.debug("[mail] Host={}", host);
         mailSender.setHost(host);
         Properties p = new Properties();

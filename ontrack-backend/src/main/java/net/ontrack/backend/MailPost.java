@@ -43,10 +43,14 @@ public class MailPost extends AbstractMessagePost {
     @Override
     public void post(final Message message, final String destination) {
 
-        MailConfiguration configuration = adminService.getMailConfiguration();
-
         // Mail sender
         JavaMailSender mailSender = mailService.getMailSender();
+        if (mailSender == null) {
+            // Mail not configured - not sending anything
+            return;
+        }
+
+        MailConfiguration configuration = adminService.getMailConfiguration();
 
         // Reply to address
         final String replyToAddress = configuration.getReplyToAddress();
