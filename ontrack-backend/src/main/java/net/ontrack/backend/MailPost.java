@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import net.ontrack.core.RunProfile;
 import net.ontrack.core.model.Message;
+import net.ontrack.core.model.MessageContentType;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.service.model.MessageChannel;
@@ -70,7 +71,17 @@ public class MailPost extends AbstractMessagePost {
         mimeMessage.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(destination));
         mimeMessage.setFrom(new InternetAddress(replyToAddress));
         mimeMessage.setSubject(message.getTitle());
-        mimeMessage.setText(message.getContent().getText());
+        MessageContentType messageContentType = message.getContent().getType();
+        switch (messageContentType) {
+            case PLAIN:
+                mimeMessage.setText(message.getContent().getText());
+                break;
+            case HTML:
+                mimeMessage.setContent(message.getContent().getText(), "text/html");
+                break;
+            default:
+                throw new IllegalStateException("Unknowm message content type: " + messageContentType);
+        }
     }
 
 }

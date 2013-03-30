@@ -10,10 +10,15 @@ import java.util.Map;
 @AllArgsConstructor
 public class MessageContent {
 
+    private final MessageContentType type;
     private final String text;
     private final Map<String, String> meta;
 
     public MessageContent(String text) {
-        this(text, Collections.<String, String>emptyMap());
+        this(MessageContentType.PLAIN, text);
+    }
+
+    public MessageContent(MessageContentType type, String text) {
+        this(type, text, Collections.<String, String>emptyMap());
     }
 }

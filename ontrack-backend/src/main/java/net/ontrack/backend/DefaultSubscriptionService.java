@@ -82,7 +82,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     /**
      * Sends a message for this event
-     *
+     * <p/>
      * TODO This should be done asynchronously
      * TODO Add logging to the process to it can be monitored easily
      */
@@ -130,10 +130,12 @@ public class DefaultSubscriptionService implements SubscriptionService {
             model.add("account", account);
             // Generates the message HTML content
             String content = templateService.generate("event.html", locale, model);
-            // TODO Creates a HTML message
+            // Creates a HTML message
             Message message = new Message(
                     title,
-                    new MessageContent(content));
+                    new MessageContent(
+                            MessageContentType.HTML,
+                            content));
             // Publication
             messageService.sendMessage(
                     message,
