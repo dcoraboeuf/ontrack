@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+
 @Component
 @Profile({RunProfile.DEV, RunProfile.IT, RunProfile.TEST})
 public class LogPost extends AbstractMessagePost {
@@ -20,8 +22,8 @@ public class LogPost extends AbstractMessagePost {
     }
 
     @Override
-    public void post(Message message, String destination) {
-        logger.info(
+    public void post(Message message, Collection<String> destination) {
+        logger.debug(
                 "[message] Sending message to '{}':\n" +
                         "-----------------\n" +
                         "{}\n" +

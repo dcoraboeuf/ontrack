@@ -7,6 +7,7 @@ import net.ontrack.service.model.MessageChannel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,8 +26,10 @@ public class InMemoryPost implements MessagePost {
     }
 
     @Override
-    public synchronized void post(Message message, String destination) {
-        messages.put(destination, message);
+    public synchronized void post(Message message, Collection<String> destination) {
+        for (String address : destination) {
+            messages.put(address, message);
+        }
     }
 
     public Message getMessage(String destination) {

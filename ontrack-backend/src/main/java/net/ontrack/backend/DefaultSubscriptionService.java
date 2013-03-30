@@ -130,6 +130,11 @@ public class DefaultSubscriptionService implements SubscriptionService {
                     }
                 }
         );
+        // If no account, does nothing
+        if (accounts.isEmpty()) {
+            logger.debug("[publish] event={}, no-account", event.getId());
+            return;
+        }
         // TODO Collects all the languages (not possible yet, see ticket #81)
         Locale locale = Locale.ENGLISH;
         logger.debug("[publish] event={}, locale={}", event.getId(), locale);
@@ -142,27 +147,32 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the title
         String title = strings.get(locale, "event.message");
         model.add("title", title);
-        // Sends for each user
-        for (TAccount account : accounts) {
-            // Completes the model for the account
-            model.add("account", account);
-            // Generates the message HTML content
-            String content = templateService.generate("event.html", locale, model);
-            // Creates a HTML message
-            Message message = new Message(
-                    title,
-                    new MessageContent(
-                            MessageContentType.HTML,
-                            content));
-            // Publication
-            logger.debug("[publish] event={}, locale={}, account={}", new Object[] {event.getId(), locale, account.getName()});
-            messageService.sendMessage(
-                    message,
-                    new MessageDestination(
-                            MessageChannel.EMAIL,
-                            account.getEmail()
-                    )
-            );
-        }
+        // Gets all the emails
+        Collection<String> emails = Collections2.transform(
+                accounts,
+                new Function<TAccount, String>() {
+                    @Override
+                    public String apply(TAccount account) {
+                        return account.getEmail();
+                    }
+                }
+        );
+        // Generates the message HTML content
+        String content = templateService.generate("event.html", locale, model);
+        // Creates a HTML message
+        Message message = new Message(
+                title,
+                new MessageContent(
+                        MessageContentType.HTML,
+                        content));
+        // Publication
+        logger.debug("[publish] event={}, locale={}, accounts={}", new Object[]{event.getId(), locale, emails.size()});
+        messageService.sendMessage(
+                message,
+                new MessageDestination(
+                        MessageChannel.EMAIL,
+                        emails
+                )
+        );
     }
 }

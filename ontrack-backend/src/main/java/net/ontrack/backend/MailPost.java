@@ -6,6 +6,7 @@ import net.ontrack.core.model.MessageContentType;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.service.model.MessageChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Collection;
 
 @Component
 @Profile({RunProfile.DEV, RunProfile.PROD})
@@ -41,7 +43,7 @@ public class MailPost extends AbstractMessagePost {
     }
 
     @Override
-    public void post(final Message message, final String destination) {
+    public void post(final Message message, final Collection<String> destination) {
 
         // Mail sender
         JavaMailSender mailSender = mailService.getMailSender();
@@ -72,8 +74,8 @@ public class MailPost extends AbstractMessagePost {
         }
     }
 
-    protected void prepareMessage(MimeMessage mimeMessage, Message message, String destination, String replyToAddress) throws MessagingException {
-        mimeMessage.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(destination));
+    protected void prepareMessage(MimeMessage mimeMessage, Message message, Collection<String> destination, String replyToAddress) throws MessagingException {
+        mimeMessage.setRecipients(MimeMessage.RecipientType.TO, StringUtils.join(destination, ","));
         mimeMessage.setFrom(new InternetAddress(replyToAddress));
         mimeMessage.setSubject(message.getTitle());
         MessageContentType messageContentType = message.getContent().getType();

@@ -32,7 +32,7 @@ public class DefaultMessageService implements MessageService {
 	@Override
 	public void sendMessage(Message message, MessageDestination messageDestination) {
 		MessageChannel channel = messageDestination.getChannel();
-		String destination = messageDestination.getDestination();
+        Collection<String> destination = messageDestination.getDestination();
 		for (MessagePost post : posts) {
 			if (post.supports(channel)) {
 				post.post(message, destination);
