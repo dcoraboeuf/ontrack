@@ -147,6 +147,8 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the title
         String title = strings.get(locale, "event.message");
         model.add("title", title);
+        // FIXME Unsubscription link
+        // We actually need one distinct link per entity
         // Gets all the emails
         Collection<String> emails = Collections2.transform(
                 accounts,
