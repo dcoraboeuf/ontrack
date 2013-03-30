@@ -28,17 +28,29 @@ public class DefaultMailService implements MailService {
     }
 
     @Override
-    @Cacheable(value = Caches.MAIL, key="'0'")
+    @Cacheable(value = Caches.MAIL, key = "'0'")
     public JavaMailSender getMailSender() {
         MailConfiguration configuration = adminService.getMailConfiguration();
         logger.debug("[mail] Creating mail sender");
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        String host = configuration.getHost();
+        logger.debug("[mail] Host={}", host);
+        mailSender.setHost(host);
         Properties p = new Properties();
-        p.put("mail.smtp.host", configuration.getHost());
-        p.put("mail.smtp.auth", String.valueOf(configuration.isAuthentication()));
-        p.put("mail.smtp.starttls.required", String.valueOf(configuration.isStartTls()));
-        p.put("mail.user", configuration.getUser());
-        p.put("password", configuration.getPassword());
+        p.put("mail.smtp.debug", "true");
+        boolean authentication = configuration.isAuthentication();
+        if (authentication) {
+            logger.debug("[mail] Using authentication");
+            mailSender.setUsername(configuration.getUser());
+            mailSender.setPassword(configuration.getPassword());
+            mailSender.setPort(587);
+            p.put("mail.smtp.auth", "true");
+            boolean startTls = configuration.isStartTls();
+            if (startTls) {
+                logger.debug("[mail] STARTTLS required");
+                p.put("mail.smtp.starttls.required", "true");
+            }
+        }
         mailSender.setJavaMailProperties(p);
         return mailSender;
     }
