@@ -17,6 +17,7 @@ import net.ontrack.service.TemplateService;
 import net.ontrack.service.model.MessageChannel;
 import net.ontrack.service.model.MessageDestination;
 import net.ontrack.service.model.TemplateModel;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -38,9 +39,10 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final GUIEventService guiEventService;
     private final MessageService messageService;
     private final TemplateService templateService;
+    private final Strings strings;
 
     @Autowired
-    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, MessageService messageService, TemplateService templateService) {
+    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, MessageService messageService, TemplateService templateService, Strings strings) {
         this.securityUtils = securityUtils;
         this.configurationService = configurationService;
         this.subscriptionDao = subscriptionDao;
@@ -48,6 +50,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
         this.guiEventService = guiEventService;
         this.messageService = messageService;
         this.templateService = templateService;
+        this.strings = strings;
     }
 
     @Override
@@ -111,21 +114,22 @@ public class DefaultSubscriptionService implements SubscriptionService {
                 }
         );
         // TODO Collects all the languages (not possible yet, see ticket #81)
+        Locale locale = Locale.ENGLISH;
         // TODO Generates one message per language (see ticket #81)
         // Gets the GUI version
-        GUIEvent guiEvent = guiEventService.toGUIEvent(event, Locale.ENGLISH, DateTime.now(DateTimeZone.UTC));
+        GUIEvent guiEvent = guiEventService.toGUIEvent(event, locale, DateTime.now(DateTimeZone.UTC));
         // Initial template
         TemplateModel model = new TemplateModel();
         model.add("event", guiEvent);
-        // TODO Gets the title
-        String title = "TODO Event";
+        // Gets the title
+        String title = strings.get(locale, "event.message");
         model.add("title", title);
         // Sends for each user
         for (TAccount account : accounts) {
             // Completes the model for the account
             model.add("account", account);
             // Generates the message HTML content
-            String content = templateService.generate("event.html", Locale.ENGLISH, model);
+            String content = templateService.generate("event.html", locale, model);
             // TODO Creates a HTML message
             Message message = new Message(
                     title,
