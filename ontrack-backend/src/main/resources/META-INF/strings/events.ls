@@ -96,3 +96,7 @@ event.unsubscription.VALIDATION_RUN
     en -> Unsubscribe from the events on the {0} validation.
     fr -> Se désabonner des événements de la validation {0}.
 
+
+event.PROMOTION_LEVEL_DELETED
+    en -> The $promotionLevel$ promotion level of $branch$ of the $project$ project has been deleted.
+    fr -> Lle niveau de promotion $promotionLevel$ de la branche $branch$ du projet $project$ a été supprimée.

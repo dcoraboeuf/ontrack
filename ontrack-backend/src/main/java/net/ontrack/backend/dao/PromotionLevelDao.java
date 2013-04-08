@@ -22,4 +22,6 @@ public interface PromotionLevelDao {
     Ack updateImage(int promotionLevelId, byte[] image);
 
     byte[] getImage(int id);
+
+    Ack deletePromotionLevel(int promotionLevelId);
 }

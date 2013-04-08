@@ -226,6 +226,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack deletePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, name);
+        return managementService.deletePromotionLevel(promotionLevelId);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{name:[A-Za-z0-9_\\.\\-]+}/image", method = RequestMethod.POST)
     public
     @ResponseBody

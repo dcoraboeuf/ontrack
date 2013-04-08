@@ -156,6 +156,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack deletePromotionLevel(String project, String branch, String name) {
+        return delete(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), Ack.class);
+    }
+
+    @Override
     public Ack setImagePromotionLevel(String project, String branch, String name, MultipartFile image) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.setImagePromotionLevel
         return null;

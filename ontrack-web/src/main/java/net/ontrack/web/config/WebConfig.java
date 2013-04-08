@@ -1,6 +1,7 @@
 package net.ontrack.web.config;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
+import freemarker.cache.TemplateLoader;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.SubscriptionService;
@@ -107,10 +108,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public FreeMarkerConfig freemarkerConfig() {
+        // Configurer
         FreeMarkerConfigurer c = new FreeMarkerConfigurer();
         c.setTemplateLoaderPaths(new String[]{
-                "/WEB-INF/views",
-                "classpath:META-INF/views"
+                "/WEB-INF/views"
+        });
+        // Extension views
+        c.setPostTemplateLoaders(new TemplateLoader[]{
+                new ExtensionTemplateLoader(extensionManager)
         });
         // Freemarker variables
         Map<String, Object> variables = new HashMap<>();

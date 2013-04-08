@@ -69,6 +69,27 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
     }
 
     @Override
+    @Transactional
+    public Ack deletePromotionLevel(int promotionLevelId) {
+        // Previous level
+        TPromotionLevel promotionLevel = getById(promotionLevelId);
+        // Deletes the promotion level
+        Ack ack = Ack.one(getNamedParameterJdbcTemplate().update(
+                SQL.PROMOTION_LEVEL_DELETE,
+                params("id", promotionLevelId)
+        ));
+        // Reordering
+        if (ack.isSuccess()) {
+            getNamedParameterJdbcTemplate().update(
+                    SQL.PROMOTION_LEVEL_UPDATE_LEVEL_NB_AFTER_DELETE,
+                    params("levelNb", promotionLevel.getLevelNb())
+            );
+        }
+        // OK
+        return ack;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<TPromotionLevel> findByBuild(int build) {
         return getNamedParameterJdbcTemplate().query(
