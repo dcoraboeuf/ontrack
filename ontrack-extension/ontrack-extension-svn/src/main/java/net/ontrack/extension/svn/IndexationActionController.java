@@ -60,7 +60,7 @@ public class IndexationActionController extends AbstractGUIController implements
             model.addAttribute("lastRevisionInfo", info);
         }
         // OK
-        return "extension/subversion/indexation";
+        return "extension/svn/indexation";
     }
 
     @RequestMapping(value = "/latest", method = RequestMethod.GET)
