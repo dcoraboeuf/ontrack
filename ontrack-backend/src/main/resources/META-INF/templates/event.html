@@ -8,14 +8,15 @@
             ${event.html}
         </p>
         <p>
-            <ul>
-                <#list links as link>
-                    <li><a href="${link.url?html}">${link.title?html}</a></li>
-                </#list>
-            </ul>
-        </p>
-        <p>
             the ontrack program.
         </p>
+        <p>
+            If you do not want this information any longer, you may click on one of the following links:
+        </p>
+        <ul>
+            <#list links as link>
+                <li><a href="${link.url?html}">${link.title?html}</a></li>
+            </#list>
+        </ul>
     </body>
 </html>

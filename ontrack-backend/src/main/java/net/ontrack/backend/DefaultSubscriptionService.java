@@ -25,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -102,7 +99,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
             @Override
             public void run() {
                 try {
-                doPublish(event);
+                    doPublish(event);
                 } catch (Exception ex) {
                     logger.error("[publish] Error on publishing", ex);
                 }
@@ -155,9 +152,11 @@ public class DefaultSubscriptionService implements SubscriptionService {
             // Gets the title
             String title = strings.get(locale, "event.message");
             model.add("title", title);
-            // Unsubscription link
+            // Gets the list of entities the account is registered to
+            Set<EntityID> subscriptions = subscriptionDao.findEntitiesByAccount(account.getId());
+            // Unsubscription links
             // We actually need one distinct link per entity
-            Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values());
+            Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values(), subscriptions);
             model.add("links", links);
             // Generates the message HTML content
             String content = templateService.generate("event.html", locale, model);
@@ -179,9 +178,17 @@ public class DefaultSubscriptionService implements SubscriptionService {
         }
     }
 
-    private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities) {
+    private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities, final Set<EntityID> subscriptions) {
         return Collections2.transform(
-                entities,
+                Collections2.filter(
+                        entities,
+                        new Predicate<EntityStub>() {
+                            @Override
+                            public boolean apply(EntityStub stub) {
+                                return subscriptions.contains(new EntityID(stub.getEntity(), stub.getId()));
+                            }
+                        }
+                ),
                 new Function<EntityStub, NamedLink>() {
                     @Override
                     public NamedLink apply(EntityStub stub) {

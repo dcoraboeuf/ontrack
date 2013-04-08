@@ -4,15 +4,21 @@ import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EntityID;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -47,6 +53,28 @@ public class SubscriptionJdbcDao extends AbstractJdbcDao implements Subscription
                 params,
                 Integer.class
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<EntityID> findEntitiesByAccount(int accountId) {
+        final Set<EntityID> entityIDs = new HashSet<>();
+        getNamedParameterJdbcTemplate().query(
+                SQL.SUBSCRIPTION_BY_ACCOUNT,
+                params("account", accountId),
+                new RowCallbackHandler() {
+                    @Override
+                    public void processRow(ResultSet rs) throws SQLException {
+                        for (Entity entity : Entity.values()) {
+                            int id = rs.getInt(entity.name());
+                            if (!rs.wasNull()) {
+                                entityIDs.add(new EntityID(entity, id));
+                            }
+                        }
+                    }
+                }
+        );
+        return entityIDs;
     }
 
     @Override

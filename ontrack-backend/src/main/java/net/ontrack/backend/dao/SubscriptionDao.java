@@ -2,9 +2,11 @@ package net.ontrack.backend.dao;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.EntityID;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SubscriptionDao {
 
@@ -12,4 +14,5 @@ public interface SubscriptionDao {
 
     List<Integer> findAccountIds (Map<Entity, Integer> entities);
 
+    Set<EntityID> findEntitiesByAccount(int accountId);
 }
