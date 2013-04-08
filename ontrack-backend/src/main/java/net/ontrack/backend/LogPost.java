@@ -31,10 +31,9 @@ public class LogPost extends AbstractMessagePost {
                         "{}" +
                         "\n" +
                         "-----------------\n",
-                new Object[]{
-                        destination,
-                        message.getTitle(),
-                        message.getContent()});
+                destination,
+                message.getTitle(),
+                message.getContent());
     }
 
 }

@@ -168,7 +168,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
                             MessageContentType.HTML,
                             content));
             // Publication
-            logger.debug("[publish] event={}, locale={}, account={}", new Object[]{event.getId(), locale, email});
+            logger.debug("[publish] event={}, locale={}, account={}", event.getId(), locale, email);
             messageService.sendMessage(
                     message,
                     new MessageDestination(
