@@ -63,3 +63,7 @@ event.VALIDATION_STAMP_LINKED
 event.VALIDATION_STAMP_UNLINKED
     en -> $VALIDATION_STAMP$ validation stamp of branch $BRANCH$ of project $PROJECT$ has been unlinked from any promotion level.
     fr -> La validation $VALIDATION_STAMP$ de la branche $BRANCH$ de $PROJECT$ a été dissociée de tout niveau de promotion.
+
+event.PROMOTION_LEVEL_DELETED
+    en -> The $promotionLevel$ promotion level of $branch$ of the $project$ project has been deleted.
+    fr -> Lle niveau de promotion $promotionLevel$ de la branche $branch$ du projet $project$ a été supprimée.
