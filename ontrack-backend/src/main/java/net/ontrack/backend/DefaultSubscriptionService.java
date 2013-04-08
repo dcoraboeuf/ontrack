@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -144,45 +145,38 @@ public class DefaultSubscriptionService implements SubscriptionService {
         Locale locale = Locale.ENGLISH;
         logger.debug("[publish] event={}, locale={}", event.getId(), locale);
         // TODO Generates one message per language (see ticket #81)
-        // Gets the GUI version
-        GUIEvent guiEvent = guiEventService.toGUIEvent(event, locale, DateTime.now(DateTimeZone.UTC));
-        // Initial template
-        TemplateModel model = new TemplateModel();
-        model.add("event", guiEvent);
-        // Gets the title
-        String title = strings.get(locale, "event.message");
-        model.add("title", title);
-        // Unsubscription link
-        // We actually need one distinct link per entity
-        Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values());
-        model.add("links", links);
-        // Gets all the emails
-        Collection<String> emails = Collections2.transform(
-                accounts,
-                new Function<TAccount, String>() {
-                    @Override
-                    public String apply(TAccount account) {
-                        return account.getEmail();
-                    }
-                }
-        );
-        // Generates the message HTML content
-        String content = templateService.generate("event.html", locale, model);
-        // Creates a HTML message
-        Message message = new Message(
-                title,
-                new MessageContent(
-                        MessageContentType.HTML,
-                        content));
-        // Publication
-        logger.debug("[publish] event={}, locale={}, accounts={}", new Object[]{event.getId(), locale, emails.size()});
-        messageService.sendMessage(
-                message,
-                new MessageDestination(
-                        MessageChannel.EMAIL,
-                        emails
-                )
-        );
+        for (TAccount account : accounts) {
+            String email = account.getEmail();
+            // Gets the GUI version
+            GUIEvent guiEvent = guiEventService.toGUIEvent(event, locale, DateTime.now(DateTimeZone.UTC));
+            // Initial template
+            TemplateModel model = new TemplateModel();
+            model.add("event", guiEvent);
+            // Gets the title
+            String title = strings.get(locale, "event.message");
+            model.add("title", title);
+            // Unsubscription link
+            // We actually need one distinct link per entity
+            Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values());
+            model.add("links", links);
+            // Generates the message HTML content
+            String content = templateService.generate("event.html", locale, model);
+            // Creates a HTML message
+            Message message = new Message(
+                    title,
+                    new MessageContent(
+                            MessageContentType.HTML,
+                            content));
+            // Publication
+            logger.debug("[publish] event={}, locale={}, account={}", new Object[]{event.getId(), locale, email});
+            messageService.sendMessage(
+                    message,
+                    new MessageDestination(
+                            MessageChannel.EMAIL,
+                            Collections.singletonList(email)
+                    )
+            );
+        }
     }
 
     private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities) {
