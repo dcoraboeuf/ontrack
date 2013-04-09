@@ -30,11 +30,13 @@
         </div>
     </div>
 
+    <div id="changelog-error" class="hidden alert alert-error"></div>
+
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#summary" data-toggle="tab"><@lh key="svnexplorer.changelog.summary" /></a></li>
-        <li><a href="#revisions" data-toggle="tab"><@lh key="svnexplorer.changelog.revisions" /></a></li>
-        <li><a href="#issues" data-toggle="tab"><@lh key="svnexplorer.changelog.issues" /></a></li>
-        <li><a href="#files" data-toggle="tab"><@lh key="svnexplorer.changelog.files" /></a></li>
+        <li class="active"><a id="summary-tab" href="#summary" data-toggle="tab"><@lh key="svnexplorer.changelog.summary" /></a></li>
+        <li><a id="revisions-tab" href="#revisions" data-toggle="tab"><@lh key="svnexplorer.changelog.revisions" /></a></li>
+        <li><a id="issues-tab" href="#issues" data-toggle="tab"><@lh key="svnexplorer.changelog.issues" /></a></li>
+        <li><a id="files-tab" href="#files" data-toggle="tab"><@lh key="svnexplorer.changelog.files" /></a></li>
     </ul>
 
     <div class="tab-content">
@@ -53,7 +55,6 @@
 
         <!-- Revision log -->
         <div class="tab-pane" id="revisions">
-            <div class="revisions-error hidden"></div>
         </div>
 
         <!-- FIXME Issue log -->

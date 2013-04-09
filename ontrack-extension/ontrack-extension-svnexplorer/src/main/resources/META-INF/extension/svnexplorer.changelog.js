@@ -10,19 +10,23 @@ var ChangeLog = function () {
             // TODO In session, with a UID and an expiration time?
             // TODO In a common cache with an expiration time?
             AJAX.get({
-                url: '',
+                url: 'ui/extension/svnexplorer/changelog/revisions',
                 loading: {
                     el: '#revisions',
                     mode: 'appendText'
                 },
                 successFn: $.noop,
-                errorFn: AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#revisions-error'));
+                errorFn: changelogErrorFn()
             });
         }
     }
 
+    function changelogErrorFn () {
+        return AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#changelog-error'));
+    }
+
     function init () {
-        $('#revisions').on('show', loadRevisions);
+        $('#revisions-tab').on('show', loadRevisions);
     }
 
     return {
