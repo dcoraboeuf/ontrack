@@ -6,9 +6,21 @@ svnexplorer.changelog
     en -> Change log
     fr -> Changements
 
-svnexplorer.changelog.header
-    en -> Change log between:
-    fr -> Changements entre :
+svnexplorer.changelog.summary
+    en -> Summary
+    fr -> Général
+
+svnexplorer.changelog.revisions
+    en -> Revisions
+    fr -> Révisions
+
+svnexplorer.changelog.issues
+    en -> Issues
+    fr -> Tickets
+
+svnexplorer.changelog.files
+    en -> Files
+    fr -> Fichiers
 
 [errors]
 

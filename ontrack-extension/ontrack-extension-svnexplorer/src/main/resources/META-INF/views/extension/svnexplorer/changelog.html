@@ -16,31 +16,38 @@
 
     <@usermessage />
 
-    <div class="container-fluid">
-
-        <!-- Summary -->
-
-        <div class="row-fluid">
-            <div class="span12 page-title">
+    <div class="row-fluid">
+        <div class="span12 page-title">
                 <span class="title">
                     <a href="gui/project/${summary.branch.project.name?html}">${summary.branch.project.name?html}</a>
                     /
                     <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}">${summary.branch.name?html}</a>
+                    /
+                    ${summary.buildFrom.buildSummary.name?html}
+                    <i class="icon-arrow-right" style="vertical-align: baseline;"></i>
+                    ${summary.buildTo.buildSummary.name?html}
                 </span>
-            </div>
-            <p>
-                <@lh key="svnexplorer.changelog.header" />
-            </p>
         </div>
+    </div>
 
-        <div class="row-fluid">
-            <!-- Build from -->
-            <div class="span6 alert alert-info">
-                <@build_info build=summary.buildFrom />
-            </div>
-            <!-- Build to -->
-            <div class="span6 alert alert-info">
-                <@build_info build=summary.buildTo />
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#summary" data-toggle="tab"><@lh key="svnexplorer.changelog.summary" /></a></li>
+        <li><a href="#revisions" data-toggle="tab"><@lh key="svnexplorer.changelog.revisions" /></a></li>
+        <li><a href="#issues" data-toggle="tab"><@lh key="svnexplorer.changelog.issues" /></a></li>
+        <li><a href="#files" data-toggle="tab"><@lh key="svnexplorer.changelog.files" /></a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="summary">
+            <div class="row-fluid">
+                <!-- Build from -->
+                <div class="span6 alert alert-info">
+                    <@build_info build=summary.buildFrom />
+                </div>
+                <!-- Build to -->
+                <div class="span6 alert alert-info">
+                    <@build_info build=summary.buildTo />
+                </div>
             </div>
         </div>
 
