@@ -5,8 +5,12 @@
     <section class="panel" id="${id?html}">
         <h4>
             ${title?html}
-            <#if secSubscriber()>
-                <img id="subscription" src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
+            <#if filter != "" && secSubscriber()>
+                <#if subscribed(filter)>
+                    <img id="subscription" src="${base}/images/unsubscription.png" class="action" title="<@lh key='subscription.disable' />" onclick="Audit.unsubscribe('${filter}')" />
+                <#else>
+                    <img id="subscription" src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
+                </#if>
             </#if>
         </h4>
         <@dynamicsection id=id template="Audit.auditTemplate('${filter}')">

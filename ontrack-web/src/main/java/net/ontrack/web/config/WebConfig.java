@@ -127,6 +127,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
+        variables.put("subscribed", new FnSubscribed(securityUtils, subscriptionService));
         // Extensions
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
         variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));

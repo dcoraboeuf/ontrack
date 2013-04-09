@@ -68,6 +68,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
     }
 
     @Override
+    public boolean isSubscribed(int accountId, Set<EntityID> entities) {
+        if (entities.isEmpty()) {
+            return false;
+        } else {
+            Set<EntityID> subscribedEntities = subscriptionDao.findEntitiesByAccount(accountId);
+            return subscribedEntities.containsAll(entities);
+        }
+    }
+
+    @Override
     @Transactional
     public Ack subscribe(Map<Entity, Integer> entities) {
         // Gets the current user
