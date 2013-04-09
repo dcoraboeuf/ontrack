@@ -7,6 +7,7 @@ import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.SVNHistory;
+import net.ontrack.extension.svnexplorer.model.ChangeLogRevisions;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
 import net.ontrack.extension.svnexplorer.model.SVNBuild;
 import net.ontrack.service.ManagementService;
@@ -15,6 +16,8 @@ import net.ontrack.tx.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 public class DefaultSVNExplorerService implements SVNExplorerService {
@@ -43,11 +46,19 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             SVNBuild buildTo = getBuild(to);
             // OK
             return new ChangeLogSummary(
+                    UUID.randomUUID().toString(),
                     branch,
                     buildFrom,
                     buildTo
             );
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChangeLogRevisions getChangeLogRevisions(ChangeLogSummary summary) {
+        // FIXME Implement net.ontrack.extension.svnexplorer.service.DefaultSVNExplorerService.getChangeLogRevisions
+        return new ChangeLogRevisions();
     }
 
     private SVNBuild getBuild(int buildId) {
