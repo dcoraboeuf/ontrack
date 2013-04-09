@@ -1,5 +1,6 @@
 package net.ontrack.backend.extension;
 
+import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
@@ -15,14 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
  * Implementation of the extension manager.
  */
 @Component
-public class DefaultExtensionManager implements ExtensionManager {
+public class DefaultExtensionManager implements ExtensionManager, StartupService {
 
     private final ApplicationContext applicationContext;
 
@@ -37,8 +37,13 @@ public class DefaultExtensionManager implements ExtensionManager {
         this.applicationContext = applicationContext;
     }
 
-    @PostConstruct
-    public void init () {
+    @Override
+    public int startupOrder() {
+        return 2;
+    }
+
+    @Override
+    public void start() {
         Logger logger = LoggerFactory.getLogger(ExtensionManager.class);
 
         /**

@@ -34,6 +34,11 @@ public class DefaultConfigurationExtensionService implements ConfigurationExtens
     }
 
     @Override
+    public int startupOrder() {
+        return 4;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void start() {
         logger.info("Loading all configurations");
