@@ -140,6 +140,20 @@ settings.extension.saved
     en -> {0} saved.
     fr -> {0} sauvegardée.
 
+settings.general
+    en -> General configuration
+    fr -> Configuration générale
+
+[settings.general]
+
+settings.general.baseUrl
+    en -> Base URL
+    fr -> URL de référence
+
+settings.general.saved
+    en -> General configuration has been saved.
+    fr -> La configuration générale a été sauvegardée.
+
 [security.ldap]
 
 ldap.enabled
@@ -200,6 +214,10 @@ mail.authentication
 mail.startTls
     en -> Start TLS
     fr -> Démarrer TLS
+
+mail.replyToAddress
+    en -> Reply to address
+    fr -> Adresse de retour
 
 [accounts]
 
@@ -550,3 +568,13 @@ properties.add
 properties.add.choice
     en -> Choose a property to add
     fr -> Choisissez la propriété à ajouter
+
+[subscription]
+
+subscription.enable
+    en -> Subscribe to the events
+    fr -> S'abonner aux événements
+
+subscription.disable
+    en -> Unsubscribe from the events
+    fr -> Se désabonner des événements

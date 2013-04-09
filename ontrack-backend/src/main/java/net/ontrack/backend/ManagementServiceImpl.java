@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.DataSource;
-import javax.validation.Validator;
 import java.io.IOException;
 import java.util.*;
 
@@ -103,8 +101,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(DataSource dataSource, Validator validator, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService) {
-        super(validator, auditService);
+    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService) {
+        super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
         this.projectGroupDao = projectGroupDao;

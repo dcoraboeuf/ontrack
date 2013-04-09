@@ -10,6 +10,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
+import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.web.gui.model.GUIConfigurationExtension;
@@ -70,6 +71,8 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("ldap", configuration);
         // Gets the mail configuration
         model.addAttribute("mail", adminService.getMailConfiguration());
+        // Gets the general configuration
+        model.addAttribute("general", adminService.getGeneralConfiguration());
         // Gets the list of configuration extensions
         Collection<GUIConfigurationExtension> extensions = Collections2.transform(
                 configurationExtensionService.getConfigurationExtensions(),
@@ -102,6 +105,19 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("extensions", extensions);
         // OK
         return "settings";
+    }
+
+    /**
+     * General settings
+     */
+    @RequestMapping(value = "/settings/general", method = RequestMethod.POST)
+    public String general(GeneralConfiguration configuration, RedirectAttributes redirectAttributes) {
+        // Saves the configuration
+        adminService.saveGeneralConfiguration(configuration);
+        // Success
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("settings.general.saved"));
+        // OK
+        return "redirect:/gui/admin/settings";
     }
 
     /**

@@ -20,21 +20,4 @@
 		</Arg>
 	</New>
 
-	<New id="ontrackMailSession" class="org.eclipse.jetty.plus.jndi.Resource">
-		<Arg>mail/SendGrid</Arg>
-		<Arg>
-			<New class="org.eclipse.jetty.jndi.factories.MailSessionReference">
-				<Set name="user">fred</Set>
-				<Set name="password">fred</Set>
-				<Set name="properties">
-					<New class="java.util.Properties">
-						<Put name="mail.smtp.host">XXX</Put>
-						<Put name="mail.from">me@me</Put>
-						<Put name="mail.debug">true</Put>
-					</New>
-				</Set>
-			</New>
-		</Arg>
-	</New>
-
 </Configure>

@@ -16,9 +16,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
-import javax.validation.Validator;
-
 @Service
 public class ControlServiceImpl extends AbstractServiceImpl implements ControlService {
 
@@ -29,8 +26,8 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     private final PromotedRunDao promotedRunDao;
 
     @Autowired
-    public ControlServiceImpl(DataSource dataSource, Validator validator, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
-        super(validator, auditService);
+    public ControlServiceImpl(ValidatorService validatorService, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
+        super(validatorService, auditService);
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.buildDao = buildDao;

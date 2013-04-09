@@ -1,8 +1,17 @@
 <script type="text/javascript" src="${base}/js/audit.js"></script>
 
-<#macro audit id="audit" filter="">
-	<@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
-	</@dynamicsection>
+<#macro audit id="audit" filter="" title=loc("event.list")>
+
+    <section class="panel" id="${id?html}">
+        <h4>
+            ${title?html}
+            <#if secSubscriber()>
+                <img id="subscription" src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" onclick="Audit.subscribe('${filter}')" />
+            </#if>
+        </h4>
+        <@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
+        </@dynamicsection>
+     </section>
     <script id="auditTemplate" type="text/html">
         <tr>
             <td>

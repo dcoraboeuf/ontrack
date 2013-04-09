@@ -10,5 +10,6 @@ public class MailConfiguration {
     private String password;
     private boolean authentication;
     private boolean startTls;
+    private String replyToAddress;
 
 }

@@ -4,6 +4,7 @@ import com.netbeetle.jackson.ObjectMapperFactory;
 import freemarker.cache.TemplateLoader;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
@@ -57,6 +58,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ExtensionManager extensionManager;
+    
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     @Autowired
     private Strings strings;
@@ -122,6 +126,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
+        variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
         // Extensions
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
         variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));

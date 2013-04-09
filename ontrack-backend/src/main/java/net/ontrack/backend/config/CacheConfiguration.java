@@ -1,4 +1,4 @@
-package net.ontrack.backend.dao.jdbc;
+package net.ontrack.backend.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -10,7 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 
 @Configuration
 @EnableCaching
-public class DaoConfiguration {
+public class CacheConfiguration {
 
     @Bean
     public CacheManager cacheManager() {
@@ -22,7 +22,7 @@ public class DaoConfiguration {
     @Bean
     public EhCacheManagerFactoryBean ehcache() {
         EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
-        factoryBean.setConfigLocation(new ClassPathResource("/META-INF/dao/ehcache.xml"));
+        factoryBean.setConfigLocation(new ClassPathResource("/META-INF/ehcache.xml"));
         return factoryBean;
     }
 

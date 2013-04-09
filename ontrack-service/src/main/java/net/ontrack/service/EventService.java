@@ -16,4 +16,6 @@ public interface EventService {
     String getEntityName(Entity entity, int entityId);
 
     DatedSignature getDatedSignature(Locale locale, EventType eventType, Map<Entity, Integer> entities);
+
+    Ack subscribe(EventFilter filter);
 }

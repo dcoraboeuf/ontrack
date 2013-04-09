@@ -13,6 +13,8 @@ public interface AccountDao {
 
     TAccount findByModeAndName(String mode, String name);
 
+    TAccount getByID(int id);
+
     List<TAccount> findAll();
 
     Ack createAccount(String name, String fullName, String email, String roleName, String mode, String password);

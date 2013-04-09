@@ -19,7 +19,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,8 +45,8 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     };
 
     @Autowired
-    public AccountServiceImpl(Validator validator, EventService eventService, AccountDao accountDao) {
-        super(validator, eventService);
+    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, AccountDao accountDao) {
+        super(validatorService, eventService);
         this.accountDao = accountDao;
     }
 
