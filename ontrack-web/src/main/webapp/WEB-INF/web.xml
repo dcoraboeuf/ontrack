@@ -34,6 +34,11 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
+    <session-config>
+        <!-- 10 hours -->
+        <session-timeout>600</session-timeout>
+    </session-config>
+
 	<resource-ref>
 		<res-ref-name>jdbc/ontrack</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
