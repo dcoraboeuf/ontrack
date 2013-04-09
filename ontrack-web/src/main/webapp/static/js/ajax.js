@@ -59,6 +59,7 @@ var AJAX = function () {
      * @param config.el     jQuery object or selector for the object which will contain the loading indicator (default: undefined)
      * @param config.mode   Way of displaying the loading indicator (default: append):
      *      'append' - appends a loading image at the end of the element
+     *      'appendText' - appends a loading image and a text at the end of the element
      * @param show          Boolean that indicates if the the loading must be hidden or shown (default: false)
      */
     function showLoading (config, show) {
@@ -70,6 +71,14 @@ var AJAX = function () {
                 if (show) {
                     $(config.el).addClass('disabled');
                     $(config.el).append('&nbsp;<img class="ajax-loader" src="static/images/ajax-loader.gif" />');
+                } else {
+                    $(config.el).removeClass('disabled');
+                    $(config.el).find('.ajax-loader').remove();
+                }
+            } else if (c.mode == 'appendText') {
+                if (show) {
+                    $(config.el).addClass('disabled');
+                    $(config.el).append('&nbsp;<span class="ajax-loader"><img src="static/images/ajax-loader.gif" /> {0}</span>'.format(loc('general.loading')));
                 } else {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();
@@ -88,10 +97,40 @@ var AJAX = function () {
     }
 
     /**
+     * Generates a AJAX error handler that just needs to deal
+     * with a text message
+     * @param errorMessageFn Function that takes the error message as a parameter
+     * @return An AJAX error handler
+     */
+    function simpleAjaxErrorFn (errorMessageFn) {
+        return function (jqXHR, textStatus, errorThrown) {
+            var message = getAjaxError (jqXHR, textStatus, errorThrown);
+            errorMessageFn(message);
+        }
+    }
+
+    /**
      * Gets the AJAX error message
      */
 	function getAjaxError (jqXHR, textStatus, errorThrown) {
 		return '[{0}] {1}'.format(jqXHR.status, jqXHR.statusText);
+	}
+
+	/**
+	 * Generates an error message handler that displays the message
+	 * into an existing element.
+	 * @param el Element that contains the error message
+	 * @return An error message handler
+	 */
+	function elementErrorMessageFn (el) {
+        return function (message) {
+            if (message == null) {
+                $(el).hide();
+            } else {
+                $(el).text(message);
+                $(el).show();
+            }
+        }
 	}
 
     return {
@@ -103,7 +142,9 @@ var AJAX = function () {
         showLoading: showLoading,
         // Error management
         defaultAjaxErrorFn: defaultAjaxErrorFn,
-        getAjaxError: getAjaxError
+        simpleAjaxErrorFn: simpleAjaxErrorFn,
+        getAjaxError: getAjaxError,
+        elementErrorMessageFn: elementErrorMessageFn
     };
 
 } ();
