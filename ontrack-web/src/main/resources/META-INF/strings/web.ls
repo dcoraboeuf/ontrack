@@ -578,3 +578,11 @@ subscription.enable
 subscription.disable
     en -> Unsubscribe from the events
     fr -> Se désabonner des événements
+
+subscription.enabled
+    en -> Subscription is enabled.
+    fr -> L'abonnement est activé.
+
+subscription.disabled
+    en -> Subscription is disabled.
+    fr -> L'abonnement est désactivé.

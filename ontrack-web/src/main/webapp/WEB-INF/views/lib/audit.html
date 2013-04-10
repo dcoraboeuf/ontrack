@@ -13,6 +13,10 @@
                 </#if>
             </#if>
         </h4>
+        <div id="subscription-notification" class="alert alert-info hidden">
+            <span id="subscription-notification-message"></span>
+            <button type="button" class="close" onclick="$('#subscription-notification').hide();">&times;</button>
+        </div>
         <@dynamicsection id=id template="Audit.auditTemplate('${filter}')">
         </@dynamicsection>
      </section>

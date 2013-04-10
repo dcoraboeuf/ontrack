@@ -7,7 +7,15 @@ var Audit = function () {
             },
             url: 'gui/event/subscribe?u=1' + filter,
             successFn: function (data) {
-                // TODO Changes the subscription icon
+                $('#subscription').attr('src', 'static/images/unsubscription.png');
+                $('#subscription').attr('title', loc('subscription.disable'));
+                $('#subscription').unbind('click');
+                $('#subscription').click(function () {
+                    unsubscribe(filter);
+                });
+                // Notification
+                $('#subscription-notification-message').text(loc('subscription.enabled'));
+                $('#subscription-notification').show();
             }
         });
     }
@@ -19,7 +27,15 @@ var Audit = function () {
             },
             url: 'gui/event/unsubscribe?u=1' + filter,
             successFn: function (data) {
-                // TODO Changes the subscription icon
+                $('#subscription').attr('src', 'static/images/subscription.png');
+                $('#subscription').attr('title', loc('subscription.enable'));
+                $('#subscription').unbind('click');
+                $('#subscription').click(function () {
+                    subscribe(filter);
+                });
+                // Notification
+                $('#subscription-notification-message').text(loc('subscription.disabled'));
+                $('#subscription-notification').show();
             }
         });
     }
