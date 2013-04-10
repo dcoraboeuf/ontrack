@@ -594,3 +594,7 @@ entityUnsubscription
 entityUnsubscription.submit
     en -> OK
     fr -> OK
+
+entityUnsubscription.done
+    en -> The subscription has been cancelled.
+    fr -> L'abonnement a été annulé.

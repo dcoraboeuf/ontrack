@@ -31,10 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/gui/admin")
@@ -173,7 +170,7 @@ public class AdminController extends AbstractGUIController {
         // Saves the configuration
         String displayNameKey = adminService.saveExtensionConfiguration(extension, name, parameters);
         // Success
-        redirectAttributes.addFlashAttribute("message", UserMessage.success(strings.get(locale, "settings.extension.saved", new LocalizableMessage(displayNameKey))));
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("settings.extension.saved", new LocalizableMessage(displayNameKey)));
         // OK
         return "redirect:/gui/admin/settings";
     }
@@ -200,6 +197,22 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("info", info);
         // Goes to the unsubscription page
         return "entityUnsubscription";
+    }
+
+    /**
+     * Unsubscription action
+     */
+    @RequestMapping(value = "/unsubscribe/{entity}/{entityId:\\d+}", method = RequestMethod.POST)
+    public String unsubscribeAction(@PathVariable Entity entity, @PathVariable int entityId, RedirectAttributes redirectAttributes) {
+        // Unsubscribes
+        subscriptionService.unsubscribe(Collections.singletonMap(
+                entity,
+                entityId
+        ));
+        // Confirmation
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("entityUnsubscription.done"));
+        // Goes to the home page
+        return "redirect:/";
     }
 
 }

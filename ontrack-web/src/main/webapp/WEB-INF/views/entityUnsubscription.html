@@ -2,8 +2,6 @@
 
 <@layout_std page="entityUnsubscription">
 
-    <@usermessage />
-
     <form action="gui/admin/unsubscribe/${info.entityStub.entity?html}/${info.entityStub.id?c}" method="POST">
         <p>
             ${info.message?html}
