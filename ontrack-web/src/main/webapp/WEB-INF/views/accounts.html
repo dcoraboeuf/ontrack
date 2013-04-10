@@ -1,6 +1,7 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="accounts" script=true breadcrumbs = {loc("home"): ""}>
+    <#assign accountId = secAccountId() >
     <table class="table table-hover">
         <thead>
             <tr>
@@ -9,6 +10,7 @@
                 <th><@lh key="account.email" /></th>
                 <th><@lh key="account.role" /></th>
                 <th><@lh key="account.mode" /></th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +21,11 @@
                     <td><a href="mailto:${account.email?html}">${account.email?html}</a></td>
                     <td><@lh key="account.role." + account.roleName /></td>
                     <td>${account.mode?html}</td>
+                    <td>
+                        <#if accountId != account.id>
+                            <a href="gui/admin/accounts/${account.id?c}/delete" class="btn btn-danger"><@lh key="general.delete" /></a>
+                        </#if>
+                    </td>
                 </tr>
             </#list>
         </tbody>

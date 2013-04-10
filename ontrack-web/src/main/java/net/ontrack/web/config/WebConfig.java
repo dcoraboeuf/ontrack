@@ -124,6 +124,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("locFormatDate", new FnLocFormatDate(strings));
         variables.put("locFormatTime", new FnLocFormatTime(strings));
         variables.put("secLogged", new FnSecLogged(securityUtils));
+        variables.put("secAccountId", new FnSecAccountId(securityUtils));
         variables.put("secAdmin", new FnSecAdmin(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
