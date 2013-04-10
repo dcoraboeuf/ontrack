@@ -51,6 +51,20 @@ public class EventController extends AbstractUIController {
                 getEventFilter(0, 0, project, branch, validationStamp, promotionLevel, build, validationRun));
     }
 
+    @RequestMapping(value = "unsubscribe", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack unsubscribe(
+            @RequestParam(required = false, defaultValue = "0") int project,
+            @RequestParam(required = false, defaultValue = "0") int branch,
+            @RequestParam(required = false, defaultValue = "0") int validationStamp,
+            @RequestParam(required = false, defaultValue = "0") int promotionLevel,
+            @RequestParam(required = false, defaultValue = "0") int build,
+            @RequestParam(required = false, defaultValue = "0") int validationRun) {
+        return auditService.unsubscribe(
+                getEventFilter(0, 0, project, branch, validationStamp, promotionLevel, build, validationRun));
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public
     @ResponseBody

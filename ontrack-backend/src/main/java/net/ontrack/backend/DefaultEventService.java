@@ -79,6 +79,12 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
 
     @Override
     @Transactional
+    public Ack unsubscribe(EventFilter filter) {
+        return subscriptionService.unsubscribe(filter.getEntities());
+    }
+
+    @Override
+    @Transactional
     public void event(Event event) {
         Signature signature = securityUtils.getCurrentSignature();
         int eventId = eventDao.createEvent(

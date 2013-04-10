@@ -14,6 +14,8 @@ public interface SubscriptionService {
 
     Ack subscribe(Map<Entity, Integer> entities);
 
+    Ack unsubscribe(Map<Entity, Integer> entities);
+
     void publish(ExpandedEvent event);
 
     boolean isSubscribed(int id, Set<EntityID> entities);

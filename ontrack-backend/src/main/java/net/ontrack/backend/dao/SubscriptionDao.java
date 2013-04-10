@@ -15,4 +15,6 @@ public interface SubscriptionDao {
     List<Integer> findAccountIds (Map<Entity, Integer> entities);
 
     Set<EntityID> findEntitiesByAccount(int accountId);
+
+    Ack unsubscribe(int userId, Entity entity, int entityId);
 }

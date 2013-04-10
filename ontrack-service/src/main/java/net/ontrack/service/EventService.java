@@ -18,4 +18,6 @@ public interface EventService {
     DatedSignature getDatedSignature(Locale locale, EventType eventType, Map<Entity, Integer> entities);
 
     Ack subscribe(EventFilter filter);
+
+    Ack unsubscribe(EventFilter eventFilter);
 }
