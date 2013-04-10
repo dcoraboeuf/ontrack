@@ -287,6 +287,18 @@ account.password.confirm.incorrect
     en -> Password confirmation is incorrect
     fr -> La confirmation du mot de passe est incorrecte.
 
+account.delete
+    en -> Account deletion
+    fr -> Suppression d'un compte utilisateur
+
+account.delete.message
+    en -> Do you really want to delete the following account?
+    fr -> Voulez-vous vraiment supprimer le compte suivant ?
+
+account.deleted
+    en -> Account has been deleted.
+    fr -> L'utilisateur a été supprimé.
+
 [home]
 
 home

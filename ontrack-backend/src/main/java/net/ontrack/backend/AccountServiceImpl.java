@@ -72,6 +72,14 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional(readOnly = true)
+    public Account getAccount(int id) {
+        return accountFunction.apply(
+                accountDao.getByID(id)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     @Secured(SecurityRoles.ADMINISTRATOR)
     public List<Account> getAccounts() {
         return Lists.transform(
@@ -115,5 +123,12 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                 form.getMode(),
                 form.getPassword()
         );
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public void deleteAccount(int id) {
+        accountDao.deleteAccount(id);
     }
 }

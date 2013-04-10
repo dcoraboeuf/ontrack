@@ -185,6 +185,26 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Request for the deletion of an account
+     */
+    @RequestMapping(value = "/accounts/{id:\\d+}/delete", method = RequestMethod.GET)
+    public String accountDelete(Model model, @PathVariable int id) {
+        securityUtils.checkIsAdmin();
+        model.addAttribute("account", accountService.getAccount(id));
+        return "accountDelete";
+    }
+
+    /**
+     * Actual deletion of an account
+     */
+    @RequestMapping(value = "/accounts/{id:\\d+}/delete", method = RequestMethod.POST)
+    public String accountDelete(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        accountService.deleteAccount(id);
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("account.deleted"));
+        return "redirect:/gui/admin/accounts";
+    }
+
+    /**
      * Unsubscription query
      */
     @RequestMapping(value = "/unsubscribe/{entity}/{entityId:\\d+}", method = RequestMethod.GET)

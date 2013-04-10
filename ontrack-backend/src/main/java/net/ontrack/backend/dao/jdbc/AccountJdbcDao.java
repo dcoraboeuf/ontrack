@@ -109,6 +109,15 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
         ));
     }
 
+    @Override
+    @Transactional
+    public void deleteAccount(int id) {
+        getNamedParameterJdbcTemplate().update(
+                "DELETE FROM ACCOUNTS WHERE ID = :id",
+                params("id", id)
+        );
+    }
+
     private String encodePassword(String password) {
         return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
     }

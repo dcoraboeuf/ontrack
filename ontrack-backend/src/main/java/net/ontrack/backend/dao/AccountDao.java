@@ -18,4 +18,6 @@ public interface AccountDao {
     List<TAccount> findAll();
 
     Ack createAccount(String name, String fullName, String email, String roleName, String mode, String password);
+
+    void deleteAccount(int id);
 }

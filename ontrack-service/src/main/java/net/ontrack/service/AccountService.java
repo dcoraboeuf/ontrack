@@ -14,7 +14,11 @@ public interface AccountService {
 
     Account getAccount(String mode, String user);
 
+    Account getAccount(int id);
+
     List<Account> getAccounts();
 
     Ack createAccount(AccountCreationForm form);
+
+    void deleteAccount(int id);
 }

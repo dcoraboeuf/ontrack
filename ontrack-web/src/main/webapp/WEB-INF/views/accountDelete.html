@@ -1,0 +1,20 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="account.delete" breadcrumbs = {loc("home"): ""}>
+
+    <form action="gui/admin/accounts/${account.id?c}/delete" method="POST">
+        <p>
+            <@lh key="account.delete.message" />
+            <ul>
+                <li><@lh key="account.name" /> : <b>${account.name?html}</b></li>
+                <li><@lh key="account.fullName" /> : <b>${account.fullName?html}</b></li>
+                <li><@lh key="account.email" /> : <b>${account.email?html}</b></li>
+            </ul>
+        </p>
+        <p>
+            <button type="submit" class="btn btn-danger"><@lh key="general.delete" /></button>
+            <a href="gui/admin/accounts" class="btn"><@lh key="general.cancel" /></a>
+        </p>
+    </form>
+
+</@layout_std>
