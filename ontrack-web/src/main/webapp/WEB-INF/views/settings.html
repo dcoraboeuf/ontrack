@@ -65,12 +65,12 @@
             <div id="section-mail" class="accordion-body collapse">
                 <div class="accordion-inner">
                     <form action="gui/admin/settings/mail" method="POST" class="form-horizontal">
-                        <@form_text idPrefix="mail-" name="host" label=loc("mail.host") class="settings-mail" value=mail.host />
-                        <@form_text idPrefix="mail-" name="user" label=loc("mail.user") class="settings-mail" value=mail.user />
-                        <@form_password idPrefix="mail-" name="password" label=loc("mail.password") class="settings-mail" value=mail.password />
+                        <@form_text idPrefix="mail-" name="host" label=loc("mail.host") class="settings-mail" value=mail.host required=false />
+                        <@form_text idPrefix="mail-" name="user" label=loc("mail.user") class="settings-mail" value=mail.user required=false />
+                        <@form_password idPrefix="mail-" name="password" label=loc("mail.password") class="settings-mail" value=mail.password required=false />
                         <@form_checkbox idPrefix="mail-" name="authentication" label=loc("mail.authentication") checked=mail.authentication/>
                         <@form_checkbox idPrefix="mail-" name="startTls" label=loc("mail.startTls") checked=mail.startTls/>
-                        <@form_text idPrefix="mail-" name="replyToAddress" label=loc("mail.replyToAddress") class="settings-mail" value=mail.replyToAddress />
+                        <@form_text idPrefix="mail-" name="replyToAddress" label=loc("mail.replyToAddress") class="settings-mail" value=mail.replyToAddress required=false />
                         <div class="control-group">
                             <div class="controls">
                                 <button type="submit" class="btn">
