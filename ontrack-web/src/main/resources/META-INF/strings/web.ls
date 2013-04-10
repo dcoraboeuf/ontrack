@@ -586,3 +586,11 @@ subscription.enabled
 subscription.disabled
     en -> Subscription is disabled.
     fr -> L'abonnement est désactivé.
+
+entityUnsubscription
+    en -> Cancelling subscription
+    fr -> Annuler un abonnement
+
+entityUnsubscription.submit
+    en -> OK
+    fr -> OK

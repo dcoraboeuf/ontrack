@@ -1,0 +1,18 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="entityUnsubscription">
+
+    <@usermessage />
+
+    <form action="gui/admin/unsubscribe/${info.entityStub.entity?html}/${info.entityStub.id?c}" method="POST">
+        <p>
+            ${info.message?html}
+        </p>
+        <p>
+            <button type="submit" class="btn btn-warning"><@lh key="entityUnsubscription.submit" /></button>
+            <!-- Going back to the home page -->
+            <a href="" class="btn"><@lh key="general.cancel"/></a>
+        </p>
+    </form>
+
+</@layout_std>

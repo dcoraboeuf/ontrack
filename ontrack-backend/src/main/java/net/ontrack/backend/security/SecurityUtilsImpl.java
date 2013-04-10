@@ -68,6 +68,13 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
+    public void checkIsLogged() {
+        if (!isLogged()) {
+            throw new AccessDeniedException("Authentication is required");
+        }
+    }
+
+    @Override
     public boolean hasRole(String role) {
         Account account = getCurrentAccount();
         if (account != null) {

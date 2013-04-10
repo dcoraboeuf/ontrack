@@ -3,9 +3,9 @@ package net.ontrack.backend;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.EventDao;
 import net.ontrack.backend.dao.model.TEvent;
-import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
@@ -16,7 +16,6 @@ import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -39,6 +38,7 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     private final Strings strings;
     private final SubscriptionService subscriptionService;
     private final EventDao eventDao;
+    private final EntityDao entityDao;
     private final Function<TEvent, ExpandedEvent> expandedEventFunction = new Function<TEvent, ExpandedEvent>() {
         @Override
         public ExpandedEvent apply(TEvent t) {
@@ -63,11 +63,12 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     };
 
     @Autowired
-    public DefaultEventService(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService, EventDao eventDao) {
+    public DefaultEventService(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService, EventDao eventDao, EntityDao entityDao) {
         this.securityUtils = securityUtils;
         this.strings = strings;
         this.subscriptionService = subscriptionService;
         this.eventDao = eventDao;
+        this.entityDao = entityDao;
         setDataSource(dataSource);
     }
 
@@ -118,15 +119,7 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     @Override
     @Transactional(readOnly = true)
     public String getEntityName(Entity entity, int entityId) {
-        try {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                format(SQL.ENTITY_NAME, entity.nameColumn(), entity.name()),
-                new MapSqlParameterSource("id", entityId),
-                String.class);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntityIdNotFoundException(entity, entityId);
-        }
-
+        return entityDao.getEntityName(entity, entityId);
     }
 
     @Override

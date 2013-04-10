@@ -1,12 +1,15 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.EntityIdNotFoundException;
 import net.ontrack.backend.EntityNameNotFoundException;
 import net.ontrack.backend.dao.EntityDao;
+import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.Each;
 import net.ontrack.core.support.ItemActionWithIndex;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,19 @@ public class EntityJdbcDao extends AbstractJdbcDao implements EntityDao {
     @Autowired
     public EntityJdbcDao(DataSource dataSource) {
         super(dataSource);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getEntityName(Entity entity, int entityId) {
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    format(SQL.ENTITY_NAME, entity.nameColumn(), entity.name()),
+                    new MapSqlParameterSource("id", entityId),
+                    String.class);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityIdNotFoundException(entity, entityId);
+        }
     }
 
     @Override

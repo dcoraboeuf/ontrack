@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.AccountDao;
+import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.*;
@@ -40,6 +41,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final ConfigurationService configurationService;
     private final SubscriptionDao subscriptionDao;
     private final AccountDao accountDao;
+    private final EntityDao entityDao;
     private final GUIEventService guiEventService;
     private final GUIService guiService;
     private final MessageService messageService;
@@ -50,11 +52,12 @@ public class DefaultSubscriptionService implements SubscriptionService {
     );
 
     @Autowired
-    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, GUIEventService guiEventService, GUIService guiService, MessageService messageService, TemplateService templateService, Strings strings) {
+    public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, EntityDao entityDao, GUIEventService guiEventService, GUIService guiService, MessageService messageService, TemplateService templateService, Strings strings) {
         this.securityUtils = securityUtils;
         this.configurationService = configurationService;
         this.subscriptionDao = subscriptionDao;
         this.accountDao = accountDao;
+        this.entityDao = entityDao;
         this.guiEventService = guiEventService;
         this.guiService = guiService;
         this.messageService = messageService;
@@ -68,12 +71,30 @@ public class DefaultSubscriptionService implements SubscriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isSubscribed(int accountId, Set<EntityID> entities) {
         if (entities.isEmpty()) {
             return false;
         } else {
             Set<EntityID> subscribedEntities = subscriptionDao.findEntitiesByAccount(accountId);
             return subscribedEntities.containsAll(entities);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SubscriptionEntityInfo getSubscriptionEntityInfo(int accountId, Entity entity, int entityId) {
+        if (isSubscribed(accountId, Collections.singleton(new EntityID(entity, entityId)))) {
+            // Loads the entity name
+            String name = entityDao.getEntityName(entity, entityId);
+            EntityStub entityStub = new EntityStub(entity, entityId, name);
+            // Confirmation message
+            // TODO Gets the locale from the account (see ticket #81)
+            String message = getUnsubscriptionConfirmationMessage(entityStub, Locale.ENGLISH);
+            // OK
+            return new SubscriptionEntityInfo(entityStub, message);
+        } else {
+            return SubscriptionEntityInfo.none();
         }
     }
 
@@ -226,16 +247,20 @@ public class DefaultSubscriptionService implements SubscriptionService {
                     public NamedLink apply(EntityStub stub) {
                         return new NamedLink(
                                 getUnsubscriptionLink(stub),
-                                strings.get(
-                                        locale,
-                                        format(
-                                                "event.unsubscription.%s",
-                                                stub.getEntity().name()),
-                                        stub.getName()
-                                )
+                                getUnsubscriptionConfirmationMessage(stub, locale)
                         );
                     }
                 }
+        );
+    }
+
+    private String getUnsubscriptionConfirmationMessage(EntityStub stub, Locale locale) {
+        return strings.get(
+                locale,
+                format(
+                        "event.unsubscription.%s",
+                        stub.getEntity().name()),
+                stub.getName()
         );
     }
 

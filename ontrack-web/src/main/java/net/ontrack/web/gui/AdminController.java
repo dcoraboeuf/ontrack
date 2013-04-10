@@ -3,6 +3,8 @@ package net.ontrack.web.gui;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.SubscriptionEntityInfo;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
@@ -10,6 +12,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
+import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
@@ -40,6 +43,7 @@ public class AdminController extends AbstractGUIController {
     private final AdminService adminService;
     private final AccountService accountService;
     private final ConfigurationExtensionService configurationExtensionService;
+    private final SubscriptionService subscriptionService;
     private final SecurityUtils securityUtils;
     private final Strings strings;
 
@@ -49,11 +53,12 @@ public class AdminController extends AbstractGUIController {
             AdminService adminService,
             AccountService accountService,
             ConfigurationExtensionService configurationExtensionService,
-            SecurityUtils securityUtils, Strings strings) {
+            SubscriptionService subscriptionService, SecurityUtils securityUtils, Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
         this.configurationExtensionService = configurationExtensionService;
+        this.subscriptionService = subscriptionService;
         this.securityUtils = securityUtils;
         this.strings = strings;
     }
@@ -180,6 +185,21 @@ public class AdminController extends AbstractGUIController {
     public String accounts(Model model) {
         model.addAttribute("accounts", accountService.getAccounts());
         return "accounts";
+    }
+
+    /**
+     * Unsubscription query
+     */
+    @RequestMapping(value = "/unsubscribe/{entity}/{entityId:\\d+}", method = RequestMethod.GET)
+    public String unsubscribe(Model model, @PathVariable Entity entity, @PathVariable int entityId) {
+        // Checks for authentication
+        securityUtils.checkIsLogged();
+        // Gets the information about the subscription
+        SubscriptionEntityInfo info = subscriptionService.getSubscriptionEntityInfo(securityUtils.getCurrentAccountId(), entity, entityId);
+        // Puts into the model
+        model.addAttribute("info", info);
+        // Goes to the unsubscription page
+        return "entityUnsubscription";
     }
 
 }
