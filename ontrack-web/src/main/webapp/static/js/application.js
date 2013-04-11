@@ -248,20 +248,6 @@ var Application = function () {
 		});
 	}
 	
-	function ajaxDelete (url, successFn, errorMessageFn) {
-		$.ajax({
-			type: 'DELETE',
-			url: url,
-			dataType: 'json',
-			success: function (data) {
-				successFn(data);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
-			}
-		});
-	}
-	
 	function confirmAndCall (text, callback) {
 		$('<div>{0}</div>'.format(text)).dialog({
 			title: loc('general.confirm.title'),
@@ -358,12 +344,12 @@ var Application = function () {
 				confirmAndCall(
 					loc('{0}.delete.prompt'.format(extractEntity(entity)), o.name),
 					function () {
-						ajaxDelete (
-							url,
-							function () {
+					    AJAX.del({
+							url: url,
+							successFn: function () {
 								location = backUrl;
-							},
-							displayError);
+							}
+					    });
 					});
 			}
 	    });
