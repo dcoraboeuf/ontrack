@@ -1,17 +1,37 @@
 <map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1364126154789" ID="ID_1532692186" MODIFIED="1364145704972" TEXT="ontrack">
-<node CREATED="1364126193839" ID="ID_222513584" MODIFIED="1364321497559" POSITION="right" TEXT="subscriptions">
-<node CREATED="1364126206176" ID="ID_327838510" MODIFIED="1364126218181" TEXT="registered user">
-<node CREATED="1364126257378" ID="ID_567818757" MODIFIED="1364126264849" TEXT="auto registration for LDAP users">
-<node CREATED="1364126266331" ID="ID_1752587856" MODIFIED="1364126291761" TEXT="LDAP config parameters for registration">
-<node CREATED="1364126292811" ID="ID_880984027" MODIFIED="1364126297674" TEXT="email"/>
-<node CREATED="1364126299380" ID="ID_151363192" MODIFIED="1364126304282" TEXT="full name"/>
-</node>
-</node>
-</node>
-<node CREATED="1364152744082" FOLDED="true" ID="ID_219198289" MODIFIED="1365604353388" TEXT="on each entity page">
+<node CREATED="1364126193839" ID="ID_222513584" MODIFIED="1365684959198" POSITION="right" TEXT="subscriptions">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364126206176" ID="ID_327838510" MODIFIED="1365684959200" TEXT="registered user">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364126257378" ID="ID_567818757" MODIFIED="1365684959200" TEXT="auto registration for LDAP users">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364126266331" ID="ID_1752587856" MODIFIED="1365684959199" TEXT="LDAP config parameters for registration">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364126292811" ID="ID_880984027" MODIFIED="1365684959199" TEXT="email">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1364126299380" ID="ID_151363192" MODIFIED="1365684959199" TEXT="full name">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
+</node>
+</node>
+</node>
+</node>
+<node CREATED="1364152744082" FOLDED="true" ID="ID_219198289" MODIFIED="1365684959199" TEXT="on each entity page">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364152762888" ID="ID_1701063405" MODIFIED="1365604348589" TEXT="subscription for an entity">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 </node>
@@ -19,8 +39,9 @@
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node CREATED="1364321504918" FOLDED="true" ID="ID_161768752" MODIFIED="1365604344885" TEXT="message service">
+<node CREATED="1364321504918" FOLDED="true" ID="ID_161768752" MODIFIED="1365684959199" TEXT="message service">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364321497560" FOLDED="true" ID="ID_1305662966" MODIFIED="1365604342053" TEXT="mail service">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1364126223602" ID="ID_1500789667" MODIFIED="1364321479528" TEXT="configured mail server">

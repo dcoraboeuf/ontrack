@@ -18,6 +18,9 @@ net.ontrack.backend.TemplateNotFoundException
 net.ontrack.backend.TemplateMergeException
     en -> [E-006] Error while merging template {0}.
 
+net.ontrack.backend.security.AsAdminCallException
+    en -> [E-007] Error while running code as administrator.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

@@ -4,6 +4,7 @@ import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
 import net.ontrack.core.model.ID;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,20 @@ import org.springframework.security.ldap.authentication.LdapAuthenticationProvid
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.Callable;
+
 @Service
 public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider {
 
     private final AccountService accountService;
     private final LDAPProviderFactory ldapProviderFactory;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public ConfigurableLdapAuthenticationProvider(AccountService accountService, LDAPProviderFactory ldapProviderFactory) {
+    public ConfigurableLdapAuthenticationProvider(AccountService accountService, LDAPProviderFactory ldapProviderFactory, SecurityUtils securityUtils) {
         this.accountService = accountService;
         this.ldapProviderFactory = ldapProviderFactory;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -41,26 +46,31 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
             Authentication ldapAuthentication = ldapAuthenticationProvider.authenticate(authentication);
             if (ldapAuthentication != null && ldapAuthentication.isAuthenticated()) {
                 // Gets the account name
-                String name = ldapAuthentication.getName();
+                final String name = ldapAuthentication.getName();
                 // Gets any existing account
                 Account account = accountService.getAccount("ldap", name);
                 if (account == null) {
                     // If not found, auto-registers the account using the LDAP details
                     Object principal = ldapAuthentication.getPrincipal();
                     if (principal instanceof PersonLDAPUserDetails) {
-                        PersonLDAPUserDetails details = (PersonLDAPUserDetails) principal;
+                        final PersonLDAPUserDetails details = (PersonLDAPUserDetails) principal;
                         // Auto-registration if email is OK
                         if (StringUtils.isNotBlank(details.getEmail())) {
                             // Registration
-                            ID id = accountService.createAccount(new AccountCreationForm(
-                                name,
-                                details.getFullName(),
-                                    details.getEmail(),
-                                    SecurityRoles.USER,
-                                    "ldap",
-                                    "",
-                                    ""
-                            ));
+                            ID id = securityUtils.asAdmin(new Callable<ID>() {
+                                @Override
+                                public ID call() throws Exception {
+                                    return accountService.createAccount(new AccountCreationForm(
+                                            name,
+                                            details.getFullName(),
+                                            details.getEmail(),
+                                            SecurityRoles.USER,
+                                            "ldap",
+                                            "",
+                                            ""
+                                    ));
+                                }
+                            });
                             // Created account
                             account = accountService.getAccount(id.getValue());
                         } else {

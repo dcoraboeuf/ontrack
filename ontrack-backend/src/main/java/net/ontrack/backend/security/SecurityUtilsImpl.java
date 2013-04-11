@@ -9,7 +9,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Callable;
 
 @Service
 public class SecurityUtilsImpl implements SecurityUtils {
@@ -90,6 +93,29 @@ public class SecurityUtilsImpl implements SecurityUtils {
             }
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public <T> T asAdmin(Callable<T> call) {
+        // Current context
+        final SecurityContext context = SecurityContextHolder.getContext();
+        try {
+            // Creates a temporary admin context
+            SecurityContextImpl adminContext = new SecurityContextImpl();
+            adminContext.setAuthentication(new RunAsAdminAuthentication());
+            SecurityContextHolder.setContext(adminContext);
+            // Runs the call
+            try {
+                return call.call();
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception e) {
+                throw new AsAdminCallException(e);
+            }
+        } finally {
+            // Restores the initial context
+            SecurityContextHolder.setContext(context);
         }
     }
 }
