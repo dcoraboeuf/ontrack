@@ -3,8 +3,8 @@ package net.ontrack.core.model;
 import lombok.Data;
 
 public class ID {
-	
-	@Data
+
+    @Data
 	public static class IDAck {
 
 		public static IDAck test(boolean b) {
@@ -50,5 +50,9 @@ public class ID {
 	public int getValue() {
 		return value;
 	}
+
+    public Ack ack() {
+        return Ack.validate(isSuccess());
+    }
 
 }

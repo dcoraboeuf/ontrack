@@ -1,7 +1,7 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.backend.dao.model.TAccount;
-import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.ID;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface AccountDao {
 
     List<TAccount> findAll();
 
-    Ack createAccount(String name, String fullName, String email, String roleName, String mode, String password);
+    ID createAccount(String name, String fullName, String email, String roleName, String mode, String password);
 
     void deleteAccount(int id);
 }

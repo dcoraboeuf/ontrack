@@ -1,6 +1,8 @@
 package net.ontrack.backend.security;
 
 import net.ontrack.core.model.Account;
+import net.ontrack.core.model.AccountCreationForm;
+import net.ontrack.core.model.ID;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.AccountService;
 import org.apache.commons.lang.StringUtils;
@@ -11,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ConfigurableLdapAuthenticationProvider implements AuthenticationProvider {
@@ -25,6 +28,7 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
     }
 
     @Override
+    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // Gets the (cached) provider
         LdapAuthenticationProvider ldapAuthenticationProvider = ldapProviderFactory.getProvider();
@@ -47,9 +51,18 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
                         PersonLDAPUserDetails details = (PersonLDAPUserDetails) principal;
                         // Auto-registration if email is OK
                         if (StringUtils.isNotBlank(details.getEmail())) {
-                            // FIXME Registration
-                            // FIXME Created account
-                            account = new Account(0, name, details.getFullName(), details.getEmail(), SecurityRoles.USER, "ldap");
+                            // Registration
+                            ID id = accountService.createAccount(new AccountCreationForm(
+                                name,
+                                details.getFullName(),
+                                    details.getEmail(),
+                                    SecurityRoles.USER,
+                                    "ldap",
+                                    "",
+                                    ""
+                            ));
+                            // Created account
+                            account = accountService.getAccount(id.getValue());
                         } else {
                             // Temporary account
                             account = new Account(0, name, details.getFullName(), "", SecurityRoles.USER, "ldap");

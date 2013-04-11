@@ -2,7 +2,7 @@ package net.ontrack.service;
 
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.ID;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface AccountService {
 
     List<Account> getAccounts();
 
-    Ack createAccount(AccountCreationForm form);
+    ID createAccount(AccountCreationForm form);
 
     void deleteAccount(int id);
 }

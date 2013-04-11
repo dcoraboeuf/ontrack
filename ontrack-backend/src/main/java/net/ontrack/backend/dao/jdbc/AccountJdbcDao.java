@@ -4,7 +4,7 @@ import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.ID;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +97,8 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
 
     @Override
     @Transactional
-    public Ack createAccount(String name, String fullName, String email, String roleName, String mode, String password) {
-        return Ack.one(dbCreate(
+    public ID createAccount(String name, String fullName, String email, String roleName, String mode, String password) {
+        return ID.success(dbCreate(
                 SQL.ACCOUNT_CREATE,
                 params("name", name)
                         .addValue("fullName", fullName)

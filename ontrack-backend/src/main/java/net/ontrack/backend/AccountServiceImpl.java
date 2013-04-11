@@ -7,7 +7,7 @@ import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.ID;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
@@ -91,7 +91,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack createAccount(final AccountCreationForm form) {
+    public ID createAccount(final AccountCreationForm form) {
         // Validation
         validate(form, AccountValidation.class);
         // Validation: role

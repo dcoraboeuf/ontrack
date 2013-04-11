@@ -32,7 +32,7 @@ public class AdminUIController extends AbstractUIController {
     public
     @ResponseBody
     Ack createAccount(@RequestBody AccountCreationForm form) {
-        return accountService.createAccount(form);
+        return accountService.createAccount(form).ack();
     }
 
 }
