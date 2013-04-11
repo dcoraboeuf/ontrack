@@ -203,7 +203,13 @@ var Application = function () {
 		// Collects all fields values
 		var data = values (config.id);
 		// Call
-		ajax (config.method, config.url, data, config.successFn, config.errorMessageFn);
+		AJAX.call({
+		   method: config.method,
+		   url: config.url,
+		   data: data,
+		   successFn: config.successFn,
+		   errorFn: AJAX.simpleAjaxErrorFn(config.errorMessageFn)
+		});
 	}
 	
 	function onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn) {
