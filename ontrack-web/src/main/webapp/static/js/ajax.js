@@ -94,6 +94,8 @@ var AJAX = function () {
      * @param config.mode   Way of displaying the loading indicator (default: append):
      *      'append' - appends a loading image at the end of the element
      *      'appendText' - appends a loading image and a text at the end of the element
+     *      'container' - a loading element is set as the content of the <code>el</code> element
+     *      'toggle' - the <code>el</code> element is directly shown or hidden according to <code>show</code>
      * @param show          Boolean that indicates if the the loading must be hidden or shown (default: false)
      */
     function showLoading (config, show) {
@@ -121,6 +123,12 @@ var AJAX = function () {
                 $(config.el).empty();
                 if (show) {
                     $(config.el).append('<div class="loading">{0}</div>'.format(loc('general.loading')));
+                }
+            } else if (c.mode == 'toggle') {
+                if (show) {
+                    $(config.el).show();
+                } else {
+                    $(config.el).hide();
                 }
             } else {
                 throw 'ShowLoading: mode={0} not known'.format(c.mode);

@@ -38,33 +38,25 @@ var Properties = function () {
         var entityId = $('#entityId').val();
         // No error
         $('#property-add-error').hide();
-        // Loading
-        $('#property-add-loading').show();
         // Loading the edition box
-		$.ajax({
-			type: 'POST',
+		AJAX.post({
 			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(entity, entityId, extension, name),
-			contentType: 'application/json',
-			data: JSON.stringify({
+			data: {
 			    value: value
-			}),
-			dataType: 'json',
-			success: function () {
-                // Loading...
-                $('#property-add-loading').hide();
+			},
+			loading: {
+			    mode: 'toggle',
+			    el: '#property-add-loading'
+			},
+			successFn: function () {
                 // OK - reloads the property container
                 cancelAddProperties();
                 Template.reload('property-values');
 			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				Application.onAjaxError(jqXHR, textStatus, errorThrown, function (message) {
-                    // Error
-                    $('#property-add-error-message').text(message);
-                    $('#property-add-error').show();
-                    // Loading...
-                    $('#property-add-loading').hide();
-				});
-			}
+			errorFn: AJAX.simpleAjaxErrorFn(function (message) {
+                $('#property-add-error-message').text(message);
+                $('#property-add-error').show();
+			})
 		});
     }
 
