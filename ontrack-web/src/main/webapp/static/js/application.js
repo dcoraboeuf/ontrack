@@ -111,7 +111,7 @@ var Application = function () {
 	 * Displays an error in a dialog. If the message is null or not defined, clears the error box.
 	 */
 	function dialogError (id, message) {
-	    error(id + '-error');
+	    error(id + '-error', message);
 	}
 
 	/**

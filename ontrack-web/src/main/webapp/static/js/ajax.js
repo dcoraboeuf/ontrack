@@ -154,6 +154,8 @@ var AJAX = function () {
 	function getAjaxError (jqXHR, textStatus, errorThrown) {
 	    if (jqXHR.status == 0) {
 	        return loc('client.error.general');
+	    } else if (jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
+	        return jqXHR.responseText;
 	    } else {
 		    return '[{0}] {1}'.format(jqXHR.status, jqXHR.statusText);
 		}
