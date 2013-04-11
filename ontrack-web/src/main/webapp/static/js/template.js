@@ -127,7 +127,6 @@ var Template = function () {
 	function error (id, message) {
         $('#' + id + '-error').html(String(message).htmlWithLines());
         $('#' + id + '-error').show();
-        Application.loading("#" + id + '-loading', false);
 	}
 
 	function more (id) {
@@ -163,20 +162,14 @@ var Template = function () {
 	  		$('#' + id + '-error').hide();
             // Call
             if (config.data) {
-			    Application.loading("#" + id + '-loading', true);
-                var postData;
-                if ($.isFunction(config.data)) {
-                    postData = config.data();
-                } else {
-                    postData = config.data;
-                }
-                Application.ajax (
-                    'POST',
-                    url,
-                    postData,
-                    function (data) {
-                        // Loading done
-                        Application.loading("#" + id + '-loading', false);
+                AJAX.post ({
+                    url: url,
+                    data: config.data,
+                    loading: {
+                        mode: 'container',
+                        el: '#' + id + '-loading'
+                    },
+                    successFn: function (data) {
                         // Uses the data
                         try {
                             display(id, append, config, data);
@@ -186,10 +179,10 @@ var Template = function () {
                              error(id, message);
                         }
                     },
-                    function (message) {
+                    errorFn: AJAX.simpleAjaxErrorFn(function (message) {
                         error(id, message);
-                    }
-                );
+                    })
+                });
             } else {
                 AJAX.get({
                     url: url,

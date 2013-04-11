@@ -9,6 +9,14 @@ var AJAX = function () {
     }
 
     /**
+     * Performs a POST request
+     * @param config.*          See #call
+     */
+    function post (config) {
+        call($.extend(config, { method: 'POST' }));
+    }
+
+    /**
      * Performs a GET request
      * @param config.*          See #call
      */
@@ -29,6 +37,8 @@ var AJAX = function () {
      * @param config.loading        Loading indicator configuration (see #showLoading)
      * @param config.method         HTTP method (default: 'POST')
      * @param config.url            URL to call (required)
+     * @param config.data           Data to send, or function that generates this data (optional)
+     * @param config.contentType    Type of the data to send (default: 'application/json')
      * @param config.responseType   Type of the response (default: 'json')
      * @param config.successFn      (data -> void) function that is called with the data returned by the AJAX call (required)
      * @param config.errorFn        (jqXHR, textStatus, errorThrown -> void) function that allows for the treatment of the error (default: #defaultAjaxErrorFn)
@@ -38,8 +48,22 @@ var AJAX = function () {
         var c = $.extend({
             method: 'POST',
             responseType: 'json',
+            contentType: 'application/json',
             errorFn: defaultAjaxErrorFn
         }, config);
+        // Data to send
+        var data = null;
+        if (config.data) {
+            if ($.isFunction(config.data)) {
+                data = config.data();
+            } else {
+                data = config.data;
+            }
+            // Transformation?
+            if (c.contentType == 'application/json' && $.isPlainObject(data)) {
+                data = JSON.stringify(data);
+            }
+        }
         // Starting to load
         showLoading(c.loading, true);
         // Performing the call
@@ -47,6 +71,8 @@ var AJAX = function () {
 			type: c.method,
 			url: c.url,
 			dataType: c.responseType,
+			contentType: c.contentType,
+			data: data,
 			success: function (data) {
 			    // Loading ending
                 showLoading(c.loading, false);
@@ -155,6 +181,7 @@ var AJAX = function () {
         put: put,
         get: get,
         del: del,
+        post: post,
         call: call,
         // Loading
         showLoading: showLoading,

@@ -41,24 +41,23 @@ var ValidationRun = function () {
             }
         });
         // Sends the form
-        Application.ajax (
-            'POST',
-            'ui/manage/validation_run/{0}/comment'.format(runId),
-            {
+        AJAX.post({
+            url: 'ui/manage/validation_run/{0}/comment'.format(runId),
+            data: {
                 status: status,
                 description: description,
                 properties: properties
             },
-            function (data) {
+            successFn: function (data) {
                 // Closes the dialog
                 $('#statusUpdate-form').hide();
                 // Reloads the page
                 location.reload();
             },
-            function (message) {
+            errorFn: AJAX.simpleAjaxErrorFn(function (message) {
                 Application.error('statusUpdate-error', message);
-            }
-        );
+            })
+        });
         // Does not submit
         return false;
     }
