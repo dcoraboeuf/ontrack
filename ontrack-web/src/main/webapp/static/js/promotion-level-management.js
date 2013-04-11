@@ -97,7 +97,6 @@ var PromotionLevelManagement = function () {
                 el: promotionLevelLoadingIndicator
             },
             successFn: function (data) {
-                Application.loading(promotionLevelLoadingIndicator, false);
                 if (data.success) {
                     // Clears the DnD style for the validation stamp item
                     postDnD(validationStampItem, promotionLevelItem, promotionLevel);

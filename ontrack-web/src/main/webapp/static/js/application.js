@@ -319,13 +319,6 @@ var Application = function () {
 			return false;
 		}
 	}
-	
-	function loading (selector, loading) {
-		$(selector).empty();
-		if (loading) {
-			$(selector).append('<div class="loading">{0}</div>'.format(loc('general.loading')));
-		}
-	}
 
 	function extractEntity (value) {
 	    var pos = value.indexOf('/');
@@ -399,7 +392,6 @@ var Application = function () {
 			var confirmValue = $(confirmation).val();
 			return validate (confirmation, confirmValue == value);
 		},
-		loading: loading,
 		deleteEntity: deleteEntity,
 		ajax: ajax,
 		tooltips: tooltips,
