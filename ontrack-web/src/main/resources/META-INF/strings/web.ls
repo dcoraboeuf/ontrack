@@ -184,6 +184,14 @@ ldap.password
     en -> LDAP password
     fr -> Mot de passe LDAP
 
+ldap.fullNameAttribute
+    en -> Full name attribute
+    fr -> Attribut pour le nom complet
+
+ldap.emailAttribute
+    en -> Email attribute
+    fr -> Attribut pour le courriel
+
 ldap.saved
     en -> LDAP configuration has been saved.
     fr -> La configuration LDAP a été sauvegardée.

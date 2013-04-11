@@ -14,5 +14,7 @@ public class LDAPConfiguration implements LDAPConfigurationValidation {
     private String searchFilter;
     private String user;
     private String password;
+    private String fullNameAttribute;
+    private String emailAttribute;
 
 }

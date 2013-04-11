@@ -5,5 +5,4 @@ import org.springframework.security.ldap.authentication.LdapAuthenticationProvid
 public interface LDAPProviderFactory {
 
     LdapAuthenticationProvider getProvider();
-
 }

@@ -3,6 +3,7 @@ package net.ontrack.backend.security;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.AccountService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,11 +36,28 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
         else {
             Authentication ldapAuthentication = ldapAuthenticationProvider.authenticate(authentication);
             if (ldapAuthentication != null && ldapAuthentication.isAuthenticated()) {
-                // Gets the account
+                // Gets the account name
                 String name = ldapAuthentication.getName();
+                // Gets any existing account
                 Account account = accountService.getAccount("ldap", name);
                 if (account == null) {
-                    account = new Account(0, name, name, "", SecurityRoles.USER, "ldap");
+                    // If not found, auto-registers the account using the LDAP details
+                    Object principal = ldapAuthentication.getPrincipal();
+                    if (principal instanceof PersonLDAPUserDetails) {
+                        PersonLDAPUserDetails details = (PersonLDAPUserDetails) principal;
+                        // Auto-registration if email is OK
+                        if (StringUtils.isNotBlank(details.getEmail())) {
+                            // FIXME Registration
+                            // FIXME Created account
+                            account = new Account(0, name, details.getFullName(), details.getEmail(), SecurityRoles.USER, "ldap");
+                        } else {
+                            // Temporary account
+                            account = new Account(0, name, details.getFullName(), "", SecurityRoles.USER, "ldap");
+                        }
+                    } else {
+                        // Temporary account
+                        account = new Account(0, name, name, "", SecurityRoles.USER, "ldap");
+                    }
                 }
                 // OK
                 return new AccountAuthentication(account);

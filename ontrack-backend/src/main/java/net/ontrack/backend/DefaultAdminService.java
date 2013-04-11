@@ -24,7 +24,6 @@ public class DefaultAdminService implements AdminService {
     private final ValidatorService validatorService;
     private final ConfigurationService configurationService;
     private final ConfigurationExtensionService configurationExtensionService;
-
     private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
 
     @Autowired
@@ -57,6 +56,8 @@ public class DefaultAdminService implements AdminService {
             c.setSearchFilter(configurationService.get(ConfigurationKey.LDAP_SEARCH_FILTER, true, null));
             c.setUser(configurationService.get(ConfigurationKey.LDAP_USER, true, null));
             c.setPassword(configurationService.get(ConfigurationKey.LDAP_PASSWORD, true, null));
+            c.setFullNameAttribute(configurationService.get(ConfigurationKey.LDAP_FULLNAME_ATTRIBUTE, false, ""));
+            c.setEmailAttribute(configurationService.get(ConfigurationKey.LDAP_EMAIL_ATTRIBUTE, false, ""));
         } else {
             // Default values
             c.setPort(389);
@@ -111,6 +112,8 @@ public class DefaultAdminService implements AdminService {
             configurationService.set(ConfigurationKey.LDAP_SEARCH_FILTER, configuration.getSearchFilter());
             configurationService.set(ConfigurationKey.LDAP_USER, configuration.getUser());
             configurationService.set(ConfigurationKey.LDAP_PASSWORD, configuration.getPassword());
+            configurationService.set(ConfigurationKey.LDAP_FULLNAME_ATTRIBUTE, configuration.getFullNameAttribute());
+            configurationService.set(ConfigurationKey.LDAP_EMAIL_ATTRIBUTE, configuration.getEmailAttribute());
         }
     }
 

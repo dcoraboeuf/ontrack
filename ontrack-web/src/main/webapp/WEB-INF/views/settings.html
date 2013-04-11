@@ -42,6 +42,8 @@
                             <@form_text idPrefix="ldap-" name="searchFilter" label=loc("ldap.search.filter") class="settings-ldap input-large" value=ldap.searchFilter />
                             <@form_text idPrefix="ldap-" name="user" label=loc("ldap.user") class="settings-ldap" value=ldap.user />
                             <@form_password idPrefix="ldap-" name="password" label=loc("ldap.password") class="settings-ldap" value=ldap.password />
+                            <@form_text idPrefix="ldap-" name="fullNameAttribute" label=loc("ldap.fullNameAttribute") value=ldap.fullNameAttribute required=false />
+                            <@form_text idPrefix="ldap-" name="emailAttribute" label=loc("ldap.emailAttribute") value=ldap.emailAttribute required=false />
                         </div>
                         <div class="control-group">
                             <div class="controls">
