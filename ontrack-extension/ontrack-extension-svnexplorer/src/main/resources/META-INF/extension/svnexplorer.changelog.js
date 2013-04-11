@@ -2,9 +2,41 @@ var ChangeLog = function () {
 
     var revisions = null;
 
+    function toggleMergedRevision (parentRevision) {
+        $('tr[parent="{0}"]'.format(parentRevision)).toggle();
+    }
+
     function displayRevisions (data) {
         // Stores the revisions (local cache for display purpose only)
         revisions = data;
+        // Computation for the layout
+        var currentLevel = 0;
+        $.each (revisions.list, function (index, entry) {
+            // Merge management
+            entry.merge = false;
+            entry.merged = false;
+            var level = entry.level;
+            if (level > currentLevel) {
+                var previous = revisions.list[index - 1];
+                // The previous entry is a merge
+                previous.merge = true;
+                // Parent for this entry
+                entry.merged = true;
+                entry.mergeParent = previous.revision;
+            } else if (level < currentLevel) {
+                // Merge section done
+            } else {
+                // Same level
+                // Copies properties from previous item
+                if (index > 0) {
+                    var previous = revisions.list[index - 1];
+                    entry.merged = previous.merged;
+                    entry.mergeParent = previous.mergeParent;
+                }
+            }
+            // Change the current level
+            currentLevel = level;
+        });
         // Rendering
         $('#revisions').html(Template.render('revisions-template', revisions));
     }
@@ -35,7 +67,8 @@ var ChangeLog = function () {
     }
 
     return {
-        init: init
+        init: init,
+        toggleMergedRevision: toggleMergedRevision
     };
 
 } ();
