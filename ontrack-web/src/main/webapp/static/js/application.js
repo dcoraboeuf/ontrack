@@ -242,20 +242,6 @@ var Application = function () {
 		});
 	}
 	
-	function ajaxGet (url, successFn, errorMessageFn) {
-		$.ajax({
-			type: 'GET',
-			url: url,
-			dataType: 'json',
-			success: function (data) {
-				successFn(data);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
-			}
-		});
-	}
-	
 	function ajaxDelete (url, successFn, errorMessageFn) {
 		$.ajax({
 			type: 'DELETE',
@@ -423,7 +409,6 @@ var Application = function () {
 		},
 		loading: loading,
 		deleteEntity: deleteEntity,
-		ajaxGet: ajaxGet,
 		ajax: ajax,
 		tooltips: tooltips,
 		informationMessageTemplate: informationMessageTemplate
