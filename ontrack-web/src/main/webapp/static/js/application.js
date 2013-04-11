@@ -246,19 +246,6 @@ var Application = function () {
 		});
 	}
 	
-	function getAjaxError (message, jqXHR, textStatus, errorThrown) {
-	    if (jqXHR.status == 0) {
-            return loc('client.error.general');
-	    } else {
-		    return '{0}\n[{1}] {2}'.format(message, jqXHR.status, jqXHR.statusText);
-		}
-	}
-	
-	function displayAjaxError (message, jqXHR, textStatus, errorThrown) {
-		var text = getAjaxError(message, jqXHR, textStatus, errorThrown);
-		displayError(text);
-	}
-	
 	function changeLanguage (lang) {
 		if (location.search.indexOf("language") > -1) {
 	    	location.search = location.search.replace(/language=[a-z][a-z]/, "language=" + lang);
@@ -337,8 +324,6 @@ var Application = function () {
 		confirmAndCall: confirmAndCall,
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
-		displayAjaxError: displayAjaxError,
-		getAjaxError: getAjaxError,
 		changeLanguage: changeLanguage,
 		validateTextAsName: function (selector) {
 			var value = $(selector).val();
