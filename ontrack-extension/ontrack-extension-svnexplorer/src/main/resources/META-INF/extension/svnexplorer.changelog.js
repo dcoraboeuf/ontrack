@@ -2,6 +2,13 @@ var ChangeLog = function () {
 
     var revisions = null;
 
+    function displayRevisions (data) {
+        // Stores the revisions (local cache for display purpose only)
+        revisions = data;
+        // Rendering
+        $('#revisions').html(Template.render('revisions-template', revisions));
+    }
+
     function loadRevisions () {
         if (revisions == null) {
             // UUID for the change log
@@ -13,7 +20,7 @@ var ChangeLog = function () {
                     el: '#revisions',
                     mode: 'appendText'
                 },
-                successFn: $.noop,
+                successFn: displayRevisions,
                 errorFn: changelogErrorFn()
             });
         }

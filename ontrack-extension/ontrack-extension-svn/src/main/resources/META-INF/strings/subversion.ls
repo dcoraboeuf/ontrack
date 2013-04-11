@@ -32,6 +32,10 @@ subversion.configuration.browserForPath
     en -> URL for browsing a path
     fr -> URL pour la navigation vers un chemin
 
+subversion.configuration.browserForRevision
+    en -> URL for browsing a revision
+    fr -> URL pour la navigation vers une révision
+
 [path]
 
 subversion.path

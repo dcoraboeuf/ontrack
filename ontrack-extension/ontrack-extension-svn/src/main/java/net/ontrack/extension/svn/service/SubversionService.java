@@ -45,4 +45,9 @@ public interface SubversionService {
      *         for the given <code>path</code>.
      */
     SVNHistory getHistory(String path);
+
+    /**
+     * Gets the URL that allows a user to browse the content of a revision
+     */
+    String getRevisionBrowsingURL(long revision);
 }

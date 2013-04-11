@@ -55,6 +55,16 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
+    public String getRevisionBrowsingURL(long revision) {
+        String browserForPath = configurationExtension.getBrowserForRevision();
+        if (StringUtils.isNotBlank(browserForPath)) {
+            return browserForPath.replace("*", String.valueOf(revision));
+        } else {
+            return String.valueOf(revision);
+        }
+    }
+
+    @Override
     public long getRepositoryRevision(SVNURL url) {
         try {
             SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);

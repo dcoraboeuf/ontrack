@@ -31,3 +31,7 @@ net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranch
 net.ontrack.extension.svnexplorer.ui.ChangeLogUUIDException
     en -> Change log with UUID {0} has not found. Maybe it has expired.
     fr -> Les changements d'UUID {0} n'ont pas été trouvés. Ils ont peut-être expiré.
+
+net.ontrack.extension.svnexplorer.service.NoCommonAncestorException
+    en -> No common ancestor was found between the builds histories.
+    fr -> Aucun ancêtre common n'a été trouvé entre les historiques des builds.
