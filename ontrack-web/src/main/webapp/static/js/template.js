@@ -160,10 +160,10 @@ var Template = function () {
 		    // Logging
 		    // console.log('Template.load id={0},url={1},more={2},append={3}'.format(id, url, config.more, append));
 			// Starts loading
-			Application.loading("#" + id + '-loading', true);
 	  		$('#' + id + '-error').hide();
             // Call
             if (config.data) {
+			    Application.loading("#" + id + '-loading', true);
                 var postData;
                 if ($.isFunction(config.data)) {
                     postData = config.data();
@@ -191,11 +191,13 @@ var Template = function () {
                     }
                 );
             } else {
-                Application.ajaxGet (
-                    url,
-                    function (data) {
-                        // Loading done
-                        Application.loading("#" + id + '-loading', false);
+                AJAX.get({
+                    url: url,
+                    loading: {
+                        mode: 'container',
+                        el: '#' + id + '-loading'
+                    },
+                    successFn: function (data) {
                         // Uses the data
                         try {
                             display(id, append, config, data);
@@ -205,10 +207,10 @@ var Template = function () {
                              error(id, message);
                         }
                     },
-                    function (message) {
+                    errorFn: AJAX.simpleAjaxErrorFn(function (message) {
                         error(id, message);
-                    }
-                );
+                    })
+                });
             }
 		} else {
 		    throw 'No "url" is defined for dynamic section "{0}"'.format(id);

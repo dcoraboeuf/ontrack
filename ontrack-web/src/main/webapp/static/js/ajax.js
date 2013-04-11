@@ -91,6 +91,11 @@ var AJAX = function () {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();
                 }
+            } else if (c.mode == 'container') {
+                $(config.el).empty();
+                if (show) {
+                    $(config.el).append('<div class="loading">{0}</div>'.format(loc('general.loading')));
+                }
             } else {
                 throw 'ShowLoading: mode={0} not known'.format(c.mode);
             }
