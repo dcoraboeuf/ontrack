@@ -12,7 +12,7 @@ import java.util.List;
 @Configuration
 public class DBConfig {
 	
-	public static final int VERSION = 15;
+	public static final int VERSION = 16;
 	
 	@Autowired
 	private DataSource dataSource;
