@@ -212,19 +212,6 @@ var Application = function () {
 		});
 	}
 	
-	function onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn) {
-	  	if (errorMessageFn) {
-	  		if (jqXHR.status == 500 && jqXHR.responseText && jqXHR.responseText != '') {
-	  			errorMessageFn(jqXHR.responseText);
-	  		} else {
-	  			var message = getAjaxError(loc('client.error.general'), jqXHR, textStatus, errorThrown);
-	  			errorMessageFn(message);
-	  		}
-	  	} else {
-	  		Application.displayAjaxError (loc('client.error.general'), jqXHR, textStatus, errorThrown);
-	  	}
-	}
-	
 	function confirmAndCall (text, callback) {
 		$('<div>{0}</div>'.format(text)).dialog({
 			title: loc('general.confirm.title'),
@@ -351,7 +338,6 @@ var Application = function () {
 		confirmIDAndCall: confirmIDAndCall,
 		displayError: displayError,
 		displayAjaxError: displayAjaxError,
-		onAjaxError: onAjaxError,
 		getAjaxError: getAjaxError,
 		changeLanguage: changeLanguage,
 		validateTextAsName: function (selector) {

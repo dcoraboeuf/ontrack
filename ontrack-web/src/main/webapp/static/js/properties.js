@@ -74,31 +74,26 @@ var Properties = function () {
     function showEditionBox (config) {
         // No error
         $('#' + config.id + '-error').hide();
-        // Loading
-        $('#' + config.id + '-loading').show();
         // Loading the edition box
-		$.ajax({
-			type: 'GET',
+		AJAX.get({
 			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(config.entity, config.entityId, config.extension, config.name),
-			dataType: 'html',
-			success: function (html) {
-                // Loading...
-                $('#' + config.id + '-loading').hide();
+			responseType: 'html',
+			loading: {
+			    mode: 'toggle',
+			    el: '#' + config.id + '-loading'
+			},
+			successFn: function (html) {
                 // Display
                 $('#' + config.id + '-field').html(html);
                 // Adjusting the label
                 // Showing the edition box
                 $('#' + config.id + '-field').show();
 			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				Application.onAjaxError(jqXHR, textStatus, errorThrown, function (message) {
-                    // Error
-                    $('#' + config.id + '-error-message').text(message);
-                    $('#' + config.id + '-error').show();
-                    // Loading...
-                    $('#' + config.id + '-loading').hide();
-				});
-			}
+			errorFn: AJAX.simpleAjaxErrorFn(function (message) {
+                // Error
+                $('#' + config.id + '-error-message').text(message);
+                $('#' + config.id + '-error').show();
+            })
 		});
     }
 
