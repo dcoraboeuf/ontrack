@@ -360,9 +360,9 @@ var Application = function () {
 	
 	function deleteEntity (entity, id, backUrl) {
 		var url = 'ui/manage/{0}/{1}'.format(entity, id);
-		ajaxGet (
-			url,
-			function (o) {
+		AJAX.get ({
+			url: url,
+			successFn: function (o) {
 				confirmAndCall(
 					loc('{0}.delete.prompt'.format(extractEntity(entity)), o.name),
 					function () {
@@ -373,8 +373,8 @@ var Application = function () {
 							},
 							displayError);
 					});
-			},
-			displayError);
+			}
+	    });
 	}
 
 	function tooltips () {

@@ -12,26 +12,24 @@ var PromotionLevelManagement = function () {
         var promotionLevelLoadingIndicator = '#loading-indicator-' + promotionLevel;
         var project = $('#project').val();
         var branch = $('#branch').val();
-        Application.loading(promotionLevelLoadingIndicator, true);
         // Ajax to perform the re-ordering
-        Application.ajaxGet(
-            'ui/manage/project/{0}/branch/{1}/promotion_level/{2}/{3}'.format(
-                project.html(),
-                branch.html(),
-                promotionLevel.html(),
-                direction
-            ),
-            function (data) {
-                Application.loading(promotionLevelLoadingIndicator, false);
+        AJAX.get({
+            url: 'ui/manage/project/{0}/branch/{1}/promotion_level/{2}/{3}'.format(
+                                 project.html(),
+                                 branch.html(),
+                                 promotionLevel.html(),
+                                 direction
+                             ),
+            loading: {
+                mode: 'container',
+                el: promotionLevelLoadingIndicator
+            },
+            successFn: function (data) {
                 if (data.success) {
                     location.reload();
                 }
-            },
-            function (message) {
-                Application.loading(promotionLevelLoadingIndicator, false);
-                Application.displayError(message);
             }
-        );
+        });
     }
 
     function unlink (validationStampItem) {
@@ -44,25 +42,23 @@ var PromotionLevelManagement = function () {
             var branch = $('#branch').val();
             // Starts indicating the loading
             var promotionLevelLoadingIndicator = '#loading-indicator-' + promotionLevel;
-            Application.loading(promotionLevelLoadingIndicator, true);
             // Ajax to perform the unlink
-            Application.ajaxGet(
-                'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/unlink'.format(
+            AJAX.get({
+                url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/unlink'.format(
                     project.html(),
                     branch.html(),
                     validationStamp.html()
                 ),
-                function (data) {
-                    Application.loading(promotionLevelLoadingIndicator, false);
+                loading: {
+                    mode: 'container',
+                    el: promotionLevelLoadingIndicator
+                },
+                successFn: function (data) {
                     if (data.success) {
                         postDnD(validationStampItem, $('#freeValidationStamps'), false);
                     }
-                },
-                function (message) {
-                    Application.loading(promotionLevelLoadingIndicator, false);
-                    Application.displayError(message);
                 }
-            );
+            });
         }
     }
 
@@ -88,27 +84,26 @@ var PromotionLevelManagement = function () {
         var branch = $('#branch').val();
         // Starts indicating the loading
         var promotionLevelLoadingIndicator = '#loading-indicator-' + promotionLevel;
-        Application.loading(promotionLevelLoadingIndicator, true);
         // Ajax to perform the link
-        Application.ajaxGet(
-            'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/link/{3}'.format(
+        AJAX.get({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/link/{3}'.format(
                 project.html(),
                 branch.html(),
                 validationStamp.html(),
                 promotionLevel.html()
             ),
-            function (data) {
+            loading: {
+                mode: 'container',
+                el: promotionLevelLoadingIndicator
+            },
+            successFn: function (data) {
                 Application.loading(promotionLevelLoadingIndicator, false);
                 if (data.success) {
                     // Clears the DnD style for the validation stamp item
                     postDnD(validationStampItem, promotionLevelItem, promotionLevel);
                 }
-            },
-            function (message) {
-                Application.loading(promotionLevelLoadingIndicator, false);
-                Application.displayError(message);
             }
-        );
+        });
     }
 
     function initDropZones () {
