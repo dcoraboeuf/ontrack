@@ -17,6 +17,14 @@ var AJAX = function () {
     }
 
     /**
+     * Performs a DELETE request
+     * @param config.*          See #call
+     */
+    function del (config) {
+        call($.extend(config, { method: 'DELETE' }));
+    }
+
+    /**
      * Performs an AJAX call
      * @param config.loading        Loading indicator configuration (see #showLoading)
      * @param config.method         HTTP method (default: 'POST')
@@ -113,7 +121,11 @@ var AJAX = function () {
      * Gets the AJAX error message
      */
 	function getAjaxError (jqXHR, textStatus, errorThrown) {
-		return '[{0}] {1}'.format(jqXHR.status, jqXHR.statusText);
+	    if (jqXHR.status == 0) {
+	        return loc('client.error.general');
+	    } else {
+		    return '[{0}] {1}'.format(jqXHR.status, jqXHR.statusText);
+		}
 	}
 
 	/**
@@ -137,6 +149,7 @@ var AJAX = function () {
         // AJAX calls
         put: put,
         get: get,
+        del: del,
         call: call,
         // Loading
         showLoading: showLoading,

@@ -305,7 +305,11 @@ var Application = function () {
 	}
 	
 	function getAjaxError (message, jqXHR, textStatus, errorThrown) {
-		return '{0}\n[{1}] {2}'.format(message, jqXHR.status, jqXHR.statusText);
+	    if (jqXHR.status == 0) {
+            return loc('client.error.general');
+	    } else {
+		    return '{0}\n[{1}] {2}'.format(message, jqXHR.status, jqXHR.statusText);
+		}
 	}
 	
 	function displayAjaxError (message, jqXHR, textStatus, errorThrown) {
