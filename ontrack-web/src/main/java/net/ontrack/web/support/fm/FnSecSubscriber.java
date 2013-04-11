@@ -29,6 +29,7 @@ public class FnSecSubscriber implements TemplateMethodModel {
         Account account = securityUtils.getCurrentAccount();
         // Test
         return account != null
+                && account.getId() != 0
                 && StringUtils.isNotBlank(account.getEmail())
                 && subscriptionService.isEnabled();
     }

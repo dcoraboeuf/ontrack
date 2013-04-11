@@ -73,7 +73,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
     @Override
     @Transactional(readOnly = true)
     public boolean isSubscribed(int accountId, Set<EntityID> entities) {
-        if (entities.isEmpty()) {
+        if (accountId == 0 || entities.isEmpty()) {
             return false;
         } else {
             Set<EntityID> subscribedEntities = subscriptionDao.findEntitiesByAccount(accountId);
