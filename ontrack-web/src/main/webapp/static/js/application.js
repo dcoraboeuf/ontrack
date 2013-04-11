@@ -225,29 +225,6 @@ var Application = function () {
 	  	}
 	}
 	
-	/**
-	 * @param method HTTP method to use ('GET', 'POST'...)
-	 * @param url URL to call
-	 * @param data Data to send as JSON
-	 * @param successFn <code>(JSON => .)</code> Function called in case of success.
-	 * @param errorMessageFn <code>(String => .)</code> Function called in case of error.
-	 */
-	function ajax (method, url, data, successFn, errorMessageFn) {
-		$.ajax({
-			type: method,
-			url: url,
-			contentType: 'application/json',
-			data: JSON.stringify(data),
-			dataType: 'json',
-			success: function (data) {
-				successFn(data);
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				onAjaxError(jqXHR, textStatus, errorThrown, errorMessageFn);
-			}
-		});
-	}
-	
 	function confirmAndCall (text, callback) {
 		$('<div>{0}</div>'.format(text)).dialog({
 			title: loc('general.confirm.title'),
@@ -393,7 +370,6 @@ var Application = function () {
 			return validate (confirmation, confirmValue == value);
 		},
 		deleteEntity: deleteEntity,
-		ajax: ajax,
 		tooltips: tooltips,
 		informationMessageTemplate: informationMessageTemplate
 	};
