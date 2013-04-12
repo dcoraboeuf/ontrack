@@ -6,6 +6,7 @@ import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.SVNHistory;
@@ -42,13 +43,15 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final SubversionService subversionService;
+    private final JIRAService jiraService;
     private final TransactionService transactionService;
 
     @Autowired
-    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, TransactionService transactionService) {
+    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, JIRAService jiraService, TransactionService transactionService) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.subversionService = subversionService;
+        this.jiraService = jiraService;
         this.transactionService = transactionService;
     }
 
@@ -167,7 +170,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private ChangeLogRevision createChangeLogRevision(int level, SVNLogEntry svnEntry) {
         long revision = svnEntry.getRevision();
         String message = svnEntry.getMessage();
-        // TODO Formatted message
+        // Formatted message
+        String formattedMessage = jiraService.insertIssueUrlsInMessage(message);
         // Revision URL
         String revisionUrl = subversionService.getRevisionBrowsingURL(revision);
         // OK
@@ -177,7 +181,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 svnEntry.getAuthor(),
                 format.print(new DateTime(svnEntry.getDate())),
                 message,
-                revisionUrl);
+                revisionUrl,
+                formattedMessage);
     }
 
     private SVNBuild getBuild(int buildId) {

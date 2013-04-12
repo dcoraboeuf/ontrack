@@ -1,7 +1,7 @@
 <map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1364126154789" ID="ID_1532692186" MODIFIED="1364145704972" TEXT="ontrack">
-<node CREATED="1364126193839" ID="ID_222513584" MODIFIED="1365684959198" POSITION="right" TEXT="subscriptions">
+<node CREATED="1364126193839" FOLDED="true" ID="ID_222513584" MODIFIED="1365748944025" POSITION="right" TEXT="subscriptions">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 <node CREATED="1364126206176" ID="ID_327838510" MODIFIED="1365684959200" TEXT="registered user">
@@ -135,7 +135,9 @@
 </node>
 </node>
 </node>
-<node CREATED="1364145715639" ID="ID_929420536" MODIFIED="1364145726018" TEXT="svn configuration">
+<node CREATED="1364145715639" FOLDED="true" ID="ID_929420536" MODIFIED="1365749014809" TEXT="svn configuration">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364145727255" ID="ID_81192316" MODIFIED="1364292031675" TEXT="repository url">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -144,18 +146,22 @@
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1364305737897" TEXT="svn browser">
+<node CREATED="1364152285532" ID="ID_237640678" MODIFIED="1365749012001" TEXT="svn browser">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
 <node CREATED="1364204497919" ID="ID_1449025321" MODIFIED="1364292031674" TEXT="path browsing">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 </node>
-<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1364305740756" TEXT="other url patterns">
-<font ITALIC="true" NAME="SansSerif" SIZE="12"/>
+<node CREATED="1364152297361" ID="ID_1274688941" MODIFIED="1365749012001" TEXT="other url patterns">
+<font BOLD="true" ITALIC="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="help"/>
+<icon BUILTIN="button_ok"/>
+<icon BUILTIN="button_ok"/>
 </node>
 </node>
 </node>
-<node CREATED="1364152359351" ID="ID_1601143387" MODIFIED="1364307782896" TEXT="svn properties">
+<node CREATED="1364152359351" FOLDED="true" ID="ID_1601143387" MODIFIED="1365749016625" TEXT="svn properties">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
 <node CREATED="1364152363732" ID="ID_1114034841" MODIFIED="1364307783633" TEXT="svn at branch level">
@@ -191,7 +197,10 @@
 <node CREATED="1364126335733" ID="ID_1914983365" MODIFIED="1364126337163" TEXT="jira">
 <node CREATED="1364145642606" ID="ID_1039263856" MODIFIED="1364205033740" TEXT="jira access service">
 <node CREATED="1364145651307" ID="ID_903789381" MODIFIED="1364145656230" TEXT="jira rest client"/>
-<node CREATED="1364152999151" ID="ID_750204296" MODIFIED="1364153003910" TEXT="link to an issue"/>
+<node CREATED="1364152999151" ID="ID_750204296" MODIFIED="1365748953742" TEXT="link to an issue">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1364205033740" ID="ID_1620413834" MODIFIED="1364292036828" TEXT="extract issues from a message">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <icon BUILTIN="button_ok"/>
@@ -201,14 +210,25 @@
 <node CREATED="1364152082124" ID="ID_1234297002" MODIFIED="1364152105585" TEXT="change log">
 <node CREATED="1364152108304" ID="ID_306751339" MODIFIED="1364152115553" TEXT="selection of 2 builds">
 <node CREATED="1364152129779" ID="ID_136812875" MODIFIED="1364152146897" TEXT="entering 2 build names"/>
-<node CREATED="1364152148124" ID="ID_1959303993" MODIFIED="1364152163915" TEXT="from the list of builds"/>
+<node CREATED="1364152148124" ID="ID_1959303993" MODIFIED="1365748971335" TEXT="from the list of builds">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 <node CREATED="1364152166605" ID="ID_685640897" MODIFIED="1364152174149" TEXT="display of boundaries">
-<node CREATED="1364152180161" ID="ID_318837181" MODIFIED="1364152184000" TEXT="svn origin"/>
+<node CREATED="1364152180161" ID="ID_318837181" MODIFIED="1365748971335" TEXT="svn origin">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 <node CREATED="1364152186298" ID="ID_40309457" MODIFIED="1364152191125" TEXT="promotions"/>
 </node>
-<node CREATED="1364152199924" ID="ID_1611460513" MODIFIED="1364152203222" TEXT="revision log">
-<node CREATED="1364153118653" ID="ID_1781606119" MODIFIED="1364153122895" TEXT="link to the revisions"/>
+<node CREATED="1364152199924" ID="ID_1611460513" MODIFIED="1365748981575" TEXT="revision log">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+<node CREATED="1364153118653" ID="ID_1781606119" MODIFIED="1365748981576" TEXT="link to the revisions">
+<font BOLD="true" NAME="SansSerif" SIZE="12"/>
+<icon BUILTIN="button_ok"/>
+</node>
 </node>
 <node CREATED="1364152204541" ID="ID_1294009173" MODIFIED="1364152208444" TEXT="jira log">
 <node CREATED="1364152845417" ID="ID_713063623" MODIFIED="1364152874674" TEXT="warning on anomalies">

@@ -11,5 +11,6 @@ public class ChangeLogRevision {
     private final String isoDateTime;
     private final String message;
     private final String revisionUrl;
+    private final String formattedMessage;
 
 }
