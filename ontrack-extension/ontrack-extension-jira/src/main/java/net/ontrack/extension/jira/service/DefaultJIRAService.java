@@ -1,9 +1,16 @@
 package net.ontrack.extension.jira.service;
 
+import com.atlassian.jira.rest.client.NullProgressMonitor;
+import com.atlassian.jira.rest.client.RestClientException;
+import com.atlassian.jira.rest.client.domain.BasicUser;
+import com.atlassian.jira.rest.client.domain.Issue;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
 import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
+import net.ontrack.extension.jira.tx.JIRASession;
+import net.ontrack.tx.Transaction;
+import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +23,12 @@ import java.util.regex.Matcher;
 public class DefaultJIRAService implements JIRAService {
 
     private final JIRAConfigurationExtension configurationExtension;
+    private final TransactionService transactionService;
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension) {
+    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, TransactionService transactionService) {
         this.configurationExtension = configurationExtension;
+        this.transactionService = transactionService;
     }
 
     @Override
@@ -61,7 +70,35 @@ public class DefaultJIRAService implements JIRAService {
 
     @Override
     public JIRAIssue getIssue(String key) {
-        // FIXME Implement net.ontrack.extension.jira.service.DefaultJIRAService.getIssue
-        return null;
+        try (Transaction tx = transactionService.start()) {
+            JIRASession session = tx.getResource(JIRASession.class);
+            try {
+                Issue issue = session.getClient().getIssueClient().getIssue(key, new NullProgressMonitor());
+                // Creates the JIRA issue
+                // TODO Translation of fields
+                // TODO Status
+                return new JIRAIssue(
+                        getIssueURL(issue.getKey()),
+                        issue.getKey(),
+                        issue.getSummary(),
+                        getUserName(issue.getAssignee()),
+                        issue.getUpdateDate()
+                );
+            } catch (RestClientException ex) {
+                if ("Issue Does Not Exist".equals(ex.getMessage())) {
+                    return null;
+                } else {
+                    throw ex;
+                }
+            }
+        }
+    }
+
+    private String getUserName(BasicUser user) {
+        if (user != null) {
+            return user.getDisplayName();
+        } else {
+            return "";
+        }
     }
 }

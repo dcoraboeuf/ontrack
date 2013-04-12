@@ -20,6 +20,7 @@ import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.service.ManagementService;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,6 +208,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Gets the details about the JIRA issue
         try {
             JIRAIssue issue = jiraService.getIssue(issueKey);
+            if (issue == null || StringUtils.isBlank(issue.getKey())) {
+                return null;
+            }
             // Creates the issue details for the change logs
             return new ChangeLogIssue(issue);
         } catch (JIRAIssueNotFoundException ex) {

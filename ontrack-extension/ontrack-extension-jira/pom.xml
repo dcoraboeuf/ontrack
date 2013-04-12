@@ -12,5 +12,17 @@
     <artifactId>ontrack-extension-jira</artifactId>
     <name>ontrack Extension JIRA</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-tx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-rest-java-client</artifactId>
+            <version>0.6-m3</version>
+        </dependency>
+    </dependencies>
 
 </project>

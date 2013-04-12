@@ -43,7 +43,10 @@ var ChangeLog = function () {
     }
 
     function displayIssues (data) {
-        // FIXME displayIssues
+        // Stores the issues (local cache for display purpose only)
+        issues = data;
+        // Rendering
+        $('#issues').html(Template.render('issues-template', issues));
     }
 
     function loadRevisions () {

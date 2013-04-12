@@ -21,3 +21,7 @@ jira.configuration.password
 net.ontrack.extension.jira.JIRAIssuePatternException
     en -> {0} is not a valid JIRA issue
     fr -> {0} ne représente pas un ticket JIRA
+
+net.ontrack.extension.jira.tx.JIRAConnectionException
+    en -> Cannot connect to JIRA at {0}: {1}
+    fr -> Impossible de se connecter à JIRA à {0} : {1}

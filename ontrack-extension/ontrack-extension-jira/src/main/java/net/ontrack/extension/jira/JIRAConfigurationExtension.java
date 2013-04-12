@@ -16,7 +16,21 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
     public static final String URL = "url";
     public static final String USER = "user";
     public static final String PASSWORD = "password";
-    private final JIRAConfiguration configuration = new JIRAConfiguration();
+    private String url;
+    private String user;
+    private String password;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
     @Override
     public String getExtension() {
@@ -37,9 +51,9 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
     public List<? extends ConfigurationExtensionField> getFields() {
         // Converts to fields
         return Lists.newArrayList(
-                new TextConfigurationExtensionField(URL, "jira.configuration.url", "http://jira", configuration.getUrl()),
-                new TextConfigurationExtensionField(USER, "jira.configuration.user", "", configuration.getUser()),
-                new PasswordConfigurationExtensionField(PASSWORD, "jira.configuration.password", configuration.getPassword())
+                new TextConfigurationExtensionField(URL, "jira.configuration.url", "http://jira", getUrl()),
+                new TextConfigurationExtensionField(USER, "jira.configuration.user", "", getUser()),
+                new PasswordConfigurationExtensionField(PASSWORD, "jira.configuration.password", getPassword())
         );
     }
 
@@ -47,19 +61,19 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
     public void configure(String name, String value) {
         switch (name) {
             case URL:
-                configuration.setUrl(value);
+                url = value;
                 break;
             case USER:
-                configuration.setUser(value);
+                user = value;
                 break;
             case PASSWORD:
-                configuration.setPassword(value);
+                password = value;
                 break;
         }
     }
 
     public String getIssueURL(String issue) {
-        String base = configuration.getUrl();
+        String base = getUrl();
         if (StringUtils.isNotBlank(base)) {
             return String.format("%s/browse/%s", base, issue);
         } else {

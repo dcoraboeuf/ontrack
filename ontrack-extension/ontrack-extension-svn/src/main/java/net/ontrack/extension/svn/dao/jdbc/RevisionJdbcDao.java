@@ -53,6 +53,16 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public TRevision get(long revision) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                "SELECT * FROM REVISION WHERE REVISION = :revision",
+                params("revision", revision),
+                revisionRowMapper
+        );
+    }
+
+    @Override
     @Transactional
     public void addRevision(long revision, String author, DateTime date, String dbMessage, String branch) {
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
