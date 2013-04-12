@@ -2,6 +2,7 @@ var ChangeLog = function () {
 
     var revisions = null;
     var issues = null;
+    var files = null;
 
     function toggleMergedRevision (parentRevision) {
         $('tr[parent="{0}"]'.format(parentRevision)).toggle();
@@ -55,6 +56,31 @@ var ChangeLog = function () {
         Application.tooltips();
     }
 
+    function displayFiles (data) {
+        // Stores the files (local cache for display purpose only)
+        files = data;
+        // Computed fields
+        $.each (files.list, function (index, changeLogFile) {
+            $.each (changeLogFile.changes, function (i, changeLogFileChange) {
+                var changeType = changeLogFileChange.changeType;
+                var icon;
+                if (changeType == "modified") {
+                    icon = "icon-asterisk";
+                } else if (changeType == "added") {
+                    icon = "icon-plus-sign";
+                } else if (changeType == "deleted") {
+                    icon = "icon-minus-sign";
+                } else {
+                    icon = "icon-question-sign";
+                }
+                changeLogFileChange.changeIcon = icon;
+            });
+        });
+        // Rendering
+        $('#files').html(Template.render('files-template', files));
+        Application.tooltips();
+    }
+
     function loadRevisions () {
         if (revisions == null) {
             // UUID for the change log
@@ -89,6 +115,23 @@ var ChangeLog = function () {
         }
     }
 
+    function loadFiles () {
+        if (files == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the files
+            AJAX.get({
+                url: 'ui/extension/svnexplorer/changelog/{0}/files'.format(uuid),
+                loading: {
+                    el: '#files',
+                    mode: 'appendText'
+                },
+                successFn: displayFiles,
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn () {
         return AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#changelog-error'));
     }
@@ -96,6 +139,7 @@ var ChangeLog = function () {
     function init () {
         $('#revisions-tab').on('show', loadRevisions);
         $('#issues-tab').on('show', loadIssues);
+        $('#files-tab').on('show', loadFiles);
     }
 
     return {

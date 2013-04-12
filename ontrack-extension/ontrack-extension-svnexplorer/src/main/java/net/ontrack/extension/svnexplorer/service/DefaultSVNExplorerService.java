@@ -11,9 +11,7 @@ import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.service.SubversionService;
-import net.ontrack.extension.svn.service.model.SVNHistory;
-import net.ontrack.extension.svn.service.model.SVNReference;
-import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
+import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svnexplorer.model.*;
@@ -68,12 +66,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ChangeLogRevisions getChangeLogRevisions(ChangeLogSummary summary) {
-        // Finds the common ancestor of the two histories
-
-        // Function that extracts the path from a SVN location
+    private ChangeLogReference getChangeLogReference (ChangeLogSummary summary) {// Function that extracts the path from a SVN location
         Function<SVNReference, String> pathFn = new Function<SVNReference, String>() {
             @Override
             public String apply(SVNReference reference) {
@@ -110,16 +103,27 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         long referenceStartRevision = summary.getBuildFrom().getHistory().getReferences().get(fromAncestorIndex).getRevision();
         long referenceEndRevision = summary.getBuildTo().getHistory().getReferences().get(toAncestorIndex).getRevision();
 
-        // No difference?
-        if (referenceEndRevision == referenceStartRevision) {
-            return ChangeLogRevisions.none();
-        }
-
         // Ordering of revisions (we must have start > end)
         if (referenceStartRevision < referenceEndRevision) {
             long t = referenceStartRevision;
             referenceStartRevision = referenceEndRevision;
             referenceEndRevision = t;
+        }
+
+        // Reference
+        return new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChangeLogRevisions getChangeLogRevisions(ChangeLogSummary summary) {
+
+        // Reference
+        ChangeLogReference reference = getChangeLogReference(summary);
+
+        // No difference?
+        if (reference.isNone()) {
+            return ChangeLogRevisions.none();
         }
 
         // SVN transaction
@@ -128,10 +132,10 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             SVNLogEntryCollector logEntryCollector = new SVNLogEntryCollector();
             // SVN change log
             subversionService.log(
-                    SVNUtils.toURL(subversionService.getURL(referencePath)),
-                    SVNRevision.create(referenceStartRevision),
-                    SVNRevision.create(referenceStartRevision),
-                    SVNRevision.create(referenceEndRevision + 1),
+                    SVNUtils.toURL(subversionService.getURL(reference.getPath())),
+                    SVNRevision.create(reference.getStart()),
+                    SVNRevision.create(reference.getStart()),
+                    SVNRevision.create(reference.getEnd() + 1),
                     true, // Stops on copy
                     false, // No path discovering (yet)
                     0L, // no limit
@@ -180,6 +184,45 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // OK
             return new ChangeLogIssues(issuesList);
 
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChangeLogFiles getChangeLogFiles(ChangeLogSummary summary, ChangeLogRevisions revisions) {
+        // In a SVN/JIRA transaction
+        try (Transaction ignored = transactionService.start()) {
+            // Index of files, indexed by path
+            Map<String, ChangeLogFile> files = new TreeMap<>();
+            // For each revision
+            for (ChangeLogRevision changeLogRevision : revisions.getList()) {
+                long revision = changeLogRevision.getRevision();
+                collectFilesForRevision(files, revision);
+            }
+            // List of files
+            List<ChangeLogFile> filesList = new ArrayList<>(files.values());
+            // OK
+            return new ChangeLogFiles(filesList);
+        }
+    }
+
+    private void collectFilesForRevision(Map<String, ChangeLogFile> files, long revision) {
+        SVNRevisionPaths revisionPaths = subversionService.getRevisionPaths(revision);
+        for (SVNRevisionPath revisionPath : revisionPaths.getPaths()) {
+            String path = revisionPath.getPath();
+            // Existing file entry?
+            ChangeLogFile changeLogFile = files.get(path);
+            if (changeLogFile == null) {
+                changeLogFile = new ChangeLogFile(path, subversionService.getBrowsingURL(path));
+                files.put(path, changeLogFile);
+            }
+            // Adds the revision and the type
+            ChangeLogFileChange change = new ChangeLogFileChange(
+                    revisionPaths.getInfo(),
+                    revisionPath.getChangeType(),
+                    "TODO File change URL"
+            );
+            changeLogFile.addChange(change);
         }
     }
 

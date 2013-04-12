@@ -1,9 +1,6 @@
 package net.ontrack.extension.svnexplorer.ui;
 
-import net.ontrack.extension.svnexplorer.model.ChangeLogIssues;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRevisions;
-import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
+import net.ontrack.extension.svnexplorer.model.*;
 
 public interface SVNExplorerUI {
 
@@ -12,5 +9,7 @@ public interface SVNExplorerUI {
     ChangeLogRevisions getChangeLogRevisions(String uuid);
 
     ChangeLogIssues getChangeLogIssues(String uuid);
+
+    ChangeLogFiles getChangeLogFiles(String uuid);
 
 }

@@ -19,3 +19,13 @@ ul.version li {
 ul.version li:first-child span.separator {
     display: none;
 }
+
+ul.filechange {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.filechange li {
+    display: inline;
+}

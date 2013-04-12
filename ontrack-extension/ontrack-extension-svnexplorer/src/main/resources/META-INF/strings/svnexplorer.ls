@@ -76,6 +76,14 @@ svnexplorer.changelog.files
     en -> Files
     fr -> Fichiers
 
+svnexplorer.changelog.files.path
+    en -> Path
+    fr -> Chemin
+
+svnexplorer.changelog.files.changes
+    en -> Changes
+    fr -> Changements
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException

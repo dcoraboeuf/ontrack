@@ -8,4 +8,5 @@ public class ChangeLog {
     private final ChangeLogSummary summary;
     private ChangeLogRevisions revisions;
     private ChangeLogIssues issues;
+    private ChangeLogFiles files;
 }

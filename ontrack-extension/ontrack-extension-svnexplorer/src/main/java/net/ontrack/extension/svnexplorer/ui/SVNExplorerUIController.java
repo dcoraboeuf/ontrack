@@ -73,7 +73,7 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     ChangeLogIssues getChangeLogIssues(@PathVariable String uuid) {
         // Gets the change log
         ChangeLog changeLog = getChangeLog(uuid);
-        // Makes the revisions are loaded
+        // Makes sure the revisions are loaded
         ChangeLogRevisions revisions = changeLog.getRevisions();
         if (revisions == null) {
             revisions = getChangeLogRevisions(uuid);
@@ -84,6 +84,26 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
         changeLog.setIssues(issues);
         // OK
         return issues;
+    }
+
+    @Override
+    @RequestMapping(value = "/changelog/{uuid}/files", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChangeLogFiles getChangeLogFiles(@PathVariable String uuid) {
+        // Gets the change log
+        ChangeLog changeLog = getChangeLog(uuid);
+        // Makes sure the revisions are loaded
+        ChangeLogRevisions revisions = changeLog.getRevisions();
+        if (revisions == null) {
+            revisions = getChangeLogRevisions(uuid);
+        }
+        // Loads the files
+        ChangeLogFiles files = svnExplorerService.getChangeLogFiles(changeLog.getSummary(), revisions);
+        // Stores in cache
+        changeLog.setFiles(files);
+        // OK
+        return files;
     }
 
     private ChangeLog getChangeLog(String uuid) {

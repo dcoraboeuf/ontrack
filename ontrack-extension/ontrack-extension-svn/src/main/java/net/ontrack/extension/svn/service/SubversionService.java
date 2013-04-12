@@ -2,6 +2,7 @@ package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.service.model.SVNHistory;
 import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
+import net.ontrack.extension.svn.service.model.SVNRevisionPaths;
 import org.joda.time.DateTime;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNURL;
@@ -73,4 +74,9 @@ public interface SubversionService {
      * Formats a date as ISO for a revision
      */
     String formatRevisionTime(DateTime time);
+
+    /**
+     * Gets the list of changes for a revision
+     */
+    SVNRevisionPaths getRevisionPaths(long revision);
 }

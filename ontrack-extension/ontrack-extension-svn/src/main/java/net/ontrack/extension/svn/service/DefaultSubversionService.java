@@ -7,9 +7,7 @@ import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
-import net.ontrack.extension.svn.service.model.SVNHistory;
-import net.ontrack.extension.svn.service.model.SVNReference;
-import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
+import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svn.tx.SVNSession;
@@ -68,8 +66,45 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public String formatRevisionTime (DateTime time) {
+    public String formatRevisionTime(DateTime time) {
         return format.print(time);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNRevisionPaths getRevisionPaths(long revision) {
+        // Result
+        final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
+        // Gets the URL of the repository
+        SVNURL rootUrl = SVNUtils.toURL(configurationExtension.getUrl());
+        // Gets the diff for the revision
+        try {
+            getDiffClient().doDiffStatus(
+                    rootUrl,
+                    SVNRevision.create(revision - 1),
+                    rootUrl,
+                    SVNRevision.create(revision),
+                    SVNDepth.INFINITY,
+                    false,
+                    new ISVNDiffStatusHandler() {
+                        @Override
+                        public void handleDiffStatus(SVNDiffStatus diffStatus) throws SVNException {
+                            if (diffStatus.getKind() == SVNNodeKind.FILE) {
+                                paths.addPath(
+                                        new SVNRevisionPath(
+                                                "/" + diffStatus.getPath(),
+                                                diffStatus.getModificationType().toString()
+                                        )
+                                );
+                            }
+                        }
+                    }
+            );
+        } catch (SVNException ex) {
+            throw translateSVNException(ex);
+        }
+        // OK
+        return paths;
     }
 
     @Override
