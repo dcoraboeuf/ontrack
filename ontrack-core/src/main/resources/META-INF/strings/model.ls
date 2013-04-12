@@ -27,3 +27,27 @@ model.validation_stamp
 model.validation_run
     en -> Run
     fr -> Exécution
+
+[status]
+
+status.PASSED
+    en -> Passed
+    fr -> Réussi
+status.FIXED
+    en -> Fixed
+    fr -> Corrigé
+status.DEFECTIVE
+    en -> Defect
+    fr -> Problème
+status.EXPLAINED
+    en -> Explanation found
+    fr -> Explication trouvée
+status.INVESTIGATED
+    en -> Under investigation
+    fr -> En cours d'investigation
+status.INTERRUPTED
+    en -> Interrupted
+    fr -> Interrompu
+status.FAILED
+    en -> Failed
+    fr -> Manqué

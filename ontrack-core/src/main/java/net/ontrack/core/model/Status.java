@@ -10,6 +10,7 @@ import java.util.Collection;
  * <ul>
  * <li><i>general.css</i></li>
  * <li>the <i>status-*.png</i> images</li>
+ * <li><i>model.ls</i> for the display names</li>
  * </ul>
  */
 public enum Status {
