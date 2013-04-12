@@ -58,6 +58,15 @@
         </div>
         <script id="revisions-template" type="text/html">
             <table id="revisions-table" class="table table-striped table-hover table-condensed changelog">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th><@lh key="svnexplorer.changelog.revisions.revision" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.author" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.date" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.message" /></th>
+                    </tr>
+                </thead>
                 <tbody>
                     {{#list}}
                         <tr id="revision_{{revision}}" class="{{#merge}}warning{{/merge}} {{#merged}}info hidden{{/merged}}" {{#merged}}parent="{{mergeParent}}"{{/merged}}>
@@ -81,6 +90,14 @@
         </div>
         <script id="issues-template" type="text/html">
             <table id="issues-table" class="table table-striped table-hover table-condensed changelog">
+                <thead>
+                    <tr>
+                        <th><@lh key="svnexplorer.changelog.issues.key" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.summary" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.assignee" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.updateTime" /></th>
+                    </tr>
+                </thead>
                 <tbody>
                     {{#list}}
                         <tr id="issue_{{issue.key}}">

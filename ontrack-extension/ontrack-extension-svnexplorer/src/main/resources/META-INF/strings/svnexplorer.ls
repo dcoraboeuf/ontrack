@@ -10,13 +10,51 @@ svnexplorer.changelog.summary
     en -> Summary
     fr -> Général
 
+[revisions]
+
 svnexplorer.changelog.revisions
     en -> Revisions
     fr -> Révisions
 
+svnexplorer.changelog.revisions.revision
+    en -> Revision
+    fr -> Révision
+
+svnexplorer.changelog.revisions.author
+    en -> Author
+    fr -> Auteur
+
+svnexplorer.changelog.revisions.date
+    en -> Date
+    fr -> Date
+
+svnexplorer.changelog.revisions.message
+    en -> Message
+    fr -> Message
+
+[issues]
+
 svnexplorer.changelog.issues
     en -> Issues
     fr -> Tickets
+
+svnexplorer.changelog.issues.key
+    en -> Key
+    fr -> Clef
+
+svnexplorer.changelog.issues.summary
+    en -> Summary
+    fr -> Titre
+
+svnexplorer.changelog.issues.assignee
+    en -> Assignee
+    fr -> Destinataire
+
+svnexplorer.changelog.issues.updateTime
+    en -> Update time
+    fr -> Mise à jour
+
+[files]
 
 svnexplorer.changelog.files
     en -> Files
