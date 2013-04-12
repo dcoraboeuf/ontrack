@@ -94,6 +94,8 @@
                     <tr>
                         <th><@lh key="svnexplorer.changelog.issues.key" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.summary" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.affectedVersions" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.fixVersions" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.assignee" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.updateTime" /></th>
                     </tr>
@@ -103,6 +105,20 @@
                         <tr id="issue_{{issue.key}}">
                             <td><a href="{{issue.url}}">{{issue.key}}</a></td>
                             <td>{{issue.summary}}</td>
+                            <td>
+                                <ul class="version">
+                                    {{#issue.affectedVersions}}
+                                        <li class="version"><span class="separator">, </span>{{name}}</li>
+                                    {{/issue.affectedVersions}}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul class="version">
+                                    {{#issue.fixVersions}}
+                                        <li class="version"><span class="separator">, </span>{{name}}</li>
+                                    {{/issue.fixVersions}}
+                                </ul>
+                            </td>
                             <td>{{issue.assignee}}</td>
                             <td>{{formattedUpdateTime}}</td>
                         </tr>

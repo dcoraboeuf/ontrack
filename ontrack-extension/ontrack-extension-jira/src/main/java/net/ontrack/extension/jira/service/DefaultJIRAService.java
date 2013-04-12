@@ -5,6 +5,7 @@ import com.atlassian.jira.rest.client.RestClientException;
 import com.atlassian.jira.rest.client.domain.BasicUser;
 import com.atlassian.jira.rest.client.domain.Field;
 import com.atlassian.jira.rest.client.domain.Issue;
+import com.atlassian.jira.rest.client.domain.Version;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -13,6 +14,7 @@ import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.JIRAField;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
+import net.ontrack.extension.jira.service.model.JIRAVersion;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
@@ -21,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +34,18 @@ public class DefaultJIRAService implements JIRAService {
 
     private final JIRAConfigurationExtension configurationExtension;
     private final TransactionService transactionService;
+    /**
+     * Conversion to a JIRAVersion from a REST JIRA version
+     */
+    private final Function<Version, JIRAVersion> versionFunction = new Function<Version, JIRAVersion>() {
+        @Override
+        public JIRAVersion apply(Version v) {
+            return new JIRAVersion(
+                    v.getName(),
+                    v.isReleased()
+            );
+        }
+    };
 
     @Autowired
     public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, TransactionService transactionService) {
@@ -96,6 +111,10 @@ public class DefaultJIRAService implements JIRAService {
                         )
                 );
 
+                // Versions
+                List<JIRAVersion> affectedVersions = toVersions(issue.getAffectedVersions());
+                List<JIRAVersion> fixVersions = toVersions(issue.getFixVersions());
+
                 // TODO Status
 
                 // Formatted JIRA issue
@@ -105,7 +124,9 @@ public class DefaultJIRAService implements JIRAService {
                         issue.getSummary(),
                         getUserName(issue.getAssignee()),
                         issue.getUpdateDate(),
-                        fields
+                        fields,
+                        affectedVersions,
+                        fixVersions
                 );
 
             } catch (RestClientException ex) {
@@ -115,6 +136,19 @@ public class DefaultJIRAService implements JIRAService {
                     throw ex;
                 }
             }
+        }
+    }
+
+    private List<JIRAVersion> toVersions(Iterable<Version> versions) {
+        if (versions == null) {
+            return Collections.emptyList();
+        } else {
+            return Lists.newArrayList(
+                    Iterables.transform(
+                            versions,
+                            versionFunction
+                    )
+            );
         }
     }
 

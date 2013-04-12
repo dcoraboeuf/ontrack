@@ -14,5 +14,7 @@ public class JIRAIssue {
     private final String assignee;
     private final DateTime updateTime;
     private final List<JIRAField> fields;
+    private final List<JIRAVersion> affectedVersions;
+    private final List<JIRAVersion> fixVersions;
 
 }

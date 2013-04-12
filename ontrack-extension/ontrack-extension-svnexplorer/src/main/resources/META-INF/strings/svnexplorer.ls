@@ -46,6 +46,14 @@ svnexplorer.changelog.issues.summary
     en -> Summary
     fr -> Titre
 
+svnexplorer.changelog.issues.affectedVersions
+    en -> Affected versions
+    fr -> Version affectées
+
+svnexplorer.changelog.issues.fixVersions
+    en -> Fix versions
+    fr -> Versions corrigées
+
 svnexplorer.changelog.issues.assignee
     en -> Assignee
     fr -> Destinataire
