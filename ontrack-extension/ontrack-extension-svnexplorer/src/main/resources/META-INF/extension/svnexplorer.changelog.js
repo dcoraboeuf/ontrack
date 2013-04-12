@@ -40,13 +40,19 @@ var ChangeLog = function () {
         });
         // Rendering
         $('#revisions').html(Template.render('revisions-template', revisions));
+        Application.tooltips();
     }
 
     function displayIssues (data) {
         // Stores the issues (local cache for display purpose only)
         issues = data;
+        // Computed fields
+        $.each (issues.list, function (index, changeLogIssue) {
+            changeLogIssue.lastRevision = changeLogIssue.revisions[changeLogIssue.revisions.length - 1];
+        });
         // Rendering
         $('#issues').html(Template.render('issues-template', issues));
+        Application.tooltips();
     }
 
     function loadRevisions () {

@@ -99,6 +99,7 @@
                         <th><@lh key="svnexplorer.changelog.issues.fixVersions" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.assignee" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.updateTime" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.revision" /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,6 +127,12 @@
                             </td>
                             <td>{{issue.assignee}}</td>
                             <td>{{formattedUpdateTime}}</td>
+                            <td>
+                                {{#lastRevision}}
+                                    <a class="tooltip-source" href="{{revisionUrl}}" title="{{message}} ({{author}})">{{revision}}</a>
+                                    ({{isoDateTime}})
+                                {{/lastRevision}}
+                            </td>
                         </tr>
                     {{/list}}
                 </tbody>

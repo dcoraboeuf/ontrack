@@ -66,6 +66,10 @@ svnexplorer.changelog.issues.updateTime
     en -> Update time
     fr -> Mise à jour
 
+svnexplorer.changelog.issues.revision
+    en -> Last revision
+    fr -> Dernière révision
+
 [files]
 
 svnexplorer.changelog.files
