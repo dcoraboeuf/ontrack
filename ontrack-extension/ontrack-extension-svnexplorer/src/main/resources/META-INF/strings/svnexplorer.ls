@@ -42,6 +42,10 @@ svnexplorer.changelog.issues.key
     en -> Key
     fr -> Clef
 
+svnexplorer.changelog.issues.status
+    en -> Status
+    fr -> Statut
+
 svnexplorer.changelog.issues.summary
     en -> Summary
     fr -> Titre

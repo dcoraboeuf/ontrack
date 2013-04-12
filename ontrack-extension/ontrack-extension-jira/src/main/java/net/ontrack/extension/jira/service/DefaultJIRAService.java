@@ -2,10 +2,7 @@ package net.ontrack.extension.jira.service;
 
 import com.atlassian.jira.rest.client.NullProgressMonitor;
 import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.BasicUser;
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.domain.Issue;
-import com.atlassian.jira.rest.client.domain.Version;
+import com.atlassian.jira.rest.client.domain.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -14,6 +11,7 @@ import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.JIRAField;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
+import net.ontrack.extension.jira.service.model.JIRAStatus;
 import net.ontrack.extension.jira.service.model.JIRAVersion;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
@@ -46,6 +44,7 @@ public class DefaultJIRAService implements JIRAService {
             );
         }
     };
+    private final NullProgressMonitor progressMonitor = new NullProgressMonitor();
 
     @Autowired
     public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, TransactionService transactionService) {
@@ -96,7 +95,7 @@ public class DefaultJIRAService implements JIRAService {
             JIRASession session = tx.getResource(JIRASession.class);
             try {
                 // Gets the JIRA issue
-                Issue issue = session.getClient().getIssueClient().getIssue(key, new NullProgressMonitor());
+                Issue issue = session.getClient().getIssueClient().getIssue(key, progressMonitor);
 
                 // Translation of fields
                 List<JIRAField> fields = Lists.newArrayList(
@@ -115,13 +114,15 @@ public class DefaultJIRAService implements JIRAService {
                 List<JIRAVersion> affectedVersions = toVersions(issue.getAffectedVersions());
                 List<JIRAVersion> fixVersions = toVersions(issue.getFixVersions());
 
-                // TODO Status
+                // Status
+                JIRAStatus status = toStatus(issue.getStatus());
 
                 // Formatted JIRA issue
                 return new JIRAIssue(
                         getIssueURL(issue.getKey()),
                         issue.getKey(),
                         issue.getSummary(),
+                        status,
                         getUserName(issue.getAssignee()),
                         issue.getUpdateDate(),
                         fields,
@@ -136,6 +137,20 @@ public class DefaultJIRAService implements JIRAService {
                     throw ex;
                 }
             }
+        }
+    }
+
+    private JIRAStatus toStatus(BasicStatus status) {
+        return new JIRAStatus(
+                status.getName(),
+                getStatusIconURL(status)
+        );
+    }
+
+    private String getStatusIconURL(BasicStatus status) {
+        try (Transaction tx = transactionService.start()) {
+            Status s = tx.getResource(JIRASession.class).getClient().getMetadataClient().getStatus(status.getSelf(), progressMonitor);
+            return s.getIconUrl().toString();
         }
     }
 

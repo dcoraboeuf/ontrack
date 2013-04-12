@@ -11,6 +11,7 @@ public class JIRAIssue {
     private final String url;
     private final String key;
     private final String summary;
+    private final JIRAStatus status;
     private final String assignee;
     private final DateTime updateTime;
     private final List<JIRAField> fields;

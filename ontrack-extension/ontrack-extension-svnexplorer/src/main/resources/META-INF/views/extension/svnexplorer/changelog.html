@@ -93,6 +93,7 @@
                 <thead>
                     <tr>
                         <th><@lh key="svnexplorer.changelog.issues.key" /></th>
+                        <th><@lh key="svnexplorer.changelog.issues.status" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.summary" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.affectedVersions" /></th>
                         <th><@lh key="svnexplorer.changelog.issues.fixVersions" /></th>
@@ -104,6 +105,10 @@
                     {{#list}}
                         <tr id="issue_{{issue.key}}">
                             <td><a href="{{issue.url}}">{{issue.key}}</a></td>
+                            <td>
+                                <img src="{{issue.status.iconUrl}}" />
+                                {{issue.status.name}}
+                            </td>
                             <td>{{issue.summary}}</td>
                             <td>
                                 <ul class="version">
