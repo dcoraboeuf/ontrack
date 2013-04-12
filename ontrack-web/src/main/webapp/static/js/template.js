@@ -187,7 +187,7 @@ var Template = function () {
                 AJAX.get({
                     url: url,
                     loading: {
-                        mode: 'container',
+                        mode: config.showLoading ? 'container' : 'none',
                         el: '#' + id + '-loading'
                     },
                     successFn: function (data) {
@@ -232,6 +232,7 @@ var Template = function () {
             offset: 0,
             count: 10,
             more: false,
+            showLoading: true,
             render: defaultRender,
             dataLength: function (data) {
                 return data.length;

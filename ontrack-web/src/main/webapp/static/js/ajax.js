@@ -96,6 +96,7 @@ var AJAX = function () {
      *      'appendText' - appends a loading image and a text at the end of the element
      *      'container' - a loading element is set as the content of the <code>el</code> element
      *      'toggle' - the <code>el</code> element is directly shown or hidden according to <code>show</code>
+     *      'none' - no loading indicator
      * @param show          Boolean that indicates if the the loading must be hidden or shown (default: false)
      */
     function showLoading (config, show) {
@@ -130,6 +131,8 @@ var AJAX = function () {
                 } else {
                     $(config.el).hide();
                 }
+            } else if (c.mode == 'none') {
+                // Does nothing
             } else {
                 throw 'ShowLoading: mode={0} not known'.format(c.mode);
             }

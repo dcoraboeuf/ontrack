@@ -309,6 +309,7 @@ var Application = function () {
         return Template.config({
             url: 'ui/info/message',
             refresh: true,
+            showLoading: false,
             render: Template.asSimpleTemplate('informationMessageTemplate')
         });
     }
