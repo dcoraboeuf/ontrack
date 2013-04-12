@@ -15,15 +15,16 @@ import java.util.List;
 public class ChangeLogIssue {
 
     private final JIRAIssue issue;
+    private final String formattedUpdateTime;
     private final List<SVNRevisionInfo> revisions;
 
-    public ChangeLogIssue(JIRAIssue issue) {
-        this(issue, Collections.<SVNRevisionInfo>emptyList());
+    public ChangeLogIssue(JIRAIssue issue, String formattedUpdateTime) {
+        this(issue, formattedUpdateTime, Collections.<SVNRevisionInfo>emptyList());
     }
 
     public ChangeLogIssue addRevision(SVNRevisionInfo revision) {
         List<SVNRevisionInfo> list = new ArrayList<>(this.revisions);
         list.add(revision);
-        return new ChangeLogIssue(issue, list);
+        return new ChangeLogIssue(issue, formattedUpdateTime, list);
     }
 }

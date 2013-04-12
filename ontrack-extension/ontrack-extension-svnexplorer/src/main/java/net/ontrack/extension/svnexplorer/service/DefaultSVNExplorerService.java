@@ -212,7 +212,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 return null;
             }
             // Creates the issue details for the change logs
-            return new ChangeLogIssue(issue);
+            return new ChangeLogIssue(issue, subversionService.formatRevisionTime(issue.getUpdateTime()));
         } catch (JIRAIssueNotFoundException ex) {
             return null;
         }
