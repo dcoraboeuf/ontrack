@@ -7,38 +7,31 @@ import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAService;
+import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
+import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.SVNHistory;
 import net.ontrack.extension.svn.service.model.SVNReference;
+import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRevision;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRevisions;
-import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
-import net.ontrack.extension.svnexplorer.model.SVNBuild;
+import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.service.ManagementService;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DefaultSVNExplorerService implements SVNExplorerService {
-
-
-    private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
@@ -147,7 +140,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Loops through all SVN log entries, taking the merged revisions into account
             int level = 0;
             List<ChangeLogRevision> revisions = new ArrayList<>();
-            for(SVNLogEntry svnEntry : logEntryCollector.getEntries()) {
+            for (SVNLogEntry svnEntry : logEntryCollector.getEntries()) {
                 long revision = svnEntry.getRevision();
                 if (SVNRevision.isValidRevisionNumber(revision)) {
                     // Conversion
@@ -167,6 +160,60 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ChangeLogIssues getChangeLogIssues(ChangeLogSummary summary, ChangeLogRevisions revisions) {
+        // In a SVN/JIRA transaction
+        try (Transaction ignored = transactionService.start()) {
+            // Index of issues, sorted by keys
+            Map<String, ChangeLogIssue> issues = new TreeMap<>();
+            // For all revisions in this revision log
+            for (ChangeLogRevision changeLogRevision : revisions.getList()) {
+                long revision = changeLogRevision.getRevision();
+                collectIssuesForRevision(issues, revision);
+            }
+            // List of issues
+            List<ChangeLogIssue> issuesList = new ArrayList<>(issues.values());
+            // TODO Validation
+            // validationService.validate(changeLog, issuesList);
+            // OK
+            return new ChangeLogIssues(issuesList);
+
+        }
+    }
+
+    private void collectIssuesForRevision(Map<String, ChangeLogIssue> issues, long revision) {
+        // Gets all issues attached to this revision
+        List<String> issueKeys = subversionService.getIssueKeysForRevision(revision);
+        // For each issue
+        for (String issueKey : issueKeys) {
+            // Gets its details if not indexed yet
+            ChangeLogIssue changeLogIssue = issues.get(issueKey);
+            if (changeLogIssue == null) {
+                changeLogIssue = getChangeLogIssue(issueKey);
+            }
+            // Existing issue?
+            if (changeLogIssue != null) {
+                // Attaches the revision to this issue
+                SVNRevisionInfo issueRevision = subversionService.getRevisionInfo(revision);
+                changeLogIssue = changeLogIssue.addRevision(issueRevision);
+                // Puts back into the cache
+                issues.put(issueKey, changeLogIssue);
+            }
+        }
+    }
+
+    private ChangeLogIssue getChangeLogIssue(String issueKey) {
+        // Gets the details about the JIRA issue
+        try {
+            JIRAIssue issue = jiraService.getIssue(issueKey);
+            // Creates the issue details for the change logs
+            return new ChangeLogIssue(issue);
+        } catch (JIRAIssueNotFoundException ex) {
+            return null;
+        }
+    }
+
     private ChangeLogRevision createChangeLogRevision(int level, SVNLogEntry svnEntry) {
         long revision = svnEntry.getRevision();
         String message = svnEntry.getMessage();
@@ -179,7 +226,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 level,
                 revision,
                 svnEntry.getAuthor(),
-                format.print(new DateTime(svnEntry.getDate())),
+                subversionService.formatRevisionTime(new DateTime(svnEntry.getDate())),
                 message,
                 revisionUrl,
                 formattedMessage);

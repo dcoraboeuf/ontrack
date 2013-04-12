@@ -1,10 +1,15 @@
 package net.ontrack.extension.svn.service;
 
+import com.google.common.base.Function;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.dao.IssueRevisionDao;
+import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
+import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.service.model.SVNHistory;
 import net.ontrack.extension.svn.service.model.SVNReference;
+import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svn.tx.SVNSession;
@@ -12,8 +17,11 @@ import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
@@ -26,17 +34,42 @@ import java.util.regex.Pattern;
 public class DefaultSubversionService implements SubversionService {
 
     public static final int HISTORY_MAX_DEPTH = 6;
+    private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    /**
+     * Transforms a DAO revision into a formatted revision information object.
+     */
+    private final Function<TRevision, SVNRevisionInfo> revisionInfoFunction = new Function<TRevision, SVNRevisionInfo>() {
+        @Override
+        public SVNRevisionInfo apply(TRevision t) {
+            return new SVNRevisionInfo(
+                    t.getRevision(),
+                    t.getAuthor(),
+                    formatRevisionTime(t.getCreation()),
+                    t.getMessage(),
+                    getRevisionBrowsingURL(t.getRevision())
+            );
+        }
+    };
     private final SubversionConfigurationExtension configurationExtension;
     private final TransactionService transactionService;
     private final SVNEventDao svnEventDao;
+    private final RevisionDao revisionDao;
+    private final IssueRevisionDao issueRevisionDao;
 
     @Autowired
-    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, SVNEventDao svnEventDao) {
+    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao) {
         this.configurationExtension = configurationExtension;
         this.transactionService = transactionService;
         this.svnEventDao = svnEventDao;
+        this.revisionDao = revisionDao;
+        this.issueRevisionDao = issueRevisionDao;
         SVNRepositoryFactoryImpl.setup();
         DAVRepositoryFactory.setup();
+    }
+
+    @Override
+    public String formatRevisionTime (DateTime time) {
+        return format.print(time);
     }
 
     @Override
@@ -62,6 +95,18 @@ public class DefaultSubversionService implements SubversionService {
         } else {
             return String.valueOf(revision);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNRevisionInfo getRevisionInfo(long revision) {
+        return revisionInfoFunction.apply(revisionDao.get(revision));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getIssueKeysForRevision(long revision) {
+        return issueRevisionDao.findIssuesByRevision(revision);
     }
 
     @Override

@@ -4,10 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.ui.ManageUI;
-import net.ontrack.extension.svnexplorer.model.ChangeLog;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRevisions;
-import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
+import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.extension.svnexplorer.service.SVNExplorerService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
@@ -67,6 +64,26 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
         changeLog.setRevisions(revisions);
         // OK
         return revisions;
+    }
+
+    @Override
+    @RequestMapping(value = "/changelog/{uuid}/issues", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChangeLogIssues getChangeLogIssues(@PathVariable String uuid) {
+        // Gets the change log
+        ChangeLog changeLog = getChangeLog(uuid);
+        // Makes the revisions are loaded
+        ChangeLogRevisions revisions = changeLog.getRevisions();
+        if (revisions == null) {
+            revisions = getChangeLogRevisions(uuid);
+        }
+        // Loads the issues
+        ChangeLogIssues issues = svnExplorerService.getChangeLogIssues(changeLog.getSummary(), revisions);
+        // Stores in cache
+        changeLog.setIssues(issues);
+        // OK
+        return issues;
     }
 
     private ChangeLog getChangeLog(String uuid) {

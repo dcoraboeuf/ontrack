@@ -1,6 +1,7 @@
 var ChangeLog = function () {
 
     var revisions = null;
+    var issues = null;
 
     function toggleMergedRevision (parentRevision) {
         $('tr[parent="{0}"]'.format(parentRevision)).toggle();
@@ -41,11 +42,15 @@ var ChangeLog = function () {
         $('#revisions').html(Template.render('revisions-template', revisions));
     }
 
+    function displayIssues (data) {
+        // FIXME displayIssues
+    }
+
     function loadRevisions () {
         if (revisions == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
-            // FIXME Loads the revisions
+            // Loads the revisions
             AJAX.get({
                 url: 'ui/extension/svnexplorer/changelog/{0}/revisions'.format(uuid),
                 loading: {
@@ -58,12 +63,30 @@ var ChangeLog = function () {
         }
     }
 
+    function loadIssues () {
+        if (issues == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the issues
+            AJAX.get({
+                url: 'ui/extension/svnexplorer/changelog/{0}/issues'.format(uuid),
+                loading: {
+                    el: '#issues',
+                    mode: 'appendText'
+                },
+                successFn: displayIssues,
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn () {
         return AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#changelog-error'));
     }
 
     function init () {
         $('#revisions-tab').on('show', loadRevisions);
+        $('#issues-tab').on('show', loadIssues);
     }
 
     return {

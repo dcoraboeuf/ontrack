@@ -1,6 +1,8 @@
 package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.service.model.SVNHistory;
+import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
+import org.joda.time.DateTime;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -50,4 +52,25 @@ public interface SubversionService {
      * Gets the URL that allows a user to browse the content of a revision
      */
     String getRevisionBrowsingURL(long revision);
+
+    /**
+     * Returns the list of indexed issues for a given revision
+     *
+     * @param revision Revision to get the issue keys for
+     * @return List of keys, never <code>null</code>
+     */
+    List<String> getIssueKeysForRevision(long revision);
+
+    /**
+     * Gets the information about a revision
+     *
+     * @param revision Revision to get information about
+     * @return Full details about this revision
+     */
+    SVNRevisionInfo getRevisionInfo(long revision);
+
+    /**
+     * Formats a date as ISO for a revision
+     */
+    String formatRevisionTime(DateTime time);
 }

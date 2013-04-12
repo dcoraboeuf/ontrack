@@ -17,4 +17,5 @@ public interface RevisionDao {
 
     TRevision getLastRevision();
 
+    TRevision get(long revision);
 }

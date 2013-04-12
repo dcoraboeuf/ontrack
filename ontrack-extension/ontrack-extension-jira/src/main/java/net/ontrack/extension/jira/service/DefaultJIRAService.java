@@ -3,6 +3,7 @@ package net.ontrack.extension.jira.service;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
 import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
+import net.ontrack.extension.jira.service.model.JIRAIssue;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,11 @@ public class DefaultJIRAService implements JIRAService {
     @Override
     public String getIssueURL(String key) {
         return configurationExtension.getIssueURL(key);
+    }
+
+    @Override
+    public JIRAIssue getIssue(String key) {
+        // FIXME Implement net.ontrack.extension.jira.service.DefaultJIRAService.getIssue
+        return null;
     }
 }
