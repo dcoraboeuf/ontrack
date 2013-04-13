@@ -29,7 +29,12 @@ var ValidationRun = function () {
                             currentRun = false;
                             list.push({
                                 header: true,
-                                title: loc('validationRun.history.thisBuild')
+                                title: loc('validationRun.history.thisBuild'),
+                                link: 'gui/project/{0}/branch/{1}/build/{2}'.format(
+                                    validationRunEvent.validationRun.build.branch.project.name.html(),
+                                    validationRunEvent.validationRun.build.branch.name.html(),
+                                    validationRunEvent.validationRun.build.name.html()
+                                )
                             });
                         }
                         validationRunEvent.thisBuild = true;
