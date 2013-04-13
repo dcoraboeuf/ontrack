@@ -632,6 +632,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         int validationStampId = validationRun.getValidationStamp().getId();
         return Lists.transform(
                 validationRunEventDao.findByBranchAndValidationStamp(
+                        validationRunId,
                         branchId,
                         validationStampId,
                         offset, count),

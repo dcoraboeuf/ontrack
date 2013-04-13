@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validationRun" script=true title="#${validationRun.runOrder?string}"
+<@layout_std page="validationRun" script=true style=true title="#${validationRun.runOrder?string}"
     modules=["projects","branches","builds","validation_stamps","audit","properties"]
     breadcrumbs = {
         loc("home"): "",
@@ -79,21 +79,29 @@
         <div class="row-fluid">
             <div class="span7">
                 <@panel title=loc("validationRun.history")>
-                    <@dynamicsection id="history" template="ValidationRun.historyTemplate(${validationRun.id?c})" />
+                    <@dynamicsection id="history" template="ValidationRun.historyTemplate(${validationRun.id?c}, ${validationRun.build.id?c})" />
                     <script id="historyItemTemplate" type="text/html">
-                        <tr>
-                            <td>
-                                {{#if status}}
-                                    <img width="24" height="24" src="static/images/status-{{status}}.png" />
-                                    <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
-                                    - {{content}}
-                                {{else}}
-                                    <img width="24" height="24" src="static/images/comment.png" />
-                                    {{content}}
-                                {{/if}}
-                                <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
-                            </td>
-                        </tr>
+                        {{#if header}}
+                            <tr class="info">
+                                <td class="validationRunHistoryHeader">
+                                    {{title}}
+                                </td>
+                            </tr>
+                        {{else}}
+                            <tr>
+                                <td>
+                                    {{#if status}}
+                                        <img width="24" height="24" src="static/images/status-{{status}}.png" />
+                                        <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
+                                        - {{content}}
+                                    {{else}}
+                                        <img width="24" height="24" src="static/images/comment.png" />
+                                        {{content}}
+                                    {{/if}}
+                                    <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
+                                </td>
+                            </tr>
+                        {{/if}}
                     </script>
                 </@panel>
             </div>

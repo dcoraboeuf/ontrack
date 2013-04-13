@@ -513,6 +513,19 @@ validationRun.history
     en -> History
     fr -> Historique
 
+
+validationRun.history.thisRun
+    en -> This run
+    fr -> Cette exécution
+
+validationRun.history.thisBuild
+    en -> This build
+    fr -> Ce build
+
+validationRun.history.allBuilds
+    en -> Other builds
+    fr -> Autres builds
+
 [validationRunStatus]
 
 validationRunStatus.new

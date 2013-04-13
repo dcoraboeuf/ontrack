@@ -7,10 +7,48 @@ var ValidationRun = function () {
         });
     }
 
-    function historyTemplate (validationRunId) {
+    function historyTemplate (validationRunId, buildId) {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
             more: true,
+            preProcessingFn: function (validationRunEvents) {
+                var list = [];
+                var currentRun = true;
+                var currentBuild = true;
+                list.push({
+                    header: true,
+                    title: loc('validationRun.history.thisRun')
+                });
+                $.each (validationRunEvents, function (index, validationRunEvent) {
+                    // This run?
+                    if (validationRunEvent.validationRun.id == validationRunId) {
+                        validationRunEvent.thisBuild = true;
+                        validationRunEvent.thisRun = true;
+                    } else if (validationRunEvent.validationRun.build.id == buildId) {
+                        if (currentRun) {
+                            currentRun = false;
+                            list.push({
+                                header: true,
+                                title: loc('validationRun.history.thisBuild')
+                            });
+                        }
+                        validationRunEvent.thisBuild = true;
+                        validationRunEvent.thisRun = false;
+                    } else {
+                        if (currentBuild) {
+                            currentBuild = false;
+                            list.push({
+                                header: true,
+                                title: loc('validationRun.history.allBuilds')
+                            });
+                        }
+                        validationRunEvent.thisBuild = false;
+                        validationRunEvent.thisRun = false;
+                    }
+                    list.push(validationRunEvent);
+                });
+                return list;
+            },
             render: Template.asTableTemplate('historyItemTemplate')
         });
     }
