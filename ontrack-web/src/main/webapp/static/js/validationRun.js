@@ -11,14 +11,6 @@ var ValidationRun = function () {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
             more: true,
-            preProcessingFn: function (items) {
-                $.each (items, function (index, item) {
-                    if (item.status) {
-                        item.statusLabel = loc('status.' +  item.status);
-                    }
-                });
-                return items;
-            },
             render: Template.asTableTemplate('historyItemTemplate')
         });
     }

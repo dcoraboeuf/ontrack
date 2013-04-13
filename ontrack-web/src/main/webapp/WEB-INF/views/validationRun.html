@@ -85,7 +85,7 @@
                             <td>
                                 {{#if status}}
                                     <img width="24" height="24" src="static/images/status-{{status}}.png" />
-                                    <b>{{statusLabel}}</b>
+                                    <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
                                     - {{content}}
                                 {{else}}
                                     <img width="24" height="24" src="static/images/comment.png" />
