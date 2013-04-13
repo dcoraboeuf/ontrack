@@ -26,14 +26,15 @@ public class ValidationRunEventJdbcDao extends AbstractJdbcDao implements Valida
 
     @Override
     @Transactional(readOnly = true)
-    public List<TValidationRunEvent> findByValidationRun(int validationRun, int offset, int count) {
+    public List<TValidationRunEvent> findByBranchAndValidationStamp(int branchId, int validationStampId, int offset, int count) {
         return getNamedParameterJdbcTemplate().query(
                 SQL.VALIDATION_RUN_HISTORY,
-                params("validationRun", validationRun).addValue("offset", offset).addValue("count", count),
+                params("branch", branchId).addValue("validationStamp", validationStampId).addValue("offset", offset).addValue("count", count),
                 new RowMapper<TValidationRunEvent>() {
                     @Override
                     public TValidationRunEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new TValidationRunEvent(
+                                rs.getInt("VRID"),
                                 SQLUtils.getEnum(Status.class, rs, "STATUS"),
                                 rs.getString("CONTENT"),
                                 rs.getString("AUTHOR"),

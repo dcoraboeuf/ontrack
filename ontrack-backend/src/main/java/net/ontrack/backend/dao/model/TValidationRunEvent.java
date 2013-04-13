@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 @Data
 public class TValidationRunEvent {
 
+    private final int validationRunId;
     private final Status status;
     private final String content;
     private final String author;

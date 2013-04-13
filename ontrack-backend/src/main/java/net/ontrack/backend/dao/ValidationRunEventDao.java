@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ValidationRunEventDao {
 
-    List<TValidationRunEvent> findByValidationRun(int validationRunId, int offset, int count);
+    List<TValidationRunEvent> findByBranchAndValidationStamp(int branchId, int validationStampId, int offset, int count);
 
 }
