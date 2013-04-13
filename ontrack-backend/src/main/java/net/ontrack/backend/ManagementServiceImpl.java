@@ -627,13 +627,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ValidationRunEvent> getValidationRunHistory(final Locale locale, int validationRunId, int offset, int count) {
-        List<TValidationRunEvent> list = validationRunEventDao.findByValidationRun(validationRunId, offset, count);
+        final ValidationRunSummary validationRun = getValidationRun(validationRunId);
         return Lists.transform(
-                list,
+                validationRunEventDao.findByValidationRun(validationRunId, offset, count),
                 new Function<TValidationRunEvent, ValidationRunEvent>() {
                     @Override
                     public ValidationRunEvent apply(TValidationRunEvent t) {
                         return new ValidationRunEvent(
+                                validationRun,
                                 new DatedSignature(
                                         new Signature(
                                                 t.getAuthorId(),
