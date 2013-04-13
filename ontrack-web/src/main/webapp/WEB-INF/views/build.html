@@ -38,7 +38,7 @@
                                                     href="gui/project/{{../project}}/branch/{{../branch}}/build/{{../build}}/validation_stamp/{{../stamp.name}}/validation_run/{{runOrder}}"
                                                     title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
                                                 <i class="icon-play"></i>
-                                                <span class="validation-run-status">{{status}}</span>
+                                                <span class="validation-run-status">{{#statusLabel}}{{status}}{{/statusLabel}}</span>
                                             </a>
                                         </p>
                                     {{/stamp.runs}}

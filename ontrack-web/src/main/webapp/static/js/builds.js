@@ -330,3 +330,8 @@ var Builds = function () {
 	};
 	
 } ();
+
+
+Handlebars.registerHelper('statusLabel', function(options) {
+  return loc('status.' + options.fn(this));
+});
