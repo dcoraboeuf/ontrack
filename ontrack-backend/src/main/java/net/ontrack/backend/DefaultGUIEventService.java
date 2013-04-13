@@ -52,7 +52,7 @@ public class DefaultGUIEventService implements GUIEventService {
         Matcher m = replacementPattern.matcher(canvas);
         StringBuffer html = new StringBuffer();
         while (m.find()) {
-            String value = expandToken(m.group(), event);
+            String value = expandToken(m.group(), event, locale);
             m.appendReplacement(html, value);
         }
         m.appendTail(html);
@@ -90,7 +90,7 @@ public class DefaultGUIEventService implements GUIEventService {
         return new GUIEvent(event.getId(), event.getAuthor(), event.getEventType(), timestamp, elapsed, html.toString(), icon, status);
     }
 
-    protected String expandToken(String rawToken, ExpandedEvent event) {
+    protected String expandToken(String rawToken, ExpandedEvent event, Locale locale) {
         // Gets rid of the $...$
         String token = StringUtils.substring(rawToken, 1, -1);
         // Searches for alternate display
@@ -108,11 +108,11 @@ public class DefaultGUIEventService implements GUIEventService {
         }
         // Looks for a fixed value
         else {
-            return expandValueToken(event, key);
+            return expandValueToken(event, key, locale);
         }
     }
 
-    private String expandValueToken(ExpandedEvent event, String key) {
+    private String expandValueToken(ExpandedEvent event, String key, Locale locale) {
         // Special values
         if ("author".equals(key)) {
             return format("<span class=\"event-author\">%s</span>", escapeHtml4(event.getAuthor()));
@@ -122,6 +122,10 @@ public class DefaultGUIEventService implements GUIEventService {
                 // TODO Uses a proper exception
                 throw new IllegalStateException("Could not find value " + key + " in event " + event.getId());
             } else {
+                if ("status".equals(key)) {
+                    // Replaces the value (enum value) by a label
+                    value = strings.get(locale, "status." + value);
+                }
                 return format("<span class=\"event-value\">%s</span>", escapeHtml4(value));
             }
         }

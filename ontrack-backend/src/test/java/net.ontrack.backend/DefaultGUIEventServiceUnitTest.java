@@ -122,7 +122,8 @@ public class DefaultGUIEventServiceUnitTest {
                         new DateTime())
                         .withEntity(
                                 Entity.PROJECT,
-                                new EntityStub(Entity.PROJECT, 1, "PROJ1")));
+                                new EntityStub(Entity.PROJECT, 1, "PROJ1")),
+                Locale.ENGLISH);
         assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ1\">PROJ1</a>", value);
     }
 
@@ -138,7 +139,8 @@ public class DefaultGUIEventServiceUnitTest {
                         new DateTime()
                 ).withEntity(
                         Entity.PROJECT,
-                        new EntityStub(Entity.PROJECT, 1, "PROJ3")));
+                        new EntityStub(Entity.PROJECT, 1, "PROJ3")),
+                Locale.ENGLISH);
         assertEquals("<a class=\"event-entity\" href=\"http://test/gui/project/PROJ3\">this project</a>", value);
     }
 
@@ -147,7 +149,8 @@ public class DefaultGUIEventServiceUnitTest {
         DefaultGUIEventService controller = dummy();
         controller.expandToken(
                 "$PROJECT$",
-                new ExpandedEvent(1, "Author", EventType.PROJECT_CREATED, new DateTime()));
+                new ExpandedEvent(1, "Author", EventType.PROJECT_CREATED, new DateTime()),
+                Locale.ENGLISH);
     }
 
     @Test
@@ -160,8 +163,38 @@ public class DefaultGUIEventServiceUnitTest {
                         "Author",
                         EventType.PROJECT_DELETED,
                         new DateTime())
-                        .withValue("project", "My > project"));
+                        .withValue("project", "My > project"),
+                Locale.ENGLISH);
         assertEquals("<span class=\"event-value\">My &gt; project</span>", value);
+    }
+
+    @Test
+    public void expandToken_value_status() {
+        DefaultGUIEventService controller = dummy();
+        String value = controller.expandToken(
+                "$status$",
+                new ExpandedEvent(
+                        1,
+                        "Author",
+                        EventType.PROJECT_DELETED,
+                        new DateTime())
+                        .withValue("status", "EXPLAINED"),
+                Locale.ENGLISH);
+        assertEquals("<span class=\"event-value\">Explanation found</span>", value);
+    }
+
+    @Test
+    public void expandToken_value_author() {
+        DefaultGUIEventService controller = dummy();
+        String value = controller.expandToken(
+                "$author$",
+                new ExpandedEvent(
+                        1,
+                        "Author",
+                        EventType.PROJECT_DELETED,
+                        new DateTime()),
+                Locale.ENGLISH);
+        assertEquals("<span class=\"event-author\">Author</span>", value);
     }
 
     @Test
