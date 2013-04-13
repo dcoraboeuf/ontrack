@@ -66,7 +66,7 @@
                                 <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="${base}/images/comment.png" /> <@lh key="validationRunStatus.status.none" /></button>
                                 <!-- Available statuses -->
                                 {{#nextStatusList}}
-                                    <button type="button" class="btn" onclick="ValidationRun.sendStatus('{{.}}')"><img src="${base}/images/status-{{.}}.png" /> {{.}}</button>
+                                    <button type="button" class="btn" onclick="ValidationRun.sendStatus('{{.}}')"><img src="${base}/images/status-{{.}}.png" /> {{#statusLabel}}{{.}}{{/statusLabel}}</button>
                                 {{/nextStatusList}}
                                 <!-- Cancel -->
                                 <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()"><@lh key="general.cancel" /></button>
