@@ -115,6 +115,11 @@ var Template = function () {
 	function display (id, append, config, data) {
 	    var containerId = id + '-list';
 	    if (config.render) {
+	        // Preprocessing?
+	        if (config.preProcessingFn) {
+	            data = config.preProcessingFn(data);
+	        }
+	        // Rendering
             config.render(containerId, append, config, data);
             if (config.postRenderFn) {
                 config.postRenderFn();
