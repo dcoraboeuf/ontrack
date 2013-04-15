@@ -4,7 +4,7 @@ var SVNIndexation = function () {
         Application.confirmAndCall(
             loc('subversion.indexation.full.confirmation'),
             function () {
-                location = 'gui/extension/subversion/indexation/full';
+                location = 'gui/extension/svn/indexation/full';
             }
         );
     }

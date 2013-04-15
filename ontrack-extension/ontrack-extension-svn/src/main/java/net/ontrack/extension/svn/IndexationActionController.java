@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/gui/extension/subversion/indexation")
+@RequestMapping("/gui/extension/svn/indexation")
 public class IndexationActionController extends AbstractGUIController implements ActionExtension {
 
     private final IndexationService indexationService;
@@ -44,7 +44,7 @@ public class IndexationActionController extends AbstractGUIController implements
 
     @Override
     public String getPath() {
-        return "gui/extension/subversion/indexation";
+        return "gui/extension/svn/indexation";
     }
 
     @Override
@@ -101,6 +101,6 @@ public class IndexationActionController extends AbstractGUIController implements
 
     private String alreadyRunning(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("message", UserMessage.error("subversion.indexation.alreadyrunning"));
-        return "redirect:/gui/extension/subversion/indexation";
+        return "redirect:/gui/extension/svn/indexation";
     }
 }
