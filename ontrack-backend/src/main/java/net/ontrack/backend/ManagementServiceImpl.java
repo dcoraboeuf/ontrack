@@ -684,10 +684,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
-        // Does not do anything if empty description
-        if (StringUtils.isBlank(form.getDescription())) {
-            return Ack.NOK;
-        }
         // Properties
         List<PropertyCreationForm> properties = form.getProperties();
         if (properties != null) {
@@ -706,6 +702,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
         // Checks the status
         if (StringUtils.isBlank(form.getStatus())) {
+            // Does not do anything if empty description
+            if (StringUtils.isBlank(form.getDescription())) {
+                return Ack.NOK;
+            }
             // No status - it means that the user creates a comment
             CommentStub comment = createComment(Entity.VALIDATION_RUN, runId, form.getDescription());
             // Registers an event for this comment

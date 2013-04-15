@@ -59,9 +59,9 @@ var ValidationRun = function () {
     }
 
     function sendStatus (status) {
-        // Checks the description
+        // Checks the description (required for Comment only)
         var description = $('#description').val();
-        if (description.trim() == '') {
+        if (description.trim() == '' && status == '') {
             $('#description').focus();
             $('#description-line').addClass('error');
             return false;
