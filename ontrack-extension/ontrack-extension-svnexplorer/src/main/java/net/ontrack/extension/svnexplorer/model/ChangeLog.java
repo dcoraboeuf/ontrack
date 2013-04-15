@@ -9,4 +9,5 @@ public class ChangeLog {
     private ChangeLogRevisions revisions;
     private ChangeLogIssues issues;
     private ChangeLogFiles files;
+    private ChangeLogInfo info;
 }

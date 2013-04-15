@@ -106,6 +106,26 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
         return files;
     }
 
+    @Override
+    @RequestMapping(value = "/changelog/{uuid}/info", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChangeLogInfo getChangeLogInfo(@PathVariable String uuid) {
+        // Gets the change log
+        ChangeLog changeLog = getChangeLog(uuid);
+        // Makes sure the issues are loaded
+        ChangeLogIssues issues = changeLog.getIssues();
+        if (issues == null) {
+            issues = getChangeLogIssues(uuid);
+        }
+        // Loads the info
+        ChangeLogInfo info = svnExplorerService.getChangeLogInfo(changeLog.getSummary(), issues);
+        // Stores in cache
+        changeLog.setInfo(info);
+        // OK
+        return info;
+    }
+
     private ChangeLog getChangeLog(String uuid) {
         ChangeLog changeLog = logCache.getIfPresent(uuid);
         if (changeLog != null) {

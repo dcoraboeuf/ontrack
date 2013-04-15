@@ -12,4 +12,6 @@ public interface SVNExplorerUI {
 
     ChangeLogFiles getChangeLogFiles(String uuid);
 
+    ChangeLogInfo getChangeLogInfo(String uuid);
+
 }

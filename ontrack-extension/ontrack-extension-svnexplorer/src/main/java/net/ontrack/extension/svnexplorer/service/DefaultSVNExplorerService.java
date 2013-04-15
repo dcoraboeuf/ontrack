@@ -9,6 +9,7 @@ import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
+import net.ontrack.extension.jira.service.model.JIRAStatus;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
@@ -66,7 +67,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private ChangeLogReference getChangeLogReference (ChangeLogSummary summary) {// Function that extracts the path from a SVN location
+    private ChangeLogReference getChangeLogReference(ChangeLogSummary summary) {// Function that extracts the path from a SVN location
         Function<SVNReference, String> pathFn = new Function<SVNReference, String>() {
             @Override
             public String apply(SVNReference reference) {
@@ -207,6 +208,28 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // OK
             return new ChangeLogFiles(filesList);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues) {
+        // JIRA issue statuses
+        Map<String, ChangeLogInfoStatus> statuses = new TreeMap<>();
+        for (ChangeLogIssue changeLogIssue : issues.getList()) {
+            JIRAStatus status = changeLogIssue.getIssue().getStatus();
+            String statusName = status.getName();
+            ChangeLogInfoStatus infoStatus = statuses.get(statusName);
+            if (infoStatus != null) {
+                infoStatus.incr();
+            } else {
+                infoStatus = new ChangeLogInfoStatus(status);
+                statuses.put(statusName, infoStatus);
+            }
+        }
+        // OK
+        return new ChangeLogInfo(
+                Lists.newArrayList(statuses.values())
+        );
     }
 
     private void collectFilesForRevision(Map<String, ChangeLogFile> files, long revision) {

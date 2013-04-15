@@ -1,9 +1,6 @@
 package net.ontrack.extension.svnexplorer.service;
 
-import net.ontrack.extension.svnexplorer.model.ChangeLogFiles;
-import net.ontrack.extension.svnexplorer.model.ChangeLogIssues;
-import net.ontrack.extension.svnexplorer.model.ChangeLogRevisions;
-import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
+import net.ontrack.extension.svnexplorer.model.*;
 
 public interface SVNExplorerService {
 
@@ -14,4 +11,6 @@ public interface SVNExplorerService {
     ChangeLogIssues getChangeLogIssues(ChangeLogSummary summary, ChangeLogRevisions revisions);
 
     ChangeLogFiles getChangeLogFiles(ChangeLogSummary summary, ChangeLogRevisions revisions);
+
+    ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues);
 }
