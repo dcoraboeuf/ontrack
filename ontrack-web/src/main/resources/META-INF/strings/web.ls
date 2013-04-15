@@ -98,6 +98,10 @@ error.back
 	en -> Go back to the portal
 	fr -> Revenir à l'acceuil
 
+net.ontrack.web.support.UploadTooBigException
+    en -> File too big.
+    fr -> Fichier trop gros.
+
 [login]
 
 login

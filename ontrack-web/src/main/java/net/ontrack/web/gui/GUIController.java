@@ -5,6 +5,7 @@ import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
+import net.ontrack.web.support.ErrorHandlingMultipartResolver;
 import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
 import org.apache.commons.codec.binary.Base64;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
@@ -26,12 +28,14 @@ public class GUIController extends AbstractGUIController {
 
     private final Strings strings;
     private final ManageUI manageUI;
+    private final ErrorHandlingMultipartResolver errorHandlingMultipartResolver;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI) {
+    public GUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.strings = strings;
+        this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -121,9 +125,10 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/image", method = RequestMethod.POST)
-    public String imageValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
+    public String imageValidationStamp(HttpServletRequest request, Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name, @RequestParam MultipartFile image) {
         try {
-            // TODO Custom (global) error handler for the upload exceptions
+            // Error handling
+            errorHandlingMultipartResolver.checkForUploadError(request);
             // Upload
             manageUI.setImageValidationStamp(project, branch, name, image);
             // Success

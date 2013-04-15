@@ -6,6 +6,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.locale.LocaleInterceptor;
+import net.ontrack.web.support.DefaultErrorHandlingMultipartResolver;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
 import net.ontrack.web.support.json.LocalTimeDeserializer;
@@ -156,7 +157,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver o = new CommonsMultipartResolver();
+        CommonsMultipartResolver o = new DefaultErrorHandlingMultipartResolver();
         o.setMaxUploadSize(4 * 1024); // 4K limit
         return o;
     }
