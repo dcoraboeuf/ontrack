@@ -85,10 +85,11 @@
 
 /* Action visible only when container is hovered */
 .action.action-optional {
-	opacity: 0;
+	opacity: 0.25;
+	float: right;
 }
 *:hover > .action.action-optional {
-	opacity: 0.5;
+	opacity: 1.0;
 }
 
 /* Validation stamps and their runs */

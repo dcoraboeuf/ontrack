@@ -27,6 +27,9 @@
                     <i class="icon-arrow-right" style="vertical-align: baseline;"></i>
                     ${summary.buildTo.buildSummary.name?html}
                 </span>
+                <span class="action action-optional">
+                    <span onclick="location='gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                </span>
         </div>
     </div>
 
@@ -198,8 +201,5 @@
             </table>
         </script>
     </div>
-
-    <!-- Going back to the branch page -->
-    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}" class="btn"><@lh key="general.close" /></a>
 
 </@layout_std>
