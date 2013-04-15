@@ -29,3 +29,12 @@ ul.filechange {
 ul.filechange li {
     display: inline;
 }
+
+td.info-status-name {
+    width: 160px;
+}
+
+.info-status-bar {
+    height: 16px;
+    background-color: #7396BF;
+}

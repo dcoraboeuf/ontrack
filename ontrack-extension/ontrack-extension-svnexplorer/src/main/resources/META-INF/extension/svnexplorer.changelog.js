@@ -3,6 +3,7 @@ var ChangeLog = function () {
     var revisions = null;
     var issues = null;
     var files = null;
+    var info = null;
 
     function toggleMergedRevision (parentRevision) {
         $('tr[parent="{0}"]'.format(parentRevision)).toggle();
@@ -82,9 +83,38 @@ var ChangeLog = function () {
     }
 
     function displayInfo (data) {
-        // TODO Stores the information (local cache for display purpose only)
-        // TODO Rendering
-        // $('#info').html(Template.render('info-template', info));
+        // Stores the information (local cache for display purpose only)
+        info = data;
+        // Processing, % of width
+        var total = 0;
+        $.each (info.statuses, function (index, statusInfo) {
+            total += statusInfo.count;
+        });
+        var reference = 400;
+        $.each (info.statuses, function (index, statusInfo) {
+            var ratio = 1.0 * statusInfo.count / total;
+            statusInfo.width = Math.round(ratio * reference);
+        });
+        // Rendering
+        $('#info-status').html(Template.render('info-status-template', info));
+        /*
+        // console.log("plotData", plotData);
+        // Rendering
+        $.plot("#info-plot", [ plotData ], {
+            series: {
+				bars: {
+					show: true,
+					barWidth: 0.6,
+					align: "center"
+				}
+			},
+			xaxis: {
+				mode: "categories",
+				tickLength: 0
+			}
+        });
+        */
+        // OK
         Application.tooltips();
     }
 
@@ -140,7 +170,7 @@ var ChangeLog = function () {
     }
 
     function loadInfo () {
-        if (files == null) {
+        if (info == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the files

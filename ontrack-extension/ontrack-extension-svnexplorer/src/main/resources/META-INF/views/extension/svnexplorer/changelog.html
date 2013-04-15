@@ -174,10 +174,29 @@
                 </tbody>
             </table>
         </script>
-    </div>
 
-    <!-- Info log -->
-    <div class="tab-pane" id="info">
+        <!-- Info log -->
+        <div class="tab-pane" id="info">
+            <div class="page-header">
+                <h1><small><@lh key="svnexplorer.changelog.info.status" /></small></h1>
+            </div>
+            <div id="info-status"></div>
+        </div>
+        <script id="info-status-template" type="text/html">
+            <table style="width:500px;" class="info-status">
+                {{#statuses}}
+                    <tr>
+                        <td class="info-status-name"><img src="{{status.iconUrl}}" /> {{status.name}}</td>
+                        <td class="info-status-count">
+                            {{count}}
+                        </td>
+                        <td>
+                            <div class="info-status-bar" style="width:{{width}}px">&nbsp;</div>
+                        </td>
+                    </tr>
+                {{/statuses}}
+            </table>
+        </script>
     </div>
 
     <!-- Going back to the branch page -->
