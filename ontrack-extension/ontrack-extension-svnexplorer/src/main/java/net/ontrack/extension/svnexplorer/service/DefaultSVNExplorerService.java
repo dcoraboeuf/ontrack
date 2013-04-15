@@ -196,8 +196,11 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             Map<String, ChangeLogFile> files = new TreeMap<>();
             // For each revision
             for (ChangeLogRevision changeLogRevision : revisions.getList()) {
-                long revision = changeLogRevision.getRevision();
-                collectFilesForRevision(files, revision);
+                // Takes into account only the unmerged revisions
+                if (changeLogRevision.getLevel() == 0) {
+                    long revision = changeLogRevision.getRevision();
+                    collectFilesForRevision(files, revision);
+                }
             }
             // List of files
             List<ChangeLogFile> filesList = new ArrayList<>(files.values());
