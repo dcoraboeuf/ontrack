@@ -84,6 +84,32 @@ svnexplorer.changelog.files.changes
     en -> Changes
     fr -> Changements
 
+[changelog.info]
+
+svnexplorer.changelog.info
+    en -> Information
+    fr -> Information
+
+svnexplorer.changelog.info.title
+    en -> Displays high level information about the status of this change log, but can take time in order to be displayed.
+    fr -> Affiche des informations de haut niveau à propos des changements, mais peut prendre du temps à être affiché.
+
+svnexplorer.changelog.info.status
+    en -> Issue statuses
+    fr -> Statuts des tickets
+
+svnexplorer.changelog.info.status.status
+    en -> Status
+    fr -> Status
+
+svnexplorer.changelog.info.status.count
+    en -> Count
+    fr -> Nombre
+
+svnexplorer.changelog.info.files
+    en -> Sensible files
+    fr -> Fichiers sensibles
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException

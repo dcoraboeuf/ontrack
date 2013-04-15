@@ -81,6 +81,13 @@ var ChangeLog = function () {
         Application.tooltips();
     }
 
+    function displayInfo (data) {
+        // TODO Stores the information (local cache for display purpose only)
+        // TODO Rendering
+        // $('#info').html(Template.render('info-template', info));
+        Application.tooltips();
+    }
+
     function loadRevisions () {
         if (revisions == null) {
             // UUID for the change log
@@ -132,6 +139,23 @@ var ChangeLog = function () {
         }
     }
 
+    function loadInfo () {
+        if (files == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the files
+            AJAX.get({
+                url: 'ui/extension/svnexplorer/changelog/{0}/info'.format(uuid),
+                loading: {
+                    el: '#info',
+                    mode: 'appendText'
+                },
+                successFn: displayInfo,
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn () {
         return AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#changelog-error'));
     }
@@ -140,6 +164,7 @@ var ChangeLog = function () {
         $('#revisions-tab').on('show', loadRevisions);
         $('#issues-tab').on('show', loadIssues);
         $('#files-tab').on('show', loadFiles);
+        $('#info-tab').on('show', loadInfo);
     }
 
     return {
