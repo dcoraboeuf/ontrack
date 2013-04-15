@@ -61,6 +61,19 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Profile page
+     */
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public String profile (Model model) {
+        // Checks the user is logged
+        securityUtils.checkIsLogged();
+        // Gets the user profile
+        model.addAttribute("account", securityUtils.getCurrentAccount());
+        // OK
+        return "profile";
+    }
+
+    /**
      * Settings page
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)

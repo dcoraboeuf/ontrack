@@ -91,6 +91,10 @@
 *:hover > .action.action-optional {
 	opacity: 1.0;
 }
+.action.action-optional a {
+    text-decoration: none;
+    color: black;
+}
 
 /* Validation stamps and their runs */
 

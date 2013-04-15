@@ -72,6 +72,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional(readOnly = true)
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Account getAccount(int id) {
         return accountFunction.apply(
                 accountDao.getByID(id)

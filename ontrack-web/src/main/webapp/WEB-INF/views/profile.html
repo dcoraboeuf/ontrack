@@ -1,0 +1,26 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="profile" breadcrumbs={loc("home"):""}>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="profile" />
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <ul>
+                    <li><@lh key="account.name" /> : <b>${account.name?html}</b></li>
+                    <li><@lh key="account.fullName" /> : <b>${account.fullName?html}</b></li>
+                    <li><@lh key="account.email" /> : <b>${account.email?html}</b></li>
+                    <li><@lh key="account.role" /> : <b><@lh key="account.role.${account.roleName?html}" /></b></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</@layout_std>
