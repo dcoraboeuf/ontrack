@@ -20,6 +20,7 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
     public static final String TAG_FILTER_PATTERN = "tagFilterPattern";
     public static final String BROWSER_FOR_PATH = "browserForPath";
     public static final String BROWSER_FOR_REVISION = "browserForRevision";
+    public static final String BROWSER_FOR_CHANGE = "browserForChange";
 
     private String url;
     private String user;
@@ -29,6 +30,7 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
     private String tagFilterPattern;
     private String browserForPath;
     private String browserForRevision;
+    private String browserForChange;
 
     public String getUrl() {
         return url;
@@ -62,6 +64,10 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
         return browserForRevision;
     }
 
+    public String getBrowserForChange() {
+        return browserForChange;
+    }
+
     @Override
     public String getExtension() {
         return SubversionExtension.EXTENSION;
@@ -88,7 +94,8 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
                 new TextConfigurationExtensionField(TAG_PATTERN, "subversion.configuration.tagPattern", ".+/(tags|int)/.+", tagPattern),
                 new TextConfigurationExtensionField(TAG_FILTER_PATTERN, "subversion.configuration.tagFilterPattern", "", tagFilterPattern),
                 new TextConfigurationExtensionField(BROWSER_FOR_PATH, "subversion.configuration.browserForPath", "", browserForPath),
-                new TextConfigurationExtensionField(BROWSER_FOR_REVISION, "subversion.configuration.browserForRevision", "", browserForRevision)
+                new TextConfigurationExtensionField(BROWSER_FOR_REVISION, "subversion.configuration.browserForRevision", "", browserForRevision),
+                new TextConfigurationExtensionField(BROWSER_FOR_CHANGE, "subversion.configuration.browserForChange", "", browserForChange)
         );
     }
 
@@ -118,6 +125,9 @@ public class SubversionConfigurationExtension implements ConfigurationExtension 
                 break;
             case BROWSER_FOR_REVISION:
                 browserForRevision = value;
+                break;
+            case BROWSER_FOR_CHANGE:
+                browserForChange = value;
                 break;
         }
     }

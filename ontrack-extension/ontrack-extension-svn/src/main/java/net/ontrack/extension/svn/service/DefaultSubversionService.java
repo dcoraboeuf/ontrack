@@ -108,6 +108,16 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
+    public String getFileChangeBrowsingURL(String path, long revision) {
+        String browserForPathAndRevision = configurationExtension.getBrowserForChange();
+        if (StringUtils.isNotBlank(browserForPathAndRevision)) {
+            return browserForPathAndRevision.replace("*", path).replace("$", String.valueOf(revision));
+        } else {
+            return getURL(path);
+        }
+    }
+
+    @Override
     public String getURL(String path) {
         return configurationExtension.getUrl() + path;
     }

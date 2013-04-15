@@ -79,4 +79,9 @@ public interface SubversionService {
      * Gets the list of changes for a revision
      */
     SVNRevisionPaths getRevisionPaths(long revision);
+
+    /**
+     * Gets the URL that allows to browse for one changeset on a path
+     */
+    String getFileChangeBrowsingURL(String path, long revision);
 }

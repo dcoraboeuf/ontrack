@@ -223,7 +223,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             ChangeLogFileChange change = new ChangeLogFileChange(
                     revisionPaths.getInfo(),
                     revisionPath.getChangeType(),
-                    "TODO File change URL"
+                    subversionService.getFileChangeBrowsingURL(path, revisionPaths.getInfo().getRevision())
             );
             changeLogFile.addChange(change);
         }

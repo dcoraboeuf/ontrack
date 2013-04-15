@@ -29,12 +29,16 @@ subversion.configuration.tagFilterPattern
     fr -> Expression régulière pour les tags à exclure
 
 subversion.configuration.browserForPath
-    en -> URL for browsing a path
-    fr -> URL pour la navigation vers un chemin
+    en -> URL for browsing a path (*)
+    fr -> URL pour la navigation vers un chemin (*)
 
 subversion.configuration.browserForRevision
-    en -> URL for browsing a revision
-    fr -> URL pour la navigation vers une révision
+    en -> URL for browsing a revision (*)
+    fr -> URL pour la navigation vers une révision (*)
+
+subversion.configuration.browserForChange
+    en -> URL for browsing a change set ($) for a path (*)
+    fr -> URL pour la navigation pour un changement ($) vers un chemin (*)
 
 [path]
 
