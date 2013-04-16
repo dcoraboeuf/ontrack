@@ -7,6 +7,7 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.locale.LocaleInterceptor;
 import net.ontrack.web.support.DefaultErrorHandlingMultipartResolver;
+import net.ontrack.web.support.ErrorHandlingMultipartResolver;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
 import net.ontrack.web.support.json.LocalTimeDeserializer;
@@ -31,7 +32,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.jmx.export.MBeanExporter;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -156,10 +156,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver o = new DefaultErrorHandlingMultipartResolver();
-        o.setMaxUploadSize(4 * 1024); // 4K limit
-        return o;
+    public ErrorHandlingMultipartResolver multipartResolver() {
+        return new DefaultErrorHandlingMultipartResolver(4);
     }
 
     @Bean

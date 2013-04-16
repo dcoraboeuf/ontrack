@@ -13,6 +13,13 @@ public class DefaultErrorHandlingMultipartResolver extends CommonsMultipartResol
 
     protected static final String EXCEPTION_KEY = "MULTIPART.EXCEPTION";
 
+    private final long sizeInK;
+
+    public DefaultErrorHandlingMultipartResolver(long sizeInK) {
+        this.sizeInK = sizeInK;
+        setMaxUploadSize(sizeInK * 1024);
+    }
+
     @Override
     protected MultipartParsingResult parseRequest(HttpServletRequest request) throws MultipartException {
         try {
@@ -30,7 +37,7 @@ public class DefaultErrorHandlingMultipartResolver extends CommonsMultipartResol
         Exception ex = (Exception) request.getAttribute(EXCEPTION_KEY);
         if (ex != null) {
             if (ex instanceof MaxUploadSizeExceededException) {
-                throw new UploadTooBigException(getFileUpload().getFileSizeMax());
+                throw new UploadTooBigException(sizeInK);
             }
         }
     }

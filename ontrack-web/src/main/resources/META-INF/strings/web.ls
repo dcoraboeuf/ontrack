@@ -99,8 +99,8 @@ error.back
 	fr -> Revenir à l'acceuil
 
 net.ontrack.web.support.UploadTooBigException
-    en -> File too big.
-    fr -> Fichier trop gros.
+    en -> File too big. Maximum is {0}K.
+    fr -> Fichier trop gros. Le maximum est de {0} K.
 
 [login]
 
