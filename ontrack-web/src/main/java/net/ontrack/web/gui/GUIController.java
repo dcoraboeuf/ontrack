@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,7 +87,10 @@ public class GUIController extends AbstractGUIController {
             // Error handling
             errorHandlingMultipartResolver.checkForUploadError(request);
             // Gets the image
-            MultipartFile image = (MultipartFile) request.getAttribute("image");
+            MultipartFile image = ((MultipartHttpServletRequest) request).getFile("image");
+            if (image == null) {
+                throw new IllegalStateException("Missing 'image' file parameter");
+            }
             // Upload
             manageUI.setImagePromotionLevel(project, branch, name, image);
             // Success
@@ -129,7 +133,7 @@ public class GUIController extends AbstractGUIController {
             // Error handling
             errorHandlingMultipartResolver.checkForUploadError(request);
             // Gets the image
-            MultipartFile image = (MultipartFile) request.getAttribute("image");
+            MultipartFile image = ((MultipartHttpServletRequest) request).getFile("image");
             // Upload
             manageUI.setImageValidationStamp(project, branch, name, image);
             // Success
