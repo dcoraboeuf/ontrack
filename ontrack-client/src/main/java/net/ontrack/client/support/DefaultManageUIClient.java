@@ -124,6 +124,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public ValidationStampSummary updateValidationStamp(String project, String branch, String validationStamp, ValidationStampUpdateForm form) {
+        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), ValidationStampSummary.class, form);
+    }
+
+    @Override
     public Ack deleteValidationStamp(String project, String branch, String validationStamp) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.deleteValidationStamp
         return null;

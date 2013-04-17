@@ -192,6 +192,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    ValidationStampSummary updateValidationStamp(String project, String branch, String validationStamp, ValidationStampUpdateForm form) {
+        return managementService.updateValidationStamp(
+                entityConverter.getValidationStampId(project, branch, validationStamp),
+                form
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody
@@ -319,8 +330,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    public
-    BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
+    public BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.queryBuilds(locale, branchId, filter);
     }
