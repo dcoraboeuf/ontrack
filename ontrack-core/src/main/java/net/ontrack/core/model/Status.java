@@ -30,7 +30,7 @@ public enum Status {
     /**
      * Explanation found
      */
-    EXPLAINED(),
+    EXPLAINED(FIXED),
     /**
      * Run is under investigation
      */
