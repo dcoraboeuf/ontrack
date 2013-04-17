@@ -25,7 +25,9 @@
                                         ${result_index + 1}.
                                     </td>
                                     <td>
-                                        <a href="${result.url}">${result.title}</a>
+                                        <a href="${result.url}">${result.title?html}</a>
+                                        <br/>
+                                        <span class="description">${result.description?html}</span>
                                     </td>
                                 </tr>
                             </#list>

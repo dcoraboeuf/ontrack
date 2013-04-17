@@ -34,6 +34,7 @@ public class ProjectSearchProvider extends AbstractEntitySearchProvider {
         if (p != null) {
             return Collections.singleton(
                     new SearchResult(
+                            p.getName(),
                             new LocalizableMessage("search.project", p.getName()),
                             guiPath("project/%s", p.getName())
                     )
