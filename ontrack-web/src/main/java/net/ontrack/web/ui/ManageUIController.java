@@ -143,6 +143,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    BranchSummary updateBranch(@PathVariable String project, @PathVariable String name, @RequestBody BranchUpdateForm form) {
+        return managementService.updateBranch(
+                entityConverter.getBranchId(project, name),
+                form
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody

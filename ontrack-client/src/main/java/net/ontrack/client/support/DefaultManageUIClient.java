@@ -96,6 +96,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BranchSummary updateBranch(String project, String name, BranchUpdateForm form) {
+        return put(format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class, form);
+    }
+
+    @Override
     public Ack deleteBranch(String project, String name) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.deleteBranch
         return null;

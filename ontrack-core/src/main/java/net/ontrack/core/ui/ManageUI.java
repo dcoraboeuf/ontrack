@@ -34,6 +34,8 @@ public interface ManageUI {
 
     BranchSummary createBranch(String project, BranchCreationForm form);
 
+    BranchSummary updateBranch(String project, String name, BranchUpdateForm form);
+
     Ack deleteBranch(String project, String name);
 
     BranchFilterData getBranchFilterData(String project, String branch);
