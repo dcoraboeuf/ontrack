@@ -1,6 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.Caches;
+import net.ontrack.backend.ProjectAlreadyExistException;
 import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.backend.db.SQL;
@@ -9,6 +10,7 @@ import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,9 +58,13 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
     @Override
     @Transactional
     public int createProject(String name, String description) {
-        return dbCreate(
-                SQL.PROJECT_CREATE,
-                params("name", name).addValue("description", description));
+        try {
+            return dbCreate(
+                    SQL.PROJECT_CREATE,
+                    params("name", name).addValue("description", description));
+        } catch (DuplicateKeyException ex) {
+            throw new ProjectAlreadyExistException(name);
+        }
     }
 
     @Override
@@ -77,11 +83,15 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
     @Transactional
     @CacheEvict(value = Caches.PROJECT, key = "#id")
     public Ack updateProject(int id, String name, String description) {
-        return Ack.one(
-                getNamedParameterJdbcTemplate().update(
-                        SQL.PROJECT_UPDATE,
-                        params("id", id).addValue("name", name).addValue("description", description)
-                )
-        );
+        try {
+            return Ack.one(
+                    getNamedParameterJdbcTemplate().update(
+                            SQL.PROJECT_UPDATE,
+                            params("id", id).addValue("name", name).addValue("description", description)
+                    )
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new ProjectAlreadyExistException(name);
+        }
     }
 }

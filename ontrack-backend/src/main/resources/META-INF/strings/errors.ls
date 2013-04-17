@@ -41,3 +41,6 @@ net.ontrack.backend.PropertyScopeException
 net.ontrack.backend.BranchNoBuildFoundException
     en -> No build found on branch.
     fr -> Aucun build pour la branche.
+net.ontrack.backend.ProjectAlreadyExistException
+    en -> Project with name "{0}" already exists.
+    fr -> Le projet de nom "{0}" existe déjà.
