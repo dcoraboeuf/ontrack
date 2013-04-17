@@ -1,5 +1,11 @@
 # Localization for SVNExplorer
 
+[sensibleFiles]
+
+svnexplorer.sensibleFiles
+    en -> List of sensible files
+    fr -> Liste des fichiers sensibles
+
 [changelog]
 
 svnexplorer.changelog
