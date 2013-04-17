@@ -14,4 +14,5 @@ public interface SVNExplorerUI {
 
     ChangeLogInfo getChangeLogInfo(String uuid);
 
+    RevisionInfo getRevisionInfo(long revision);
 }

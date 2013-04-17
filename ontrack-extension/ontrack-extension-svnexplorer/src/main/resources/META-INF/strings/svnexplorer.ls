@@ -123,6 +123,11 @@ svnexplorer.changelog.info.files.none
 [search]
 
 svnexplorer.search.revision
+    en,fr -> @[svnexplorer.revision]
+
+[revision]
+
+svnexplorer.revision
     en -> Revision {0}
     fr -> Révision {0}
 

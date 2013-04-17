@@ -1,0 +1,15 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="svnexplorer.revision" title=loc("svnexplorer.revision", info.changeLogRevision.revision?c) extension=true>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    ${loc("svnexplorer.revision", info.changeLogRevision.revision?c)}
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+</@layout_std>

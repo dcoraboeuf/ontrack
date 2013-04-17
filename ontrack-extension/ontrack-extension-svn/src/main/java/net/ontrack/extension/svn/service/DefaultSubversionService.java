@@ -42,6 +42,7 @@ public class DefaultSubversionService implements SubversionService {
             return new SVNRevisionInfo(
                     t.getRevision(),
                     t.getAuthor(),
+                    t.getCreation(),
                     formatRevisionTime(t.getCreation()),
                     t.getMessage(),
                     getRevisionBrowsingURL(t.getRevision())

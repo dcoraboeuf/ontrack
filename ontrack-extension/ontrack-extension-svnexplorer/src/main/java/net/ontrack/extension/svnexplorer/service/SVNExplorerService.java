@@ -13,4 +13,6 @@ public interface SVNExplorerService {
     ChangeLogFiles getChangeLogFiles(ChangeLogSummary summary, ChangeLogRevisions revisions);
 
     ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues, ChangeLogFiles files);
+
+    RevisionInfo getRevisionInfo(long revision);
 }

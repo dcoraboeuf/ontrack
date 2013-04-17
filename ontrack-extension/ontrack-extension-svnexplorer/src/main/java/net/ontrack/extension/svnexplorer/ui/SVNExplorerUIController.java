@@ -36,6 +36,12 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     }
 
     @Override
+    @RequestMapping(value = "/revision/{revision:\\d+}", method = RequestMethod.GET)
+    public @ResponseBody RevisionInfo getRevisionInfo(@PathVariable long revision) {
+        return svnExplorerService.getRevisionInfo(revision);
+    }
+
+    @Override
     @RequestMapping(value = "/changelog", method = RequestMethod.POST)
     public
     @ResponseBody

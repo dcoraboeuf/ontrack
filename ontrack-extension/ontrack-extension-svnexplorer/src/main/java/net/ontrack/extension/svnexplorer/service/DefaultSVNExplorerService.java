@@ -250,6 +250,24 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public RevisionInfo getRevisionInfo(long revision) {
+        // Gets information about the revision
+        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
+        ChangeLogRevision changeLogRevision = createChangeLogRevision(
+                0,
+                revision,
+                basicInfo.getMessage(),
+                basicInfo.getAuthor(),
+                basicInfo.getDateTime()
+        );
+        // OK
+        return new RevisionInfo(
+                changeLogRevision
+        );
+    }
+
     private Predicate<ChangeLogFile> getSensibleFilePredicateFn(String sensibleFilesPatterns) {
         // Empty?
         if (StringUtils.isBlank(sensibleFilesPatterns)) {
@@ -337,8 +355,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     }
 
     private ChangeLogRevision createChangeLogRevision(int level, SVNLogEntry svnEntry) {
-        long revision = svnEntry.getRevision();
-        String message = svnEntry.getMessage();
+        return createChangeLogRevision(
+                level,
+                svnEntry.getRevision(),
+                svnEntry.getMessage(),
+                svnEntry.getAuthor(),
+                new DateTime(svnEntry.getDate()));
+
+    }
+
+    private ChangeLogRevision createChangeLogRevision(int level, long revision, String message, String author, DateTime revisionDate) {
         // Formatted message
         String formattedMessage = jiraService.insertIssueUrlsInMessage(message);
         // Revision URL
@@ -347,8 +373,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         return new ChangeLogRevision(
                 level,
                 revision,
-                svnEntry.getAuthor(),
-                subversionService.formatRevisionTime(new DateTime(svnEntry.getDate())),
+                author,
+                subversionService.formatRevisionTime(revisionDate),
                 message,
                 revisionUrl,
                 formattedMessage);

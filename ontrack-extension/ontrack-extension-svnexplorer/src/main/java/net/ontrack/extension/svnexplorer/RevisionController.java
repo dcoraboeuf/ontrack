@@ -1,0 +1,33 @@
+package net.ontrack.extension.svnexplorer;
+
+import net.ontrack.extension.svnexplorer.ui.SVNExplorerUI;
+import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.ErrorHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class RevisionController extends AbstractGUIController {
+
+    private final SVNExplorerUI ui;
+
+    @Autowired
+    public RevisionController(ErrorHandler errorHandler, SVNExplorerUI ui) {
+        super(errorHandler);
+        this.ui = ui;
+    }
+
+
+    @RequestMapping(value = "/gui/extension/svnexplorer/revision/{revision:\\d+}", method = RequestMethod.GET)
+    public String revision (@PathVariable long revision, Model model) {
+        // Revision info
+        model.addAttribute("info", ui.getRevisionInfo(revision));
+        // OK
+        return "extension/svnexplorer/revision";
+    }
+
+}
