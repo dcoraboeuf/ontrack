@@ -117,7 +117,7 @@ var Template = function () {
 	    if (config.render) {
 	        // Preprocessing?
 	        if (config.preProcessingFn) {
-	            data = config.preProcessingFn(data);
+	            data = config.preProcessingFn(data, append);
 	        }
 	        // Rendering
             config.render(containerId, append, config, data);

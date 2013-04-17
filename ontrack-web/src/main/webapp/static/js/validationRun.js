@@ -1,5 +1,9 @@
 var ValidationRun = function () {
 
+    var thisRun = false;
+    var thisBuild = false;
+    var otherBuilds = false;
+
     function statusUpdateDataTemplate (validationRunId) {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/statusUpdateData'.format(validationRunId),
@@ -11,22 +15,22 @@ var ValidationRun = function () {
         return Template.config({
             url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
             more: true,
-            preProcessingFn: function (validationRunEvents) {
+            preProcessingFn: function (validationRunEvents, append) {
                 var list = [];
-                var currentRun = true;
-                var currentBuild = true;
-                list.push({
-                    header: true,
-                    title: loc('validationRun.history.thisRun')
-                });
                 $.each (validationRunEvents, function (index, validationRunEvent) {
                     // This run?
                     if (validationRunEvent.validationRun.id == validationRunId) {
+                        if (!thisRun) {
+                            list.push({
+                                header: true,
+                                title: loc('validationRun.history.thisRun')
+                            });
+                            thisRun = true;
+                        }
                         validationRunEvent.thisBuild = true;
                         validationRunEvent.thisRun = true;
                     } else if (validationRunEvent.validationRun.build.id == buildId) {
-                        if (currentRun) {
-                            currentRun = false;
+                        if (!thisBuild) {
                             list.push({
                                 header: true,
                                 title: loc('validationRun.history.thisBuild'),
@@ -36,16 +40,17 @@ var ValidationRun = function () {
                                     validationRunEvent.validationRun.build.name.html()
                                 )
                             });
+                            thisBuild = true;
                         }
                         validationRunEvent.thisBuild = true;
                         validationRunEvent.thisRun = false;
                     } else {
-                        if (currentBuild) {
-                            currentBuild = false;
+                        if (!otherBuilds) {
                             list.push({
                                 header: true,
                                 title: loc('validationRun.history.allBuilds')
                             });
+                            otherBuilds = true;
                         }
                         validationRunEvent.thisBuild = false;
                         validationRunEvent.thisRun = false;
