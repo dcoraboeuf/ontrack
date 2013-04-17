@@ -96,6 +96,18 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
+    @CacheEvict(value = Caches.VALIDATION_STAMP, key = "#id")
+    public Ack updateValidationStamp(int id, String name, String description) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATION_STAMP_UPDATE,
+                        params("id", id).addValue("name", name).addValue("description", description)
+                )
+        );
+    }
+
+    @Override
+    @Transactional
     @CacheEvict(Caches.VALIDATION_STAMP)
     public Ack deleteValidationStamp(int id) {
         return Ack.one(

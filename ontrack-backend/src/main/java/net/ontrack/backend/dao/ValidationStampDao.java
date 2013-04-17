@@ -13,6 +13,8 @@ public interface ValidationStampDao {
 
     int createValidationStamp(int branch, String name, String description);
 
+    Ack updateValidationStamp(int id, String name, String description);
+
     Ack deleteValidationStamp(int id);
 
     List<TValidationStamp> findByPromotionLevel(int promotionLevel);
