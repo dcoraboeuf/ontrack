@@ -2,6 +2,7 @@ package net.ontrack.web.gui;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
@@ -189,11 +190,15 @@ public class GUIController extends AbstractGUIController {
                     }
                 }
         );
-        // FIXME One result only?
-        // Adds into the model
-        model.addAttribute("results", guiResults);
-        // OK
-        return "search";
+        // One result only?
+        if (guiResults.size() == 1) {
+            return "redirect:" + Iterables.get(guiResults, 0).getUrl();
+        } else {
+            // Adds into the model
+            model.addAttribute("results", guiResults);
+            // OK
+            return "search";
+        }
     }
 
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
