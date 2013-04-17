@@ -2,11 +2,13 @@ package net.ontrack.extension.svn.dao.jdbc;
 
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
+import net.ontrack.extension.svn.RevisionNotFoundException;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -55,11 +57,15 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     @Override
     @Transactional(readOnly = true)
     public TRevision get(long revision) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                "SELECT * FROM REVISION WHERE REVISION = :revision",
-                params("revision", revision),
-                revisionRowMapper
-        );
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    "SELECT * FROM REVISION WHERE REVISION = :revision",
+                    params("revision", revision),
+                    revisionRowMapper
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            throw new RevisionNotFoundException(revision);
+        }
     }
 
     @Override
