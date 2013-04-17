@@ -10,6 +10,28 @@ var Branches = function () {
 			}
 	    });
 	}
+
+	function updateBranch (project, branch) {
+	    var url = 'ui/manage/project/{0}/branch/{1}'.format(project, branch);
+	    AJAX.get({
+            url: url,
+            successFn: function (summary) {
+                Application.dialogAndSubmit({
+                    id: 'branch-update-dialog',
+                    title: loc('branch.update'),
+                    url: url,
+                    method: 'PUT',
+                    openFn: function () {
+                        $('#branch-update-dialog-name').val(summary.name);
+                        $('#branch-update-dialog-description').val(summary.description);
+                    },
+                    successFn: function (summary) {
+                            location = 'gui/project/{0}/branch/{1}'.format(summary.project.name, summary.name);
+                        }
+                    });
+            }
+	    });
+	}
 	
 	function deleteBranch (project,name) {
 		Application.deleteEntity('project/{0}/branch'.format(project), name, '');
@@ -26,6 +48,7 @@ var Branches = function () {
 	return {
 		createBranch: createBranch,
 		deleteBranch: deleteBranch,
+		updateBranch: updateBranch,
 		branchTemplate: branchTemplate
 	};
 	

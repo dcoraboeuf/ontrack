@@ -384,6 +384,10 @@ branch.empty
 branch.create
 	en -> New branch
 	fr -> Nouvelle branche
+
+branch.update
+	en -> Update branch
+	fr -> Modifier branche
 	
 branch.delete.prompt
 	en -> Are you sure to delete the "{0}" branch and all its associated information?
