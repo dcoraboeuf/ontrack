@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -71,6 +72,16 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
                         SQL.BRANCH_DELETE,
                         params("id", id)
                 )
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TBranch> findByName(String name) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.BRANCH_BY_NAME,
+                params("name", name),
+                branchMapper
         );
     }
 }
