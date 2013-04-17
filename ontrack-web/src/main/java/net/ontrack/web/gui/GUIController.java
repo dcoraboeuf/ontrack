@@ -1,12 +1,18 @@
 package net.ontrack.web.gui;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
+import net.ontrack.service.SearchService;
+import net.ontrack.web.gui.model.GUISearchResult;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.support.ErrorHandlingMultipartResolver;
 import net.sf.jstring.NonLocalizable;
+import net.sf.jstring.Strings;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,12 +20,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Locale;
 
 @Controller
@@ -27,12 +35,16 @@ public class GUIController extends AbstractGUIController {
 
     private final ManageUI manageUI;
     private final ErrorHandlingMultipartResolver errorHandlingMultipartResolver;
+    private final SearchService searchService;
+    private final Strings strings;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, SearchService searchService, Strings strings) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
+        this.searchService = searchService;
+        this.strings = strings;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -114,7 +126,7 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level_manage", method = RequestMethod.GET)
-    public String managePromotionLevels(@PathVariable String project, @PathVariable String branch, Model model)  {
+    public String managePromotionLevels(@PathVariable String project, @PathVariable String branch, Model model) {
         model.addAttribute("management", manageUI.getPromotionLevelManagementData(project, branch));
         return "promotionLevelManagement";
     }
@@ -154,6 +166,33 @@ public class GUIController extends AbstractGUIController {
             content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
         }
         renderImage(response, content);
+    }
+
+    /**
+     * Search
+     */
+    @RequestMapping(value = "/gui/search", method = RequestMethod.GET)
+    public String search(@RequestParam String token, Model model, final Locale locale) {
+        // Fills the model with the search results
+        Collection<SearchResult> results = searchService.search(token);
+        // Gets the localization form
+        Collection<GUISearchResult> guiResults = Collections2.transform(
+                results,
+                new Function<SearchResult, GUISearchResult>() {
+                    @Override
+                    public GUISearchResult apply(SearchResult result) {
+                        return new GUISearchResult(
+                                result.getTitle().getLocalizedMessage(strings, locale),
+                                result.getUrl()
+                        );
+                    }
+                }
+        );
+        // FIXME One result only?
+        // Adds into the model
+        model.addAttribute("results", guiResults);
+        // OK
+        return "search";
     }
 
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
