@@ -635,3 +635,9 @@ entityUnsubscription.submit
 entityUnsubscription.done
     en -> The subscription has been cancelled.
     fr -> L'abonnement a été annulé.
+
+[search]
+
+search.submit
+    en -> Search
+    fr -> Chercher
