@@ -24,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 @Controller
@@ -173,7 +176,7 @@ public class GUIController extends AbstractGUIController {
      * Search
      */
     @RequestMapping(value = "/gui/search", method = RequestMethod.GET)
-    public String search(@RequestParam String token, Model model, final Locale locale) {
+    public ModelAndView search(@RequestParam String token, final Locale locale) {
         // Fills the model with the search results
         Collection<SearchResult> results = searchService.search(token);
         // Gets the localization form
@@ -192,12 +195,10 @@ public class GUIController extends AbstractGUIController {
         );
         // One result only?
         if (guiResults.size() == 1) {
-            return "redirect:" + Iterables.get(guiResults, 0).getUrl();
+            return new ModelAndView(new RedirectView(Iterables.get(guiResults, 0).getUrl(), false, false, false));
         } else {
-            // Adds into the model
-            model.addAttribute("results", guiResults);
             // OK
-            return "search";
+            return new ModelAndView("search", Collections.singletonMap("results", guiResults));
         }
     }
 
