@@ -182,7 +182,7 @@ public class GUIController extends AbstractGUIController {
                     @Override
                     public GUISearchResult apply(SearchResult result) {
                         return new GUISearchResult(
-                                result.getTitle(),
+                                result.getTitle().getLocalizedMessage(strings, locale),
                                 result.getDescription().getLocalizedMessage(strings, locale),
                                 result.getUrl()
                         );

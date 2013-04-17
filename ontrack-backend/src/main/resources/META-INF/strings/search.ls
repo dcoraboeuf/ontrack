@@ -9,3 +9,7 @@ search.branch
 search.build
     en -> {2} build of {1} branch of {0} project
     fr -> Build {2} de la branche {1} du project {0}
+
+search.comment
+    en -> Comment on {0}
+    fr -> Commentaire sur {0}

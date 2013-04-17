@@ -11,7 +11,7 @@ public abstract class AbstractEntitySearchProvider implements SearchProvider {
         this.guiService = guiService;
     }
 
-    protected String guiPath(String path, String... params) {
+    protected String guiPath(String path, Object... params) {
         return guiService.toGUI(String.format(path, params));
     }
 }
