@@ -93,8 +93,21 @@ public abstract class AbstractClient implements Client {
         });
     }
 
-    protected <T> T put(String path, Class<T> returnType) {
-        return request(new HttpPut(getUrl(path)), returnType);
+    protected <T> T put(String path, Class<T> returnType, Object payload) {
+        HttpPut put = new HttpPut(getUrl(path));
+        if (put != null) {
+            setBody(payload, put);
+        }
+        return request(put, returnType);
+    }
+
+    private void setBody(Object payload, HttpEntityEnclosingRequestBase put) {
+        try {
+            String json = ObjectMapperFactory.createObjectMapper().writeValueAsString(payload);
+            put.setEntity(new StringEntity(json, ContentType.create("application/json", "UTF-8")));
+        } catch (IOException e) {
+            throw new ClientGeneralException(put, e);
+        }
     }
 
     protected <T> T post(String path, Class<T> returnType, Map<String, String> parameters) {
@@ -116,12 +129,7 @@ public abstract class AbstractClient implements Client {
     protected <T> T post(String path, Class<T> returnType, Object body) {
         HttpPost post = new HttpPost(getUrl(path));
         if (body != null) {
-            try {
-                String json = ObjectMapperFactory.createObjectMapper().writeValueAsString(body);
-                post.setEntity(new StringEntity(json, ContentType.create("application/json", "UTF-8")));
-            } catch (IOException e) {
-                throw new ClientGeneralException(post, e);
-            }
+            setBody(body, post);
         }
         return request(post, returnType);
     }

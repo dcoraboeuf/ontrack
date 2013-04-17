@@ -90,6 +90,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.deleteProject(entityConverter.getProjectId(name));
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack updateProject(@PathVariable String name, @RequestBody ProjectUpdateForm form) {
+        return managementService.updateProject(
+                entityConverter.getProjectId(name),
+                form
+        );
+    }
+
     // Branches
 
     @Override
