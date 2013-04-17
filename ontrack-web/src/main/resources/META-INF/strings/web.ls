@@ -33,10 +33,6 @@ general.create
 	en -> Create
 	fr -> Créer
 
-general.update
-    en -> Update
-    fr -> Modifier
-
 general.modify
 	en -> Modify
 	fr -> Modifier
