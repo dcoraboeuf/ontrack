@@ -153,9 +153,9 @@
     </@form_field>
 </#macro>
 
-<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true class="" value="">
+<#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true class="" value="" extra="">
     <@form_field name=name label=label idPrefix=idPrefix help=help>
-        <input name="${name?html}" class="${class?html}" type="text" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> />
+        <input name="${name?html}" class="${class?html}" type="text" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> ${extra} />
     </@form_field>
 </#macro>
 

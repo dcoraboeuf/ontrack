@@ -32,6 +32,28 @@ var Branches = function () {
             }
 	    });
 	}
+
+	function cloneBranch (project, branch) {
+	    AJAX.get({
+            url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
+            successFn: function (summary) {
+                Application.dialogAndSubmit({
+                    id: 'branch-clone-dialog',
+                    title: loc('branch.clone'),
+                    url: 'ui/manage/project/{0}/branch/{1}/clone'.format(project, branch),
+                    method: 'POST',
+                    openFn: function () {
+                        $('#branch-clone-dialog-name-original').val(summary.name);
+                        $('#branch-clone-dialog-name').val(summary.name);
+                        $('#branch-clone-dialog-description').val(summary.description);
+                    },
+                    successFn: function (summary) {
+                            location = 'gui/project/{0}/branch/{1}'.format(summary.project.name, summary.name);
+                        }
+                    });
+            }
+	    });
+	}
 	
 	function deleteBranch (project,name) {
 		Application.deleteEntity('project/{0}/branch'.format(project), name, '');
@@ -49,6 +71,7 @@ var Branches = function () {
 		createBranch: createBranch,
 		deleteBranch: deleteBranch,
 		updateBranch: updateBranch,
+		cloneBranch: cloneBranch,
 		branchTemplate: branchTemplate
 	};
 	

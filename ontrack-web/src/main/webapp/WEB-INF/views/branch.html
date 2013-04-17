@@ -9,6 +9,7 @@
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span onclick="Branches.updateBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span onclick="Branches.cloneBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-forward"></i> <@lh key="branch.clone" /></span>
                         <span onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
                     <a href="gui/project/${branch.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
@@ -41,12 +42,20 @@
 		</div>
 	</div>
 
-
     <@dialog id="branch-update-dialog">
         <@form_text idPrefix="branch-update-dialog-" name="name" label=loc('branch.name') />
         <@form_memo idPrefix="branch-update-dialog-" name="description" label=loc('branch.description') required=false />
 
         <@dialog_button id="branch-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
+        <@dialog_button_cancel />
+    </@dialog>
+
+    <@dialog id="branch-clone-dialog">
+        <@form_text idPrefix="branch-clone-dialog-" name="name-original" label=loc('branch.clone.original') extra='readonly="readonly"' />
+        <@form_text idPrefix="branch-clone-dialog-" name="name" label=loc('branch.name') />
+        <@form_memo idPrefix="branch-clone-dialog-" name="description" label=loc('branch.description') required=false />
+
+        <@dialog_button id="branch-clone-dialog-submit" class="btn-primary" text=loc('branch.clone') />
         <@dialog_button_cancel />
     </@dialog>
 </@layout_std>

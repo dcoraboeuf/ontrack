@@ -384,7 +384,15 @@ branch.create
 branch.update
 	en -> Update branch
 	fr -> Modifier branche
-	
+
+branch.clone
+    en -> Clone
+    fr -> Cloner
+
+branch.clone.original
+    en -> Original name
+    fr -> Nom initial
+
 branch.delete.prompt
 	en -> Are you sure to delete the "{0}" branch and all its associated information?
 	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" et toutes ses informations associées?
