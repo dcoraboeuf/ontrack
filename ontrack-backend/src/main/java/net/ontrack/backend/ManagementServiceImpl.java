@@ -183,6 +183,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new ProjectSummary(id, form.getName(), form.getDescription());
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack updateProject(int id, ProjectUpdateForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Query
+        Ack ack = projectDao.updateProject(id, form.getName(), form.getDescription());
+        // Audit
+        if (ack.isSuccess()) {
+            event(Event.of(EventType.PROJECT_UPDATED).withProject(id));
+        }
+        // OK
+        return ack;
+    }
+
     // Validation stamps
 
     @Override

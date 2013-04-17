@@ -72,4 +72,16 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
                 )
         );
     }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.PROJECT, key = "#id")
+    public Ack updateProject(int id, String name, String description) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.PROJECT_UPDATE,
+                        params("id", id).addValue("name", name).addValue("description", description)
+                )
+        );
+    }
 }

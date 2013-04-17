@@ -12,6 +12,10 @@ event.PROJECT_CREATED
 	en -> Project $PROJECT$ has been created.
 	fr -> Le project $PROJECT$ a été créé.
 
+event.PROJECT_UPDATED
+	en -> Project $PROJECT$ has been updated.
+	fr -> Le project $PROJECT$ a été mis à jour.
+
 event.PROJECT_DELETED
 	en -> Project $project$ has been deleted.
 	fr -> Le project $project$ a été supprimé.

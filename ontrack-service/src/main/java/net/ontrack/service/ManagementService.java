@@ -25,6 +25,8 @@ public interface ManagementService {
 	ProjectSummary getProject(int id);
 
 	Ack deleteProject(int id);
+
+    Ack updateProject(int id, ProjectUpdateForm form);
 	
 	// Branches
 

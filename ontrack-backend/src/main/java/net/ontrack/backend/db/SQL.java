@@ -18,6 +18,8 @@ public interface SQL {
 
     String PROJECT_DELETE = "DELETE FROM PROJECT WHERE ID = :id";
 
+    String PROJECT_UPDATE = "UPDATE PROJECT SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
+
     // Branches
 
     String BRANCH = "SELECT * FROM BRANCH WHERE ID = :id";

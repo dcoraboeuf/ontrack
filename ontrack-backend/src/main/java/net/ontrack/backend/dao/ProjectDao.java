@@ -14,4 +14,6 @@ public interface ProjectDao {
     int createProject(String name, String description);
 
     Ack deleteProject(int id);
+
+    Ack updateProject(int id, String name, String description);
 }
