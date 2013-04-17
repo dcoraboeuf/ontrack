@@ -192,10 +192,10 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
-    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
     public
     @ResponseBody
-    ValidationStampSummary updateValidationStamp(String project, String branch, String validationStamp, ValidationStampUpdateForm form) {
+    ValidationStampSummary updateValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody ValidationStampUpdateForm form) {
         return managementService.updateValidationStamp(
                 entityConverter.getValidationStampId(project, branch, validationStamp),
                 form

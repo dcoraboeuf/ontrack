@@ -425,6 +425,10 @@ validation_stamp.empty
 validation_stamp.create
 	en -> New validation stamp
 	fr -> Nouvelle validation
+
+validation_stamp.update
+	en -> Update validation stamp
+	fr -> Modifier validation
 	
 validation_stamp.create.title
 	en,fr -> @[validation_stamp.create]
