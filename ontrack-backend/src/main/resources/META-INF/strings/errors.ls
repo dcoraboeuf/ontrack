@@ -44,3 +44,6 @@ net.ontrack.backend.BranchNoBuildFoundException
 net.ontrack.backend.ProjectAlreadyExistException
     en -> Project with name "{0}" already exists.
     fr -> Le projet de nom "{0}" existe déjà.
+net.ontrack.backend.BranchAlreadyExistException
+    en -> Branch with name "{0}" already exists.
+    fr -> La branche de nom "{0}" existe déjà.

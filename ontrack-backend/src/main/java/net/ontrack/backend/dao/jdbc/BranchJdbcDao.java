@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.BranchAlreadyExistException;
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.model.TBranch;
@@ -9,6 +10,7 @@ import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,9 +59,13 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
     @Override
     @Transactional
     public int createBranch(int project, String name, String description) {
-        return dbCreate(
-                SQL.BRANCH_CREATE,
-                params("project", project).addValue("name", name).addValue("description", description));
+        try {
+            return dbCreate(
+                    SQL.BRANCH_CREATE,
+                    params("project", project).addValue("name", name).addValue("description", description));
+        } catch (DuplicateKeyException ex) {
+            throw new BranchAlreadyExistException(name);
+        }
     }
 
     @Override
@@ -78,11 +84,15 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
     @Transactional
     @CacheEvict(value = Caches.BRANCH, key = "#id")
     public Ack updateBranch(int id, String name, String description) {
-        return Ack.one(
-                getNamedParameterJdbcTemplate().update(
-                        SQL.BRANCH_UPDATE,
-                        params("id", id).addValue("name", name).addValue("description", description)
-                )
-        );
+        try {
+            return Ack.one(
+                    getNamedParameterJdbcTemplate().update(
+                            SQL.BRANCH_UPDATE,
+                            params("id", id).addValue("name", name).addValue("description", description)
+                    )
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new BranchAlreadyExistException(name);
+        }
     }
 }
