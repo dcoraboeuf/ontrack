@@ -180,13 +180,23 @@
 
         <!-- Info log -->
         <div class="tab-pane" id="info">
-            <div class="page-header">
-                <h1><small><@lh key="svnexplorer.changelog.info.status" /></small></h1>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="page-header">
+                        <h1><small><@lh key="svnexplorer.changelog.info.status" /></small></h1>
+                    </div>
+                    <div id="info-status"></div>
+                </div>
+                <div class="span6">
+                    <div class="page-header">
+                        <h1><small><@lh key="svnexplorer.changelog.info.files" /></small></h1>
+                    </div>
+                    <div id="info-files"></div>
+                </div>
             </div>
-            <div id="info-status"></div>
         </div>
         <script id="info-status-template" type="text/html">
-            <table style="width:500px;" class="info-status">
+            <table style="width:500px;" class=" info-status">
                 {{#statuses}}
                     <tr>
                         <td class="info-status-name"><img src="{{status.iconUrl}}" /> {{status.name}}</td>
@@ -198,6 +208,30 @@
                         </td>
                     </tr>
                 {{/statuses}}
+            </table>
+        </script>
+        <script id="info-files-template" type="text/html">
+            <table class="table table-condensed info-files">
+                {{#sensibleFiles}}
+                    <tr class="info">
+                        <td colspan="2">
+                            <a href="{{url}}">{{path}}</a>
+                        </td>
+                    </tr>
+                    {{#changes}}
+                        <tr>
+                            <td width="32" class="revision-header"><i class="icon-arrow-right"></i></td>
+                            <td>
+                                <a href="{{url}}">{{revisionInfo.revision}}</a>
+                                <i>{{changeType}}</i>
+                                - {{revisionInfo.author}}
+                                - {{revisionInfo.isoDateTime}}
+                                <br/>
+                                {{revisionInfo.message}}
+                            </td>
+                        </tr>
+                    {{/changes}}
+                {{/sensibleFiles}}
             </table>
         </script>
     </div>

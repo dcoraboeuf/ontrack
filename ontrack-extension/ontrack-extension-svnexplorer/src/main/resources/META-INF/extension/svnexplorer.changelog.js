@@ -85,6 +85,9 @@ var ChangeLog = function () {
     function displayInfo (data) {
         // Stores the information (local cache for display purpose only)
         info = data;
+
+        // 1) Issue status
+
         // Processing, % of width
         var total = 0;
         $.each (info.statuses, function (index, statusInfo) {
@@ -97,23 +100,16 @@ var ChangeLog = function () {
         });
         // Rendering
         $('#info-status').html(Template.render('info-status-template', info));
-        /*
-        // console.log("plotData", plotData);
-        // Rendering
-        $.plot("#info-plot", [ plotData ], {
-            series: {
-				bars: {
-					show: true,
-					barWidth: 0.6,
-					align: "center"
-				}
-			},
-			xaxis: {
-				mode: "categories",
-				tickLength: 0
-			}
-        });
-        */
+
+        // 2) Sensible files
+
+        // None
+        if (info.sensibleFiles.length == 0) {
+            $('#info-files').html('<div class="alert alert-info">{0}</div>'.format(loc('svnexplorer.changelog.info.files.none').html()));
+        } else {
+            $('#info-files').html(Template.render('info-files-template', info));
+        }
+
         // OK
         Application.tooltips();
     }

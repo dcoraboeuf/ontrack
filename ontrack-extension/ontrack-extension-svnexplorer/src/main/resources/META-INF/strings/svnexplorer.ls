@@ -116,6 +116,10 @@ svnexplorer.changelog.info.files
     en -> Sensible files
     fr -> Fichiers sensibles
 
+svnexplorer.changelog.info.files.none
+    en -> No sensible file was changed.
+    fr -> Aucun fichier sensible n'a été changé.
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException
