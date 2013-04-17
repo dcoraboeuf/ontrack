@@ -36,6 +36,8 @@ public enum EventType {
 
     PROJECT_UPDATED,
 
-    BRANCH_UPDATED;
+    BRANCH_UPDATED,
+
+    VALIDATION_STAMP_UPDATED;
 
 }

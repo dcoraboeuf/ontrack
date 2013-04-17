@@ -36,6 +36,10 @@ event.VALIDATION_STAMP_CREATED
 	en -> The $VALIDATION_STAMP$ validation stamp has been created for the $BRANCH$ branch of the $PROJECT$ project.
 	fr -> La validation $VALIDATION_STAMP$ a été créée pour la branche $BRANCH$ du projet $PROJECT$.
 
+event.VALIDATION_STAMP_UPDATED
+	en -> The $VALIDATION_STAMP$ validation stamp has been updated for the $BRANCH$ branch of the $PROJECT$ project.
+	fr -> La validation $VALIDATION_STAMP$ a été mise à jour pour la branche $BRANCH$ du projet $PROJECT$.
+
 event.PROMOTION_LEVEL_CREATED
 	en -> The $PROMOTION_LEVEL$ promotion level has been created for the $BRANCH$ branch of the $PROJECT$ project.
 	fr -> Le niveau de promotion $PROMOTION_LEVEL$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.

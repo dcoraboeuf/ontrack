@@ -321,6 +321,25 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Existing value
+        ValidationStampSummary existing = getValidationStamp(validationStampId);
+        // Query
+        validationStampDao.updateValidationStamp(validationStampId, form.getName(), form.getDescription());
+        // Audit
+        event(Event.of(EventType.VALIDATION_STAMP_UPDATED)
+                .withProject(existing.getBranch().getProject().getId())
+                .withBranch(existing.getBranch().getId())
+                .withValidationStamp(validationStampId));
+        // OK
+        return getValidationStamp(validationStampId);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationStamp(int validationStampId) {
         ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
         Ack ack = validationStampDao.deleteValidationStamp(validationStampId);

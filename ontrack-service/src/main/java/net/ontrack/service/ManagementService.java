@@ -46,7 +46,9 @@ public interface ManagementService {
 
 	ValidationStampSummary getValidationStamp(int id);
 
-	ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
+    ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
+
+    ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form);
 
 	Ack imageValidationStamp(int validationStampId, MultipartFile image);
 
