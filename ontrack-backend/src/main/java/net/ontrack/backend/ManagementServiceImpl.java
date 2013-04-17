@@ -427,7 +427,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         event(Event.of(EventType.PROMOTION_LEVEL_UPDATED)
                 .withProject(existing.getBranch().getProject().getId())
                 .withBranch(existing.getBranch().getId())
-                .withValidationStamp(promotionLevelId));
+                .withPromotionLevel(promotionLevelId));
         // OK
         return getPromotionLevel(promotionLevelId);
     }
