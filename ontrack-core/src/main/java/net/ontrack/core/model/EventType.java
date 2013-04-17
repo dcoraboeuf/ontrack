@@ -34,6 +34,8 @@ public enum EventType {
 
     PROMOTION_LEVEL_DELETED,
 
-    PROJECT_UPDATED;
+    PROJECT_UPDATED,
+
+    BRANCH_UPDATED;
 
 }

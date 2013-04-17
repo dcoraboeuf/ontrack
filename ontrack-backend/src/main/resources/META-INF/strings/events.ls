@@ -24,6 +24,10 @@ event.BRANCH_CREATED
 	en -> Branch $BRANCH$ has been created for the $PROJECT$ project.
 	fr -> La branche $BRANCH$ a été créée pour le projet $PROJECT$.
 
+event.BRANCH_UPDATED
+	en -> Branch $BRANCH$ has been updated for the $PROJECT$ project.
+	fr -> La branche $BRANCH$ a été mise à jour pour le projet $PROJECT$.
+
 event.BRANCH_DELETED
     en -> The $branch$ of the $project$ project has been deleted.
     fr -> La branche $branch$ du projet $project$ a été supprimée.

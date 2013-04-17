@@ -15,4 +15,6 @@ public interface BranchDao {
     int createBranch(int project, String name, String description);
 
     Ack deleteBranch(int id);
+
+    Ack updateBranch(int id, String name, String description);
 }

@@ -37,6 +37,8 @@ public interface ManagementService {
 	BranchSummary createBranch(int project, BranchCreationForm form);
 
     Ack deleteBranch(int branchId);
+
+    BranchSummary updateBranch(int branch, BranchUpdateForm form);
 	
 	// Validation stamps
 

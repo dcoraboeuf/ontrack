@@ -30,6 +30,8 @@ public interface SQL {
 
     String BRANCH_DELETE = "DELETE FROM BRANCH WHERE ID = :id";
 
+    String BRANCH_UPDATE = "UPDATE BRANCH SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
+
     // Builds
 
     String BUILD = "SELECT * FROM BUILD WHERE ID = :id";

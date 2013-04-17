@@ -261,6 +261,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public BranchSummary updateBranch(int branch, BranchUpdateForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Loads existing branch
+        BranchSummary existingBranch = getBranch(branch);
+        // Query
+        branchDao.updateBranch(
+                branch,
+                form.getName(),
+                form.getDescription()
+        );
+        // Audit
+        event(Event.of(EventType.BRANCH_UPDATED).withProject(existingBranch.getProject().getId()).withBranch(branch));
+        // OK
+        return getBranch(branch);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ValidationStampSummary> getValidationStampList(int branch) {
         return Lists.transform(

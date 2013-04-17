@@ -73,4 +73,16 @@ public class BranchJdbcDao extends AbstractJdbcDao implements BranchDao {
                 )
         );
     }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.BRANCH, key = "#id")
+    public Ack updateBranch(int id, String name, String description) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.BRANCH_UPDATE,
+                        params("id", id).addValue("name", name).addValue("description", description)
+                )
+        );
+    }
 }
