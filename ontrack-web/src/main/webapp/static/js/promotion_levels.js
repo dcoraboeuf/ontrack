@@ -10,6 +10,28 @@ var PromotionLevels = function () {
 			}
 		});
 	}
+
+	function updatePromotionLevel (project, branch, promotionLevel) {
+	    var url = 'ui/manage/project/{0}/branch/{1}/promotion_level/{2}'.format(project, branch, promotionLevel);
+	    AJAX.get({
+            url: url,
+            successFn: function (summary) {
+                Application.dialogAndSubmit({
+                    id: 'promotion_level-update-dialog',
+                    title: loc('promotion_level.update'),
+                    url: url,
+                    method: 'PUT',
+                    openFn: function () {
+                        $('#promotion_level-update-dialog-name').val(summary.name);
+                        $('#promotion_level-update-dialog-description').val(summary.description);
+                    },
+                    successFn: function (summary) {
+                            location = 'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(summary.branch.project.name, summary.branch.name, summary.name);
+                        }
+                    });
+            }
+	    });
+	}
 	
 	function deletePromotionLevel(project, branch, name) {
 		Application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project,branch), name, '');
@@ -41,6 +63,7 @@ var PromotionLevels = function () {
 	return {
 		createPromotionLevel: createPromotionLevel,
 		deletePromotionLevel: deletePromotionLevel,
+		updatePromotionLevel: updatePromotionLevel,
 		promotionLevelTemplate: promotionLevelTemplate,
 		promotionLevelImage: promotionLevelImage,
 		editImage: editImage,

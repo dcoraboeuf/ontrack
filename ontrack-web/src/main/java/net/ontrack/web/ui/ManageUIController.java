@@ -259,6 +259,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    PromotionLevelSummary updatePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel, @RequestBody PromotionLevelUpdateForm form) {
+        return managementService.updatePromotionLevel(
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel),
+                form
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody

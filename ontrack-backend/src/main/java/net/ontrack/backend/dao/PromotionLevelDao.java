@@ -13,6 +13,8 @@ public interface PromotionLevelDao {
 
     int createPromotionLevel(int branch, String name, String description);
 
+    Ack updatePromotionLevel(int promotionLevelId, String name, String description);
+
     List<TPromotionLevel> findByBuild(int build);
 
     Ack upPromotionLevel(int promotionLevelId);

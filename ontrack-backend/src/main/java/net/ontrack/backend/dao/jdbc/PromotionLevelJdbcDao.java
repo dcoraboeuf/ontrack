@@ -1,11 +1,13 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.PromotionLevelAlreadyExistException;
 import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.model.TPromotionLevel;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -60,12 +62,31 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
         );
         int levelNb = count + 1;
         // OK
-        return dbCreate(
-                SQL.PROMOTION_LEVEL_CREATE,
-                params("branch", branch)
-                        .addValue("name", name)
-                        .addValue("description", description)
-                        .addValue("levelNb", levelNb));
+        try {
+            return dbCreate(
+                    SQL.PROMOTION_LEVEL_CREATE,
+                    params("branch", branch)
+                            .addValue("name", name)
+                            .addValue("description", description)
+                            .addValue("levelNb", levelNb));
+        } catch (DuplicateKeyException ex) {
+            throw new PromotionLevelAlreadyExistException(name);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Ack updatePromotionLevel(int promotionLevelId, String name, String description) {
+        try {
+            return Ack.one(
+                    getNamedParameterJdbcTemplate().update(
+                            SQL.PROMOTION_LEVEL_UPDATE,
+                            params("id", promotionLevelId).addValue("name", name).addValue("description", description)
+                    )
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new PromotionLevelAlreadyExistException(name);
+        }
     }
 
     @Override

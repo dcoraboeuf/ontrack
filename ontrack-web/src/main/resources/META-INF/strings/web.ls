@@ -470,6 +470,10 @@ promotion_level.create
 	en -> New promotion level
 	fr -> Nouveau niveau de promotion
 
+promotion_level.update
+	en -> Update promotion level
+	fr -> Modifier niveau de promotion
+
 promotion_level.name
 	en,fr -> @[model.name]
 promotion_level.description

@@ -50,3 +50,6 @@ net.ontrack.backend.BranchAlreadyExistException
 net.ontrack.backend.ValidationStampAlreadyExistException
     en -> Validation stamp with name "{0}" already exists.
     fr -> La validation de nom "{0}" existe déjà.
+net.ontrack.backend.PromotionLevelAlreadyExistException
+    en -> Promotion level with name "{0}" already exists.
+    fr -> Le niveau de promotion de nom "{0}" existe déjà.

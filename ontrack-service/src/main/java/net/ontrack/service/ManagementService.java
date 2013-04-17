@@ -68,6 +68,8 @@ public interface ManagementService {
 
     PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form);
 
+    PromotionLevelSummary updatePromotionLevel(int promotionLevelId, PromotionLevelUpdateForm form);
+
     Ack deletePromotionLevel(int promotionLevelId);
 
     Ack imagePromotionLevel(int promotionLevelId, MultipartFile image);

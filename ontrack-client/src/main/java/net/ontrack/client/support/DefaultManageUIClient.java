@@ -171,6 +171,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public PromotionLevelSummary updatePromotionLevel(String project, String branch, String promotionLevel, PromotionLevelUpdateForm form) {
+        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, promotionLevel), PromotionLevelSummary.class, form);
+    }
+
+    @Override
     public Ack deletePromotionLevel(String project, String branch, String name) {
         return delete(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), Ack.class);
     }

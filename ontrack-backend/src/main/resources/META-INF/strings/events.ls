@@ -44,6 +44,10 @@ event.PROMOTION_LEVEL_CREATED
 	en -> The $PROMOTION_LEVEL$ promotion level has been created for the $BRANCH$ branch of the $PROJECT$ project.
 	fr -> Le niveau de promotion $PROMOTION_LEVEL$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.
 
+event.PROMOTION_LEVEL_UPDATED
+	en -> The $PROMOTION_LEVEL$ promotion level has been updated for the $BRANCH$ branch of the $PROJECT$ project.
+	fr -> Le niveau de promotion $PROMOTION_LEVEL$ a été mis à jour pour la branche $BRANCH$ du projet $PROJECT$.
+
 event.BUILD_CREATED
 	en -> Build $BUILD$ has been created for the $BRANCH$ in the $PROJECT$ project.
 	fr -> Le build $BUILD$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.

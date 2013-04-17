@@ -7,15 +7,15 @@
                 <span class="title">
                     <a href="gui/project/${promotionLevel.branch.project.name?html}">${promotionLevel.branch.project.name?html}</a>
                     / <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}">${promotionLevel.branch.name?html}</a>
-                / <@promotion_level_img promotionLevel=promotionLevel /> ${promotionLevel.name?html}</span>
+                    / <@promotion_level_img promotionLevel=promotionLevel /> ${promotionLevel.name?html}</span>
                 <span class="action action-optional">
                     <#if secAdmin()>
-                        <span onclick=""><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span onclick="PromotionLevels.updatePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="PromotionLevels.editImage();"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
-                        <span onclick="location='gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage'"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></span>
+                        <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span onclick="PromotionLevels.deletePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
-                    <span onclick="location='gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                    <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
             <div class="muted">${promotionLevel.description?html}</div>
@@ -38,4 +38,12 @@
 			</div>
 		</div>
 	</div>
+
+    <@dialog id="promotion_level-update-dialog">
+        <@form_text idPrefix="promotion_level-update-dialog-" name="name" label=loc('promotion_level.name') />
+        <@form_memo idPrefix="promotion_level-update-dialog-" name="description" label=loc('promotion_level.description') required=false />
+
+        <@dialog_button id="promotion_level-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
+        <@dialog_button_cancel />
+    </@dialog>
 </@layout_std>

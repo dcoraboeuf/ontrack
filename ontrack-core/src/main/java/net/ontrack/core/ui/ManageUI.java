@@ -66,6 +66,8 @@ public interface ManageUI {
 
     PromotionLevelSummary createPromotionLevel(String project, String branch, PromotionLevelCreationForm form);
 
+    PromotionLevelSummary updatePromotionLevel(String project, String branch, String promotionLevel, PromotionLevelUpdateForm form);
+
     Ack deletePromotionLevel(String project, String branch, String name);
 
     Ack setImagePromotionLevel(String project, String branch, String name, MultipartFile image);

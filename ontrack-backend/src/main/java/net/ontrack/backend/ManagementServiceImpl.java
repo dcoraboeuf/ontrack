@@ -416,6 +416,25 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public PromotionLevelSummary updatePromotionLevel(int promotionLevelId, PromotionLevelUpdateForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Existing value
+        PromotionLevelSummary existing = getPromotionLevel(promotionLevelId);
+        // Query
+        promotionLevelDao.updatePromotionLevel(promotionLevelId, form.getName(), form.getDescription());
+        // Audit
+        event(Event.of(EventType.PROMOTION_LEVEL_UPDATED)
+                .withProject(existing.getBranch().getProject().getId())
+                .withBranch(existing.getBranch().getId())
+                .withValidationStamp(promotionLevelId));
+        // OK
+        return getPromotionLevel(promotionLevelId);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deletePromotionLevel(int promotionLevelId) {
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         Ack ack = promotionLevelDao.deletePromotionLevel(promotionLevelId);
