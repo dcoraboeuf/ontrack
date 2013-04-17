@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.model.TBuild;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.Status;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -22,4 +23,6 @@ public interface BuildDao {
 	TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel);
 
     TBuild findLastByBranch(int branch);
+
+    Collection<TBuild> findByName(String name);
 }

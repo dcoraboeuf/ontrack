@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -65,6 +66,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         return getFirstItem(
                 SQL.BUILD_LAST_BY_BRANCH,
                 params("branch", branch),
+                buildRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TBuild> findByName(String name) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.BUILD_BY_NAME,
+                params("name", name),
                 buildRowMapper
         );
     }

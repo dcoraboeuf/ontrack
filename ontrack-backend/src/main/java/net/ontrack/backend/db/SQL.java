@@ -42,6 +42,8 @@ public interface SQL {
 
     String BUILD_CREATE = "INSERT INTO BUILD (BRANCH, NAME, DESCRIPTION) VALUES (:branch, :name, :description)";
 
+    String BUILD_BY_NAME = "SELECT * FROM BUILD WHERE NAME = :name";
+
     // Validation stamps
 
     long VALIDATION_STAMP_IMAGE_MAXSIZE = 4096;

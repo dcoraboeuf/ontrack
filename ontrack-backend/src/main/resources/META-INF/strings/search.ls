@@ -5,3 +5,7 @@ search.project
 search.branch
     en -> {1} branch of {0} project
     fr -> Branche {1} du project {0}
+
+search.build
+    en -> {2} build of {1} branch of {0} project
+    fr -> Build {2} de la branche {1} du project {0}
