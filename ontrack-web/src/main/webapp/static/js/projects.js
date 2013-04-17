@@ -26,7 +26,7 @@ var Projects = function () {
                         $('#project-update-dialog-description').val(project.description);
                     },
                     successFn: function (data) {
-                            location = 'gui/project/' + $('#project-update-dialog-name').val();
+                            location = 'gui/project/' + data.name;
                         }
                     });
             }

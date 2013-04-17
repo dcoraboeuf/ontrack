@@ -24,7 +24,7 @@ public interface ManageUI {
 
     Ack deleteProject(String name);
 
-    Ack updateProject(String name, ProjectUpdateForm form);
+    ProjectSummary updateProject(String name, ProjectUpdateForm form);
 
     // Branches
 

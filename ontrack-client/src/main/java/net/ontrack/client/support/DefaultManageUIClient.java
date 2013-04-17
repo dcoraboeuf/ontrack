@@ -70,8 +70,8 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public Ack updateProject(String name, ProjectUpdateForm form) {
-        return put(format("/ui/manage/project/%s", name), Ack.class, form);
+    public ProjectSummary updateProject(String name, ProjectUpdateForm form) {
+        return put(format("/ui/manage/project/%s", name), ProjectSummary.class, form);
     }
 
     @Override
