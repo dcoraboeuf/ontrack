@@ -7,10 +7,10 @@
                 <span class="title">${project.name?html}</span>
                 <span class="action action-optional">
                     <#if secAdmin()>
-                        <span onclick=""><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span onclick="Projects.updateProject('${project.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="Projects.deleteProject('${project.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
-                    <span onclick="location=''"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
             <div class="muted">${project.description?html}</div>
@@ -29,4 +29,13 @@
             </div>
         </div>
 	</div>
+
+
+    <@dialog id="project-update-dialog">
+        <@form_text idPrefix="project-update-dialog-" name="name" label=loc('project.name') />
+        <@form_memo idPrefix="project-update-dialog-" name="description" label=loc('project.description') required=false />
+
+        <@dialog_button id="project-update-dialog-submit" class="btn-primary" text=loc('general.update') />
+        <@dialog_button_cancel />
+    </@dialog>
 </@layout_std>

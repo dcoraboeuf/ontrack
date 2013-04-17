@@ -32,7 +32,11 @@ general.close
 general.create
 	en -> Create
 	fr -> Créer
-	
+
+general.update
+    en -> Update
+    fr -> Modifier
+
 general.modify
 	en -> Modify
 	fr -> Modifier
@@ -352,6 +356,10 @@ project.empty
 project.create
 	en -> New project
 	fr -> Nouveau projet
+
+project.update
+	en -> Update project
+	fr -> Modifier projet
 	
 project.delete.prompt
 	en -> Are you sure to delete the project "{0}" and all its associated information?

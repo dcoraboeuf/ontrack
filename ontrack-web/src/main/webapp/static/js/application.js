@@ -67,7 +67,7 @@ var Application = function () {
 	 * @param method HTTP method (defaults to 'POST')
 	 * @param url URL to post to
 	 * @param successFn Function to call when the submit is OK. This function takes the returned JSON data as a unique parameter
-	 * @param openFn Function to call when the dialog is opended. This defaults to no action
+	 * @param openFn Function to call when the dialog is opened. This defaults to no action
 	 * @param validateFn Function to call when validating before submitting. It must return false when
 	 *    the validation is not OK. The default returns always true.
 	 */
@@ -134,7 +134,7 @@ var Application = function () {
 	 * is triggered. The <code>submitFn</code> is called with a function
 	 * (no argument) which is responsible to close the dialog. Defaults to just
 	 * closing the dialog
-	 * @param openFn Function to call when the dialog is opended. This defaults to no action
+	 * @param openFn Function to call when the dialog is opened. This defaults to no action
 	 */
 	function dialog (config) {
 	    config = $.extend({
