@@ -1,6 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.Caches;
+import net.ontrack.backend.ValidationStampAlreadyExistException;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
@@ -9,6 +10,7 @@ import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,22 +90,30 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional
     public int createValidationStamp(int branch, String name, String description) {
-        return dbCreate(
-                SQL.VALIDATION_STAMP_CREATE,
-                params("branch", branch).addValue("name", name).addValue("description", description)
-        );
+        try {
+            return dbCreate(
+                    SQL.VALIDATION_STAMP_CREATE,
+                    params("branch", branch).addValue("name", name).addValue("description", description)
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new ValidationStampAlreadyExistException(name);
+        }
     }
 
     @Override
     @Transactional
     @CacheEvict(value = Caches.VALIDATION_STAMP, key = "#id")
     public Ack updateValidationStamp(int id, String name, String description) {
-        return Ack.one(
-                getNamedParameterJdbcTemplate().update(
-                        SQL.VALIDATION_STAMP_UPDATE,
-                        params("id", id).addValue("name", name).addValue("description", description)
-                )
-        );
+        try {
+            return Ack.one(
+                    getNamedParameterJdbcTemplate().update(
+                            SQL.VALIDATION_STAMP_UPDATE,
+                            params("id", id).addValue("name", name).addValue("description", description)
+                    )
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new ValidationStampAlreadyExistException(name);
+        }
     }
 
     @Override

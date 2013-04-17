@@ -47,3 +47,6 @@ net.ontrack.backend.ProjectAlreadyExistException
 net.ontrack.backend.BranchAlreadyExistException
     en -> Branch with name "{0}" already exists.
     fr -> La branche de nom "{0}" existe déjà.
+net.ontrack.backend.ValidationStampAlreadyExistException
+    en -> Validation stamp with name "{0}" already exists.
+    fr -> La validation de nom "{0}" existe déjà.
