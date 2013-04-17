@@ -8,5 +8,6 @@ import java.util.List;
 public class ChangeLogInfo {
 
     private final List<ChangeLogInfoStatus> statuses;
+    private final List<ChangeLogFile> sensibleFiles;
 
 }

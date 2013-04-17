@@ -15,6 +15,8 @@ import static java.lang.String.format;
 @Component
 public class SensibleFilesPropertyException extends AbstractPropertyExtensionDescriptor {
 
+    public static final String NAME = "sensibleFiles";
+
     @Override
     public EnumSet<Entity> getScope() {
         return EnumSet.of(Entity.BRANCH);
@@ -27,7 +29,7 @@ public class SensibleFilesPropertyException extends AbstractPropertyExtensionDes
 
     @Override
     public String getName() {
-        return "sensibleFiles";
+        return NAME;
     }
 
     @Override

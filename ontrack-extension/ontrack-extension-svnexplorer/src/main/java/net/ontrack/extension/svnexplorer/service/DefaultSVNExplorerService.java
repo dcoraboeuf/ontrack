@@ -1,6 +1,9 @@
 package net.ontrack.extension.svnexplorer.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.BuildSummary;
@@ -15,6 +18,8 @@ import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.extension.svnexplorer.SVNExplorerExtension;
+import net.ontrack.extension.svnexplorer.SensibleFilesPropertyException;
 import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.service.ManagementService;
 import net.ontrack.tx.Transaction;
@@ -29,6 +34,7 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class DefaultSVNExplorerService implements SVNExplorerService {
@@ -212,7 +218,11 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues) {
+    public ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues, ChangeLogFiles files) {
+        // List of patterns for sensible files
+        String sensibleFilesPattern = propertiesService.getPropertyValue(Entity.BRANCH, summary.getBranch().getId(), SVNExplorerExtension.EXTENSION, SensibleFilesPropertyException.NAME);
+        // Filtering function
+        Predicate<ChangeLogFile> sensibleFilePredicate = getSensibleFilePredicateFn(sensibleFilesPattern);
         // JIRA issue statuses
         Map<String, ChangeLogInfoStatus> statuses = new TreeMap<>();
         for (ChangeLogIssue changeLogIssue : issues.getList()) {
@@ -226,10 +236,49 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 statuses.put(statusName, infoStatus);
             }
         }
+        // Sensible files
+        List<ChangeLogFile> sensibleFiles = Lists.newArrayList(
+                Iterables.filter(
+                        files.getList(),
+                        sensibleFilePredicate
+                )
+        );
         // OK
         return new ChangeLogInfo(
-                Lists.newArrayList(statuses.values())
+                Lists.newArrayList(statuses.values()),
+                sensibleFiles
         );
+    }
+
+    private Predicate<ChangeLogFile> getSensibleFilePredicateFn(String sensibleFilesPatterns) {
+        // Empty?
+        if (StringUtils.isBlank(sensibleFilesPatterns)) {
+            return Predicates.alwaysFalse();
+        }
+        // List of patterns
+        final List<Pattern> patterns = new ArrayList<>();
+        // Split on lines
+        String[] lines = StringUtils.split(sensibleFilesPatterns, "\n\r");
+        // Creates the patterns
+        for (String line : lines) {
+            if (StringUtils.isNotBlank(line)) {
+                Pattern pattern = Pattern.compile(StringUtils.trim(line));
+                patterns.add(pattern);
+            }
+        }
+        // OK
+        return new Predicate<ChangeLogFile>() {
+            @Override
+            public boolean apply(ChangeLogFile file) {
+                String path = file.getPath();
+                for (Pattern pattern : patterns) {
+                    if (pattern.matcher(path).matches()) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
 
     private void collectFilesForRevision(Map<String, ChangeLogFile> files, long revision) {

@@ -84,10 +84,7 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
             return issues;
         }
         // Makes sure the revisions are loaded
-        ChangeLogRevisions revisions = changeLog.getRevisions();
-        if (revisions == null) {
-            revisions = getChangeLogRevisions(uuid);
-        }
+        ChangeLogRevisions revisions = loadChangeLogRevisions(uuid, changeLog);
         // Loads the issues
         issues = svnExplorerService.getChangeLogIssues(changeLog.getSummary(), revisions);
         // Stores in cache
@@ -109,16 +106,22 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
             return files;
         }
         // Makes sure the revisions are loaded
-        ChangeLogRevisions revisions = changeLog.getRevisions();
-        if (revisions == null) {
-            revisions = getChangeLogRevisions(uuid);
-        }
+        ChangeLogRevisions revisions = loadChangeLogRevisions(uuid, changeLog);
         // Loads the files
         files = svnExplorerService.getChangeLogFiles(changeLog.getSummary(), revisions);
         // Stores in cache
         changeLog.setFiles(files);
         // OK
         return files;
+    }
+
+    private ChangeLogRevisions loadChangeLogRevisions(String uuid, ChangeLog changeLog) {
+        // Makes sure the revisions are loaded
+        ChangeLogRevisions revisions = changeLog.getRevisions();
+        if (revisions == null) {
+            revisions = getChangeLogRevisions(uuid);
+        }
+        return revisions;
     }
 
     @Override
@@ -134,16 +137,31 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
             return info;
         }
         // Makes sure the issues are loaded
-        ChangeLogIssues issues = changeLog.getIssues();
-        if (issues == null) {
-            issues = getChangeLogIssues(uuid);
-        }
+        ChangeLogIssues issues = loadChangeLogIssues(uuid, changeLog);
+        // Makes sure the files are loaded
+        ChangeLogFiles files = loadChangeLogFiles(uuid, changeLog);
         // Loads the info
-        info = svnExplorerService.getChangeLogInfo(changeLog.getSummary(), issues);
+        info = svnExplorerService.getChangeLogInfo(changeLog.getSummary(), issues, files);
         // Stores in cache
         changeLog.setInfo(info);
         // OK
         return info;
+    }
+
+    private ChangeLogIssues loadChangeLogIssues(String uuid, ChangeLog changeLog) {
+        ChangeLogIssues issues = changeLog.getIssues();
+        if (issues == null) {
+            issues = getChangeLogIssues(uuid);
+        }
+        return issues;
+    }
+
+    private ChangeLogFiles loadChangeLogFiles(String uuid, ChangeLog changeLog) {
+        ChangeLogFiles files = changeLog.getFiles();
+        if (files == null) {
+            files = getChangeLogFiles(uuid);
+        }
+        return files;
     }
 
     private ChangeLog getChangeLog(String uuid) {
