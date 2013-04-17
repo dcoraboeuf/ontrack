@@ -13,3 +13,7 @@ search.build
 search.comment
     en -> Comment on {0}
     fr -> Commentaire sur {0}
+
+search.status
+    en -> Status {0} on {1}
+    fr -> Status {0} sur {1}

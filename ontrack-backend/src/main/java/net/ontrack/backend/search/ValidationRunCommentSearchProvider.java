@@ -50,7 +50,7 @@ public class ValidationRunCommentSearchProvider extends AbstractEntitySearchProv
     public Collection<SearchResult> search(String token) {
         Collection<SearchResult> results = new ArrayList<>();
         results.addAll(searchOnComments(token));
-        // FIXME results.addAll(searchOnStatus(token));
+        results.addAll(searchOnStatus(token));
         return results;
     }
 
@@ -78,6 +78,45 @@ public class ValidationRunCommentSearchProvider extends AbstractEntitySearchProv
                                                 validationStamp.getName(),
                                                 validationRun.getRunOrder())),
                                 new NonLocalizable(t.getContent()),
+                                guiPath(
+                                        "project/%s/branch/%s/build/%s/validation_stamp/%s/validation_run/%s",
+                                        project.getName(),
+                                        branch.getName(),
+                                        build.getName(),
+                                        validationStamp.getName(),
+                                        validationRun.getRunOrder()
+                                )
+                        );
+                    }
+                }
+        );
+    }
+
+    private Collection<? extends SearchResult> searchOnStatus(String token) {
+        Collection<TValidationRunStatus> statuses = validationRunStatusDao.findByText(token);
+        return Collections2.transform(
+                statuses,
+                new Function<TValidationRunStatus, SearchResult>() {
+                    @Override
+                    public SearchResult apply(TValidationRunStatus t) {
+                        int validationRunId = t.getValidationRun();
+                        TValidationRun validationRun = validationRunDao.getById(validationRunId);
+                        TValidationStamp validationStamp = validationStampDao.getById(validationRun.getValidationStamp());
+                        TBuild build = buildDao.getById(validationRun.getBuild());
+                        TBranch branch = branchDao.getById(build.getBranch());
+                        TProject project = projectDao.getById(branch.getProject());
+                        return new SearchResult(
+                                new LocalizableMessage(
+                                        "search.status",
+                                        new LocalizableMessage("status." + t.getStatus()),
+                                        String.format(
+                                                "%s/%s/%s/%s/%s",
+                                                project.getName(),
+                                                branch.getName(),
+                                                build.getName(),
+                                                validationStamp.getName(),
+                                                validationRun.getRunOrder())),
+                                new NonLocalizable(t.getDescription()),
                                 guiPath(
                                         "project/%s/branch/%s/build/%s/validation_stamp/%s/validation_run/%s",
                                         project.getName(),

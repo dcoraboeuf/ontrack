@@ -6,6 +6,7 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Status;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 @Component
 public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements ValidationRunStatusDao {
@@ -45,6 +47,16 @@ public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements Valid
                 SQL.VALIDATION_RUN_STATUS_LAST,
                 params("id", validationRunId),
                 validationRunStatusMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TValidationRunStatus> findByText(String text) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.VALIDATION_RUN_STATUS_BY_NAME,
+                params("text", "%" + StringUtils.upperCase(text) + "%"),
+                validationRunStatusMapper
+        );
     }
 
     @Override
