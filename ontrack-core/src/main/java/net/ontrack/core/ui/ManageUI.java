@@ -36,6 +36,8 @@ public interface ManageUI {
 
     BranchSummary updateBranch(String project, String name, BranchUpdateForm form);
 
+    BranchSummary cloneBranch(String project, String name, BranchCloneForm form);
+
     Ack deleteBranch(String project, String name);
 
     BranchFilterData getBranchFilterData(String project, String branch);

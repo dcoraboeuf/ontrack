@@ -154,6 +154,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/clone", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    BranchSummary cloneBranch(@PathVariable String project, @PathVariable String name, @RequestBody BranchCloneForm form) {
+        return managementService.cloneBranch(
+                entityConverter.getBranchId(project, name),
+                form
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody

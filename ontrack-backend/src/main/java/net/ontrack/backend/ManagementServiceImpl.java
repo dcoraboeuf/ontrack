@@ -281,6 +281,53 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public BranchSummary cloneBranch(int branchId, BranchCloneForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Gets the original branch
+        BranchSummary originalBranch = getBranch(branchId);
+        // Creates the (empty) branch
+        BranchSummary newBranch = createBranch(
+                originalBranch.getProject().getId(),
+                new BranchCreationForm(
+                        form.getName(),
+                        form.getDescription()
+                )
+        );
+        int newBranchId = newBranch.getId();
+        // Promotion levels
+        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
+        for (PromotionLevelSummary promotionLevel : promotionLevelList) {
+            createPromotionLevel(
+                    newBranchId,
+                    new PromotionLevelCreationForm(
+                            promotionLevel.getName(),
+                            promotionLevel.getDescription()
+                    )
+            );
+            // TODO Copies any image
+        }
+        // Validation stamps
+        List<ValidationStampSummary> validationStampList = getValidationStampList(branchId);
+        for (ValidationStampSummary validationStamp : validationStampList) {
+            createValidationStamp(
+                    newBranchId,
+                    new ValidationStampCreationForm(
+                            validationStamp.getName(),
+                            validationStamp.getDescription()
+                    )
+            );
+            // TODO Copies any image
+        }
+        // TODO Links between promotion levels & validation stamps
+        // TODO Properties
+        // OK
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ValidationStampSummary> getValidationStampList(int branch) {
         return Lists.transform(
