@@ -237,6 +237,10 @@ accounts
     en -> Accounts
     fr -> Utilisateurs
 
+accounts.ldap-warning
+    en -> The LDAP is not enabled and some users may not be able to connect.
+    fr -> La configuration LDAP n'est pas activée et quelques utilisateurs pourraient ne pas pouvoir se connecter.
+
 account.new
     en -> Create a new account
     fr -> Créer un nouvel utilisateur

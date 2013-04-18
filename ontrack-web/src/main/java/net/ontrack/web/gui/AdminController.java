@@ -1,8 +1,11 @@
 package net.ontrack.web.gui;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import net.ontrack.core.model.Account;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.SubscriptionEntityInfo;
 import net.ontrack.core.model.UserMessage;
@@ -64,7 +67,7 @@ public class AdminController extends AbstractGUIController {
      * Profile page
      */
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public String profile (Model model) {
+    public String profile(Model model) {
         // Checks the user is logged
         securityUtils.checkIsLogged();
         // Gets the user profile
@@ -166,7 +169,6 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/settings/extension/{extension}/{name}", method = RequestMethod.POST)
     public String extensionSettings(
-            Locale locale,
             @PathVariable String extension,
             @PathVariable String name,
             WebRequest request,
@@ -193,7 +195,24 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/accounts", method = RequestMethod.GET)
     public String accounts(Model model) {
-        model.addAttribute("accounts", accountService.getAccounts());
+        // List of accounts
+        List<Account> accounts = accountService.getAccounts();
+        model.addAttribute("accounts", accounts);
+        // LDAP warning if not enabled & some users are LDAP-enabled
+        if (!adminService.getLDAPConfiguration().isEnabled()) {
+            if (Iterables.find(
+                    accounts,
+                    new Predicate<Account>() {
+                        @Override
+                        public boolean apply(Account account) {
+                            return "ldap".equals(account.getMode());
+                        }
+                    },
+                    null) != null) {
+                model.addAttribute("message", UserMessage.warning("accounts.ldap-warning"));
+            }
+        }
+        // OK
         return "accounts";
     }
 
