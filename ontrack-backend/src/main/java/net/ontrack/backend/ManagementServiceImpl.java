@@ -309,8 +309,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     }
                 }
         );
-        // Recreates the promotion levels
+        // Links between promotion levels & validation stamps
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
+            // Creates the new promotion level
             PromotionLevelSummary newPromotionLevel = createPromotionLevel(
                     newBranchId,
                     new PromotionLevelCreationForm(
@@ -319,32 +320,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     )
             );
             // Copies any image
-            byte[] image = imagePromotionLevel(promotionLevel.getId());
-            if (image != null) {
+            byte[] promotionLevelImage = imagePromotionLevel(promotionLevel.getId());
+            if (promotionLevelImage != null) {
                 promotionLevelDao.updateImage(
                         newPromotionLevel.getId(),
-                        image);
+                        promotionLevelImage);
+            }
+            // Gets all the linked stamps
+            List<TValidationStamp> linkedStamps = validationStampDao.findByPromotionLevel(promotionLevel.getId());
+            for (TValidationStamp linkedStamp : linkedStamps) {
+                ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, linkedStamp);
+                // Link to the promotion level
+                linkValidationStampToPromotionLevel(newValidationStamp.getId(), newPromotionLevel.getId());
             }
         }
-        // Validation stamps
-        List<ValidationStampSummary> validationStampList = getValidationStampList(branchId);
-        for (ValidationStampSummary validationStamp : validationStampList) {
-            ValidationStampSummary newValidationStamp = createValidationStamp(
-                    newBranchId,
-                    new ValidationStampCreationForm(
-                            validationStamp.getName(),
-                            validationStamp.getDescription()
-                    )
-            );
-            // Copies any image
-            byte[] image = imageValidationStamp(validationStamp.getId());
-            if (image != null) {
-                validationStampDao.updateImage(
-                        newValidationStamp.getId(),
-                        image);
-            }
+        // Gets all the unlinked validation stamps
+        List<TValidationStamp> unlinkedStamp = validationStampDao.findByNoPromotionLevel(branchId);
+        for (TValidationStamp stamp : unlinkedStamp) {
+            cloneValidationStampSummary(newBranchId, stamp);
         }
-        // TODO Links between promotion levels & validation stamps
+
         // Properties
         List<PropertyValue> propertyValues = propertiesService.getPropertyValues(Entity.BRANCH, branchId);
         List<PropertyCreationForm> propertyCreationForms = Lists.transform(
@@ -367,6 +362,24 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
         // OK
         return newBranch;
+    }
+
+    private ValidationStampSummary cloneValidationStampSummary(int newBranchId, TValidationStamp linkedStamp) {
+        ValidationStampSummary newValidationStamp = createValidationStamp(
+                newBranchId,
+                new ValidationStampCreationForm(
+                        linkedStamp.getName(),
+                        linkedStamp.getDescription()
+                )
+        );
+        // Copies any image
+        byte[] image = imageValidationStamp(linkedStamp.getId());
+        if (image != null) {
+            validationStampDao.updateImage(
+                    newValidationStamp.getId(),
+                    image);
+        }
+        return newValidationStamp;
     }
 
     @Override
