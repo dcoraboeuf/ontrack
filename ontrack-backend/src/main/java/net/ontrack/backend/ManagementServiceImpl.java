@@ -298,7 +298,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
         int newBranchId = newBranch.getId();
         // Promotion levels
-        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
+        List<PromotionLevelSummary> promotionLevelList = new ArrayList<>(getPromotionLevelList(branchId));
+        // Sort by increasing level number
+        Collections.sort(
+                promotionLevelList,
+                new Comparator<PromotionLevelSummary>() {
+                    @Override
+                    public int compare(PromotionLevelSummary o1, PromotionLevelSummary o2) {
+                        return o1.getLevelNb() - o2.getLevelNb();
+                    }
+                }
+        );
+        // Recreates the promotion levels
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
             PromotionLevelSummary newPromotionLevel = createPromotionLevel(
                     newBranchId,
