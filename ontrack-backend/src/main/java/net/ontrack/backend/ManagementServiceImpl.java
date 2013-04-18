@@ -324,7 +324,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // TODO Links between promotion levels & validation stamps
         // TODO Properties
         // OK
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return newBranch;
     }
 
     @Override
