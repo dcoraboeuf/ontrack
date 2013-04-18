@@ -300,26 +300,38 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Promotion levels
         List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
-            createPromotionLevel(
+            PromotionLevelSummary newPromotionLevel = createPromotionLevel(
                     newBranchId,
                     new PromotionLevelCreationForm(
                             promotionLevel.getName(),
                             promotionLevel.getDescription()
                     )
             );
-            // TODO Copies any image
+            // Copies any image
+            byte[] image = imagePromotionLevel(promotionLevel.getId());
+            if (image != null) {
+                promotionLevelDao.updateImage(
+                        newPromotionLevel.getId(),
+                        image);
+            }
         }
         // Validation stamps
         List<ValidationStampSummary> validationStampList = getValidationStampList(branchId);
         for (ValidationStampSummary validationStamp : validationStampList) {
-            createValidationStamp(
+            ValidationStampSummary newValidationStamp = createValidationStamp(
                     newBranchId,
                     new ValidationStampCreationForm(
                             validationStamp.getName(),
                             validationStamp.getDescription()
                     )
             );
-            // TODO Copies any image
+            // Copies any image
+            byte[] image = imageValidationStamp(validationStamp.getId());
+            if (image != null) {
+                validationStampDao.updateImage(
+                        newValidationStamp.getId(),
+                        image);
+            }
         }
         // TODO Links between promotion levels & validation stamps
         // Properties
