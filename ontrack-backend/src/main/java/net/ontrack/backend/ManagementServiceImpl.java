@@ -322,7 +322,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // TODO Copies any image
         }
         // TODO Links between promotion levels & validation stamps
-        // TODO Properties
+        // Properties
+        List<PropertyValue> propertyValues = propertiesService.getPropertyValues(Entity.BRANCH, branchId);
+        List<PropertyCreationForm> propertyCreationForms = Lists.transform(
+                propertyValues,
+                new Function<PropertyValue, PropertyCreationForm>() {
+                    @Override
+                    public PropertyCreationForm apply(PropertyValue propertyValue) {
+                        return new PropertyCreationForm(
+                                propertyValue.getExtension(),
+                                propertyValue.getName(),
+                                propertyValue.getValue()
+                        );
+                    }
+                }
+        );
+        propertiesService.createProperties(
+                Entity.BRANCH,
+                newBranchId,
+                new PropertiesCreationForm(propertyCreationForms)
+        );
         // OK
         return newBranch;
     }
