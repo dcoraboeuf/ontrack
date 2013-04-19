@@ -8,6 +8,7 @@ import net.ontrack.core.model.ID;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -111,6 +112,7 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
 
     @Override
     @Transactional
+    @CacheEvict(Caches.ACCOUNT)
     public void deleteAccount(int id) {
         getNamedParameterJdbcTemplate().update(
                 SQL.ACCOUNT_DELETE,
@@ -120,6 +122,7 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
 
     @Override
     @Transactional
+    @CacheEvict(value = Caches.ACCOUNT, key = "#id")
     public void updateAccount(int id, String name, String fullName, String email, String roleName) {
         // Updates the account itself
         getNamedParameterJdbcTemplate().update(

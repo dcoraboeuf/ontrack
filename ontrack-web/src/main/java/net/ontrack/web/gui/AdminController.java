@@ -216,7 +216,7 @@ public class AdminController extends AbstractGUIController {
     /**
      * Request for the update of an account
      */
-    @RequestMapping(value = "/account/{id:\\d+}/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.GET)
     public String accountUpdate(Model model, @PathVariable int id) {
         securityUtils.checkIsAdmin();
         model.addAttribute("account", accountService.getAccount(id));
@@ -226,7 +226,7 @@ public class AdminController extends AbstractGUIController {
     /**
      * Actual update of an account
      */
-    @RequestMapping(value = "/account/{id:\\d+}/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.POST)
     public String accountUpdate(@PathVariable int id, AccountUpdateForm form, RedirectAttributes redirectAttributes) {
         accountService.updateAccount(id, form);
         redirectAttributes.addFlashAttribute("message", UserMessage.success("account.updated"));

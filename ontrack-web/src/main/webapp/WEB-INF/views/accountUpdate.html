@@ -1,0 +1,22 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="account.update" breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
+
+    <form action="gui/admin/accounts/${account.id?c}/update" method="POST" class="form-horizontal">
+        <@form_text name="name" label=loc('account.name') value=account.name />
+        <@form_text name="fullName" label=loc('account.fullName') value=account.fullName />
+        <@form_email name="email" label=loc('account.email') value=account.email/>
+        <@form_select name="roleName" label=loc('account.role')>
+            <@form_select_option value="ROLE_ADMIN" text=loc('account.role.ROLE_ADMIN') selection=account.roleName />
+            <@form_select_option value="ROLE_CONTROLLER" text=loc('account.role.ROLE_CONTROLLER') selection=account.roleName />
+            <@form_select_option value="ROLE_USER" text=loc('account.role.ROLE_USER') selection=account.roleName />
+        </@form_select>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-warning"><@lh key="general.modify" /></button>
+                <a href="gui/admin/accounts" class="btn btn-link"><@lh key="general.cancel" /></a>
+            </div>
+        </div>
+    </form>
+
+</@layout_std>

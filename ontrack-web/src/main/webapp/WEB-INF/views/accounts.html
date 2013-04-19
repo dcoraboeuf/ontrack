@@ -22,6 +22,7 @@
                     <td><@lh key="account.role." + account.roleName /></td>
                     <td>${account.mode?html}</td>
                     <td>
+                        <a href="gui/admin/accounts/${account.id?c}/update" class="btn btn-warning"><@lh key="general.modify" /></a>
                         <#if accountId != account.id>
                             <a href="gui/admin/accounts/${account.id?c}/delete" class="btn btn-danger"><@lh key="general.delete" /></a>
                         </#if>

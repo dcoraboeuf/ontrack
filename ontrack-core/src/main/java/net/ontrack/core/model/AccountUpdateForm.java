@@ -6,9 +6,9 @@ import net.ontrack.core.validation.AccountValidation;
 @Data
 public class AccountUpdateForm implements AccountValidation {
 
-    private final String name;
-    private final String fullName;
-    private final String email;
-    private final String roleName;
+    private String name;
+    private String fullName;
+    private String email;
+    private String roleName;
 
 }

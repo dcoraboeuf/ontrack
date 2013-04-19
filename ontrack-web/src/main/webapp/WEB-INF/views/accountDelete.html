@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="account.delete" breadcrumbs = {loc("home"): ""}>
+<@layout_std page="account.delete" breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
 
     <form action="gui/admin/accounts/${account.id?c}/delete" method="POST">
         <p>
@@ -13,7 +13,7 @@
         </p>
         <p>
             <button type="submit" class="btn btn-danger"><@lh key="general.delete" /></button>
-            <a href="gui/admin/accounts" class="btn"><@lh key="general.cancel" /></a>
+            <a href="gui/admin/accounts" class="btn btn-link"><@lh key="general.cancel" /></a>
         </p>
     </form>
 
