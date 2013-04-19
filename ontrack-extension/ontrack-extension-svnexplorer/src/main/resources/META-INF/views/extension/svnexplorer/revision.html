@@ -40,9 +40,22 @@
         <div class="span12">
             <h1><small><@lh key="svnexplorer.revision.builds" /></small></h1>
             <table class="table">
+                <thead>
+                    <tr>
+                        <th><@lh key="model.project" /></th>
+                        <th><@lh key="model.branch" /></th>
+                        <th><@lh key="model.build" /></th>
+                    </tr>
+                </thead>
                 <tbody>
                     <#list info.builds as build>
                         <tr>
+                            <td>
+                                <a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a>
+                            </td>
+                            <td>
+                                <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}">${build.branch.name?html}</a>
+                            </td>
                             <td>
                                 <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}/build/${build.name?html}">${build.name?html}</a>
                             </td>
