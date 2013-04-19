@@ -44,6 +44,8 @@ public interface SQL {
 
     String BUILD_BY_NAME = "SELECT * FROM BUILD WHERE NAME = :name";
 
+    String BUILD_BY_BRANCH_AND_NAME = "SELECT ID FROM BUILD WHERE BRANCH = :branch AND NAME = :name";
+
     // Validation stamps
 
     long VALIDATION_STAMP_IMAGE_MAXSIZE = 4096;

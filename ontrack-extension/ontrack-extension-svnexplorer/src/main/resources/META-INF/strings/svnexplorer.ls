@@ -131,6 +131,10 @@ svnexplorer.revision
     en -> Revision {0}
     fr -> Révision {0}
 
+svnexplorer.revision.builds
+    en -> Associated builds
+    fr -> Builds associés
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException

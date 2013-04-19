@@ -121,8 +121,8 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFrom(SVNLocation location) {
-        return svnEventDao.getCopiesFrom(location);
+    public Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFrom(location, sortMode);
     }
 
     @Override

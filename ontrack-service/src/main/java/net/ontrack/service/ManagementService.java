@@ -86,6 +86,8 @@ public interface ManagementService {
 
     BuildSummary getLastBuild(int branch);
 
+    Integer findBuildNyName(int branchId, String buildName);
+
 	BuildSummary getBuild(int build);
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, int buildId);

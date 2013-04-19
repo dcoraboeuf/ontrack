@@ -13,7 +13,6 @@ import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.service.model.JIRAStatus;
-import net.ontrack.extension.svn.SubversionBuildPathPropertyExtension;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.SubversionService;
@@ -36,6 +35,7 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -266,55 +266,85 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
         // Looks for branches with the corresponding path
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
-        // TODO For each branch, looks for the earliest build that contains this revision
+        // For each branch, looks for the earliest build that contains this revision
+        Collection<BuildSummary> buildSummaries = new ArrayList<>();
         for (int branchId : branchIds) {
-            // Gets the SVN path for the branch
-            String branchPath = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH);
             // Gets the build SVN path pattern for the branch
-            String buildPathPatternValue = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
-            if (StringUtils.isNotBlank(buildPathPatternValue)) {
+            String buildPathPattern = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
+            if (StringUtils.isNotBlank(buildPathPattern)) {
                 // Location for this revision
                 SVNLocation initialLocation = new SVNLocation(basicInfo.getPath(), basicInfo.getRevision());
                 // Stack of eligible locations
                 Stack<SVNLocation> locations = new Stack<>();
                 locations.push(initialLocation);
                 // Earliest build
-                SVNLocation buildLocation = null;
+                Integer buildId = null;
                 // Recursive search of eligible locations
                 while (!locations.isEmpty()) {
                     // Gets the top element
                     SVNLocation location = locations.pop();
-                    String locationPath = location.getPath();
-                    long locationRevision = location.getRevision();
                     // Is it a build?
-                    if (isBuild(location, buildPathPatternValue)) {
-                        buildLocation = location;
+                    buildId = getBuild(branchId, location, buildPathPattern);
+                    if (buildId != null) {
+                        // Build found - not looking further
+                        locations.clear();
                     }
                     // Not a build
                     else {
                         // List of copies from this location
-                        Collection<SVNLocation> copies = subversionService.getCopiesFrom(location);
-                        // Adds them to the stack
-                        for (SVNLocation copy : copies) {
-                            locations.push(copy);
-                        }
+                        Collection<SVNLocation> copies = subversionService.getCopiesFrom(location, SVNLocationSortMode.FROM_NEWEST);
+                        // Adds them to the stack, from the most ancient to the newest
+                        locations.addAll(copies);
                     }
+                }
+                // Build found
+                if (buildId != null) {
+                    // Gets the build information
+                    BuildSummary buildSummary = managementService.getBuild(buildId);
+                    // TODO For each build, gets the promotion levels & validation stamps
+                    // Adds to the list
+                    buildSummaries.add(buildSummary);
                 }
             }
         }
-        // TODO For each build, gets the promotion levels & validation stamps
         // OK
         return new RevisionInfo(
-                changeLogRevision
+                changeLogRevision,
+                buildSummaries
         );
     }
 
-    private boolean isBuild(SVNLocation location, String pathPattern) {
+    private Integer getBuild(int branchId, SVNLocation location, String pathPattern) {
+        if (followsBuildPattern(location, pathPattern)) {
+            // Gets the build name
+            String buildName = getBuildName(location, pathPattern);
+            // Is that a valid build?
+            return managementService.findBuildNyName(branchId, buildName);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean followsBuildPattern(SVNLocation location, String pathPattern) {
         if (pathPattern.endsWith("@*")) {
             // FIXME Revision-based path (see #112)
             return false;
         } else {
             return Pattern.compile(StringUtils.replace(pathPattern, "*", ".+")).matcher(location.getPath()).matches();
+        }
+    }
+
+    private String getBuildName(SVNLocation location, String pathPattern) {
+        if (pathPattern.endsWith("@*")) {
+            // FIXME Revision-based path (see #112)
+            throw new RuntimeException("NYI See #112");
+        } else {
+            Matcher matcher = Pattern.compile(StringUtils.replace(pathPattern, "*", "(.+)")).matcher(location.getPath());
+            if (matcher.matches()) {
+                return matcher.group(1);
+            } else {
+                throw new IllegalStateException(String.format("Build path %s does not match pattern %s", location.getRevision(), pathPattern));
+            }
         }
     }
 

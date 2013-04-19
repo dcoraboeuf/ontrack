@@ -25,4 +25,6 @@ public interface BuildDao {
     TBuild findLastByBranch(int branch);
 
     Collection<TBuild> findByName(String name);
+
+    Integer findByBrandAndName(int branchId, String buildName);
 }

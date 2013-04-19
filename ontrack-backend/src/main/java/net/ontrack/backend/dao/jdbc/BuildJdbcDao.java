@@ -82,6 +82,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
 
     @Override
     @Transactional(readOnly = true)
+    public Integer findByBrandAndName(int branchId, String buildName) {
+        return getFirstItem(
+                SQL.BUILD_BY_BRANCH_AND_NAME,
+                params("branch", branchId).addValue("name", buildName),
+                Integer.class
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TBuild> findByBranch(int branch, int offset, int count) {
         return getNamedParameterJdbcTemplate().query(
                 SQL.BUILD_LIST,
@@ -176,8 +186,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-	@Override
-	public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
+    @Override
+    public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
         int validationStampId = validationStampDao.getByBranchAndName(branch, validationStamp).getId();
         StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
                 "                LEFT JOIN (" +
@@ -204,7 +214,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-	@Override
+    @Override
     public TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel) {
         return getFirstItem(
                 "SELECT B.* FROM BUILD B" +

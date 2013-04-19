@@ -2,6 +2,7 @@ package net.ontrack.extension.svn.dao;
 
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.service.model.SVNLocation;
+import net.ontrack.extension.svn.service.model.SVNLocationSortMode;
 
 import java.util.Collection;
 
@@ -13,5 +14,5 @@ public interface SVNEventDao {
 
     TSVNCopyEvent getLastCopyEvent(String path, long revision);
 
-    Collection<SVNLocation> getCopiesFrom(SVNLocation location);
+    Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
 }
