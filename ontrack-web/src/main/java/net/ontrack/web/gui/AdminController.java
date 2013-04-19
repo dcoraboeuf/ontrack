@@ -224,16 +224,6 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
-     * Actual update of an account
-     */
-    @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.POST)
-    public String accountUpdate(@PathVariable int id, AccountUpdateForm form, RedirectAttributes redirectAttributes) {
-        accountService.updateAccount(id, form);
-        redirectAttributes.addFlashAttribute("message", UserMessage.success("account.updated"));
-        return "redirect:/gui/admin/accounts";
-    }
-
-    /**
      * Request for the deletion of an account
      */
     @RequestMapping(value = "/accounts/{id:\\d+}/delete", method = RequestMethod.GET)

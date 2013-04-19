@@ -1,6 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.AccountCreationForm;
+import net.ontrack.core.model.AccountUpdateForm;
 import net.ontrack.core.model.Ack;
 import net.ontrack.service.AccountService;
 import net.ontrack.web.support.AbstractUIController;
@@ -8,10 +9,7 @@ import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/ui/admin")
@@ -33,6 +31,17 @@ public class AdminUIController extends AbstractUIController {
     @ResponseBody
     Ack createAccount(@RequestBody AccountCreationForm form) {
         return accountService.createAccount(form).ack();
+    }
+
+    /**
+     * Actual update of an account
+     */
+    @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack accountUpdate(@PathVariable int id, @RequestBody AccountUpdateForm form) {
+        accountService.updateAccount(id, form);
+        return Ack.OK;
     }
 
 }

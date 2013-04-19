@@ -1,8 +1,9 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="account.update" breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
+<@layout_std page="account.update" script=true breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
 
-    <form action="gui/admin/accounts/${account.id?c}/update" method="POST" class="form-horizontal">
+    <input id="accountId" type="hidden" value="${account.id?c}" />
+    <form id="account-form" class="form-horizontal" onsubmit="AccountUpdate.updateAccount(); return false;">
         <@form_text name="name" label=loc('account.name') value=account.name />
         <@form_text name="fullName" label=loc('account.fullName') value=account.fullName />
         <@form_email name="email" label=loc('account.email') value=account.email/>
@@ -18,5 +19,7 @@
             </div>
         </div>
     </form>
+
+    <div id="account-form-error" class="alert alert-error hidden"></div>
 
 </@layout_std>
