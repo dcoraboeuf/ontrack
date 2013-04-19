@@ -135,6 +135,10 @@ svnexplorer.revision.builds
     en -> Associated builds
     fr -> Builds associés
 
+svnexplorer.revision.builds.none
+    en -> The revision does not appear in any build.
+    fr -> Cette révision n'apparait dans aucun build.
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException
