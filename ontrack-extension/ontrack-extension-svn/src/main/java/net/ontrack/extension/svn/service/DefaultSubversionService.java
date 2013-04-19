@@ -43,6 +43,7 @@ public class DefaultSubversionService implements SubversionService {
                     t.getRevision(),
                     t.getAuthor(),
                     t.getCreation(),
+                    t.getBranch(),
                     formatRevisionTime(t.getCreation()),
                     t.getMessage(),
                     getRevisionBrowsingURL(t.getRevision())
@@ -116,6 +117,12 @@ public class DefaultSubversionService implements SubversionService {
         } else {
             return getURL(path);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<SVNLocation> getCopiesFrom(SVNLocation location) {
+        return svnEventDao.getCopiesFrom(location);
     }
 
     @Override

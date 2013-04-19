@@ -4,6 +4,7 @@ package net.ontrack.extension.svn.dao.jdbc;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
+import net.ontrack.extension.svn.service.model.SVNLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 @Component
 public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
@@ -59,5 +61,23 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
                         );
                     }
                 });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<SVNLocation> getCopiesFrom(SVNLocation location) {
+        return getNamedParameterJdbcTemplate().query(
+                "SELECT * FROM SVNCOPYEVENT WHERE COPYFROMPATH = :copyFromPath AND COPYFROMREVISION >= :copyFromRevision ORDER BY COPYFROMREVISION ASC",
+                params("copyFromPath", location.getPath()).addValue("copyFromRevision", location.getRevision()),
+                new RowMapper<SVNLocation>() {
+                    @Override
+                    public SVNLocation mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new SVNLocation(
+                                rs.getString("copyToPath"),
+                                rs.getLong("revision")
+                        );
+                    }
+                }
+        );
     }
 }

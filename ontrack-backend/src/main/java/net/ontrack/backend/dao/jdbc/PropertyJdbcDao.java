@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -63,6 +64,16 @@ public class PropertyJdbcDao extends AbstractJdbcDao implements PropertyDao {
                 format(SQL.PROPERTY_ALL, entity.name()),
                 params("entityId", entityId),
                 propertyRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Integer> findEntityByPropertyValue(Entity entity, String extension, String name, String value) {
+        return getNamedParameterJdbcTemplate().queryForList(
+                format("SELECT %1$s FROM PROPERTIES WHERE %1$s IS NOT NULL AND EXTENSION = :extension AND NAME = :name AND VALUE = :value", entity.name()),
+                params("extension", extension).addValue("name", name).addValue("value", value),
+                Integer.class
         );
     }
 

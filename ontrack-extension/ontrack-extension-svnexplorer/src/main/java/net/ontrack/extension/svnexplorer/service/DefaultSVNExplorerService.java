@@ -13,7 +13,9 @@ import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.service.model.JIRAStatus;
+import net.ontrack.extension.svn.SubversionBuildPathPropertyExtension;
 import net.ontrack.extension.svn.SubversionExtension;
+import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
@@ -262,10 +264,58 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 basicInfo.getAuthor(),
                 basicInfo.getDateTime()
         );
+        // Looks for branches with the corresponding path
+        Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
+        // TODO For each branch, looks for the earliest build that contains this revision
+        for (int branchId : branchIds) {
+            // Gets the SVN path for the branch
+            String branchPath = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH);
+            // Gets the build SVN path pattern for the branch
+            String buildPathPatternValue = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
+            if (StringUtils.isNotBlank(buildPathPatternValue)) {
+                // Location for this revision
+                SVNLocation initialLocation = new SVNLocation(basicInfo.getPath(), basicInfo.getRevision());
+                // Stack of eligible locations
+                Stack<SVNLocation> locations = new Stack<>();
+                locations.push(initialLocation);
+                // Earliest build
+                SVNLocation buildLocation = null;
+                // Recursive search of eligible locations
+                while (!locations.isEmpty()) {
+                    // Gets the top element
+                    SVNLocation location = locations.pop();
+                    String locationPath = location.getPath();
+                    long locationRevision = location.getRevision();
+                    // Is it a build?
+                    if (isBuild(location, buildPathPatternValue)) {
+                        buildLocation = location;
+                    }
+                    // Not a build
+                    else {
+                        // List of copies from this location
+                        Collection<SVNLocation> copies = subversionService.getCopiesFrom(location);
+                        // Adds them to the stack
+                        for (SVNLocation copy : copies) {
+                            locations.push(copy);
+                        }
+                    }
+                }
+            }
+        }
+        // TODO For each build, gets the promotion levels & validation stamps
         // OK
         return new RevisionInfo(
                 changeLogRevision
         );
+    }
+
+    private boolean isBuild(SVNLocation location, String pathPattern) {
+        if (pathPattern.endsWith("@*")) {
+            // FIXME Revision-based path (see #112)
+            return false;
+        } else {
+            return Pattern.compile(StringUtils.replace(pathPattern, "*", ".+")).matcher(location.getPath()).matches();
+        }
     }
 
     private Predicate<ChangeLogFile> getSensibleFilePredicateFn(String sensibleFilesPatterns) {

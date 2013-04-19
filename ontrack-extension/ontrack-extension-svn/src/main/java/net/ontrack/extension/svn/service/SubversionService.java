@@ -1,6 +1,7 @@
 package net.ontrack.extension.svn.service;
 
 import net.ontrack.extension.svn.service.model.SVNHistory;
+import net.ontrack.extension.svn.service.model.SVNLocation;
 import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
 import net.ontrack.extension.svn.service.model.SVNRevisionPaths;
 import org.joda.time.DateTime;
@@ -8,6 +9,7 @@ import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface SubversionService {
@@ -84,4 +86,6 @@ public interface SubversionService {
      * Gets the URL that allows to browse for one changeset on a path
      */
     String getFileChangeBrowsingURL(String path, long revision);
+
+    Collection<SVNLocation> getCopiesFrom(SVNLocation location);
 }

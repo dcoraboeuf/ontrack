@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +121,12 @@ public class DefaultPropertiesService implements PropertiesService {
                 )
         );
         return Ack.OK;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Integer> findEntityByPropertyValue(Entity entity, String extension, String name, String value) {
+        return propertyDao.findEntityByPropertyValue(entity, extension, name, value);
     }
 
     @Override
