@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,24 @@ public class EventJdbcDao extends AbstractJdbcDao implements EventDao {
                 SQL.EVENT,
                 params("id", id),
                 eventRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TEvent> findEventsToSend() {
+        return getJdbcTemplate().query(
+                SQL.EVENTS_TO_SEND,
+                eventRowMapper
+        );
+    }
+
+    @Override
+    @Transactional
+    public void eventSent(int id) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.EVENT_SENT,
+                params("id", id)
         );
     }
 

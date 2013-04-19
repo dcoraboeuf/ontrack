@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.model.TEvent;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EventType;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -15,4 +16,7 @@ public interface EventDao {
 
     TEvent getById(int id);
 
+    Collection<TEvent> findEventsToSend();
+
+    void eventSent(int id);
 }

@@ -5,7 +5,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.SubscriptionDao;
@@ -27,8 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.lang.String.format;
 
@@ -47,9 +44,6 @@ public class DefaultSubscriptionService implements SubscriptionService {
     private final MessageService messageService;
     private final TemplateService templateService;
     private final Strings strings;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor(
-            new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Subscription %s").build()
-    );
 
     @Autowired
     public DefaultSubscriptionService(SecurityUtils securityUtils, ConfigurationService configurationService, SubscriptionDao subscriptionDao, AccountDao accountDao, EntityDao entityDao, GUIEventService guiEventService, GUIService guiService, MessageService messageService, TemplateService templateService, Strings strings) {
@@ -146,22 +140,9 @@ public class DefaultSubscriptionService implements SubscriptionService {
      * Sends a message for this event
      */
     @Override
-    @Transactional(readOnly = true)
-    public void publish(final ExpandedEvent event) {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    doPublish(event);
-                } catch (Exception ex) {
-                    logger.error("[publish] Error on publishing", ex);
-                }
-            }
-        });
-    }
-
-    protected void doPublish(ExpandedEvent event) {
-        logger.debug("[publish] event={}", event.getId());
+    @Transactional
+    public void publish(ExpandedEvent event) {
+        logger.debug("[publish] [start] event={}", event.getId());
         // Gets the IDs of the entities
         Map<Entity, Integer> entityIds = Maps.transformValues(
                 event.getEntities(),
@@ -229,6 +210,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
                     )
             );
         }
+        logger.debug("[publish] [end] event={}", event.getId());
     }
 
     private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities, final Set<EntityID> subscriptions) {

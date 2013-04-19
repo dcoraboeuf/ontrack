@@ -1,6 +1,7 @@
 package net.ontrack.backend;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.backend.dao.EntityDao;
@@ -12,6 +13,7 @@ import net.ontrack.core.support.TimeUtils;
 import net.ontrack.dao.SQLUtils;
 import net.ontrack.service.EventService;
 import net.ontrack.service.SubscriptionService;
+import net.ontrack.service.api.ScheduledService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
@@ -19,20 +21,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
 @Service
-public class DefaultEventService extends NamedParameterJdbcDaoSupport implements EventService {
+public class DefaultEventService extends NamedParameterJdbcDaoSupport implements EventService, ScheduledService {
 
     private final SecurityUtils securityUtils;
     private final Strings strings;
@@ -88,19 +94,52 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     @Transactional
     public void event(Event event) {
         Signature signature = securityUtils.getCurrentSignature();
-        int eventId = eventDao.createEvent(
+        eventDao.createEvent(
                 signature.getName(),
                 signature.getId(),
                 event.getEventType(),
                 event.getEntities(),
                 event.getValues()
         );
-        // Gets the expanded version for this event
-        ExpandedEvent expandedEvent = expandedEventFunction.apply(
-                eventDao.getById(eventId)
+    }
+
+    /**
+     * This method is normally executed in its own thread, scheduled by the general scheduler.
+     *
+     * @see ScheduledService
+     * @see #getTrigger()
+     */
+    protected void sendEvents() {
+        // Gets the list of events to send
+        Collection<ExpandedEvent> events = Collections2.transform(
+                eventDao.findEventsToSend(),
+                expandedEventFunction
         );
-        // Subscription
-        subscriptionService.publish(expandedEvent);
+        // For each event...
+        for (ExpandedEvent event : events) {
+            // ... send it
+            subscriptionService.publish(event);
+            // OK, sent
+            eventDao.eventSent(event.getId());
+        }
+    }
+
+    @Override
+    public Runnable getTask() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                sendEvents();
+            }
+        };
+    }
+
+    /**
+     * Checks for events every 1 minute.
+     */
+    @Override
+    public Trigger getTrigger() {
+        return new PeriodicTrigger(1, TimeUnit.MINUTES);
     }
 
     @Override
