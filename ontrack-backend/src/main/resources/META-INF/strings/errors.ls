@@ -53,3 +53,6 @@ net.ontrack.backend.ValidationStampAlreadyExistException
 net.ontrack.backend.PromotionLevelAlreadyExistException
     en -> Promotion level with name "{0}" already exists.
     fr -> Le niveau de promotion de nom "{0}" existe déjà.
+net.ontrack.backend.AccountAlreadyExistException
+    en -> Account with name "{0}" already exists.
+    fr -> L'utilisateur de nom "{0}" existe déjà.

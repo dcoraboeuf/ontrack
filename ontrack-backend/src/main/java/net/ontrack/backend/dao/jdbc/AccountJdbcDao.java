@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.AccountAlreadyExistException;
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.token.Sha512DigestUtils;
@@ -99,15 +101,19 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
     @Override
     @Transactional
     public ID createAccount(String name, String fullName, String email, String roleName, String mode, String password) {
-        return ID.success(dbCreate(
-                SQL.ACCOUNT_CREATE,
-                params("name", name)
-                        .addValue("fullName", fullName)
-                        .addValue("roleName", roleName)
-                        .addValue("email", email)
-                        .addValue("mode", mode)
-                        .addValue("password", encodePassword(password))
-        ));
+        try {
+            return ID.success(dbCreate(
+                    SQL.ACCOUNT_CREATE,
+                    params("name", name)
+                            .addValue("fullName", fullName)
+                            .addValue("roleName", roleName)
+                            .addValue("email", email)
+                            .addValue("mode", mode)
+                            .addValue("password", encodePassword(password))
+            ));
+        } catch (DuplicateKeyException ex) {
+            throw new AccountAlreadyExistException(name);
+        }
     }
 
     @Override
@@ -124,11 +130,15 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
     @Transactional
     @CacheEvict(value = Caches.ACCOUNT, key = "#id")
     public void updateAccount(int id, String name, String fullName, String email, String roleName) {
-        // Updates the account itself
-        getNamedParameterJdbcTemplate().update(
-                SQL.ACCOUNT_UPDATE,
-                params("id", id).addValue("name", name).addValue("fullName", fullName).addValue("email", email).addValue("roleName", roleName)
-        );
+        try {
+            // Updates the account itself
+            getNamedParameterJdbcTemplate().update(
+                    SQL.ACCOUNT_UPDATE,
+                    params("id", id).addValue("name", name).addValue("fullName", fullName).addValue("email", email).addValue("roleName", roleName)
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new AccountAlreadyExistException(name);
+        }
     }
 
     private String encodePassword(String password) {
