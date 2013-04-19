@@ -14,6 +14,7 @@ import java.util.Locale;
 @Component
 public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDescriptor {
 
+    public static final String PATH = "path";
     private final SubversionService subversionService;
 
     @Autowired
@@ -33,7 +34,7 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
 
     @Override
     public String getName() {
-        return "path";
+        return PATH;
     }
 
     @Override

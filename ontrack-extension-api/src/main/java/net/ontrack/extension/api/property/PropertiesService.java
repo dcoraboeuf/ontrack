@@ -6,6 +6,7 @@ import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyValue;
 import net.sf.jstring.Strings;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,4 +49,15 @@ public interface PropertiesService {
      * @return Acknowledgment
      */
     Ack saveProperty(Entity entity, int entityId, String extension, String name, String value);
+
+    /**
+     * Gets the list of entities that get the given property value
+     *
+     * @param entity    Entity to look for
+     * @param extension Extension for the property
+     * @param name      Property name
+     * @param value     Value for the property
+     * @return List of IDs
+     */
+    Collection<Integer> findEntityByPropertyValue(Entity entity, String extension, String name, String value);
 }

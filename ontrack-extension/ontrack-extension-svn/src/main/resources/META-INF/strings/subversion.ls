@@ -154,3 +154,9 @@ subversion.indexation.last.repositoryRevision
 subversion.indexation.last.none
     en -> None
     fr -> Aucune
+
+[errors]
+
+net.ontrack.extension.svn.RevisionNotFoundException
+    en -> Revision {0} cannot be found.
+    fr -> La révision {0} ne peut pas être trouvée.

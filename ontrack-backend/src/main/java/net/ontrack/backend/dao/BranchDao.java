@@ -1,9 +1,9 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.backend.dao.model.TBranch;
-import net.ontrack.backend.dao.model.TProject;
 import net.ontrack.core.model.Ack;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface BranchDao {
@@ -17,4 +17,6 @@ public interface BranchDao {
     Ack deleteBranch(int id);
 
     Ack updateBranch(int id, String name, String description);
+
+    Collection<TBranch> findByName(String name);
 }

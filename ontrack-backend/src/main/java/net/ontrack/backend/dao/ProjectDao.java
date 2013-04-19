@@ -15,5 +15,7 @@ public interface ProjectDao {
 
     Ack deleteProject(int id);
 
+    TProject findByName(String name);
+
     Ack updateProject(int id, String name, String description);
 }

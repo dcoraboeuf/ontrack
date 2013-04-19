@@ -94,4 +94,13 @@ public class ProjectJdbcDao extends AbstractJdbcDao implements ProjectDao {
             throw new ProjectAlreadyExistException(name);
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TProject findByName(String name) {
+        return getFirstItem(
+                SQL.PROJECT_BY_NAME,
+                params("name", name),
+                projectMapper);
+    }
 }

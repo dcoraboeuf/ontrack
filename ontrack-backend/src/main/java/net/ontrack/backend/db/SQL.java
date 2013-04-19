@@ -20,6 +20,8 @@ public interface SQL {
 
     String PROJECT_UPDATE = "UPDATE PROJECT SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
 
+    String PROJECT_BY_NAME = "SELECT * FROM PROJECT WHERE NAME = :name";
+
     // Branches
 
     String BRANCH = "SELECT * FROM BRANCH WHERE ID = :id";
@@ -32,6 +34,8 @@ public interface SQL {
 
     String BRANCH_UPDATE = "UPDATE BRANCH SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
 
+    String BRANCH_BY_NAME = "SELECT * FROM BRANCH WHERE NAME = :name";
+
     // Builds
 
     String BUILD = "SELECT * FROM BUILD WHERE ID = :id";
@@ -41,6 +45,10 @@ public interface SQL {
     String BUILD_LIST = "SELECT * FROM BUILD WHERE BRANCH = :branch ORDER BY ID DESC LIMIT :count OFFSET :offset";
 
     String BUILD_CREATE = "INSERT INTO BUILD (BRANCH, NAME, DESCRIPTION) VALUES (:branch, :name, :description)";
+
+    String BUILD_BY_NAME = "SELECT * FROM BUILD WHERE NAME = :name";
+
+    String BUILD_BY_BRANCH_AND_NAME = "SELECT ID FROM BUILD WHERE BRANCH = :branch AND NAME = :name";
 
     // Validation stamps
 
@@ -129,6 +137,8 @@ public interface SQL {
     String VALIDATION_RUN_STATUS_CREATE = "INSERT INTO VALIDATION_RUN_STATUS (VALIDATION_RUN, STATUS, DESCRIPTION, AUTHOR, AUTHOR_ID, STATUS_TIMESTAMP) VALUES (:validationRun, :status, :description, :author, :authorId, :statusTimestamp)";
 
     String VALIDATION_RUN_STATUS_LAST = "SELECT * FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = :id ORDER BY ID DESC LIMIT 1";
+
+    String VALIDATION_RUN_STATUS_BY_NAME = "SELECT * FROM VALIDATION_RUN_STATUS WHERE UPPER(DESCRIPTION) LIKE :text";
 
     // Promoted runs
 

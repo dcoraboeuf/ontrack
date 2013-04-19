@@ -1,0 +1,40 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="search" breadcrumbs={loc("home"):""}>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="search" />
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <#if results?size == 0>
+                    <div class="alert alert-warning"><@lh key="search.noResult" /></div>
+                <#else>
+                    <table class="table table-hover">
+                        <tbody>
+                            <#list results as result>
+                                <tr>
+                                    <td width="32">
+                                        ${result_index + 1}.
+                                    </td>
+                                    <td>
+                                        <a href="${result.url}">${result.title?html}</a>
+                                        <br/>
+                                        <span class="description">${result.description?html}</span>
+                                    </td>
+                                </tr>
+                            </#list>
+                        </tbody>
+                    </table>
+                </#if>
+            </div>
+        </div>
+    </div>
+</@layout_std>

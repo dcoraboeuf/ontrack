@@ -120,6 +120,21 @@ svnexplorer.changelog.info.files.none
     en -> No sensible file was changed.
     fr -> Aucun fichier sensible n'a été changé.
 
+[search]
+
+svnexplorer.search.revision
+    en,fr -> @[svnexplorer.revision]
+
+[revision]
+
+svnexplorer.revision
+    en -> Revision {0}
+    fr -> Révision {0}
+
+svnexplorer.revision.builds
+    en -> Associated builds
+    fr -> Builds associés
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException
@@ -133,3 +148,4 @@ net.ontrack.extension.svnexplorer.ui.ChangeLogUUIDException
 net.ontrack.extension.svnexplorer.service.NoCommonAncestorException
     en -> No common ancestor was found between the builds histories.
     fr -> Aucun ancêtre common n'a été trouvé entre les historiques des builds.
+

@@ -663,3 +663,17 @@ entityUnsubscription.submit
 entityUnsubscription.done
     en -> The subscription has been cancelled.
     fr -> L'abonnement a été annulé.
+
+[search]
+
+search
+    en -> Search results
+    fr -> Résultats de la recherche
+
+search.noResult
+    en -> No result was returned by the search.
+    fr -> Aucun résultat n'a été trouvé.
+
+search.submit
+    en -> Search
+    fr -> Chercher

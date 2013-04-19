@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -66,6 +67,26 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 SQL.BUILD_LAST_BY_BRANCH,
                 params("branch", branch),
                 buildRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TBuild> findByName(String name) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.BUILD_BY_NAME,
+                params("name", name),
+                buildRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer findByBrandAndName(int branchId, String buildName) {
+        return getFirstItem(
+                SQL.BUILD_BY_BRANCH_AND_NAME,
+                params("branch", branchId).addValue("name", buildName),
+                Integer.class
         );
     }
 
@@ -165,8 +186,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-	@Override
-	public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
+    @Override
+    public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
         int validationStampId = validationStampDao.getByBranchAndName(branch, validationStamp).getId();
         StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
                 "                LEFT JOIN (" +
@@ -193,7 +214,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
-	@Override
+    @Override
     public TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel) {
         return getFirstItem(
                 "SELECT B.* FROM BUILD B" +
