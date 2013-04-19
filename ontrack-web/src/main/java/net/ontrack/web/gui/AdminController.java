@@ -5,10 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.SubscriptionEntityInfo;
-import net.ontrack.core.model.UserMessage;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
@@ -214,6 +211,26 @@ public class AdminController extends AbstractGUIController {
         }
         // OK
         return "accounts";
+    }
+
+    /**
+     * Request for the update of an account
+     */
+    @RequestMapping(value = "/account/{id:\\d+}/update", method = RequestMethod.GET)
+    public String accountUpdate(Model model, @PathVariable int id) {
+        securityUtils.checkIsAdmin();
+        model.addAttribute("account", accountService.getAccount(id));
+        return "accountUpdate";
+    }
+
+    /**
+     * Actual update of an account
+     */
+    @RequestMapping(value = "/account/{id:\\d+}/update", method = RequestMethod.POST)
+    public String accountUpdate(@PathVariable int id, AccountUpdateForm form, RedirectAttributes redirectAttributes) {
+        accountService.updateAccount(id, form);
+        redirectAttributes.addFlashAttribute("message", UserMessage.success("account.updated"));
+        return "redirect:/gui/admin/accounts";
     }
 
     /**

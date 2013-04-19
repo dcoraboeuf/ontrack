@@ -4,9 +4,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.AccountDao;
+import net.ontrack.backend.dao.CommentDao;
+import net.ontrack.backend.dao.EventDao;
+import net.ontrack.backend.dao.ValidationRunStatusDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
+import net.ontrack.core.model.AccountUpdateForm;
 import net.ontrack.core.model.ID;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.validation.AccountValidation;
@@ -26,6 +30,9 @@ import java.util.List;
 public class AccountServiceImpl extends AbstractServiceImpl implements AccountService {
 
     private final AccountDao accountDao;
+    private final CommentDao commentDao;
+    private final ValidationRunStatusDao validationRunStatusDao;
+    private final EventDao eventDao;
     private final Function<TAccount, Account> accountFunction = new Function<TAccount, Account>() {
         @Override
         public Account apply(TAccount t) {
@@ -45,9 +52,12 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     };
 
     @Autowired
-    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, AccountDao accountDao) {
+    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao) {
         super(validatorService, eventService);
         this.accountDao = accountDao;
+        this.commentDao = commentDao;
+        this.validationRunStatusDao = validationRunStatusDao;
+        this.eventDao = eventDao;
     }
 
     @Override
@@ -131,5 +141,36 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void deleteAccount(int id) {
         accountDao.deleteAccount(id);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public void updateAccount(int id, AccountUpdateForm form) {
+        // Gets the existing account
+        Account account = getAccount(id);
+        // Previous values
+        String oldName = account.getName();
+        String oldFullName = account.getFullName();
+        // New values
+        String name = form.getName();
+        String fullName = form.getFullName();
+        // Differences in names?
+        boolean differentNames = !StringUtils.equals(oldName, name)
+                || !StringUtils.equals(oldFullName, fullName);
+        // Updates the account
+        accountDao.updateAccount(
+                id,
+                name,
+                fullName,
+                form.getEmail(),
+                form.getRoleName()
+        );
+        // Renaming?
+        if (differentNames) {
+            commentDao.renameAuthor(id, fullName);
+            validationRunStatusDao.renameAuthor(id, fullName);
+            eventDao.renameAuthor(id, fullName);
+        }
     }
 }

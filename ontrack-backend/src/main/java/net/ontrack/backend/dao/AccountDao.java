@@ -20,4 +20,6 @@ public interface AccountDao {
     ID createAccount(String name, String fullName, String email, String roleName, String mode, String password);
 
     void deleteAccount(int id);
+
+    void updateAccount(int id, String name, String fullName, String email, String roleName);
 }

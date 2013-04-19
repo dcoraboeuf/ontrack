@@ -315,6 +315,10 @@ account.deleted
     en -> Account has been deleted.
     fr -> L'utilisateur a été supprimé.
 
+account.updated
+    en -> Account has been updated.
+    fr -> L'utilisateur a été mis à jour.
+
 [home]
 
 home

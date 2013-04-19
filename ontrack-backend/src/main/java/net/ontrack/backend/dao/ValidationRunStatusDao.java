@@ -12,4 +12,6 @@ public interface ValidationRunStatusDao {
     int createValidationRunStatus(int validationRun, Status status, String description, String author, Integer authorId);
 
     Collection<TValidationRunStatus> findByText(String text);
+
+    void renameAuthor(int id, String name);
 }

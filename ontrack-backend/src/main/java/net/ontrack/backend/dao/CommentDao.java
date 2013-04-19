@@ -11,4 +11,5 @@ public interface CommentDao {
 
     Collection<TComment> findByEntityAndText(Entity entity, String text);
 
+    void renameAuthor(int id, String name);
 }

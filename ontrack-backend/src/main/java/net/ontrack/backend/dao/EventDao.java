@@ -19,4 +19,6 @@ public interface EventDao {
     Collection<TEvent> findEventsToSend();
 
     void eventSent(int id);
+
+    void renameAuthor(int id, String name);
 }

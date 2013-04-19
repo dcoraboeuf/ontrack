@@ -61,6 +61,15 @@ public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements Valid
 
     @Override
     @Transactional
+    public void renameAuthor(int id, String name) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_RUN_STATUS_RENAME_AUTHOR,
+                params("id", id).addValue("name", name)
+        );
+    }
+
+    @Override
+    @Transactional
     public int createValidationRunStatus(int validationRun, Status status, String description, String author, Integer authorId) {
         return dbCreate(
                 SQL.VALIDATION_RUN_STATUS_CREATE,

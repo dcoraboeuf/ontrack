@@ -140,6 +140,8 @@ public interface SQL {
 
     String VALIDATION_RUN_STATUS_BY_NAME = "SELECT * FROM VALIDATION_RUN_STATUS WHERE UPPER(DESCRIPTION) LIKE :text";
 
+    String VALIDATION_RUN_STATUS_RENAME_AUTHOR = "UPDATE VALIDATION_RUN_STATUS SET AUTHOR = :name WHERE AUTHOR_ID = :id";
+
     // Promoted runs
 
     String PROMOTED_RUN_CREATE = "INSERT INTO PROMOTED_RUN (PROMOTION_LEVEL, BUILD, DESCRIPTION) VALUES (:promotionLevel, :build, :description)";
@@ -162,6 +164,8 @@ public interface SQL {
 
     String EVENT_SENT = "UPDATE EVENTS SET SENT = TRUE WHERE ID = :id";
 
+    String EVENTS_RENAME_AUTHOR = "UPDATE EVENTS SET AUTHOR = :name WHERE AUTHOR_ID = :id";
+
     // Accounts
 
     String ACCOUNT_AUTHENTICATE = "SELECT ID, NAME, FULLNAME, EMAIL, ROLENAME, MODE FROM ACCOUNTS WHERE MODE = 'builtin' AND NAME = :user AND PASSWORD = :password";
@@ -176,6 +180,10 @@ public interface SQL {
 
     String ACCOUNT_CREATE = "INSERT INTO ACCOUNTS (NAME, FULLNAME, EMAIL, ROLENAME, MODE, PASSWORD) VALUES (:name, :fullName, :email, :roleName, :mode, :password)";
 
+    String ACCOUNT_DELETE = "DELETE FROM ACCOUNTS WHERE ID = :id";
+
+    String ACCOUNT_UPDATE = "UPDATE ACCOUNTS SET NAME = :name, FULLNAME = :fullName, EMAIL = :email, ROLENAME = :roleName WHERE ID = :id";
+
     // Configuration
 
     String CONFIGURATION_GET = "SELECT VALUE FROM CONFIGURATION WHERE NAME = :name";
@@ -187,6 +195,8 @@ public interface SQL {
     // Comments
 
     String COMMENT_CREATE = "INSERT INTO COMMENT (%s, CONTENT, AUTHOR, AUTHOR_ID, COMMENT_TIMESTAMP) VALUES (:id, :content, :author, :author_id, :comment_timestamp)";
+
+    String COMMENT_RENAME_AUTHOR = "UPDATE COMMENT SET AUTHOR = :name WHERE AUTHOR_ID = :id";
 
     // Properties
 

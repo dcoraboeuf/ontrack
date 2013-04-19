@@ -113,8 +113,18 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
     @Transactional
     public void deleteAccount(int id) {
         getNamedParameterJdbcTemplate().update(
-                "DELETE FROM ACCOUNTS WHERE ID = :id",
+                SQL.ACCOUNT_DELETE,
                 params("id", id)
+        );
+    }
+
+    @Override
+    @Transactional
+    public void updateAccount(int id, String name, String fullName, String email, String roleName) {
+        // Updates the account itself
+        getNamedParameterJdbcTemplate().update(
+                SQL.ACCOUNT_UPDATE,
+                params("id", id).addValue("name", name).addValue("fullName", fullName).addValue("email", email).addValue("roleName", roleName)
         );
     }
 

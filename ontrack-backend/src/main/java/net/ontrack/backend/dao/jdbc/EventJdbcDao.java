@@ -113,6 +113,15 @@ public class EventJdbcDao extends AbstractJdbcDao implements EventDao {
 
     @Override
     @Transactional
+    public void renameAuthor(int id, String name) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.EVENTS_RENAME_AUTHOR,
+                params("id", id).addValue("name", name)
+        );
+    }
+
+    @Override
+    @Transactional
     public int createEvent(String author, Integer authorId, EventType eventType, Map<Entity, Integer> entities, Map<String, String> values) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         // Author

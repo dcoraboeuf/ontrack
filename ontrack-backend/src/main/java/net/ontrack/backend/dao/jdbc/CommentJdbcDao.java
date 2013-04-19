@@ -49,7 +49,7 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
                 new RowMapper<TComment>() {
                     @Override
                     public TComment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Map<Entity,Integer> entities = new HashMap<>();
+                        Map<Entity, Integer> entities = new HashMap<>();
                         for (Entity candidate : Entity.values()) {
                             int candidateId = rs.getInt(candidate.name());
                             if (!rs.wasNull()) {
@@ -57,7 +57,7 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
                             }
                         }
                         return new TComment(
-                          rs.getInt("id"),
+                                rs.getInt("id"),
                                 rs.getString("content"),
                                 rs.getString("author"),
                                 getInteger(rs, "author_id"),
@@ -66,5 +66,14 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
                         );
                     }
                 });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void renameAuthor(int id, String name) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.COMMENT_RENAME_AUTHOR,
+                params("id", id).addValue("name", name)
+        );
     }
 }
