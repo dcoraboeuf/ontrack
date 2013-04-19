@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @Controller
@@ -37,8 +38,8 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
 
     @Override
     @RequestMapping(value = "/revision/{revision:\\d+}", method = RequestMethod.GET)
-    public @ResponseBody RevisionInfo getRevisionInfo(@PathVariable long revision) {
-        return svnExplorerService.getRevisionInfo(revision);
+    public @ResponseBody RevisionInfo getRevisionInfo(Locale locale, @PathVariable long revision) {
+        return svnExplorerService.getRevisionInfo(locale, revision);
     }
 
     @Override

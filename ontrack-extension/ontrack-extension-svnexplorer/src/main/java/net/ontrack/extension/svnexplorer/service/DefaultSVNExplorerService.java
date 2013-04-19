@@ -5,9 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.BuildSummary;
-import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
@@ -254,7 +252,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public RevisionInfo getRevisionInfo(long revision) {
+    public RevisionInfo getRevisionInfo(Locale locale, long revision) {
         // Gets information about the revision
         SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
         ChangeLogRevision changeLogRevision = createChangeLogRevision(
@@ -267,7 +265,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Looks for branches with the corresponding path
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
         // For each branch, looks for the earliest build that contains this revision
-        Collection<BuildSummary> buildSummaries = new ArrayList<>();
+        Collection<RevisionInfoBuild> buildSummaries = new ArrayList<>();
         for (int branchId : branchIds) {
             // Gets the build SVN path pattern for the branch
             String buildPathPattern = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
@@ -301,9 +299,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 if (buildId != null) {
                     // Gets the build information
                     BuildSummary buildSummary = managementService.getBuild(buildId);
-                    // TODO For each build, gets the promotion levels & validation stamps
+                    // TODO Gets the promotion levels & validation stamps
+                    List<BuildPromotionLevel> promotionLevels = managementService.getBuildPromotionLevels(locale, buildId);
+                    List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
                     // Adds to the list
-                    buildSummaries.add(buildSummary);
+                    buildSummaries.add(
+                            new RevisionInfoBuild(
+                                    buildSummary,
+                                    promotionLevels,
+                                    buildValidationStamps
+                            ));
                 }
             }
         }

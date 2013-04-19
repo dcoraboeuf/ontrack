@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Locale;
+
 @Controller
 public class RevisionController extends AbstractGUIController {
 
@@ -23,9 +25,9 @@ public class RevisionController extends AbstractGUIController {
 
 
     @RequestMapping(value = "/gui/extension/svnexplorer/revision/{revision:\\d+}", method = RequestMethod.GET)
-    public String revision (@PathVariable long revision, Model model) {
+    public String revision (Locale locale, @PathVariable long revision, Model model) {
         // Revision info
-        model.addAttribute("info", ui.getRevisionInfo(revision));
+        model.addAttribute("info", ui.getRevisionInfo(locale, revision));
         // OK
         return "extension/svnexplorer/revision";
     }

@@ -2,6 +2,8 @@ package net.ontrack.extension.svnexplorer.service;
 
 import net.ontrack.extension.svnexplorer.model.*;
 
+import java.util.Locale;
+
 public interface SVNExplorerService {
 
     ChangeLogSummary getChangeLogSummary(int branch, int from, int to);
@@ -14,5 +16,5 @@ public interface SVNExplorerService {
 
     ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues, ChangeLogFiles files);
 
-    RevisionInfo getRevisionInfo(long revision);
+    RevisionInfo getRevisionInfo(Locale locale, long revision);
 }

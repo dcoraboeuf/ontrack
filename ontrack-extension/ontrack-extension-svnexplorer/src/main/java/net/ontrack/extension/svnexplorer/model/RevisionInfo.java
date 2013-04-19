@@ -9,6 +9,6 @@ import java.util.Collection;
 public class RevisionInfo {
 
     private final ChangeLogRevision changeLogRevision;
-    private final Collection<BuildSummary> builds;
+    private final Collection<RevisionInfoBuild> builds;
 
 }

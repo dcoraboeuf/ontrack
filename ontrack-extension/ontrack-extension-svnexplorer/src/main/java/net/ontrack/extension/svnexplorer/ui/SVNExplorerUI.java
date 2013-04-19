@@ -2,6 +2,8 @@ package net.ontrack.extension.svnexplorer.ui;
 
 import net.ontrack.extension.svnexplorer.model.*;
 
+import java.util.Locale;
+
 public interface SVNExplorerUI {
 
     ChangeLogSummary getChangeLogSummary(ChangeLogRequest request);
@@ -14,5 +16,5 @@ public interface SVNExplorerUI {
 
     ChangeLogInfo getChangeLogInfo(String uuid);
 
-    RevisionInfo getRevisionInfo(long revision);
+    RevisionInfo getRevisionInfo(Locale locale, long revision);
 }

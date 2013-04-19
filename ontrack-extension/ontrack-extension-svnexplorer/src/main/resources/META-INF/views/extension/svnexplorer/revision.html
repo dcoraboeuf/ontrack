@@ -45,19 +45,41 @@
                         <th><@lh key="model.project" /></th>
                         <th><@lh key="model.branch" /></th>
                         <th><@lh key="model.build" /></th>
+                        <th><@lh key="build.promotion_levels" /></th>
+                        <th><@lh key="build.validation_stamps" /></th>
                     </tr>
                 </thead>
                 <tbody>
                     <#list info.builds as build>
                         <tr>
                             <td>
-                                <a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a>
+                                <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
                             </td>
                             <td>
-                                <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}">${build.branch.name?html}</a>
+                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}">${build.build.branch.name?html}</a>
                             </td>
                             <td>
-                                <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}/build/${build.name?html}">${build.name?html}</a>
+                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
+                            </td>
+                            <td>
+                                <ul class="promotions">
+                                    <#list build.buildPromotionLevels as buildPromotionLevel>
+                                        <li>
+                                            <i class="icon-arrow-right"></i>
+                                            <img width="24" title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
+                                            <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
+                                        </li>
+                                    </#list>
+                                </ul>
+                            </td>
+                            <td>
+                                <#list build.buildValidationStamps as buildValidationStamp>
+                                    <#if buildValidationStamp.run>
+                                        <#assign run = buildValidationStamp.runs?first />
+                                        <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                        <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                    </#if>
+                                </#list>
                             </td>
                         </tr>
                     </#list>
