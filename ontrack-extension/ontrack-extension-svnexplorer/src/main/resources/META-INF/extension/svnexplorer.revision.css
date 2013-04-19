@@ -2,3 +2,8 @@ td.revision-info-label {
     padding-right: 1em;
     font-weight: bold;
 }
+
+.label.validationStamp {
+    background-color: #dddddd;
+    border: solid 1px darkgray;
+}

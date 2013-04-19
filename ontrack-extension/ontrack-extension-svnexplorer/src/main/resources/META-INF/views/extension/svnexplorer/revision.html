@@ -76,8 +76,11 @@
                                 <#list build.buildValidationStamps as buildValidationStamp>
                                     <#if buildValidationStamp.run>
                                         <#assign run = buildValidationStamp.runs?first />
-                                        <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
-                                        <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                        <span class="label validationStamp">
+                                            <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                            <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                            <img width="24" src="static/images/status-${run.status}.png" />
+                                        </span>
                                     </#if>
                                 </#list>
                             </td>
