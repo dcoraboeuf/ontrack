@@ -120,6 +120,8 @@ public interface ManagementService {
 
     PromotedRunSummary getPromotedRun(int buildId, int promotionLevel);
 
+    Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId);
+
     // Comments
 
     CommentStub createComment (Entity entity, int id, String content);

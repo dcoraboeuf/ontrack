@@ -57,4 +57,14 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                         .addValue("promotionLevel", promotionLevel)
                         .addValue("description", description));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer findBuildByEarliestPromotion(int buildId, int promotionLevelId) {
+        return getFirstItem(
+                SQL.PROMOTED_EARLIEST_RUN,
+                params("build", buildId).addValue("promotionLevel", promotionLevelId),
+                Integer.class
+        );
+    }
 }

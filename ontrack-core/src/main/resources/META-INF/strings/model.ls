@@ -28,6 +28,10 @@ model.validation_run
     en -> Run
     fr -> Exécution
 
+model.promotion_level
+    en -> Promotion level
+    fr -> Niveau de promotion
+
 [status]
 
 status.PASSED

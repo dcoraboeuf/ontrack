@@ -966,6 +966,36 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId) {
+        // Branch for the build
+        int branchId = getBuild(buildId).getBranch().getId();
+        // Branch for the promotion
+        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        int promotionBranchId = promotionLevel.getBranch().getId();
+        // ... they must be same
+        if (branchId != promotionBranchId) {
+            throw new IllegalStateException("Branches for the build and the promotion level must be identical.");
+        }
+        // Looking for the earliest promoted run
+        Integer earliestBuildId = promotedRunDao.findBuildByEarliestPromotion(buildId, promotionLevelId);
+        // Not found
+        if (earliestBuildId == null) {
+            return new Promotion(
+                    promotionLevel,
+                    null,
+                    null
+            );
+        } else {
+            return new Promotion(
+                    promotionLevel,
+                    getBuild(earliestBuildId),
+                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, earliestBuildId))
+            );
+        }
+    }
+
 
     // Comments
 

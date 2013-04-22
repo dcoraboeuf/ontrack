@@ -266,6 +266,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
         // For each branch, looks for the earliest build that contains this revision
         Collection<RevisionInfoBuild> buildSummaries = new ArrayList<>();
+        List<RevisionPromotions> revisionPromotionsPerBranch = new ArrayList<>();
         for (int branchId : branchIds) {
             // Gets the build SVN path pattern for the branch
             String buildPathPattern = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
@@ -309,13 +310,36 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                                     promotionLevels,
                                     buildValidationStamps
                             ));
+                    // Gets the promotions for this branch
+                    List<Promotion> promotions = getPromotionsForBranch(locale, branchId, buildId);
+                    if (promotions != null && !promotions.isEmpty()) {
+                        revisionPromotionsPerBranch.add(new RevisionPromotions(
+                                managementService.getBranch(branchId),
+                                promotions
+                        ));
+                    }
                 }
             }
         }
         // OK
         return new RevisionInfo(
                 changeLogRevision,
-                buildSummaries
+                buildSummaries,
+                revisionPromotionsPerBranch
+        );
+    }
+
+    private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
+        // List of promotions for this branch
+        List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+        return Lists.transform(
+                promotionLevelList,
+                new Function<PromotionLevelSummary, Promotion>() {
+                    @Override
+                    public Promotion apply(PromotionLevelSummary promotionLevel) {
+                        return managementService.getEarliestPromotionForBuild(locale, buildId, promotionLevel.getId());
+                    }
+                }
         );
     }
 

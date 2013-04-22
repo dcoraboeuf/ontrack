@@ -139,6 +139,18 @@ svnexplorer.revision.builds.none
     en -> The revision does not appear in any build.
     fr -> Cette révision n'apparait dans aucun build.
 
+svnexplorer.revision.promotions
+    en -> Associated promotions
+    fr -> Promotions associées
+
+svnexplorer.revision.promotions.none
+    en -> The revision was never promoted.
+    fr -> Cette révision n'a jamais été promue.
+
+svnexplorer.revision.promotions.notForThisPromotionLevel
+    en -> The revision was never promoted to this promotion level.
+    fr -> Cette révision n'a jamais été promue à ce niveau de promotion.
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException
