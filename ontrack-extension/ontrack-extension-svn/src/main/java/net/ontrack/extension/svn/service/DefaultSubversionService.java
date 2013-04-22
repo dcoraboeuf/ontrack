@@ -26,6 +26,7 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -33,6 +34,7 @@ public class DefaultSubversionService implements SubversionService {
 
     public static final int HISTORY_MAX_DEPTH = 6;
     private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private final Pattern pathWithRevision = Pattern.compile("(.*)@(\\d+)$");
     /**
      * Transforms a DAO revision into a formatted revision information object.
      */
@@ -273,7 +275,7 @@ public class DefaultSubversionService implements SubversionService {
     @Override
     public SVNHistory getHistory(String path) {
         // Gets the reference for this first path
-        SVNReference reference = getReference(path, SVNRevision.HEAD);
+        SVNReference reference = getReference(path);
         // Initializes the history
         SVNHistory history = new SVNHistory(reference);
         // Loops on copies
@@ -302,6 +304,17 @@ public class DefaultSubversionService implements SubversionService {
             return getReference(copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
         } else {
             return null;
+        }
+    }
+
+    private SVNReference getReference(String path) {
+        Matcher matcher = pathWithRevision.matcher(path);
+        if (matcher.matches()) {
+            String pathOnly = matcher.group(1);
+            long revision = Long.parseLong(matcher.group(2), 10);
+            return getReference(pathOnly, SVNRevision.create(revision));
+        } else {
+            return getReference(path, SVNRevision.HEAD);
         }
     }
 
