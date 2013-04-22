@@ -126,6 +126,18 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public boolean isIndexedIssue(String key) {
+        return issueRevisionDao.isIndexed(key);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getRevisionsForIssueKey(String key) {
+        return issueRevisionDao.findRevisionsByIssue(key);
+    }
+
+    @Override
     public String getURL(String path) {
         return configurationExtension.getUrl() + path;
     }

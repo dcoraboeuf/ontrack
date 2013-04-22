@@ -329,6 +329,39 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public IssueInfo getIssueInfo(Locale locale, String key) {
+        // Gets the details about the issue
+        JIRAIssue issue = jiraService.getIssue(key);
+        // Gets the list of revisions & their basic info (order from latest to oldest)
+        List<ChangeLogRevision> revisions = Lists.transform(
+                subversionService.getRevisionsForIssueKey(key),
+                new Function<Long, ChangeLogRevision>() {
+                    @Override
+                    public ChangeLogRevision apply(Long revision) {
+                        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
+                        return createChangeLogRevision(
+                                0,
+                                revision,
+                                basicInfo.getMessage(),
+                                basicInfo.getAuthor(),
+                                basicInfo.getDateTime()
+                        );
+                    }
+                });
+        // Gets the last revision (which is the first in the list)
+        ChangeLogRevision firstRevision = revisions.get(0);
+        RevisionInfo revisionInfo = getRevisionInfo(locale, firstRevision.getRevision());
+        // OK
+        return new IssueInfo(
+                issue,
+                subversionService.formatRevisionTime(issue.getUpdateTime()),
+                revisionInfo,
+                revisions
+        );
+    }
+
     private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
         // List of promotions for this branch
         List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);

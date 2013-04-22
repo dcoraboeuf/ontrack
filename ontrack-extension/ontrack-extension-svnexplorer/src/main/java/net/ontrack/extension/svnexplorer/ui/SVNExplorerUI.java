@@ -17,4 +17,6 @@ public interface SVNExplorerUI {
     ChangeLogInfo getChangeLogInfo(String uuid);
 
     RevisionInfo getRevisionInfo(Locale locale, long revision);
+
+    IssueInfo getIssueInfo(Locale locale, String key);
 }

@@ -87,4 +87,6 @@ public interface SubversionService {
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
 
     boolean isIndexedIssue(String key);
+
+    List<Long> getRevisionsForIssueKey(String key);
 }

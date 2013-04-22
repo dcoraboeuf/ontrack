@@ -1,0 +1,76 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="svnexplorer.issue" title=info.issue.key style=true extension=true breadcrumbs={loc("home"):""}>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="${info.issue.url?html}">${info.issue.key?html}</a>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.status" /></td>
+                        <td class="issue-info-value">
+                            <img src="${info.issue.status.iconUrl?html}" />
+                            ${info.issue.status.name?html}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.summary" /></td>
+                        <td class="issue-info-value">${info.issue.summary?html}</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.affectedVersions" /></td>
+                        <td class="issue-info-value">
+                            <ul class="version">
+                                <#list info.issue.affectedVersions as version>
+                                    <li>
+                                        <span class="separator">, </span>
+                                        ${version.name}
+                                    </li>
+                                </#list>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.fixVersions" /></td>
+                        <td class="issue-info-value">
+                            <ul class="version">
+                                <#list info.issue.fixVersions as version>
+                                    <li>
+                                        <span class="separator">, </span>
+                                        ${version.name}
+                                    </li>
+                                </#list>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.assignee" /></td>
+                        <td class="issue-info-value">${info.issue.assignee?html}</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.updateTime" /></td>
+                        <td class="issue-info-value">${info.formattedUpdateTime?html}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="row-fluid">
+        <div class="span12">
+        </div>
+    </div>
+
+</@layout_std>

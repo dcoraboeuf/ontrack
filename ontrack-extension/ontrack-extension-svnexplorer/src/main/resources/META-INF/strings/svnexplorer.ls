@@ -155,6 +155,12 @@ svnexplorer.revision.promotions.notForThisPromotionLevel
     en -> The revision was never promoted to this promotion level.
     fr -> Cette révision n'a jamais été promue à ce niveau de promotion.
 
+[issue]]
+
+svnexplorer.issue
+    en -> Issue {0}
+    fr -> Ticket {0}
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException

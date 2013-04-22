@@ -43,4 +43,13 @@ public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisi
                 params("key", key),
                 String.class) != null;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> findRevisionsByIssue(String key) {
+        return getNamedParameterJdbcTemplate().queryForList(
+                "SELECT REVISION FROM REVISION_ISSUE WHERE ISSUE = :key ORDER BY REVISION DESC",
+                params("key", key),
+                Long.class);
+    }
 }
