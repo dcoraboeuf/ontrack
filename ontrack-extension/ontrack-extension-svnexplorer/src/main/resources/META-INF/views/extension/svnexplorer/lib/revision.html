@@ -1,7 +1,11 @@
-<#macro revision_info_summary info>
+<#macro revision_info_summary info title=false>
 
     <div class="row-fluid">
         <div class="span12">
+            <#if title>
+                <#assign revisionLink><a href="${info.changeLogRevision.revisionUrl}">${info.changeLogRevision.revision?c}</a></#assign>
+                <h1><small>${loc("svnexplorer.revision", revisionLink)}</small></h1>
+            </#if>
             <table>
                 <tbody>
                     <tr>

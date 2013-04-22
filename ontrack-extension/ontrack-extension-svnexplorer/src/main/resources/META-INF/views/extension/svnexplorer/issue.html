@@ -1,6 +1,7 @@
 <#include "/lib/layout.html">
+<#include "/extension/svnexplorer/lib/revision.html" >
 
-<@layout_std page="svnexplorer.issue" title=info.issue.key style=true extension=true breadcrumbs={loc("home"):""}>
+<@layout_std page="svnexplorer.issue" title=info.issue.key modules = [ "promotion_levels" ] style=true extension=true breadcrumbs={loc("home"):""}>
 
     <div class="row-fluid">
         <div class="span12 page-title">
@@ -67,10 +68,10 @@
         </div>
     </div>
 
+    <@revision_info_summary info = info.revisionInfo title = true />
 
-    <div class="row-fluid">
-        <div class="span12">
-        </div>
-    </div>
+    <@revision_info_builds info = info.revisionInfo />
+
+    <@revision_info_promotions info = info.revisionInfo />
 
 </@layout_std>
