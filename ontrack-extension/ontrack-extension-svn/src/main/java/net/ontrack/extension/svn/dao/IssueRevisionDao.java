@@ -7,4 +7,6 @@ public interface IssueRevisionDao {
     void link(long revision, String key);
 
     List<String> findIssuesByRevision(long revision);
+
+    boolean isIndexed(String key);
 }

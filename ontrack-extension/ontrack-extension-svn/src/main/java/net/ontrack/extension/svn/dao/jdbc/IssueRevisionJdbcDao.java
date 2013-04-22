@@ -34,4 +34,13 @@ public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisi
                 String.class
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isIndexed(String key) {
+        return getFirstItem(
+                "SELECT ISSUE FROM REVISION_ISSUE WHERE ISSUE = :key",
+                params("key", key),
+                String.class) != null;
+    }
 }

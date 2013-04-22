@@ -85,4 +85,6 @@ public interface SubversionService {
     String getFileChangeBrowsingURL(String path, long revision);
 
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
+
+    boolean isIndexedIssue(String key);
 }

@@ -125,6 +125,10 @@ svnexplorer.changelog.info.files.none
 svnexplorer.search.revision
     en,fr -> @[svnexplorer.revision]
 
+svnexplorer.search.key
+    en -> Issue {0} is associated with some code.
+    fr -> Le ticket {0} est associé à du code.
+
 [revision]
 
 svnexplorer.revision

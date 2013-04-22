@@ -140,6 +140,12 @@ public class DefaultJIRAService implements JIRAService {
         }
     }
 
+    @Override
+    public boolean isIssue(String token) {
+        // TODO List of excluded projects (see #97)
+        return JIRAExtension.ISSUE_PATTERN.matcher(token).matches();
+    }
+
     private JIRAStatus toStatus(BasicStatus status) {
         return new JIRAStatus(
                 status.getName(),

@@ -13,4 +13,6 @@ public interface JIRAService {
     String getIssueURL(String key);
 
     JIRAIssue getIssue(String key);
+
+    boolean isIssue(String token);
 }
