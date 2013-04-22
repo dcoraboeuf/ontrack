@@ -74,4 +74,34 @@
 
     <@revision_info_promotions info = info.revisionInfo />
 
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="svnexplorer.issue.revisions" /></small></h1>
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><@lh key="svnexplorer.changelog.revisions.revision" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.author" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.date" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.message" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list info.revisions as revision>
+                        <tr>
+                            <td>
+                                <a href="${revision.revisionUrl?html}">${revision.revision?c}</a>
+                                <a href="gui/extension/svnexplorer/revision/${revision.revision?c}"><i class="icon-info-sign"></i></a>
+                            </td>
+                            <td>${revision.author?html}</td>
+                            <td>${revision.isoDateTime?html}</td>
+                            <td>${revision.formattedMessage}</td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </@layout_std>
