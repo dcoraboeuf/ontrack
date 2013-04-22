@@ -1,0 +1,143 @@
+<#macro revision_info_summary info>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="revision-info-label"><@lh key="svnexplorer.changelog.revisions.author" /></td>
+                        <td class="revision-info-value">${info.changeLogRevision.author?html}</td>
+                    </tr>
+                    <tr>
+                        <td class="revision-info-label"><@lh key="svnexplorer.changelog.revisions.date" /></td>
+                        <td class="revision-info-value">${info.changeLogRevision.isoDateTime?html}</td>
+                    </tr>
+                    <tr>
+                        <td class="revision-info-label"><@lh key="svnexplorer.changelog.revisions.message" /></td>
+                        <td class="revision-info-value">${info.changeLogRevision.formattedMessage}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</#macro>
+
+<#macro revision_info_builds info>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="svnexplorer.revision.builds" /></small></h1>
+            <#if info.builds?size == 0>
+                <div class="alert alert-info"><@lh key="svnexplorer.revision.builds.none" /></div>
+            <#else>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><@lh key="model.project" /></th>
+                            <th><@lh key="model.branch" /></th>
+                            <th><@lh key="model.build" /></th>
+                            <th><@lh key="build.promotion_levels" /></th>
+                            <th><@lh key="build.validation_stamps" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <#list info.builds as build>
+                            <tr>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
+                                </td>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}">${build.build.branch.name?html}</a>
+                                </td>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
+                                </td>
+                                <td>
+                                    <ul class="promotions">
+                                        <#list build.buildPromotionLevels as buildPromotionLevel>
+                                            <li>
+                                                <i class="icon-arrow-right"></i>
+                                                <img width="24" title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
+                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
+                                            </li>
+                                        </#list>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <#list build.buildValidationStamps as buildValidationStamp>
+                                        <#if buildValidationStamp.run>
+                                            <#assign run = buildValidationStamp.runs?first />
+                                            <span class="label validationStamp">
+                                                <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                                <img width="24" src="static/images/status-${run.status}.png" />
+                                            </span>
+                                        </#if>
+                                    </#list>
+                                </td>
+                            </tr>
+                        </#list>
+                    </tbody>
+                </table>
+            </#if>
+        </div>
+    </div>
+
+</#macro>
+
+<#macro revision_info_promotions info>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="svnexplorer.revision.promotions" /></small></h1>
+            <#if info.promotionsPerBranch?size == 0>
+                <div class="alert alert-info"><@lh key="svnexplorer.revision.promotions.none" /></div>
+            <#else>
+                <table class="table">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <#list info.promotionsPerBranch as revisionPromotions>
+                            <tr class="info">
+                                <td colspan="3">
+                                    <@lh key="model.project" />
+                                    <a href="gui/project/${revisionPromotions.branch.project.name?html}">${revisionPromotions.branch.project.name?html}</a>
+                                    <@lh key="model.branch" />
+                                    <a href="gui/project/${revisionPromotions.branch.project.name?html}/branch/${revisionPromotions.branch.name?html}">${revisionPromotions.branch.name?html}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><@lh key="model.promotion_level" /></th>
+                                <th><@lh key="model.build" /></th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            <#list revisionPromotions.promotions as promotion>
+                                <tr>
+                                    <td>
+                                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                                    </td>
+                                    <#if promotion.buildSummary??>
+                                        <td>
+                                            <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
+                                        </td>
+                                        <td class="description">
+                                            ${promotion.signature.elapsedTime} -
+                                            ${promotion.signature.formattedTime}
+                                        </td>
+                                    <#else>
+                                        <td colspan="2" class="description">
+                                            <@lh key="svnexplorer.revision.promotions.notForThisPromotionLevel" />
+                                        </td>
+                                    </#if>
+                                </tr>
+                            </#list>
+                        </#list>
+                    </tbody>
+                </table>
+            </#if>
+        </div>
+    </div>
+
+</#macro>
