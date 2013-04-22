@@ -22,5 +22,12 @@
                 </ul>
             </div>
         </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <#if account.mode == "builtin">
+                    <a class="btn" href="gui/admin/password"><@lh key="profile.changePassword" /></a>
+                </#if>
+            </div>
+        </div>
     </div>
 </@layout_std>

@@ -126,6 +126,48 @@ profile
     en -> Profile
     fr -> Profil
 
+profile.changePassword
+    en -> Change password
+    fr -> Changer de mot de passe
+
+profile.changePassword.ok
+    en -> Password has been changed.
+    fr -> Votre mot de passe a été changé.
+
+profile.changePassword.nok
+    en -> Password has not been changed. The old password may have been incorrect.
+    fr -> Votre mot de passe n'a pas été changé. L'ancien mot de passe était peut-être incorrect.
+
+[password]
+
+password
+    en -> Password change
+    fr -> Changement de mot de passe
+
+password.user
+    en -> User
+    fr -> Utilisateur
+
+password.oldPassword
+    en -> Old password
+    fr -> Ancien mot de passe
+
+password.newPassword
+    en -> New password
+    fr -> Nouveau mot de passe
+
+password.newPassword.confirm
+    en -> Confirmation
+    fr -> Confirmation
+
+password.submit
+    en -> Change
+    fr -> Changer
+
+password.confirmationNok
+    en -> The password confirmation is not correct.
+    fr -> La confirmation du mot de passe est incorrecte.
+
 [settings]
 
 settings

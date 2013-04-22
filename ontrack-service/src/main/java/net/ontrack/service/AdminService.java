@@ -1,5 +1,7 @@
 package net.ontrack.service;
 
+import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.PasswordChangeForm;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;

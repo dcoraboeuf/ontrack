@@ -20,6 +20,7 @@ import net.ontrack.web.gui.model.GUIConfigurationExtension;
 import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
+import net.ontrack.web.support.WebUtils;
 import net.sf.jstring.LocalizableMessage;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 
 @Controller
 @RequestMapping("/gui/admin")
@@ -71,6 +73,40 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("account", securityUtils.getCurrentAccount());
         // OK
         return "profile";
+    }
+
+    /**
+     * Request to change his password
+     */
+    @RequestMapping(value = "/password", method = RequestMethod.GET)
+    public String password() {
+        securityUtils.checkIsLogged();
+        return "password";
+    }
+
+    /**
+     * Actual change of his password
+     */
+    @RequestMapping(value = "/password", method = RequestMethod.POST)
+    public String password(final PasswordChangeForm form, RedirectAttributes redirectAttributes) {
+        final int accountId = securityUtils.getCurrentAccountId();
+        Ack ack = securityUtils.asAdmin(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.changePassword(accountId, form);
+            }
+        });
+        if (ack.isSuccess()) {
+            // Success message
+            WebUtils.userMessage(redirectAttributes, UserMessage.success("profile.changePassword.ok"));
+            // Back to the profile
+            return "redirect:/gui/admin/profile";
+        } else {
+            // Error message
+            WebUtils.userMessage(redirectAttributes, UserMessage.error("profile.changePassword.nok"));
+            // Back to the change page
+            return "redirect:/gui/admin/password";
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
@@ -139,6 +140,19 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
         } catch (DuplicateKeyException ex) {
             throw new AccountAlreadyExistException(name);
         }
+    }
+
+    @Override
+    @Transactional
+    public Ack changePassword(int id, String oldPassword, String newPassword) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.ACCOUNT_CHANGE_PASSWORD,
+                        params("id", id)
+                                .addValue("oldPassword", encodePassword(oldPassword))
+                                .addValue("newPassword", encodePassword(newPassword))
+                )
+        );
     }
 
     private String encodePassword(String password) {

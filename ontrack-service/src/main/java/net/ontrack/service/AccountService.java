@@ -1,9 +1,6 @@
 package net.ontrack.service;
 
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.AccountUpdateForm;
-import net.ontrack.core.model.ID;
+import net.ontrack.core.model.*;
 
 import java.util.List;
 
@@ -24,4 +21,6 @@ public interface AccountService {
     void deleteAccount(int id);
 
     void updateAccount(int id, AccountUpdateForm form);
+
+    Ack changePassword(int id, PasswordChangeForm form);
 }

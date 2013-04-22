@@ -1,6 +1,8 @@
 package net.ontrack.web.support;
 
+import net.ontrack.core.model.UserMessage;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,4 +39,7 @@ public class WebUtils {
 		return s.toString();
 	}
 
+    public static void userMessage(RedirectAttributes redirectAttributes, UserMessage message) {
+        redirectAttributes.addFlashAttribute("message", message);
+    }
 }

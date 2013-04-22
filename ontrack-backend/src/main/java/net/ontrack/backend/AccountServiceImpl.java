@@ -8,10 +8,7 @@ import net.ontrack.backend.dao.CommentDao;
 import net.ontrack.backend.dao.EventDao;
 import net.ontrack.backend.dao.ValidationRunStatusDao;
 import net.ontrack.backend.dao.model.TAccount;
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.AccountUpdateForm;
-import net.ontrack.core.model.ID;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
@@ -171,6 +168,22 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             commentDao.renameAuthor(id, fullName);
             validationRunStatusDao.renameAuthor(id, fullName);
             eventDao.renameAuthor(id, fullName);
+        }
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack changePassword(int id, PasswordChangeForm form) {
+        // Gets the existing account
+        Account account = getAccount(id);
+        // Checks the mode
+        if ("builtin".equals(account.getMode())) {
+            // DAO
+            return accountDao.changePassword(id, form.getOldPassword(), form.getNewPassword());
+        } else {
+            // Cannot change password in this case
+            return Ack.NOK;
         }
     }
 }
