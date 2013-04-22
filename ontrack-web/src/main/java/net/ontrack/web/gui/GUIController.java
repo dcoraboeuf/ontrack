@@ -15,6 +15,7 @@ import net.ontrack.web.support.ErrorHandlingMultipartResolver;
 import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -177,8 +178,10 @@ public class GUIController extends AbstractGUIController {
      */
     @RequestMapping(value = "/gui/search", method = RequestMethod.GET)
     public ModelAndView search(@RequestParam String token, final Locale locale) {
+        // Normalization
+        String searchToken = StringUtils.trimToEmpty(token);
         // Fills the model with the search results
-        Collection<SearchResult> results = searchService.search(token);
+        Collection<SearchResult> results = searchService.search(searchToken);
         // Gets the localization form
         Collection<GUISearchResult> guiResults = Collections2.transform(
                 results,
