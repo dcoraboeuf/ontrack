@@ -157,6 +157,10 @@
                             title="{{description}} - {{signature.elapsedTime}} - {{formattedTime}}">
                         {{name}}
                     </a>
+                    <!-- Build decorations -->
+                    {{#decorations}}
+                        <span class="decoration label label-{{cls}} decoration-{{cls}} {{cls}}">{{title}}</span>
+                    {{/decorations}}
                 </td>
                 <td class="build_promotion_level" build="{{name}}">
                     {{{promotionLevelsFn}}}

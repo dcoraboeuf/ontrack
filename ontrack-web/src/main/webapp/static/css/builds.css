@@ -10,3 +10,8 @@ td.build-hover {
 td.validation-stamp-hover {
     background-color: #FFFFEE;
 }
+
+span.decoration {
+    font-size: 75%;
+    font-weight: normal;
+}
