@@ -1,12 +1,23 @@
 package net.ontrack.core.ui;
 
-import net.ontrack.core.model.EditableProperty;
-import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.*;
 
 import java.util.List;
 import java.util.Locale;
 
 public interface PropertyUI {
+
+    Ack saveProperty(
+            Entity entity,
+            int entityId,
+            String extension,
+            String name,
+            PropertyForm form);
+
+    List<DisplayablePropertyValue> getProperties(
+            Locale locale,
+            Entity entity,
+            int entityId);
 
     List<EditableProperty> getEditableProperties(
             Locale locale,

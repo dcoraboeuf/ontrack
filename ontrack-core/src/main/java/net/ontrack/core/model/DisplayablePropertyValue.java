@@ -1,4 +1,4 @@
-package net.ontrack.web.ui.model;
+package net.ontrack.core.model;
 
 import lombok.Data;
 

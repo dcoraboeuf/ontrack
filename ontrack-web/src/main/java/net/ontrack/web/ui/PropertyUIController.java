@@ -15,8 +15,8 @@ import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyValueWithDescriptor;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
-import net.ontrack.web.ui.model.DisplayablePropertyValue;
-import net.ontrack.web.ui.model.PropertyForm;
+import net.ontrack.core.model.DisplayablePropertyValue;
+import net.ontrack.core.model.PropertyForm;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,6 +59,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
     /**
      * Editing a property
      */
+    @Override
     @RequestMapping(value = "/{entity}/{entityId:\\d+}/edit/{extension}/{name:.*}", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -74,6 +75,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
     /**
      * Getting the list of properties for an entity
      */
+    @Override
     @RequestMapping(value = "/{entity}/{entityId:\\d+}", method = RequestMethod.GET)
     public
     @ResponseBody

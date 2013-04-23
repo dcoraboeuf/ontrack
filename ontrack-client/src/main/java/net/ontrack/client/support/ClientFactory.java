@@ -2,6 +2,7 @@ package net.ontrack.client.support;
 
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
+import net.ontrack.client.PropertyUIClient;
 
 public class ClientFactory {
 
@@ -21,6 +22,10 @@ public class ClientFactory {
 
     public ManageUIClient manage() {
         return new DefaultManageUIClient(url);
+    }
+
+    public PropertyUIClient property() {
+        return new DefaultPropertyUIClient(url);
     }
 
 }
