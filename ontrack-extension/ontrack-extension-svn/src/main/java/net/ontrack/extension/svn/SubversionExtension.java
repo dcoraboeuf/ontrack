@@ -1,16 +1,27 @@
 package net.ontrack.extension.svn;
 
+import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.configuration.ConfigurationExtension;
+import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class SubversionExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "svn";
     public static final String SUBVERSION_BUILD_PATH = "buildPath";
+    private final SubversionPathPropertyExtension subversionPathPropertyExtension;
+    private final SubversionBuildPathPropertyExtension subversionBuildPathPropertyExtension;
+    private final SubversionConfigurationExtension subversionConfigurationExtension;
+    private final IndexationConfigurationExtension indexationConfigurationExtension;
+    private final IndexationActionController indexationActionController;
 
     @Autowired
     public SubversionExtension(
@@ -19,18 +30,26 @@ public class SubversionExtension extends ExtensionAdapter {
             SubversionConfigurationExtension subversionConfigurationExtension,
             IndexationConfigurationExtension indexationConfigurationExtension,
             IndexationActionController indexationActionController) {
-        super(
-                EXTENSION,
-                Arrays.asList(
-                        subversionPathPropertyExtension,
-                        subversionBuildPathPropertyExtension
-                ),
-                Arrays.asList(
-                        subversionConfigurationExtension,
-                        indexationConfigurationExtension
-                ),
-                Arrays.asList(
-                        indexationActionController
-                ));
+        super(EXTENSION);
+        this.subversionPathPropertyExtension = subversionPathPropertyExtension;
+        this.subversionBuildPathPropertyExtension = subversionBuildPathPropertyExtension;
+        this.subversionConfigurationExtension = subversionConfigurationExtension;
+        this.indexationConfigurationExtension = indexationConfigurationExtension;
+        this.indexationActionController = indexationActionController;
+    }
+
+    @Override
+    public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
+        return Arrays.asList(subversionPathPropertyExtension, subversionBuildPathPropertyExtension);
+    }
+
+    @Override
+    public List<? extends ConfigurationExtension> getConfigurationExtensions() {
+        return Arrays.asList(subversionConfigurationExtension, indexationConfigurationExtension);
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getTopLevelActions() {
+        return Collections.singletonList(indexationActionController);
     }
 }

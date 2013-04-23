@@ -13,7 +13,7 @@ import java.util.Locale;
 import static java.lang.String.format;
 
 @Component
-public class SensibleFilesPropertyException extends AbstractPropertyExtensionDescriptor {
+public class SensibleFilesPropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     public static final String NAME = "sensibleFiles";
 

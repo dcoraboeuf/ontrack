@@ -12,29 +12,9 @@ import java.util.List;
 public abstract class ExtensionAdapter implements Extension {
 
     private final String name;
-    private final List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors;
-    private final List<? extends ConfigurationExtension> configurationExtensions;
-    private final Collection<? extends ActionExtension> topLevelActions;
-    private final Collection<? extends ActionExtension> diffActions;
 
-    protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors) {
-        this(name, propertyExtensionDescriptors, Collections.<ConfigurationExtension>emptyList());
-    }
-
-    protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors, List<? extends ConfigurationExtension> configurationExtensions) {
-        this(name, propertyExtensionDescriptors, configurationExtensions, Collections.<ActionExtension>emptyList());
-    }
-
-    protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors, List<? extends ConfigurationExtension> configurationExtensions, Collection<? extends ActionExtension> topLevelActions) {
-        this(name, propertyExtensionDescriptors, configurationExtensions, topLevelActions, Collections.<ActionExtension>emptyList());
-    }
-
-    protected ExtensionAdapter(String name, List<? extends PropertyExtensionDescriptor> propertyExtensionDescriptors, List<? extends ConfigurationExtension> configurationExtensions, Collection<? extends ActionExtension> topLevelActions, Collection<? extends ActionExtension> diffActions) {
+    protected ExtensionAdapter(String name) {
         this.name = name;
-        this.propertyExtensionDescriptors = propertyExtensionDescriptors;
-        this.configurationExtensions = configurationExtensions;
-        this.topLevelActions = topLevelActions;
-        this.diffActions = diffActions;
     }
 
     @Override
@@ -44,21 +24,21 @@ public abstract class ExtensionAdapter implements Extension {
 
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
-        return propertyExtensionDescriptors;
+        return Collections.emptyList();
     }
 
     @Override
     public List<? extends ConfigurationExtension> getConfigurationExtensions() {
-        return configurationExtensions;
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends ActionExtension> getTopLevelActions() {
-        return topLevelActions;
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends ActionExtension> getDiffActions() {
-        return diffActions;
+        return Collections.emptyList();
     }
 }

@@ -18,7 +18,7 @@ import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svnexplorer.SVNExplorerExtension;
-import net.ontrack.extension.svnexplorer.SensibleFilesPropertyException;
+import net.ontrack.extension.svnexplorer.SensibleFilesPropertyExtension;
 import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.service.ManagementService;
 import net.ontrack.tx.Transaction;
@@ -219,7 +219,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Transactional(readOnly = true)
     public ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues, ChangeLogFiles files) {
         // List of patterns for sensible files
-        String sensibleFilesPattern = propertiesService.getPropertyValue(Entity.BRANCH, summary.getBranch().getId(), SVNExplorerExtension.EXTENSION, SensibleFilesPropertyException.NAME);
+        String sensibleFilesPattern = propertiesService.getPropertyValue(Entity.BRANCH, summary.getBranch().getId(), SVNExplorerExtension.EXTENSION, SensibleFilesPropertyExtension.NAME);
         // Filtering function
         Predicate<ChangeLogFile> sensibleFilePredicate = getSensibleFilePredicateFn(sensibleFilesPattern);
         // JIRA issue statuses

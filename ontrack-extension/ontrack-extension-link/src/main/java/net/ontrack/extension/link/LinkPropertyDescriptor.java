@@ -3,9 +3,11 @@ package net.ontrack.extension.link;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractLinkPropertyExtensionDescriptor;
+import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
 
+@Component
 public class LinkPropertyDescriptor extends AbstractLinkPropertyExtensionDescriptor {
 
     public LinkPropertyDescriptor() {
