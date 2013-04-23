@@ -1,5 +1,6 @@
 package net.ontrack.web.support;
 
+import net.ontrack.core.model.BuildSummary;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.GUIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,20 @@ public class DefaultGUIService implements GUIService {
     @Override
     public String toGUI(String uri) {
         return toURL("gui/" + uri);
+    }
+
+    @Override
+    public String getBuildGUIURL(BuildSummary build) {
+        return toGUI(getBuildURI(build));
+    }
+
+    @Override
+    public String getBuildURI(BuildSummary build) {
+        return String.format(
+                "project/%s/branch/%s/build/%s",
+                build.getBranch().getProject().getName(),
+                build.getBranch().getName(),
+                build.getName());
     }
 
     private String toURL(String uri) {

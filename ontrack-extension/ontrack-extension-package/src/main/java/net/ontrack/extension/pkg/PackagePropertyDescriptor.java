@@ -10,6 +10,8 @@ import java.util.EnumSet;
 @Component
 public class PackagePropertyDescriptor extends AbstractPropertyExtensionDescriptor {
 
+    public static final String PACKAGE = "package";
+
     @Override
     public EnumSet<Entity> getScope() {
         return EnumSet.of(Entity.BUILD);
@@ -22,7 +24,7 @@ public class PackagePropertyDescriptor extends AbstractPropertyExtensionDescript
 
     @Override
     public String getName() {
-        return "package";
+        return PACKAGE;
     }
 
     @Override
