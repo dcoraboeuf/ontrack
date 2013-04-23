@@ -92,6 +92,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
 
     @Override
     @Transactional(readOnly = true)
+    public Integer findBuildAfterUsingNumericForm(int branchId, String buildName) {
+        return getFirstItem(
+                SQL.BUILD_BY_BRANCH_AND_NUMERIC_NAME,
+                params("branch", branchId).addValue("name", buildName),
+                Integer.class
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TBuild> findByBranch(int branch, int offset, int count) {
         return getNamedParameterJdbcTemplate().query(
                 SQL.BUILD_LIST,

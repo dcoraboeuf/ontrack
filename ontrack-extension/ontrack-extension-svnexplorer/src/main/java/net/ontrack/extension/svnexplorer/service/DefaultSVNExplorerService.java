@@ -282,7 +282,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // Gets the top element
                     SVNLocation location = locations.pop();
                     // Is it a build?
-                    buildId = getBuild(branchId, location, buildPathPattern);
+                    buildId = getEarliestBuild(branchId, location, buildPathPattern);
                     if (buildId != null) {
                         // Build found - not looking further
                         locations.clear();
@@ -375,12 +375,31 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
     }
 
-    private Integer getBuild(int branchId, SVNLocation location, String pathPattern) {
+    /**
+     * Gets the earliest build that contains the given <code>location</code> on this branch.
+     *
+     * @param branchId    ID of the branch
+     * @param location    Location for the revision to search the build for
+     * @param pathPattern Path pattern for the build on this branch
+     * @return ID of the earliest build that contains this revision, or <code>null</code> if none is found
+     */
+    private Integer getEarliestBuild(int branchId, SVNLocation location, String pathPattern) {
         if (SVNExplorerPathUtils.followsBuildPattern(location, pathPattern)) {
             // Gets the build name
             String buildName = SVNExplorerPathUtils.getBuildName(location, pathPattern);
-            // Is that a valid build?
-            return managementService.findBuildNyName(branchId, buildName);
+            /**
+             * If the build is defined by path@revision, the earliest build is the one
+             * that follows this revision.
+             */
+            if (SVNExplorerPathUtils.isPathRevision(pathPattern)) {
+                return managementService.findBuildAfterUsingNumericForm(branchId, buildName);
+            }
+            /**
+             * In any other case (tag or tag prefix), the build must be looked exactly
+             */
+            else {
+                return managementService.findBuildByName(branchId, buildName);
+            }
         } else {
             return null;
         }

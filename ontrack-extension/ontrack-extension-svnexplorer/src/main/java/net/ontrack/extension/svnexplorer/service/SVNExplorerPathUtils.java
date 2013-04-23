@@ -12,7 +12,7 @@ public final class SVNExplorerPathUtils {
     }
 
     public static boolean followsBuildPattern(SVNLocation location, String pathPattern) {
-        if (pathPattern.endsWith("@*")) {
+        if (isPathRevision(pathPattern)) {
             // Removes the last part of the pattern
             String pathOnly = StringUtils.substringBeforeLast(pathPattern, "@");
             // Equality of paths is required
@@ -23,7 +23,7 @@ public final class SVNExplorerPathUtils {
     }
 
     public static String getBuildName(SVNLocation location, String pathPattern) {
-        if (pathPattern.endsWith("@*")) {
+        if (isPathRevision(pathPattern)) {
             // Removes the last part of the pattern
             String pathOnly = StringUtils.substringBeforeLast(pathPattern, "@");
             // Equality of paths is required
@@ -51,5 +51,9 @@ public final class SVNExplorerPathUtils {
                 throw new IllegalStateException(String.format("Build path %s@%d does not match pattern %s", location.getPath(), location.getRevision(), pathPattern));
             }
         }
+    }
+
+    public static boolean isPathRevision(String pathPattern) {
+        return pathPattern.endsWith("@*");
     }
 }

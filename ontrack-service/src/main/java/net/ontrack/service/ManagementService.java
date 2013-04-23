@@ -96,7 +96,13 @@ public interface ManagementService {
 
     BuildSummary getLastBuild(int branch);
 
-    Integer findBuildNyName(int branchId, String buildName);
+    Integer findBuildByName(int branchId, String buildName);
+
+    /**
+     * Finds a build on this branch whose name is the closest. It assumes that build names
+     * are in a numeric format.
+     */
+    Integer findBuildAfterUsingNumericForm(int branchId, String buildName);
 
 	BuildSummary getBuild(int build);
 

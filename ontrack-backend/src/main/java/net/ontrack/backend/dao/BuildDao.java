@@ -27,4 +27,6 @@ public interface BuildDao {
     Collection<TBuild> findByName(String name);
 
     Integer findByBrandAndName(int branchId, String buildName);
+
+    Integer findBuildAfterUsingNumericForm(int branchId, String buildName);
 }

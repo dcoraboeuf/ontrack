@@ -735,8 +735,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public Integer findBuildNyName(int branchId, String buildName) {
+    public Integer findBuildByName(int branchId, String buildName) {
         return buildDao.findByBrandAndName(branchId, buildName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer findBuildAfterUsingNumericForm(int branchId, String buildName) {
+        return buildDao.findBuildAfterUsingNumericForm(branchId, buildName);
     }
 
     @Override
