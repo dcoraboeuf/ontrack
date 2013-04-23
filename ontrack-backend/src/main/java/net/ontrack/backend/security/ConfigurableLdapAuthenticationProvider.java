@@ -57,10 +57,10 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
                         // Auto-registration if email is OK
                         if (StringUtils.isNotBlank(details.getEmail())) {
                             // Registration
-                            ID id = securityUtils.asAdmin(new Callable<ID>() {
+                            account = securityUtils.asAdmin(new Callable<Account>() {
                                 @Override
-                                public ID call() throws Exception {
-                                    return accountService.createAccount(new AccountCreationForm(
+                                public Account call() throws Exception {
+                                    ID id = accountService.createAccount(new AccountCreationForm(
                                             name,
                                             details.getFullName(),
                                             details.getEmail(),
@@ -69,10 +69,10 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
                                             "",
                                             ""
                                     ));
+                                    // Created account
+                                    return accountService.getAccount(id.getValue());
                                 }
                             });
-                            // Created account
-                            account = accountService.getAccount(id.getValue());
                         } else {
                             // Temporary account
                             account = new Account(0, name, details.getFullName(), "", SecurityRoles.USER, "ldap");
