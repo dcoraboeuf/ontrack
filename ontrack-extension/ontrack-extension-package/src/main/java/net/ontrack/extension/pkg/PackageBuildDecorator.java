@@ -1,7 +1,7 @@
 package net.ontrack.extension.pkg;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.extension.api.decorator.Decoration;
+import net.ontrack.core.model.Decoration;
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertiesService;
 import org.apache.commons.lang3.StringUtils;

@@ -11,6 +11,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
+import net.ontrack.extension.api.decorator.DecorationService;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
@@ -46,6 +47,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final CommentDao commentDao;
     private final EntityDao entityDao;
     private final PropertiesService propertiesService;
+    private final DecorationService decorationService;
     // Dao -> Summary converters
     private final Function<TProject, ProjectSummary> projectSummaryFunction = new Function<TProject, ProjectSummary>() {
         @Override
@@ -101,7 +103,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService) {
+    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
@@ -118,6 +120,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.commentDao = commentDao;
         this.entityDao = entityDao;
         this.propertiesService = propertiesService;
+        this.decorationService = decorationService;
     }
 
     // Branches
@@ -708,6 +711,17 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             @Override
             public BuildCompleteStatus apply(TBuild t) {
                 int buildId = t.getId();
+                List<LocalizedDecoration> decorations = Lists.transform(
+                        decorationService.getDecorations(Entity.BUILD, buildId),
+                        new Function<Decoration, LocalizedDecoration>() {
+                            @Override
+                            public LocalizedDecoration apply(Decoration decoration) {
+                                return new LocalizedDecoration(
+                                        decoration.getTitle().getLocalizedMessage(strings, locale),
+                                        decoration.getCls()
+                                );
+                            }
+                        });
                 List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
                 List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
                 DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
@@ -716,6 +730,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         t.getName(),
                         t.getDescription(),
                         signature,
+                        decorations,
                         stamps,
                         promotionLevels);
             }

@@ -3,6 +3,7 @@ package net.ontrack.extension.api;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
+import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 
@@ -59,4 +60,10 @@ public interface ExtensionManager {
      * Lists of actions that can be defined for the difference between two builds
      */
     Collection<? extends ActionExtension> getDiffActions();
+
+    /**
+     * List of decorators
+     *
+     */
+    Collection<? extends EntityDecorator> getDecorators();
 }

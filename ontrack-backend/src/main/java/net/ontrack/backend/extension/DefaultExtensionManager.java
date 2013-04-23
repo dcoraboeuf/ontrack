@@ -8,6 +8,7 @@ import net.ontrack.extension.api.ExtensionNotFoundException;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
+import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
     private Collection<ActionExtension> topLevelActions;
     private Collection<ActionExtension> diffActions;
+    private Collection<EntityDecorator> decorators;
 
     @Autowired
     public DefaultExtensionManager(ApplicationContext applicationContext) {
@@ -60,6 +62,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         configurationIndex = new HashMap<>();
         topLevelActions = new ArrayList<>();
         diffActions = new ArrayList<>();
+        decorators = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
             logger.info("[extension] Extension={}", extensionName);
@@ -107,6 +110,12 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
              */
             topLevelActions.addAll(extension.getTopLevelActions());
             diffActions.addAll(extension.getDiffActions());
+
+            /**
+             * Indexation of decorators
+             */
+            decorators.addAll(extension.getDecorators());
+
         }
     }
 
@@ -118,6 +127,11 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     @Override
     public Collection<? extends ActionExtension> getDiffActions() {
         return diffActions;
+    }
+
+    @Override
+    public Collection<? extends EntityDecorator> getDecorators() {
+        return decorators;
     }
 
     @Override

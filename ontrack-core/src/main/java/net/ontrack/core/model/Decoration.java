@@ -1,4 +1,4 @@
-package net.ontrack.extension.api.decorator;
+package net.ontrack.core.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

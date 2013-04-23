@@ -19,16 +19,19 @@ public class BuildCompleteStatus {
     private final String name;
     private final String description;
     private final DatedSignature signature;
+    // List of decorations
+    private final List<LocalizedDecoration> decorations;
     // List of validation stamps with their associated runs for this build
     private final Map<String, BuildValidationStamp> validationStamps;
     // List of promotion levels for this build
     private final List<BuildPromotionLevel> promotionLevels;
 
-    public BuildCompleteStatus(int id, String name, String description, DatedSignature signature, List<BuildValidationStamp> stamps, List<BuildPromotionLevel> promotionLevels) {
+    public BuildCompleteStatus(int id, String name, String description, DatedSignature signature, List<LocalizedDecoration> decorations, List<BuildValidationStamp> stamps, List<BuildPromotionLevel> promotionLevels) {
         this(
                 id, name, description,
                 signature,
-                new TreeMap<String, BuildValidationStamp>(
+                decorations,
+                new TreeMap<>(
                         Maps.uniqueIndex(stamps, new Function<BuildValidationStamp, String>() {
                             @Override
                             public String apply(BuildValidationStamp stamp) {
