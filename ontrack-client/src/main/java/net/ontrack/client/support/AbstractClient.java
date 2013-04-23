@@ -20,6 +20,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractClient implements Client {
+
+    private final Logger logger = LoggerFactory.getLogger(Client.class);
 
     private final String url;
     private final DefaultHttpClient client;
@@ -47,6 +51,7 @@ public abstract class AbstractClient implements Client {
 
     @Override
     public void logout() {
+        logger.debug("[logout]");
         // Executes the call
         request(new HttpGet(getUrl("/logout")), new NOPResponseHandler());
     }
@@ -56,6 +61,7 @@ public abstract class AbstractClient implements Client {
         // Forces the logout
         logout();
         // Configures the client for the credentials
+        logger.debug("[login]");
         client.getCredentialsProvider().setCredentials(
                 new AuthScope(null, -1),
                 new UsernamePasswordCredentials(name, password));
@@ -159,9 +165,11 @@ public abstract class AbstractClient implements Client {
     }
 
     protected <T> T request(HttpRequestBase request, ResponseHandler<T> responseHandler) {
+        logger.debug("[request] {}", request);
         // Executes the call
         try {
             HttpResponse response = client.execute(request);
+            logger.debug("[response] {}", response);
             // Entity response
             HttpEntity entity = response.getEntity();
             try {

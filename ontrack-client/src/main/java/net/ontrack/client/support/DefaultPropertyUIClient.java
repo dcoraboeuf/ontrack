@@ -18,7 +18,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
     public Ack saveProperty(Entity entity, int entityId, String extension, String name, PropertyForm form) {
         return post(
                 format(
-                        "/%s/%d/edit/%s/%s",
+                        "/ui/property/%s/%d/edit/%s/%s",
                         entity.name(),
                         entityId,
                         extension,
@@ -33,7 +33,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
         // TODO Locale management
         return list(
                 format(
-                        "/%s/%d",
+                        "/ui/property/%s/%d",
                         entity.name(),
                         entityId
                 ),
@@ -45,7 +45,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
         // TODO Locale management
         return list(
                 format(
-                        "/%s/%d/editable",
+                        "/ui/property/%s/%d/editable",
                         entity.name(),
                         entityId
                 ),

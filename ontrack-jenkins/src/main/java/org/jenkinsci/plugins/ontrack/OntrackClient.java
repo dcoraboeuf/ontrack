@@ -5,6 +5,7 @@ import jenkins.model.Jenkins;
 import net.ontrack.client.Client;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
+import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.ClientFactory;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,6 +26,23 @@ public final class OntrackClient {
                     @Override
                     public T apply(ManageUIClient client) {
                         return manageClientCall.onCall(client);
+                    }
+                }
+        );
+    }
+
+    public static <T> T property(final PropertyClientCall<T> propertyClientCall) {
+        return OntrackClient.call(
+                new Function<String, PropertyUIClient>() {
+                    @Override
+                    public PropertyUIClient apply(String url) {
+                        return ClientFactory.create(url).property();
+                    }
+                },
+                new Function<PropertyUIClient, T>() {
+                    @Override
+                    public T apply(PropertyUIClient client) {
+                        return propertyClientCall.onCall(client);
                     }
                 }
         );
