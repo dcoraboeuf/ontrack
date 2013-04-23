@@ -154,14 +154,14 @@ var Builds = function () {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/build/{2}/validationStamps'.format(project, branch, build),
 	        refresh: true,
-	        render: Template.asTable(function (stamp) {
-	            return Template.render('buildValidationStampsTemplate', {
+	        render: Template.asSimpleTemplate('buildValidationStampsTemplate', function (items) {
+                return {
                     project: project,
                     branch: branch,
                     build: build,
-                    stamp: stamp
-	            });
-	        }),
+                    stamps: items
+	            };
+            }),
 	        postRenderFn: Application.tooltips
 	    });
 	}

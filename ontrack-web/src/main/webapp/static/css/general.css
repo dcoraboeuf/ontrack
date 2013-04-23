@@ -186,3 +186,21 @@ ul.promotions li {
 ul.promotions li:first-child i {
     display: none;
 }
+
+.build-validation-stamps p {
+    font-style: italic;
+    font-weight: bold;
+    color: gray;
+}
+
+.build-validation-runs .label.build-validation-run {
+    background-color: #eeeeee;
+    border: solid 1px darkgray;
+    margin-bottom: 3px;
+}
+
+.build-validation-notruns .label.build-validation-run {
+    background-color: #dddddd;
+    border: solid 1px darkgray;
+    margin-bottom: 3px;
+}

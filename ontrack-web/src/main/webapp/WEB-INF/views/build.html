@@ -19,36 +19,51 @@
             </div>
         </div>
 		<div class="row-fluid">
-            <div class="span4">
+            <div class="span12">
                 <@panel title=loc("build.validation_stamps")>
                     <@dynamicsection
                         id="build-validation-stamp-list"
                         template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')">
                     </@dynamicsection>
                     <script id="buildValidationStampsTemplate" type="text/html">
-                        <tr>
-                            <td>
-                                <div class="{{^stamp.run}}validation-stamp-norun{{/stamp.run}}">
-                                    <img class="tooltip-source" width="24" title="{{stamp.name}}" src="gui/project/{{project}}/branch/{{branch}}/validation_stamp/{{stamp.name}}/image" />
-                                    <a class="tooltip-source" href="gui/project/{{project}}/branch/{{branch}}/validation_stamp/{{stamp.name}}">{{stamp.name}}</a>
-                                    {{#stamp.runs}}
-                                        <p class="validation-run status-{{status}}">
-                                            <a
-                                                    class="tooltip-source"
-                                                    href="gui/project/{{../project}}/branch/{{../branch}}/build/{{../build}}/validation_stamp/{{../stamp.name}}/validation_run/{{runOrder}}"
-                                                    title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
-                                                <i class="icon-play"></i>
-                                                <span class="validation-run-status">{{#statusLabel}}{{status}}{{/statusLabel}}</span>
-                                            </a>
-                                        </p>
-                                    {{/stamp.runs}}
-                                </div>
-                            </td>
-                        </tr>
+                        <div>
+                            <!-- Run -->
+                            <div class="build-validation-stamps build-validation-runs">
+                                <p><@lh key="build.validation_stamps.runs" /></p>
+                                {{#stamps}}
+                                    {{#if run}}
+                                        <span class="build-validation-run label">
+                                            <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
+                                            <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">{{name}}</a>
+                                            {{#runs}}
+                                                <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/build/{{../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" /></a>
+                                            {{/runs}}
+                                        </span>
+                                    {{/if}}
+                                {{/stamps}}
+                            </div>
+                            <!-- Not run -->
+                            <div class="build-validation-stamps build-validation-notruns">
+                                <p><@lh key="build.validation_stamps.notruns" /></p>
+                                {{#stamps}}
+                                    {{^if run}}
+                                            <span class="build-validation-run label">
+                                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
+                                                <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">{{name}}</a>
+                                                {{#runs}}
+                                                    <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/build/{{../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" /></a>
+                                                {{/runs}}
+                                            </span>
+                                    {{/if}}
+                                {{/stamps}}
+                            </div>
+                        </div>
                     </script>
                 </@panel>
             </div>
-            <div class="span4">
+        </div>
+        <div class="row-fluid">
+            <div class="span7">
                 <@panel title=loc("build.promotion_levels")>
                     <@dynamicsection
                         id="build-promotion-level-list"
@@ -56,7 +71,7 @@
                     </@dynamicsection>
                 </@panel>
             </div>
-			<div class="span4">
+			<div class="span5">
 				<@audit filter="&build=${build.id}" />
 			</div>
 		</div>

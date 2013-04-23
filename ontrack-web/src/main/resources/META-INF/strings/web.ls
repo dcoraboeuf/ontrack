@@ -573,6 +573,18 @@ build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
 
+build.validation_stamps.runs
+    en -> Runs
+    fr -> Exécutées
+
+build.validation_stamps.notruns
+    en -> Not runs
+    fr -> Non exécutées
+
+build.validation_stamps.none
+    en -> None
+    fr -> Aucune
+
 build.promotion_levels
     en -> Promotions
     fr -> Promotions

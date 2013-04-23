@@ -37,15 +37,23 @@ var Template = function () {
 	/**
 	 * Uses a {{handleBars}} template for rendering. The template
 	 * is contained by an element whose ID is <code>templateId</code>.
-	 * If <code>container</code> is defined, the data provided
-	 * for the template will be hold into a property of the same name.
+	 * If <code>dataFn</code> is defined and is:
+     * <ul>
+     *     <li>a String - the data for the template is {$dataFn: items}</li>
+     *     <li>a Function - the data for the template is dataFn(items)
+     * </ul>
+     * In any other case, data = items
 	 */
-	function asSimpleTemplate (templateId, container) {
+	function asSimpleTemplate (templateId, dataFn) {
         return fill (function (items, append) {
             var data;
-            if (container) {
-                data = {};
-                data[container] = items;
+            if (dataFn) {
+                if ($.isFunction(dataFn)) {
+                    data = dataFn(items);
+                } else {
+                    data = {};
+                    data[dataFn] = items;
+                }
             } else {
                 data = items;
             }
