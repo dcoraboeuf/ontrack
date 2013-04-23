@@ -33,7 +33,6 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -377,36 +376,13 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     }
 
     private Integer getBuild(int branchId, SVNLocation location, String pathPattern) {
-        if (followsBuildPattern(location, pathPattern)) {
+        if (SVNExplorerPathUtils.followsBuildPattern(location, pathPattern)) {
             // Gets the build name
-            String buildName = getBuildName(location, pathPattern);
+            String buildName = SVNExplorerPathUtils.getBuildName(location, pathPattern);
             // Is that a valid build?
             return managementService.findBuildNyName(branchId, buildName);
         } else {
             return null;
-        }
-    }
-
-    private boolean followsBuildPattern(SVNLocation location, String pathPattern) {
-        if (pathPattern.endsWith("@*")) {
-            // FIXME Revision-based path (see #112)
-            return false;
-        } else {
-            return Pattern.compile(StringUtils.replace(pathPattern, "*", ".+")).matcher(location.getPath()).matches();
-        }
-    }
-
-    private String getBuildName(SVNLocation location, String pathPattern) {
-        if (pathPattern.endsWith("@*")) {
-            // FIXME Revision-based path (see #112)
-            throw new RuntimeException("NYI See #112");
-        } else {
-            Matcher matcher = Pattern.compile(StringUtils.replace(pathPattern, "*", "(.+)")).matcher(location.getPath());
-            if (matcher.matches()) {
-                return matcher.group(1);
-            } else {
-                throw new IllegalStateException(String.format("Build path %s does not match pattern %s", location.getRevision(), pathPattern));
-            }
         }
     }
 
