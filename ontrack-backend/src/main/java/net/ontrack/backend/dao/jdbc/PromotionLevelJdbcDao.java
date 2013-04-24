@@ -24,7 +24,13 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
     protected final RowMapper<TPromotionLevel> promotionLevelMapper = new RowMapper<TPromotionLevel>() {
         @Override
         public TPromotionLevel mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new TPromotionLevel(rs.getInt("id"), rs.getInt("branch"), rs.getInt("levelNb"), rs.getString("name"), rs.getString("description"));
+            return new TPromotionLevel(
+                    rs.getInt("id"),
+                    rs.getInt("branch"),
+                    rs.getInt("levelNb"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getBoolean("autoPromote"));
         }
     };
 

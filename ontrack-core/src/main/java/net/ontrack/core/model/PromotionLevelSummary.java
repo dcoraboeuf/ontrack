@@ -10,5 +10,6 @@ public class PromotionLevelSummary {
     private final int levelNb;
 	private final String name;
 	private final String description;
+    private final boolean autoPromote;
 
 }

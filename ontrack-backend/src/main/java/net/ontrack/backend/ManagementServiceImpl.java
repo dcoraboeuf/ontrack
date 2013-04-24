@@ -85,7 +85,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     getBranch(t.getBranch()),
                     t.getLevelNb(),
                     t.getName(),
-                    t.getDescription()
+                    t.getDescription(),
+                    t.isAutoPromote()
             );
         }
     };
