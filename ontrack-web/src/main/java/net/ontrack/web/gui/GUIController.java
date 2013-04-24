@@ -12,9 +12,9 @@ import net.ontrack.web.gui.model.GUISearchResult;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.support.ErrorHandlingMultipartResolver;
+import net.ontrack.web.support.WebUtils;
 import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,6 +43,9 @@ public class GUIController extends AbstractGUIController {
     private final SearchService searchService;
     private final Strings strings;
 
+    private final byte[] defaultValidationStampImage;
+    private final byte[] defaultPromotionLevelImage;
+
     @Autowired
     public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, SearchService searchService, Strings strings) {
         super(errorHandler);
@@ -50,6 +53,9 @@ public class GUIController extends AbstractGUIController {
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
         this.searchService = searchService;
         this.strings = strings;
+        // Reads the default images
+        defaultValidationStampImage = WebUtils.readBytes("/default_validation_stamp.png");
+        defaultPromotionLevelImage = WebUtils.readBytes("/default_promotion_level.png");
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -124,8 +130,8 @@ public class GUIController extends AbstractGUIController {
     public void getImagePromotionLevel(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
         byte[] content = manageUI.imagePromotionLevel(project, branch, name);
         if (content == null) {
-            // TODO Default image for promotion levels
-            content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
+            // Default image for promotion levels
+            content = defaultPromotionLevelImage;
         }
         renderImage(response, content);
     }
@@ -167,8 +173,8 @@ public class GUIController extends AbstractGUIController {
     public void getImageValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String name, HttpServletResponse response) throws IOException {
         byte[] content = manageUI.imageValidationStamp(project, branch, name);
         if (content == null) {
-            // TODO Default image for validation stamps
-            content = Base64.decodeBase64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAE0lEQVR4XgXAAQ0AAABAMP1L38IF/gL+/AQ1bQAAAABJRU5ErkJggg==");
+            // Default image for validation stamps
+            content = defaultValidationStampImage;
         }
         renderImage(response, content);
     }
