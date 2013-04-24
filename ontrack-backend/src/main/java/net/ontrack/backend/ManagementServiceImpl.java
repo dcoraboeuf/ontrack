@@ -1,6 +1,8 @@
 package net.ontrack.backend;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
@@ -665,6 +667,46 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return Flag.UNSET;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PromotionLevelSummary getPromotionLevelForValidationStamp(int validationStamp) {
+        TValidationStamp t = validationStampDao.getById(validationStamp);
+        Integer promotionLevelId = t.getPromotionLevel();
+        if (promotionLevelId != null) {
+            return getPromotionLevel(promotionLevelId);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isPromotionLevelComplete(final int build, int promotionLevelId) {
+        // Gets the promotion level
+        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        if (!promotionLevel.isAutoPromote()) {
+            return false;
+        } else {
+            // Gets the list of validation stamps for this promotion level
+            List<ValidationStampSummary> stamps = getValidationStampForPromotionLevel(promotionLevelId);
+            return Iterables.all(
+                    stamps,
+                    new Predicate<ValidationStampSummary>() {
+                        @Override
+                        public boolean apply(ValidationStampSummary stamp) {
+                            TValidationRun r = validationRunDao.findLastByBuildAndValidationStamp(build, stamp.getId());
+                            if (r != null) {
+                                TValidationRunStatus rs = validationRunStatusDao.findLastForValidationRun(r.getId());
+                                return rs != null && rs.getStatus() == Status.PASSED;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+            );
+        }
+    }
+
     protected List<ValidationStampSummary> getValidationStampForPromotionLevel(int promotionLevelId) {
         return Lists.transform(
                 validationStampDao.findByPromotionLevel(promotionLevelId),
@@ -803,13 +845,17 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 new Function<ValidationStampSummary, BuildValidationStamp>() {
                     @Override
                     public BuildValidationStamp apply(ValidationStampSummary stamp) {
-                        BuildValidationStamp buildStamp = BuildValidationStamp.of(stamp);
-                        // Gets the latest runs with their status for this build and this stamp
-                        List<BuildValidationStampRun> runStatuses = getValidationRuns(locale, buildId, stamp.getId());
-                        // OK
-                        return buildStamp.withRuns(runStatuses);
+                        return getBuildValidationStamp(stamp, locale, buildId);
                     }
                 });
+    }
+
+    protected BuildValidationStamp getBuildValidationStamp(ValidationStampSummary stamp, Locale locale, int buildId) {
+        BuildValidationStamp buildStamp = BuildValidationStamp.of(stamp);
+        // Gets the latest runs with their status for this build and this stamp
+        List<BuildValidationStampRun> runStatuses = getValidationRuns(locale, buildId, stamp.getId());
+        // OK
+        return buildStamp.withRuns(runStatuses);
     }
 
     @Override

@@ -87,6 +87,10 @@ public interface ManagementService {
     Flag setPromotionLevelAutoPromote(int promotionLevelId);
 
     Flag unsetPromotionLevelAutoPromote(int promotionLevelId);
+
+    PromotionLevelSummary getPromotionLevelForValidationStamp(int validationStamp);
+
+    boolean isPromotionLevelComplete(int build, int promotionLevel);
 	
 	// Builds
 
