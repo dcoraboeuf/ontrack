@@ -108,6 +108,8 @@ public interface SQL {
 
     String PROMOTION_LEVEL_UPDATE = "UPDATE PROMOTION_LEVEL SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
 
+    String PROMOTION_LEVEL_AUTO_PROMOTE = "UPDATE PROMOTION_LEVEL SET AUTOPROMOTE = :flag WHERE ID = :id";
+
     // Validation runs
 
     String VALIDATION_RUN = "SELECT R.* FROM VALIDATION_RUN R WHERE R.ID = :id";

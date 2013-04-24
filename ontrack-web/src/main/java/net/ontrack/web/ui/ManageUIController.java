@@ -281,6 +281,26 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/autopromote/set", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Flag setPromotionLevelAutoPromote(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+        return managementService.setPromotionLevelAutoPromote(
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel)
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/autopromote/unset", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Flag unsetPromotionLevelAutoPromote(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+        return managementService.unsetPromotionLevelAutoPromote(
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel)
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
     public
     @ResponseBody

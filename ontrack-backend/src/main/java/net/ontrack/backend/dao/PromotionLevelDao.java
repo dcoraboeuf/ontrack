@@ -26,4 +26,6 @@ public interface PromotionLevelDao {
     byte[] getImage(int id);
 
     Ack deletePromotionLevel(int promotionLevelId);
+
+    void setAutoPromote(int promotionLevelId, boolean flag);
 }

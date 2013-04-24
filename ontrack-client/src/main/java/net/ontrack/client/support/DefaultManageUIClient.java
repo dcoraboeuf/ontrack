@@ -221,6 +221,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Flag setPromotionLevelAutoPromote(String project, String branch, String promotionLevel) {
+        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/set", project, branch, promotionLevel), Flag.class, null);
+    }
+
+    @Override
+    public Flag unsetPromotionLevelAutoPromote(String project, String branch, String promotionLevel) {
+        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/unset", project, branch, promotionLevel), Flag.class, null);
+    }
+
+    @Override
     public BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
         // TODO Locale management
         return post(format("/ui/manage/project/%s/branch/%s/query", project, branch), BranchBuilds.class, filter);

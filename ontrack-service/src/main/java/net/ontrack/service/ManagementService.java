@@ -83,6 +83,10 @@ public interface ManagementService {
     Ack downPromotionLevel(int promotionLevelId);
 
     PromotionLevelManagementData getPromotionLevelManagementData(int branchId);
+
+    Flag setPromotionLevelAutoPromote(int promotionLevelId);
+
+    Flag unsetPromotionLevelAutoPromote(int promotionLevelId);
 	
 	// Builds
 

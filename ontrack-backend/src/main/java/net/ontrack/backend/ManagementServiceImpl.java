@@ -643,6 +643,28 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new PromotionLevelManagementData(branch, freeValidationStampList, promotionLevelAndStampsList);
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Flag setPromotionLevelAutoPromote(int promotionLevelId) {
+        // Auto promotion can be enabled only if the promotion level is associated to at least one validation stamp
+        List<TValidationStamp> stamps = validationStampDao.findByPromotionLevel(promotionLevelId);
+        if (stamps.isEmpty()) {
+            return Flag.UNSET;
+        } else {
+            promotionLevelDao.setAutoPromote(promotionLevelId, true);
+            return Flag.SET;
+        }
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Flag unsetPromotionLevelAutoPromote(int promotionLevelId) {
+        promotionLevelDao.setAutoPromote(promotionLevelId, false);
+        return Flag.UNSET;
+    }
+
     protected List<ValidationStampSummary> getValidationStampForPromotionLevel(int promotionLevelId) {
         return Lists.transform(
                 validationStampDao.findByPromotionLevel(promotionLevelId),

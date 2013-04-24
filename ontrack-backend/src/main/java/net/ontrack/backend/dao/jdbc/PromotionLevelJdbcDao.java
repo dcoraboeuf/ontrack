@@ -117,6 +117,15 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
     }
 
     @Override
+    @Transactional
+    public void setAutoPromote(int promotionLevelId, boolean flag) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.PROMOTION_LEVEL_AUTO_PROMOTE,
+                params("id", promotionLevelId).addValue("flag", flag)
+        );
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<TPromotionLevel> findByBuild(int build) {
         return getNamedParameterJdbcTemplate().query(
