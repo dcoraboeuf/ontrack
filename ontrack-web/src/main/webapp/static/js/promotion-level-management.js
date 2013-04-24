@@ -75,6 +75,15 @@ var PromotionLevelManagement = function () {
         }
         // Initializes all promotion drop zones
         initDropZones();
+        // Sets the autopromotion button states
+        $('.promotionLevelStamps').each(function (index, zone) {
+            var promotionLevel = $(zone).attr('data-promotionLevel');
+            if ($(zone).find('.validationStamp').length > 0) {
+                $('#autoPromote-' +  promotionLevel).show();
+            } else {
+                $('#autoPromote-' +  promotionLevel).hide();
+            }
+        });
     }
 
     function link (validationStampItem, promotionLevelItem) {

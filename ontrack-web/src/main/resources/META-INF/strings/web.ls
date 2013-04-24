@@ -567,6 +567,14 @@ promotion_level.management.dndhelp
     en -> Drag and drop validation stamps into the promotion levels to associate them.
     fr -> Déplacez les validations vers les niveaux de promotion pour les associer.
 
+promotion_level.management.auto
+    en -> Enable auto-promotion
+    fr -> Activer l'auto-promotion
+
+promotion_level.management.notauto
+    en -> Disable auto-promotion
+    fr -> Désactiver l'auto-promotion
+
 [builds]
 
 build.validation_stamps

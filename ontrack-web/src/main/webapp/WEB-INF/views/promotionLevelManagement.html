@@ -47,8 +47,22 @@
                                     <br/>
                                     <span class="muted">${promotionLevelAndStamps.promotionLevel.description?html}</span>
                                 </td>
+                                <td width="220">
+                                    <#if promotionLevelAndStamps.promotionLevel.autoPromote>
+                                        <!-- Disables auto-promotion -->
+                                        <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn"><@lh key="promotion_level.management.notauto" /></button>
+                                    <#else>
+                                        <#if promotionLevelAndStamps.validationStamps?size gt 0>
+                                            <!-- Enables auto-promotion -->
+                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn"><@lh key="promotion_level.management.auto" /></button>
+                                        <#else>
+                                            <!-- Enables auto-promotion - disabled until validation stamps are added -->
+                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn hidden"><@lh key="promotion_level.management.auto" /></button>
+                                        </#if>
+                                    </#if>
+                                </td>
                                 <td>
-                                    <div data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
+                                    <div id="dropzone-${promotionLevelAndStamps.promotionLevel.name?html}" data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" class="promotionLevelStamps">
                                         <span class="dropzone-label muted" id="dropzone-label-${promotionLevelAndStamps.promotionLevel.name?html}"><@lh key="promotion_level.management.dropzone" /></span>
                                         <#list promotionLevelAndStamps.validationStamps as validationStamp>
                                             <@stamp mode="promotion" validationStamp=validationStamp promotionLevel=promotionLevelAndStamps.promotionLevel.name />
