@@ -12,9 +12,10 @@ import java.util.List;
 @Configuration
 public class DBConfig {
 	
-	public static final int VERSION = 17;
+	public static final int VERSION = 18;
 	
-	@Autowired
+	@SuppressWarnings("SpringJavaAutowiringInspection")
+    @Autowired
 	private DataSource dataSource;
 	
 	@Autowired(required = false)
