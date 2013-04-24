@@ -62,6 +62,22 @@ var PromotionLevelManagement = function () {
         }
     }
 
+    function initAutoPromote() {
+        $('.promotionLevelStamps').each(function (index, zone) {
+            var promotionLevel = $(zone).attr('data-promotionLevel');
+            if ($(zone).find('.validationStamp').length > 0) {
+                $('#autoPromote-' + promotionLevel).show();
+            } else {
+                $('#autoPromote-' + promotionLevel).hide();
+            }
+            if ($('#autoPromote-' + promotionLevel).attr('data-autoPromote') == 'true') {
+                $('#autoPromoteFlag-' + promotionLevel).show();
+            } else {
+                $('#autoPromoteFlag-' + promotionLevel).hide();
+            }
+        });
+    }
+
     function postDnD (validationStampItem, target, promotionLevel) {
         // Prepares for alignment
         validationStampItem.css('left', '').css('top', '');
@@ -76,14 +92,7 @@ var PromotionLevelManagement = function () {
         // Initializes all promotion drop zones
         initDropZones();
         // Sets the autopromotion button states
-        $('.promotionLevelStamps').each(function (index, zone) {
-            var promotionLevel = $(zone).attr('data-promotionLevel');
-            if ($(zone).find('.validationStamp').length > 0) {
-                $('#autoPromote-' +  promotionLevel).show();
-            } else {
-                $('#autoPromote-' +  promotionLevel).hide();
-            }
-        });
+        initAutoPromote();
     }
 
     function link (validationStampItem, promotionLevelItem) {
@@ -146,6 +155,7 @@ var PromotionLevelManagement = function () {
                     $(button).attr('data-autoPromote', 'false');
                     $(button).text(loc('promotion_level.management.auto'));
                 }
+                initAutoPromote();
             }
         });
     }

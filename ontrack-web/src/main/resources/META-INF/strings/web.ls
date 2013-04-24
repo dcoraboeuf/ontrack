@@ -540,6 +540,9 @@ promotion_level.name
 	en,fr -> @[model.name]
 promotion_level.description
 	en,fr -> @[model.description]
+promotion_level.autoPromote
+    en -> Auto promotion
+    fr -> Auto promotion
 promotion_level.image
 	en,fr -> Image
 promotion_level.image.edit

@@ -44,6 +44,11 @@
                                 <td>
                                     <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
                                     <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                    <#if promotionLevelAndStamps.promotionLevel.autoPromote>
+                                        <span id="autoPromoteFlag-${promotionLevelAndStamps.promotionLevel.name?html}" class="label label-success"><@lh key="promotion_level.autoPromote" /></span>
+                                    <#else>
+                                        <span id="autoPromoteFlag-${promotionLevelAndStamps.promotionLevel.name?html}" class="label label-success hidden"><@lh key="promotion_level.autoPromote" /></span>
+                                    </#if>
                                     <br/>
                                     <span class="muted">${promotionLevelAndStamps.promotionLevel.description?html}</span>
                                 </td>
