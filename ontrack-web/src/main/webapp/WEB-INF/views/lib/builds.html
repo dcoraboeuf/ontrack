@@ -176,7 +176,7 @@
 
     <script id="compactValidationStampTemplate" type="text/html">
         {{#if buildValidationStamp.run}}
-            {{#firstRun}}
+            {{#lastRun}}
                 <a
                         class="tooltip-source"
                         data-toggle="tooltip"
@@ -184,7 +184,7 @@
                         title="{{statusDescription}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
                     <img width="24" src="static/images/status-{{status}}.png" />
                 </a>
-            {{/firstRun}}
+            {{/lastRun}}
         {{else}}
             <img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="<@lh key='validationRun.notRun'/>" />
         {{/if}}

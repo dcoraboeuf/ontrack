@@ -11,10 +11,10 @@ var Builds = function () {
             })[0];
             // Looks for the validation stamp build
             var oBuildValidationStamp = oBuild.validationStamps[this.name];
-            // First run
-            var firstRun;
+            // Last run
+            var lastRun;
             if (oBuildValidationStamp.run) {
-                firstRun = oBuildValidationStamp.runs[0];
+                lastRun = oBuildValidationStamp.runs[oBuildValidationStamp.runs.length - 1];
             }
             // Rendering
             return Template.render('compactValidationStampTemplate', {
@@ -23,7 +23,7 @@ var Builds = function () {
                 branch: branch,
                 build: build,
                 buildValidationStamp: oBuildValidationStamp,
-                firstRun: firstRun
+                lastRun: lastRun
             });
         });
         return Template.render('branchBuildsRowTemplate', {
