@@ -50,14 +50,14 @@
                                 <td width="220">
                                     <#if promotionLevelAndStamps.promotionLevel.autoPromote>
                                         <!-- Disables auto-promotion -->
-                                        <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn"><@lh key="promotion_level.management.notauto" /></button>
+                                        <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn" data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" data-autoPromote="true" onclick="PromotionLevelManagement.autoPromote(this);"><@lh key="promotion_level.management.notauto" /></button>
                                     <#else>
                                         <#if promotionLevelAndStamps.validationStamps?size gt 0>
                                             <!-- Enables auto-promotion -->
-                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn"><@lh key="promotion_level.management.auto" /></button>
+                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn" data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" data-autoPromote="false" onclick="PromotionLevelManagement.autoPromote(this);"><@lh key="promotion_level.management.auto" /></button>
                                         <#else>
                                             <!-- Enables auto-promotion - disabled until validation stamps are added -->
-                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn hidden"><@lh key="promotion_level.management.auto" /></button>
+                                            <button id="autoPromote-${promotionLevelAndStamps.promotionLevel.name?html}" type="button" class="autoPromote btn hidden" data-promotionLevel="${promotionLevelAndStamps.promotionLevel.name?html}" data-autoPromote="false" onclick="PromotionLevelManagement.autoPromote(this);"><@lh key="promotion_level.management.auto" /></button>
                                         </#if>
                                     </#if>
                                 </td>
