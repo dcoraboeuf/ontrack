@@ -90,6 +90,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional
     public int createValidationStamp(int branch, String name, String description) {
+        // FIXME #127 Ordering
         try {
             return dbCreate(
                     SQL.VALIDATION_STAMP_CREATE,
