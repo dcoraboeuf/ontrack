@@ -10,6 +10,7 @@ public class ValidationStampSummary implements Comparable<ValidationStampSummary
     private final String description;
     private final BranchSummary branch;
     private final int orderNb;
+    private final AccountSummary owner;
 
     @Override
     public int compareTo(ValidationStampSummary o) {

@@ -36,6 +36,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     private final SecurityUtils securityUtils;
     private final Strings strings;
+    private final AccountDao accountDao;
     private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
@@ -76,10 +77,25 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     t.getName(),
                     t.getDescription(),
                     getBranch(t.getBranch()),
-                    t.getOrderNb()
+                    t.getOrderNb(),
+                    getAccountSummary(t.getOwnerId())
             );
         }
     };
+
+    private AccountSummary getAccountSummary(Integer id) {
+        if (id == null) {
+            return null;
+        } else {
+            TAccount account = accountDao.getByID(id);
+            return new AccountSummary(
+                    account.getId(),
+                    account.getName(),
+                    account.getFullName()
+            );
+        }
+    }
+
     private final Function<TPromotionLevel, PromotionLevelSummary> promotionLevelSummaryFunction = new Function<TPromotionLevel, PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary apply(TPromotionLevel t) {
@@ -107,10 +123,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
+    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
+        this.accountDao = accountDao;
         this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
