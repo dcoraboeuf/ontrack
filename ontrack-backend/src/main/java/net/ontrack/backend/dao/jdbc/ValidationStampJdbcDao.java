@@ -32,7 +32,8 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                     rs.getString("name"),
                     rs.getString("description"),
                     getInteger(rs, "promotion_level"),
-                    rs.getInt("orderNb"));
+                    rs.getInt("orderNb"),
+                    getInteger(rs, "owner_id"));
         }
     };
 
