@@ -90,11 +90,17 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional
     public int createValidationStamp(int branch, String name, String description) {
-        // FIXME #127 Ordering
+        // Count of existing validation stamp
+        int count = getNamedParameterJdbcTemplate().queryForInt(
+                SQL.VALIDATION_STAMP_COUNT,
+                params("branch", branch)
+        );
+        int orderNb = count + 1;
+        // Creation
         try {
             return dbCreate(
                     SQL.VALIDATION_STAMP_CREATE,
-                    params("branch", branch).addValue("name", name).addValue("description", description)
+                    params("branch", branch).addValue("name", name).addValue("description", description).addValue("orderNb", orderNb)
             );
         } catch (DuplicateKeyException ex) {
             throw new ValidationStampAlreadyExistException(name);
