@@ -97,4 +97,10 @@ git commit -am "Starting development of 1.${NEXT_VERSION}"
 # Pushing the result
 # git push
 
+########################
+# Clean-up & termination
+########################
+
+git checkout -- .
+
 echo Done.
