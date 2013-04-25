@@ -152,20 +152,27 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the current user
         int userId = securityUtils.getCurrentAccountId();
         if (userId >= 0) {
-            Ack ack = Ack.OK;
-            // Subscribes to each entity
-            for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
-                Entity entity = entry.getKey();
-                int entityId = entry.getValue();
-                ack = ack.and(
-                        subscriptionDao.subscribe(userId, entity, entityId)
-                );
-            }
-            // OK
-            return ack;
+            return unsubscribeUser(userId, entities);
         } else {
             return Ack.NOK;
         }
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack unsubscribeUser(int user, Map<Entity, Integer> entities) {
+        Ack ack = Ack.OK;
+        // Unsubscribes from each entity
+        for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
+            Entity entity = entry.getKey();
+            int entityId = entry.getValue();
+            ack = ack.and(
+                    subscriptionDao.unsubscribe(user, entity, entityId)
+            );
+        }
+        // OK
+        return ack;
     }
 
     @Override

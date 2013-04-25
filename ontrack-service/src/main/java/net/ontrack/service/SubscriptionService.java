@@ -21,4 +21,6 @@ public interface SubscriptionService {
     Collection<SubscriptionEntityInfo> getSubscriptions(Locale locale);
 
     AllSubscriptions getAllSubscriptions(Locale locale);
+
+    Ack unsubscribeUser(int user, Map<Entity, Integer> entities);
 }

@@ -60,4 +60,14 @@ public class AdminUIController extends AbstractUIController {
         return subscriptionService.unsubscribe(Collections.singletonMap(entity, id));
     }
 
+    /**
+     * Deletion of a subscription
+     */
+    @RequestMapping(value = "/subscriptions/{user:\\d+}/{entity}/{id:\\d+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack subscriptionDeleteForUser(@PathVariable int user, @PathVariable Entity entity, @PathVariable int id) {
+        return subscriptionService.unsubscribeUser(user, Collections.singletonMap(entity, id));
+    }
+
 }
