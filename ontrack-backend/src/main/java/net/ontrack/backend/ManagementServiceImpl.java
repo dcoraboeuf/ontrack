@@ -75,7 +75,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     t.getId(),
                     t.getName(),
                     t.getDescription(),
-                    getBranch(t.getBranch())
+                    getBranch(t.getBranch()),
+                    t.getOrderNb()
             );
         }
     };
@@ -423,7 +424,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 .withBranch(theBranch.getId())
                 .withValidationStamp(id));
         // OK
-        return new ValidationStampSummary(id, form.getName(), form.getDescription(), theBranch);
+        return getValidationStamp(id);
     }
 
     @Override

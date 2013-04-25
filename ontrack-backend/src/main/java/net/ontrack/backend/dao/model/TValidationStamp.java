@@ -10,5 +10,6 @@ public class TValidationStamp {
     private final String name;
     private final String description;
     private final Integer promotionLevel;
+    private final int orderNb;
 
 }
