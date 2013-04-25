@@ -464,6 +464,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack upValidationStamp(int validationStampId) {
+        return validationStampDao.upValidationStamp(validationStampId);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack downValidationStamp(int validationStampId) {
+        return validationStampDao.downValidationStamp(validationStampId);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imageValidationStamp(final int validationStampId, MultipartFile image) {
         return setImage(
                 image,

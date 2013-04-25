@@ -62,6 +62,10 @@ public interface ManageUI {
 
     Ack unlinkValidationStampToPromotionLevel (String project, String branch, String validationStamp);
 
+    Ack upValidationStamp (String project, String branch, String validationStamp);
+
+    Ack downValidationStamp (String project, String branch, String validationStamp);
+
     // Promotion levels
 
     PromotionLevelSummary getPromotionLevel(String project, String branch, String name);

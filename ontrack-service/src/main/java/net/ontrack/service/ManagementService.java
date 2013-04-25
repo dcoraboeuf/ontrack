@@ -62,6 +62,10 @@ public interface ManagementService {
 
     Ack deleteValidationStamp(int validationStampId);
 
+    Ack upValidationStamp(int validationStampId);
+
+    Ack downValidationStamp(int validationStampId);
+
     // Promotion levels
 
     List<PromotionLevelSummary> getPromotionLevelList(int branchId);

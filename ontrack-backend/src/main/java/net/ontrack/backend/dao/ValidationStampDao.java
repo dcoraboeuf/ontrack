@@ -30,4 +30,8 @@ public interface ValidationStampDao {
     byte[] getImage(int id);
 
     TValidationStamp getByBranchAndName(int branch, String validationStamp);
+
+    Ack upValidationStamp(int id);
+
+    Ack downValidationStamp(int id);
 }

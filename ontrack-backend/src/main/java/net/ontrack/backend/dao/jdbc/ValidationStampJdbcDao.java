@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +57,50 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                 SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
                 params("branch", branch).addValue("name", name),
                 validationStampMapper);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(Caches.VALIDATION_STAMP)
+    public Ack upValidationStamp(int id) {
+        TValidationStamp validationStamp = getById(id);
+        Integer higherId = getFirstItem(
+                SQL.VALIDATION_STAMP_HIGHER,
+                params("branch", validationStamp.getBranch()).addValue("orderNb", validationStamp.getOrderNb()),
+                Integer.class);
+        if (higherId != null) {
+            return swapValidationStampOrderNb(id, higherId);
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    @Transactional
+    public Ack downValidationStamp(int id) {
+        TValidationStamp validationStamp = getById(id);
+        Integer lowerId = getFirstItem(
+                SQL.VALIDATION_STAMP_LOWER,
+                params("branch", validationStamp.getBranch()).addValue("orderNb", validationStamp.getOrderNb()),
+                Integer.class);
+        if (lowerId != null) {
+            return swapValidationStampOrderNb(id, lowerId);
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    protected Ack swapValidationStampOrderNb(int aId, int bId) {
+        // Loads the level numbers
+        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
+        // Gets the order values
+        int ordera = t.queryForInt(SQL.VALIDATION_STAMP_LEVELNB, params("id", aId));
+        int orderb = t.queryForInt(SQL.VALIDATION_STAMP_LEVELNB, params("id", bId));
+        // Changes the order
+        t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", aId).addValue("orderNb", orderb));
+        t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", bId).addValue("orderNb", ordera));
+        // OK
+        return Ack.OK;
     }
 
     @Override
