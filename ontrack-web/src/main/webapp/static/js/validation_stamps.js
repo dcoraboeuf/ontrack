@@ -32,6 +32,32 @@ var ValidationStamps = function () {
             }
 	    });
 	}
+
+    function up (project, branch, name) {
+        AJAX.put({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/up'.format(project, branch, name),
+            loading: {
+                el: $('#validation-stamp-{0}-order-loading'.format(name)),
+                mode: 'container'
+            },
+            successFn: function () {
+                Template.reload('validation_stamps');
+            }
+        })
+    }
+
+    function down (project, branch, name) {
+        AJAX.put({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/down'.format(project, branch, name),
+            loading: {
+                el: $('#validation-stamp-{0}-order-loading'.format(name)),
+                mode: 'container'
+            },
+            successFn: function () {
+                Template.reload('validation_stamps');
+            }
+        })
+    }
 	
 	function deleteValidationStamp(project, branch, name) {
 		Application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project,branch), name, '');
@@ -79,7 +105,9 @@ var ValidationStamps = function () {
 		validationStampTemplate: validationStampTemplate,
 		validationStampImage: validationStampImage,
 		editImage: editImage,
-		editImageCancel: editImageCancel
+		editImageCancel: editImageCancel,
+        up: up,
+        down: down
 	};
 	
 } ();

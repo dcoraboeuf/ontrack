@@ -22,11 +22,12 @@
                 <span class="description">({{orderNb}})</span>
                 <#if secAdmin()>
                     {{^first}}
-                        <i class="icon-arrow-up action validation-stamp-order"></i>
+                        <i class="icon-arrow-up action validation-stamp-order" onclick="ValidationStamps.down('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
                     {{/first}}
                     {{^last}}
-                        <i class="icon-arrow-down action validation-stamp-order"></i>
+                        <i class="icon-arrow-down action validation-stamp-order" onclick="ValidationStamps.up('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
                     {{/last}}
+                    <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
                 </#if>
                 {{#description}}
                     <br/>
