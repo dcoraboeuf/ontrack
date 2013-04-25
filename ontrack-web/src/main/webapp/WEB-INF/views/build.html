@@ -10,7 +10,7 @@
                     / ${build.name?html}
                 </span>
                 <span class="action action-optional">
-                    <span onclick="location='gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                    <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
             <div class="span12 muted">${build.description?html}</div>

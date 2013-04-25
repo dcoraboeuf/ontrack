@@ -21,7 +21,7 @@
                     / <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}"><@validation_stamp_img validationStamp=validationRun.validationStamp /> ${validationRun.validationStamp.name?html}</a>
                 / #${validationRun.runOrder?html}</span>
                 <span class="action action-optional">
-                    <span onclick="location='gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}'"><i class="icon-remove"></i> <@lh key="general.close" /></span>
+                    <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
             <#if validationRun.description != "">
