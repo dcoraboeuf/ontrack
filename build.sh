@@ -46,7 +46,7 @@ let "NEXT_VERSION=$VERSION+1"
 echo Next version is $NEXT_VERSION
 
 # Release number is made of the version and the build number
-RELEASE=1-${NEXT_VERSION}
+RELEASE=1-${VERSION}
 echo Building release ${RELEASE}...
 
 
@@ -83,5 +83,18 @@ TAG=ontrack-${RELEASE}
 git tag ${TAG}
 # Pushing the result
 # git push origin ${TAG}
+
+#########################################
+# Increment the version number and commit
+#########################################
+
+# Update the version locally
+${MVN} versions:set -DnewVersion=1.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
+
+# Commits the update
+git commit -am "Starting development of 1.${NEXT_VERSION}"
+
+# Pushing the result
+# git push
 
 echo Done.
