@@ -753,6 +753,10 @@ subscription.management.none
     en -> No subscription.
     fr -> Aucun abonnement.
 
+admin.subscriptions
+    en -> Manage all subscriptions
+    fr -> Gestion de tous les abonnements
+
 [search]
 
 search
