@@ -46,7 +46,7 @@ let "NEXT_VERSION=$VERSION+1"
 echo Next version is $NEXT_VERSION
 
 # Release number is made of the version and the build number
-RELEASE=1-${VERSION}
+RELEASE=1.${VERSION}
 echo Building release ${RELEASE}...
 
 
