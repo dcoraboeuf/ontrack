@@ -4,12 +4,6 @@
 # Check environment variables
 #############################
 
-if [ "$BUILD_NUMBER" == "" ]
-then
-	echo BUILD_NUMBER is required.
-	exit 1
-fi
-
 if [ "$MVN" == "" ]
 then
 	echo MVN is required.
@@ -29,7 +23,6 @@ then
 fi
 
 # Listing environment
-echo "BUILD_NUMBER = ${BUILD_NUMBER}"
 echo "MVN          = ${MVN}"
 echo "NEXUS_URL    = ${NEXUS_URL}"
 echo "NEXUS_ID     = ${NEXUS_ID}"
@@ -45,10 +38,15 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=128m -Djava.net.preferIPv4Stack=tru
 ##########################
 
 # Gets the version number from the POM
-VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -e 's/\-SNAPSHOT//'`
+VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/1\.([0-9]+)\-SNAPSHOT/\1/'`
+echo Current version is $VERSION
+
+# Gets the next version
+let "NEXT_VERSION=$VERSION+1"
+echo Next version is $NEXT_VERSION
 
 # Release number is made of the version and the build number
-RELEASE=${VERSION}-${BUILD_NUMBER}
+RELEASE=1-${NEXT_VERSION}
 echo Building release ${RELEASE}...
 
 
@@ -63,7 +61,7 @@ git checkout -- .
 ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 
 # Special case for Jenkins
-sed -i "s/${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
+sed -i "s/1.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
 
 # Maven build
 ${MVN} clean deploy -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
