@@ -19,6 +19,10 @@
                 </#if>
                 <!-- Profile page -->
                 <li><a href="gui/admin/profile"><@lh key="profile" /></a></li>
+                <!-- Subscriptions -->
+                <#if secSubscriber()>
+                    <li><a href="gui/admin/subscriptions"><@lh key="subscription.management" /></a></li>
+                </#if>
                 <!-- Extensions -->
                 <#list extensionTopLevelActions() as action>
                     <li><a href="${action.path?html}">${action.title?html}</a></li>

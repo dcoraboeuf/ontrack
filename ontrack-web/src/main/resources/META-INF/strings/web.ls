@@ -745,6 +745,10 @@ entityUnsubscription.done
     en -> The subscription has been cancelled.
     fr -> L'abonnement a été annulé.
 
+subscription.management
+    en -> Subscriptions
+    fr -> Abonnements
+
 [search]
 
 search
