@@ -19,6 +19,12 @@
                 </span>
             </div>
             <div class="muted">${validationStamp.description?html}</div>
+            <#if validationStamp.owner??>
+                <div>
+                    <@lh key="validation_stamp.owner" />:
+                    ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
+                </div>
+            </#if>
             <div class="span12">
                 <@properties entity="VALIDATION_STAMP" entityId=validationStamp.id />
             </div>
