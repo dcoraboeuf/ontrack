@@ -174,6 +174,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId) {
+        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner/%d", project, branch, validationStamp, ownerId), Ack.class, null);
+    }
+
+    @Override
+    public Ack unsetValidationStampOwner(String project, String branch, String validationStamp) {
+        return delete(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner", project, branch, validationStamp), Ack.class);
+    }
+
+    @Override
     public PromotionLevelSummary getPromotionLevel(String project, String branch, String name) {
         // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getPromotionLevel
         return null;

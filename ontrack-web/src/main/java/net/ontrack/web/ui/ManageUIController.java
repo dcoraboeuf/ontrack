@@ -363,6 +363,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/owner/{ownerId:\\d+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setValidationStampOwner(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @PathVariable int ownerId) {
+        return managementService.setValidationStampOwner(entityConverter.getValidationStampId(project, branch, validationStamp), ownerId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/owner", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack unsetValidationStampOwner(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return managementService.unsetValidationStampOwner(entityConverter.getValidationStampId(project, branch, validationStamp));
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/up", method = RequestMethod.GET)
     public
     @ResponseBody

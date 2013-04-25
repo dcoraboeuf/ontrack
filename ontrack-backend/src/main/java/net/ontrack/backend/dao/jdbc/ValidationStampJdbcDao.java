@@ -91,6 +91,17 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
         }
     }
 
+    @Override
+    @Transactional
+    public Ack setValidationStampOwner(int id, Integer ownerId) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATION_STAMP_CHANGE_OWNER,
+                        params("id", id).addValue("owner", ownerId)
+                )
+        );
+    }
+
     protected Ack swapValidationStampOrderNb(int aId, int bId) {
         // Loads the level numbers
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();

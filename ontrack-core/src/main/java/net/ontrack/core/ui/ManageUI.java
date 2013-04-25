@@ -66,6 +66,10 @@ public interface ManageUI {
 
     Ack downValidationStamp (String project, String branch, String validationStamp);
 
+    Ack setValidationStampOwner (String project, String branch, String validationStamp, int ownerId);
+
+    Ack unsetValidationStampOwner (String project, String branch, String validationStamp);
+
     // Promotion levels
 
     PromotionLevelSummary getPromotionLevel(String project, String branch, String name);
