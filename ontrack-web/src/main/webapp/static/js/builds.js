@@ -154,12 +154,23 @@ var Builds = function () {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/build/{2}/validationStamps'.format(project, branch, build),
 	        refresh: true,
-	        render: Template.asSimpleTemplate('buildValidationStampsTemplate', function (items) {
+            preProcessingFn: function (stamps) {
+                $.each(stamps, function (index, stamp) {
+                    if (stamp.run) {
+                        var lastRun = stamp.runs[stamp.runs.length - 1];
+                        if (lastRun.status == 'PASSED') {
+                            stamp.passed = true;
+                        }
+                    }
+                });
+                return stamps;
+            },
+	        render: Template.asSimpleTemplate('buildValidationStampsTemplate', function (stamps) {
                 return {
                     project: project,
                     branch: branch,
                     build: build,
-                    stamps: items
+                    stamps: stamps
 	            };
             }),
 	        postRenderFn: Application.tooltips

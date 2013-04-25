@@ -584,9 +584,17 @@ build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
 
-build.validation_stamps.runs
-    en -> Runs
-    fr -> Exécutées
+build.validation_stamps.none
+    en -> None
+    fr -> Aucune
+
+build.validation_stamps.runAndPassed
+    en -> Run & passed
+    fr -> Exécutées avec succès
+
+build.validation_stamps.runAndFailed
+    en -> Run & failed
+    fr -> Exécutées sans succès
 
 build.validation_stamps.notruns
     en -> Not runs
