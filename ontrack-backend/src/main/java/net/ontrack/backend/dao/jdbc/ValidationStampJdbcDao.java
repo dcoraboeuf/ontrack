@@ -78,6 +78,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
+    @CacheEvict(Caches.VALIDATION_STAMP)
     public Ack downValidationStamp(int id) {
         TValidationStamp validationStamp = getById(id);
         Integer lowerId = getFirstItem(
@@ -93,6 +94,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
+    @CacheEvict(value = Caches.VALIDATION_STAMP, key = "#id")
     public Ack setValidationStampOwner(int id, Integer ownerId) {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(
