@@ -34,7 +34,7 @@
                     {{#branchBuilds.validationStamps}}
                         <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
                             <a href="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
-                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                                <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
                             </a>
                         </th>
                     {{/branchBuilds.validationStamps}}
