@@ -503,6 +503,12 @@ validation_stamp.name
 	en,fr -> @[model.name]
 validation_stamp.description
 	en,fr -> @[model.description]
+validation_stamp.owner
+    en -> Owner
+    fr -> Responsable
+validation_stamp.owner.none
+    en -> None
+    fr -> Aucun
 validation_stamp.image
 	en,fr -> Image
 validation_stamp.image.edit
@@ -517,6 +523,10 @@ validation_stamp.image.help
 validation_stamp.image.success
 	en -> Successful upload of the image.
 	fr -> L'image a été chargée correctement.
+
+validation_stamp.owner.change
+    en -> Change the ownership
+    fr -> Changer le responsable
 
 [promotion_level]
 

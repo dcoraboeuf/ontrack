@@ -1,9 +1,6 @@
 package net.ontrack.web.ui;
 
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.AccountUpdateForm;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.*;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.support.AbstractUIController;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/admin")
@@ -27,6 +25,16 @@ public class AdminUIController extends AbstractUIController {
         super(errorHandler, strings);
         this.accountService = accountService;
         this.subscriptionService = subscriptionService;
+    }
+
+    /**
+     * List of accounts
+     */
+    @RequestMapping(value = "/accounts", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Account> accounts() {
+        return accountService.getAccounts();
     }
 
     /**

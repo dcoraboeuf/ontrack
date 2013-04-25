@@ -58,6 +58,82 @@ var ValidationStamps = function () {
             }
         })
     }
+
+    function changeOwner (project, branch, name) {
+        // Gets the list of potential owner
+        AJAX.get({
+            url: 'ui/admin/accounts',
+            successFn: function (accounts) {
+                Application.dialog({
+                    id: 'validation_stamp-owner-dialog',
+                    title: loc('validation_stamp.owner.change'),
+                    openFn: function () {
+                        // Validation stamp name
+                        $('#validation_stamp-owner-dialog-name').val(name);
+                        // List of accounts
+                        $('#validation_stamp-owner-dialog-owner').empty();
+                        $('#validation_stamp-owner-dialog-owner')
+                            .append($("<option></option>")
+                                .attr("value", "")
+                                .text(loc('validation_stamp.owner.none')));
+                        $.each(accounts, function (index, account) {
+                            $('#validation_stamp-owner-dialog-owner')
+                                .append($("<option></option>")
+                                    .attr("value", account.id)
+                                    .text('{0} - {1}'.format(account.name, account.fullName)));
+                        });
+                    },
+                    submitFn: function (closeFn) {
+                        // Gets the selected owner
+                        var owner = $('#validation_stamp-owner-dialog-owner').val();
+                        // Removes the owner
+                        if (owner == '') {
+                            AJAX.del({
+                                url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/owner'.format(
+                                    project,
+                                    branch,
+                                    name
+                                ),
+                                loading: {
+                                    el: $('#validation_stamp-owner-dialog-submit')
+                                },
+                                successFn: function (ack) {
+                                    if (ack.success) {
+                                        // Refreshes the validation stamps
+                                        Template.reload('validation_stamps');
+                                        // Closes the dialog
+                                        closeFn();
+                                    }
+                                }
+                            });
+                        }
+                        // Changes the owner
+                        else {
+                            AJAX.put({
+                                url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/owner/{3}'.format(
+                                    project,
+                                    branch,
+                                    name,
+                                    owner
+                                ),
+                                loading: {
+                                    el: $('#validation_stamp-owner-dialog-submit')
+                                },
+                                successFn: function (ack) {
+                                    if (ack.success) {
+                                        // Refreshes the validation stamps
+                                        Template.reload('validation_stamps');
+                                        // Closes the dialog
+                                        closeFn();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
 	
 	function deleteValidationStamp(project, branch, name) {
 		Application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project,branch), name, '');
@@ -107,7 +183,8 @@ var ValidationStamps = function () {
 		editImage: editImage,
 		editImageCancel: editImageCancel,
         up: up,
-        down: down
+        down: down,
+        changeOwner: changeOwner
 	};
 	
 } ();
