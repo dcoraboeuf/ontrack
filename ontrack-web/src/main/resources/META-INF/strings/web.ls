@@ -749,6 +749,10 @@ subscription.management
     en -> Subscriptions
     fr -> Abonnements
 
+subscription.management.none
+    en -> No subscription.
+    fr -> Aucun abonnement.
+
 [search]
 
 search
