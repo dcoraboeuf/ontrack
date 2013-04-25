@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.ontrack</groupId>
 		<artifactId>ontrack-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>ontrack-core</artifactId>
