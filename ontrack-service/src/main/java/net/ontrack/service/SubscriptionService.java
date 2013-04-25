@@ -2,8 +2,7 @@ package net.ontrack.service;
 
 import net.ontrack.core.model.*;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface SubscriptionService {
 
@@ -18,4 +17,6 @@ public interface SubscriptionService {
     boolean isSubscribed(int accountId, Set<EntityID> entities);
 
     SubscriptionEntityInfo getSubscriptionEntityInfo(int accountId, Entity entity, int entityId);
+
+    Collection<SubscriptionEntityInfo> getSubscriptions(Locale locale);
 }

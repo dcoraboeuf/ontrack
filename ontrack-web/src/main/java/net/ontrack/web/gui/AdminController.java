@@ -76,6 +76,19 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Management of subscriptions
+     */
+    @RequestMapping(value = "/subscriptions", method = RequestMethod.GET)
+    public String subscriptions(Locale locale, Model model) {
+        // Checks the user is logged
+        securityUtils.checkIsLogged();
+        // Gets the subscriptions
+        model.addAttribute("subscriptions", subscriptionService.getSubscriptions(locale));
+        // OK
+        return "subscriptions";
+    }
+
+    /**
      * Request to change his password
      */
     @RequestMapping(value = "/password", method = RequestMethod.GET)

@@ -92,6 +92,32 @@ public class DefaultSubscriptionService implements SubscriptionService {
         }
     }
 
+    /**
+     * Gets the list of subscriptions for the current user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<SubscriptionEntityInfo> getSubscriptions(Locale locale) {
+        // Gets the current user
+        final int userId = securityUtils.getCurrentAccountId();
+        if (userId >= 0) {
+            // List of entities this user is subscribed to
+            return Collections2.transform(
+                    subscriptionDao.findEntitiesByAccount(userId),
+                    new Function<EntityID, SubscriptionEntityInfo>() {
+                        @Override
+                        public SubscriptionEntityInfo apply(EntityID entityID) {
+                            return getSubscriptionEntityInfo(userId,
+                                    entityID.getEntity(),
+                                    entityID.getId());
+                        }
+                    }
+            );
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @Override
     @Transactional
     public Ack subscribe(Map<Entity, Integer> entities) {
