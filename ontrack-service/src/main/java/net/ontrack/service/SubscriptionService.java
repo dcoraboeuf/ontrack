@@ -19,4 +19,6 @@ public interface SubscriptionService {
     SubscriptionEntityInfo getSubscriptionEntityInfo(int accountId, Entity entity, int entityId);
 
     Collection<SubscriptionEntityInfo> getSubscriptions(Locale locale);
+
+    AllSubscriptions getAllSubscriptions(Locale locale);
 }

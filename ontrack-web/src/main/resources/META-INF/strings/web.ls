@@ -757,6 +757,10 @@ admin.subscriptions
     en -> Manage all subscriptions
     fr -> Gestion de tous les abonnements
 
+admin.subscriptions.none
+    en -> Not one subscription!
+    fr -> Aucune subscription !
+
 [search]
 
 search

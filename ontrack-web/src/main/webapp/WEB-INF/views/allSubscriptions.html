@@ -1,0 +1,46 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="admin.subscriptions" script=true breadcrumbs={loc("home"):""}>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="admin.subscriptions" />
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div id="container" class="span12">
+                <#if subscriptions.users?size == 0>
+                    <div class="alert alert-info"><@lh key="admin.subscriptions.none" /></div>
+                <#else>
+                    <table class="table table-hover" id="container-table">
+                        <tbody>
+                            <#list subscriptions.users as user>
+                                <tr class="user-${user.id?c} info">
+                                    <td colspan="3">
+                                        ${user.fullName?html} (<code>${user.name?html}</code>)
+                                    </td>
+                                </tr>
+                                <#list user.subscriptions as subscription>
+                                    <tr class="user-${user.id?c}">
+                                        <td width="80">&nbsp;</td>
+                                        <td width="24">
+                                            <i class="icon-trash action action-optional" onclick="Subscriptions.unsubscribe(${user.id?c}, '${subscription.entityStub.entity?html}', ${subscription.entityStub.id?c});"></i>
+                                        </td>
+                                        <td>
+                                            ${subscription.message?html}
+                                        </td>
+                                    </tr>
+                                </#list>
+                            </#list>
+                        </tbody>
+                    </table>
+                </#if>
+            </div>
+        </div>
+    </div>
+</@layout_std>

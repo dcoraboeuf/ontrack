@@ -10,6 +10,7 @@ import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.*;
 import net.ontrack.service.model.MessageChannel;
@@ -22,6 +23,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -102,20 +104,46 @@ public class DefaultSubscriptionService implements SubscriptionService {
         final int userId = securityUtils.getCurrentAccountId();
         if (userId >= 0) {
             // List of entities this user is subscribed to
-            return Collections2.transform(
-                    subscriptionDao.findEntitiesByAccount(userId),
-                    new Function<EntityID, SubscriptionEntityInfo>() {
-                        @Override
-                        public SubscriptionEntityInfo apply(EntityID entityID) {
-                            return getSubscriptionEntityInfo(userId,
-                                    entityID.getEntity(),
-                                    entityID.getId());
-                        }
-                    }
-            );
+            return getSubscriptionEntityInfosForUser(userId);
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private Collection<SubscriptionEntityInfo> getSubscriptionEntityInfosForUser(final int userId) {
+        return Collections2.transform(
+                subscriptionDao.findEntitiesByAccount(userId),
+                new Function<EntityID, SubscriptionEntityInfo>() {
+                    @Override
+                    public SubscriptionEntityInfo apply(EntityID entityID) {
+                        return getSubscriptionEntityInfo(userId,
+                                entityID.getEntity(),
+                                entityID.getId());
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public AllSubscriptions getAllSubscriptions(Locale locale) {
+        // Gets all users
+        List<TAccount> accounts = accountDao.findAll();
+        List<SubscriptionsForUser> users = new ArrayList<>();
+        for (TAccount account : accounts) {
+            Collection<SubscriptionEntityInfo> subscriptions = getSubscriptionEntityInfosForUser(account.getId());
+            if (!subscriptions.isEmpty()) {
+                users.add(new SubscriptionsForUser(
+                        account.getId(),
+                        account.getName(),
+                        account.getFullName(),
+                        subscriptions
+                ));
+            }
+        }
+        // OK
+        return new AllSubscriptions(users);
     }
 
     @Override
