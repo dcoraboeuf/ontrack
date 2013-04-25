@@ -91,6 +91,9 @@ git tag ${TAG}
 # Update the version locally
 ${MVN} versions:set -DnewVersion=1.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
 
+# Again, special case for Jenkins
+sed -i "s/${RELEASE}/1.${NEXT_VERSION}-SNAPSHOT/" ontrack-jenkins/pom.xml
+
 # Commits the update
 git commit -am "Starting development of 1.${NEXT_VERSION}"
 
