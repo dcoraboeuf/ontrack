@@ -19,8 +19,10 @@
             <td>
                 <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
                 <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
-                <span class="description">({{orderNb}})</span>
-                <!-- TODO Owner -->
+                <!-- Owner -->
+                {{#owner}}
+                    <span class="description">({{fullName}})</span>
+                {{/owner}}
                 <#if secAdmin()>
                     {{^first}}
                         <i class="icon-arrow-up action validation-stamp-order" onclick="ValidationStamps.down('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
