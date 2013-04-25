@@ -1,4 +1,5 @@
 <script type="text/javascript" src="${base}/js/validation_stamps.js"></script>
+<link rel="stylesheet" type="text/css" href="${base}/css/validation_stamps.css" />
 
 <#macro validation_stamps project branch id="validation_stamps" create=true>
 	<@dynamicsection id=id template="ValidationStamps.validationStampTemplate('${project?html}','${branch?html}')">
@@ -19,6 +20,14 @@
                 <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
                 <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
                 <span class="description">({{orderNb}})</span>
+                <#if secAdmin()>
+                    {{^first}}
+                        <i class="icon-arrow-up action validation-stamp-order"></i>
+                    {{/first}}
+                    {{^last}}
+                        <i class="icon-arrow-down action validation-stamp-order"></i>
+                    {{/last}}
+                </#if>
                 {{#description}}
                     <br/>
                     <span class="description">{{description}}</span>

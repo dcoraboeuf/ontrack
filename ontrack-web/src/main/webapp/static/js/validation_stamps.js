@@ -48,6 +48,18 @@ var ValidationStamps = function () {
 	function validationStampTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
+            preProcessingFn: function (stamps) {
+                var count = stamps.length;
+                $.each(stamps, function (index, stamp) {
+                    if (index == 0) {
+                        stamp.first = true;
+                    }
+                    if (index == count - 1) {
+                        stamp.last = true;
+                    }
+                });
+                return stamps;
+            },
 	        render: Template.asTableTemplate('validationStampTemplate')
 	    });
 	}
