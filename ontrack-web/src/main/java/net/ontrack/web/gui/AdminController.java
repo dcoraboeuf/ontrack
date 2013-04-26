@@ -12,6 +12,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.AdminService;
+import net.ontrack.service.ProfileService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -19,6 +20,7 @@ import net.ontrack.service.model.MailConfiguration;
 import net.ontrack.web.gui.model.GUIConfigurationExtension;
 import net.ontrack.web.gui.model.GUIConfigurationExtensionField;
 import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.support.WebUtils;
 import net.sf.jstring.LocalizableMessage;
@@ -44,6 +46,8 @@ public class AdminController extends AbstractGUIController {
     private final ConfigurationExtensionService configurationExtensionService;
     private final SubscriptionService subscriptionService;
     private final SecurityUtils securityUtils;
+    private final EntityConverter entityConverter;
+    private final ProfileService profileService;
     private final Strings strings;
 
     @Autowired
@@ -52,13 +56,15 @@ public class AdminController extends AbstractGUIController {
             AdminService adminService,
             AccountService accountService,
             ConfigurationExtensionService configurationExtensionService,
-            SubscriptionService subscriptionService, SecurityUtils securityUtils, Strings strings) {
+            SubscriptionService subscriptionService, SecurityUtils securityUtils, EntityConverter entityConverter, ProfileService profileService, Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
         this.configurationExtensionService = configurationExtensionService;
         this.subscriptionService = subscriptionService;
         this.securityUtils = securityUtils;
+        this.entityConverter = entityConverter;
+        this.profileService = profileService;
         this.strings = strings;
     }
 
@@ -80,7 +86,10 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/filter", method = RequestMethod.GET)
     public String filterValidationStamps(Model model, @PathVariable String project, @PathVariable String branch) {
-        // FIXME Adds the list of validation stamp and their status in the model
+        // Adds the list of validation stamp and their status in the model
+        model.addAttribute("filteredStamps", profileService.getFilteredValidationStamps(
+                entityConverter.getBranchId(project, branch)
+        ));
         // OK
         return "filterValidationStamps";
     }
