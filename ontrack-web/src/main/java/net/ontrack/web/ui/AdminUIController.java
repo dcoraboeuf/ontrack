@@ -2,12 +2,15 @@ package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
 import net.ontrack.service.AccountService;
+import net.ontrack.service.ProfileService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.support.AbstractUIController;
+import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -19,12 +22,16 @@ public class AdminUIController extends AbstractUIController {
 
     private final AccountService accountService;
     private final SubscriptionService subscriptionService;
+    private final ProfileService profileService;
+    private final EntityConverter entityConverter;
 
     @Autowired
-    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService) {
+    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService, ProfileService profileService, EntityConverter entityConverter) {
         super(errorHandler, strings);
         this.accountService = accountService;
         this.subscriptionService = subscriptionService;
+        this.profileService = profileService;
+        this.entityConverter = entityConverter;
     }
 
     /**
@@ -76,6 +83,26 @@ public class AdminUIController extends AbstractUIController {
     @ResponseBody
     Ack subscriptionDeleteForUser(@PathVariable int user, @PathVariable Entity entity, @PathVariable int id) {
         return subscriptionService.unsubscribeUser(user, Collections.singletonMap(entity, id));
+    }
+
+    /**
+     * Filtering of validation stamps - remove from filters
+     */
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack removeFilterValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return profileService.removeFilterValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp));
+    }
+
+    /**
+     * Filtering of validation stamps - adding to filters
+     */
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack addFilterValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return profileService.addFilterValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp));
     }
 
 }

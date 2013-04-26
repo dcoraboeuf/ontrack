@@ -25,4 +25,23 @@ public class ValidationStampSelectionJdbcDao extends AbstractJdbcDao implements 
                 params("account", account).addValue("validationStamp", validationStamp),
                 Integer.class) != null;
     }
+
+    @Override
+    @Transactional
+    public void removeFilterValidationStamp(int account, int validationStamp) {
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_SELECTION_DELETE,
+                params("account", account).addValue("validationStamp", validationStamp)
+        );
+    }
+
+    @Override
+    @Transactional
+    public void addFilterValidationStamp(int account, int validationStamp) {
+        removeFilterValidationStamp(account, validationStamp);
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_SELECTION_INSERT,
+                params("account", account).addValue("validationStamp", validationStamp)
+        );
+    }
 }

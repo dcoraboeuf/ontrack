@@ -3,6 +3,7 @@ package net.ontrack.backend;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.ValidationStampSelectionDao;
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.FilteredValidationStamp;
 import net.ontrack.core.model.FilteredValidationStamps;
 import net.ontrack.core.model.ValidationStampSummary;
@@ -50,6 +51,32 @@ public class DefaultProfileService implements ProfileService {
             );
         } else {
             throw new IllegalStateException("No current account");
+        }
+    }
+
+    @Override
+    @Transactional
+    public Ack removeFilterValidationStamp(int validationStampId) {
+        // Gets the current user
+        final int accountId = securityUtils.getCurrentAccountId();
+        if (accountId > 0) {
+            validationStampSelectionDao.removeFilterValidationStamp(accountId, validationStampId);
+            return Ack.OK;
+        } else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    @Transactional
+    public Ack addFilterValidationStamp(int validationStampId) {
+        // Gets the current user
+        final int accountId = securityUtils.getCurrentAccountId();
+        if (accountId > 0) {
+            validationStampSelectionDao.addFilterValidationStamp(accountId, validationStampId);
+            return Ack.OK;
+        } else {
+            return Ack.NOK;
         }
     }
 
