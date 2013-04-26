@@ -4,6 +4,7 @@ var ValidationStampFilter = function () {
         var filtered = ($(chk).attr('filtered') == 'true');
         var project = $('#project').val();
         var branch = $('#branch').val();
+        var stampId = $(chk).attr('stampId');
         var stamp = $(chk).attr('stamp');
         AJAX.call({
             url: 'ui/admin/project/{0}/branch/{1}/validation_stamp/{2}/filter'.format(
@@ -19,11 +20,11 @@ var ValidationStampFilter = function () {
                 if (ack.success) {
                     filtered = !filtered;
                     if (filtered) {
-                        $('stamp_line_{0}'.format(stamp)).addClass('filtered');
-                        chk.attr('filtered', 'true');
+                        $('#stamp_line_{0}'.format(stampId)).addClass('filtered');
+                        $(chk).attr('filtered', 'true');
                     } else {
-                        $('stamp_line_{0}'.format(stamp)).removeClass('filtered');
-                        chk.attr('filtered', 'false');
+                        $('#stamp_line_{0}'.format(stampId)).removeClass('filtered');
+                        $(chk).attr('filtered', 'false');
                     }
                 }
             }

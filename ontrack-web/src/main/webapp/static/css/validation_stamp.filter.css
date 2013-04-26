@@ -1,0 +1,4 @@
+tr.stamp_line.filtered td.stamp {
+    opacity: 0.25;
+    text-decoration: line-through;
+}
