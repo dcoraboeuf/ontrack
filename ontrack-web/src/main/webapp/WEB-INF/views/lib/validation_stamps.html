@@ -32,7 +32,7 @@
                     {{/last}}
                     <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
                     <!-- Ownership -->
-                    <i class="icon-user action action-optional" title="<@lh key='validation_stamp.owner.change' />" onclick="ValidationStamps.changeOwner('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
+                    <i class="icon-user action action-optional" title="<@lh key='validation_stamp.owner.change' />" onclick="ValidationStamps.changeOwnerInList('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
                 </#if>
                 {{#description}}
                     <br/>
@@ -41,6 +41,10 @@
             </td>
         </tr>
     </script>
+    <@validation_stamp_owner_dialog />
+</#macro>
+
+<#macro validation_stamp_owner_dialog>
     <@dialog id="validation_stamp-owner-dialog">
         <@form_text idPrefix="validation_stamp-owner-dialog-" name="name" label=loc('model.validation_stamp') extra='readOnly="readOnly"' />
         <@form_select idPrefix="validation_stamp-owner-dialog-" name="owner" label=loc('validation_stamp.owner')>

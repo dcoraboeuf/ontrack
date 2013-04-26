@@ -59,7 +59,21 @@ var ValidationStamps = function () {
         })
     }
 
-    function changeOwner (project, branch, name) {
+    function changeOwnerInList (project, branch, name) {
+        changeOwner(project, branch, name, function () {
+            // Refreshes the validation stamps
+            Template.reload('validation_stamps');
+        });
+    }
+
+    function changeOwnerInPage (project, branch, name) {
+        changeOwner(project, branch, name, function () {
+            // Refreshes the page
+            location.reload();
+        });
+    }
+
+    function changeOwner (project, branch, name, successFn) {
         // Gets the details of the validation stamp
         AJAX.get({
             url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}'.format(
@@ -112,10 +126,10 @@ var ValidationStamps = function () {
                                         },
                                         successFn: function (ack) {
                                             if (ack.success) {
-                                                // Refreshes the validation stamps
-                                                Template.reload('validation_stamps');
                                                 // Closes the dialog
                                                 closeFn();
+                                                // OK
+                                                successFn();
                                             }
                                         }
                                     });
@@ -134,10 +148,10 @@ var ValidationStamps = function () {
                                         },
                                         successFn: function (ack) {
                                             if (ack.success) {
-                                                // Refreshes the validation stamps
-                                                Template.reload('validation_stamps');
                                                 // Closes the dialog
                                                 closeFn();
+                                                // OK
+                                                successFn();
                                             }
                                         }
                                     });
@@ -199,7 +213,8 @@ var ValidationStamps = function () {
 		editImageCancel: editImageCancel,
         up: up,
         down: down,
-        changeOwner: changeOwner
+        changeOwnerInList: changeOwnerInList,
+        changeOwnerInPage: changeOwnerInPage
 	};
 	
 } ();

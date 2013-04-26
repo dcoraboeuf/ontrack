@@ -12,6 +12,7 @@
                     <#if secAdmin()>
                         <span onclick="ValidationStamps.updateValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="ValidationStamps.editImage();"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
+                        <span onclick="ValidationStamps.changeOwnerInPage('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}');"><i class="icon-user"></i> <@lh key="validation_stamp.owner.change" /></span>
                         <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span onclick="ValidationStamps.deleteValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
@@ -52,4 +53,7 @@
         <@dialog_button id="validation_stamp-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
         <@dialog_button_cancel />
     </@dialog>
+
+    <@validation_stamp_owner_dialog />
+        
 </@layout_std>
