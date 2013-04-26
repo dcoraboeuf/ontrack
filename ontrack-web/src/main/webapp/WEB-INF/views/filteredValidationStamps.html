@@ -1,6 +1,8 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="validation_stamp.filter" modules=["validation_stamps"] breadcrumbs = {loc("home"): "", filteredStamps.branch.project.name?html: "gui/project/${filteredStamps.branch.project.name?html}", filteredStamps.branch.name?html: "gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}"}>
+    <input type="hidden" id="project" value="${filteredStamps.branch.project.name?html}" />
+    <input type="hidden" id="branch" value="${filteredStamps.branch.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -20,6 +22,9 @@
                     <tbody>
                         <#list filteredStamps.list as filteredValidationStamp>
                             <tr id="stamp_${filteredValidationStamp.stamp.name?html}">
+                                <td style="width:1em;">
+                                    <input style="vertical-align: baseline;" type="checkbox" id="filter_${filteredValidationStamp.stamp.name?html}" stamp="${filteredValidationStamp.stamp.name?html}" />
+                                </td>
                                 <td>
                                     <@validation_stamp_img validationStamp=filteredValidationStamp.stamp />
                                     <@validation_stamp_link validationStamp=filteredValidationStamp.stamp />
