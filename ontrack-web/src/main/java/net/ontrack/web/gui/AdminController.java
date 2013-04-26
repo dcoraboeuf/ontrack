@@ -76,6 +76,16 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Filtering of validation stamps
+     */
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/filter", method = RequestMethod.GET)
+    public String filterValidationStamps(Model model, @PathVariable String project, @PathVariable String branch) {
+        // FIXME Adds the list of validation stamp and their status in the model
+        // OK
+        return "filterValidationStamps";
+    }
+
+    /**
      * Management of subscriptions
      */
     @RequestMapping(value = "/subscriptions", method = RequestMethod.GET)

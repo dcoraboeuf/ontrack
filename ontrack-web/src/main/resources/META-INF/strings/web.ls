@@ -528,6 +528,10 @@ validation_stamp.owner.change
     en -> Change the ownership
     fr -> Changer le responsable
 
+validation_stamp.filter
+    en -> Filter validation stamps
+    fr -> Sélectionner les validations
+
 [promotion_level]
 
 promotion_level.manage

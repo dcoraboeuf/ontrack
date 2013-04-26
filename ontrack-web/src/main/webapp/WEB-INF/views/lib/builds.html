@@ -28,7 +28,14 @@
                     <th rowspan="2">&nbsp;</th>
                     <th rowspan="2"><@lh key="model.build" /></th>
                     <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
-                    <th colspan="{{branchBuilds.validationStamps.length}}"><@lh key="branch.validation_stamps" /></th>
+                    <th colspan="{{branchBuilds.validationStamps.length}}">
+                        <@lh key="branch.validation_stamps" />
+                        <#if secLogged()>
+                            <a href="gui/admin/project/{{project}}/branch/{{branch}}/validation_stamp/filter">
+                                <i class="icon-filter action action-optional" title="<@lh key='validation_stamp.filter'/>"></i>
+                            </a>
+                        </#if>
+                    </th>
                 </tr>
                 <tr>
                     {{#branchBuilds.validationStamps}}
