@@ -8,6 +8,6 @@ import java.util.List;
 public class FilteredValidationStamps {
 
     private final BranchSummary branch;
-    private final List<FilteredValidationStamp> filteredStamps;
+    private final List<FilteredValidationStamp> list;
 
 }

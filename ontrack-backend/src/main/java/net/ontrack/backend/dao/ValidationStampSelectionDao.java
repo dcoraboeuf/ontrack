@@ -2,7 +2,7 @@ package net.ontrack.backend.dao;
 
 import net.ontrack.core.model.FilteredValidationStamp;
 
-public interface AccountValidationStampDao {
+public interface ValidationStampSelectionDao {
 
     boolean isFiltered(int account, int validationStamp);
 

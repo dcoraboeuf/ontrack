@@ -2,7 +2,7 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import net.ontrack.backend.dao.AccountValidationStampDao;
+import net.ontrack.backend.dao.ValidationStampSelectionDao;
 import net.ontrack.core.model.FilteredValidationStamp;
 import net.ontrack.core.model.FilteredValidationStamps;
 import net.ontrack.core.model.ValidationStampSummary;
@@ -18,13 +18,13 @@ public class DefaultProfileService implements ProfileService {
 
     private final SecurityUtils securityUtils;
     private final ManagementService managementService;
-    private final AccountValidationStampDao accountValidationStampDao;
+    private final ValidationStampSelectionDao validationStampSelectionDao;
 
     @Autowired
-    public DefaultProfileService(SecurityUtils securityUtils, ManagementService managementService, AccountValidationStampDao accountValidationStampDao) {
+    public DefaultProfileService(SecurityUtils securityUtils, ManagementService managementService, ValidationStampSelectionDao validationStampSelectionDao) {
         this.securityUtils = securityUtils;
         this.managementService = managementService;
-        this.accountValidationStampDao = accountValidationStampDao;
+        this.validationStampSelectionDao = validationStampSelectionDao;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DefaultProfileService implements ProfileService {
                                 public FilteredValidationStamp apply(ValidationStampSummary stamp) {
                                     return new FilteredValidationStamp(
                                             stamp,
-                                            accountValidationStampDao.isFiltered(accountId, stamp.getId())
+                                            validationStampSelectionDao.isFiltered(accountId, stamp.getId())
                                     );
                                 }
                             }

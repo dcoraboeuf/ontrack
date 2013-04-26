@@ -86,12 +86,14 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/filter", method = RequestMethod.GET)
     public String filterValidationStamps(Model model, @PathVariable String project, @PathVariable String branch) {
+        // Checks for logging
+        securityUtils.checkIsLogged();
         // Adds the list of validation stamp and their status in the model
         model.addAttribute("filteredStamps", profileService.getFilteredValidationStamps(
                 entityConverter.getBranchId(project, branch)
         ));
         // OK
-        return "filterValidationStamps";
+        return "filteredValidationStamps";
     }
 
     /**

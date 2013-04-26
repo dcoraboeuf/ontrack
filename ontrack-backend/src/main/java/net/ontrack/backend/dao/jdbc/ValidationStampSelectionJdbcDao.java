@@ -1,6 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.dao.AccountValidationStampDao;
+import net.ontrack.backend.dao.ValidationStampSelectionDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 
 @Component
-public class AccountValidationStampJdbcDao extends AbstractJdbcDao implements AccountValidationStampDao {
+public class ValidationStampSelectionJdbcDao extends AbstractJdbcDao implements ValidationStampSelectionDao {
 
     @Autowired
-    public AccountValidationStampJdbcDao(DataSource dataSource) {
+    public ValidationStampSelectionJdbcDao(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -21,7 +21,7 @@ public class AccountValidationStampJdbcDao extends AbstractJdbcDao implements Ac
     @Transactional(readOnly = true)
     public boolean isFiltered(int account, int validationStamp) {
         return getFirstItem(
-                SQL.ACCOUNT_VALIDATION_STAMP_EXISTS,
+                SQL.VALIDATION_STAMP_SELECTION_EXISTS,
                 params("account", account).addValue("validationStamp", validationStamp),
                 Integer.class) != null;
     }
