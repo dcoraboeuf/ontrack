@@ -34,8 +34,8 @@
                                 {{#if run}}
                                     {{#if passed}}
                                         <span class="build-validation-run label">
-                                            <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
-                                            <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">{{name}}</a>
+                                            <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                                            <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">{{name}}</a>
                                             {{#runs}}
                                                 <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
                                             {{/runs}}
@@ -51,7 +51,7 @@
                                     {{#if run}}
                                         {{^passed}}
                                             <span class="build-validation-run label">
-                                                <img class="tooltip-source" width="24" title="{{../name}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                                                <img class="tooltip-source" width="24" title="{{../name}}{{#../owner}} - {{fullName}}{{/../owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
                                                 <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">{{name}}</a>
                                                 {{#runs}}
                                                     <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
@@ -67,7 +67,7 @@
                                 {{#stamps}}
                                     {{^if run}}
                                             <span class="build-validation-run label">
-                                                <img class="tooltip-source" width="24" title="{{name}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
+                                                <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
                                                 <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">{{name}}</a>
                                                 {{#runs}}
                                                     <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/build/{{../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" /></a>

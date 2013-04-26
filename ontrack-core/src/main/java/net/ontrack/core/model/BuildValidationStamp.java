@@ -12,11 +12,16 @@ import java.util.List;
 public class BuildValidationStamp {
 
     public static BuildValidationStamp of (ValidationStampSummary validationStamp) {
-        return new BuildValidationStamp(validationStamp.getName(), validationStamp.getDescription(), Collections.<BuildValidationStampRun>emptyList());
+        return new BuildValidationStamp(
+                validationStamp.getName(),
+                validationStamp.getDescription(),
+                validationStamp.getOwner(),
+                Collections.<BuildValidationStampRun>emptyList());
     }
 
 	private final String name;
 	private final String description;
+    private final AccountSummary owner;
     private final List<BuildValidationStampRun> runs;
 
     public boolean isRun() {
@@ -24,7 +29,7 @@ public class BuildValidationStamp {
     }
 
     public BuildValidationStamp withRuns (List<BuildValidationStampRun> runs) {
-        return new BuildValidationStamp(name, description, runs);
+        return new BuildValidationStamp(name, description, owner, runs);
     }
 
 }
