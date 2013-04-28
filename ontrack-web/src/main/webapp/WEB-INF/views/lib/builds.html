@@ -32,7 +32,10 @@
                         <@lh key="branch.validation_stamps" />
                         <#if secLogged()>
                             <a href="gui/admin/project/{{project}}/branch/{{branch}}/validation_stamp/filter">
-                                <i class="icon-filter action action-optional" title="<@lh key='validation_stamp.filter'/>"></i>
+                                <i
+                                        id="validation-stamps-filter-button"
+                                        class="icon-filter action action-optional {{#if branchBuilds.validationStampsFiltered}}enabled{{/if}}"
+                                        title="<@lh key='validation_stamp.filter'/>{{#if branchBuilds.validationStampsFiltered}} - <@lh key='validation_stamp.filter.enabled'/>{{/if}}"></i>
                             </a>
                         </#if>
                     </th>

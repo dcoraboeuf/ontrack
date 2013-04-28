@@ -532,6 +532,10 @@ validation_stamp.filter
     en -> Filter validation stamps
     fr -> Sélectionner les validations
 
+validation_stamp.filter.enabled
+    en -> Enabled
+    fr -> Actif
+
 [promotion_level]
 
 promotion_level.manage

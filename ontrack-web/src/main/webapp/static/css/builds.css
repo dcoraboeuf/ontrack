@@ -15,3 +15,7 @@ span.decoration {
     font-size: 75%;
     font-weight: normal;
 }
+
+#validation-stamps-filter-button.enabled {
+    border: solid 2px red;
+}
