@@ -1,10 +1,15 @@
 package net.ontrack.web.ui;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.service.ManagementService;
+import net.ontrack.service.ProfileService;
 import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.ui.model.ValidationRunStatusUpdateData;
@@ -18,22 +23,23 @@ import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
 
+    private final SecurityUtils securityUtils;
     private final ManagementService managementService;
+    private final ProfileService profileService;
     private final PropertyUI propertyUI;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, PropertyUI propertyUI, ObjectMapper objectMapper) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, PropertyUI propertyUI, ObjectMapper objectMapper) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
+        this.securityUtils = securityUtils;
+        this.profileService = profileService;
         this.propertyUI = propertyUI;
         this.objectMapper = objectMapper;
     }
@@ -415,6 +421,18 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     BranchBuilds getBuilds(HttpServletResponse response, Locale locale, @PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter filter) throws IOException {
         // Performs the query
         BranchBuilds builds = getBuilds(locale, project, branch, filter);
+        // Filters on validation stamps?
+        int currentAccountId = securityUtils.getCurrentAccountId();
+        if (currentAccountId > 0) {
+            // Gets the branch ID
+            int branchId = entityConverter.getBranchId(project, branch);
+            // Gets the list of filtered validation IDs
+            Set<Integer> filteredStampIds = profileService.getFilteredValidationStampIds(branchId);
+            // Operating the filter
+            if (!filteredStampIds.isEmpty()) {
+                builds = filterStamps(builds, filteredStampIds);
+            }
+        }
         // Setting the cookie for the filter
         CookieGenerator cookie = new CookieGenerator();
         cookie.setCookieMaxAge(365 * 24 * 60 * 60); // 1 year
@@ -422,6 +440,59 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         cookie.addCookie(response, objectMapper.writeValueAsString(filter));
         // OK
         return builds;
+    }
+
+    private BranchBuilds filterStamps(BranchBuilds builds, final Set<Integer> filteredStampIds) {
+        return new BranchBuilds(
+                filterValidationStamps(builds.getValidationStamps(), filteredStampIds),
+                builds.getPromotionLevels(),
+                builds.getStatusList(),
+                Lists.transform(
+                        builds.getBuilds(),
+                        new Function<BuildCompleteStatus, BuildCompleteStatus>() {
+                            @Override
+                            public BuildCompleteStatus apply(BuildCompleteStatus buildCompleteStatus) {
+                                return filterBuildCompleteStatus(buildCompleteStatus, filteredStampIds);
+                            }
+                        }
+                )
+        );
+    }
+
+    private BuildCompleteStatus filterBuildCompleteStatus(BuildCompleteStatus buildCompleteStatus, final Set<Integer> filteredStampIds) {
+        return new BuildCompleteStatus(
+          buildCompleteStatus.getId(),
+                buildCompleteStatus.getName(),
+                buildCompleteStatus.getDescription(),
+                buildCompleteStatus.getSignature(),
+                buildCompleteStatus.getDecorations(),
+                Lists.newArrayList(
+                        Collections2.filter(
+                                buildCompleteStatus.getValidationStamps().values(),
+                                new Predicate<BuildValidationStamp>() {
+                                    @Override
+                                    public boolean apply(BuildValidationStamp buildValidationStamp) {
+                                        return !filteredStampIds.contains(buildValidationStamp.getValidationStampId());
+                                    }
+                                }
+                        )
+                ),
+                buildCompleteStatus.getPromotionLevels()
+        );
+    }
+
+    private List<ValidationStampSummary> filterValidationStamps(List<ValidationStampSummary> validationStamps, final Set<Integer> filteredStampIds) {
+        return Lists.newArrayList(
+                Collections2.filter(
+                        validationStamps,
+                        new Predicate<ValidationStampSummary>() {
+                            @Override
+                            public boolean apply(ValidationStampSummary validationStampSummary) {
+                                return !filteredStampIds.contains(validationStampSummary.getId());
+                            }
+                        }
+                )
+        );
     }
 
     @Override

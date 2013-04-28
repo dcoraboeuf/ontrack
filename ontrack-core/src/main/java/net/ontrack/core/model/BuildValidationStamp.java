@@ -13,12 +13,14 @@ public class BuildValidationStamp {
 
     public static BuildValidationStamp of (ValidationStampSummary validationStamp) {
         return new BuildValidationStamp(
+                validationStamp.getId(),
                 validationStamp.getName(),
                 validationStamp.getDescription(),
                 validationStamp.getOwner(),
                 Collections.<BuildValidationStampRun>emptyList());
     }
 
+    private final int validationStampId;
 	private final String name;
 	private final String description;
     private final AccountSummary owner;
@@ -29,7 +31,7 @@ public class BuildValidationStamp {
     }
 
     public BuildValidationStamp withRuns (List<BuildValidationStampRun> runs) {
-        return new BuildValidationStamp(name, description, owner, runs);
+        return new BuildValidationStamp(validationStampId, name, description, owner, runs);
     }
 
 }
