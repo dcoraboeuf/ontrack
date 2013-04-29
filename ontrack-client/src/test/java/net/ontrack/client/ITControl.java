@@ -6,8 +6,6 @@ import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.PropertiesCreationForm;
 import org.junit.Test;
 
-import java.util.concurrent.Callable;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,10 +17,10 @@ public class ITControl extends AbstractEnv {
         final BranchSummary branch = createBranch();
         // Creates a build
         final String buildName = uid("BLD");
-        BuildSummary build = controlAsAdmin(new Callable<BuildSummary>() {
+        BuildSummary build = asAdmin(new ControlCall<BuildSummary>() {
             @Override
-            public BuildSummary call() {
-                return control.createBuild(
+            public BuildSummary call(ControlUIClient client) {
+                return client.createBuild(
                         branch.getProject().getName(),
                         branch.getName(),
                         new BuildCreationForm(

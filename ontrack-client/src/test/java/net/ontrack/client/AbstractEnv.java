@@ -8,12 +8,11 @@ import net.ontrack.core.model.ProjectSummary;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.Callable;
 
 public abstract class AbstractEnv {
 
-    protected final ControlUIClient control;
-    protected final ManageUIClient manage;
+    private final ControlUIClient control;
+    private final ManageUIClient manage;
 
     protected AbstractEnv() {
         String itPort = System.getProperty("itPort");
@@ -25,10 +24,10 @@ public abstract class AbstractEnv {
 
     protected BranchSummary createBranch() {
         final ProjectSummary project = createProject();
-        return manageAsAdmin(new Callable<BranchSummary>() {
+        return asAdmin(new ManageCall<BranchSummary>() {
             @Override
-            public BranchSummary call() {
-                return manage.createBranch(
+            public BranchSummary call(ManageUIClient client) {
+                return client.createBranch(
                         project.getName(),
                         new BranchCreationForm(
                                 uid("BRCH"),
@@ -40,10 +39,10 @@ public abstract class AbstractEnv {
     }
 
     protected ProjectSummary createProject() {
-        return manageAsAdmin(new Callable<ProjectSummary>() {
+        return asAdmin(new ManageCall<ProjectSummary>() {
             @Override
-            public ProjectSummary call() {
-                return manage.createProject(new ProjectCreationForm(
+            public ProjectSummary call(ManageUIClient client) {
+                return client.createProject(new ProjectCreationForm(
                         uid("PRJ"),
                         "Test project"
                 ));
@@ -51,11 +50,11 @@ public abstract class AbstractEnv {
         });
     }
 
-    protected <T> T manageAsAdmin(Callable<T> call) {
+    protected <T> T asAdmin(ManageCall<T> call) {
         manage.login("admin", "admin");
         try {
             try {
-                return call.call();
+                return call.call(manage);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -64,11 +63,11 @@ public abstract class AbstractEnv {
         }
     }
 
-    protected <T> T controlAsAdmin(Callable<T> call) {
+    protected <T> T asAdmin(ControlCall<T> call) {
         control.login("admin", "admin");
         try {
             try {
-                return call.call();
+                return call.call(control);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
