@@ -40,6 +40,10 @@
         </dependency>
     </dependencies>
 
+    <properties>
+        <itPort>9999</itPort>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -91,7 +95,7 @@
                                 </systemProperty>
                                 <systemProperty>
                                     <name>jetty.port</name>
-                                    <value>9999</value>
+                                    <value>${itPort}</value>
                                 </systemProperty>
                             </systemProperties>
                         </configuration>
@@ -120,6 +124,25 @@
                         <version>1.4</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <!-- Runs integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>it-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <itPort>${itPort}</itPort>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
