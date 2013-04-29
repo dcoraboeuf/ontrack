@@ -1,6 +1,7 @@
 package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,16 @@ public class SVNExplorerExtension extends ExtensionAdapter {
     public static final String EXTENSION = "svnexplorer";
     private final ChangeLogActionController changeLogActionController;
     private final SensibleFilesPropertyExtension sensibleFilesPropertyExtension;
+    private final BranchHistoryActionController branchHistoryActionController;
 
     @Autowired
     public SVNExplorerExtension(
             ChangeLogActionController changeLogActionController,
-            SensibleFilesPropertyExtension sensibleFilesPropertyExtension) {
+            SensibleFilesPropertyExtension sensibleFilesPropertyExtension, BranchHistoryActionController branchHistoryActionController) {
         super(EXTENSION);
         this.changeLogActionController = changeLogActionController;
         this.sensibleFilesPropertyExtension = sensibleFilesPropertyExtension;
+        this.branchHistoryActionController = branchHistoryActionController;
     }
 
     @Override
@@ -34,5 +37,12 @@ public class SVNExplorerExtension extends ExtensionAdapter {
     @Override
     public Collection<? extends ActionExtension> getDiffActions() {
         return Collections.singletonList(changeLogActionController);
+    }
+
+    @Override
+    public Collection<? extends EntityActionExtension> getEntityActions() {
+        return Collections.singletonList(
+                branchHistoryActionController
+        );
     }
 }

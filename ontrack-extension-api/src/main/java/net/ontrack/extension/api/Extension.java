@@ -1,6 +1,8 @@
 package net.ontrack.extension.api;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
@@ -19,6 +21,8 @@ public interface Extension {
     Collection<? extends ActionExtension> getTopLevelActions();
 
     Collection<? extends ActionExtension> getDiffActions();
+
+    Collection<? extends EntityActionExtension> getEntityActions();
 
     Collection<? extends EntityDecorator> getDecorators();
 }

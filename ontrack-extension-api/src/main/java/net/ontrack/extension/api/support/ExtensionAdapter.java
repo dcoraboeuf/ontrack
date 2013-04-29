@@ -2,6 +2,7 @@ package net.ontrack.extension.api.support;
 
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
@@ -45,6 +46,11 @@ public abstract class ExtensionAdapter implements Extension {
 
     @Override
     public Collection<? extends EntityDecorator> getDecorators() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<? extends EntityActionExtension> getEntityActions() {
         return Collections.emptyList();
     }
 }

@@ -155,7 +155,7 @@ svnexplorer.revision.promotions.notForThisPromotionLevel
     en -> The revision was never promoted to this promotion level.
     fr -> Cette révision n'a jamais été promue à ce niveau de promotion.
 
-[issue]]
+[issue]
 
 svnexplorer.issue
     en -> Issue {0}
@@ -164,6 +164,12 @@ svnexplorer.issue
 svnexplorer.issue.revisions
     en -> Associated revisions
     fr -> Révisions associées
+
+[branch-history]
+
+svnexplorer.branch-history
+    en -> Branch history
+    fr -> Historique des branches
 
 [errors]
 
