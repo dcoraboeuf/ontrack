@@ -25,7 +25,7 @@ public abstract class AbstractEnv {
 
     protected BranchSummary createBranch() {
         final ProjectSummary project = createProject();
-        return asAdmin(new Callable<BranchSummary>() {
+        return manageAsAdmin(new Callable<BranchSummary>() {
             @Override
             public BranchSummary call() {
                 return manage.createBranch(
@@ -40,7 +40,7 @@ public abstract class AbstractEnv {
     }
 
     protected ProjectSummary createProject() {
-        return asAdmin(new Callable<ProjectSummary>() {
+        return manageAsAdmin(new Callable<ProjectSummary>() {
             @Override
             public ProjectSummary call() {
                 return manage.createProject(new ProjectCreationForm(
@@ -51,7 +51,7 @@ public abstract class AbstractEnv {
         });
     }
 
-    protected <T> T asAdmin(Callable<T> call) {
+    protected <T> T manageAsAdmin(Callable<T> call) {
         manage.login("admin", "admin");
         try {
             try {
@@ -61,6 +61,19 @@ public abstract class AbstractEnv {
             }
         } finally {
             manage.logout();
+        }
+    }
+
+    protected <T> T controlAsAdmin(Callable<T> call) {
+        control.login("admin", "admin");
+        try {
+            try {
+                return call.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            control.logout();
         }
     }
 

@@ -19,7 +19,7 @@ public class ITControl extends AbstractEnv {
         final BranchSummary branch = createBranch();
         // Creates a build
         final String buildName = uid("BLD");
-        BuildSummary build = asAdmin(new Callable<BuildSummary>() {
+        BuildSummary build = controlAsAdmin(new Callable<BuildSummary>() {
             @Override
             public BuildSummary call() {
                 return control.createBuild(
@@ -37,7 +37,7 @@ public class ITControl extends AbstractEnv {
         assertNotNull(build);
         assertEquals(buildName, build.getName());
         assertEquals(branch.getName(), build.getBranch().getName());
-        assertEquals(branch.getProject().getName(), build.getBranch().getName());
+        assertEquals(branch.getProject().getName(), build.getBranch().getProject().getName());
     }
 
 }
