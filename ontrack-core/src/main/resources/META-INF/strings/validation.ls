@@ -40,13 +40,6 @@ net.ontrack.core.model.Account.password.requiredForBuiltin
     en -> Password is required when using the 'builtin' authentication mode.
     fr -> Le mot de passe est obligatoire quand le mode d'authentification 'builtin' est utilisé.
 
-[project_group]
-
-net.ontrack.core.model.ProjectGroupCreationForm.name
-	en,fr -> @[model.name]
-net.ontrack.core.model.ProjectGroupCreationForm.description
-	en,fr -> @[model.description]
-	
 [project]
 
 net.ontrack.core.model.ProjectCreationForm.name

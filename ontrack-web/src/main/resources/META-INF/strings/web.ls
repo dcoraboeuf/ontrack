@@ -371,31 +371,9 @@ home
 	en -> Home page
 	fr -> Page d'accueil
 
-home.projectgroups
-	en -> Groups
-	fr -> Groupes
-
 home.projects
 	en -> Projects
 	fr -> Projets
-
-[projectgroup]
-
-projectgroup.empty
-    en -> No project group has been created yet.
-    fr -> Aucun groupe de projet n'a encore été créé.
-
-projectgroup.create
-	en -> New group
-	fr -> Nouveau groupe
-
-projectgroup.create.title
-	en,fr -> @[projectgroup.create]
-
-projectgroup.name
-	en,fr -> @[model.name]
-projectgroup.description
-	en,fr -> @[model.description]
 
 [project]
 
