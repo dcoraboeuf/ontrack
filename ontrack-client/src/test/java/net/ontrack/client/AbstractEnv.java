@@ -2,7 +2,13 @@ package net.ontrack.client;
 
 import net.ontrack.client.support.ClientFactory;
 import net.ontrack.core.model.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -104,6 +110,14 @@ public abstract class AbstractEnv {
         }
     }
 
+    protected <T> T anonymous(ManageCall<T> call) {
+        try {
+            return call.call(manage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected <T> T asAdmin(ControlCall<T> call) {
         control.login("admin", "admin");
         try {
@@ -114,6 +128,20 @@ public abstract class AbstractEnv {
             }
         } finally {
             control.logout();
+        }
+    }
+
+    protected MultipartFile mockImage(String path) {
+        try (InputStream in = getClass().getResourceAsStream(path)) {
+            byte[] content = IOUtils.toByteArray(in);
+            return new MockMultipartFile(
+                    StringUtils.substringAfterLast(path, "/"),
+                    path,
+                    "image/png",
+                    content
+            );
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
