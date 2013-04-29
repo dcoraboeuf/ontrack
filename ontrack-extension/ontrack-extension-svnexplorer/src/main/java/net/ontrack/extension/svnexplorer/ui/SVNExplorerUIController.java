@@ -7,6 +7,7 @@ import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.svnexplorer.model.*;
 import net.ontrack.extension.svnexplorer.service.SVNExplorerService;
 import net.ontrack.web.support.AbstractUIController;
+import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,15 @@ import java.util.concurrent.TimeUnit;
 public class SVNExplorerUIController extends AbstractUIController implements SVNExplorerUI {
 
     private final ManageUI manageUI;
+    private final EntityConverter entityConverter;
     private final SVNExplorerService svnExplorerService;
     private final Cache<String, ChangeLog> logCache;
 
     @Autowired
-    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI, SVNExplorerService svnExplorerService) {
+    public SVNExplorerUIController(ErrorHandler errorHandler, Strings strings, ManageUI manageUI, EntityConverter entityConverter, SVNExplorerService svnExplorerService) {
         super(errorHandler, strings);
         this.manageUI = manageUI;
+        this.entityConverter = entityConverter;
         this.svnExplorerService = svnExplorerService;
         // Caching
         logCache = CacheBuilder.newBuilder()
@@ -46,6 +49,15 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     @RequestMapping(value = "/issue/{key:.*}", method = RequestMethod.GET)
     public @ResponseBody IssueInfo getIssueInfo(Locale locale, @PathVariable String key) {
         return svnExplorerService.getIssueInfo(locale, key);
+    }
+
+    @Override
+    @RequestMapping(value = "/branch-history/{projectName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public @ResponseBody BranchHistory getBranchHistory(@PathVariable String projectName) {
+        // Gets the project ID
+        int projectId = entityConverter.getProjectId(projectName);
+        // Branch history
+        return svnExplorerService.getBranchHistory(projectId);
     }
 
     @Override

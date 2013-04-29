@@ -361,6 +361,18 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public BranchHistory getBranchHistory(int projectId) {
+        // Gets the project details
+        ProjectSummary project = managementService.getProject(projectId);
+        // FIXME Branch history
+        // OK
+        return new BranchHistory(
+                project
+        );
+    }
+
     private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
         // List of promotions for this branch
         List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);

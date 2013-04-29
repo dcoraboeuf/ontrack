@@ -3,21 +3,35 @@ package net.ontrack.extension.svnexplorer;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.extension.api.action.EntityActionExtension;
+import net.ontrack.extension.svnexplorer.ui.SVNExplorerUI;
 import net.ontrack.web.support.AbstractGUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/gui/extension/svnexplorer/branch-history")
 public class BranchHistoryActionController extends AbstractGUIController implements EntityActionExtension<ProjectSummary> {
 
+    private final SVNExplorerUI svnExplorerUI;
+
     @Autowired
-    public BranchHistoryActionController(ErrorHandler errorHandler) {
+    public BranchHistoryActionController(ErrorHandler errorHandler, SVNExplorerUI svnExplorerUI) {
         super(errorHandler);
+        this.svnExplorerUI = svnExplorerUI;
+    }
+
+    @RequestMapping(value = "/{projectName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public String branchHistory(@PathVariable String projectName, Model model) {
+        model.addAttribute("branchHistory", svnExplorerUI.getBranchHistory(projectName));
+        // OK
+        return "extension/svnexplorer/branch-history";
     }
 
     @Override

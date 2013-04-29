@@ -171,6 +171,10 @@ svnexplorer.branch-history
     en -> Branch history
     fr -> Historique des branches
 
+svnexplorer.branch-history.title
+    en -> Branch history for {0}
+    fr -> Historique des branches pour {0}
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException

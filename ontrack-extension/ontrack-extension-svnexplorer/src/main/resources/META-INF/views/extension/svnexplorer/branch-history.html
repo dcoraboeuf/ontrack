@@ -1,0 +1,18 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) script=true style=true extension=true>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${branchHistory.project.name?html}">${branchHistory.project.name?html}</a>
+                    /
+                    ${ loc('svnexplorer.branch-history.title', branchHistory.project.name) }
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${branchHistory.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+</@layout_std>
