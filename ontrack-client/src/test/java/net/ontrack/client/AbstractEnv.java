@@ -1,10 +1,7 @@
 package net.ontrack.client;
 
 import net.ontrack.client.support.ClientFactory;
-import net.ontrack.core.model.BranchCreationForm;
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.ProjectCreationForm;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +19,11 @@ public abstract class AbstractEnv {
         manage = clientFactory.manage();
     }
 
-    protected BranchSummary createBranch() {
-        final ProjectSummary project = createProject();
+    protected BranchSummary doCreateBranch() {
+        return doCreateBranch(doCreateProject());
+    }
+
+    private BranchSummary doCreateBranch(final ProjectSummary project) {
         return asAdmin(new ManageCall<BranchSummary>() {
             @Override
             public BranchSummary call(ManageUIClient client) {
@@ -38,7 +38,7 @@ public abstract class AbstractEnv {
         });
     }
 
-    protected ProjectSummary createProject() {
+    protected ProjectSummary doCreateProject() {
         return asAdmin(new ManageCall<ProjectSummary>() {
             @Override
             public ProjectSummary call(ManageUIClient client) {
@@ -46,6 +46,47 @@ public abstract class AbstractEnv {
                         uid("PRJ"),
                         "Test project"
                 ));
+            }
+        });
+    }
+
+    protected ValidationStampSummary doCreateValidationStamp() {
+        return doCreateValidationStamp(doCreateBranch());
+    }
+
+    protected ValidationStampSummary doCreateValidationStamp(final BranchSummary branch) {
+        return asAdmin(new ManageCall<ValidationStampSummary>() {
+            @Override
+            public ValidationStampSummary call(ManageUIClient client) {
+                return client.createValidationStamp(
+                        branch.getProject().getName(),
+                        branch.getName(),
+                        new ValidationStampCreationForm(
+                                uid("STMP"),
+                                "Test validation stamp"
+                        )
+                );
+            }
+        });
+    }
+
+    protected BuildSummary doCreateBuild() {
+        return doCreateBuild(doCreateBranch());
+    }
+
+    protected BuildSummary doCreateBuild(final BranchSummary branch) {
+        return asAdmin(new ControlCall<BuildSummary>() {
+            @Override
+            public BuildSummary call(ControlUIClient client) {
+                return client.createBuild(
+                        branch.getProject().getName(),
+                        branch.getName(),
+                        new BuildCreationForm(
+                                uid("BLD"),
+                                "Test build",
+                                PropertiesCreationForm.create()
+                        )
+                );
             }
         });
     }
