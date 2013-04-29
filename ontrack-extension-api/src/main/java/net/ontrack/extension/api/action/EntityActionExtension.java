@@ -14,6 +14,8 @@ public interface EntityActionExtension<T extends EntitySummary> {
 
     String getRole(T summary);
 
+    boolean isEnabled(T summary);
+
     String getPath(T summary);
 
     Localizable getTitle(T summary);

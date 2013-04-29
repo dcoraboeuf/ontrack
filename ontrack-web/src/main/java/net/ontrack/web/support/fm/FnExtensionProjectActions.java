@@ -58,11 +58,15 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
                     new Predicate<EntityActionExtension<ProjectSummary>>() {
                         @Override
                         public boolean apply(EntityActionExtension<ProjectSummary> action) {
-                            String actionRole = action.getRole(projectSummary);
-                            if (actionRole == null) {
-                                return true;
+                            if (action.isEnabled(projectSummary)) {
+                                String actionRole = action.getRole(projectSummary);
+                                if (actionRole == null) {
+                                    return true;
+                                } else {
+                                    return securityUtils.hasRole(actionRole);
+                                }
                             } else {
-                                return securityUtils.hasRole(actionRole);
+                                return false;
                             }
                         }
                     }

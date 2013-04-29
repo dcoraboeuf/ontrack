@@ -7,6 +7,7 @@ import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,20 +19,25 @@ public class SVNExplorerExtension extends ExtensionAdapter {
     private final ChangeLogActionController changeLogActionController;
     private final SensibleFilesPropertyExtension sensibleFilesPropertyExtension;
     private final BranchHistoryActionController branchHistoryActionController;
+    private final ProjectRootPathPropertyExtension projectRootPathPropertyExtension;
 
     @Autowired
     public SVNExplorerExtension(
             ChangeLogActionController changeLogActionController,
-            SensibleFilesPropertyExtension sensibleFilesPropertyExtension, BranchHistoryActionController branchHistoryActionController) {
+            SensibleFilesPropertyExtension sensibleFilesPropertyExtension, BranchHistoryActionController branchHistoryActionController, ProjectRootPathPropertyExtension projectRootPathPropertyExtension) {
         super(EXTENSION);
         this.changeLogActionController = changeLogActionController;
         this.sensibleFilesPropertyExtension = sensibleFilesPropertyExtension;
         this.branchHistoryActionController = branchHistoryActionController;
+        this.projectRootPathPropertyExtension = projectRootPathPropertyExtension;
     }
 
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
-        return Collections.singletonList(sensibleFilesPropertyExtension);
+        return Arrays.asList(
+                sensibleFilesPropertyExtension,
+                projectRootPathPropertyExtension
+        );
     }
 
     @Override

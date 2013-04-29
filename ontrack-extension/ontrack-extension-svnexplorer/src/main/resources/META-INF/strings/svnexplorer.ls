@@ -175,6 +175,12 @@ svnexplorer.branch-history.title
     en -> Branch history for {0}
     fr -> Historique des branches pour {0}
 
+[rootPath]
+
+svnexplorer.rootPath
+    en -> SVN root path
+    fr -> Chemin racine SVN
+
 [errors]
 
 net.ontrack.extension.svnexplorer.service.SVNExplorerNoBuildPathDefinedForBranchException
