@@ -16,18 +16,6 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public List<ProjectGroupSummary> getProjectGroupList() {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getProjectGroupList
-        return null;
-    }
-
-    @Override
-    public ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createProjectGroup
-        return null;
-    }
-
-    @Override
     public String getProjectURL(String project) {
         return getUrl(format("/gui/project/%s", project));
     }

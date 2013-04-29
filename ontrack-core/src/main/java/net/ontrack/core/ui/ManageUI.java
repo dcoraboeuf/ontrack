@@ -8,12 +8,6 @@ import java.util.Locale;
 
 public interface ManageUI {
 
-    // Project groups
-
-    List<ProjectGroupSummary> getProjectGroupList();
-
-    ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form);
-
     // Projects
 
     List<ProjectSummary> getProjectList();

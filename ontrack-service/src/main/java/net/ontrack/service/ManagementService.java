@@ -10,12 +10,6 @@ import java.util.Set;
 
 public interface ManagementService {
 	
-	// Project groups
-
-	ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form);
-
-	List<ProjectGroupSummary> getProjectGroupList();
-	
 	// Projects
 
 	ProjectSummary createProject(ProjectCreationForm form);

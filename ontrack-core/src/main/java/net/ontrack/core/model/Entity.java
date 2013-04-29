@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum Entity {
-	
-	PROJECT_GROUP("NAME", list(), list(), "project_group/{this}"),
-	
+
 	PROJECT("NAME", list(), list(), "project/{this}"),
 	
 	BRANCH("NAME", list(PROJECT), list(PROJECT), "project/{project}/branch/{this}"),

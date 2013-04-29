@@ -41,24 +41,6 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         this.objectMapper = objectMapper;
     }
 
-    // Project groups
-
-    @Override
-    @RequestMapping(value = "/ui/manage/project_group", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    List<ProjectGroupSummary> getProjectGroupList() {
-        return managementService.getProjectGroupList();
-    }
-
-    @Override
-    @RequestMapping(value = "/ui/manage/project_group", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    ProjectGroupSummary createProjectGroup(@RequestBody ProjectGroupCreationForm form) {
-        return managementService.createProjectGroup(form);
-    }
-
     // Projects
 
     @Override

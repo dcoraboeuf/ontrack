@@ -141,8 +141,6 @@ public class ManagementServiceTest extends AbstractValidationTest {
     public void getEntityId() {
         assertEquals(1, service.getEntityId(Entity.PROJECT, "PROJECT1", Collections.<Entity, Integer>emptyMap()));
         assertEquals(2, service.getEntityId(Entity.PROJECT, "PROJECT2", Collections.<Entity, Integer>emptyMap()));
-        assertEquals(1, service.getEntityId(Entity.PROJECT_GROUP, "GROUP1", Collections.<Entity, Integer>emptyMap()));
-        assertEquals(2, service.getEntityId(Entity.PROJECT_GROUP, "GROUP2", Collections.<Entity, Integer>emptyMap()));
     }
 
     @Test(expected = EntityNameNotFoundException.class)

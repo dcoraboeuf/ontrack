@@ -37,7 +37,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final SecurityUtils securityUtils;
     private final Strings strings;
     private final AccountDao accountDao;
-    private final ProjectGroupDao projectGroupDao;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
     private final ValidationStampDao validationStampDao;
@@ -123,12 +122,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectGroupDao projectGroupDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
+    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
         this.accountDao = accountDao;
-        this.projectGroupDao = projectGroupDao;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.validationStampDao = validationStampDao;
@@ -142,40 +140,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.entityDao = entityDao;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
-    }
-
-    // Branches
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProjectGroupSummary> getProjectGroupList() {
-        return Lists.transform(
-                projectGroupDao.findAll(),
-                new Function<TProjectGroup, ProjectGroupSummary>() {
-                    @Override
-                    public ProjectGroupSummary apply(TProjectGroup t) {
-                        return new ProjectGroupSummary(
-                                t.getId(),
-                                t.getName(),
-                                t.getDescription()
-                        );
-                    }
-                }
-        );
-    }
-
-    @Override
-    @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public ProjectGroupSummary createProjectGroup(ProjectGroupCreationForm form) {
-        // Validation
-        validate(form, NameDescription.class);
-        // Query
-        int id = projectGroupDao.createGroup(form.getName(), form.getDescription());
-        // Audit
-        event(Event.of(EventType.PROJECT_GROUP_CREATED).withProjectGroup(id));
-        // OK
-        return new ProjectGroupSummary(id, form.getName(), form.getDescription());
     }
 
     @Override

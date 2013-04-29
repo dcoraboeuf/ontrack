@@ -27,10 +27,6 @@ public class Event {
         return this;
     }
 
-    public Event withProjectGroup(int id) {
-        return withEntity(Entity.PROJECT_GROUP, id);
-    }
-
     public Event withProject(int id) {
         return withEntity(Entity.PROJECT, id);
     }
