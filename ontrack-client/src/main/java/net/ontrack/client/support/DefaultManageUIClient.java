@@ -42,8 +42,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public ProjectSummary createProject(ProjectCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createProject
-        return null;
+        return post("/ui/manage/project", ProjectSummary.class, form);
     }
 
     @Override
@@ -53,8 +52,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack deleteProject(String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.deleteProject
-        return null;
+        return delete(format("ui/manage/project/%s", name), Ack.class);
     }
 
     @Override
@@ -79,8 +77,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public BranchSummary createBranch(String project, BranchCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createBranch
-        return null;
+        return post(format("/ui/manage/project/%s/branch", project), BranchSummary.class, form);
     }
 
     @Override
@@ -95,8 +92,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack deleteBranch(String project, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.deleteBranch
-        return null;
+        return delete(format("/ui/manage/project/%s/branch/%s", project, name), Ack.class);
     }
 
     @Override
@@ -106,14 +102,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public ValidationStampSummary getValidationStamp(String project, String branch, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getValidationStamp
-        return null;
+        return get(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, name), ValidationStampSummary.class);
     }
 
     @Override
     public ValidationStampSummary createValidationStamp(String project, String branch, ValidationStampCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createValidationStamp
-        return null;
+        return post(format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class, form);
     }
 
     @Override
@@ -123,8 +117,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack deleteValidationStamp(String project, String branch, String validationStamp) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.deleteValidationStamp
-        return null;
+        return delete(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), Ack.class);
     }
 
     @Override
@@ -141,14 +134,27 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack linkValidationStampToPromotionLevel(String project, String branch, String validationStamp, String promotionLevel) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.linkValidationStampToPromotionLevel
-        return null;
+        return get(
+                format(
+                        "/ui/manage/project/%s/branch/%s/validation_stamp/%s/link/%s",
+                        project,
+                        branch,
+                        validationStamp,
+                        promotionLevel
+                ),
+                Ack.class);
     }
 
     @Override
     public Ack unlinkValidationStampToPromotionLevel(String project, String branch, String validationStamp) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.unlinkValidationStampToPromotionLevel
-        return null;
+        return get(
+                format(
+                        "/ui/manage/project/%s/branch/%s/validation_stamp/%s/unlink",
+                        project,
+                        branch,
+                        validationStamp
+                ),
+                Ack.class);
     }
 
     @Override
@@ -173,14 +179,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public PromotionLevelSummary getPromotionLevel(String project, String branch, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getPromotionLevel
-        return null;
+        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), PromotionLevelSummary.class);
     }
 
     @Override
     public PromotionLevelSummary createPromotionLevel(String project, String branch, PromotionLevelCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.createPromotionLevel
-        return null;
+        return post(format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class, form);
     }
 
     @Override
@@ -212,20 +216,17 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack upPromotionLevel(String project, String branch, String promotionLevel) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.upPromotionLevel
-        return null;
+        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/up", project, branch, promotionLevel), Ack.class);
     }
 
     @Override
     public Ack downPromotionLevel(String project, String branch, String promotionLevel) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.downPromotionLevel
-        return null;
+        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/down", project, branch, promotionLevel), Ack.class);
     }
 
     @Override
     public PromotionLevelManagementData getPromotionLevelManagementData(String project, String branch) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getPromotionLevelManagementData
-        return null;
+        return get(format("/ui/manage/project/%s/branch/%s/promotion_level_manage", project, branch), PromotionLevelManagementData.class);
     }
 
     @Override
@@ -278,8 +279,17 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.getValidationRun
-        return null;
+        return get(
+                format(
+                        "/ui/manage/project/%s/branch/%s/build/%s/validation_stamp/%s/validation_run/%d",
+                        project,
+                        branch,
+                        build,
+                        validationStamp,
+                        run
+                ),
+                ValidationRunSummary.class
+        );
     }
 
     @Override
@@ -290,8 +300,14 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.addValidationRunComment
-        return null;
+        return post(
+                format(
+                        "/ui/manage/validation_run/%d/comment",
+                        runId
+                ),
+                Ack.class,
+                form
+        );
     }
 
 }
