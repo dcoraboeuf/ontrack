@@ -49,4 +49,14 @@ public class BranchHistoryActionController extends AbstractGUIController impleme
     public Localizable getTitle(ProjectSummary summary) {
         return new LocalizableMessage("svnexplorer.branch-history");
     }
+
+    @Override
+    public String getIcon(ProjectSummary summary) {
+        return "icon-align-left";
+    }
+
+    @Override
+    public String getCss(ProjectSummary summary) {
+        return null;
+    }
 }

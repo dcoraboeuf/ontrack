@@ -16,6 +16,7 @@ import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.support.EntityConverter;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -74,10 +75,22 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
                     new Function<EntityActionExtension<ProjectSummary>, NamedLink>() {
                         @Override
                         public NamedLink apply(EntityActionExtension<ProjectSummary> action) {
-                            return new NamedLink(
+                            NamedLink link = new NamedLink(
                                     action.getPath(projectSummary),
                                     action.getTitle(projectSummary).getLocalizedMessage(strings, locale)
                             );
+                            // Icon
+                            String icon = action.getIcon(projectSummary);
+                            if (StringUtils.isNotBlank(icon)) {
+                                link = link.withIcon(icon);
+                            }
+                            // CSS
+                            String css = action.getCss(projectSummary);
+                            if (StringUtils.isNotBlank(css)) {
+                                link = link.withCss(css);
+                            }
+                            // OK
+                            return link;
                         }
                     }
             );

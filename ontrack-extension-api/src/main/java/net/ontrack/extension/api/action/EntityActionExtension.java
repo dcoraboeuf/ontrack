@@ -18,4 +18,8 @@ public interface EntityActionExtension<T extends EntitySummary> {
 
     Localizable getTitle(T summary);
 
+    String getIcon(T summary);
+
+    String getCss(T summary);
+
 }
