@@ -195,3 +195,6 @@ net.ontrack.extension.svnexplorer.service.NoCommonAncestorException
     en -> No common ancestor was found between the builds histories.
     fr -> Aucun ancêtre common n'a été trouvé entre les historiques des builds.
 
+net.ontrack.extension.svnexplorer.service.ProjectHasRootPathException
+    en -> Project {0} has no SVN root path defined.
+    fr -> Le project {0} n'a aucun chemin racine de défini.

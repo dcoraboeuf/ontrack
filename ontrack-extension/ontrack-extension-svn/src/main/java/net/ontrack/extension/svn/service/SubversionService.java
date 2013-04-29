@@ -26,6 +26,8 @@ public interface SubversionService {
      */
     long getRepositoryRevision(SVNURL url);
 
+    SVNReference getReference(SVNLocation location);
+
     void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
              boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions,
              ISVNLogEntryHandler isvnLogEntryHandler);

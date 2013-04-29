@@ -180,7 +180,7 @@ public class DefaultSubversionService implements SubversionService {
     public long getRepositoryRevision(SVNURL url) {
         try {
             SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
-            return info.getRevision().getNumber();
+            return info.getCommittedRevision().getNumber();
         } catch (SVNException e) {
             throw translateSVNException(e);
         }
@@ -328,6 +328,11 @@ public class DefaultSubversionService implements SubversionService {
                 info.getRevision().getNumber(),
                 new DateTime(info.getCommittedDate())
         );
+    }
+
+    @Override
+    public SVNReference getReference(SVNLocation location) {
+        return getReference(location.getPath(), SVNRevision.create(location.getRevision()));
     }
 
     private SVNInfo getInfo(SVNURL url, SVNRevision revision) {

@@ -7,5 +7,6 @@ import net.ontrack.core.model.ProjectSummary;
 public class BranchHistory {
 
     private final ProjectSummary project;
+    private final BranchHistoryLine root;
 
 }

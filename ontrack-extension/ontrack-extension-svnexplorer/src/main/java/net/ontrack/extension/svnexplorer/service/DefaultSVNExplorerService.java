@@ -17,6 +17,7 @@ import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.extension.svnexplorer.ProjectRootPathPropertyExtension;
 import net.ontrack.extension.svnexplorer.SVNExplorerExtension;
 import net.ontrack.extension.svnexplorer.SensibleFilesPropertyExtension;
 import net.ontrack.extension.svnexplorer.model.*;
@@ -364,13 +365,39 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Override
     @Transactional(readOnly = true)
     public BranchHistory getBranchHistory(int projectId) {
-        // Gets the project details
-        ProjectSummary project = managementService.getProject(projectId);
-        // FIXME Branch history
-        // OK
-        return new BranchHistory(
-                project
+        try (Transaction ignored = transactionService.start()) {
+            // Gets the project details
+            ProjectSummary project = managementService.getProject(projectId);
+            // Gets the root path for this project
+            String rootPath = propertiesService.getPropertyValue(Entity.PROJECT, projectId, SVNExplorerExtension.EXTENSION, ProjectRootPathPropertyExtension.NAME);
+            if (StringUtils.isBlank(rootPath)) {
+                throw new ProjectHasRootPathException(project.getName());
+            }
+            // Gets the latest revision on this root path
+            long rootRevision = subversionService.getRepositoryRevision(SVNUtils.toURL(subversionService.getURL(rootPath)));
+            // Root
+            BranchHistoryLine root = createBranchHistoryLine(new SVNLocation(rootPath, rootRevision));
+            // FIXME Branch history
+            // OK
+            return new BranchHistory(
+                    project,
+                    root
+            );
+        }
+    }
+
+    private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
+        // Core
+        BranchHistoryLine line = new BranchHistoryLine(
+                subversionService.getReference(location)
         );
+        // TODO Ancestry? Do we really need this?
+        // TODO Tag?
+        // TODO Branch?
+        // TODO Latest build?
+        // TODO Promotions?
+        // OK
+        return line;
     }
 
     private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
