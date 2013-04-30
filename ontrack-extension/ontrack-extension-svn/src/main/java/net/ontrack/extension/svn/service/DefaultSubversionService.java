@@ -83,7 +83,6 @@ public class DefaultSubversionService implements SubversionService {
             public void onEvent(TSVNEvent e) {
                 svnEventCallback.onEvent(
                         new EventSVN(
-                                e.getCreation(),
                                 e.getRevision(),
                                 e.getType(),
                                 e.getCopyFromPath(),

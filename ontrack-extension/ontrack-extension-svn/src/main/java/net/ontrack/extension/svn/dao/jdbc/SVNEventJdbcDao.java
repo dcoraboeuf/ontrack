@@ -91,9 +91,9 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
     @Override
     @Transactional(readOnly = true)
     public void onEvents(final TSVNEventCallback callback) {
-        String sql = "(SELECT r.CREATION, e.REVISION, 'STOP', e.PATH, 0, NULL FROM SVNSTOPEVENT e, REVISION r WHERE e.REVISION = r.REVISION "
+        String sql = "(SELECT REVISION, 'STOP', PATH, 0, NULL FROM SVNSTOPEVENT) "
                 + "UNION "
-                + "SELECT r.CREATION, e.REVISION, 'COPY', e.COPYFROMPATH, e.COPYFROMREVISION, e.COPYTOPATH FROM SVNCOPYEVENT e, REVISION r WHERE e.REVISION = r.REVISION) "
+                + "(SELECT REVISION, 'COPY', COPYFROMPATH, COPYFROMREVISION, COPYTOPATH FROM SVNCOPYEVENT) "
                 + "ORDER BY REVISION ASC ";
         getJdbcTemplate().query(
                 sql,
@@ -101,12 +101,11 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
                         callback.onEvent(new TSVNEvent(
-                                SQLUtils.getDateTime(rs.getTimestamp(1)),
-                                rs.getLong(2),
-                                SVNEventType.valueOf(rs.getString(3)),
-                                rs.getString(4),
-                                rs.getLong(5),
-                                rs.getString(6)
+                                rs.getLong(1),
+                                SVNEventType.valueOf(rs.getString(2)),
+                                rs.getString(3),
+                                rs.getLong(4),
+                                rs.getString(5)
                         ));
                     }
                 }

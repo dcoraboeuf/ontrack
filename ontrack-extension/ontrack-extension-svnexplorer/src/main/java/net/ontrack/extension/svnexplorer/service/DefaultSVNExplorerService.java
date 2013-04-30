@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
 public class DefaultSVNExplorerService implements SVNExplorerService {
 
     private final Logger logger = LoggerFactory.getLogger(SVNExplorerService.class);
-
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final SubversionService subversionService;
@@ -407,8 +406,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                                         if (line != null) {
                                             // Creates the link
                                             BranchHistoryLink link = new BranchHistoryLink(
-                                              revision,
-                                                    e.getCreation(),
+                                                    revision,
                                                     type,
                                                     null
                                             );
@@ -436,7 +434,6 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                                     // Adds the copy link to the parent history
                                     copyFromHistory.addLink(new BranchHistoryLink(
                                             copyFromRevision,
-                                            e.getCreation(),
                                             type,
                                             copyToHistory
                                     ));
