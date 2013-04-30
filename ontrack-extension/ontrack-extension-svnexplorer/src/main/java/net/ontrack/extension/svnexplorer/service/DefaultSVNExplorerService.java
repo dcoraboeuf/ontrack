@@ -395,8 +395,35 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         public void onEvent(EventSVN e) {
                             long revision = e.getRevision();
                             SVNEventType type = e.getType();
-                            // FIXME Stop event
-                            if (type == SVNEventType.COPY) {
+                            // Stop event
+                            if (type == SVNEventType.STOP) {
+                                String path = e.getCopyFromPath();
+                                // Deleting a path can delete any path in the history
+                                List<String> linePaths = new ArrayList<String>(lines.keySet());
+                                for (String linePath : linePaths) {
+                                    if (linePath.startsWith(path)) {
+                                        BranchHistoryLine line = lines.get(linePath);
+                                        // This line path could have been removed
+                                        if (line != null) {
+                                            // Creates the link
+                                            BranchHistoryLink link = new BranchHistoryLink(
+                                              revision,
+                                                    e.getCreation(),
+                                                    type,
+                                                    null
+                                            );
+                                            // Adds the link to the history node
+                                            line.addLink(link);
+                                            // History is now stopped
+                                            line.setStopRevision(revision);
+                                            // Removes the history
+                                            lines.remove(linePath);
+                                        }
+                                    }
+                                }
+                            }
+                            // COPY event
+                            else if (type == SVNEventType.COPY) {
                                 String copyFromPath = e.getCopyFromPath();
                                 long copyFromRevision = e.getCopyFromRevision();
                                 String copyToPath = e.getCopyToPath();

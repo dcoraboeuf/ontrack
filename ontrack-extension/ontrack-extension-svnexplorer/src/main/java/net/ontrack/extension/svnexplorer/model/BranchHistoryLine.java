@@ -22,9 +22,10 @@ public class BranchHistoryLine {
     private final BuildSummary latestBuild;
     private final List<Promotion> promotions;
     private final List<BranchHistoryLink> links;
+    private Long stopRevision;
 
     public BranchHistoryLine(SVNReference current, boolean tag) {
-        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLink>());
+        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLink>(), null);
     }
 
     public void addLink(BranchHistoryLink link) {
