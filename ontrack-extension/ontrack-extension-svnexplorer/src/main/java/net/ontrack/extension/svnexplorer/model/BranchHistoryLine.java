@@ -8,6 +8,7 @@ import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Promotion;
 import net.ontrack.extension.svn.service.model.SVNReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,9 +21,13 @@ public class BranchHistoryLine {
     private final BranchSummary branch;
     private final BuildSummary latestBuild;
     private final List<Promotion> promotions;
-    private final List<BranchHistoryLine> lines;
+    private final List<BranchHistoryLink> links;
 
     public BranchHistoryLine(SVNReference current) {
-        this(current, null, false, null, null, null, null);
+        this(current, null, false, null, null, null, new ArrayList<BranchHistoryLink>());
+    }
+
+    public void addLink(BranchHistoryLink link) {
+        links.add(link);
     }
 }

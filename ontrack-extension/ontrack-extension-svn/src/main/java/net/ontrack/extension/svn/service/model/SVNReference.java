@@ -11,4 +11,7 @@ public class SVNReference {
     private final long revision;
     private final DateTime time;
 
+    public SVNLocation toLocation() {
+        return new SVNLocation(path, revision);
+    }
 }

@@ -11,6 +11,7 @@ import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.service.model.JIRAStatus;
+import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.SubversionService;
@@ -27,6 +28,8 @@ import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class DefaultSVNExplorerService implements SVNExplorerService {
+
+    private final Logger logger = LoggerFactory.getLogger(SVNExplorerService.class);
 
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
@@ -366,6 +371,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Transactional(readOnly = true)
     public BranchHistory getBranchHistory(int projectId) {
         try (Transaction ignored = transactionService.start()) {
+            logger.debug("[branch-history] Start");
             // Gets the project details
             ProjectSummary project = managementService.getProject(projectId);
             // Gets the root path for this project
@@ -375,10 +381,47 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             }
             // Gets the latest revision on this root path
             long rootRevision = subversionService.getRepositoryRevision(SVNUtils.toURL(subversionService.getURL(rootPath)));
+            SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Root
-            BranchHistoryLine root = createBranchHistoryLine(new SVNLocation(rootPath, rootRevision));
-            // FIXME Branch history
+            BranchHistoryLine root = createBranchHistoryLine(rootLocation);
+            // Index per path
+            final Map<String, BranchHistoryLine> lines = new HashMap<>();
+            lines.put(root.getCurrent().getPath(), root);
+            // Branch history
+            logger.debug("[branch-history] Collection history - start");
+            subversionService.onEvents(
+                    new SVNEventCallback() {
+                        @Override
+                        public void onEvent(EventSVN e) {
+                            long revision = e.getRevision();
+                            SVNEventType type = e.getType();
+                            // FIXME Stop event
+                            if (type == SVNEventType.COPY) {
+                                String copyFromPath = e.getCopyFromPath();
+                                long copyFromRevision = e.getCopyFromRevision();
+                                String copyToPath = e.getCopyToPath();
+                                BranchHistoryLine copyFromHistory = lines.get(copyFromPath);
+                                if (copyFromHistory != null) {
+                                    // Creates the new history
+                                    BranchHistoryLine copyToHistory = createBranchHistoryLine(new SVNLocation(copyToPath, revision));
+                                    // Registers the history
+                                    lines.put(copyToPath, copyToHistory);
+                                    // Adds the copy link to the parent history
+                                    copyFromHistory.addLink(new BranchHistoryLink(
+                                            copyFromRevision,
+                                            e.getCreation(),
+                                            type,
+                                            copyToHistory
+                                    ));
+                                }
+                            }
+                        }
+                    }
+            );
+            logger.debug("[branch-history] Collection history - end");
+
             // OK
+            logger.debug("[branch-history] End");
             return new BranchHistory(
                     project,
                     root

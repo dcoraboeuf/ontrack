@@ -7,6 +7,8 @@ import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
+import net.ontrack.extension.svn.dao.model.TSVNEvent;
+import net.ontrack.extension.svn.dao.model.TSVNEventCallback;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
@@ -72,6 +74,25 @@ public class DefaultSubversionService implements SubversionService {
     @Override
     public String formatRevisionTime(DateTime time) {
         return format.print(time);
+    }
+
+    @Override
+    public void onEvents(final SVNEventCallback svnEventCallback) {
+        svnEventDao.onEvents(new TSVNEventCallback() {
+            @Override
+            public void onEvent(TSVNEvent e) {
+                svnEventCallback.onEvent(
+                        new EventSVN(
+                                e.getCreation(),
+                                e.getRevision(),
+                                e.getType(),
+                                e.getCopyFromPath(),
+                                e.getCopyFromRevision(),
+                                e.getCopyToPath()
+                        )
+                );
+            }
+        });
     }
 
     @Override

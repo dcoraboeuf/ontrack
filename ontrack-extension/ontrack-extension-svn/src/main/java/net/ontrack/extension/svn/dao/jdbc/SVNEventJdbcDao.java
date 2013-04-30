@@ -2,11 +2,16 @@ package net.ontrack.extension.svn.dao.jdbc;
 
 
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.dao.SQLUtils;
+import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
+import net.ontrack.extension.svn.dao.model.TSVNEvent;
+import net.ontrack.extension.svn.dao.model.TSVNEventCallback;
 import net.ontrack.extension.svn.service.model.SVNLocation;
 import net.ontrack.extension.svn.service.model.SVNLocationSortMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +83,31 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
                                 rs.getString("copyToPath"),
                                 rs.getLong("revision")
                         );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void onEvents(final TSVNEventCallback callback) {
+        String sql = "(SELECT r.CREATION, e.REVISION, 'STOP', e.PATH, 0, NULL FROM SVNSTOPEVENT e, REVISION r WHERE e.REVISION = r.REVISION "
+                + "UNION "
+                + "SELECT r.CREATION, e.REVISION, 'COPY', e.COPYFROMPATH, e.COPYFROMREVISION, e.COPYTOPATH FROM SVNCOPYEVENT e, REVISION r WHERE e.REVISION = r.REVISION) "
+                + "ORDER BY REVISION ASC ";
+        getJdbcTemplate().query(
+                sql,
+                new RowCallbackHandler() {
+                    @Override
+                    public void processRow(ResultSet rs) throws SQLException {
+                        callback.onEvent(new TSVNEvent(
+                                SQLUtils.getDateTime(rs.getTimestamp(1)),
+                                rs.getLong(2),
+                                SVNEventType.valueOf(rs.getString(3)),
+                                rs.getString(4),
+                                rs.getLong(5),
+                                rs.getString(6)
+                        ));
                     }
                 }
         );

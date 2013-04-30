@@ -91,4 +91,6 @@ public interface SubversionService {
     boolean isIndexedIssue(String key);
 
     List<Long> getRevisionsForIssueKey(String key);
+
+    void onEvents(SVNEventCallback svnEventCallback);
 }
