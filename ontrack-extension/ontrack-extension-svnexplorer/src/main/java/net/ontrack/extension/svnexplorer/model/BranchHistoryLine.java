@@ -23,8 +23,8 @@ public class BranchHistoryLine {
     private final List<Promotion> promotions;
     private final List<BranchHistoryLink> links;
 
-    public BranchHistoryLine(SVNReference current) {
-        this(current, null, false, null, null, null, new ArrayList<BranchHistoryLink>());
+    public BranchHistoryLine(SVNReference current, boolean tag) {
+        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLink>());
     }
 
     public void addLink(BranchHistoryLink link) {

@@ -374,7 +374,8 @@ public class DefaultSubversionService implements SubversionService {
         return isTrunk(path) || isBranch(path);
     }
 
-    private boolean isTag(String path) {
+    @Override
+    public boolean isTag(String path) {
         return isPathOK(configurationExtension.getTagPattern(), path);
     }
 

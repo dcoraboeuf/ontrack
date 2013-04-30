@@ -432,10 +432,10 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
-                subversionService.getReference(location)
+                subversionService.getReference(location),
+                subversionService.isTag(location.getPath())
         );
         // TODO Ancestry? Do we really need this?
-        // TODO Tag?
         // TODO Branch?
         // TODO Latest build?
         // TODO Promotions?

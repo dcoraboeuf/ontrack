@@ -40,6 +40,8 @@ public interface SubversionService {
 
     boolean isTagOrBranch(String path);
 
+    boolean isTag(String path);
+
     /**
      * Gets the Subversion history from a path
      *
