@@ -17,5 +17,7 @@ public interface SVNEventDao {
 
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
 
+    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
+
     void onEvents(TSVNEventCallback callback);
 }

@@ -26,6 +26,8 @@ public interface SubversionService {
      */
     long getRepositoryRevision(SVNURL url);
 
+    long getLastRevision(SVNLocation location);
+
     SVNReference getReference(SVNLocation location);
 
     void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
@@ -89,6 +91,8 @@ public interface SubversionService {
     String getFileChangeBrowsingURL(String path, long revision);
 
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
+
+    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
 
     boolean isIndexedIssue(String key);
 

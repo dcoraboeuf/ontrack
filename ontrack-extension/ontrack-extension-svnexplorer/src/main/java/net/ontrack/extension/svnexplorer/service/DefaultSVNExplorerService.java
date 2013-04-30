@@ -11,7 +11,6 @@ import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.service.model.JIRAStatus;
-import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.SubversionService;
@@ -383,6 +382,39 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Root
             BranchHistoryLine root = createBranchHistoryLine(rootLocation);
+            // Tree of locations
+            SVNTreeNode rootNode = new SVNTreeNode(root.getCurrent().toLocation());
+            // Stack of locations
+            Stack<SVNTreeNode> stack = new Stack<>();
+            stack.add(rootNode);
+            // Trimming the stack
+            while (!stack.isEmpty()) {
+                // Gets the top
+                SVNTreeNode current = stack.pop();
+                // Gets the last revision on this path
+                long lastRevision = subversionService.getLastRevision(current.getLocation());
+                SVNLocation lastLocation = current.getLocation().withRevision(lastRevision);
+                // Gets all the copies from this location
+                Collection<SVNLocation> copies = subversionService.getCopiesFromBefore(lastLocation, SVNLocationSortMode.FROM_NEWEST);
+                // No copy?
+                if (copies.isEmpty()) {
+                    // Trunk or branch
+                    if (subversionService.isTrunkOrBranch(current.getLocation().getPath())) {
+                        // Attaches to the parent
+                        current.attachToParent();
+                    }
+                }
+                // At least one copy
+                else {
+                    // For each copy
+                    for (SVNLocation copy : copies) {
+                        // Adds to the stack
+                        stack.push(new SVNTreeNode(current, copy));
+                    }
+                }
+            }
+
+            /*
             // Index per path
             final Map<String, BranchHistoryLine> lines = new HashMap<>();
             lines.put(root.getCurrent().getPath(), root);
@@ -443,6 +475,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     }
             );
             logger.debug("[branch-history] Collection history - end");
+            */
 
             // OK
             logger.debug("[branch-history] End");

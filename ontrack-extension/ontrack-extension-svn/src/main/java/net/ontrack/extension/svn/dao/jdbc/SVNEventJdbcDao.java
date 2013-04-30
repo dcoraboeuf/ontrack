@@ -2,7 +2,6 @@ package net.ontrack.extension.svn.dao.jdbc;
 
 
 import net.ontrack.dao.AbstractJdbcDao;
-import net.ontrack.dao.SQLUtils;
 import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
@@ -23,6 +22,16 @@ import java.util.Collection;
 
 @Component
 public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
+
+    private final RowMapper<SVNLocation> svnLocationRowMapper = new RowMapper<SVNLocation>() {
+        @Override
+        public SVNLocation mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new SVNLocation(
+                    rs.getString("copyToPath"),
+                    rs.getLong("revision")
+            );
+        }
+    };
 
     @Autowired
     public SVNEventJdbcDao(DataSource dataSource) {
@@ -71,20 +80,23 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
 
     @Override
     @Transactional(readOnly = true)
+    public Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode) {
+        return getNamedParameterJdbcTemplate().query(
+                "SELECT * FROM SVNCOPYEVENT WHERE COPYFROMPATH = :copyFromPath AND COPYFROMREVISION <= :copyFromRevision ORDER BY COPYFROMREVISION " +
+                        (sortMode == SVNLocationSortMode.FROM_NEWEST ? "DESC" : "ASC"),
+                params("copyFromPath", location.getPath()).addValue("copyFromRevision", location.getRevision()),
+                svnLocationRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode) {
         return getNamedParameterJdbcTemplate().query(
                 "SELECT * FROM SVNCOPYEVENT WHERE COPYFROMPATH = :copyFromPath AND COPYFROMREVISION >= :copyFromRevision ORDER BY COPYFROMREVISION " +
                         (sortMode == SVNLocationSortMode.FROM_NEWEST ? "DESC" : "ASC"),
                 params("copyFromPath", location.getPath()).addValue("copyFromRevision", location.getRevision()),
-                new RowMapper<SVNLocation>() {
-                    @Override
-                    public SVNLocation mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new SVNLocation(
-                                rs.getString("copyToPath"),
-                                rs.getLong("revision")
-                        );
-                    }
-                }
+                svnLocationRowMapper
         );
     }
 

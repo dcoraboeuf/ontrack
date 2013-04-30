@@ -28,6 +28,7 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,6 +150,12 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
+    public Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFromBefore(location, sortMode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean isIndexedIssue(String key) {
         return issueRevisionDao.isIndexed(key);
     }
@@ -204,6 +211,31 @@ public class DefaultSubversionService implements SubversionService {
         } catch (SVNException e) {
             throw translateSVNException(e);
         }
+    }
+
+    @Override
+    public long getLastRevision(SVNLocation location) {
+        SVNRevision rev = SVNRevision.create(location.getRevision());
+        final AtomicLong entryRef = new AtomicLong(location.getRevision());
+        ISVNLogEntryHandler handler = new ISVNLogEntryHandler() {
+
+            @Override
+            public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
+                entryRef.set(logEntry.getRevision());
+            }
+        };
+        log(
+                SVNUtils.toURL(getURL(location.getPath())), // Path to scan from
+                rev, // The path exists for sure at this revision
+                rev, // Starting from this revision
+                SVNRevision.HEAD, // At most until the HEAD
+                false,
+                false,
+                0L,
+                false,
+                handler);
+        // Gets the last logged entry
+        return entryRef.get();
     }
 
     @Override
