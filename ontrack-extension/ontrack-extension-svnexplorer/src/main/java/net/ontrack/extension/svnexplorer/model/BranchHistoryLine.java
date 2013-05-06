@@ -9,6 +9,7 @@ import net.ontrack.core.model.Promotion;
 import net.ontrack.extension.svn.service.model.SVNReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class BranchHistoryLine {
     private final List<BranchHistoryLine> lines;
 
     public BranchHistoryLine(SVNReference current, boolean tag) {
-        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLine>());
+        this(current, null, tag, null, null, Collections.<Promotion>emptyList(), new ArrayList<BranchHistoryLine>());
     }
 
     public void addLine(BranchHistoryLine line) {

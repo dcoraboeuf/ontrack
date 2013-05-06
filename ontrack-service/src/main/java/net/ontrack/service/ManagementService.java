@@ -144,6 +144,8 @@ public interface ManagementService {
 
     Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId);
 
+    Promotion findLastPromotion(Locale locale, int promotionLevelId);
+
     // Comments
 
     CommentStub createComment (Entity entity, int id, String content);

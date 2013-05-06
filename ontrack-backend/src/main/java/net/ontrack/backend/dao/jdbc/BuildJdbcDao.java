@@ -233,11 +233,16 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
 
     @Override
     public TBuild findLastBuildWithPromotionLevel(int promotionLevel) {
-        return getFirstItem(
+        Integer buildId = getFirstItem(
                 SQL.BUILD_LAST_FOR_PROMOTION_LEVEL,
-                params("name", promotionLevel),
-                buildRowMapper
+                params("promotionLevel", promotionLevel),
+                Integer.class
         );
+        if (buildId != null) {
+            return getById(buildId);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -499,19 +499,21 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             if (latestBuild != null) {
                 line = line.withLatestBuild(latestBuild);
             }
-            // FIXME Gets the list of promotions
-            // List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
-            // line = line.withPromotions(
-            //  Lists.transform(
-            //           promotionLevelList,
-            //           new Function<PromotionLevelSummary, Promotion>() {
-            //               @Override
-            //               public Promotion apply(PromotionLevelSummary promotionLevel) {
-            //                   return managementService.getLatestPromotionForBranch(locale, branchId, promotionLevel.getId());
-            //               }
-            //           }
-            //   )
-            // );
+            // Gets the list of promotions
+            List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+            promotionLevelList = new ArrayList<>(promotionLevelList);
+            Collections.reverse(promotionLevelList);
+            line = line.withPromotions(
+                    Lists.transform(
+                            promotionLevelList,
+                            new Function<PromotionLevelSummary, Promotion>() {
+                                @Override
+                                public Promotion apply(PromotionLevelSummary promotionLevel) {
+                                    return managementService.findLastPromotion(locale, promotionLevel.getId());
+                                }
+                            }
+                    )
+            );
         }
         // OK
         return line;

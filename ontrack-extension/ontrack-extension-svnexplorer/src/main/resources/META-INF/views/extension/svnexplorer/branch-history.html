@@ -28,13 +28,21 @@
                 <a href="gui/project/${line.latestBuild.branch.project.name?html}/branch/${line.latestBuild.branch.name?html}/build/${line.latestBuild.name?html}">${line.latestBuild.name?html}</a>
             </#if>
         </td>
+        <td>
+            <#list line.promotions as promotion>
+                <span>
+                    <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                    <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                </span>
+            </#list>
+        </td>
     </tr>
     <#list line.lines as child>
         <@history_line line=child indent=indent+1 />
     </#list>
 </#macro>
 
-<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) script=true style=true extension=true>
+<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) script=true style=true extension=true modules=["promotion_levels"]>
 
     <div class="row-fluid">
         <div class="span12 page-title">
@@ -57,6 +65,7 @@
                         <th colspan="16"><@lh key="svnexplorer.branch-history.path" /></th>
                         <th><@lh key="svnexplorer.branch-history.branch" /></th>
                         <th><@lh key="svnexplorer.branch-history.latestBuild" /></th>
+                        <th><@lh key="svnexplorer.branch-history.promotions" /></th>
                     </tr>
                 </thead>
                 <tbody>

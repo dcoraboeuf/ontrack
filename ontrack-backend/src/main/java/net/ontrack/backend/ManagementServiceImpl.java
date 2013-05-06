@@ -82,20 +82,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
-
-    private AccountSummary getAccountSummary(Integer id) {
-        if (id == null) {
-            return null;
-        } else {
-            TAccount account = accountDao.getByID(id);
-            return new AccountSummary(
-                    account.getId(),
-                    account.getName(),
-                    account.getFullName()
-            );
-        }
-    }
-
     private final Function<TPromotionLevel, PromotionLevelSummary> promotionLevelSummaryFunction = new Function<TPromotionLevel, PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary apply(TPromotionLevel t) {
@@ -142,6 +128,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.entityDao = entityDao;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
+    }
+
+    private AccountSummary getAccountSummary(Integer id) {
+        if (id == null) {
+            return null;
+        } else {
+            TAccount account = accountDao.getByID(id);
+            return new AccountSummary(
+                    account.getId(),
+                    account.getName(),
+                    account.getFullName()
+            );
+        }
     }
 
     // Branches
@@ -782,23 +781,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     public BuildSummary findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
         TBuild tBuild = buildDao.findLastBuildWithValidationStamp(validationStamp, statuses);
-
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);
+        } else {
+            return null;
         }
-
-        throw new BranchNoBuildFoundException();
     }
 
     @Override
     public BuildSummary findLastBuildWithPromotionLevel(final int promotionLevel) {
         TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(promotionLevel);
-
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);
+        } else {
+            return null;
         }
-
-        throw new BranchNoBuildFoundException();
     }
 
     private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
@@ -1128,6 +1125,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     promotionLevel,
                     getBuild(earliestBuildId),
                     getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, earliestBuildId))
+            );
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Promotion findLastPromotion(Locale locale, int promotionLevelId) {
+        BuildSummary build = findLastBuildWithPromotionLevel(promotionLevelId);
+        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        if (build != null) {
+            return new Promotion(
+                    promotionLevel,
+                    build,
+                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, build.getId()))
+            );
+        } else {
+            return new Promotion(
+                    promotionLevel,
+                    null,
+                    null
             );
         }
     }
