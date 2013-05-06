@@ -456,14 +456,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             });
 
-            // History context
-            BranchHistoryContext context = new BranchHistoryContext(
-                    projectId,
-                    managementService.getBranchList(projectId)
-                    );
-
             // Collects history
-            BranchHistoryLine root = collectHistory(context, rootNode);
+            BranchHistoryLine root = collectHistory(rootNode);
 
             // OK
             logger.debug("[branch-history] End");
@@ -474,18 +468,18 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private BranchHistoryLine collectHistory(BranchHistoryContext context, SVNTreeNode node) {
+    private BranchHistoryLine collectHistory(SVNTreeNode node) {
         // Line itself
-        BranchHistoryLine line = createBranchHistoryLine(context, node.getLocation());
+        BranchHistoryLine line = createBranchHistoryLine(node.getLocation());
         // Collects lines
         for (SVNTreeNode childNode : node.getChildren()) {
-            line.addLine(collectHistory(context, childNode));
+            line.addLine(collectHistory(childNode));
         }
         // OK
         return line;
     }
 
-    private BranchHistoryLine createBranchHistoryLine(BranchHistoryContext context, SVNLocation location) {
+    private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
                 subversionService.getReference(location),
