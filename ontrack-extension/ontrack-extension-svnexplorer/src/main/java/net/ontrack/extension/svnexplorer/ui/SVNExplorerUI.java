@@ -20,5 +20,5 @@ public interface SVNExplorerUI {
 
     IssueInfo getIssueInfo(Locale locale, String key);
 
-    BranchHistory getBranchHistory(String projectName);
+    BranchHistory getBranchHistory(Locale locale, String projectName);
 }

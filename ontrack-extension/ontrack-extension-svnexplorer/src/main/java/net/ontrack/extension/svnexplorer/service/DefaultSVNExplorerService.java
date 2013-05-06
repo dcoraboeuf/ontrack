@@ -367,7 +367,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public BranchHistory getBranchHistory(int projectId) {
+    public BranchHistory getBranchHistory(int projectId, Locale locale) {
         try (Transaction ignored = transactionService.start()) {
             logger.debug("[branch-history] Start");
             // Gets the project details
@@ -457,7 +457,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             });
 
             // Collects history
-            BranchHistoryLine root = collectHistory(rootNode);
+            BranchHistoryLine root = collectHistory(locale, rootNode);
 
             // OK
             logger.debug("[branch-history] End");
@@ -468,18 +468,18 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private BranchHistoryLine collectHistory(SVNTreeNode node) {
+    private BranchHistoryLine collectHistory(Locale locale, SVNTreeNode node) {
         // Line itself
-        BranchHistoryLine line = createBranchHistoryLine(node.getLocation());
+        BranchHistoryLine line = createBranchHistoryLine(locale, node.getLocation());
         // Collects lines
         for (SVNTreeNode childNode : node.getChildren()) {
-            line.addLine(collectHistory(childNode));
+            line.addLine(collectHistory(locale, childNode));
         }
         // OK
         return line;
     }
 
-    private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
+    private BranchHistoryLine createBranchHistoryLine(final Locale locale, SVNLocation location) {
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
                 subversionService.getReference(location),
@@ -491,7 +491,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         if (branchIds.size() > 1) {
             throw new IllegalStateException("At most one branch should be eligible - configuration problem at branch level?");
         } else if (branchIds.size() == 1) {
-            int branchId = branchIds.iterator().next();
+            final int branchId = branchIds.iterator().next();
             BranchSummary branch = managementService.getBranch(branchId);
             line = line.withBranch(branch);
             // Latest build?
@@ -499,8 +499,20 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             if (latestBuild != null) {
                 line = line.withLatestBuild(latestBuild);
             }
+            // FIXME Gets the list of promotions
+            // List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+            // line = line.withPromotions(
+            //  Lists.transform(
+            //           promotionLevelList,
+            //           new Function<PromotionLevelSummary, Promotion>() {
+            //               @Override
+            //               public Promotion apply(PromotionLevelSummary promotionLevel) {
+            //                   return managementService.getLatestPromotionForBranch(locale, branchId, promotionLevel.getId());
+            //               }
+            //           }
+            //   )
+            // );
         }
-        // TODO Promotions?
         // OK
         return line;
     }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Locale;
+
 @Controller
 @RequestMapping("/gui/extension/svnexplorer/branch-history")
 public class BranchHistoryActionController extends AbstractGUIController implements EntityActionExtension<ProjectSummary> {
@@ -32,8 +34,8 @@ public class BranchHistoryActionController extends AbstractGUIController impleme
     }
 
     @RequestMapping(value = "/{projectName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public String branchHistory(@PathVariable String projectName, Model model) {
-        model.addAttribute("branchHistory", svnExplorerUI.getBranchHistory(projectName));
+    public String branchHistory(Locale locale, @PathVariable String projectName, Model model) {
+        model.addAttribute("branchHistory", svnExplorerUI.getBranchHistory(locale, projectName));
         // OK
         return "extension/svnexplorer/branch-history";
     }

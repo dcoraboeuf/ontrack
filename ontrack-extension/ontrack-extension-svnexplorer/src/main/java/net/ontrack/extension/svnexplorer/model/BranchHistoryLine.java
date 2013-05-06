@@ -39,4 +39,8 @@ public class BranchHistoryLine {
         return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
     }
 
+    public BranchHistoryLine withPromotions(List<Promotion> promotions) {
+        return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
+    }
+
 }

@@ -53,11 +53,11 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
 
     @Override
     @RequestMapping(value = "/branch-history/{projectName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public @ResponseBody BranchHistory getBranchHistory(@PathVariable String projectName) {
+    public @ResponseBody BranchHistory getBranchHistory(Locale locale, @PathVariable String projectName) {
         // Gets the project ID
         int projectId = entityConverter.getProjectId(projectName);
         // Branch history
-        return svnExplorerService.getBranchHistory(projectId);
+        return svnExplorerService.getBranchHistory(projectId, locale);
     }
 
     @Override
