@@ -500,8 +500,12 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             int branchId = branchIds.iterator().next();
             BranchSummary branch = managementService.getBranch(branchId);
             line = line.withBranch(branch);
+            // Latest build?
+            BuildSummary latestBuild = managementService.getLastBuild(branchId);
+            if (latestBuild != null) {
+                line = line.withLatestBuild(latestBuild);
+            }
         }
-        // TODO Latest build?
         // TODO Promotions?
         // OK
         return line;

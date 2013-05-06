@@ -183,6 +183,10 @@ svnexplorer.branch-history.branch
     en -> Branch
     fr -> Branche
 
+svnexplorer.branch-history.latestBuild
+    en -> Last build
+    fr -> Dernier build
+
 [rootPath]
 
 svnexplorer.rootPath

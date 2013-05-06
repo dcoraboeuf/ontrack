@@ -23,6 +23,11 @@
                 <a href="gui/project/${line.branch.project.name?html}/branch/${line.branch.name?html}">${line.branch.name?html}</a>
             </#if>
         </td>
+        <td>
+            <#if line.latestBuild??>
+                <a href="gui/project/${line.latestBuild.branch.project.name?html}/branch/${line.latestBuild.branch.name?html}/build/${line.latestBuild.name?html}">${line.latestBuild.name?html}</a>
+            </#if>
+        </td>
     </tr>
     <#list line.lines as child>
         <@history_line line=child indent=indent+1 />
@@ -51,6 +56,7 @@
                     <tr>
                         <th colspan="16"><@lh key="svnexplorer.branch-history.path" /></th>
                         <th><@lh key="svnexplorer.branch-history.branch" /></th>
+                        <th><@lh key="svnexplorer.branch-history.latestBuild" /></th>
                     </tr>
                 </thead>
                 <tbody>
