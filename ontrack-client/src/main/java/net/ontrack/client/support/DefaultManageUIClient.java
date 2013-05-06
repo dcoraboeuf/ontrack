@@ -2,14 +2,29 @@ package net.ontrack.client.support;
 
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.core.model.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 import static java.lang.String.format;
 
 public class DefaultManageUIClient extends AbstractClient implements ManageUIClient {
+
+    public static void main(String[] args) throws IOException {
+        ManageUIClient client = ClientFactory.create("http://localhost:8080/ontrack").manage();
+        client.login("admin", "admin");
+        try {
+            byte[] content = client.imageValidationStamp("TEST", "T2", "SMOKE");
+            FileUtils.writeByteArrayToFile(new File("test.png"), content);
+
+        } finally {
+            client.logout();
+        }
+    }
 
     public DefaultManageUIClient(String url) {
         super(url);
