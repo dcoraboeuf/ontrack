@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.client.Client;
 import net.ontrack.core.model.Ack;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -75,11 +76,10 @@ public abstract class AbstractClient implements Client {
 
     protected byte[] getBytes(String path) {
         HttpGet get = new HttpGet(getUrl(path));
-        get.setHeader("Accept", "image/png");
-        return request(get, new ResponseHandler<byte[]>() {
+        return request(get, new ResponseParser<byte[]>() {
             @Override
-            public byte[] handleResponse(HttpRequestBase request, HttpResponse response, HttpEntity entity) throws ParseException, IOException {
-                return EntityUtils.toByteArray(entity);
+            public byte[] parse(String content) throws IOException {
+                return Base64.decodeBase64(content);
             }
         });
     }

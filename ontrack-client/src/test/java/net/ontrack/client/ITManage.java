@@ -2,7 +2,6 @@ package net.ontrack.client;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ValidationStampSummary;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +12,6 @@ import static org.junit.Assert.*;
 public class ITManage extends AbstractEnv {
 
     @Test
-    @Ignore
     public void imageValidationStamp() throws IOException {
         // Prerequisites
         final ValidationStampSummary validationStamp = doCreateValidationStamp();
