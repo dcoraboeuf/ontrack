@@ -391,11 +391,10 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             while (!stack.isEmpty()) {
                 // Gets the top
                 SVNTreeNode current = stack.pop();
-                // Gets the last revision on this path
-                long lastRevision = subversionService.getLastRevision(current.getLocation());
-                SVNLocation lastLocation = current.getLocation().withRevision(lastRevision);
                 // Gets all the copies from this location
-                Collection<SVNLocation> copies = subversionService.getCopiesFromBefore(lastLocation, SVNLocationSortMode.FROM_NEWEST);
+                Collection<SVNLocation> copies = subversionService.getCopiesFrom(
+                        current.getLocation().withRevision(1),
+                        SVNLocationSortMode.FROM_NEWEST);
                 // No copy?
                 if (copies.isEmpty()) {
                     // Trunk or branch
@@ -406,6 +405,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
                 // At least one copy
                 else {
+                    // Attach to the parent
+                    current.attachToParent();
                     // For each copy
                     for (SVNLocation copy : copies) {
                         // Adds to the stack
@@ -413,69 +414,6 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     }
                 }
             }
-
-            /*
-            // Index per path
-            final Map<String, BranchHistoryLine> lines = new HashMap<>();
-            lines.put(root.getCurrent().getPath(), root);
-            // Branch history
-            logger.debug("[branch-history] Collection history - start");
-            subversionService.onEvents(
-                    new SVNEventCallback() {
-                        @Override
-                        public void onEvent(EventSVN e) {
-                            long revision = e.getRevision();
-                            SVNEventType type = e.getType();
-                            // Stop event
-                            if (type == SVNEventType.STOP) {
-                                String path = e.getCopyFromPath();
-                                // Deleting a path can delete any path in the history
-                                List<String> linePaths = new ArrayList<String>(lines.keySet());
-                                for (String linePath : linePaths) {
-                                    if (linePath.startsWith(path)) {
-                                        BranchHistoryLine line = lines.get(linePath);
-                                        // This line path could have been removed
-                                        if (line != null) {
-                                            // Creates the link
-                                            BranchHistoryLink link = new BranchHistoryLink(
-                                                    revision,
-                                                    type,
-                                                    null
-                                            );
-                                            // Adds the link to the history node
-                                            line.addLink(link);
-                                            // History is now stopped
-                                            line.setStopRevision(revision);
-                                            // Removes the history
-                                            lines.remove(linePath);
-                                        }
-                                    }
-                                }
-                            }
-                            // COPY event
-                            else if (type == SVNEventType.COPY) {
-                                String copyFromPath = e.getCopyFromPath();
-                                long copyFromRevision = e.getCopyFromRevision();
-                                String copyToPath = e.getCopyToPath();
-                                BranchHistoryLine copyFromHistory = lines.get(copyFromPath);
-                                if (copyFromHistory != null) {
-                                    // Creates the new history
-                                    BranchHistoryLine copyToHistory = createBranchHistoryLine(new SVNLocation(copyToPath, revision));
-                                    // Registers the history
-                                    lines.put(copyToPath, copyToHistory);
-                                    // Adds the copy link to the parent history
-                                    copyFromHistory.addLink(new BranchHistoryLink(
-                                            copyFromRevision,
-                                            type,
-                                            copyToHistory
-                                    ));
-                                }
-                            }
-                        }
-                    }
-            );
-            logger.debug("[branch-history] Collection history - end");
-            */
 
             // OK
             logger.debug("[branch-history] End");

@@ -26,8 +26,6 @@ public interface SubversionService {
      */
     long getRepositoryRevision(SVNURL url);
 
-    long getLastRevision(SVNLocation location);
-
     SVNReference getReference(SVNLocation location);
 
     void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
