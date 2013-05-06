@@ -74,7 +74,9 @@ public abstract class AbstractClient implements Client {
     }
 
     protected byte[] getBytes(String path) {
-        return request(new HttpGet(getUrl(path)), new ResponseHandler<byte[]>() {
+        HttpGet get = new HttpGet(getUrl(path));
+        get.setHeader("Accept", "image/png");
+        return request(get, new ResponseHandler<byte[]>() {
             @Override
             public byte[] handleResponse(HttpRequestBase request, HttpResponse response, HttpEntity entity) throws ParseException, IOException {
                 return EntityUtils.toByteArray(entity);
