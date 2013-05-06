@@ -2,7 +2,6 @@ package net.ontrack.client;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ValidationStampSummary;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +12,6 @@ import static org.junit.Assert.*;
 public class ITManage extends AbstractEnv {
 
     @Test
-    @Ignore
     public void imageValidationStamp() throws IOException {
         // Prerequisites
         final ValidationStampSummary validationStamp = doCreateValidationStamp();
@@ -29,7 +27,11 @@ public class ITManage extends AbstractEnv {
             }
         });
         assertNotNull(defaultContent);
-        // TODO Checks the content
+        // Checks the content (empty for the default image)
+        assertArrayEquals(
+                new byte[0],
+                defaultContent
+        );
         // Test image
         final MultipartFile file = mockImage("/images/fire.png");
         // Sets the image
