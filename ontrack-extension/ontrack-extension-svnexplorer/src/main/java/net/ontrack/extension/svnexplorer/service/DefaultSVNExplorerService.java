@@ -303,7 +303,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 if (buildId != null) {
                     // Gets the build information
                     BuildSummary buildSummary = managementService.getBuild(buildId);
-                    // TODO Gets the promotion levels & validation stamps
+                    // Gets the promotion levels & validation stamps
                     List<BuildPromotionLevel> promotionLevels = managementService.getBuildPromotionLevels(locale, buildId);
                     List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
                     // Adds to the list
@@ -456,8 +456,14 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             });
 
+            // History context
+            BranchHistoryContext context = new BranchHistoryContext(
+                    projectId,
+                    managementService.getBranchList(projectId)
+                    );
+
             // Collects history
-            BranchHistoryLine root = collectHistory(rootNode);
+            BranchHistoryLine root = collectHistory(context, rootNode);
 
             // OK
             logger.debug("[branch-history] End");
@@ -468,25 +474,33 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private BranchHistoryLine collectHistory(SVNTreeNode node) {
+    private BranchHistoryLine collectHistory(BranchHistoryContext context, SVNTreeNode node) {
         // Line itself
-        BranchHistoryLine line = createBranchHistoryLine(node.getLocation());
+        BranchHistoryLine line = createBranchHistoryLine(context, node.getLocation());
         // Collects lines
         for (SVNTreeNode childNode : node.getChildren()) {
-            line.addLine(collectHistory(childNode));
+            line.addLine(collectHistory(context, childNode));
         }
         // OK
         return line;
     }
 
-    private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
+    private BranchHistoryLine createBranchHistoryLine(BranchHistoryContext context, SVNLocation location) {
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
                 subversionService.getReference(location),
                 subversionService.isTag(location.getPath())
         );
         // TODO Ancestry? Do we really need this?
-        // TODO Branch?
+        // Branch?
+        Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, location.getPath());
+        if (branchIds.size() > 1) {
+            throw new IllegalStateException("At most one branch should be eligible - configuration problem at branch level?");
+        } else if (branchIds.size() == 1) {
+            int branchId = branchIds.iterator().next();
+            BranchSummary branch = managementService.getBranch(branchId);
+            line = line.withBranch(branch);
+        }
         // TODO Latest build?
         // TODO Promotions?
         // OK

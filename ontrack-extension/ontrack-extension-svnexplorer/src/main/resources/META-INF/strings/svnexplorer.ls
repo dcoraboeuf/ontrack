@@ -179,6 +179,10 @@ svnexplorer.branch-history.path
     en -> Path
     fr -> Chemin
 
+svnexplorer.branch-history.branch
+    en -> Branch
+    fr -> Branche
+
 [rootPath]
 
 svnexplorer.rootPath

@@ -22,13 +22,16 @@ public class BranchHistoryLine {
     private final BuildSummary latestBuild;
     private final List<Promotion> promotions;
     private final List<BranchHistoryLine> lines;
-    private Long stopRevision;
 
     public BranchHistoryLine(SVNReference current, boolean tag) {
-        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLine>(), null);
+        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLine>());
     }
 
     public void addLine(BranchHistoryLine line) {
         lines.add(line);
+    }
+
+    public BranchHistoryLine withBranch(BranchSummary branch) {
+        return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
     }
 }

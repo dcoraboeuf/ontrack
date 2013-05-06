@@ -18,6 +18,11 @@
         <td colspan="${colspan?c}">
            <a href="${line.current.url?html}">${line.current.path?html}</a>
         </td>
+        <td>
+            <#if line.branch??>
+                <a href="gui/project/${line.branch.project.name?html}/branch/${line.branch.name?html}">${line.branch.name?html}</a>
+            </#if>
+        </td>
     </tr>
     <#list line.lines as child>
         <@history_line line=child indent=indent+1 />
@@ -45,6 +50,7 @@
                 <thead>
                     <tr>
                         <th colspan="16"><@lh key="svnexplorer.branch-history.path" /></th>
+                        <th><@lh key="svnexplorer.branch-history.branch" /></th>
                     </tr>
                 </thead>
                 <tbody>
