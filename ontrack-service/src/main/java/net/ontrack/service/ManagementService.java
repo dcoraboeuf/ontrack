@@ -106,9 +106,9 @@ public interface ManagementService {
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
 
-	BuildSummary queryLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
+	BuildSummary findLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
 
-	BuildSummary queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
+	BuildSummary findLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
 
     BuildSummary getLastBuild(int branch);
 
