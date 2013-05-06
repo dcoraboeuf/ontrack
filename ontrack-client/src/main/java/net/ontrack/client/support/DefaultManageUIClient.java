@@ -122,14 +122,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.setImageValidationStamp
-        return null;
+        return upload(
+                format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name),
+                "image",
+                image,
+                Ack.class);
     }
 
     @Override
     public byte[] imageValidationStamp(String project, String branch, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.imageValidationStamp
-        return new byte[0];
+        return getBytes(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name));
     }
 
     @Override
@@ -199,14 +201,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack setImagePromotionLevel(String project, String branch, String name, MultipartFile image) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.setImagePromotionLevel
-        return null;
+        return upload(
+                format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name),
+                "image",
+                image,
+                Ack.class);
     }
 
     @Override
     public byte[] imagePromotionLevel(String project, String branch, String name) {
-        // FIXME Implement net.ontrack.client.support.DefaultManageUIClient.imagePromotionLevel
-        return new byte[0];
+        return getBytes(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name));
     }
 
     @Override

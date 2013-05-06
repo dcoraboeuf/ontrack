@@ -12,9 +12,6 @@ import static org.junit.Assert.*;
 
 public class ITManage extends AbstractEnv {
 
-    /**
-     * Client not ready yet
-     */
     @Test
     @Ignore
     public void imageValidationStamp() throws IOException {
@@ -61,7 +58,7 @@ public class ITManage extends AbstractEnv {
             }
         });
         // Checks equality
-        assertEquals(
+        assertArrayEquals(
                 file.getBytes(),
                 content
         );

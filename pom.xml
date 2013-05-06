@@ -39,6 +39,7 @@
 		<springSecurityVersion>3.1.1.RELEASE</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
 		<lombokVersion>0.11.4</lombokVersion>
+        <httpClientVersion>4.2.1</httpClientVersion>
 		<!-- General -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -87,11 +88,16 @@
 				<version>1.2.2</version>
 			</dependency>
 			<!-- HTTP client -->
-			<dependency>
-			    <groupId>org.apache.httpcomponents</groupId>
-			    <artifactId>httpclient</artifactId>
-			    <version>4.2.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpClientVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${httpClientVersion}</version>
+            </dependency>
 			<!-- Guava -->
 			<dependency>
 				<groupId>com.google.guava</groupId>

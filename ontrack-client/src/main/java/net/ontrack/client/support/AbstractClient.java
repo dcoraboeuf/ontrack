@@ -14,6 +14,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -22,6 +25,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,10 +47,6 @@ public abstract class AbstractClient implements Client {
     public AbstractClient(String url, DefaultHttpClient client) {
         this.client = client;
         this.url = url;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     @Override
@@ -71,6 +71,15 @@ public abstract class AbstractClient implements Client {
 
     protected <T> T get(String path, Class<T> returnType) {
         return request(new HttpGet(getUrl(path)), returnType);
+    }
+
+    protected byte[] getBytes(String path) {
+        return request(new HttpGet(getUrl(path)), new ResponseHandler<byte[]>() {
+            @Override
+            public byte[] handleResponse(HttpRequestBase request, HttpResponse response, HttpEntity entity) throws ParseException, IOException {
+                return EntityUtils.toByteArray(entity);
+            }
+        });
     }
 
     protected <T> List<T> list(final String path, final Class<T> elementType) {
@@ -101,7 +110,7 @@ public abstract class AbstractClient implements Client {
 
     protected <T> T put(String path, Class<T> returnType, Object payload) {
         HttpPut put = new HttpPut(getUrl(path));
-        if (put != null) {
+        if (payload != null) {
             setBody(payload, put);
         }
         return request(put, returnType);
@@ -119,7 +128,7 @@ public abstract class AbstractClient implements Client {
     protected <T> T post(String path, Class<T> returnType, Map<String, String> parameters) {
         HttpPost post = new HttpPost(getUrl(path));
         if (parameters != null) {
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            List<NameValuePair> nvps = new ArrayList<>();
             for (Map.Entry<String, String> param : parameters.entrySet()) {
                 nvps.add(new BasicNameValuePair(param.getKey(), param.getValue()));
             }
@@ -129,6 +138,27 @@ public abstract class AbstractClient implements Client {
                 throw new ClientGeneralException(post, e);
             }
         }
+        return request(post, returnType);
+    }
+
+    protected <T> T upload(String path, String fileParameterName, MultipartFile file, Class<T> returnType) {
+        HttpPost post = new HttpPost(getUrl(path));
+        // Sets the content
+        try {
+            MultipartEntity multipartEntity = new MultipartEntity();
+            ContentBody contentBody = new InputStreamBody(
+                    file.getInputStream(),
+                    file.getContentType(),
+                    file.getName()
+            );
+            multipartEntity.addPart(fileParameterName, contentBody);
+            post.setEntity(
+                    multipartEntity
+            );
+        } catch (IOException e) {
+            throw new ClientGeneralException(post, e);
+        }
+        // OK
         return request(post, returnType);
     }
 
@@ -149,7 +179,7 @@ public abstract class AbstractClient implements Client {
     }
 
     protected <T> T request(HttpRequestBase request, Class<T> returnType) {
-        return request(request, new SimpleTypeResponseParser<T>(returnType));
+        return request(request, new SimpleTypeResponseParser<>(returnType));
     }
 
     protected <T> T request(HttpRequestBase request, final ResponseParser<T> responseParser) {
@@ -194,26 +224,6 @@ public abstract class AbstractClient implements Client {
 
         T handleResponse(HttpRequestBase request, HttpResponse response, HttpEntity entity) throws ParseException, IOException;
 
-    }
-
-    protected static class NullResponseParser<T> implements ResponseParser<Object> {
-
-        public static final NullResponseParser<Object> INSTANCE = new NullResponseParser<Object>();
-
-        @Override
-        public Object parse(String content) throws IOException {
-            return null;
-        }
-    }
-
-    protected static class StringResponseParser<T> implements ResponseParser<String> {
-
-        public static final StringResponseParser INSTANCE = new StringResponseParser();
-
-        @Override
-        public String parse(String content) throws IOException {
-            return content;
-        }
     }
 
     protected static class SimpleTypeResponseParser<T> implements ResponseParser<T> {
