@@ -175,6 +175,10 @@ svnexplorer.branch-history.title
     en -> Branch history for {0}
     fr -> Historique des branches pour {0}
 
+svnexplorer.branch-history.path
+    en -> Path
+    fr -> Chemin
+
 [rootPath]
 
 svnexplorer.rootPath

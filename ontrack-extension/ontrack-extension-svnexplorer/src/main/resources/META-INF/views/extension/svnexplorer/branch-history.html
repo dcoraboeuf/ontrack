@@ -1,5 +1,16 @@
 <#include "/lib/layout.html">
 
+<#macro history_line line>
+    <tr>
+       <td>
+           <a href="${line.current.url?html}">${line.current.path?html}</a>
+       </td>
+    </tr>
+    <#list line.lines as child>
+        <@history_line line=child />
+    </#list>
+</#macro>
+
 <@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) script=true style=true extension=true>
 
     <div class="row-fluid">
@@ -12,6 +23,21 @@
                 <span class="action action-optional">
                     <a href="gui/project/${branchHistory.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><@lh key="svnexplorer.branch-history.path" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <@history_line line=branchHistory.root />
+                </tbody>
+            </table>
         </div>
     </div>
 
