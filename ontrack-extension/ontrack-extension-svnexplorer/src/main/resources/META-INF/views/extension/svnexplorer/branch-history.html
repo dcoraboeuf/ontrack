@@ -1,7 +1,7 @@
 <#include "/lib/layout.html">
 
 <#macro history_line line indent=0>
-    <tr>
+    <tr class="<#if !line.tag>info</#if>">
         <#if indent gt 0>
             <#if indent gt 1>
                 <#list 2..indent as index>
