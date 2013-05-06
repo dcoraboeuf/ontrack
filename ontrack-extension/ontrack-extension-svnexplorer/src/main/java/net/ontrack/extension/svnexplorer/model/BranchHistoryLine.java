@@ -21,14 +21,14 @@ public class BranchHistoryLine {
     private final BranchSummary branch;
     private final BuildSummary latestBuild;
     private final List<Promotion> promotions;
-    private final List<BranchHistoryLink> links;
+    private final List<BranchHistoryLine> lines;
     private Long stopRevision;
 
     public BranchHistoryLine(SVNReference current, boolean tag) {
-        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLink>(), null);
+        this(current, null, tag, null, null, null, new ArrayList<BranchHistoryLine>(), null);
     }
 
-    public void addLink(BranchHistoryLink link) {
-        links.add(link);
+    public void addLine(BranchHistoryLine line) {
+        lines.add(line);
     }
 }

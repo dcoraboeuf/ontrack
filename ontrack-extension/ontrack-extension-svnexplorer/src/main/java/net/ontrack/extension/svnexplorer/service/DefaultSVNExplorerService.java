@@ -380,10 +380,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Gets the latest revision on this root path
             long rootRevision = subversionService.getRepositoryRevision(SVNUtils.toURL(subversionService.getURL(rootPath)));
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
-            // Root
-            BranchHistoryLine root = createBranchHistoryLine(rootLocation);
             // Tree of locations
-            SVNTreeNode rootNode = new SVNTreeNode(root.getCurrent().toLocation());
+            SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
             // Stack of locations
             Stack<SVNTreeNode> stack = new Stack<>();
             stack.add(rootNode);
@@ -423,7 +421,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         node.setClosed(subversionService.isClosed(node.getLocation().getPath()));
                     }
                     // Loops over children
-                    node.filterChildren(new Predicate<SVNTreeNode> () {
+                    node.filterChildren(new Predicate<SVNTreeNode>() {
 
                         @Override
                         public boolean apply(SVNTreeNode child) {
@@ -441,7 +439,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // Is this node a tag?
                     node.setTag(subversionService.isTag(node.getLocation().getPath()));
                     // Loops over children
-                    node.filterChildren(new Predicate<SVNTreeNode> () {
+                    node.filterChildren(new Predicate<SVNTreeNode>() {
 
                         @Override
                         public boolean apply(SVNTreeNode child) {
@@ -458,7 +456,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             });
 
-            // TODO Collects history
+            // Collects history
+            BranchHistoryLine root = collectHistory(rootNode);
 
             // OK
             logger.debug("[branch-history] End");
@@ -467,6 +466,17 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     root
             );
         }
+    }
+
+    private BranchHistoryLine collectHistory(SVNTreeNode node) {
+        // Line itself
+        BranchHistoryLine line = createBranchHistoryLine(node.getLocation());
+        // Collects lines
+        for (SVNTreeNode childNode : node.getChildren()) {
+            line.addLine(collectHistory(childNode));
+        }
+        // OK
+        return line;
     }
 
     private BranchHistoryLine createBranchHistoryLine(SVNLocation location) {
