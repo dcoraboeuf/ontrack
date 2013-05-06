@@ -76,6 +76,26 @@ public abstract class AbstractEnv {
         });
     }
 
+    protected PromotionLevelSummary doCreatePromotionLevel() {
+        return doCreatePromotionLevel(doCreateBranch());
+    }
+
+    private PromotionLevelSummary doCreatePromotionLevel(final BranchSummary branch) {
+        return asAdmin(new ManageCall<PromotionLevelSummary>() {
+            @Override
+            public PromotionLevelSummary call(ManageUIClient client) {
+                return client.createPromotionLevel(
+                        branch.getProject().getName(),
+                        branch.getName(),
+                        new PromotionLevelCreationForm(
+                                uid("PL"),
+                                "Test promotion level"
+                        )
+                );
+            }
+        });
+    }
+
     protected BuildSummary doCreateBuild() {
         return doCreateBuild(doCreateBranch());
     }
