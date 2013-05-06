@@ -96,5 +96,5 @@ public interface SubversionService {
 
     List<Long> getRevisionsForIssueKey(String key);
 
-    void onEvents(SVNEventCallback svnEventCallback);
+    boolean isClosed(String path);
 }

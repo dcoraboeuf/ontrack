@@ -14,6 +14,7 @@ public class SVNTreeNode {
     private final SVNLocation location;
     private final List<SVNTreeNode> children = new ArrayList<>();
     private boolean tag;
+    private boolean closed;
 
     public SVNTreeNode(SVNLocation location) {
         this(null, location);
@@ -46,6 +47,14 @@ public class SVNTreeNode {
 
     public void setTag(boolean tag) {
         this.tag = tag;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     @Override

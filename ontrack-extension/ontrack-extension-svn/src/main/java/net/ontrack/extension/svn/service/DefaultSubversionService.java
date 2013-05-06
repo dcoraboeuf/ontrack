@@ -1,6 +1,7 @@
 package net.ontrack.extension.svn.service;
 
 import com.google.common.base.Function;
+import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
@@ -8,7 +9,6 @@ import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.dao.model.TSVNEvent;
-import net.ontrack.extension.svn.dao.model.TSVNEventCallback;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
@@ -77,21 +77,10 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public void onEvents(final SVNEventCallback svnEventCallback) {
-        svnEventDao.onEvents(new TSVNEventCallback() {
-            @Override
-            public void onEvent(TSVNEvent e) {
-                svnEventCallback.onEvent(
-                        new EventSVN(
-                                e.getRevision(),
-                                e.getType(),
-                                e.getCopyFromPath(),
-                                e.getCopyFromRevision(),
-                                e.getCopyToPath()
-                        )
-                );
-            }
-        });
+    @Transactional(readOnly = true)
+    public boolean isClosed(String path) {
+        TSVNEvent lastEvent = svnEventDao.getLastEvent(path);
+        return lastEvent != null && lastEvent.getType() == SVNEventType.STOP;
     }
 
     @Override

@@ -6,11 +6,9 @@ import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.dao.model.TSVNEvent;
-import net.ontrack.extension.svn.dao.model.TSVNEventCallback;
 import net.ontrack.extension.svn.service.model.SVNLocation;
 import net.ontrack.extension.svn.service.model.SVNLocationSortMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +17,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
@@ -29,6 +28,18 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
             return new SVNLocation(
                     rs.getString("copyToPath"),
                     rs.getLong("revision")
+            );
+        }
+    };
+    private RowMapper<TSVNEvent> eventRowMapper = new RowMapper<TSVNEvent>() {
+        @Override
+        public TSVNEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new TSVNEvent(
+                    rs.getLong(1),
+                    SVNEventType.valueOf(rs.getString(2)),
+                    rs.getString(3),
+                    rs.getLong(4),
+                    rs.getString(5)
             );
         }
     };
@@ -102,25 +113,29 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
 
     @Override
     @Transactional(readOnly = true)
-    public void onEvents(final TSVNEventCallback callback) {
-        String sql = "(SELECT REVISION, 'STOP', PATH, 0, NULL FROM SVNSTOPEVENT) "
+    public List<TSVNEvent> getAllEvents(String path) {
+        String sql = "(SELECT REVISION, 'STOP', PATH, 0, NULL FROM SVNSTOPEVENT WHERE PATH = :path) "
                 + "UNION "
-                + "(SELECT REVISION, 'COPY', COPYFROMPATH, COPYFROMREVISION, COPYTOPATH FROM SVNCOPYEVENT) "
+                + "(SELECT REVISION, 'COPY', COPYFROMPATH, COPYFROMREVISION, COPYTOPATH FROM SVNCOPYEVENT WHERE COPYFROMPATH = :path) "
                 + "ORDER BY REVISION ASC ";
-        getJdbcTemplate().query(
+        return getNamedParameterJdbcTemplate().query(
                 sql,
-                new RowCallbackHandler() {
-                    @Override
-                    public void processRow(ResultSet rs) throws SQLException {
-                        callback.onEvent(new TSVNEvent(
-                                rs.getLong(1),
-                                SVNEventType.valueOf(rs.getString(2)),
-                                rs.getString(3),
-                                rs.getLong(4),
-                                rs.getString(5)
-                        ));
-                    }
-                }
+                params("path", path),
+                eventRowMapper
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TSVNEvent getLastEvent(String path) {
+        String sql = "(SELECT REVISION, 'STOP', PATH, 0, NULL FROM SVNSTOPEVENT WHERE PATH = :path) "
+                + "UNION "
+                + "(SELECT REVISION, 'COPY', COPYFROMPATH, COPYFROMREVISION, COPYTOPATH FROM SVNCOPYEVENT WHERE COPYFROMPATH = :path) "
+                + "ORDER BY REVISION DESC LIMIT 1";
+        return getFirstItem(
+                sql,
+                params("path", path),
+                eventRowMapper
         );
     }
 }

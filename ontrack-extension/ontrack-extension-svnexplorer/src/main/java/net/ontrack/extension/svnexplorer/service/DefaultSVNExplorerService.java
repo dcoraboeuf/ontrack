@@ -415,6 +415,24 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             }
 
+            // Pruning the closed branches
+            rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
+                @Override
+                public void visit(SVNTreeNode node) {
+                    if (subversionService.isTrunkOrBranch(node.getLocation().getPath())) {
+                        node.setClosed(subversionService.isClosed(node.getLocation().getPath()));
+                    }
+                    // Loops over children
+                    node.filterChildren(new Predicate<SVNTreeNode> () {
+
+                        @Override
+                        public boolean apply(SVNTreeNode child) {
+                            return !child.isClosed();
+                        }
+                    });
+                }
+            });
+
             // Prunes the tag-only locations
             rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
 
@@ -439,6 +457,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     });
                 }
             });
+
+            // TODO Collects history
 
             // OK
             logger.debug("[branch-history] End");
