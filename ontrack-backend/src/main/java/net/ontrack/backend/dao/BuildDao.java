@@ -18,9 +18,9 @@ public interface BuildDao {
 
     List<TBuild> query(int branch, BuildFilter filter);
 
-	TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses);
+	TBuild findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses);
 
-	TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel);
+	TBuild findLastBuildWithPromotionLevel(int promotionLevel);
 
     TBuild findLastByBranch(int branch);
 

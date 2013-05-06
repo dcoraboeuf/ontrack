@@ -2,10 +2,12 @@ package net.ontrack.backend.extension;
 
 import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
 import net.ontrack.extension.api.decorator.EntityDecorator;
@@ -26,7 +28,6 @@ import java.util.*;
 public class DefaultExtensionManager implements ExtensionManager, StartupService {
 
     private final ApplicationContext applicationContext;
-
     private Map<String, Extension> extensionIndex;
     private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
@@ -132,6 +133,20 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     @Override
     public Collection<? extends EntityDecorator> getDecorators() {
         return decorators;
+    }
+
+    @Override
+    public Collection<EntityActionExtension<ProjectSummary>> getProjectActions() {
+        Collection<EntityActionExtension<ProjectSummary>> actions = new ArrayList<>();
+        for (Extension extension : extensionIndex.values()) {
+            Collection<? extends EntityActionExtension> entityActions = extension.getEntityActions();
+            for (EntityActionExtension entityAction : entityActions) {
+                if (entityAction.getScope() == Entity.PROJECT) {
+                    actions.add(entityAction);
+                }
+            }
+        }
+        return actions;
     }
 
     @Override

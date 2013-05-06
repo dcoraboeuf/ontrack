@@ -17,6 +17,7 @@ import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.extension.svnexplorer.ProjectRootPathPropertyExtension;
 import net.ontrack.extension.svnexplorer.SVNExplorerExtension;
 import net.ontrack.extension.svnexplorer.SensibleFilesPropertyExtension;
 import net.ontrack.extension.svnexplorer.model.*;
@@ -26,6 +27,8 @@ import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,7 @@ import java.util.regex.Pattern;
 @Service
 public class DefaultSVNExplorerService implements SVNExplorerService {
 
+    private final Logger logger = LoggerFactory.getLogger(SVNExplorerService.class);
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final SubversionService subversionService;
@@ -299,7 +303,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 if (buildId != null) {
                     // Gets the build information
                     BuildSummary buildSummary = managementService.getBuild(buildId);
-                    // TODO Gets the promotion levels & validation stamps
+                    // Gets the promotion levels & validation stamps
                     List<BuildPromotionLevel> promotionLevels = managementService.getBuildPromotionLevels(locale, buildId);
                     List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
                     // Adds to the list
@@ -359,6 +363,160 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 revisionInfo,
                 revisions
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BranchHistory getBranchHistory(int projectId, Locale locale) {
+        try (Transaction ignored = transactionService.start()) {
+            logger.debug("[branch-history] Start");
+            // Gets the project details
+            ProjectSummary project = managementService.getProject(projectId);
+            // Gets the root path for this project
+            String rootPath = propertiesService.getPropertyValue(Entity.PROJECT, projectId, SVNExplorerExtension.EXTENSION, ProjectRootPathPropertyExtension.NAME);
+            if (StringUtils.isBlank(rootPath)) {
+                throw new ProjectHasRootPathException(project.getName());
+            }
+            // Gets the latest revision on this root path
+            long rootRevision = subversionService.getRepositoryRevision(SVNUtils.toURL(subversionService.getURL(rootPath)));
+            SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
+            // Tree of locations
+            SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
+            // Stack of locations
+            Stack<SVNTreeNode> stack = new Stack<>();
+            stack.add(rootNode);
+            // Trimming the stack
+            while (!stack.isEmpty()) {
+                // Gets the top
+                SVNTreeNode current = stack.pop();
+                // Gets all the copies from this location
+                Collection<SVNLocation> copies = subversionService.getCopiesFrom(
+                        current.getLocation().withRevision(1),
+                        SVNLocationSortMode.FROM_NEWEST);
+                // No copy?
+                if (copies.isEmpty()) {
+                    // Trunk or branch
+                    if (subversionService.isTrunkOrBranch(current.getLocation().getPath())) {
+                        // Attaches to the parent
+                        current.attachToParent();
+                    }
+                }
+                // At least one copy
+                else {
+                    // Attach to the parent
+                    current.attachToParent();
+                    // For each copy
+                    for (SVNLocation copy : copies) {
+                        // Adds to the stack
+                        stack.push(new SVNTreeNode(current, copy));
+                    }
+                }
+            }
+
+            // Pruning the closed branches
+            rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
+                @Override
+                public void visit(SVNTreeNode node) {
+                    if (subversionService.isTrunkOrBranch(node.getLocation().getPath())) {
+                        node.setClosed(subversionService.isClosed(node.getLocation().getPath()));
+                    }
+                    // Loops over children
+                    node.filterChildren(new Predicate<SVNTreeNode>() {
+
+                        @Override
+                        public boolean apply(SVNTreeNode child) {
+                            return !child.isClosed();
+                        }
+                    });
+                }
+            });
+
+            // Prunes the tag-only locations
+            rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
+
+                @Override
+                public void visit(SVNTreeNode node) {
+                    // Is this node a tag?
+                    node.setTag(subversionService.isTag(node.getLocation().getPath()));
+                    // Loops over children
+                    node.filterChildren(new Predicate<SVNTreeNode>() {
+
+                        @Override
+                        public boolean apply(SVNTreeNode child) {
+                            boolean allTags = child.all(new Predicate<SVNTreeNode>() {
+
+                                @Override
+                                public boolean apply(SVNTreeNode n) {
+                                    return n.isTag();
+                                }
+                            });
+                            return !allTags;
+                        }
+                    });
+                }
+            });
+
+            // Collects history
+            BranchHistoryLine root = collectHistory(locale, rootNode);
+
+            // OK
+            logger.debug("[branch-history] End");
+            return new BranchHistory(
+                    project,
+                    root
+            );
+        }
+    }
+
+    private BranchHistoryLine collectHistory(Locale locale, SVNTreeNode node) {
+        // Line itself
+        BranchHistoryLine line = createBranchHistoryLine(locale, node.getLocation());
+        // Collects lines
+        for (SVNTreeNode childNode : node.getChildren()) {
+            line.addLine(collectHistory(locale, childNode));
+        }
+        // OK
+        return line;
+    }
+
+    private BranchHistoryLine createBranchHistoryLine(final Locale locale, SVNLocation location) {
+        // Core
+        BranchHistoryLine line = new BranchHistoryLine(
+                subversionService.getReference(location),
+                subversionService.isTag(location.getPath())
+        );
+        // TODO Ancestry? Do we really need this?
+        // Branch?
+        Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, location.getPath());
+        if (branchIds.size() > 1) {
+            throw new IllegalStateException("At most one branch should be eligible - configuration problem at branch level?");
+        } else if (branchIds.size() == 1) {
+            final int branchId = branchIds.iterator().next();
+            BranchSummary branch = managementService.getBranch(branchId);
+            line = line.withBranch(branch);
+            // Latest build?
+            BuildSummary latestBuild = managementService.getLastBuild(branchId);
+            if (latestBuild != null) {
+                line = line.withLatestBuild(latestBuild);
+            }
+            // Gets the list of promotions
+            List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+            promotionLevelList = new ArrayList<>(promotionLevelList);
+            Collections.reverse(promotionLevelList);
+            line = line.withPromotions(
+                    Lists.transform(
+                            promotionLevelList,
+                            new Function<PromotionLevelSummary, Promotion>() {
+                                @Override
+                                public Promotion apply(PromotionLevelSummary promotionLevel) {
+                                    return managementService.findLastPromotion(locale, promotionLevel.getId());
+                                }
+                            }
+                    )
+            );
+        }
+        // OK
+        return line;
     }
 
     private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {

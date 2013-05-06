@@ -1,12 +1,14 @@
 package net.ontrack.extension.svn.service;
 
 import com.google.common.base.Function;
+import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
+import net.ontrack.extension.svn.dao.model.TSVNEvent;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
@@ -76,6 +78,13 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isClosed(String path) {
+        TSVNEvent lastEvent = svnEventDao.getLastEvent(path);
+        return lastEvent != null && lastEvent.getType() == SVNEventType.STOP;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public SVNRevisionPaths getRevisionPaths(long revision) {
         // Result
         final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
@@ -125,6 +134,12 @@ public class DefaultSubversionService implements SubversionService {
     @Transactional(readOnly = true)
     public Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode) {
         return svnEventDao.getCopiesFrom(location, sortMode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFromBefore(location, sortMode);
     }
 
     @Override
@@ -180,7 +195,7 @@ public class DefaultSubversionService implements SubversionService {
     public long getRepositoryRevision(SVNURL url) {
         try {
             SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
-            return info.getRevision().getNumber();
+            return info.getCommittedRevision().getNumber();
         } catch (SVNException e) {
             throw translateSVNException(e);
         }
@@ -330,6 +345,11 @@ public class DefaultSubversionService implements SubversionService {
         );
     }
 
+    @Override
+    public SVNReference getReference(SVNLocation location) {
+        return getReference(location.getPath(), SVNRevision.create(location.getRevision()));
+    }
+
     private SVNInfo getInfo(SVNURL url, SVNRevision revision) {
         try {
             return getWCClient().doInfo(url, revision, revision);
@@ -348,7 +368,8 @@ public class DefaultSubversionService implements SubversionService {
         return isTrunk(path) || isBranch(path);
     }
 
-    private boolean isTag(String path) {
+    @Override
+    public boolean isTag(String path) {
         return isPathOK(configurationExtension.getTagPattern(), path);
     }
 

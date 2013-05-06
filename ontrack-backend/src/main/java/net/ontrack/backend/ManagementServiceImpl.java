@@ -744,25 +744,23 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
-    public BuildSummary queryLastBuildWithValidationStamp(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
-        TBuild tBuild = buildDao.findLastBuildWithValidationStamp(branch, validationStamp, statuses);
-
+    public BuildSummary findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
+        TBuild tBuild = buildDao.findLastBuildWithValidationStamp(validationStamp, statuses);
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);
+        } else {
+            return null;
         }
-
-        throw new BranchNoBuildFoundException();
     }
 
     @Override
-    public BuildSummary queryLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
-        TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
-
+    public BuildSummary findLastBuildWithPromotionLevel(final int promotionLevel) {
+        TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(promotionLevel);
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);
+        } else {
+            return null;
         }
-
-        throw new BranchNoBuildFoundException();
     }
 
     private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
@@ -1092,6 +1090,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     promotionLevel,
                     getBuild(earliestBuildId),
                     getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, earliestBuildId))
+            );
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Promotion findLastPromotion(Locale locale, int promotionLevelId) {
+        BuildSummary build = findLastBuildWithPromotionLevel(promotionLevelId);
+        PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        if (build != null) {
+            return new Promotion(
+                    promotionLevel,
+                    build,
+                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, build.getId()))
+            );
+        } else {
+            return new Promotion(
+                    promotionLevel,
+                    null,
+                    null
             );
         }
     }

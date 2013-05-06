@@ -26,6 +26,8 @@ public interface SubversionService {
      */
     long getRepositoryRevision(SVNURL url);
 
+    SVNReference getReference(SVNLocation location);
+
     void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
              boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions,
              ISVNLogEntryHandler isvnLogEntryHandler);
@@ -37,6 +39,8 @@ public interface SubversionService {
     boolean exists(SVNURL url, SVNRevision revision);
 
     boolean isTagOrBranch(String path);
+
+    boolean isTag(String path);
 
     /**
      * Gets the Subversion history from a path
@@ -86,7 +90,11 @@ public interface SubversionService {
 
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
 
+    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
+
     boolean isIndexedIssue(String key);
 
     List<Long> getRevisionsForIssueKey(String key);
+
+    boolean isClosed(String path);
 }

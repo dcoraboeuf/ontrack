@@ -433,8 +433,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     BuildSummary getLastBuildWithValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
-        int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.queryLastBuildWithValidationStamp(locale, branchId, validationStamp, Collections.singleton(Status.PASSED));
+        int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+        return managementService.findLastBuildWithValidationStamp(validationStampId, Collections.singleton(Status.PASSED));
     }
 
     @Override
@@ -442,8 +442,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     BuildSummary getLastBuildWithPromotionLevel(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
-        int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.queryLastBuildWithPromotionLevel(locale, branchId, promotionLevel);
+        int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, promotionLevel);
+        return managementService.findLastBuildWithPromotionLevel(promotionLevelId);
     }
 
     @Override

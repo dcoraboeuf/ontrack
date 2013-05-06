@@ -1,0 +1,87 @@
+<#include "/lib/layout.html">
+
+<#macro history_line line indent=0>
+    <tr class="<#if !line.tag>info</#if>">
+        <#if indent gt 0>
+            <#if indent gt 1>
+                <#list 2..indent as index>
+                    <td width="16">
+                        &nbsp;
+                    </td>
+                </#list>
+            </#if>
+            <td width="16" style="text-align: right;">
+                <i class="icon-arrow-right"></i>
+            </td>
+        </#if>
+        <#assign colspan = 16 - indent />
+        <td colspan="${colspan?c}">
+           <a href="${line.current.url?html}">${line.current.path?html}</a>
+        </td>
+        <td>
+            <#if line.branch??>
+                <a href="gui/project/${line.branch.project.name?html}/branch/${line.branch.name?html}">${line.branch.name?html}</a>
+            </#if>
+        </td>
+        <td>
+            <#if line.latestBuild??>
+                <a href="gui/project/${line.latestBuild.branch.project.name?html}/branch/${line.latestBuild.branch.name?html}/build/${line.latestBuild.name?html}">${line.latestBuild.name?html}</a>
+            </#if>
+        </td>
+        <td>
+            <#list line.promotions as promotion>
+                <#if promotion.buildSummary??>
+                    <span class="promotion">
+                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                        @
+                        <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
+                    </span>
+                <#else>
+                    <span class="promotion muted">
+                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                    </span>
+                </#if>
+            </#list>
+        </td>
+    </tr>
+    <#list line.lines as child>
+        <@history_line line=child indent=indent+1 />
+    </#list>
+</#macro>
+
+<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) style=true extension=true modules=["promotion_levels"]>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${branchHistory.project.name?html}">${branchHistory.project.name?html}</a>
+                    /
+                    ${ loc('svnexplorer.branch-history.title', branchHistory.project.name) }
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${branchHistory.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="16"><@lh key="svnexplorer.branch-history.path" /></th>
+                        <th><@lh key="svnexplorer.branch-history.branch" /></th>
+                        <th><@lh key="svnexplorer.branch-history.latestBuild" /></th>
+                        <th><@lh key="svnexplorer.branch-history.promotions" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <@history_line line=branchHistory.root />
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</@layout_std>

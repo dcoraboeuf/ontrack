@@ -3,6 +3,7 @@ package net.ontrack.web.config;
 import com.netbeetle.jackson.ObjectMapperFactory;
 import freemarker.cache.TemplateLoader;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.web.locale.LocaleInterceptor;
@@ -65,6 +66,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private Strings strings;
+
+    @Autowired
+    private ManageUI manageUI;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -133,6 +137,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // Extensions
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
         variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));
+        variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, securityUtils, manageUI));
         // OK
         c.setFreemarkerVariables(variables);
         // OK

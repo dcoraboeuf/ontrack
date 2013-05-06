@@ -155,7 +155,7 @@ svnexplorer.revision.promotions.notForThisPromotionLevel
     en -> The revision was never promoted to this promotion level.
     fr -> Cette révision n'a jamais été promue à ce niveau de promotion.
 
-[issue]]
+[issue]
 
 svnexplorer.issue
     en -> Issue {0}
@@ -164,6 +164,38 @@ svnexplorer.issue
 svnexplorer.issue.revisions
     en -> Associated revisions
     fr -> Révisions associées
+
+[branch-history]
+
+svnexplorer.branch-history
+    en -> Branch history
+    fr -> Historique des branches
+
+svnexplorer.branch-history.title
+    en -> Branch history for {0}
+    fr -> Historique des branches pour {0}
+
+svnexplorer.branch-history.path
+    en -> Path
+    fr -> Chemin
+
+svnexplorer.branch-history.branch
+    en -> Branch
+    fr -> Branche
+
+svnexplorer.branch-history.latestBuild
+    en -> Last build
+    fr -> Dernier build
+
+svnexplorer.branch-history.promotions
+    en -> Promotions
+    fr -> Promotions
+
+[rootPath]
+
+svnexplorer.rootPath
+    en -> SVN root path
+    fr -> Chemin racine SVN
 
 [errors]
 
@@ -179,3 +211,6 @@ net.ontrack.extension.svnexplorer.service.NoCommonAncestorException
     en -> No common ancestor was found between the builds histories.
     fr -> Aucun ancêtre common n'a été trouvé entre les historiques des builds.
 
+net.ontrack.extension.svnexplorer.service.ProjectHasRootPathException
+    en -> Project {0} has no SVN root path defined.
+    fr -> Le project {0} n'a aucun chemin racine de défini.

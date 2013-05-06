@@ -100,9 +100,9 @@ public interface ManagementService {
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
 
-	BuildSummary queryLastBuildWithValidationStamp(Locale locale, int branch, String validationStamp, Set<Status> statuses);
+	BuildSummary findLastBuildWithValidationStamp(int validationStampId, Set<Status> statuses);
 
-	BuildSummary queryLastBuildWithPromotionLevel(Locale locale, int branch, String promotionLevel);
+	BuildSummary findLastBuildWithPromotionLevel(int promotionLevelId);
 
     BuildSummary getLastBuild(int branch);
 
@@ -137,6 +137,8 @@ public interface ManagementService {
     PromotedRunSummary getPromotedRun(int buildId, int promotionLevel);
 
     Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId);
+
+    Promotion findLastPromotion(Locale locale, int promotionLevelId);
 
     // Comments
 

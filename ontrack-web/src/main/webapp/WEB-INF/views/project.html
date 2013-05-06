@@ -6,6 +6,14 @@
             <div class="span12 page-title">
                 <span class="title">${project.name?html}</span>
                 <span class="action action-optional">
+                    <#list extensionProjectActions(project.name) as projectAction>
+                        <a href="${projectAction.url?html}" class="<#if projectAction.css??>${projectAction.css?html}</#if>">
+                            <#if projectAction.icon??>
+                                <i class="${projectAction.icon?html}"></i>
+                            </#if>
+                            ${projectAction.title?html}
+                        </a>
+                    </#list>
                     <#if secAdmin()>
                         <span onclick="Projects.updateProject('${project.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="Projects.deleteProject('${project.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>

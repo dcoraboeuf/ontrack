@@ -19,4 +19,6 @@ public interface SVNExplorerService {
     RevisionInfo getRevisionInfo(Locale locale, long revision);
 
     IssueInfo getIssueInfo(Locale locale, String key);
+
+    BranchHistory getBranchHistory(int project, Locale locale);
 }

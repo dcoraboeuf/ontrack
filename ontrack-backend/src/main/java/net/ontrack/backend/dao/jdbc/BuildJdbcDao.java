@@ -2,6 +2,7 @@ package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BuildDao;
+import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
 import net.ontrack.backend.dao.model.TValidationStamp;
@@ -42,11 +43,13 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         }
     };
     private final ValidationStampDao validationStampDao;
+    private final PromotionLevelDao promotionLevelDao;
 
     @Autowired
-    public BuildJdbcDao(DataSource dataSource, ValidationStampDao validationStampDao) {
+    public BuildJdbcDao(DataSource dataSource, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao) {
         super(dataSource);
         this.validationStampDao = validationStampDao;
+        this.promotionLevelDao = promotionLevelDao;
     }
 
     @Override
@@ -128,8 +131,10 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         // Since last promotion level
         String sincePromotionLevel = filter.getSincePromotionLevel();
         if (StringUtils.isNotBlank(sincePromotionLevel)) {
+            // Gets the promotion level ID
+            int promotionLevelId = promotionLevelDao.getByBranchAndName(branch, sincePromotionLevel).getId();
             // Gets the last build having this promotion level
-            TBuild build = findLastBuildWithPromotionLevel(branch, sincePromotionLevel);
+            TBuild build = findLastBuildWithPromotionLevel(promotionLevelId);
             if (build != null) {
                 sinceBuildId = build.getId();
             }
@@ -144,8 +149,10 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         List<BuildValidationStampFilter> sinceValidationStamps = filter.getSinceValidationStamps();
         if (sinceValidationStamps != null && !sinceValidationStamps.isEmpty()) {
             for (BuildValidationStampFilter sinceValidationStamp : sinceValidationStamps) {
+                // Gets the validation stamp ID
+                int validationStampId = validationStampDao.getByBranchAndName(branch, sinceValidationStamp.getValidationStamp()).getId();
                 // Gets the last build having this validation stamp and the status
-                TBuild build = findLastBuildWithValidationStamp(branch, sinceValidationStamp.getValidationStamp(), sinceValidationStamp.getStatuses());
+                TBuild build = findLastBuildWithValidationStamp(validationStampId, sinceValidationStamp.getStatuses());
                 if (build != null) {
                     if (sinceBuildId == null) {
                         sinceBuildId = build.getId();
@@ -197,46 +204,45 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     }
 
     @Override
-    public TBuild findLastBuildWithValidationStamp(int branch, String validationStamp, Set<Status> statuses) {
-        int validationStampId = validationStampDao.getByBranchAndName(branch, validationStamp).getId();
-        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
-                "                LEFT JOIN (" +
-                "                    SELECT R.BUILD,  R.VALIDATION_STAMP, VRS.STATUS " +
-                "                    FROM VALIDATION_RUN R" +
-                "                    INNER JOIN VALIDATION_RUN_STATUS VRS ON VRS.ID = (SELECT ID FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = R.ID ORDER BY ID DESC LIMIT 1)" +
-                "                    AND R.RUN_ORDER = (SELECT MAX(RUN_ORDER) FROM VALIDATION_RUN WHERE BUILD = R.BUILD AND VALIDATION_STAMP = R.VALIDATION_STAMP)" +
-                "                    ) S ON S.BUILD = B.ID" +
-                "                WHERE B.BRANCH = :branch" +
-                "                AND S.VALIDATION_STAMP = :validationStampId");
+    public TBuild findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT VR.BUILD FROM VALIDATION_RUN_STATUS VRS\n" +
+                "INNER JOIN VALIDATION_RUN VR ON VR.ID = VRS.VALIDATION_RUN\n" +
+                "WHERE VR.VALIDATION_STAMP = :validationStamp\n");
         // Status criteria
         if (statuses != null && !statuses.isEmpty()) {
-            sql.append(format(" AND S.STATUS IN (%s)", getStatusesForSQLInClause(statuses)));
+            sql.append(format("AND S.STATUS IN (%s)\n", getStatusesForSQLInClause(statuses)));
         }
+        // Order & limit
+        sql.append("ORDER BY VR.BUILD DESC LIMIT 1\n");
         // Parameters
-        MapSqlParameterSource params = params("branch", branch).addValue("validationStampId", validationStampId);
-        // Limit & order
-        sql.append(" ORDER BY B.ID DESC LIMIT 1");
-        // OK
-        return getFirstItem(
+        MapSqlParameterSource params = params("validationStamp", validationStamp);
+        // Build ID
+        Integer buildId = getFirstItem(
                 sql.toString(),
                 params,
-                buildRowMapper
+                Integer.class
         );
+        // OK
+        if (buildId != null) {
+            return getById(buildId);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public TBuild findLastBuildWithPromotionLevel(int branch, String promotionLevel) {
-        return getFirstItem(
-                "SELECT B.* FROM BUILD B" +
-                        " LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
-                        " LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
-                        " WHERE B.BRANCH = :branch AND PL.NAME = :name" +
-                        " ORDER BY B.ID DESC" +
-                        " LIMIT 1",
-                params("branch", branch)
-                        .addValue("name", promotionLevel),
-                buildRowMapper
+    public TBuild findLastBuildWithPromotionLevel(int promotionLevel) {
+        Integer buildId = getFirstItem(
+                SQL.BUILD_LAST_FOR_PROMOTION_LEVEL,
+                params("promotionLevel", promotionLevel),
+                Integer.class
         );
+        if (buildId != null) {
+            return getById(buildId);
+        } else {
+            return null;
+        }
     }
 
     @Override

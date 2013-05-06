@@ -127,6 +127,15 @@ public class PromotionLevelJdbcDao extends AbstractJdbcDao implements PromotionL
 
     @Override
     @Transactional(readOnly = true)
+    public TPromotionLevel getByBranchAndName(int branch, String promotionLevel) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                SQL.PROMOTION_LEVEL_BY_BRANCH_AND_NAME,
+                params("branch", branch).addValue("name", promotionLevel),
+                promotionLevelMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TPromotionLevel> findByBuild(int build) {
         return getNamedParameterJdbcTemplate().query(
                 SQL.PROMOTION_LEVEL_FOR_BUILD,
