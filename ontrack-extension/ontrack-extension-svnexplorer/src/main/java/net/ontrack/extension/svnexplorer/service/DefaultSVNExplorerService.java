@@ -415,6 +415,31 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             }
 
+            // Prunes the tag-only locations
+            rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
+
+                @Override
+                public void visit(SVNTreeNode node) {
+                    // Is this node a tag?
+                    node.setTag(subversionService.isTag(node.getLocation().getPath()));
+                    // Loops over children
+                    node.filterChildren(new Predicate<SVNTreeNode> () {
+
+                        @Override
+                        public boolean apply(SVNTreeNode child) {
+                            boolean allTags = child.all(new Predicate<SVNTreeNode>() {
+
+                                @Override
+                                public boolean apply(SVNTreeNode n) {
+                                    return n.isTag();
+                                }
+                            });
+                            return !allTags;
+                        }
+                    });
+                }
+            });
+
             // OK
             logger.debug("[branch-history] End");
             return new BranchHistory(
