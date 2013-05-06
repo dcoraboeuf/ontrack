@@ -30,10 +30,19 @@
         </td>
         <td>
             <#list line.promotions as promotion>
-                <span>
-                    <@promotion_level_img promotionLevel=promotion.promotionLevel />
-                    <@promotion_level_link promotionLevel=promotion.promotionLevel />
-                </span>
+                <#if promotion.buildSummary??>
+                    <span class="promotion">
+                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                        @
+                        <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
+                    </span>
+                <#else>
+                    <span class="promotion muted">
+                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                    </span>
+                </#if>
             </#list>
         </td>
     </tr>
@@ -42,7 +51,7 @@
     </#list>
 </#macro>
 
-<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) script=true style=true extension=true modules=["promotion_levels"]>
+<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) style=true extension=true modules=["promotion_levels"]>
 
     <div class="row-fluid">
         <div class="span12 page-title">
