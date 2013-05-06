@@ -780,8 +780,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
-    public BuildSummary findLastBuildWithValidationStamp(final Locale locale, final int branch, final String validationStamp, final Set<Status> statuses) {
-        TBuild tBuild = buildDao.findLastBuildWithValidationStamp(branch, validationStamp, statuses);
+    public BuildSummary findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
+        TBuild tBuild = buildDao.findLastBuildWithValidationStamp(validationStamp, statuses);
 
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);
@@ -791,8 +791,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
-    public BuildSummary findLastBuildWithPromotionLevel(final Locale locale, final int branch, final String promotionLevel) {
-        TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(branch, promotionLevel);
+    public BuildSummary findLastBuildWithPromotionLevel(final int promotionLevel) {
+        TBuild tBuild = buildDao.findLastBuildWithPromotionLevel(promotionLevel);
 
         if (tBuild != null) {
             return buildSummaryFunction.apply(tBuild);

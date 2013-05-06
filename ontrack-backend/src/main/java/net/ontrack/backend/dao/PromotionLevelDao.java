@@ -28,4 +28,6 @@ public interface PromotionLevelDao {
     Ack deletePromotionLevel(int promotionLevelId);
 
     void setAutoPromote(int promotionLevelId, boolean flag);
+
+    TPromotionLevel getByBranchAndName(int branch, String promotionLevel);
 }
