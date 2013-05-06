@@ -1,13 +1,26 @@
 <#include "/lib/layout.html">
 
-<#macro history_line line>
+<#macro history_line line indent=0>
     <tr>
-       <td>
+        <#if indent gt 0>
+            <#if indent gt 1>
+                <#list 2..indent as index>
+                    <td width="16">
+                        &nbsp;
+                    </td>
+                </#list>
+            </#if>
+            <td width="16" style="text-align: right;">
+                <i class="icon-arrow-right"></i>
+            </td>
+        </#if>
+        <#assign colspan = 16 - indent />
+        <td colspan="${colspan?c}">
            <a href="${line.current.url?html}">${line.current.path?html}</a>
-       </td>
+        </td>
     </tr>
     <#list line.lines as child>
-        <@history_line line=child />
+        <@history_line line=child indent=indent+1 />
     </#list>
 </#macro>
 
@@ -31,7 +44,7 @@
             <table class="table table-condensed table-hover">
                 <thead>
                     <tr>
-                        <th><@lh key="svnexplorer.branch-history.path" /></th>
+                        <th colspan="16"><@lh key="svnexplorer.branch-history.path" /></th>
                     </tr>
                 </thead>
                 <tbody>
