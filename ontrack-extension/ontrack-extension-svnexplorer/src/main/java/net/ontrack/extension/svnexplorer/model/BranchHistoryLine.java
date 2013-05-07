@@ -17,7 +17,6 @@ import java.util.List;
 public class BranchHistoryLine {
 
     private final SVNReference current;
-    private final SVNReference creation;
     private final boolean tag;
     private final BranchSummary branch;
     private final BuildSummary latestBuild;
@@ -25,7 +24,7 @@ public class BranchHistoryLine {
     private final List<BranchHistoryLine> lines;
 
     public BranchHistoryLine(SVNReference current, boolean tag) {
-        this(current, null, tag, null, null, Collections.<Promotion>emptyList(), new ArrayList<BranchHistoryLine>());
+        this(current, tag, null, null, Collections.<Promotion>emptyList(), new ArrayList<BranchHistoryLine>());
     }
 
     public void addLine(BranchHistoryLine line) {
@@ -33,15 +32,15 @@ public class BranchHistoryLine {
     }
 
     public BranchHistoryLine withBranch(BranchSummary branch) {
-        return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
+        return new BranchHistoryLine(current, tag, branch, latestBuild, promotions, lines);
     }
 
     public BranchHistoryLine withLatestBuild(BuildSummary latestBuild) {
-        return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
+        return new BranchHistoryLine(current, tag, branch, latestBuild, promotions, lines);
     }
 
     public BranchHistoryLine withPromotions(List<Promotion> promotions) {
-        return new BranchHistoryLine(current, creation, tag, branch, latestBuild, promotions, lines);
+        return new BranchHistoryLine(current, tag, branch, latestBuild, promotions, lines);
     }
 
 }

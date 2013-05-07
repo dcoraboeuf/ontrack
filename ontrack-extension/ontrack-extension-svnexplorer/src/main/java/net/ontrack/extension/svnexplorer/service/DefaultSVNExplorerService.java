@@ -485,7 +485,6 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 subversionService.getReference(location),
                 subversionService.isTag(location.getPath())
         );
-        // TODO Ancestry? Do we really need this?
         // Branch?
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, location.getPath());
         if (branchIds.size() > 1) {
