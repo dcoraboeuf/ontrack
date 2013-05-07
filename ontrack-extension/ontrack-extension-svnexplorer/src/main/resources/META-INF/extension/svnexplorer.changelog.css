@@ -42,3 +42,13 @@ td.info-status-name {
 table.info-files td.revision-header {
     text-align: right;
 }
+
+span.validation_stamp {
+    background-color: #eeeeee;
+    border: solid 1px gray;
+    margin-bottom: 5px;
+}
+
+span.validation_stamp.notrun {
+    opacity: 0.35;
+}
