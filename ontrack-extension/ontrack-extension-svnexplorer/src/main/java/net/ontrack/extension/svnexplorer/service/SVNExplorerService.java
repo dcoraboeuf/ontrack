@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public interface SVNExplorerService {
 
-    ChangeLogSummary getChangeLogSummary(int branch, int from, int to);
+    ChangeLogSummary getChangeLogSummary(Locale locale, int branch, int from, int to);
 
     ChangeLogRevisions getChangeLogRevisions(ChangeLogSummary summary);
 

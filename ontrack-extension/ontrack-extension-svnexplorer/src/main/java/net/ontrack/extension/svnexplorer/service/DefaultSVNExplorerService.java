@@ -59,13 +59,13 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public ChangeLogSummary getChangeLogSummary(int branchId, int from, int to) {
+    public ChangeLogSummary getChangeLogSummary(Locale locale, int branchId, int from, int to) {
         try (Transaction ignored = transactionService.start()) {
             // Gets the branch
             BranchSummary branch = managementService.getBranch(branchId);
             // Gets the build information
-            SVNBuild buildFrom = getBuild(from);
-            SVNBuild buildTo = getBuild(to);
+            SVNBuild buildFrom = getBuild(locale, from);
+            SVNBuild buildTo = getBuild(locale, to);
             // OK
             return new ChangeLogSummary(
                     UUID.randomUUID().toString(),
@@ -674,7 +674,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 formattedMessage);
     }
 
-    private SVNBuild getBuild(int buildId) {
+    private SVNBuild getBuild(Locale locale, int buildId) {
         // Gets the build basic information
         BuildSummary build = managementService.getBuild(buildId);
         // Gets the build SVN tag
@@ -684,7 +684,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // OK
         return new SVNBuild(
                 build,
-                history
+                history,
+                managementService.getBuildValidationStamps(locale, build.getId()),
+                managementService.getBuildPromotionLevels(locale, build.getId())
         );
     }
 

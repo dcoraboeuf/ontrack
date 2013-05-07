@@ -64,12 +64,12 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     @RequestMapping(value = "/changelog", method = RequestMethod.POST)
     public
     @ResponseBody
-    ChangeLogSummary getChangeLogSummary(@RequestBody ChangeLogRequest request) {
+    ChangeLogSummary getChangeLogSummary(Locale locale, @RequestBody ChangeLogRequest request) {
         // Build information
         BuildSummary buildFrom = manageUI.getBuild(request.getProject(), request.getBranch(), request.getFrom());
         BuildSummary buildTo = manageUI.getBuild(request.getProject(), request.getBranch(), request.getTo());
         // Loads the change log summary
-        ChangeLogSummary summary = svnExplorerService.getChangeLogSummary(buildFrom.getBranch().getId(), buildFrom.getId(), buildTo.getId());
+        ChangeLogSummary summary = svnExplorerService.getChangeLogSummary(locale, buildFrom.getBranch().getId(), buildFrom.getId(), buildTo.getId());
         // Stores it into the cache
         logCache.put(summary.getUuid(), new ChangeLog(summary));
         // OK

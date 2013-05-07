@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Locale;
+
 @Controller
 @RequestMapping("/gui/extension/svnexplorer/changelog")
 public class ChangeLogActionController extends AbstractGUIController implements ActionExtension {
@@ -26,11 +28,11 @@ public class ChangeLogActionController extends AbstractGUIController implements 
 
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String changeLogPage (String project, String branch, String from, String to, Model model) {
+    public String changeLogPage (Locale locale, String project, String branch, String from, String to, Model model) {
         // Request
         ChangeLogRequest request = new ChangeLogRequest(project, branch, from, to);
         // Loads the summary
-        ChangeLogSummary summary = ui.getChangeLogSummary(request);
+        ChangeLogSummary summary = ui.getChangeLogSummary(locale, request);
         model.addAttribute("summary", summary);
         // OK
         return "extension/svnexplorer/changelog";

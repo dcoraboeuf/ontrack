@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public interface SVNExplorerUI {
 
-    ChangeLogSummary getChangeLogSummary(ChangeLogRequest request);
+    ChangeLogSummary getChangeLogSummary(Locale locale, ChangeLogRequest request);
 
     ChangeLogRevisions getChangeLogRevisions(String uuid);
 
