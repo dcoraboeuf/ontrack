@@ -189,9 +189,9 @@
             {{#lastRun}}
                 <a
                         class="tooltip-source"
-                        data-toggle="tooltip"
                         href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../buildValidationStamp/name}}/validation_run/{{runOrder}}"
-                        title="{{status}} - {{signature.elapsedTime}} - {{signature.formattedTime}}">
+                        title="<div style='text-align:left;'>{{#events}}- {{status}} {{content}}<br/>{{/events}}{{signature.elapsedTime}} - {{signature.formattedTime}}</div>"
+                        data-html="true">
                     <img width="24" src="static/images/status-{{status}}.png" />
                 </a>
             {{/lastRun}}

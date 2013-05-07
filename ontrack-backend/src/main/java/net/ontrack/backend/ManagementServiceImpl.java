@@ -31,9 +31,14 @@ import java.util.*;
 
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
+    /**
+     * Maximum number of events to store in a {@link BuildValidationStampRun}.
+     *
+     * @see #getValidationRuns(java.util.Locale, int, int)
+     */
+    public static final int MAX_EVENTS_IN_BUILD_VALIDATION_STAMP_RUN = 10;
 
     // TODO Split the service in different parts
-
     private final SecurityUtils securityUtils;
     private final Strings strings;
     private final AccountDao accountDao;
@@ -81,20 +86,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
-
-    private AccountSummary getAccountSummary(Integer id) {
-        if (id == null) {
-            return null;
-        } else {
-            TAccount account = accountDao.getByID(id);
-            return new AccountSummary(
-                    account.getId(),
-                    account.getName(),
-                    account.getFullName()
-            );
-        }
-    }
-
     private final Function<TPromotionLevel, PromotionLevelSummary> promotionLevelSummaryFunction = new Function<TPromotionLevel, PromotionLevelSummary>() {
         @Override
         public PromotionLevelSummary apply(TPromotionLevel t) {
@@ -140,6 +131,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.entityDao = entityDao;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
+    }
+
+    private AccountSummary getAccountSummary(Integer id) {
+        if (id == null) {
+            return null;
+        } else {
+            TAccount account = accountDao.getByID(id);
+            return new AccountSummary(
+                    account.getId(),
+                    account.getName(),
+                    account.getFullName()
+            );
+        }
     }
 
     @Override
@@ -954,7 +958,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         ValidationRunStatusStub runStatus = getLastValidationRunStatus(runId);
                         ValidationRunSummary run = getValidationRun(runId);
                         DatedSignature signature = getDatedSignature(locale, EventType.VALIDATION_RUN_CREATED, MapBuilder.of(Entity.BUILD, buildId).with(Entity.VALIDATION_STAMP, validationStampId).get());
-                        return new BuildValidationStampRun(runId, run.getRunOrder(), signature, runStatus.getStatus(), runStatus.getDescription());
+                        return new BuildValidationStampRun(runId, run.getRunOrder(), signature, runStatus.getStatus(), runStatus.getDescription(),
+                                getValidationRunHistory(locale, runId, 0, MAX_EVENTS_IN_BUILD_VALIDATION_STAMP_RUN));
                     }
                 }
         );
