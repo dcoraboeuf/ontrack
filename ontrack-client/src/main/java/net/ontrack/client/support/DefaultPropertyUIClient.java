@@ -17,6 +17,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
     @Override
     public Ack saveProperty(Entity entity, int entityId, String extension, String name, PropertyForm form) {
         return post(
+                Locale.getDefault(),
                 format(
                         "/ui/property/%s/%d/edit/%s/%s",
                         entity.name(),
@@ -30,8 +31,8 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
 
     @Override
     public List<DisplayablePropertyValue> getProperties(Locale locale, Entity entity, int entityId) {
-        // TODO Locale management
         return list(
+                locale,
                 format(
                         "/ui/property/%s/%d",
                         entity.name(),
@@ -42,8 +43,8 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
 
     @Override
     public List<EditableProperty> getEditableProperties(Locale locale, Entity entity, int entityId) {
-        // TODO Locale management
         return list(
+                locale,
                 format(
                         "/ui/property/%s/%d/editable",
                         entity.name(),

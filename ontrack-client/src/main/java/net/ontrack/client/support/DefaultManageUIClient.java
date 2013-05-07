@@ -52,92 +52,93 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<ProjectSummary> getProjectList() {
-        return list("/ui/manage/project", ProjectSummary.class);
+        return list(getDefaultLocale(), "/ui/manage/project", ProjectSummary.class);
     }
 
     @Override
     public ProjectSummary createProject(ProjectCreationForm form) {
-        return post("/ui/manage/project", ProjectSummary.class, form);
+        return post(getDefaultLocale(), "/ui/manage/project", ProjectSummary.class, form);
     }
 
     @Override
     public ProjectSummary getProject(String name) {
-        return get(format("/ui/manage/project/%s", name), ProjectSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s", name), ProjectSummary.class);
     }
 
     @Override
     public Ack deleteProject(String name) {
-        return delete(format("ui/manage/project/%s", name), Ack.class);
+        return delete(getDefaultLocale(), format("ui/manage/project/%s", name), Ack.class);
     }
 
     @Override
     public ProjectSummary updateProject(String name, ProjectUpdateForm form) {
-        return put(format("/ui/manage/project/%s", name), ProjectSummary.class, form);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s", name), ProjectSummary.class, form);
     }
 
     @Override
     public List<BranchSummary> getBranchList(String project) {
-        return list(format("/ui/manage/project/%s/branch", project), BranchSummary.class);
+        return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }
 
     @Override
     public BranchSummary getBranch(String project, String name) {
-        return get(format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class);
     }
 
     @Override
     public BranchFilterData getBranchFilterData(String project, String branch) {
-        return get(format("/ui/manage/project/%s/branch/%s/filter", project, branch), BranchFilterData.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/filter", project, branch), BranchFilterData.class);
     }
 
     @Override
     public BranchSummary createBranch(String project, BranchCreationForm form) {
-        return post(format("/ui/manage/project/%s/branch", project), BranchSummary.class, form);
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class, form);
     }
 
     @Override
     public BranchSummary updateBranch(String project, String name, BranchUpdateForm form) {
-        return put(format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class, form);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class, form);
     }
 
     @Override
     public BranchSummary cloneBranch(String project, String name, BranchCloneForm form) {
-        return post(format("/ui/manage/project/%s/branch/%s/clone", project, name), BranchSummary.class, form);
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/clone", project, name), BranchSummary.class, form);
     }
 
     @Override
     public Ack deleteBranch(String project, String name) {
-        return delete(format("/ui/manage/project/%s/branch/%s", project, name), Ack.class);
+        return delete(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s", project, name), Ack.class);
     }
 
     @Override
     public List<ValidationStampSummary> getValidationStampList(String project, String branch) {
-        return list(format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class);
+        return list(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class);
     }
 
     @Override
     public ValidationStampSummary getValidationStamp(String project, String branch, String name) {
-        return get(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, name), ValidationStampSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, name), ValidationStampSummary.class);
     }
 
     @Override
     public ValidationStampSummary createValidationStamp(String project, String branch, ValidationStampCreationForm form) {
-        return post(format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class, form);
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class, form);
     }
 
     @Override
     public ValidationStampSummary updateValidationStamp(String project, String branch, String validationStamp, ValidationStampUpdateForm form) {
-        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), ValidationStampSummary.class, form);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), ValidationStampSummary.class, form);
     }
 
     @Override
     public Ack deleteValidationStamp(String project, String branch, String validationStamp) {
-        return delete(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), Ack.class);
+        return delete(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s", project, branch, validationStamp), Ack.class);
     }
 
     @Override
     public Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image) {
         return upload(
+                getDefaultLocale(),
                 format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name),
                 "image",
                 image,
@@ -146,12 +147,13 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public byte[] imageValidationStamp(String project, String branch, String name) {
-        return getBytes(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name));
+        return getBytes(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/image", project, branch, name));
     }
 
     @Override
     public Ack linkValidationStampToPromotionLevel(String project, String branch, String validationStamp, String promotionLevel) {
         return get(
+                getDefaultLocale(),
                 format(
                         "/ui/manage/project/%s/branch/%s/validation_stamp/%s/link/%s",
                         project,
@@ -165,6 +167,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     @Override
     public Ack unlinkValidationStampToPromotionLevel(String project, String branch, String validationStamp) {
         return get(
+                getDefaultLocale(),
                 format(
                         "/ui/manage/project/%s/branch/%s/validation_stamp/%s/unlink",
                         project,
@@ -176,47 +179,48 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack upValidationStamp(String project, String branch, String validationStamp) {
-        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/up", project, branch, validationStamp), Ack.class, null);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/up", project, branch, validationStamp), Ack.class, null);
     }
 
     @Override
     public Ack downValidationStamp(String project, String branch, String validationStamp) {
-        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/down", project, branch, validationStamp), Ack.class, null);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/down", project, branch, validationStamp), Ack.class, null);
     }
 
     @Override
     public Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId) {
-        return put(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner/%d", project, branch, validationStamp, ownerId), Ack.class, null);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner/%d", project, branch, validationStamp, ownerId), Ack.class, null);
     }
 
     @Override
     public Ack unsetValidationStampOwner(String project, String branch, String validationStamp) {
-        return delete(format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner", project, branch, validationStamp), Ack.class);
+        return delete(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner", project, branch, validationStamp), Ack.class);
     }
 
     @Override
     public PromotionLevelSummary getPromotionLevel(String project, String branch, String name) {
-        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), PromotionLevelSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), PromotionLevelSummary.class);
     }
 
     @Override
     public PromotionLevelSummary createPromotionLevel(String project, String branch, PromotionLevelCreationForm form) {
-        return post(format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class, form);
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class, form);
     }
 
     @Override
     public PromotionLevelSummary updatePromotionLevel(String project, String branch, String promotionLevel, PromotionLevelUpdateForm form) {
-        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, promotionLevel), PromotionLevelSummary.class, form);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, promotionLevel), PromotionLevelSummary.class, form);
     }
 
     @Override
     public Ack deletePromotionLevel(String project, String branch, String name) {
-        return delete(format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), Ack.class);
+        return delete(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, name), Ack.class);
     }
 
     @Override
     public Ack setImagePromotionLevel(String project, String branch, String name, MultipartFile image) {
         return upload(
+                getDefaultLocale(),
                 format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name),
                 "image",
                 image,
@@ -225,80 +229,78 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public byte[] imagePromotionLevel(String project, String branch, String name) {
-        return getBytes(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name));
+        return getBytes(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/image", project, branch, name));
     }
 
     @Override
     public List<PromotionLevelSummary> getPromotionLevelList(String project, String branch) {
-        return list(format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class);
+        return list(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level", project, branch), PromotionLevelSummary.class);
     }
 
     @Override
     public Ack upPromotionLevel(String project, String branch, String promotionLevel) {
-        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/up", project, branch, promotionLevel), Ack.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/up", project, branch, promotionLevel), Ack.class);
     }
 
     @Override
     public Ack downPromotionLevel(String project, String branch, String promotionLevel) {
-        return get(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/down", project, branch, promotionLevel), Ack.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/down", project, branch, promotionLevel), Ack.class);
     }
 
     @Override
     public PromotionLevelManagementData getPromotionLevelManagementData(String project, String branch) {
-        return get(format("/ui/manage/project/%s/branch/%s/promotion_level_manage", project, branch), PromotionLevelManagementData.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level_manage", project, branch), PromotionLevelManagementData.class);
     }
 
     @Override
     public Flag setPromotionLevelAutoPromote(String project, String branch, String promotionLevel) {
-        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/set", project, branch, promotionLevel), Flag.class, null);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/set", project, branch, promotionLevel), Flag.class, null);
     }
 
     @Override
     public Flag unsetPromotionLevelAutoPromote(String project, String branch, String promotionLevel) {
-        return put(format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/unset", project, branch, promotionLevel), Flag.class, null);
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/unset", project, branch, promotionLevel), Flag.class, null);
     }
 
     @Override
     public BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
-        // TODO Locale management
-        return post(format("/ui/manage/project/%s/branch/%s/query", project, branch), BranchBuilds.class, filter);
+        return post(locale, format("/ui/manage/project/%s/branch/%s/query", project, branch), BranchBuilds.class, filter);
     }
 
     @Override
     public BuildSummary getBuild(String project, String branch, String name) {
-        return get(format("/ui/manage/project/%s/branch/%s/build/%s", project, branch, name), BuildSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/%s", project, branch, name), BuildSummary.class);
     }
 
     @Override
     public BuildSummary getLastBuild(String project, String branch) {
-        return get(format("/ui/manage/project/%s/branch/%s/build/last", project, branch), BuildSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/last", project, branch), BuildSummary.class);
     }
 
     @Override
     public BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp) {
-        return get(format("/ui/manage/project/%s/branch/%s/build/withValidationStamp/%s", project, branch, validationStamp), BuildSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withValidationStamp/%s", project, branch, validationStamp), BuildSummary.class);
     }
 
     @Override
     public BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel) {
-        return get(format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), BuildSummary.class);
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), BuildSummary.class);
     }
 
     @Override
     public List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name) {
-        // TODO Locale management
-        return list(format("/ui/manage/project/%s/branch/%s/build/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
+        return list(locale, format("/ui/manage/project/%s/branch/%s/build/%s/validationStamps", project, branch, name), BuildValidationStamp.class);
     }
 
     @Override
     public List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, String project, String branch, String name) {
-        // TODO Locale management
-        return list(format("/ui/manage/project/%s/branch/%s/build/%s/promotionLevels", project, branch, name), BuildPromotionLevel.class);
+        return list(locale, format("/ui/manage/project/%s/branch/%s/build/%s/promotionLevels", project, branch, name), BuildPromotionLevel.class);
     }
 
     @Override
     public ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run) {
         return get(
+                getDefaultLocale(),
                 format(
                         "/ui/manage/project/%s/branch/%s/build/%s/validation_stamp/%s/validation_run/%d",
                         project,
@@ -313,13 +315,13 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count) {
-        // TODO Locale management
-        return list(format("/ui/manage/validation_run/%d/history?offset=%d&count=%d", validationRunId, offset, count), ValidationRunEvent.class);
+        return list(locale, format("/ui/manage/validation_run/%d/history?offset=%d&count=%d", validationRunId, offset, count), ValidationRunEvent.class);
     }
 
     @Override
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
         return post(
+                getDefaultLocale(),
                 format(
                         "/ui/manage/validation_run/%d/comment",
                         runId

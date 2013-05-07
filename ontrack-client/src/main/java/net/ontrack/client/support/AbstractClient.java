@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public abstract class AbstractClient implements Client {
@@ -50,11 +51,15 @@ public abstract class AbstractClient implements Client {
         this.url = url;
     }
 
+    protected Locale getDefaultLocale() {
+        return Locale.getDefault();
+    }
+
     @Override
     public void logout() {
         logger.debug("[logout]");
         // Executes the call
-        request(new HttpGet(getUrl("/logout")), new NOPResponseHandler());
+        request(getDefaultLocale(), new HttpGet(getUrl("/logout")), new NOPResponseHandler());
     }
 
     @Override
@@ -67,16 +72,16 @@ public abstract class AbstractClient implements Client {
                 new AuthScope(null, -1),
                 new UsernamePasswordCredentials(name, password));
         // Gets the server to send a challenge back
-        get("/ui/login", Ack.class);
+        get(getDefaultLocale(), "/ui/login", Ack.class);
     }
 
-    protected <T> T get(String path, Class<T> returnType) {
-        return request(new HttpGet(getUrl(path)), returnType);
+    protected <T> T get(Locale locale, String path, Class<T> returnType) {
+        return request(locale, new HttpGet(getUrl(path)), returnType);
     }
 
-    protected byte[] getBytes(String path) {
+    protected byte[] getBytes(Locale locale, String path) {
         HttpGet get = new HttpGet(getUrl(path));
-        return request(get, new ResponseParser<byte[]>() {
+        return request(locale, get, new ResponseParser<byte[]>() {
             @Override
             public byte[] parse(String content) throws IOException {
                 return Base64.decodeBase64(content);
@@ -84,8 +89,8 @@ public abstract class AbstractClient implements Client {
         });
     }
 
-    protected <T> List<T> list(final String path, final Class<T> elementType) {
-        return request(new HttpGet(getUrl(path)), new ResponseParser<List<T>>() {
+    protected <T> List<T> list(Locale locale, final String path, final Class<T> elementType) {
+        return request(locale, new HttpGet(getUrl(path)), new ResponseParser<List<T>>() {
             @Override
             public List<T> parse(final String content) throws IOException {
                 final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
@@ -110,12 +115,12 @@ public abstract class AbstractClient implements Client {
         });
     }
 
-    protected <T> T put(String path, Class<T> returnType, Object payload) {
+    protected <T> T put(Locale locale, String path, Class<T> returnType, Object payload) {
         HttpPut put = new HttpPut(getUrl(path));
         if (payload != null) {
             setBody(payload, put);
         }
-        return request(put, returnType);
+        return request(locale, put, returnType);
     }
 
     private void setBody(Object payload, HttpEntityEnclosingRequestBase put) {
@@ -127,7 +132,7 @@ public abstract class AbstractClient implements Client {
         }
     }
 
-    protected <T> T post(String path, Class<T> returnType, Map<String, String> parameters) {
+    protected <T> T post(Locale locale, String path, Class<T> returnType, Map<String, String> parameters) {
         HttpPost post = new HttpPost(getUrl(path));
         if (parameters != null) {
             List<NameValuePair> nvps = new ArrayList<>();
@@ -140,10 +145,10 @@ public abstract class AbstractClient implements Client {
                 throw new ClientGeneralException(post, e);
             }
         }
-        return request(post, returnType);
+        return request(locale, post, returnType);
     }
 
-    protected <T> T upload(String path, String fileParameterName, MultipartFile file, Class<T> returnType) {
+    protected <T> T upload(Locale locale, String path, String fileParameterName, MultipartFile file, Class<T> returnType) {
         HttpPost post = new HttpPost(getUrl(path));
         // Sets the content
         try {
@@ -161,31 +166,31 @@ public abstract class AbstractClient implements Client {
             throw new ClientGeneralException(post, e);
         }
         // OK
-        return request(post, returnType);
+        return request(locale, post, returnType);
     }
 
-    protected <T> T post(String path, Class<T> returnType, Object body) {
+    protected <T> T post(Locale locale, String path, Class<T> returnType, Object body) {
         HttpPost post = new HttpPost(getUrl(path));
         if (body != null) {
             setBody(body, post);
         }
-        return request(post, returnType);
+        return request(locale, post, returnType);
     }
 
-    protected <T> T delete(String path, Class<T> returnType) {
-        return request(new HttpDelete(getUrl(path)), returnType);
+    protected <T> T delete(Locale locale, String path, Class<T> returnType) {
+        return request(locale, new HttpDelete(getUrl(path)), returnType);
     }
 
     protected String getUrl(String path) {
         return url + path;
     }
 
-    protected <T> T request(HttpRequestBase request, Class<T> returnType) {
-        return request(request, new SimpleTypeResponseParser<>(returnType));
+    protected <T> T request(Locale locale, HttpRequestBase request, Class<T> returnType) {
+        return request(locale, request, new SimpleTypeResponseParser<>(returnType));
     }
 
-    protected <T> T request(HttpRequestBase request, final ResponseParser<T> responseParser) {
-        return request(request, new BaseResponseHandler<T>() {
+    protected <T> T request(Locale locale, HttpRequestBase request, final ResponseParser<T> responseParser) {
+        return request(locale, request, new BaseResponseHandler<T>() {
             @Override
             protected T handleEntity(HttpEntity entity) throws ParseException, IOException {
                 // Gets the content as a JSON string
@@ -196,8 +201,9 @@ public abstract class AbstractClient implements Client {
         });
     }
 
-    protected <T> T request(HttpRequestBase request, ResponseHandler<T> responseHandler) {
+    protected <T> T request(Locale locale, HttpRequestBase request, ResponseHandler<T> responseHandler) {
         logger.debug("[request] {}", request);
+        request.setHeader("Accept-Language", locale != null ? locale.toString() : "en");
         // Executes the call
         try {
             HttpResponse response = client.execute(request);
