@@ -29,21 +29,40 @@
             </#if>
         </td>
         <td>
-            <#list line.promotions as promotion>
-                <#if promotion.buildSummary??>
-                    <span class="promotion">
-                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
-                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
-                        @
-                        <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
-                    </span>
-                <#else>
-                    <span class="promotion muted">
-                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
-                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
-                    </span>
-                </#if>
-            </#list>
+            <table>
+                <tbody>
+                    <tr>
+                        <#list line.promotions as promotion>
+                            <#if promotion.buildSummary??>
+                                <td>
+                                    <div class="promotion">
+                                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                                        <br />
+                                        <i class="icon-star-empty"></i>
+                                        <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
+                                        <#if promotion.buildSummary.name != line.latestBuild.name>
+                                            <a
+                                                href="gui/extension/svnexplorer/changelog?project=${line.branch.project.name?html}&branch=${line.branch.name?html}&from=${promotion.buildSummary.name?html}&to=${line.latestBuild.name?html}"
+                                                title="<@lh key='svnexplorer.changelog' />"><i class="icon-adjust"></i></a>
+                                        </#if>
+                                    </div>
+                                </td>
+                            <#else>
+                                <td>
+                                    <div class="promotion none">
+                                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
+                                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                                        <br />
+                                        <i class="icon-star-empty"></i>
+                                        <@lh key="svnexplorer.branch-history.latestBuild.none" />
+                                    </div>
+                                </td>
+                            </#if>
+                        </#list>
+                    </tr>
+                </tbody>
+            </table>
         </td>
     </tr>
     <#list line.lines as child>

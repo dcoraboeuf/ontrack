@@ -187,6 +187,10 @@ svnexplorer.branch-history.latestBuild
     en -> Last build
     fr -> Dernier build
 
+svnexplorer.branch-history.latestBuild.none
+    en -> No build
+    fr -> Aucun build
+
 svnexplorer.branch-history.promotions
     en -> Promotions
     fr -> Promotions
