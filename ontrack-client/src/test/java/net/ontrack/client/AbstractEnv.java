@@ -16,6 +16,7 @@ public abstract class AbstractEnv {
 
     private final ControlUIClient control;
     private final ManageUIClient manage;
+    private final PropertyUIClient property;
 
     protected AbstractEnv() {
         String itPort = System.getProperty("itPort");
@@ -23,6 +24,7 @@ public abstract class AbstractEnv {
         ClientFactory clientFactory = ClientFactory.create(url);
         control = clientFactory.control();
         manage = clientFactory.manage();
+        property = clientFactory.property();
     }
 
     protected BranchSummary doCreateBranch() {
@@ -148,6 +150,19 @@ public abstract class AbstractEnv {
             }
         } finally {
             control.logout();
+        }
+    }
+
+    protected <T> T asAdmin(PropertyCall<T> call) {
+        property.login("admin", "admin");
+        try {
+            try {
+                return call.call(property);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            property.logout();
         }
     }
 
