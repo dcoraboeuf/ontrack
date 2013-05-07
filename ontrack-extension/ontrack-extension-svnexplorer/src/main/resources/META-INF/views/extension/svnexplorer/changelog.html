@@ -26,6 +26,19 @@
     </#list>
 
     <h1><small><@lh key="build.promotion_levels" /></small></h1>
+    <#if build.buildPromotionLevels?size == 0>
+        <span class="muted"><@lh key="build.promotion_levels.none" /></span>
+    <#else>
+        <ul class="promotions">
+            <#list build.buildPromotionLevels as buildPromotionLevel>
+                <li>
+                    <i class="icon-arrow-right"></i>
+                    <img width="24" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}/image" />
+                    <a class="tooltip-source" href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}" title="${buildPromotionLevel.signature.elapsedTime?html} - ${buildPromotionLevel.signature.formattedTime?html}">${buildPromotionLevel.name?html}</a>
+                </li>
+            </#list>
+        </ul>
+    </#if>
 
 </#macro>
 
