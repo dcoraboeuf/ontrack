@@ -1,5 +1,7 @@
 <#include "/lib/layout.html">
 
+<#assign validationStamp = decoratedValidationStamp.summary />
+
 <@layout_std page="validation_stamp" title=validationStamp.name modules=["projects","branches","builds","validation_stamps","audit","properties"] breadcrumbs = {loc("home"): "", validationStamp.branch.project.name?html: "gui/project/${validationStamp.branch.project.name?html}", validationStamp.branch.name?html: "gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
@@ -19,13 +21,19 @@
                     <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
-            <div class="muted">${validationStamp.description?html}</div>
+            <div class="description">${validationStamp.description?html}</div>
             <#if validationStamp.owner??>
                 <div>
-                    <@lh key="validation_stamp.owner" />:
+                    <span class="description"><@lh key="validation_stamp.owner" />:</span>
                     ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
                 </div>
             </#if>
+            <#list decoratedValidationStamp.decorations as decoration>
+                <div>
+                    <span class="description">${decoration.title?html}</span>
+                    <img src="${decoration.iconPath}" />
+                </div>
+            </#list>
             <div class="span12">
                 <@properties entity="VALIDATION_STAMP" entityId=validationStamp.id />
             </div>
