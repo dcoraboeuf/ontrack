@@ -60,6 +60,10 @@ event.VALIDATION_RUN_COMMENT
     en -> $author$ has added a comment on run #$VALIDATION_RUN$ of $VALIDATION_STAMP$ of build $BUILD$ of branch $BRANCH$ of project $PROJECT$: $comment$
     fr -> $author$ a ajouté un commentaire pour l'éxecution #$VALIDATION_RUN$ de $VALIDATION_STAMP$ du build $BUILD$ de la branche $BRANCH$ du projet $PROJECT$ : $comment$
 
+event.VALIDATION_STAMP_COMMENT
+    en -> $author$ has added a comment on validation stamp $VALIDATION_STAMP$ of branch $BRANCH$ of project $PROJECT$: $comment$
+    fr -> $author$ a ajouté un commentaire pour la validation $VALIDATION_STAMP$ de la branche $BRANCH$ du projet $PROJECT$ : $comment$
+
 event.PROMOTED_RUN_CREATED
     en -> Build $BUILD$ of branch $BRANCH$ of project $PROJECT$ has been promoted to $PROMOTION_LEVEL$.
     fr -> Le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ a été promu vers $PROMOTION_LEVEL$.

@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
@@ -37,7 +38,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
      * @see #getValidationRuns(java.util.Locale, int, int)
      */
     public static final int MAX_EVENTS_IN_BUILD_VALIDATION_STAMP_RUN = 10;
-
     // TODO Split the service in different parts
     private final SecurityUtils securityUtils;
     private final Strings strings;
@@ -472,6 +472,40 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unsetValidationStampOwner(int validationStampId) {
         return validationStampDao.setValidationStampOwner(validationStampId, null);
+    }
+
+    @Override
+    @Transactional
+    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
+    public Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form) {
+        // Comment
+        CommentStub comment = createComment(Entity.VALIDATION_STAMP, validationStampId, form.getComment());
+        // Registers an event for this comment
+        event(
+                collectEntityContext(
+                        Event.of(EventType.VALIDATION_STAMP_COMMENT), Entity.VALIDATION_STAMP, validationStampId)
+                        .withEntity(Entity.VALIDATION_STAMP, validationStampId)
+                        .withComment(comment.getComment()));
+        // OK
+        return Ack.OK;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Comment> getValidationStampComments(final Locale locale, final int validationStampId) {
+        return Collections2.transform(
+                commentDao.findByEntity(Entity.VALIDATION_STAMP, validationStampId),
+                new Function<TComment, Comment>() {
+                    @Override
+                    public Comment apply(TComment t) {
+                        return new Comment(
+                                t.getId(),
+                                t.getContent(),
+                                getDatedSignature(locale, EventType.VALIDATION_STAMP_COMMENT, Entity.VALIDATION_STAMP, validationStampId)
+                        );
+                    }
+                }
+        );
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -136,8 +137,13 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public CommentStub addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form) {
-        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment", project, branch, validationStamp), CommentStub.class, form);
+    public Ack addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form) {
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment", project, branch, validationStamp), Ack.class, form);
+    }
+
+    @Override
+    public Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp) {
+        return list(locale, format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment", project, branch, validationStamp), Comment.class);
     }
 
     @Override

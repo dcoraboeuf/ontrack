@@ -24,6 +24,27 @@ import static java.lang.String.format;
 @Component
 public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
 
+    private final RowMapper<TComment> commentRowMapper = new RowMapper<TComment>() {
+        @Override
+        public TComment mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Map<Entity, Integer> entities = new HashMap<>();
+            for (Entity candidate : Entity.values()) {
+                int candidateId = rs.getInt(candidate.name());
+                if (!rs.wasNull()) {
+                    entities.put(candidate, candidateId);
+                }
+            }
+            return new TComment(
+                    rs.getInt("id"),
+                    rs.getString("content"),
+                    rs.getString("author"),
+                    getInteger(rs, "author_id"),
+                    SQLUtils.getDateTime(rs, "comment_timestamp"),
+                    entities
+            );
+        }
+    };
+
     @Autowired
     public CommentJdbcDao(DataSource dataSource) {
         super(dataSource);
@@ -44,28 +65,9 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
     @Transactional(readOnly = true)
     public Collection<TComment> findByEntityAndText(Entity entity, String text) {
         return getNamedParameterJdbcTemplate().query(
-                String.format("SELECT * FROM COMMENT WHERE %s IS NOT NULL AND UPPER(CONTENT) LIKE :text", entity.name()),
+                format("SELECT * FROM COMMENT WHERE %s IS NOT NULL AND UPPER(CONTENT) LIKE :text", entity.name()),
                 params("text", "%" + StringUtils.upperCase(text) + "%"),
-                new RowMapper<TComment>() {
-                    @Override
-                    public TComment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Map<Entity, Integer> entities = new HashMap<>();
-                        for (Entity candidate : Entity.values()) {
-                            int candidateId = rs.getInt(candidate.name());
-                            if (!rs.wasNull()) {
-                                entities.put(candidate, candidateId);
-                            }
-                        }
-                        return new TComment(
-                                rs.getInt("id"),
-                                rs.getString("content"),
-                                rs.getString("author"),
-                                getInteger(rs, "author_id"),
-                                SQLUtils.getDateTime(rs, "comment_timestamp"),
-                                entities
-                        );
-                    }
-                });
+                commentRowMapper);
     }
 
     @Override
@@ -74,6 +76,16 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
         getNamedParameterJdbcTemplate().update(
                 SQL.COMMENT_RENAME_AUTHOR,
                 params("id", id).addValue("name", name)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<TComment> findByEntity(Entity entity, int entityId) {
+        return getNamedParameterJdbcTemplate().query(
+                format("SELECT * FROM COMMENT WHERE %s = :id ORDER BY ID DESC", entity.name()),
+                params("id", entityId),
+                commentRowMapper
         );
     }
 }

@@ -1,5 +1,5 @@
 var ValidationStamps = function () {
-	
+
 	function createValidationStamp (project, branch) {
 		Application.dialogAndSubmit({
 			id: 'validation_stamp-create-dialog',
@@ -163,7 +163,7 @@ var ValidationStamps = function () {
             }
         });
     }
-	
+
 	function deleteValidationStamp(project, branch, name) {
 		Application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project,branch), name, '');
 	}
@@ -175,7 +175,7 @@ var ValidationStamps = function () {
                					stamp.name.html()
                					);
 	}
-	
+
 	function validationStampTemplate (project, branch) {
 	    return Template.config({
 	        url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
@@ -194,11 +194,18 @@ var ValidationStamps = function () {
 	        render: Template.asTableTemplate('validationStampTemplate')
 	    });
 	}
-	
+
+    function commentsTemplate (project, branch, validationStamp) {
+        return Template.config({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/comment'.format(project, branch, validationStamp),
+            render: Template.asTableTemplate('validation-stamp-comment-template')
+        });
+    }
+
 	function editImage () {
 		$('#validation_stamp-image-form').toggle();
 	}
-	
+
 	function editImageCancel() {
 		$('#validation_stamp-image-form').hide();
 	}
@@ -217,13 +224,14 @@ var ValidationStamps = function () {
                 el: $('#validation-stamp-comment-submit')
             },
             successFn: function () {
-                // TODO Reloads the list of comments
+                $('#validation-stamp-comment').val('');
+                Template.reload('validation-stamp-comments');
             }
         });
         // No direct submit
         return false;
     }
-	
+
 	return {
 		createValidationStamp: createValidationStamp,
 		deleteValidationStamp: deleteValidationStamp,
@@ -236,7 +244,8 @@ var ValidationStamps = function () {
         down: down,
         changeOwnerInList: changeOwnerInList,
         changeOwnerInPage: changeOwnerInPage,
-        addComment: addComment
+        addComment: addComment,
+        commentsTemplate: commentsTemplate
 	};
-	
+
 } ();

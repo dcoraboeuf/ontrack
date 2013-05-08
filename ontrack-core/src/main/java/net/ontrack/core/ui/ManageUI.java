@@ -3,6 +3,7 @@ package net.ontrack.core.ui;
 import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +65,9 @@ public interface ManageUI {
 
     Ack unsetValidationStampOwner (String project, String branch, String validationStamp);
 
-    CommentStub addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form);
+    Ack addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form);
+
+    Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp);
 
     // Promotion levels
 

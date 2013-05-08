@@ -211,9 +211,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/comment", method = RequestMethod.POST)
     public
     @ResponseBody
-    CommentStub addValidationStampComment(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody ValidationStampCommentForm form) {
+    Ack addValidationStampComment(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody ValidationStampCommentForm form) {
         int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
-        return managementService.createComment(Entity.VALIDATION_STAMP, validationStampId, form.getComment());
+        return managementService.addValidationStampComment(validationStampId, form);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/comment", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Collection<Comment> getValidationStampComments(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return managementService.getValidationStampComments(locale, entityConverter.getValidationStampId(project, branch, validationStamp));
     }
 
     @Override

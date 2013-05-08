@@ -53,6 +53,15 @@
                         </div>
                     </form>
                 </#if>
+                <@dynamicsection id="validation-stamp-comments" template="ValidationStamps.commentsTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')" />
+                <script id="validation-stamp-comment-template" type="text/html">
+                    <tr>
+                        <td>
+                            <span>{{comment}}</span>
+                            <span class="elapsed">- <span title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span></span>
+                        </td>
+                    </tr>
+                </script>
             </div>
 			<div class="span6">
                 <@audit filter="&validationStamp=${validationStamp.id}" />

@@ -3,10 +3,7 @@ package net.ontrack.service;
 import net.ontrack.core.model.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public interface ManagementService {
 	
@@ -63,6 +60,10 @@ public interface ManagementService {
     Ack setValidationStampOwner(int validationStampId, int ownerId);
 
     Ack unsetValidationStampOwner(int validationStampId);
+
+    Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form);
+
+    Collection<Comment> getValidationStampComments (Locale locale, int validationStampId);
 
     // Promotion levels
 
