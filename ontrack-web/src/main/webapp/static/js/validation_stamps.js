@@ -199,6 +199,12 @@ var ValidationStamps = function () {
         return Template.config({
             url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/comment?u=1'.format(project, branch, validationStamp),
             more: true,
+            preProcessingFn: function (comments) {
+                $.each(comments, function (index, comment) {
+                    comment.comment = comment.comment.html().replace(/\n/g, '<br/>');
+                });
+                return comments;
+            },
             render: Template.asTableTemplate('validation-stamp-comment-template')
         });
     }
