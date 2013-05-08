@@ -64,6 +64,8 @@ public interface ManageUI {
 
     Ack unsetValidationStampOwner (String project, String branch, String validationStamp);
 
+    CommentStub addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form);
+
     // Promotion levels
 
     PromotionLevelSummary getPromotionLevel(String project, String branch, String name);

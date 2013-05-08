@@ -208,6 +208,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/comment", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    CommentStub addValidationStampComment(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody ValidationStampCommentForm form) {
+        int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+        return managementService.createComment(Entity.VALIDATION_STAMP, validationStampId, form.getComment());
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/image", method = RequestMethod.POST)
     public
     @ResponseBody

@@ -136,6 +136,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public CommentStub addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form) {
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment", project, branch, validationStamp), CommentStub.class, form);
+    }
+
+    @Override
     public Ack setImageValidationStamp(String project, String branch, String name, MultipartFile image) {
         return upload(
                 getDefaultLocale(),

@@ -205,11 +205,14 @@ var ValidationStamps = function () {
 
     function addComment() {
         AJAX.post({
-            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{1}/comment'.format(
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/comment'.format(
                 $('#validation-stamp-comment-project').val(),
                 $('#validation-stamp-comment-branch').val(),
                 $('#validation-stamp-comment-validationStamp').val()
             ),
+            data: {
+                comment: $('#validation-stamp-comment').val()
+            },
             loading: {
                 el: $('#validation-stamp-comment-submit')
             },
