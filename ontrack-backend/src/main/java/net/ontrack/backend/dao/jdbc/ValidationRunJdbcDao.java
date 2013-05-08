@@ -1,5 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.backend.dao.model.TValidationRun;
 import net.ontrack.backend.db.SQL;
@@ -61,6 +63,27 @@ public class ValidationRunJdbcDao extends AbstractJdbcDao implements ValidationR
                 SQL.VALIDATION_RUN_LAST_FOR_BUILD_AND_STAMP,
                 params("build", build).addValue("validationStamp", validationStamp),
                 validationRunRowMapper);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TValidationRun> findLastRunsOfBuildByValidationStamp(final int validationStamp, int limit) {
+        // Gets the last builds
+        List<Integer> buildIds = getNamedParameterJdbcTemplate().queryForList(
+                SQL.VALIDATION_RUN_LAST_OF_BUILD_BY_VALIDATION_STAMP,
+                params("validationStamp", validationStamp).addValue("limit", limit),
+                Integer.class
+        );
+        // Gets the last validation run for each build
+        return Lists.transform(
+                buildIds,
+                new Function<Integer, TValidationRun>() {
+                    @Override
+                    public TValidationRun apply(Integer buildId) {
+                        return findLastByBuildAndValidationStamp(buildId, validationStamp);
+                    }
+                }
+        );
     }
 
     @Override

@@ -10,7 +10,9 @@ public interface ValidationRunDao {
 
     List<TValidationRun> findByBuildAndValidationStamp(int build, int validationStamp);
 
-    TValidationRun findLastByBuildAndValidationStamp(int build, int name);
+    TValidationRun findLastByBuildAndValidationStamp(int build, int validation);
+
+    List<TValidationRun> findLastRunsOfBuildByValidationStamp(int validationStamp, int limit);
 
     int createValidationRun(int build, int validationStamp, String description);
 }

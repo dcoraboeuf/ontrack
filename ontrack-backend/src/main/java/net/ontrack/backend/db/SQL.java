@@ -146,6 +146,8 @@ public interface SQL {
             "ORDER BY BUILD DESC, RUN_ORDER DESC, EVENT_TIMESTAMP DESC\n" +
             "LIMIT :count OFFSET :offset";
 
+    String VALIDATION_RUN_LAST_OF_BUILD_BY_VALIDATION_STAMP = "SELECT DISTINCT(BUILD) FROM VALIDATION_RUN WHERE VALIDATION_STAMP = :validationStamp ORDER BY BUILD DESC LIMIT :limit";
+
     // Validation run statuses
 
     String VALIDATION_RUN_STATUS_CREATE = "INSERT INTO VALIDATION_RUN_STATUS (VALIDATION_RUN, STATUS, DESCRIPTION, AUTHOR, AUTHOR_ID, STATUS_TIMESTAMP) VALUES (:validationRun, :status, :description, :author, :authorId, :statusTimestamp)";

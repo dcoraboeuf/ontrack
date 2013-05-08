@@ -984,6 +984,23 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ValidationRunStatusStub> getStatusesForLastBuilds(int validationStampId, int count) {
+        // Gets the last validation runs
+        List<TValidationRun> runs = validationRunDao.findLastRunsOfBuildByValidationStamp(validationStampId, count);
+        // Gets the last status
+        return Lists.transform(
+                runs,
+                new Function<TValidationRun, ValidationRunStatusStub>() {
+                    @Override
+                    public ValidationRunStatusStub apply(TValidationRun run) {
+                        return getLastValidationRunStatus(run.getId());
+                    }
+                }
+        );
+    }
+
     // Validation run status
 
     @Override
