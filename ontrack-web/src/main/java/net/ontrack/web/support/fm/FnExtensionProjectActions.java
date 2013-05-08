@@ -14,16 +14,13 @@ import net.ontrack.extension.api.action.EntityActionExtension;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-@Component
 public class FnExtensionProjectActions implements TemplateMethodModel {
 
     private final Strings strings;
@@ -31,7 +28,6 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
     private final SecurityUtils securityUtils;
     private final ManageUI manageUI;
 
-    @Autowired
     public FnExtensionProjectActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils, ManageUI manageUI) {
         this.strings = strings;
         this.extensionManager = extensionManager;
