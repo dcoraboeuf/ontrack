@@ -10,7 +10,7 @@ var Builds = function () {
                 return aBuild.name == build;
             })[0];
             // Looks for the validation stamp build
-            var oBuildValidationStamp = oBuild.validationStamps[this.name];
+            var oBuildValidationStamp = oBuild.validationStamps[this.summary.name];
             // Last run
             var lastRun;
             if (oBuildValidationStamp.run) {
