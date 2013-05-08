@@ -179,6 +179,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
+    public
+    @ResponseBody DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
+        return managementService.getDecoratedValidationStamp(locale, validationStampId);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp", method = RequestMethod.POST)
     public
     @ResponseBody

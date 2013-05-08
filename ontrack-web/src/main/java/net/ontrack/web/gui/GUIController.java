@@ -89,9 +89,9 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public String getValidationStamp(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+    public String getValidationStamp(Locale locale, Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         // Loads the details
-        model.addAttribute("validationStamp", manageUI.getValidationStamp(project, branch, name));
+        model.addAttribute("decoratedValidationStamp", manageUI.getDecoratedValidationStamp(locale, project, branch, name));
         // OK
         return "validationStamp";
     }
@@ -166,7 +166,7 @@ public class GUIController extends AbstractGUIController {
             model.addAttribute("message", UserMessage.error(new NonLocalizable(errorHandler.displayableError(ex, locale))));
         }
         // OK
-        return getValidationStamp(model, project, branch, name);
+        return getValidationStamp(locale, model, project, branch, name);
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/image", method = RequestMethod.GET)

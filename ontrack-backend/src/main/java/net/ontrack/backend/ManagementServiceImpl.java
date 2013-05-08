@@ -394,6 +394,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, int validationStampId) {
+        ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
+        return new DecoratedValidationStamp(
+                validationStamp,
+                getLocalizedDecorations(locale, Entity.VALIDATION_STAMP, validationStampId)
+        );
+    }
+
+    @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form) {

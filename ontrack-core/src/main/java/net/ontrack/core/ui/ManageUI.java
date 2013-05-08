@@ -43,6 +43,8 @@ public interface ManageUI {
 
     ValidationStampSummary getValidationStamp(String project, String branch, String name);
 
+    DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, String project, String branch, String validationStamp);
+
     ValidationStampSummary createValidationStamp(String project, String branch, ValidationStampCreationForm form);
 
     ValidationStampSummary updateValidationStamp(String project, String branch, String validationStamp, ValidationStampUpdateForm form);

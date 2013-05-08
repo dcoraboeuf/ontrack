@@ -39,6 +39,8 @@ public interface ManagementService {
 
 	ValidationStampSummary getValidationStamp(int id);
 
+    DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, int validationStampId);
+
     ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form);
 
     ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form);

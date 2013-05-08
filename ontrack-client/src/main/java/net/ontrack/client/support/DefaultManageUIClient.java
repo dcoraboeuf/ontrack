@@ -122,6 +122,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, String project, String branch, String validationStamp) {
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/decorated", project, branch, validationStamp), DecoratedValidationStamp.class);
+    }
+
+    @Override
     public ValidationStampSummary createValidationStamp(String project, String branch, ValidationStampCreationForm form) {
         return post(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp", project, branch), ValidationStampSummary.class, form);
     }
