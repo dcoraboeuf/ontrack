@@ -226,6 +226,7 @@ var ValidationStamps = function () {
             successFn: function () {
                 $('#validation-stamp-comment').val('');
                 Template.reload('validation-stamp-comments');
+                Template.reload('audit');
             }
         });
         // No direct submit

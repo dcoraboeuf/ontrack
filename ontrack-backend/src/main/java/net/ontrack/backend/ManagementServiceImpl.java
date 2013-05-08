@@ -493,7 +493,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public Collection<Comment> getValidationStampComments(final Locale locale, final int validationStampId) {
-        return Collections2.transform(
+        return Lists.newArrayList(Collections2.transform(
                 commentDao.findByEntity(Entity.VALIDATION_STAMP, validationStampId),
                 new Function<TComment, Comment>() {
                     @Override
@@ -501,11 +501,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return new Comment(
                                 t.getId(),
                                 t.getContent(),
-                                getDatedSignature(locale, EventType.VALIDATION_STAMP_COMMENT, Entity.VALIDATION_STAMP, validationStampId)
+                                new DatedSignature(
+                                        new Signature(
+                                                t.getAuthorId(),
+                                                t.getAuthor()
+                                        ),
+                                        t.getTimestamp(),
+                                        TimeUtils.elapsed(strings, locale, t.getTimestamp(), TimeUtils.now(), t.getAuthor()),
+                                        TimeUtils.format(locale, t.getTimestamp())
+                                )
                         );
                     }
                 }
-        );
+        ));
     }
 
     @Override
