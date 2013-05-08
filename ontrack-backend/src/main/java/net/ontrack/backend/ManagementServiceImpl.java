@@ -865,7 +865,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     public LocalizedDecoration apply(Decoration decoration) {
                         return new LocalizedDecoration(
                                 decoration.getTitle().getLocalizedMessage(strings, locale),
-                                decoration.getCls()
+                                decoration.getCls(),
+                                decoration.getIconPath()
                         );
                     }
                 });

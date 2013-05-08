@@ -46,6 +46,13 @@
                             <a href="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}">
                                 <img class="tooltip-source" width="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
                             </a>
+                            {{#if decorations.length}}
+                                <ul class="validation-stamp-decoration">
+                                    {{#decorations}}
+                                        <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" /></li>
+                                    {{/decorations}}
+                                </ul>
+                            {{/if}}
                         </th>
                     {{/branchBuilds.validationStamps}}
                 </tr>

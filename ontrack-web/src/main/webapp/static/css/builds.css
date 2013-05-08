@@ -19,3 +19,9 @@ span.decoration {
 #validation-stamps-filter-button.enabled {
     border: solid 2px red;
 }
+
+ul.validation-stamp-decoration {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
