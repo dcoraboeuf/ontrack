@@ -13,5 +13,5 @@ public interface CommentDao {
 
     void renameAuthor(int id, String name);
 
-    Collection<TComment> findByEntity(Entity entity, int entityId);
+    Collection<TComment> findByEntity(Entity entity, int entityId, int offset, int count);
 }

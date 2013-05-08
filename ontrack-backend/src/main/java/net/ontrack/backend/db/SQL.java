@@ -216,6 +216,8 @@ public interface SQL {
 
     String COMMENT_RENAME_AUTHOR = "UPDATE COMMENT SET AUTHOR = :name WHERE AUTHOR_ID = :id";
 
+    String COMMENT_FOR_ENTITY = "SELECT * FROM COMMENT WHERE %s = :id ORDER BY ID DESC LIMIT :count OFFSET :offset";
+
     // Properties
 
     String PROPERTY_DELETE = "DELETE FROM PROPERTIES WHERE %s = :entityId AND EXTENSION = :extension AND NAME = :name";

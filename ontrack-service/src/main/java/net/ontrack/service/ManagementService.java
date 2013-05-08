@@ -63,7 +63,7 @@ public interface ManagementService {
 
     Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form);
 
-    Collection<Comment> getValidationStampComments (Locale locale, int validationStampId);
+    Collection<Comment> getValidationStampComments (Locale locale, int validationStampId, int offset, int count);
 
     // Promotion levels
 

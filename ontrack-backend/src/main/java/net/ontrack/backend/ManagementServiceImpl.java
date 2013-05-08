@@ -492,9 +492,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Comment> getValidationStampComments(final Locale locale, final int validationStampId) {
+    public Collection<Comment> getValidationStampComments(final Locale locale, final int validationStampId, int offset, int count) {
         return Lists.newArrayList(Collections2.transform(
-                commentDao.findByEntity(Entity.VALIDATION_STAMP, validationStampId),
+                commentDao.findByEntity(Entity.VALIDATION_STAMP, validationStampId, offset, count),
                 new Function<TComment, Comment>() {
                     @Override
                     public Comment apply(TComment t) {

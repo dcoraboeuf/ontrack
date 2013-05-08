@@ -81,10 +81,10 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<TComment> findByEntity(Entity entity, int entityId) {
+    public Collection<TComment> findByEntity(Entity entity, int entityId, int offset, int count) {
         return getNamedParameterJdbcTemplate().query(
-                format("SELECT * FROM COMMENT WHERE %s = :id ORDER BY ID DESC", entity.name()),
-                params("id", entityId),
+                format(SQL.COMMENT_FOR_ENTITY, entity.name()),
+                params("id", entityId).addValue("offset", offset).addValue("count", count),
                 commentRowMapper
         );
     }

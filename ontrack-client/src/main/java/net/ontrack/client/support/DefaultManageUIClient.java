@@ -142,8 +142,8 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp) {
-        return list(locale, format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment", project, branch, validationStamp), Comment.class);
+    public Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp, int offset, int count) {
+        return list(locale, format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/comment?offset=%d&count=%d", project, branch, validationStamp, offset, count), Comment.class);
     }
 
     @Override

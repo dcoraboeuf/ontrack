@@ -197,7 +197,8 @@ var ValidationStamps = function () {
 
     function commentsTemplate (project, branch, validationStamp) {
         return Template.config({
-            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/comment'.format(project, branch, validationStamp),
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/comment?u=1'.format(project, branch, validationStamp),
+            more: true,
             render: Template.asTableTemplate('validation-stamp-comment-template')
         });
     }

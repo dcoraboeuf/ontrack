@@ -67,7 +67,7 @@ public interface ManageUI {
 
     Ack addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form);
 
-    Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp);
+    Collection<Comment> getValidationStampComments(Locale locale, String project, String branch, String validationStamp, int offset, int count);
 
     // Promotion levels
 
