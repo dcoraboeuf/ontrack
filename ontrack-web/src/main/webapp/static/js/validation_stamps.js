@@ -202,6 +202,24 @@ var ValidationStamps = function () {
 	function editImageCancel() {
 		$('#validation_stamp-image-form').hide();
 	}
+
+    function addComment() {
+        AJAX.post({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{1}/comment'.format(
+                $('#validation-stamp-comment-project').val(),
+                $('#validation-stamp-comment-branch').val(),
+                $('#validation-stamp-comment-validationStamp').val()
+            ),
+            loading: {
+                el: $('#validation-stamp-comment-submit')
+            },
+            successFn: function () {
+                // TODO Reloads the list of comments
+            }
+        });
+        // No direct submit
+        return false;
+    }
 	
 	return {
 		createValidationStamp: createValidationStamp,
@@ -214,7 +232,8 @@ var ValidationStamps = function () {
         up: up,
         down: down,
         changeOwnerInList: changeOwnerInList,
-        changeOwnerInPage: changeOwnerInPage
+        changeOwnerInPage: changeOwnerInPage,
+        addComment: addComment
 	};
 	
 } ();

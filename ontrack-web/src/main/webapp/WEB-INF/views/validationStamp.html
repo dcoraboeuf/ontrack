@@ -40,7 +40,21 @@
             <div class="span12 muted">${validationStamp.description?html}</div>
         </div>
 		<div class="row-fluid">
-			<div class="span12">
+            <div class="span6">
+                <h4><@lh key="validation_stamp.comments" /></h4>
+                <#if secLogged()>
+                    <form id="validation-stamp-comment-form" onsubmit="return ValidationStamps.addComment();">
+                        <input type="hidden" id="validation-stamp-comment-project" value="${validationStamp.branch.project.name?html}" />
+                        <input type="hidden" id="validation-stamp-comment-branch" value="${validationStamp.branch.name?html}" />
+                        <input type="hidden" id="validation-stamp-comment-validationStamp" value="${validationStamp.name?html}" />
+                        <div class="input-append">
+                            <textarea id="validation-stamp-comment" name="comment" class="span10" rows="1" required="required"></textarea>
+                            <button id="validation-stamp-comment-submit" type="submit" class="btn"><@lh key="validation_stamp.comment.add" /></button>
+                        </div>
+                    </form>
+                </#if>
+            </div>
+			<div class="span6">
                 <@audit filter="&validationStamp=${validationStamp.id}" />
 			</div>
 		</div>
