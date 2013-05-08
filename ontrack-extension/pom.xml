@@ -23,6 +23,7 @@
         <module>ontrack-extension-explanation</module>
         <module>ontrack-extension-svnexplorer</module>
         <module>ontrack-extension-package</module>
+        <module>ontrack-extension-general</module>
     </modules>
 
     <dependencies>

@@ -11,12 +11,18 @@ public class Decoration {
 
     private final Localizable title;
     private final String cls;
+    private final String iconPath;
 
     public Decoration(String title) {
         this(title, "");
     }
 
     public Decoration(String title, String cls) {
-        this(new NonLocalizable(title), cls);
+        this(new NonLocalizable(title), cls, null);
     }
+
+    public Decoration withIconPath(String iconPath) {
+        return new Decoration(title, cls, iconPath);
+    }
+
 }
