@@ -38,7 +38,7 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=128m -Djava.net.preferIPv4Stack=tru
 ##########################
 
 # Gets the version number from the POM
-VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/1\.([0-9]+)\-SNAPSHOT/\1/'`
+VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/1\.3\.([0-9]+)\-SNAPSHOT/\1/'`
 echo Current version is $VERSION
 
 # Gets the next version
@@ -46,7 +46,7 @@ let "NEXT_VERSION=$VERSION+1"
 echo Next version is $NEXT_VERSION
 
 # Release number is made of the version and the build number
-RELEASE=1.${VERSION}
+RELEASE=1.3.${VERSION}
 echo Building release ${RELEASE}...
 
 
@@ -61,7 +61,7 @@ git checkout -- .
 ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 
 # Special case for Jenkins
-sed -i "s/1.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
+sed -i "s/1.3.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
 
 # Maven build
 ${MVN} clean deploy -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
@@ -89,13 +89,13 @@ git tag ${TAG}
 #########################################
 
 # Update the version locally
-${MVN} versions:set -DnewVersion=1.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
+${MVN} versions:set -DnewVersion=1.3.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
 
 # Again, special case for Jenkins
-sed -i "s/${RELEASE}/1.${NEXT_VERSION}-SNAPSHOT/" ontrack-jenkins/pom.xml
+sed -i "s/${RELEASE}/1.3.${NEXT_VERSION}-SNAPSHOT/" ontrack-jenkins/pom.xml
 
 # Commits the update
-git commit -am "Starting development of 1.${NEXT_VERSION}"
+git commit -am "Starting development of 1.3.${NEXT_VERSION}"
 
 # Pushing the result
 # git push
