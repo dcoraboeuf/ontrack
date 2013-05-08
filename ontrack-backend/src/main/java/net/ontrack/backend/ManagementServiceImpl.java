@@ -809,10 +809,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     }
 
-    private BranchBuilds getBranchBuilds(Locale locale, int branch, List<TBuild> tlist) {
+    private BranchBuilds getBranchBuilds(final Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
-                getValidationStampList(branch),
+                Lists.transform(
+                        getValidationStampList(branch),
+                        new Function<ValidationStampSummary, DecoratedValidationStamp>() {
+                            @Override
+                            public DecoratedValidationStamp apply(ValidationStampSummary summary) {
+                                return new DecoratedValidationStamp(
+                                        summary,
+                                        getLocalizedDecorations(locale, Entity.VALIDATION_STAMP, summary.getId())
+                                );
+                            }
+                        }
+                ),
                 // Promotion levels for the branch
                 getPromotionLevelList(branch),
                 // Status list
@@ -830,17 +841,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             @Override
             public BuildCompleteStatus apply(TBuild t) {
                 int buildId = t.getId();
-                List<LocalizedDecoration> decorations = Lists.transform(
-                        decorationService.getDecorations(Entity.BUILD, buildId),
-                        new Function<Decoration, LocalizedDecoration>() {
-                            @Override
-                            public LocalizedDecoration apply(Decoration decoration) {
-                                return new LocalizedDecoration(
-                                        decoration.getTitle().getLocalizedMessage(strings, locale),
-                                        decoration.getCls()
-                                );
-                            }
-                        });
+                List<LocalizedDecoration> decorations = getLocalizedDecorations(locale, Entity.BUILD, buildId);
                 List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
                 List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
                 DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
@@ -854,6 +855,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         promotionLevels);
             }
         };
+    }
+
+    private List<LocalizedDecoration> getLocalizedDecorations(final Locale locale, Entity entity, int entityId) {
+        return Lists.transform(
+                decorationService.getDecorations(entity, entityId),
+                new Function<Decoration, LocalizedDecoration>() {
+                    @Override
+                    public LocalizedDecoration apply(Decoration decoration) {
+                        return new LocalizedDecoration(
+                                decoration.getTitle().getLocalizedMessage(strings, locale),
+                                decoration.getCls()
+                        );
+                    }
+                });
     }
 
     @Override
