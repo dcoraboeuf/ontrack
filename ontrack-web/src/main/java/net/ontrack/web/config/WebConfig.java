@@ -1,6 +1,5 @@
 package net.ontrack.web.config;
 
-import com.netbeetle.jackson.ObjectMapperFactory;
 import freemarker.cache.TemplateLoader;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
@@ -11,19 +10,8 @@ import net.ontrack.web.support.DefaultErrorHandlingMultipartResolver;
 import net.ontrack.web.support.ErrorHandlingMultipartResolver;
 import net.ontrack.web.support.WebInterceptor;
 import net.ontrack.web.support.fm.*;
-import net.ontrack.web.support.json.LocalTimeDeserializer;
-import net.ontrack.web.support.json.LocalTimeSerializer;
 import net.sf.jstring.Strings;
-import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ext.JodaDeserializers.LocalDateDeserializer;
-import org.codehaus.jackson.map.ext.JodaDeserializers.LocalDateTimeDeserializer;
-import org.codehaus.jackson.map.ext.JodaSerializers.LocalDateSerializer;
-import org.codehaus.jackson.map.ext.JodaSerializers.LocalDateTimeSerializer;
-import org.codehaus.jackson.map.module.SimpleModule;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,6 +58,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ManageUI manageUI;
 
+    @Autowired
+    ObjectMapper jacksonObjectMapper;
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.clear();
@@ -77,7 +68,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         converters.add(new StringHttpMessageConverter());
         // JSON
         MappingJacksonHttpMessageConverter mapper = new MappingJacksonHttpMessageConverter();
-        mapper.setObjectMapper(jacksonObjectMapper());
+        mapper.setObjectMapper(jacksonObjectMapper);
         converters.add(mapper);
     }
 
@@ -156,45 +147,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public View jsonViewResolver() {
         MappingJacksonJsonView o = new MappingJacksonJsonView();
-        o.setObjectMapper(jacksonObjectMapper());
+        o.setObjectMapper(jacksonObjectMapper);
         return o;
     }
 
     @Bean
     public ErrorHandlingMultipartResolver multipartResolver() {
         return new DefaultErrorHandlingMultipartResolver(4);
-    }
-
-    @Bean
-    public ObjectMapper jacksonObjectMapper() {
-        ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
-
-        jsonJoda(mapper);
-
-        return mapper;
-    }
-
-    protected void jsonJoda(ObjectMapper mapper) {
-        SimpleModule jodaModule = new SimpleModule("JodaTimeModule", new Version(1, 0, 0, null));
-        jsonLocalDateTime(jodaModule);
-        jsonLocalDate(jodaModule);
-        jsonLocalTime(jodaModule);
-        mapper.registerModule(jodaModule);
-    }
-
-    protected void jsonLocalDateTime(SimpleModule jodaModule) {
-        jodaModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-        jodaModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
-    }
-
-    protected void jsonLocalTime(SimpleModule jodaModule) {
-        jodaModule.addSerializer(LocalTime.class, new LocalTimeSerializer());
-        jodaModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer());
-    }
-
-    protected void jsonLocalDate(SimpleModule jodaModule) {
-        jodaModule.addSerializer(LocalDate.class, new LocalDateSerializer());
-        jodaModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
     }
 
 }

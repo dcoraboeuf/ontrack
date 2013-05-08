@@ -3,7 +3,6 @@ package net.ontrack.web.support.fm;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import net.ontrack.core.model.NamedLink;
@@ -11,10 +10,7 @@ import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.action.EntityActionExtension;
-import net.ontrack.service.ManagementService;
-import net.ontrack.web.support.EntityConverter;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -60,11 +56,7 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
                         public boolean apply(EntityActionExtension<ProjectSummary> action) {
                             if (action.isEnabled(projectSummary)) {
                                 String actionRole = action.getRole(projectSummary);
-                                if (actionRole == null) {
-                                    return true;
-                                } else {
-                                    return securityUtils.hasRole(actionRole);
-                                }
+                                return actionRole == null || securityUtils.hasRole(actionRole);
                             } else {
                                 return false;
                             }
