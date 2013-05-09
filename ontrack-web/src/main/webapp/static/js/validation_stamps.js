@@ -257,3 +257,5 @@ var ValidationStamps = function () {
 	};
 
 } ();
+
+$(document).ready(Application.tooltips);

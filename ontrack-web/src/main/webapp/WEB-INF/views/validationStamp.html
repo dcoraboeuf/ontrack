@@ -9,7 +9,11 @@
                 <span class="title">
                     <a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a>
                     / <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
-                    / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}</span>
+                    / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}
+                    <#list decoratedValidationStamp.decorations as decoration>
+                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" />
+                    </#list>
+                </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span onclick="ValidationStamps.updateValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
@@ -28,12 +32,6 @@
                     ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
                 </div>
             </#if>
-            <#list decoratedValidationStamp.decorations as decoration>
-                <div>
-                    <span class="description">${decoration.title?html}</span>
-                    <img src="${decoration.iconPath}" />
-                </div>
-            </#list>
             <div class="span12">
                 <@properties entity="VALIDATION_STAMP" entityId=validationStamp.id />
             </div>
