@@ -9,6 +9,10 @@
         <ul class="properties">
             {{#properties}}
                 <li>
+                    {{#if iconPath}}
+                        <img src="{{iconPath}}" width="24" height="24" />
+                    {{/if}}
+                    <span class="description">{{displayName}}:</span>
                     {{{html}}}
                     {{#editable}}
                         <i class="icon-pencil action" onclick="Properties.editProperty('{{extension}}','{{name}}')"></i>

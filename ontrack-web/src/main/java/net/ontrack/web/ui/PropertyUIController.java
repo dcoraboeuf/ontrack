@@ -104,6 +104,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                                 property.getDescriptor().toHTML(strings, locale, property.getValue()),
                                 property.getDescriptor().getExtension(),
                                 property.getDescriptor().getName(),
+                                strings.get(locale, property.getDescriptor().getDisplayNameKey()),
                                 property.getValue(),
                                 isPropertyEditable(property.getDescriptor(), entity)
                         );
