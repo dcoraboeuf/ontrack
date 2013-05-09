@@ -44,7 +44,7 @@ public class PropertiesServiceTest extends AbstractIntegrationTest {
         // Rendering
         String html = propertiesService.toHTML(strings, Locale.ENGLISH, "jenkins", "url", "http://jenkins/test/2");
         // Check
-        assertEquals("<span title=\"Jenkins URL\"><img src=\"extension/jenkins.png\" /> <a href=\"http://jenkins/test/2\">http://jenkins/test/2</a></span>", html);
+        assertEquals("<a href=\"http://jenkins/test/2\">http://jenkins/test/2</a>", html);
     }
 
 }
