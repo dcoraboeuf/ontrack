@@ -19,6 +19,14 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     }
 
     /**
+     * Returns a default icon
+     */
+    @Override
+    public String getIconPath() {
+        return "static/images/property.png";
+    }
+
+    /**
      * Returns an escaped value
      */
     @Override

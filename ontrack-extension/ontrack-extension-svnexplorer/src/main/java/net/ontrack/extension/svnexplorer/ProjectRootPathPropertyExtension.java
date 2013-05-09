@@ -33,6 +33,11 @@ public class ProjectRootPathPropertyExtension extends AbstractPropertyExtensionD
     }
 
     @Override
+    public String getIconPath() {
+        return "extension/subversion.png";
+    }
+
+    @Override
     public String getRoleForEdition(Entity entity) {
         return SecurityRoles.ADMINISTRATOR;
     }

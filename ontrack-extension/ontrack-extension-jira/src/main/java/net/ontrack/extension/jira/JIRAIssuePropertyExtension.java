@@ -63,11 +63,13 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     }
 
     @Override
+    public String getIconPath() {
+        return "extension/jira.png";
+    }
+
+    @Override
     public String toHTML(final Strings strings, final Locale locale, String value) {
-        StringBuilder html = new StringBuilder(
-                String.format("<span title=\"%s\"><img src=\"extension/%s\" /> ",
-                        strings.get(locale, getDisplayNameKey()),
-                        "jira.png"));
+        StringBuilder html = new StringBuilder();
         // For each issue
         html.append(
                 StringUtils.join(
@@ -87,7 +89,6 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
                 )
         );
         // End
-        html.append("</span>");
         return html.toString();
     }
 

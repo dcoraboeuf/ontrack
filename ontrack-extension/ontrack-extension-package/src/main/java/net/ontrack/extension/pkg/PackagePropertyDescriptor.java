@@ -32,6 +32,11 @@ public class PackagePropertyDescriptor extends AbstractPropertyExtensionDescript
         return "package";
     }
 
+    @Override
+    public String getIconPath() {
+        return "extension/package.png";
+    }
+
     /**
      * Editable by controllers on all entities
      */

@@ -50,12 +50,8 @@ public class ExplanationPropertyExtension extends AbstractPropertyExtensionDescr
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
-        return String.format(
-                "<span title=\"%s\"><img src=\"extension/%s\" /> %s",
-                strings.get(locale, getDisplayNameKey()),
-                "explanation.png",
-                StringEscapeUtils.escapeHtml4(value));
+    public String getIconPath() {
+        return "extension/explanation.png";
     }
 
     @Override

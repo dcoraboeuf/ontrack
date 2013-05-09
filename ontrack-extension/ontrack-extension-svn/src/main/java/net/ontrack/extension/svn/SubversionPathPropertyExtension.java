@@ -43,20 +43,17 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
     }
 
     @Override
+    public String getIconPath() {
+        return "extension/subversion.png";
+    }
+
+    @Override
     public String toHTML(Strings strings, Locale locale, String path) {
-        // Logo
-        StringBuilder html = new StringBuilder(
-                String.format("<span title=\"%s\"><img src=\"extension/%s\" /> ",
-                        strings.get(locale, getDisplayNameKey()),
-                        "subversion.png"));
-        // Path URL
-        html.append(String.format("<a href=\"%s\">%s</a>",
+        return String.format(
+                "<a href=\"%s\">%s</a>",
                 subversionService.getBrowsingURL(path),
                 path
-                ));
-        // End
-        html.append("</span>");
-        return html.toString();
+        );
     }
 
     @Override

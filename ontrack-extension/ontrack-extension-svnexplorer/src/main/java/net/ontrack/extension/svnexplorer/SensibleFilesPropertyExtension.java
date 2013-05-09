@@ -38,6 +38,11 @@ public class SensibleFilesPropertyExtension extends AbstractPropertyExtensionDes
     }
 
     @Override
+    public String getIconPath() {
+        return "extension/svnexplorer-sensiblefiles.png";
+    }
+
+    @Override
     public String toHTML(Strings strings, Locale locale, String value) {
         return StringEscapeUtils.escapeHtml4(value).replaceAll("\n", "<br/>");
     }

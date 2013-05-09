@@ -44,6 +44,11 @@ public interface PropertyExtensionDescriptor {
     String getDisplayNameKey();
 
     /**
+     * Relative path to an icon
+     */
+    String getIconPath();
+
+    /**
      * Given a value, renders it as HTML.
      *
      * @param strings Localization
