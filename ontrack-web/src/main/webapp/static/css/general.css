@@ -161,6 +161,10 @@
 
 /* Properties display */
 
+.span12.properties {
+    margin-left: 0px;
+}
+
 ul.properties {
     list-style-type: none;
     padding: 0;

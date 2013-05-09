@@ -18,8 +18,8 @@
                     <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>
-            <div class="muted">${promotionLevel.description?html}</div>
-            <div class="span12">
+            <div class="muted span12 properties">${promotionLevel.description?html}</div>
+            <div class="span12 properties">
                 <@properties entity="PROMOTION_LEVEL" entityId=promotionLevel.id />
             </div>
         </div>
