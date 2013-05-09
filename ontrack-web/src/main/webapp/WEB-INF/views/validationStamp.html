@@ -27,10 +27,13 @@
             </div>
             <div class="description">${validationStamp.description?html}</div>
             <#if validationStamp.owner??>
-                <div>
-                    <span class="description"><@lh key="validation_stamp.owner" />:</span>
-                    ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
-                </div>
+                <ul class="properties">
+                    <li>
+                        <img src="${base}/images/owner.png" width="24" height="24" />
+                        <span class="description"><@lh key="validation_stamp.owner" />:</span>
+                        ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
+                    </li>
+                </ul>
             </#if>
             <div class="span12">
                 <@properties entity="VALIDATION_STAMP" entityId=validationStamp.id />
