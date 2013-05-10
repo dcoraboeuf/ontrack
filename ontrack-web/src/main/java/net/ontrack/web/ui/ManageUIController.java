@@ -189,7 +189,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
     public
-    @ResponseBody DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+    @ResponseBody
+    DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
         int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
         return managementService.getDecoratedValidationStamp(locale, validationStampId);
     }
@@ -527,6 +528,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
             @RequestParam(required = false, defaultValue = "0") int offset,
             @RequestParam(required = false, defaultValue = "10") int count) {
         return managementService.getValidationRunHistory(locale, validationRunId, offset, count);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/validation_run", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "10") int count) {
+        return managementService.getValidationRunsForValidationStamp(locale, entityConverter.getValidationStampId(project, branch, validationStamp), offset, count);
     }
 
     @Override

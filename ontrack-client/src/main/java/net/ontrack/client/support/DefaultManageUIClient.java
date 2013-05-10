@@ -340,6 +340,20 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, String project, String branch, String validationStamp, int offset, int count) {
+        return list(
+                locale,
+                format(
+                        "/ui/manage/project/%s/branch/%s/validationStamp/%s/validation_run?offset=%d&count=%d",
+                        project,
+                        branch,
+                        validationStamp,
+                        offset,
+                        count),
+                ValidationRunEvent.class);
+    }
+
+    @Override
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
         return post(
                 getDefaultLocale(),

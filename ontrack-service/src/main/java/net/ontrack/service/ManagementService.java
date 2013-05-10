@@ -137,6 +137,8 @@ public interface ManagementService {
 
     List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
 
+    List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, int validationStampId, int offset, int count);
+
     List<ValidationRunStatusStub> getStatusesForLastBuilds(int validationStampId, int count);
 
     // Promoted runs

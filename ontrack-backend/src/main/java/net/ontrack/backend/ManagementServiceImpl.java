@@ -989,9 +989,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ValidationRunEvent> getValidationRunHistory(final Locale locale, int validationRunId, int offset, int count) {
-        final ValidationRunSummary validationRun = getValidationRun(validationRunId);
+        ValidationRunSummary validationRun = getValidationRun(validationRunId);
         int branchId = validationRun.getBuild().getBranch().getId();
         int validationStampId = validationRun.getValidationStamp().getId();
+        return getValidationRunEvents(locale, validationStampId, offset, count, branchId, validationRunId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ValidationRunEvent> getValidationRunsForValidationStamp(final Locale locale, int validationStampId, int offset, int count) {
+        // Gets the validation stamp
+        ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
+        // Gets the branch id
+        int branchId = validationStamp.getBranch().getId();
+        // All validation runs
+        int validationRunId = Integer.MAX_VALUE;
+        // OK
+        return getValidationRunEvents(locale, validationStampId, offset, count, branchId, validationRunId);
+    }
+
+    private List<ValidationRunEvent> getValidationRunEvents(final Locale locale, int validationStampId, int offset, int count, int branchId, int validationRunId) {
         return Lists.transform(
                 validationRunEventDao.findByBranchAndValidationStamp(
                         validationRunId,
