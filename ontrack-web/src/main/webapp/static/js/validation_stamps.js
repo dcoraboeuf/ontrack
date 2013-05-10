@@ -209,6 +209,14 @@ var ValidationStamps = function () {
         });
     }
 
+    function validationStampHistoryTemplate (project, branch, validationStamp) {
+        return Template.config({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/validation_run?u=1'.format(project, branch, validationStamp),
+            more: true,
+            render: Template.asTableTemplate('validation-stamp-history-template')
+        });
+    }
+
 	function editImage () {
 		$('#validation_stamp-image-form').toggle();
 	}
@@ -253,7 +261,8 @@ var ValidationStamps = function () {
         changeOwnerInList: changeOwnerInList,
         changeOwnerInPage: changeOwnerInPage,
         addComment: addComment,
-        commentsTemplate: commentsTemplate
+        commentsTemplate: commentsTemplate,
+        validationStampHistoryTemplate: validationStampHistoryTemplate
 	};
 
 } ();
