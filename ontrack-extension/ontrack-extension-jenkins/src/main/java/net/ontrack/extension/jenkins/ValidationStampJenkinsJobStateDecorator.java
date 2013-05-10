@@ -6,7 +6,6 @@ import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
 import net.ontrack.extension.jenkins.client.JenkinsClientException;
-import net.sf.jstring.LocalizableMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -22,11 +21,13 @@ public class ValidationStampJenkinsJobStateDecorator implements EntityDecorator 
     private final Logger logger = LoggerFactory.getLogger(ValidationStampJenkinsJobStateDecorator.class);
     private final PropertiesService propertiesService;
     private final JenkinsClient jenkinsClient;
+    private final JenkinsDecorator jenkinsDecorator;
 
     @Autowired
-    public ValidationStampJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient) {
+    public ValidationStampJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator) {
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
+        this.jenkinsDecorator = jenkinsDecorator;
     }
 
     @Override
@@ -48,16 +49,7 @@ public class ValidationStampJenkinsJobStateDecorator implements EntityDecorator 
         try {
             JenkinsJobState jenkinsJobState = getJenkinsJobState(jenkinsJobUrl);
             // Returns a decoration according to the job state
-            switch (jenkinsJobState) {
-                case DISABLED:
-                    return new Decoration(new LocalizableMessage("jenkins.job.disabled")).withIconPath("extension/jenkins-job-disabled.png");
-                case RUNNING:
-                    return new Decoration(new LocalizableMessage("jenkins.job.running")).withIconPath("extension/jenkins-job-running.png");
-                case IDLE:
-                    return new Decoration(new LocalizableMessage("jenkins.job.idle")).withIconPath("extension/jenkins-job-idle.png");
-                default:
-                    return null;
-            }
+            return jenkinsDecorator.getJobDecoration(jenkinsJobState);
         } catch (JenkinsClientException ex) {
             // Logs an error
             logger.error(String.format("Could not get the job state at %s", jenkinsJobUrl), ex);
