@@ -6,6 +6,7 @@ import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +17,17 @@ public class JenkinsExtension extends ExtensionAdapter {
     public static final String EXTENSION = "jenkins";
     private final JenkinsUrlPropertyDescriptor jenkinsUrlPropertyDescriptor;
     private final ValidationStampJenkinsJobStateDecorator validationStampJenkinsJobStateDecorator;
+    private final BranchJenkinsJobStateDecorator branchJenkinsJobStateDecorator;
 
     @Autowired
     public JenkinsExtension(
             JenkinsUrlPropertyDescriptor jenkinsUrlPropertyDescriptor,
-            ValidationStampJenkinsJobStateDecorator validationStampJenkinsJobStateDecorator) {
+            ValidationStampJenkinsJobStateDecorator validationStampJenkinsJobStateDecorator,
+            BranchJenkinsJobStateDecorator branchJenkinsJobStateDecorator) {
         super(EXTENSION);
         this.jenkinsUrlPropertyDescriptor = jenkinsUrlPropertyDescriptor;
         this.validationStampJenkinsJobStateDecorator = validationStampJenkinsJobStateDecorator;
+        this.branchJenkinsJobStateDecorator = branchJenkinsJobStateDecorator;
     }
 
     @Override
@@ -33,6 +37,8 @@ public class JenkinsExtension extends ExtensionAdapter {
 
     @Override
     public Collection<? extends EntityDecorator> getDecorators() {
-        return Collections.singletonList(validationStampJenkinsJobStateDecorator);
+        return Arrays.asList(
+                validationStampJenkinsJobStateDecorator,
+                branchJenkinsJobStateDecorator);
     }
 }

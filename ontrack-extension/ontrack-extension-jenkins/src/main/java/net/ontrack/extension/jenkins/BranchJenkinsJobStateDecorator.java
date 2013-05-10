@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidationStampJenkinsJobStateDecorator extends AbstractJenkinsJobStateDecorator {
+public class BranchJenkinsJobStateDecorator extends AbstractJenkinsJobStateDecorator {
 
     @Autowired
-    public ValidationStampJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator) {
-        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.VALIDATION_STAMP);
+    public BranchJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator) {
+        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.BRANCH);
     }
 }
