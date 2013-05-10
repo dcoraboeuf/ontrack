@@ -1,5 +1,6 @@
 package net.ontrack.extension.jenkins.client;
 
+import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.extension.jenkins.JenkinsJobState;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -11,7 +12,6 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,12 +19,7 @@ import java.io.IOException;
 @Component
 public class DefaultJenkinsClient implements JenkinsClient {
 
-    private final ObjectMapper mapper;
-
-    @Autowired
-    public DefaultJenkinsClient(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
+    private ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
 
     @Override
     public JenkinsJobState getJobState(String jenkinsJobUrl) {
