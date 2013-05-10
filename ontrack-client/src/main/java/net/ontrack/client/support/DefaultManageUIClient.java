@@ -87,6 +87,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public DecoratedBranch getDecoratedBranch(Locale locale, String project, String name) {
+        return get(locale, format("/ui/manage/project/%s/branch/%s/decorated", project, name), DecoratedBranch.class);
+    }
+
+    @Override
     public BranchFilterData getBranchFilterData(String project, String branch) {
         return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/filter", project, branch), BranchFilterData.class);
     }

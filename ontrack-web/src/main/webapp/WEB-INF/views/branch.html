@@ -1,11 +1,18 @@
 <#include "/lib/layout.html">
 
+<#assign branch = decoratedBranch.summary />
+
 <@layout_std page="branch" title=branch.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
-                <span class="title"><a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
-                / ${branch.name?html}</span>
+                <span class="title">
+                    <a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
+                    / ${branch.name?html}
+                    <#list decoratedBranch.decorations as decoration>
+                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" width="24" height="24" />
+                    </#list>
+                </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span onclick="Branches.updateBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>

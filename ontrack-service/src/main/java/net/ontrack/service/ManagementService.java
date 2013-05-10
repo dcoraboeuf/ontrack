@@ -25,6 +25,8 @@ public interface ManagementService {
 
 	BranchSummary getBranch(int id);
 
+    DecoratedBranch getDecoratedBranch(Locale locale, int branchId);
+
 	BranchSummary createBranch(int project, BranchCreationForm form);
 
     Ack deleteBranch(int branchId);

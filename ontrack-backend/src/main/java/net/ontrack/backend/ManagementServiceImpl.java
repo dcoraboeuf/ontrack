@@ -221,6 +221,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public DecoratedBranch getDecoratedBranch(Locale locale, int branchId) {
+        BranchSummary branch = getBranch(branchId);
+        return new DecoratedBranch(
+                branch,
+                getLocalizedDecorations(locale, Entity.BRANCH, branchId)
+        );
+    }
+
+    @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary createBranch(int project, BranchCreationForm form) {
