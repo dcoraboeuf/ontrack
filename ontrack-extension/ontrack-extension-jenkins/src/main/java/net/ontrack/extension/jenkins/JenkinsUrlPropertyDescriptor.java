@@ -10,6 +10,8 @@ import java.util.EnumSet;
 @Component
 public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionDescriptor {
 
+    public static final String NAME = "url";
+
     public JenkinsUrlPropertyDescriptor() {
         super("jenkins.url", "jenkins.png");
     }
@@ -26,7 +28,7 @@ public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionD
 
     @Override
     public String getName() {
-        return "url";
+        return NAME;
     }
 
     /**
