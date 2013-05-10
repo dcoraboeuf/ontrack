@@ -25,3 +25,7 @@ ul.validation-stamp-decoration {
     padding: 0;
     margin: 0;
 }
+
+ul.validation-stamp-decoration li {
+    display: inline;
+}

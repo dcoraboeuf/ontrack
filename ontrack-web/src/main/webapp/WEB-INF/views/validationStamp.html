@@ -11,7 +11,7 @@
                     / <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
                     / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}
                     <#list decoratedValidationStamp.decorations as decoration>
-                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" />
+                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" width="24" height="24" />
                     </#list>
                 </span>
                 <span class="action action-optional">
