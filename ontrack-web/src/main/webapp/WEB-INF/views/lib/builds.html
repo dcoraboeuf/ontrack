@@ -25,9 +25,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th rowspan="2">&nbsp;</th>
-                    <th rowspan="2"><@lh key="model.build" /></th>
-                    <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
+                    <th rowspan="3">&nbsp;</th>
+                    <th rowspan="3"><@lh key="model.build" /></th>
+                    <th rowspan="3"><@lh key="branch.promotion_levels" /></th>
                     <th colspan="{{branchBuilds.validationStamps.length}}">
                         <@lh key="branch.validation_stamps" />
                         <#if secLogged()>
@@ -46,10 +46,16 @@
                             <a href="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}">
                                 <img class="tooltip-source" width="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
                             </a>
+                        </th>
+                    {{/branchBuilds.validationStamps}}
+                </tr>
+                <tr>
+                    {{#branchBuilds.validationStamps}}
+                        <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
                             {{#if decorations.length}}
                                 <ul class="validation-stamp-decoration">
                                     {{#decorations}}
-                                        <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" /></li>
+                                    <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" /></li>
                                     {{/decorations}}
                                 </ul>
                             {{/if}}
