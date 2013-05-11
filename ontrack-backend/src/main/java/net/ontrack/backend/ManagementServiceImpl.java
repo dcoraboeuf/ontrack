@@ -952,20 +952,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<BuildPromotionLevel> getBuildPromotionLevels(final Locale locale, final int buildId) {
-        // Gets all the promotion levels that were run for this build
-        List<TPromotionLevel> tPromotionLevels = promotionLevelDao.findByBuild(buildId);
+        // Gets all the promotion that were run for this build
+        List<TPromotedRun> runs = promotedRunDao.findByBuild(buildId);
+        // Reference time
+        final DateTime now = TimeUtils.now();
         // Conversion
         return Lists.transform(
-                tPromotionLevels,
-                new Function<TPromotionLevel, BuildPromotionLevel>() {
+                runs,
+                new Function<TPromotedRun, BuildPromotionLevel>() {
                     @Override
-                    public BuildPromotionLevel apply(TPromotionLevel level) {
+                    public BuildPromotionLevel apply(TPromotedRun t) {
+                        TPromotionLevel pl = promotionLevelDao.getById(t.getPromotionLevel());
                         return new BuildPromotionLevel(
-                                getDatedSignature(locale, EventType.PROMOTED_RUN_CREATED,
-                                        MapBuilder.of(Entity.BUILD, buildId).with(Entity.PROMOTION_LEVEL, level.getId()).get()),
-                                level.getName(),
-                                level.getDescription(),
-                                level.getLevelNb()
+                                getPromotedRunDatedSignature(t, locale, now),
+                                pl.getName(),
+                                pl.getDescription(),
+                                pl.getLevelNb()
                         );
                     }
                 }

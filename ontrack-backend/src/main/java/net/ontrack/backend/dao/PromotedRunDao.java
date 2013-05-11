@@ -14,4 +14,6 @@ public interface PromotedRunDao {
     Integer findBuildByEarliestPromotion(int buildId, int promotionLevelId);
 
     List<TPromotedRun> findByPromotionLevel(int promotionLevelId, int offset, int count);
+
+    List<TPromotedRun> findByBuild(int buildId);
 }

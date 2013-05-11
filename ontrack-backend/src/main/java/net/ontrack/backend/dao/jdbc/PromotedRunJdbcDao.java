@@ -93,4 +93,14 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                 promotedRunRowMapper
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TPromotedRun> findByBuild(int buildId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.PROMOTED_RUN_BY_BUILD,
+                params("build", buildId),
+                promotedRunRowMapper
+        );
+    }
 }
