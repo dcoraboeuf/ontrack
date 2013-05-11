@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.Locale;
@@ -15,7 +16,15 @@ public final class TimeUtils {
     }
 
     public static String format(Locale locale, DateTime dateTime) {
-        return DateTimeFormat.mediumDateTime().withLocale(locale).print(dateTime);
+        return new DateTimeFormatterBuilder()
+                .append(
+                        DateTimeFormat.mediumDateTime()
+                )
+                .appendLiteral(" ")
+                .appendTimeZoneId()
+                .toFormatter()
+                .withLocale(locale)
+                .print(dateTime);
     }
 
     public static Period compress(Period period) {

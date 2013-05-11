@@ -107,6 +107,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    DecoratedBranch getDecoratedBranch(Locale locale, String project, String name) {
+        return managementService.getDecoratedBranch(locale, entityConverter.getBranchId(project, name));
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.GET)
     public
     @ResponseBody
@@ -181,7 +189,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
     public
-    @ResponseBody DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+    @ResponseBody
+    DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
         int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
         return managementService.getDecoratedValidationStamp(locale, validationStampId);
     }
@@ -522,11 +531,37 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/validation_run", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestParam(required = false, defaultValue = "0") int offset, @RequestParam(required = false, defaultValue = "10") int count) {
+        return managementService.getValidationRunsForValidationStamp(locale, entityConverter.getValidationStampId(project, branch, validationStamp), offset, count);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/validation_run/{runId:[0-9]+}/comment", method = RequestMethod.POST)
     public
     @ResponseBody
     Ack addValidationRunComment(@PathVariable int runId, @RequestBody ValidationRunCommentCreationForm form) {
         return managementService.addValidationRunComment(runId, form);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/promotions", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Promotion> getPromotions(Locale locale,
+                                  @PathVariable String project,
+                                  @PathVariable String branch,
+                                  @PathVariable String promotionLevel,
+                                  @RequestParam(required = false, defaultValue = "0") int offset,
+                                  @RequestParam(required = false, defaultValue = "10") int count) {
+        return managementService.getPromotions(
+                locale,
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel),
+                offset,
+                count
+        );
     }
 
     @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/statusUpdateData", method = RequestMethod.GET)

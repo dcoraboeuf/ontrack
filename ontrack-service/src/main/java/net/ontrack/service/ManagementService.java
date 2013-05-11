@@ -25,6 +25,8 @@ public interface ManagementService {
 
 	BranchSummary getBranch(int id);
 
+    DecoratedBranch getDecoratedBranch(Locale locale, int branchId);
+
 	BranchSummary createBranch(int project, BranchCreationForm form);
 
     Ack deleteBranch(int branchId);
@@ -135,6 +137,8 @@ public interface ManagementService {
 
     List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
 
+    List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, int validationStampId, int offset, int count);
+
     List<ValidationRunStatusStub> getStatusesForLastBuilds(int validationStampId, int count);
 
     // Promoted runs
@@ -144,6 +148,8 @@ public interface ManagementService {
     Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId);
 
     Promotion findLastPromotion(Locale locale, int promotionLevelId);
+
+    List<Promotion> getPromotions(final Locale locale, int promotionLevelId, int offset, int count);
 
     // Comments
 

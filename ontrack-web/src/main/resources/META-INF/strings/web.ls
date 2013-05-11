@@ -582,6 +582,10 @@ promotion_level.management.notauto
     en -> Disable auto-promotion
     fr -> Désactiver l'auto-promotion
 
+promotion_level.promotions
+    en -> Promotions
+    fr -> Promotions
+
 [builds]
 
 build.validation_stamps

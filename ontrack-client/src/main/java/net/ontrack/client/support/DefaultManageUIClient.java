@@ -87,6 +87,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public DecoratedBranch getDecoratedBranch(Locale locale, String project, String name) {
+        return get(locale, format("/ui/manage/project/%s/branch/%s/decorated", project, name), DecoratedBranch.class);
+    }
+
+    @Override
     public BranchFilterData getBranchFilterData(String project, String branch) {
         return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/filter", project, branch), BranchFilterData.class);
     }
@@ -335,6 +340,20 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, String project, String branch, String validationStamp, int offset, int count) {
+        return list(
+                locale,
+                format(
+                        "/ui/manage/project/%s/branch/%s/validationStamp/%s/validation_run?offset=%d&count=%d",
+                        project,
+                        branch,
+                        validationStamp,
+                        offset,
+                        count),
+                ValidationRunEvent.class);
+    }
+
+    @Override
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
         return post(
                 getDefaultLocale(),
@@ -344,6 +363,22 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
                 ),
                 Ack.class,
                 form
+        );
+    }
+
+    @Override
+    public List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count) {
+        return list(
+                locale,
+                format(
+                        "/ui/manage/project/%s/branch/%s/promotion_level/%s/promotions?offset=%d&count=%d",
+                        project,
+                        branch,
+                        promotionLevel,
+                        offset,
+                        count
+                ),
+                Promotion.class
         );
     }
 

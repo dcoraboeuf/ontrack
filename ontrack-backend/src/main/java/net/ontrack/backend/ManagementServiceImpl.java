@@ -21,6 +21,7 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -218,6 +219,16 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional(readOnly = true)
     public BranchSummary getBranch(int id) {
         return branchSummaryFunction.apply(branchDao.getById(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DecoratedBranch getDecoratedBranch(Locale locale, int branchId) {
+        BranchSummary branch = getBranch(branchId);
+        return new DecoratedBranch(
+                branch,
+                getLocalizedDecorations(locale, Entity.BRANCH, branchId)
+        );
     }
 
     @Override
@@ -941,20 +952,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<BuildPromotionLevel> getBuildPromotionLevels(final Locale locale, final int buildId) {
-        // Gets all the promotion levels that were run for this build
-        List<TPromotionLevel> tPromotionLevels = promotionLevelDao.findByBuild(buildId);
+        // Gets all the promotion that were run for this build
+        List<TPromotedRun> runs = promotedRunDao.findByBuild(buildId);
+        // Reference time
+        final DateTime now = TimeUtils.now();
         // Conversion
         return Lists.transform(
-                tPromotionLevels,
-                new Function<TPromotionLevel, BuildPromotionLevel>() {
+                runs,
+                new Function<TPromotedRun, BuildPromotionLevel>() {
                     @Override
-                    public BuildPromotionLevel apply(TPromotionLevel level) {
+                    public BuildPromotionLevel apply(TPromotedRun t) {
+                        TPromotionLevel pl = promotionLevelDao.getById(t.getPromotionLevel());
                         return new BuildPromotionLevel(
-                                getDatedSignature(locale, EventType.PROMOTED_RUN_CREATED,
-                                        MapBuilder.of(Entity.BUILD, buildId).with(Entity.PROMOTION_LEVEL, level.getId()).get()),
-                                level.getName(),
-                                level.getDescription(),
-                                level.getLevelNb()
+                                getPromotedRunDatedSignature(t, locale, now),
+                                pl.getName(),
+                                pl.getDescription(),
+                                pl.getLevelNb()
                         );
                     }
                 }
@@ -979,9 +992,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional(readOnly = true)
     public List<ValidationRunEvent> getValidationRunHistory(final Locale locale, int validationRunId, int offset, int count) {
-        final ValidationRunSummary validationRun = getValidationRun(validationRunId);
+        ValidationRunSummary validationRun = getValidationRun(validationRunId);
         int branchId = validationRun.getBuild().getBranch().getId();
         int validationStampId = validationRun.getValidationStamp().getId();
+        return getValidationRunEvents(locale, validationStampId, offset, count, branchId, validationRunId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ValidationRunEvent> getValidationRunsForValidationStamp(final Locale locale, int validationStampId, int offset, int count) {
+        // Gets the validation stamp
+        ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
+        // Gets the branch id
+        int branchId = validationStamp.getBranch().getId();
+        // All validation runs
+        int validationRunId = Integer.MAX_VALUE;
+        // OK
+        return getValidationRunEvents(locale, validationStampId, offset, count, branchId, validationRunId);
+    }
+
+    private List<ValidationRunEvent> getValidationRunEvents(final Locale locale, int validationStampId, int offset, int count, int branchId, int validationRunId) {
         return Lists.transform(
                 validationRunEventDao.findByBranchAndValidationStamp(
                         validationRunId,
@@ -1145,6 +1175,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         if (t != null) {
             return new PromotedRunSummary(
                     t.getId(),
+                    new Signature(t.getAuthorId(), t.getAuthor()),
+                    t.getCreation(),
                     t.getDescription(),
                     getBuild(t.getBuild()),
                     getPromotionLevel(t.getPromotionLevel())
@@ -1152,6 +1184,50 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         } else {
             return null;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Promotion> getPromotions(final Locale locale, int promotionLevelId, int offset, int count) {
+        // List of `promoted_run` for this promotion level
+        List<TPromotedRun> runs = promotedRunDao.findByPromotionLevel(promotionLevelId, offset, count);
+        // Gets the promotion level summary
+        final PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        // Now
+        final DateTime now = TimeUtils.now();
+        // Converts them into Promotion objects
+        return Lists.transform(
+                runs,
+                new Function<TPromotedRun, Promotion>() {
+                    @Override
+                    public Promotion apply(TPromotedRun t) {
+                        return new Promotion(
+                                promotionLevel,
+                                getBuild(t.getBuild()),
+                                getPromotedRunDatedSignature(t, locale, now)
+                        );
+                    }
+                }
+        );
+    }
+
+    private DatedSignature getPromotedRunDatedSignature(TPromotedRun t, Locale locale, DateTime now) {
+        return getDatedSignature(
+                locale,
+                t.getAuthorId(), t.getAuthor(), t.getCreation(),
+                now);
+    }
+
+    private DatedSignature getDatedSignature(Locale locale, Integer authorId, String author, DateTime time, DateTime now) {
+        return new DatedSignature(
+                new Signature(
+                        authorId,
+                        author
+                ),
+                time,
+                TimeUtils.elapsed(strings, locale, time, now, author),
+                TimeUtils.format(locale, time)
+        );
     }
 
     @Override
@@ -1176,10 +1252,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     null
             );
         } else {
+            // Gets the promoted run data
+            TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(earliestBuildId, promotionLevelId);
             return new Promotion(
                     promotionLevel,
                     getBuild(earliestBuildId),
-                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, earliestBuildId))
+                    getPromotedRunDatedSignature(t, locale, TimeUtils.now())
             );
         }
     }
@@ -1190,10 +1268,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         BuildSummary build = findLastBuildWithPromotionLevel(promotionLevelId);
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         if (build != null) {
+            TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(build.getId(), promotionLevelId);
             return new Promotion(
                     promotionLevel,
                     build,
-                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, build.getId()))
+                    getPromotedRunDatedSignature(t, locale, TimeUtils.now())
             );
         } else {
             return new Promotion(

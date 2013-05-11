@@ -11,7 +11,7 @@
                     / <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
                     / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}
                     <#list decoratedValidationStamp.decorations as decoration>
-                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" />
+                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" width="24" height="24" />
                     </#list>
                 </span>
                 <span class="action action-optional">
@@ -49,7 +49,7 @@
             <div class="span12 muted">${validationStamp.description?html}</div>
         </div>
 		<div class="row-fluid">
-            <div class="span6">
+            <div class="span4">
                 <h4>
                     <@lh key="validation_stamp.comments" />
                     <#if secLogged()>
@@ -78,7 +78,34 @@
                     </tr>
                 </script>
             </div>
-			<div class="span6">
+            <div class="span4">
+                <h4><@lh key="validationRun.history" /></h4>
+                <@dynamicsection id="validationStampHistory" template="ValidationStamps.validationStampHistoryTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')" />
+                <script id="validation-stamp-history-template" type="text/html">
+                    <tr>
+                        <td width="26">
+                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">
+                                {{#if status}}
+                                    <img src="${base}/images/status-{{status}}.png" height="24" width="24" title="{{status}}" class="tooltip-source" />
+                                {{else}}
+                                    <img src="${base}/images/comment.png" height="24" width="24" />
+                                {{/if}}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}">{{validationRun.build.name}}</a>
+                        </td>
+                        <td width="32">
+                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
+                        </td>
+                        <td>
+                            {{content}}
+                            <span class="elapsed">- <span title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span></span>
+                        </td>
+                    </tr>
+                </script>
+            </div>
+			<div class="span4">
                 <@audit filter="&validationStamp=${validationStamp.id}" />
 			</div>
 		</div>

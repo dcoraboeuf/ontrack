@@ -5,6 +5,8 @@ import net.ontrack.backend.dao.PromotedRunDao;
 import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.service.ControlService;
@@ -24,15 +26,17 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     private final BuildDao buildDao;
     private final ValidationRunDao validationRunDao;
     private final PromotedRunDao promotedRunDao;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public ControlServiceImpl(ValidatorService validatorService, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao) {
+    public ControlServiceImpl(ValidatorService validatorService, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao, SecurityUtils securityUtils) {
         super(validatorService, auditService);
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.buildDao = buildDao;
         this.validationRunDao = validationRunDao;
         this.promotedRunDao = promotedRunDao;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -73,16 +77,6 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // Associated properties
         propertiesService.createProperties(Entity.VALIDATION_RUN, validationRunId, validationRun.getProperties());
 
-        // Associated promotion level & auto-promotion
-        PromotionLevelSummary promotionLevel = managementService.getPromotionLevelForValidationStamp(validationStamp);
-        if (promotionLevel != null && promotionLevel.isAutoPromote()) {
-            if (managementService.isPromotionLevelComplete(build, promotionLevel.getId())) {
-                createPromotedRun(build, promotionLevel.getId(), new PromotedRunCreationForm(
-                   ""
-                ));
-            }
-        }
-
         // Summary
         ValidationRunSummary run = managementService.getValidationRun(validationRunId);
         // Event
@@ -94,6 +88,18 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
                 .withValidationRun(validationRunId)
                 .withValue("status", validationRun.getStatus().name())
         );
+
+        // Associated promotion level & auto-promotion
+        PromotionLevelSummary promotionLevel = managementService.getPromotionLevelForValidationStamp(validationStamp);
+        if (promotionLevel != null && promotionLevel.isAutoPromote()) {
+            if (managementService.isPromotionLevelComplete(build, promotionLevel.getId())) {
+                createPromotedRun(build, promotionLevel.getId(), new PromotedRunCreationForm(
+                        TimeUtils.now(),
+                        "Created automatically"
+                ));
+            }
+        }
+
         // Gets the summary
         return run;
     }
@@ -108,31 +114,27 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     @Transactional
     @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun) {
-        // Gets the promoted run for the build and promotion, if any
-        PromotedRunSummary run = managementService.getPromotedRun(buildId, promotionLevel);
+        // Gets the current signature
+        Signature signature = securityUtils.getCurrentSignature();
         // If none, creates one
-        if (run == null) {
-            // TODO Checks if the promotion level is eligible for control
-            promotedRunDao.createPromotedRun(
-                    buildId,
-                    promotionLevel,
-                    promotedRun.getDescription()
-            );
-            // Gets the newly created run
-            run = managementService.getPromotedRun(buildId, promotionLevel);
-            // Event
-            event(Event.of(EventType.PROMOTED_RUN_CREATED)
-                    .withProject(run.getBuild().getBranch().getProject().getId())
-                    .withBranch(run.getBuild().getBranch().getId())
-                    .withPromotionLevel(promotionLevel)
-                    .withBuild(run.getBuild().getId())
-            );
-            // OK
-            return run;
-        }
-        // If already existing, returns it
-        else {
-            return run;
-        }
+        promotedRunDao.createPromotedRun(
+                buildId,
+                promotionLevel,
+                signature.getName(),
+                signature.getId(),
+                promotedRun.getCreation() != null ? promotedRun.getCreation() : TimeUtils.now(),
+                promotedRun.getDescription()
+        );
+        // Loads the created run
+        PromotedRunSummary run = managementService.getPromotedRun(buildId, promotionLevel);
+        // Event
+        event(Event.of(EventType.PROMOTED_RUN_CREATED)
+                .withProject(run.getBuild().getBranch().getProject().getId())
+                .withBranch(run.getBuild().getBranch().getId())
+                .withPromotionLevel(promotionLevel)
+                .withBuild(run.getBuild().getId())
+        );
+        // OK
+        return run;
     }
 }

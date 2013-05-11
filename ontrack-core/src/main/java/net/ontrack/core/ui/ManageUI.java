@@ -27,6 +27,8 @@ public interface ManageUI {
 
     BranchSummary getBranch(String project, String name);
 
+    DecoratedBranch getDecoratedBranch(Locale locale, String project, String name);
+
     BranchSummary createBranch(String project, BranchCreationForm form);
 
     BranchSummary updateBranch(String project, String name, BranchUpdateForm form);
@@ -117,7 +119,13 @@ public interface ManageUI {
 
     List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);
 
+    List<ValidationRunEvent> getValidationRunsForValidationStamp(Locale locale, String project, String branch, String validationStamp, int offset, int count);
+
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
+
+    // Promoted runs
+
+    List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);
 }

@@ -25,9 +25,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th rowspan="2">&nbsp;</th>
-                    <th rowspan="2"><@lh key="model.build" /></th>
-                    <th rowspan="2"><@lh key="branch.promotion_levels" /></th>
+                    <th rowspan="3">&nbsp;</th>
+                    <th rowspan="3"><@lh key="model.build" /></th>
+                    <th rowspan="3"><@lh key="branch.promotion_levels" /></th>
                     <th colspan="{{branchBuilds.validationStamps.length}}">
                         <@lh key="branch.validation_stamps" />
                         <#if secLogged()>
@@ -44,12 +44,18 @@
                     {{#branchBuilds.validationStamps}}
                         <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
                             <a href="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}">
-                                <img class="tooltip-source" width="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
+                                <img class="tooltip-source" width="24" height="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
                             </a>
+                        </th>
+                    {{/branchBuilds.validationStamps}}
+                </tr>
+                <tr>
+                    {{#branchBuilds.validationStamps}}
+                        <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
                             {{#if decorations.length}}
                                 <ul class="validation-stamp-decoration">
                                     {{#decorations}}
-                                        <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" /></li>
+                                        <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" /></li>
                                     {{/decorations}}
                                 </ul>
                             {{/if}}
@@ -199,7 +205,7 @@
                         href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../buildValidationStamp/name}}/validation_run/{{runOrder}}"
                         title="<div style='text-align:left;'>{{#events}}- {{status}} {{content}}<br/>{{/events}}{{signature.elapsedTime}} - {{signature.formattedTime}}</div>"
                         data-html="true">
-                    <img width="24" src="static/images/status-{{status}}.png" />
+                    <img width="24" height="24" src="static/images/status-{{status}}.png" />
                 </a>
             {{/lastRun}}
         {{else}}

@@ -92,7 +92,7 @@ git tag ${TAG}
 ${MVN} versions:set -DnewVersion=1.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
 
 # Again, special case for Jenkins
-sed -i "s/${RELEASE}/1.${NEXT_VERSION}-SNAPSHOT/" ontrack-jenkins/pom.xml
+sed -i "s/${RELEASE}<\/version>/1.${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-jenkins/pom.xml
 
 # Commits the update
 git commit -am "Starting development of 1.${NEXT_VERSION}"

@@ -73,9 +73,9 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public String getBranch(Model model, @PathVariable String project, @PathVariable String name) {
+    public String getBranch(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
-        model.addAttribute("branch", manageUI.getBranch(project, name));
+        model.addAttribute("decoratedBranch", manageUI.getDecoratedBranch(locale, project, name));
         // OK
         return "branch";
     }
