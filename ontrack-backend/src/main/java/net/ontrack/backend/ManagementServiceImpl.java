@@ -1200,14 +1200,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return new Promotion(
                                 promotionLevel,
                                 getBuild(t.getBuild()),
-                                getDatedSignature(
-                                        locale,
-                                        t.getAuthorId(), t.getAuthor(), t.getCreation(),
-                                        now)
+                                getPromotedRunDatedSignature(t, locale, now)
                         );
                     }
                 }
         );
+    }
+
+    private DatedSignature getPromotedRunDatedSignature(TPromotedRun t, Locale locale, DateTime now) {
+        return getDatedSignature(
+                locale,
+                t.getAuthorId(), t.getAuthor(), t.getCreation(),
+                now);
     }
 
     private DatedSignature getDatedSignature(Locale locale, Integer authorId, String author, DateTime time, DateTime now) {
@@ -1244,11 +1248,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     null
             );
         } else {
-            // FIXME #144 Promotion date
+            // Gets the promoted run data
+            TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(earliestBuildId, promotionLevelId);
             return new Promotion(
                     promotionLevel,
                     getBuild(earliestBuildId),
-                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, earliestBuildId))
+                    getPromotedRunDatedSignature(t, locale, TimeUtils.now())
             );
         }
     }
@@ -1259,11 +1264,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         BuildSummary build = findLastBuildWithPromotionLevel(promotionLevelId);
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         if (build != null) {
-            // FIXME #144 Promotion date
+            TPromotedRun t = promotedRunDao.findByBuildAndPromotionLevel(build.getId(), promotionLevelId);
             return new Promotion(
                     promotionLevel,
                     build,
-                    getDatedSignature(locale, EventType.BUILD_CREATED, Collections.singletonMap(Entity.BUILD, build.getId()))
+                    getPromotedRunDatedSignature(t, locale, TimeUtils.now())
             );
         } else {
             return new Promotion(
