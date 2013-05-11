@@ -59,6 +59,14 @@ var PromotionLevels = function () {
 	function editImageCancel() {
 		$('#promotion_level-image-form').hide();
 	}
+
+    function promotionsTemplate (project, branch, promotionLevel) {
+        return Template.config({
+            url: 'ui/manage/project/{0}/branch/{1}/promotion_level/{2}/promotions?u=1'.format(project, branch, promotionLevel),
+            more: true,
+            render: Template.asTableTemplate('promotionTemplate')
+        });
+    }
 	
 	return {
 		createPromotionLevel: createPromotionLevel,
@@ -67,7 +75,8 @@ var PromotionLevels = function () {
 		promotionLevelTemplate: promotionLevelTemplate,
 		promotionLevelImage: promotionLevelImage,
 		editImage: editImage,
-		editImageCancel: editImageCancel
+		editImageCancel: editImageCancel,
+        promotionsTemplate: promotionsTemplate
 	};
 	
 } ();
