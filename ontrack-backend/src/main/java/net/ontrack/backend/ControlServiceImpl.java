@@ -77,17 +77,6 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         // Associated properties
         propertiesService.createProperties(Entity.VALIDATION_RUN, validationRunId, validationRun.getProperties());
 
-        // Associated promotion level & auto-promotion
-        PromotionLevelSummary promotionLevel = managementService.getPromotionLevelForValidationStamp(validationStamp);
-        if (promotionLevel != null && promotionLevel.isAutoPromote()) {
-            if (managementService.isPromotionLevelComplete(build, promotionLevel.getId())) {
-                createPromotedRun(build, promotionLevel.getId(), new PromotedRunCreationForm(
-                        TimeUtils.now(),
-                        "Created automatically"
-                ));
-            }
-        }
-
         // Summary
         ValidationRunSummary run = managementService.getValidationRun(validationRunId);
         // Event
@@ -99,6 +88,18 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
                 .withValidationRun(validationRunId)
                 .withValue("status", validationRun.getStatus().name())
         );
+
+        // Associated promotion level & auto-promotion
+        PromotionLevelSummary promotionLevel = managementService.getPromotionLevelForValidationStamp(validationStamp);
+        if (promotionLevel != null && promotionLevel.isAutoPromote()) {
+            if (managementService.isPromotionLevelComplete(build, promotionLevel.getId())) {
+                createPromotedRun(build, promotionLevel.getId(), new PromotedRunCreationForm(
+                        TimeUtils.now(),
+                        "Created automatically"
+                ));
+            }
+        }
+
         // Gets the summary
         return run;
     }
