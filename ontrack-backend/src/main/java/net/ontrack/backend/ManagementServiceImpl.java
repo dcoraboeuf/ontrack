@@ -1173,6 +1173,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         if (t != null) {
             return new PromotedRunSummary(
                     t.getId(),
+                    new Signature(t.getAuthorId(), t.getAuthor()),
+                    t.getCreation(),
                     t.getDescription(),
                     getBuild(t.getBuild()),
                     getPromotionLevel(t.getPromotionLevel())
