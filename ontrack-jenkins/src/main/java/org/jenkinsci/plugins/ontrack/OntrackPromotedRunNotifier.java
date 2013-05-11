@@ -9,6 +9,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import net.ontrack.core.model.PromotedRunCreationForm;
 import net.ontrack.core.model.PromotedRunSummary;
+import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -58,7 +59,9 @@ public class OntrackPromotedRunNotifier extends AbstractOntrackNotifier {
         // TODO Run description
         String runDescription = String.format("Run %s", theBuild);
         // Run creation form
-        final PromotedRunCreationForm runCreationForm = new PromotedRunCreationForm(runDescription);
+        final PromotedRunCreationForm runCreationForm = new PromotedRunCreationForm(
+                TimeUtils.now(),
+                runDescription);
         // Logging of parameters
         listener.getLogger().format("Promoting build %s of branch %s of project %s for %s%n", buildName, branchName, projectName, promotionLevelName);
         // Calling ontrack UI
