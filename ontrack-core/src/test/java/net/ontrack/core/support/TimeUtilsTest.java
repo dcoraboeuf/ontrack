@@ -20,7 +20,7 @@ public class TimeUtilsTest {
                 36,
                 DateTimeZone.forID("Europe/Brussels")
         ));
-        assertEquals("Sat, 2013 May 11, 19:36 UTC", value);
+        assertEquals("May 11, 2013 9:36:00 PM Europe/Brussels", value);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class TimeUtilsTest {
                 36,
                 DateTimeZone.forID("Europe/Brussels")
         ));
-        assertEquals("sam., 2013 mai 11, 19:36 UTC", value);
+        assertEquals("11 mai 2013 21:36:00 Europe/Brussels", value);
     }
 
 }

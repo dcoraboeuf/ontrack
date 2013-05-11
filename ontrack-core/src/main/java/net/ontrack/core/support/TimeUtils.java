@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.PeriodFormat;
 
 import java.util.Locale;
@@ -15,9 +16,13 @@ public final class TimeUtils {
     }
 
     public static String format(Locale locale, DateTime dateTime) {
-        return DateTimeFormat
-                .forPattern("EEE, YYYY MMM dd, HH:mm ZZZZ")
-                .withZoneUTC()
+        return new DateTimeFormatterBuilder()
+                .append(
+                        DateTimeFormat.mediumDateTime()
+                )
+                .appendLiteral(" ")
+                .appendTimeZoneId()
+                .toFormatter()
                 .withLocale(locale)
                 .print(dateTime);
     }
