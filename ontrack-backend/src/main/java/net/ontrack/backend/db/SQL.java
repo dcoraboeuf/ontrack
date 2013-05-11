@@ -160,6 +160,8 @@ public interface SQL {
 
     // Promoted runs
 
+    String PROMOTED_RUN_DELETE = "DELETE FROM PROMOTED_RUN WHERE PROMOTION_LEVEL = :promotionLevel AND BUILD = :build";
+
     String PROMOTED_RUN_CREATE = "INSERT INTO PROMOTED_RUN (PROMOTION_LEVEL, BUILD, AUTHOR_ID, AUTHOR, CREATION, DESCRIPTION) VALUES (:promotionLevel, :build, :creation, :description)";
 
     String PROMOTED_RUN = "SELECT * FROM PROMOTED_RUN WHERE BUILD = :build AND PROMOTION_LEVEL = :promotionLevel";

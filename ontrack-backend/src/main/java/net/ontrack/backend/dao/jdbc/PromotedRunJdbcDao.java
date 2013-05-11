@@ -57,6 +57,13 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
     @Override
     @Transactional
     public int createPromotedRun(int build, int promotionLevel, String author, Integer authorId, DateTime creation, String description) {
+        // Deletes any one before
+        getNamedParameterJdbcTemplate().update(
+                SQL.PROMOTED_RUN_DELETE,
+                params("build", build)
+                        .addValue("promotionLevel", promotionLevel)
+        );
+        // Creation
         return dbCreate(
                 SQL.PROMOTED_RUN_CREATE,
                 params("build", build)
