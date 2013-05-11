@@ -9,7 +9,7 @@ public interface PromotedRunDao {
 
     TPromotedRun findByBuildAndPromotionLevel(int build, int promotionLevel);
 
-    int createPromotedRun(int build, int promotionLevel, DateTime creation, String description);
+    int createPromotedRun(int build, int promotionLevel, String author, Integer authorId, DateTime creation, String description);
 
     Integer findBuildByEarliestPromotion(int buildId, int promotionLevelId);
 

@@ -27,6 +27,8 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                     rs.getInt("id"),
                     rs.getInt("build"),
                     rs.getInt("promotion_level"),
+                    getInteger(rs, "author_id"),
+                    rs.getString("author"),
                     SQLUtils.getDateTime(rs, "creation"),
                     rs.getString("description")
             );
@@ -54,11 +56,13 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
 
     @Override
     @Transactional
-    public int createPromotedRun(int build, int promotionLevel, DateTime creation, String description) {
+    public int createPromotedRun(int build, int promotionLevel, String author, Integer authorId, DateTime creation, String description) {
         return dbCreate(
                 SQL.PROMOTED_RUN_CREATE,
                 params("build", build)
                         .addValue("promotionLevel", promotionLevel)
+                        .addValue("authorId", authorId)
+                        .addValue("author", author)
                         .addValue("creation", SQLUtils.toTimestamp(creation))
                         .addValue("description", description));
     }

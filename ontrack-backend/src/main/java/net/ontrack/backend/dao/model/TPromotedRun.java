@@ -9,6 +9,8 @@ public class TPromotedRun {
     private final int id;
     private final int build;
     private final int promotionLevel;
+    private final Integer authorId;
+    private final String author;
     private final DateTime creation;
     private final String description;
 
