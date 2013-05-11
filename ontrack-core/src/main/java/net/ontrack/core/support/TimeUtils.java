@@ -15,7 +15,11 @@ public final class TimeUtils {
     }
 
     public static String format(Locale locale, DateTime dateTime) {
-        return DateTimeFormat.mediumDateTime().withLocale(locale).print(dateTime);
+        return DateTimeFormat
+                .forPattern("EEE, YYYY MMM dd, HH:mm ZZZZ")
+                .withZoneUTC()
+                .withLocale(locale)
+                .print(dateTime);
     }
 
     public static Period compress(Period period) {
