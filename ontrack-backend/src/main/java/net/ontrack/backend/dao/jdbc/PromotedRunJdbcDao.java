@@ -4,6 +4,8 @@ import net.ontrack.backend.dao.PromotedRunDao;
 import net.ontrack.backend.dao.model.TPromotedRun;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.dao.SQLUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,6 +27,7 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                     rs.getInt("id"),
                     rs.getInt("build"),
                     rs.getInt("promotion_level"),
+                    SQLUtils.getDateTime(rs, "creation"),
                     rs.getString("description")
             );
         }
@@ -51,11 +54,12 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
 
     @Override
     @Transactional
-    public int createPromotedRun(int build, int promotionLevel, String description) {
+    public int createPromotedRun(int build, int promotionLevel, DateTime creation, String description) {
         return dbCreate(
                 SQL.PROMOTED_RUN_CREATE,
                 params("build", build)
                         .addValue("promotionLevel", promotionLevel)
+                        .addValue("creation", SQLUtils.toTimestamp(creation))
                         .addValue("description", description));
     }
 
