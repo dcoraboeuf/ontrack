@@ -124,4 +124,8 @@ public interface ManageUI {
     ValidationRunSummary getValidationRun(String project, String branch, String build, String validationStamp, int run);
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
+
+    // Promoted runs
+
+    List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);
 }

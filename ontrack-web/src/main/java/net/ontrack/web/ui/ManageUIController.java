@@ -546,6 +546,24 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.addValidationRunComment(runId, form);
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/promotions", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Promotion> getPromotions(Locale locale,
+                                  @PathVariable String project,
+                                  @PathVariable String branch,
+                                  @PathVariable String promotionLevel,
+                                  @RequestParam(required = false, defaultValue = "0") int offset,
+                                  @RequestParam(required = false, defaultValue = "10") int count) {
+        return managementService.getPromotions(
+                locale,
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel),
+                offset,
+                count
+        );
+    }
+
     @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/statusUpdateData", method = RequestMethod.GET)
     public
     @ResponseBody

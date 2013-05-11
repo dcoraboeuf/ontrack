@@ -1183,6 +1183,35 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
+    public List<Promotion> getPromotions(final Locale locale, int promotionLevelId, int offset, int count) {
+        // List of `promoted_run` for this promotion level
+        List<TPromotedRun> runs = promotedRunDao.findByPromotionLevel(promotionLevelId, offset, count);
+        // Gets the promotion level summary
+        final PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        // Converts them into Promotion objects
+        return Lists.transform(
+                runs,
+                new Function<TPromotedRun, Promotion>() {
+                    @Override
+                    public Promotion apply(TPromotedRun t) {
+                        return new Promotion(
+                                promotionLevel,
+                                getBuild(t.getBuild()),
+                                // TODO #144 Gets the promoted run actual date
+                                getDatedSignature(
+                                        locale,
+                                        EventType.BUILD_CREATED,
+                                        Entity.BUILD,
+                                        t.getBuild()
+                                )
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Promotion getEarliestPromotionForBuild(Locale locale, int buildId, int promotionLevelId) {
         // Branch for the build
         int branchId = getBuild(buildId).getBranch().getId();

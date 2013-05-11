@@ -149,6 +149,8 @@ public interface ManagementService {
 
     Promotion findLastPromotion(Locale locale, int promotionLevelId);
 
+    List<Promotion> getPromotions(final Locale locale, int promotionLevelId, int offset, int count);
+
     // Comments
 
     CommentStub createComment (Entity entity, int id, String content);

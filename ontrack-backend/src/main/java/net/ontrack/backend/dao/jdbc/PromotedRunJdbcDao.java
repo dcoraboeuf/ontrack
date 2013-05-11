@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Component
 public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDao {
@@ -65,6 +66,16 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                 SQL.PROMOTED_EARLIEST_RUN,
                 params("build", buildId).addValue("promotionLevel", promotionLevelId),
                 Integer.class
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TPromotedRun> findByPromotionLevel(int promotionLevel, int offset, int count) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.PROMOTED_RUN_BY_PROMOTION_LEVEL,
+                params("promotionLevel", promotionLevel).addValue("count", count).addValue("offset", offset),
+                promotedRunRowMapper
         );
     }
 }

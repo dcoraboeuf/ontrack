@@ -366,4 +366,20 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
         );
     }
 
+    @Override
+    public List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count) {
+        return list(
+                locale,
+                format(
+                        "/ui/manage/project/%s/branch/%s/promotion_level/%s/promotions?offset=%d&count=%d",
+                        project,
+                        branch,
+                        promotionLevel,
+                        offset,
+                        count
+                ),
+                Promotion.class
+        );
+    }
+
 }
