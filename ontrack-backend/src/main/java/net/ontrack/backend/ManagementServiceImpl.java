@@ -21,6 +21,7 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -1188,6 +1189,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         List<TPromotedRun> runs = promotedRunDao.findByPromotionLevel(promotionLevelId, offset, count);
         // Gets the promotion level summary
         final PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
+        // Now
+        final DateTime now = TimeUtils.now();
         // Converts them into Promotion objects
         return Lists.transform(
                 runs,
@@ -1197,16 +1200,25 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return new Promotion(
                                 promotionLevel,
                                 getBuild(t.getBuild()),
-                                // TODO #144 Gets the promoted run actual date
                                 getDatedSignature(
                                         locale,
-                                        EventType.BUILD_CREATED,
-                                        Entity.BUILD,
-                                        t.getBuild()
-                                )
+                                        t.getAuthorId(), t.getAuthor(), t.getCreation(),
+                                        now)
                         );
                     }
                 }
+        );
+    }
+
+    private DatedSignature getDatedSignature(Locale locale, Integer authorId, String author, DateTime time, DateTime now) {
+        return new DatedSignature(
+                new Signature(
+                        authorId,
+                        author
+                ),
+                time,
+                TimeUtils.elapsed(strings, locale, time, now, author),
+                TimeUtils.format(locale, time)
         );
     }
 
@@ -1232,6 +1244,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     null
             );
         } else {
+            // FIXME #144 Promotion date
             return new Promotion(
                     promotionLevel,
                     getBuild(earliestBuildId),
@@ -1246,6 +1259,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         BuildSummary build = findLastBuildWithPromotionLevel(promotionLevelId);
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         if (build != null) {
+            // FIXME #144 Promotion date
             return new Promotion(
                     promotionLevel,
                     build,
