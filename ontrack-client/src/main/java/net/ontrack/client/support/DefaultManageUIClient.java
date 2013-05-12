@@ -68,7 +68,7 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
 
     @Override
     public Ack deleteProject(String name) {
-        return delete(getDefaultLocale(), format("ui/manage/project/%s", name), Ack.class);
+        return delete(getDefaultLocale(), format("/ui/manage/project/%s", name), Ack.class);
     }
 
     @Override
