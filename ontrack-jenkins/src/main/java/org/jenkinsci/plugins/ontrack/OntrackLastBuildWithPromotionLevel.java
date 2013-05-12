@@ -6,6 +6,7 @@ import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.ontrack.client.ManageUIClient;
+import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
 import org.kohsuke.stapler.DataBoundConstructor;
 

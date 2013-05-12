@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.ontrack;
+package net.ontrack.client.support;
 
 import net.ontrack.client.PropertyUIClient;
 

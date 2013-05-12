@@ -10,6 +10,8 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
+import net.ontrack.client.support.ManageClientCall;
+import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;

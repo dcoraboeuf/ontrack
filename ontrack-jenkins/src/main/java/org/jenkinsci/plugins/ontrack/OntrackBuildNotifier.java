@@ -8,6 +8,8 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import net.ontrack.client.ControlUIClient;
+import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.BuildCreationForm;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.PropertiesCreationForm;
@@ -59,7 +61,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
             listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
             // Calling ontrack UI
             BuildSummary buildSummary = call(new ControlClientCall<BuildSummary>() {
-                public BuildSummary onCall(ControlUI ui) {
+                public BuildSummary onCall(ControlUIClient ui) {
                     return ui.createBuild(
                             projectName,
                             branchName,

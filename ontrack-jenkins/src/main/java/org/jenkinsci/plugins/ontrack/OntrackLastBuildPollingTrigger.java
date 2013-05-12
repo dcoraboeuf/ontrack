@@ -7,6 +7,7 @@ import hudson.model.Action;
 import hudson.model.Item;
 import hudson.model.Node;
 import net.ontrack.client.ManageUIClient;
+import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
 import org.jenkinsci.lib.xtrigger.XTriggerDescriptor;
