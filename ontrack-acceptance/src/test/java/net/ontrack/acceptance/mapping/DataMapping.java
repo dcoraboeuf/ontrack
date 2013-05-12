@@ -11,6 +11,7 @@ public class DataMapping {
 
     @Given("a project $project exists")
     public void project_exists(String project) {
+        dataSteps.delete_project(project);
         dataSteps.create_project(project);
     }
 
