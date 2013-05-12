@@ -7,6 +7,8 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import net.ontrack.client.ControlUIClient;
+import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.PromotedRunCreationForm;
 import net.ontrack.core.model.PromotedRunSummary;
 import net.ontrack.core.support.TimeUtils;
@@ -66,7 +68,7 @@ public class OntrackPromotedRunNotifier extends AbstractOntrackNotifier {
         listener.getLogger().format("Promoting build %s of branch %s of project %s for %s%n", buildName, branchName, projectName, promotionLevelName);
         // Calling ontrack UI
         PromotedRunSummary summary = call(new ControlClientCall<PromotedRunSummary>() {
-            public PromotedRunSummary onCall(ControlUI ui) {
+            public PromotedRunSummary onCall(ControlUIClient ui) {
                 return ui.createPromotedRun(projectName, branchName, buildName, promotionLevelName, runCreationForm);
             }
         });

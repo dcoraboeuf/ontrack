@@ -1,5 +1,6 @@
 package net.ontrack.client;
 
+import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.EditableProperty;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
@@ -18,9 +19,9 @@ public class ITProperty extends AbstractEnv {
         // Prerequisites
         final ProjectSummary project = doCreateProject();
         // Call
-        List<EditableProperty> editableProperties = asAdmin(new PropertyCall<List<EditableProperty>>() {
+        List<EditableProperty> editableProperties = asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
-            public List<EditableProperty> call(PropertyUIClient client) {
+            public List<EditableProperty> onCall(PropertyUIClient client) {
                 return client.getEditableProperties(
                         Locale.FRENCH,
                         Entity.PROJECT,
@@ -54,9 +55,9 @@ public class ITProperty extends AbstractEnv {
         // Prerequisites
         final ProjectSummary project = doCreateProject();
         // Call
-        List<EditableProperty> editableProperties = asAdmin(new PropertyCall<List<EditableProperty>>() {
+        List<EditableProperty> editableProperties = asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
-            public List<EditableProperty> call(PropertyUIClient client) {
+            public List<EditableProperty> onCall(PropertyUIClient client) {
                 return client.getEditableProperties(
                         Locale.ENGLISH,
                         Entity.PROJECT,

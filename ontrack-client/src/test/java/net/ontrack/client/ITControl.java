@@ -1,5 +1,6 @@
 package net.ontrack.client;
 
+import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
 import org.junit.Test;
 
@@ -14,9 +15,9 @@ public class ITControl extends AbstractEnv {
         final BranchSummary branch = doCreateBranch();
         // Creates a build
         final String buildName = uid("BLD");
-        BuildSummary build = asAdmin(new ControlCall<BuildSummary>() {
+        BuildSummary build = asAdmin(new ControlClientCall<BuildSummary>() {
             @Override
-            public BuildSummary call(ControlUIClient client) {
+            public BuildSummary onCall(ControlUIClient client) {
                 return client.createBuild(
                         branch.getProject().getName(),
                         branch.getName(),
@@ -41,9 +42,9 @@ public class ITControl extends AbstractEnv {
         final ValidationStampSummary validationStamp = doCreateValidationStamp();
         final BuildSummary build = doCreateBuild(validationStamp.getBranch());
         // Creates a validation run
-        ValidationRunSummary validationRun = asAdmin(new ControlCall<ValidationRunSummary>() {
+        ValidationRunSummary validationRun = asAdmin(new ControlClientCall<ValidationRunSummary>() {
             @Override
-            public ValidationRunSummary call(ControlUIClient client) {
+            public ValidationRunSummary onCall(ControlUIClient client) {
                 return client.createValidationRun(
                         build.getBranch().getProject().getName(),
                         build.getBranch().getName(),

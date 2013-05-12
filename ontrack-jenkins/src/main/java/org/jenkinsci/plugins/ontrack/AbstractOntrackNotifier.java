@@ -5,6 +5,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import jenkins.model.Jenkins;
+import net.ontrack.client.support.ControlClientCall;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;

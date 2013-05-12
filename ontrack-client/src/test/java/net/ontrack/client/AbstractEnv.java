@@ -1,6 +1,9 @@
 package net.ontrack.client;
 
-import net.ontrack.client.support.ClientFactory;
+import net.ontrack.client.support.ClientSupport;
+import net.ontrack.client.support.ControlClientCall;
+import net.ontrack.client.support.ManageClientCall;
+import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,17 +17,12 @@ import java.util.Date;
 
 public abstract class AbstractEnv {
 
-    private final ControlUIClient control;
-    private final ManageUIClient manage;
-    private final PropertyUIClient property;
+    private final ClientSupport client;
 
     protected AbstractEnv() {
         String itPort = System.getProperty("itPort");
         String url = String.format("http://localhost:%s/ontrack", itPort);
-        ClientFactory clientFactory = ClientFactory.create(url);
-        control = clientFactory.control();
-        manage = clientFactory.manage();
-        property = clientFactory.property();
+        client = new ClientSupport(url);
     }
 
     protected BranchSummary doCreateBranch() {
@@ -32,9 +30,9 @@ public abstract class AbstractEnv {
     }
 
     private BranchSummary doCreateBranch(final ProjectSummary project) {
-        return asAdmin(new ManageCall<BranchSummary>() {
+        return asAdmin(new ManageClientCall<BranchSummary>() {
             @Override
-            public BranchSummary call(ManageUIClient client) {
+            public BranchSummary onCall(ManageUIClient client) {
                 return client.createBranch(
                         project.getName(),
                         new BranchCreationForm(
@@ -47,9 +45,9 @@ public abstract class AbstractEnv {
     }
 
     protected ProjectSummary doCreateProject() {
-        return asAdmin(new ManageCall<ProjectSummary>() {
+        return asAdmin(new ManageClientCall<ProjectSummary>() {
             @Override
-            public ProjectSummary call(ManageUIClient client) {
+            public ProjectSummary onCall(ManageUIClient client) {
                 return client.createProject(new ProjectCreationForm(
                         uid("PRJ"),
                         "Test project"
@@ -63,9 +61,9 @@ public abstract class AbstractEnv {
     }
 
     protected ValidationStampSummary doCreateValidationStamp(final BranchSummary branch) {
-        return asAdmin(new ManageCall<ValidationStampSummary>() {
+        return asAdmin(new ManageClientCall<ValidationStampSummary>() {
             @Override
-            public ValidationStampSummary call(ManageUIClient client) {
+            public ValidationStampSummary onCall(ManageUIClient client) {
                 return client.createValidationStamp(
                         branch.getProject().getName(),
                         branch.getName(),
@@ -83,9 +81,9 @@ public abstract class AbstractEnv {
     }
 
     private PromotionLevelSummary doCreatePromotionLevel(final BranchSummary branch) {
-        return asAdmin(new ManageCall<PromotionLevelSummary>() {
+        return asAdmin(new ManageClientCall<PromotionLevelSummary>() {
             @Override
-            public PromotionLevelSummary call(ManageUIClient client) {
+            public PromotionLevelSummary onCall(ManageUIClient client) {
                 return client.createPromotionLevel(
                         branch.getProject().getName(),
                         branch.getName(),
@@ -103,9 +101,9 @@ public abstract class AbstractEnv {
     }
 
     protected BuildSummary doCreateBuild(final BranchSummary branch) {
-        return asAdmin(new ControlCall<BuildSummary>() {
+        return asAdmin(new ControlClientCall<BuildSummary>() {
             @Override
-            public BuildSummary call(ControlUIClient client) {
+            public BuildSummary onCall(ControlUIClient client) {
                 return client.createBuild(
                         branch.getProject().getName(),
                         branch.getName(),
@@ -119,51 +117,20 @@ public abstract class AbstractEnv {
         });
     }
 
-    protected <T> T asAdmin(ManageCall<T> call) {
-        manage.login("admin", "admin");
-        try {
-            try {
-                return call.call(manage);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } finally {
-            manage.logout();
-        }
+    protected <T> T asAdmin(ManageClientCall<T> call) {
+        return client.asUser("admin", "admin", call);
     }
 
-    protected <T> T anonymous(ManageCall<T> call) {
-        try {
-            return call.call(manage);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    protected <T> T anonymous(ManageClientCall<T> call) {
+        return client.anonymous(call);
     }
 
-    protected <T> T asAdmin(ControlCall<T> call) {
-        control.login("admin", "admin");
-        try {
-            try {
-                return call.call(control);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } finally {
-            control.logout();
-        }
+    protected <T> T asAdmin(ControlClientCall<T> call) {
+        return client.asUser("admin", "admin", call);
     }
 
-    protected <T> T asAdmin(PropertyCall<T> call) {
-        property.login("admin", "admin");
-        try {
-            try {
-                return call.call(property);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } finally {
-            property.logout();
-        }
+    protected <T> T asAdmin(PropertyClientCall<T> call) {
+        return client.asUser("admin", "admin", call);
     }
 
     protected MultipartFile mockImage(String path) {

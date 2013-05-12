@@ -7,6 +7,9 @@ import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.ClientFactory;
+import net.ontrack.client.support.ControlClientCall;
+import net.ontrack.client.support.ManageClientCall;
+import net.ontrack.client.support.PropertyClientCall;
 import org.apache.commons.lang3.StringUtils;
 
 public final class OntrackClient {

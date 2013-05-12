@@ -1,5 +1,6 @@
 package net.ontrack.client;
 
+import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.PromotionLevelSummary;
 import net.ontrack.core.model.ValidationStampSummary;
@@ -17,9 +18,9 @@ public class ITManage extends AbstractEnv {
         // Prerequisites
         final ValidationStampSummary validationStamp = doCreateValidationStamp();
         // Default image
-        byte[] defaultContent = anonymous(new ManageCall<byte[]>() {
+        byte[] defaultContent = anonymous(new ManageClientCall<byte[]>() {
             @Override
-            public byte[] call(ManageUIClient client) {
+            public byte[] onCall(ManageUIClient client) {
                 return client.imageValidationStamp(
                         validationStamp.getBranch().getProject().getName(),
                         validationStamp.getBranch().getName(),
@@ -36,9 +37,9 @@ public class ITManage extends AbstractEnv {
         // Test image
         final MultipartFile file = mockImage("/images/fire.png");
         // Sets the image
-        Ack ack = asAdmin(new ManageCall<Ack>() {
+        Ack ack = asAdmin(new ManageClientCall<Ack>() {
             @Override
-            public Ack call(ManageUIClient client) {
+            public Ack onCall(ManageUIClient client) {
                 return client.setImageValidationStamp(
                         validationStamp.getBranch().getProject().getName(),
                         validationStamp.getBranch().getName(),
@@ -50,9 +51,9 @@ public class ITManage extends AbstractEnv {
         assertNotNull(ack);
         assertTrue(ack.isSuccess());
         // Gets the image
-        byte[] content = anonymous(new ManageCall<byte[]>() {
+        byte[] content = anonymous(new ManageClientCall<byte[]>() {
             @Override
-            public byte[] call(ManageUIClient client) {
+            public byte[] onCall(ManageUIClient client) {
                 return client.imageValidationStamp(
                         validationStamp.getBranch().getProject().getName(),
                         validationStamp.getBranch().getName(),
@@ -72,9 +73,9 @@ public class ITManage extends AbstractEnv {
         // Prerequisites
         final PromotionLevelSummary promotionLevel = doCreatePromotionLevel();
         // Default image
-        byte[] defaultContent = anonymous(new ManageCall<byte[]>() {
+        byte[] defaultContent = anonymous(new ManageClientCall<byte[]>() {
             @Override
-            public byte[] call(ManageUIClient client) {
+            public byte[] onCall(ManageUIClient client) {
                 return client.imagePromotionLevel(
                         promotionLevel.getBranch().getProject().getName(),
                         promotionLevel.getBranch().getName(),
@@ -91,9 +92,9 @@ public class ITManage extends AbstractEnv {
         // Test image
         final MultipartFile file = mockImage("/images/server.png");
         // Sets the image
-        Ack ack = asAdmin(new ManageCall<Ack>() {
+        Ack ack = asAdmin(new ManageClientCall<Ack>() {
             @Override
-            public Ack call(ManageUIClient client) {
+            public Ack onCall(ManageUIClient client) {
                 return client.setImagePromotionLevel(
                         promotionLevel.getBranch().getProject().getName(),
                         promotionLevel.getBranch().getName(),
@@ -105,9 +106,9 @@ public class ITManage extends AbstractEnv {
         assertNotNull(ack);
         assertTrue(ack.isSuccess());
         // Gets the image
-        byte[] content = anonymous(new ManageCall<byte[]>() {
+        byte[] content = anonymous(new ManageClientCall<byte[]>() {
             @Override
-            public byte[] call(ManageUIClient client) {
+            public byte[] onCall(ManageUIClient client) {
                 return client.imagePromotionLevel(
                         promotionLevel.getBranch().getProject().getName(),
                         promotionLevel.getBranch().getName(),
