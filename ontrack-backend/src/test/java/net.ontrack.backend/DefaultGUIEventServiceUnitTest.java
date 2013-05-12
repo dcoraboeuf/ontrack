@@ -6,6 +6,7 @@ import net.ontrack.service.GUIService;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.StringsLoader;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -201,14 +202,14 @@ public class DefaultGUIEventServiceUnitTest {
     public void toGUIEvent_one_entity() {
         DefaultGUIEventService controller = dummy();
         GUIEvent event = controller.toGUIEvent(
-                new ExpandedEvent(10, "Author", EventType.PROJECT_CREATED, new DateTime(2013, 1, 30, 10, 5, 30))
+                new ExpandedEvent(10, "Author", EventType.PROJECT_CREATED, new DateTime(2013, 1, 30, 10, 5, 30, DateTimeZone.forID("Europe/Brussels")))
                         .withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ2")),
                 Locale.ENGLISH,
-                new DateTime(2013, 1, 30, 11, 10, 45));
+                new DateTime(2013, 1, 30, 11, 10, 45, DateTimeZone.forID("Europe/Brussels")));
         assertNotNull(event);
         assertEquals(10, event.getId());
         assertEquals(EventType.PROJECT_CREATED, event.getEventType());
-        assertEquals("Jan 30, 2013 10:05:30 AM", event.getTimestamp());
+        assertEquals("Jan 30, 2013 10:05:30 AM Europe/Brussels", event.getTimestamp());
         assertEquals("1 hour ago by Author", event.getElapsed());
         assertEquals(
                 "Project <a class=\"event-entity\" href=\"http://test/gui/project/PROJ2\">PROJ2</a> has been created.",
@@ -220,14 +221,14 @@ public class DefaultGUIEventServiceUnitTest {
         DefaultGUIEventService controller = dummy();
         GUIEvent event = controller.toGUIEvent(
                 new ExpandedEvent(10, "Author", EventType.BRANCH_CREATED,
-                        new DateTime(2013, 1, 30, 10, 5, 30))
+                        new DateTime(2013, 1, 30, 10, 5, 30, DateTimeZone.UTC))
                         .withEntity(Entity.PROJECT, new EntityStub(Entity.PROJECT, 1001, "PROJ1"))
                         .withEntity(Entity.BRANCH, new EntityStub(Entity.BRANCH, 2001, "1.x")),
-                Locale.ENGLISH, new DateTime(2013, 1, 30, 11, 10, 45));
+                Locale.ENGLISH, new DateTime(2013, 1, 30, 11, 10, 45, DateTimeZone.UTC));
         assertNotNull(event);
         assertEquals(10, event.getId());
         assertEquals(EventType.BRANCH_CREATED, event.getEventType());
-        assertEquals("Jan 30, 2013 10:05:30 AM", event.getTimestamp());
+        assertEquals("Jan 30, 2013 10:05:30 AM UTC", event.getTimestamp());
         assertEquals("1 hour ago by Author", event.getElapsed());
         assertEquals(
                 "Branch <a class=\"event-entity\" href=\"http://test/gui/project/PROJ1/branch/1.x\">1.x</a> has been created for the <a class=\"event-entity\" href=\"http://test/gui/project/PROJ1\">PROJ1</a> project.",
