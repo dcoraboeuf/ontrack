@@ -19,6 +19,7 @@
         <thucydides.version>0.9.125</thucydides.version>
         <seleniumVersion>2.32.0</seleniumVersion>
         <webdriver.driver>firefox</webdriver.driver>
+        <itPort>9999</itPort>
     </properties>
 
     <dependencies>
@@ -84,30 +85,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12</version>
-                <configuration>
-                    <includes>
-                        <include>**/*Test.java</include>
-                        <include>**/Test*.java</include>
-                        <include>**/When*.java</include>
-                    </includes>
-                    <argLine>-Xmx512m</argLine>
-                    <parallel>classes</parallel>
-                    <systemPropertyVariables>
-                        <webdriver.driver>${webdriver.driver}</webdriver.driver>
-                    </systemPropertyVariables>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
@@ -116,34 +93,157 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>net.thucydides.maven.plugins</groupId>
-                <artifactId>maven-thucydides-plugin</artifactId>
-                <version>${thucydides.version}</version>
-                <executions>
-                    <execution>
-                        <id>thucydides-reports</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>aggregate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-3</version>
-				<configuration>
-					<reportPlugins>
-						<plugin>
-							<groupId>net.thucydides.maven.plugins</groupId>
-							<artifactId>maven-thucydides-plugin</artifactId>
-							<version>${thucydides.version}</version>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
         </plugins>
-    </build>	
+    </build>
+
+    <profiles>
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.12</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*TestCase.java</include>
+                            </includes>
+                            <argLine>-Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <webdriver.driver>${webdriver.driver}</webdriver.driver>
+								<webdriver.base.url>${webdriver.base.url}</webdriver.base.url>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.thucydides.maven.plugins</groupId>
+                        <artifactId>maven-thucydides-plugin</artifactId>
+                        <version>${thucydides.version}</version>
+                        <executions>
+                            <execution>
+                                <id>thucydides-reports</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.0-beta-3</version>
+                        <configuration>
+                            <reportPlugins>
+                                <plugin>
+                                    <groupId>net.thucydides.maven.plugins</groupId>
+                                    <artifactId>maven-thucydides-plugin</artifactId>
+                                    <version>${thucydides.version}</version>
+                                </plugin>
+                            </reportPlugins>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it-jetty</id>
+			<properties>
+				<webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
+			</properties>
+            <build>
+                <plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>it-jetty-war</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>ontrack-web</artifactId>
+											<version>${project.version}</version>
+											<type>war</type>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>it-jetty-start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run-war</goal>
+                                </goals>
+                                <configuration>
+                                    <war>${basedir}/target/dependency/ontrack-web-${project.version}.war</war>
+                                    <webApp>
+                                        <contextPath>/ontrack</contextPath>
+                                        <jettyEnvXml>${project.basedir}/src/test/resources/jetty/jetty-env-it.xml</jettyEnvXml>
+                                    </webApp>
+                                    <stopPort>9966</stopPort>
+                                    <stopKey>foo</stopKey>
+                                    <daemon>true</daemon>
+                                    <systemProperties>
+                                        <systemProperty>
+                                            <name>spring.profiles.active</name>
+                                            <value>it</value>
+                                        </systemProperty>
+                                        <systemProperty>
+                                            <name>jetty.port</name>
+                                            <value>${itPort}</value>
+                                        </systemProperty>
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>it-jetty-stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                                <configuration>
+                                    <stopPort>9966</stopPort>
+                                    <stopKey>foo</stopKey>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>1.3.166</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>commons-dbcp</groupId>
+                                <artifactId>commons-dbcp</artifactId>
+                                <version>1.4</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
