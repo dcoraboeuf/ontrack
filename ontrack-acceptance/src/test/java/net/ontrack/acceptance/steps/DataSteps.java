@@ -26,13 +26,13 @@ public class DataSteps extends ScenarioSteps {
     }
 
     @Step
-    public void create_project(final String project) {
+    public void create_project(final String project, final String description) {
         client.asUser("admin", "admin", new ManageClientCall<Void>() {
             @Override
             public Void onCall(ManageUIClient ui) {
                 ui.createProject(new ProjectCreationForm(
                         project,
-                        "Test project " + project
+                        description
                 ));
                 return null;
             }

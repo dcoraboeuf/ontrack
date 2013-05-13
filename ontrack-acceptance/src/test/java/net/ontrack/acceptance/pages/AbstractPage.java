@@ -1,25 +1,26 @@
 package net.ontrack.acceptance.pages;
 
+import net.thucydides.core.pages.PageObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class HomePage extends AbstractPage {
+public abstract class AbstractPage extends PageObject {
 
-    public HomePage(WebDriver driver) {
+    public AbstractPage(WebDriver driver) {
         super(driver);
     }
 
-    public WebElement projectLink(String project) {
+    public WebElement findOptional(By selector) {
         try {
-            return find(By.id("projects")).find(By.linkText(project));
+            return find(selector);
         } catch (NoSuchElementException ex) {
             return null;
         }
     }
 
-    public WebElement getCreateProjectButton() {
-        return findOptional(By.id("project-create-button"));
+    public boolean isDefined(By selector) {
+        return findOptional(selector) != null;
     }
 }

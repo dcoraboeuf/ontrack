@@ -9,10 +9,10 @@ public class DataMapping {
     @Steps
     private DataSteps dataSteps;
 
-    @Given("a project $project exists")
-    public void project_exists(String project) {
+    @Given("a project $project exists with description \"$description\"")
+    public void project_exists(String project, String description) {
         dataSteps.delete_project(project);
-        dataSteps.create_project(project);
+        dataSteps.create_project(project, description);
     }
 
 }

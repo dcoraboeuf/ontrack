@@ -15,9 +15,20 @@ public class GeneralMapping {
         generalSteps.open_home_page();
     }
 
-    @Then("I see the $project project")
-    public void home_project_exists(String project) {
+    @When("I am not logged")
+    public void general_not_logged() {
+        generalSteps.general_not_logged();
+    }
+
+    @Then("I see the $project project with description \"$description\"")
+    public void home_project_exists(String project, String description) {
+        // TODO Checks the description
         generalSteps.home_project_exists(project);
+    }
+
+    @Then("I cannot create a project")
+    public void home_cannot_create_project() {
+        generalSteps.home_cannot_create_project();
     }
 
 }
