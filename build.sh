@@ -64,7 +64,7 @@ ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 sed -i "s/1.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
 
 # Maven build
-${MVN} clean deploy -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
+${MVN} clean deploy -P it -P it-jetty -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
 if [ $? -ne 0 ]
 then
 	echo Build failed.
