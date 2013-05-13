@@ -1,5 +1,40 @@
 #!/bin/bash
 
+# How to perform a release?
+#
+# Set the following variables:
+# MVN 			= path to Maven executable (can be as simple as "mvn" only)
+# NEXUS_ID 		= ID for the Maven repository to deploy againt. Can be used to map with credentials in the Maven settings.xml file
+# NEXUS_URL		= URL of the Maven repository to deploy to (see below)
+#
+# Then just execute the command:
+# ./build.sh
+#
+# It will:
+# - execute all the tests
+# - package the application
+# - export the application artifacts on the NEXUS_URL defined above
+# - prepare all the POM files for the next release
+#
+# The release creates a commit for the preparation of the next release and this has to be pushed as well.
+#
+# The application artifacts are:
+# - the WAR
+# - the Jenkins plug-in (.hpi)
+
+# How to use Git as Maven repository?
+#
+# In a directory $DIR, clone of the dcoraboeuf/mvnrepo repository
+# git clone git@github.com:dcoraboeuf/mvnrepo.git $DIR
+#
+# Use this directory as target for the release:
+# export NEXUS_ID=git-mvrepo
+# export NEXUS_URL=file:/$DIR
+#
+# Perform the release operation as indicated above.
+#
+# You can then commit the artifacts and push as usual.
+
 #############################
 # Check environment variables
 #############################
@@ -81,8 +116,6 @@ echo Tagging...
 TAG=ontrack-${RELEASE}
 # Tagging the build
 git tag ${TAG}
-# Pushing the result
-# git push origin ${TAG}
 
 #########################################
 # Increment the version number and commit
@@ -97,8 +130,6 @@ sed -i "s/${RELEASE}<\/version>/1.${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-
 # Commits the update
 git commit -am "Starting development of 1.${NEXT_VERSION}"
 
-# Pushing the result
-# git push
 
 ########################
 # Clean-up & termination
