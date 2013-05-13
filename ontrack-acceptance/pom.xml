@@ -20,6 +20,7 @@
         <seleniumVersion>2.32.0</seleniumVersion>
         <webdriver.driver>firefox</webdriver.driver>
         <itPort>9999</itPort>
+        <ontrackVersion>${project.version}</ontrackVersion>
     </properties>
 
     <dependencies>
@@ -177,7 +178,7 @@
 										<artifactItem>
 											<groupId>${project.groupId}</groupId>
 											<artifactId>ontrack-web</artifactId>
-											<version>${project.version}</version>
+											<version>${ontrackVersion}</version>
 											<type>war</type>
 										</artifactItem>
 									</artifactItems>
@@ -196,7 +197,7 @@
                                     <goal>run-war</goal>
                                 </goals>
                                 <configuration>
-                                    <war>${basedir}/target/dependency/ontrack-web-${project.version}.war</war>
+                                    <war>${basedir}/target/dependency/ontrack-web-${ontrackVersion}.war</war>
                                     <webApp>
                                         <contextPath>/ontrack</contextPath>
                                         <jettyEnvXml>${project.basedir}/src/test/resources/jetty/jetty-env-it.xml</jettyEnvXml>
