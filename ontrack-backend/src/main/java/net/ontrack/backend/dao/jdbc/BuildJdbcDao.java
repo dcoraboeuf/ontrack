@@ -211,7 +211,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 "WHERE VR.VALIDATION_STAMP = :validationStamp\n");
         // Status criteria
         if (statuses != null && !statuses.isEmpty()) {
-            sql.append(format("AND S.STATUS IN (%s)\n", getStatusesForSQLInClause(statuses)));
+            sql.append(format("AND VRS.STATUS IN (%s)\n", getStatusesForSQLInClause(statuses)));
         }
         // Order & limit
         sql.append("ORDER BY VR.BUILD DESC LIMIT 1\n");
