@@ -152,6 +152,9 @@
                                 <goals>
                                     <goal>xvfb</goal>
                                 </goals>
+                                <configuration>
+                                    <display>${xvfbDisplay}</display>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>start</id>
