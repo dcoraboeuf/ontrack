@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>net.ontrack</groupId>
-		<artifactId>ontrack-parent</artifactId>
+
+    <parent>
+        <groupId>net.ontrack</groupId>
+        <artifactId>ontrack-parent</artifactId>
         <version>1.9-SNAPSHOT</version>
-	</parent>
+    </parent>
 
     <artifactId>ontrack-acceptance</artifactId>
 
     <name>ontrack Acceptance</name>
-	<description>ontrack acceptance tests</description>
+    <description>ontrack acceptance tests</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -108,6 +108,11 @@
                 <artifactId>selenium-maven-plugin</artifactId>
                 <version>2.3</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.12</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -142,31 +147,46 @@
                         <artifactId>selenium-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>selenium-xvfb</id>
+                                <id>xvfb</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>xvfb</goal>
                                 </goals>
+                            </execution>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start-server</goal>
+                                </goals>
                                 <configuration>
-                                    <display>${xvfbDisplay}</display>
-                                    <skip>${skipXvfb}</skip>
+                                    <background>true</background>
+                                    <logOutput>true</logOutput>
                                 </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop-server</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
 
                     <!-- Running integration tests -->
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.12</version>
                         <configuration>
                             <includes>
                                 <include>**/*TestCase.java</include>
+                                <include>**/IT*.java</include>
                             </includes>
                             <argLine>-Xmx512m</argLine>
                             <systemPropertyVariables>
                                 <webdriver.driver>${webdriver.driver}</webdriver.driver>
-								<webdriver.base.url>${webdriver.base.url}</webdriver.base.url>
+                                <webdriver.base.url>${webdriver.base.url}</webdriver.base.url>
                             </systemPropertyVariables>
                         </configuration>
                         <executions>
@@ -217,35 +237,35 @@
 
         <profile>
             <id>it-jetty</id>
-			<properties>
-				<webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
-			</properties>
+            <properties>
+                <webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
+            </properties>
             <build>
                 <plugins>
                     <!-- Getting the WAR to deploy -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>it-jetty-war</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>${project.groupId}</groupId>
-											<artifactId>ontrack-web</artifactId>
-											<version>${ontrackVersion}</version>
-											<type>war</type>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>it-jetty-war</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${project.groupId}</groupId>
+                                            <artifactId>ontrack-web</artifactId>
+                                            <version>${ontrackVersion}</version>
+                                            <type>war</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <!-- Starting and stopping the web application -->
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
@@ -261,7 +281,8 @@
                                     <war>${basedir}/target/dependency/ontrack-web-${ontrackVersion}.war</war>
                                     <webApp>
                                         <contextPath>/ontrack</contextPath>
-                                        <jettyEnvXml>${project.basedir}/src/test/resources/jetty/jetty-env-it.xml</jettyEnvXml>
+                                        <jettyEnvXml>${project.basedir}/src/test/resources/jetty/jetty-env-it.xml
+                                        </jettyEnvXml>
                                     </webApp>
                                     <stopPort>9966</stopPort>
                                     <stopKey>foo</stopKey>
