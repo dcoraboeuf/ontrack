@@ -99,12 +99,16 @@ ${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
 sed -i "s/1.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
 
 # Maven build
-${MVN} clean deploy -P it -P it-jetty -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
+${MVN} clean install -P it -P it-jetty -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
 if [ $? -ne 0 ]
 then
 	echo Build failed.
 	exit 1
 fi
+
+# Deployment of artifacts
+${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${RELEASE}
+${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${RELEASE}
 
 ##################################################################
 # After the build is complete, create the tag in Git and pushes it
