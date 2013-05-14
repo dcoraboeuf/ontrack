@@ -156,24 +156,6 @@
                                     <display>${xvfbDisplay}</display>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>start</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>start-server</goal>
-                                </goals>
-                                <configuration>
-                                    <background>true</background>
-                                    <logOutput>true</logOutput>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>stop</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>stop-server</goal>
-                                </goals>
-                            </execution>
                         </executions>
                     </plugin>
 
