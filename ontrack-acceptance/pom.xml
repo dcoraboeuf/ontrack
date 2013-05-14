@@ -18,9 +18,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <thucydides.version>0.9.125</thucydides.version>
         <seleniumVersion>2.32.0</seleniumVersion>
+        <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
+        <!-- Default base URL for tests -->
+        <webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
+        <!-- Port to use when running IT tests -->
         <itPort>9999</itPort>
+        <!-- Version of ontrack to test -->
         <ontrackVersion>${project.version}</ontrackVersion>
+        <!-- Display to use for Xvfb -->
+        <xvfbDisplay>:22</xvfbDisplay>
+        <!-- Skipping Xvfb tests -->
+        <skipXvfb>false</skipXvfb>
     </properties>
 
     <dependencies>
@@ -94,14 +103,59 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>selenium-maven-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
+
+        <!-- Configuration of acceptance tests on Windows -->
+
+        <profile>
+            <id>it-windows</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <!-- Skipping Xvfb on Windows -->
+                <skipXvfb>true</skipXvfb>
+            </properties>
+        </profile>
+
+        <!-- Running the acceptance tests -->
+
         <profile>
             <id>it</id>
             <build>
                 <plugins>
+
+                    <!-- Selenium set-up -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>selenium-xvfb</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>xvfb</goal>
+                                </goals>
+                                <configuration>
+                                    <display>${xvfbDisplay}</display>
+                                    <skip>${skipXvfb}</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Running integration tests -->
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>2.12</version>
@@ -125,6 +179,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Collecting reports using Thucydides -->
                     <plugin>
                         <groupId>net.thucydides.maven.plugins</groupId>
                         <artifactId>maven-thucydides-plugin</artifactId>
@@ -139,6 +195,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Generating reports using Thucydides -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-site-plugin</artifactId>
@@ -156,6 +214,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>it-jetty</id>
 			<properties>
@@ -163,6 +222,7 @@
 			</properties>
             <build>
                 <plugins>
+                    <!-- Getting the WAR to deploy -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -186,6 +246,7 @@
 							</execution>
 						</executions>
 					</plugin>
+                    <!-- Starting and stopping the web application -->
                     <plugin>
                         <groupId>org.mortbay.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
