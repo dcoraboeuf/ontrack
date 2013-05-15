@@ -22,8 +22,11 @@ public abstract class AbstractEnv {
     private final ClientSupport client;
 
     protected AbstractEnv() {
-        String itPort = System.getProperty("itPort");
-        String url = String.format("http://localhost:%s/ontrack", itPort);
+        String url = System.getProperty("itUrl");
+        if (StringUtils.isBlank(url)) {
+            // Uses a default URL
+            url = "http://localhost:9999/ontrack";
+        }
         client = new ClientSupport(url);
     }
 

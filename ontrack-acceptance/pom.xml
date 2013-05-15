@@ -21,7 +21,7 @@
         <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
         <!-- Default base URL for tests -->
-        <webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
+        <itUrl>http://localhost:9999/ontrack</itUrl>
         <!-- Port to use when running IT tests -->
         <itPort>9999</itPort>
         <!-- Version of ontrack to test -->
@@ -134,7 +134,7 @@
                             <argLine>-Xmx512m</argLine>
                             <systemPropertyVariables>
                                 <webdriver.driver>${webdriver.driver}</webdriver.driver>
-                                <webdriver.base.url>${webdriver.base.url}</webdriver.base.url>
+                                <webdriver.base.url>${itUrl}</webdriver.base.url>
                             </systemPropertyVariables>
                         </configuration>
                         <executions>
@@ -186,7 +186,7 @@
         <profile>
             <id>it-jetty</id>
             <properties>
-                <webdriver.base.url>http://localhost:9999/ontrack</webdriver.base.url>
+                <itUrl>http://localhost:9999/ontrack</itUrl>
             </properties>
             <build>
                 <plugins>
