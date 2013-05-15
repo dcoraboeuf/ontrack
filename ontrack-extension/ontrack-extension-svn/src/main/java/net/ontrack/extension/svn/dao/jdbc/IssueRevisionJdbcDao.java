@@ -2,6 +2,9 @@ package net.ontrack.extension.svn.dao.jdbc;
 
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +15,9 @@ import java.util.List;
 @Component
 public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisionDao {
 
+    private static final int ISSUE_KEY_MAX_LENGTH = 20;
+    private final Logger logger = LoggerFactory.getLogger(IssueRevisionDao.class);
+
     @Autowired
     public IssueRevisionJdbcDao(DataSource dataSource) {
         super(dataSource);
@@ -20,9 +26,15 @@ public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisi
     @Override
     @Transactional
     public void link(long revision, String key) {
-        getNamedParameterJdbcTemplate().update(
-                "INSERT INTO REVISION_ISSUE (REVISION, ISSUE) VALUES (:revision, :key)",
-                params("revision", revision).addValue("key", key));
+        if (StringUtils.isBlank(key)) {
+            logger.warn("Cannot insert a null or blank key (revision {})", revision);
+        } else if (key.length() > ISSUE_KEY_MAX_LENGTH) {
+            logger.warn("Cannot insert a key longer than {} characters: {} for revision {}", ISSUE_KEY_MAX_LENGTH, key, revision);
+        } else {
+            getNamedParameterJdbcTemplate().update(
+                    "INSERT INTO REVISION_ISSUE (REVISION, ISSUE) VALUES (:revision, :key)",
+                    params("revision", revision).addValue("key", key));
+        }
     }
 
     @Override
