@@ -1,5 +1,6 @@
-package net.ontrack.client;
+package net.ontrack.acceptance.client;
 
+import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.EditableProperty;
 import net.ontrack.core.model.Entity;

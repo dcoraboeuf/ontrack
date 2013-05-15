@@ -1,5 +1,6 @@
-package net.ontrack.client;
+package net.ontrack.acceptance.client;
 
+import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
 import org.junit.Test;

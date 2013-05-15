@@ -1,5 +1,6 @@
-package net.ontrack.client;
+package net.ontrack.acceptance.client;
 
+import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.PromotionLevelSummary;
