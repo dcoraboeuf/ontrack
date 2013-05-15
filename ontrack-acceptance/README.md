@@ -54,3 +54,12 @@ One can change the version to be deployed by specifying the `ontrackVersion` sys
 ```
 mvn clean install -P it P it-jetty -DontrackVersion=1.8
 ```
+
+## Headless considerations
+
+When running in a headless environment, one display must be made available for the run of the integration tests.
+The `ontrack-acceptance` module does not take charge of setting up such an environment and the infrastructure
+must do it.
+
+A typical solution is to use the [Jenkins Xvnc plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvnc+Plugin) when
+running with Jenkins.
