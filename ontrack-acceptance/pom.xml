@@ -26,10 +26,6 @@
         <itPort>9999</itPort>
         <!-- Version of ontrack to test -->
         <ontrackVersion>${project.version}</ontrackVersion>
-        <!-- Display to use for Xvfb -->
-        <xvfbDisplay>:22</xvfbDisplay>
-        <!-- Skipping Xvfb tests -->
-        <skipXvfb>false</skipXvfb>
     </properties>
 
     <dependencies>
@@ -104,11 +100,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>selenium-maven-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.12</version>
@@ -118,46 +109,12 @@
 
     <profiles>
 
-        <!-- Configuration of acceptance tests on Windows -->
-
-        <profile>
-            <id>it-windows</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <!-- Skipping Xvfb on Windows -->
-                <skipXvfb>true</skipXvfb>
-            </properties>
-        </profile>
-
         <!-- Running the acceptance tests -->
 
         <profile>
             <id>it</id>
             <build>
                 <plugins>
-
-                    <!-- Selenium set-up -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>selenium-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>xvfb</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>xvfb</goal>
-                                </goals>
-                                <configuration>
-                                    <display>${xvfbDisplay}</display>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
 
                     <!-- Running integration tests -->
                     <plugin>
