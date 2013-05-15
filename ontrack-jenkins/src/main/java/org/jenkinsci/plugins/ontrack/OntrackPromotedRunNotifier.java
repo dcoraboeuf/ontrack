@@ -5,6 +5,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import net.ontrack.client.ControlUIClient;
@@ -12,7 +13,6 @@ import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.PromotedRunCreationForm;
 import net.ontrack.core.model.PromotedRunSummary;
 import net.ontrack.core.support.TimeUtils;
-import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -58,20 +58,25 @@ public class OntrackPromotedRunNotifier extends AbstractOntrackNotifier {
         final String branchName = expand(branch, theBuild, listener);
         final String buildName = expand(build, theBuild, listener);
         final String promotionLevelName = expand(promotionLevel, theBuild, listener);
-        // TODO Run description
-        String runDescription = String.format("Run %s", theBuild);
-        // Run creation form
-        final PromotedRunCreationForm runCreationForm = new PromotedRunCreationForm(
-                TimeUtils.now(),
-                runDescription);
-        // Logging of parameters
-        listener.getLogger().format("Promoting build %s of branch %s of project %s for %s%n", buildName, branchName, projectName, promotionLevelName);
-        // Calling ontrack UI
-        PromotedRunSummary summary = call(new ControlClientCall<PromotedRunSummary>() {
-            public PromotedRunSummary onCall(ControlUIClient ui) {
-                return ui.createPromotedRun(projectName, branchName, buildName, promotionLevelName, runCreationForm);
-            }
-        });
+        // Only triggers in case of success
+        if (theBuild.getResult().isBetterOrEqualTo(Result.SUCCESS)) {
+            // TODO Run description
+            String runDescription = String.format("Run %s", theBuild);
+            // Run creation form
+            final PromotedRunCreationForm runCreationForm = new PromotedRunCreationForm(
+                    TimeUtils.now(),
+                    runDescription);
+            // Logging of parameters
+            listener.getLogger().format("[ontrack] Promoting build %s of branch %s of project %s for %s%n", buildName, branchName, projectName, promotionLevelName);
+            // Calling ontrack UI
+            PromotedRunSummary summary = call(new ControlClientCall<PromotedRunSummary>() {
+                public PromotedRunSummary onCall(ControlUIClient ui) {
+                    return ui.createPromotedRun(projectName, branchName, buildName, promotionLevelName, runCreationForm);
+                }
+            });
+        } else {
+            listener.getLogger().format("[ontrack] No promotion to %s since build is broken", promotionLevelName);
+        }
         // OK
         return true;
     }

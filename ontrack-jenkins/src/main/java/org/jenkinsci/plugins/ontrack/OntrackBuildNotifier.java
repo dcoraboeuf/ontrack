@@ -58,7 +58,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
             // TODO Build description
             final String buildDescription = String.format("Build %s", theBuild);
             // Logging of parameters
-            listener.getLogger().format("Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
+            listener.getLogger().format("[ontrack] Creating build %s on project %s for branch %s%n", buildName, projectName, branchName);
             // Calling ontrack UI
             BuildSummary buildSummary = call(new ControlClientCall<BuildSummary>() {
                 public BuildSummary onCall(ControlUIClient ui) {
@@ -78,6 +78,8 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
                                     ));
                 }
             });
+        } else {
+            listener.getLogger().format("[ontrack] No creation of build since it is broken");
         }
         // OK
         return true;

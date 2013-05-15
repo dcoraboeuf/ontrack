@@ -11,7 +11,6 @@ import hudson.tasks.Publisher;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
-import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
                 )
         );
         // Logging of parameters
-        listener.getLogger().format("Running %s with status %s for build %s of branch %s of project %s%n", validationStampName, runStatus, buildName, branchName, projectName);
+        listener.getLogger().format("[ontrack] Running %s with status %s for build %s of branch %s of project %s%n", validationStampName, runStatus, buildName, branchName, projectName);
         // Calling ontrack UI
         ValidationRunSummary summary = call(new ControlClientCall<ValidationRunSummary>() {
             public ValidationRunSummary onCall(ControlUIClient ui) {
