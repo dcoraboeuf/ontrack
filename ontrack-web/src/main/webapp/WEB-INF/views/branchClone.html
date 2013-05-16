@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="branchClone" title=loc('branch.clone') modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"]
+<@layout_std page="branchClone" title=loc('branch.clone') script=true modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"]
     breadcrumbs = {
         loc("home"): "",
         branch.summary.project.name?html: "gui/project/${branch.summary.project.name?html}",
@@ -20,7 +20,7 @@
         </div>
         <div class="row-fluid">
             <div class="span12">
-                <form>
+                <form onsubmit="return BranchClone.clone('${branch.summary.project.name?html}', '${branch.summary.name?html}');">
 
                     <table class="table table-condensed">
                         <tbody>
@@ -109,8 +109,9 @@
                         <tfoot>
                             <tr>
                                 <td colspan="3" class="info">
-                                    <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                                    <button id="clone-submit" type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
                                     <a class="btn btn-link" href="gui/project/${branch.summary.project.name?html}/branch/${branch.summary.name?html}"><@lh key="general.cancel" /></a>
+                                    <div id="clone-error" class="alert alert-error hidden"></div>
                                 </td>
                             </tr>
                         </tfoot>
