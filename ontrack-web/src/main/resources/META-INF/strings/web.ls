@@ -425,6 +425,18 @@ branch.clone.original
     en -> Original name
     fr -> Nom initial
 
+branch.clone.properties
+    en -> Branch properties
+    fr -> Propriétés de la branche
+
+branch.clone.validation_stamp.properties
+    en -> Validation stamps properties
+    fr -> Propriétés des validations
+
+branch.clone.promotion_level.properties
+    en -> Promotion level properties
+    fr -> Propriétés des niveaux de promotions
+
 branch.delete.prompt
 	en -> Are you sure to delete the "{0}" branch and all its associated information?
 	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" et toutes ses informations associées?
