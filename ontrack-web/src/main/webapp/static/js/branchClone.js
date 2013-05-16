@@ -9,7 +9,7 @@ var BranchClone = function () {
             var value = $('#extension-{0}-{1}'.format(extension, property)).val();
             branchProperties.push({
                 extension: extension,
-                property: property,
+                name: property,
                 value: value
             });
         });
@@ -23,7 +23,7 @@ var BranchClone = function () {
             if (regex != '') {
                 validationStampExpressions.push({
                     extension: extension,
-                    property: property,
+                    name: property,
                     regex: regex,
                     replacement: replacement
                 });
@@ -39,7 +39,7 @@ var BranchClone = function () {
             if (regex != '') {
                 promotionLevelExpressions.push({
                     extension: extension,
-                    property: property,
+                    name: property,
                     regex: regex,
                     replacement: replacement
                 });
@@ -55,8 +55,8 @@ var BranchClone = function () {
                 name: $('#name').val(),
                 description: $('#description').val(),
                 branchProperties: branchProperties,
-                validationStampExpressions: validationStampExpressions,
-                promotionLevelExpressions: promotionLevelExpressions
+                validationStampReplacements: validationStampExpressions,
+                promotionLevelReplacements: promotionLevelExpressions
             },
             successFn: function (summary) {
                 location = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
