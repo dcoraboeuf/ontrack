@@ -149,15 +149,24 @@ public class PropertyUIController extends AbstractUIController implements Proper
                     public EditableProperty apply(PropertyExtensionDescriptor descriptor) {
                         String extension = descriptor.getExtension();
                         String propertyName = descriptor.getName();
+                        String propertyValue = propertiesService.getPropertyValue(
+                                entity,
+                                entityId,
+                                extension,
+                                propertyName);
                         return new EditableProperty(
                                 extension,
                                 propertyName,
                                 strings.get(locale, descriptor.getDisplayNameKey()),
-                                propertiesService.getPropertyValue(
-                                        entity,
-                                        entityId,
+                                descriptor.getIconPath(),
+                                propertyValue,
+                                propertiesService.toHTML(
+                                        strings,
+                                        locale,
                                         extension,
-                                        propertyName),
+                                        propertyName,
+                                        propertyValue
+                                ),
                                 propertiesService.editHTML(
                                         strings,
                                         locale,

@@ -11,7 +11,7 @@ import java.util.Collection;
 public class BranchCloneInfo {
 
     private final BranchSummary summary;
-    private final Collection<DisplayablePropertyValue> properties;
+    private final Collection<EditableProperty> properties;
     private final Collection<DisplayableProperty> validationStampProperties;
     private final Collection<DisplayableProperty> promotionLevelProperties;
 

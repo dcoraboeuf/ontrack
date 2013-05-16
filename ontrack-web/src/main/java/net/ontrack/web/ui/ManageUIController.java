@@ -1,5 +1,7 @@
 package net.ontrack.web.ui;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
@@ -11,6 +13,7 @@ import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.ui.model.ValidationRunStatusUpdateData;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -111,6 +114,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     BranchCloneInfo getBranchCloneInfo(Locale locale, @PathVariable String project, @PathVariable String name) {
+        // Admin only
+        securityUtils.checkIsAdmin();
         // Branch
         int branchId = entityConverter.getBranchId(project, name);
         // Gets all the properties for the validation stamps
@@ -154,7 +159,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         // OK
         return new BranchCloneInfo(
                 managementService.getBranch(branchId),
-                propertyUI.getProperties(locale, Entity.BRANCH, branchId),
+                Collections2.filter(
+                        propertyUI.getEditableProperties(locale, Entity.BRANCH, branchId),
+                        new Predicate<EditableProperty>() {
+                            @Override
+                            public boolean apply(EditableProperty property) {
+                                return StringUtils.isNotBlank(property.getValue());
+                            }
+                        }
+                ),
                 validationStampIndex.values(),
                 promotionLevelIndex.values()
         );
