@@ -1,0 +1,123 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="branchClone" title=loc('branch.clone') modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"]
+    breadcrumbs = {
+        loc("home"): "",
+        branch.summary.project.name?html: "gui/project/${branch.summary.project.name?html}",
+        branch.summary.name?html: "gui/project/${branch.summary.project.name?html}/branch/${branch.summary.name?html}"}>
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${branch.summary.project.name?html}">${branch.summary.project.name?html}</a>
+                    / <a href="gui/project/${branch.summary.project.name?html}/branch/${branch.summary.name?html}">${branch.summary.name?html}</a>
+                    / <@lh key="branch.clone" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${branch.summary.project.name?html}/branch/${branch.summary.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <form>
+
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="info">
+                                    <h1><small><@lh key="branch.clone.general" /></small></h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <@lh key="model.name" />
+                                </td>
+                                <td>
+                                    <input type="text" value="${branch.summary.name?html}" readonly="readonly" />
+                                </td>
+                                <td>
+                                    <i class="icon-arrow-right"></i>
+                                    <input id="name" name="name" type="text" value="" required="required" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <@lh key="model.description" />
+                                </td>
+                                <td>
+                                    <textarea readonly="readonly">${branch.summary.description?html}</textarea>
+                                </td>
+                                <td>
+                                    <i class="icon-arrow-right"></i>
+                                    <textarea id="description" name="description" required="required"></textarea>
+                                </td>
+                            </tr>
+                            <#if branch.properties?size gt 0>
+                                <tr>
+                                    <td colspan="3" class="info">
+                                        <h1><small><@lh key="branch.clone.properties" /></small></h1>
+                                    </td>
+                                </tr>
+                                <#list branch.properties as property>
+                                    <tr>
+                                        <td>
+                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            ${property.displayName?html}
+                                        </td>
+                                        <td>
+                                            ${property.html}
+                                        </td>
+                                        <td>
+                                            <i class="icon-arrow-right"></i>
+                                            TODO Property editor
+                                        </td>
+                                    </tr>
+                                </#list>
+                            </#if>
+                            <#if branch.validationStampProperties?size gt 0>
+                                <tr>
+                                    <td colspan="3" class="info">
+                                        <h1><small><@lh key="branch.clone.validation_stamp.properties" /></small></h1>
+                                    </td>
+                                </tr>
+                                <#list branch.validationStampProperties as property>
+                                    <tr>
+                                        <td>
+                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            ${property.displayName?html}
+                                        </td>
+                                        <td>
+                                            <input type="text" />
+                                            <span class="description"><@lh key="branch.clone.properties.regex" /></span>
+                                        </td>
+                                        <td>
+                                            <i class="icon-arrow-right"></i>
+                                            <input type="text" />
+                                        </td>
+                                    </tr>
+                                </#list>
+                            </#if>
+                            <#if branch.promotionLevelProperties?size gt 0>
+                                <tr>
+                                    <td colspan="3" class="info">
+                                        <h1><small><@lh key="branch.clone.promotion_level.properties" /></small></h1>
+                                    </td>
+                                </tr>
+                            </#if>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="info">
+                                    <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                                    <a class="btn btn-link" href="gui/project/${branch.summary.project.name?html}/branch/${branch.summary.name?html}"><@lh key="general.cancel" /></a>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </form>
+            </div>
+        </div>
+	</div>
+</@layout_std>

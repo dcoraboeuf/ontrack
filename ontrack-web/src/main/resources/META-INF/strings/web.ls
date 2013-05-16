@@ -421,6 +421,10 @@ branch.clone
     en -> Clone
     fr -> Cloner
 
+branch.clone.general
+    en -> General
+    fr -> Général
+
 branch.clone.original
     en -> Original name
     fr -> Nom initial
@@ -428,6 +432,10 @@ branch.clone.original
 branch.clone.properties
     en -> Branch properties
     fr -> Propriétés de la branche
+
+branch.clone.properties.regex
+    en -> Regular expression to be replaced by
+    fr -> Expression régulière à remplacer par
 
 branch.clone.validation_stamp.properties
     en -> Validation stamps properties

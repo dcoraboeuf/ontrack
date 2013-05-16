@@ -80,6 +80,14 @@ public class GUIController extends AbstractGUIController {
         return "branch";
     }
 
+    @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/clone", method = RequestMethod.GET)
+    public String cloneBranch(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("branch", manageUI.getBranchCloneInfo(locale, project, name));
+        // OK
+        return "branchClone";
+    }
+
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String getBuild(Model model, @PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         // Loads the details
