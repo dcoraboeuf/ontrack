@@ -104,6 +104,22 @@
                                         <h1><small><@lh key="branch.clone.promotion_level.properties" /></small></h1>
                                     </td>
                                 </tr>
+                                <#list branch.promotionLevelProperties as property>
+                                    <tr>
+                                        <td>
+                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            ${property.displayName?html}
+                                        </td>
+                                        <td class="promotion-level-property" extension="${property.extension?html}" property="${property.name?html}">
+                                            <input id="promotion-level-${property.extension?html}-${property.name?html}-regex" type="text" />
+                                            <span class="description"><@lh key="branch.clone.properties.regex" /></span>
+                                        </td>
+                                        <td>
+                                            <i class="icon-arrow-right"></i>
+                                            <input id="promotion-level-${property.extension?html}-${property.name?html}-replacement" type="text" />
+                                        </td>
+                                    </tr>
+                                </#list>
                             </#if>
                         </tbody>
                         <tfoot>

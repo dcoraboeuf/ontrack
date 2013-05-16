@@ -29,7 +29,22 @@ var BranchClone = function () {
                 });
             }
         });
-        // TODO Collects the promotion level expressions
+        // Collects the promotion level expressions
+        var promotionLevelExpressions = [];
+        $('.promotion-level-property').each(function (index, el) {
+            var extension = $(el).attr('extension');
+            var property = $(el).attr('property');
+            var regex = $('#promotion-level-{0}-{1}-regex'.format(extension, property)).val();
+            var replacement = $('#promotion-level-{0}-{1}-replacement'.format(extension, property)).val();
+            if (regex != '') {
+                promotionLevelExpressions.push({
+                    extension: extension,
+                    property: property,
+                    regex: regex,
+                    replacement: replacement
+                });
+            }
+        });
         // AJAX call
         AJAX.post({
             url: 'ui/manage/project/{0}/branch/{1}/clone'.format(project, branch),
@@ -40,7 +55,8 @@ var BranchClone = function () {
                 name: $('#name').val(),
                 description: $('#description').val(),
                 branchProperties: branchProperties,
-                validationStampExpressions: validationStampExpressions
+                validationStampExpressions: validationStampExpressions,
+                promotionLevelExpressions: promotionLevelExpressions
             },
             successFn: function (summary) {
                 location = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
