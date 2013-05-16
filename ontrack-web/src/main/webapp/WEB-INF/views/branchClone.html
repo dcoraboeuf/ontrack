@@ -50,7 +50,7 @@
                                 </td>
                                 <td>
                                     <i class="icon-arrow-right"></i>
-                                    <textarea id="description" name="description" required="required"></textarea>
+                                    <textarea id="description" name="description"></textarea>
                                 </td>
                             </tr>
                             <#if branch.properties?size gt 0>
@@ -68,7 +68,7 @@
                                         <td>
                                             ${property.htmlValue}
                                         </td>
-                                        <td>
+                                        <td class="branch-property" extension="${property.extension?html}" property="${property.name?html}">
                                             <i class="icon-arrow-right"></i>
                                             ${property.htmlForEdit}
                                         </td>
