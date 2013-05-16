@@ -35,17 +35,17 @@ var Branches = function () {
 
 	function cloneBranch (project, branch) {
 	    AJAX.get({
-            url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
-            successFn: function (summary) {
+            url: 'ui/manage/project/{0}/branch/{1}/clone'.format(project, branch),
+            successFn: function (info) {
                 Application.dialogAndSubmit({
                     id: 'branch-clone-dialog',
                     title: loc('branch.clone'),
                     url: 'ui/manage/project/{0}/branch/{1}/clone'.format(project, branch),
                     method: 'POST',
                     openFn: function () {
-                        $('#branch-clone-dialog-name-original').val(summary.name);
-                        $('#branch-clone-dialog-name').val(summary.name);
-                        $('#branch-clone-dialog-description').val(summary.description);
+                        $('#branch-clone-dialog-name-original').val(info.summary.name);
+                        $('#branch-clone-dialog-name').val('');
+                        $('#branch-clone-dialog-description').val(info.summary.description);
                     },
                     successFn: function (summary) {
                             location = 'gui/project/{0}/branch/{1}'.format(summary.project.name, summary.name);

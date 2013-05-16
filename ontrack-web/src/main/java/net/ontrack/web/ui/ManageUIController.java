@@ -107,6 +107,60 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/clone", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BranchCloneInfo getBranchCloneInfo(Locale locale, @PathVariable String project, @PathVariable String name) {
+        // Branch
+        int branchId = entityConverter.getBranchId(project, name);
+        // Gets all the properties for the validation stamps
+        Map<String, DisplayableProperty> validationStampIndex = new TreeMap<>();
+        List<ValidationStampSummary> validationStampList = managementService.getValidationStampList(branchId);
+        for (ValidationStampSummary validationStampSummary : validationStampList) {
+            // Gets the list of properties for this validation stamp
+            List<DisplayablePropertyValue> validationStampProperties = propertyUI.getProperties(locale, Entity.VALIDATION_STAMP, validationStampSummary.getId());
+            for (DisplayablePropertyValue validationStampProperty : validationStampProperties) {
+                String key = String.format("%s-%s", validationStampProperty.getExtension(), validationStampProperty.getName());
+                validationStampIndex.put(
+                        key,
+                        new DisplayableProperty(
+                                validationStampProperty.getExtension(),
+                                validationStampProperty.getName(),
+                                validationStampProperty.getDisplayName(),
+                                validationStampProperty.getIconPath()
+                        )
+                );
+            }
+        }
+        // Gets all the properties for the promotionlevels
+        Map<String, DisplayableProperty> promotionLevelIndex = new TreeMap<>();
+        List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+        for (PromotionLevelSummary promotionLevelSummary : promotionLevelList) {
+            // Gets the list of properties for this promotion level
+            List<DisplayablePropertyValue> promotionLevelProperties = propertyUI.getProperties(locale, Entity.PROMOTION_LEVEL, promotionLevelSummary.getId());
+            for (DisplayablePropertyValue promotionLevelProperty : promotionLevelProperties) {
+                String key = String.format("%s-%s", promotionLevelProperty.getExtension(), promotionLevelProperty.getName());
+                promotionLevelIndex.put(
+                        key,
+                        new DisplayableProperty(
+                                promotionLevelProperty.getExtension(),
+                                promotionLevelProperty.getName(),
+                                promotionLevelProperty.getDisplayName(),
+                                promotionLevelProperty.getIconPath()
+                        )
+                );
+            }
+        }
+        // OK
+        return new BranchCloneInfo(
+                managementService.getBranch(branchId),
+                propertyUI.getProperties(locale, Entity.BRANCH, branchId),
+                validationStampIndex.values(),
+                promotionLevelIndex.values()
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
     public
     @ResponseBody

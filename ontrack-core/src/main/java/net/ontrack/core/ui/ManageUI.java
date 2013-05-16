@@ -27,6 +27,8 @@ public interface ManageUI {
 
     BranchSummary getBranch(String project, String name);
 
+    BranchCloneInfo getBranchCloneInfo(Locale locale, String project, String name);
+
     DecoratedBranch getDecoratedBranch(Locale locale, String project, String name);
 
     BranchSummary createBranch(String project, BranchCreationForm form);
