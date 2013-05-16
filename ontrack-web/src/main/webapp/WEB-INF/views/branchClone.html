@@ -87,13 +87,13 @@
                                             <img src="${property.iconPath?html}" width="24" height="24" />
                                             ${property.displayName?html}
                                         </td>
-                                        <td>
-                                            <input type="text" />
+                                        <td class="validation-stamp-property" extension="${property.extension?html}" property="${property.name?html}">
+                                            <input id="validation-stamp-${property.extension?html}-${property.name?html}-regex" type="text" />
                                             <span class="description"><@lh key="branch.clone.properties.regex" /></span>
                                         </td>
                                         <td>
                                             <i class="icon-arrow-right"></i>
-                                            <input type="text" />
+                                            <input id="validation-stamp-${property.extension?html}-${property.name?html}-replacement" type="text" />
                                         </td>
                                     </tr>
                                 </#list>

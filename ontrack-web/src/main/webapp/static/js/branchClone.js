@@ -13,7 +13,22 @@ var BranchClone = function () {
                 value: value
             });
         });
-        // TODO Collects the validation stamp expressions
+        // Collects the validation stamp expressions
+        var validationStampExpressions = [];
+        $('.validation-stamp-property').each(function (index, el) {
+            var extension = $(el).attr('extension');
+            var property = $(el).attr('property');
+            var regex = $('#validation-stamp-{0}-{1}-regex'.format(extension, property)).val();
+            var replacement = $('#validation-stamp-{0}-{1}-replacement'.format(extension, property)).val();
+            if (regex != '') {
+                validationStampExpressions.push({
+                    extension: extension,
+                    property: property,
+                    regex: regex,
+                    replacement: replacement
+                });
+            }
+        });
         // TODO Collects the promotion level expressions
         // AJAX call
         AJAX.post({
@@ -24,7 +39,8 @@ var BranchClone = function () {
             data: {
                 name: $('#name').val(),
                 description: $('#description').val(),
-                branchProperties: branchProperties
+                branchProperties: branchProperties,
+                validationStampExpressions: validationStampExpressions
             },
             successFn: function (summary) {
                 location = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
