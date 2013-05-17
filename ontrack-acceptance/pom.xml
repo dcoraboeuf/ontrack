@@ -21,7 +21,7 @@
         <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
         <!-- Selenium configuration -->
-        <webdriver.timeouts.implicitlywait>5</webdriver.timeouts.implicitlywait>
+	<thucydides.timeout>5000</thucydides.timeout>
         <!-- Default base URL for tests -->
         <itUrl>http://localhost:9999/ontrack</itUrl>
         <!-- Port to use when running IT tests -->
