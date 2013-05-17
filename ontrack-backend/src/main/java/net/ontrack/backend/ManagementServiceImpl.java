@@ -300,6 +300,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 )
         );
         int newBranchId = newBranch.getId();
+
+        // Branch properties
+        propertiesService.createProperties(
+                Entity.BRANCH,
+                newBranchId,
+                new PropertiesCreationForm(Lists.newArrayList(form.getBranchProperties()))
+        );
+
         // Promotion levels
         List<PromotionLevelSummary> promotionLevelList = new ArrayList<>(getPromotionLevelList(branchId));
         // Sort by increasing level number
@@ -312,8 +320,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     }
                 }
         );
+
+
         // Links between promotion levels & validation stamps
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
+
             // Creates the new promotion level
             PromotionLevelSummary newPromotionLevel = createPromotionLevel(
                     newBranchId,
@@ -322,6 +333,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                             promotionLevel.getDescription()
                     )
             );
+
+            // Promotion level properties
+            replaceProperties(form.getPromotionLevelReplacements(), Entity.PROMOTION_LEVEL, promotionLevel.getId(), newPromotionLevel.getId());
+
             // Copies any image
             byte[] promotionLevelImage = imagePromotionLevel(promotionLevel.getId());
             if (promotionLevelImage != null) {
@@ -332,7 +347,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // Gets all the linked stamps
             List<TValidationStamp> linkedStamps = validationStampDao.findByPromotionLevel(promotionLevel.getId());
             for (TValidationStamp linkedStamp : linkedStamps) {
-                ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, linkedStamp);
+                ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, linkedStamp, form.getValidationStampReplacements());
                 // Link to the promotion level
                 linkValidationStampToPromotionLevel(newValidationStamp.getId(), newPromotionLevel.getId());
             }
@@ -340,34 +355,35 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Gets all the unlinked validation stamps
         List<TValidationStamp> unlinkedStamp = validationStampDao.findByNoPromotionLevel(branchId);
         for (TValidationStamp stamp : unlinkedStamp) {
-            cloneValidationStampSummary(newBranchId, stamp);
+            cloneValidationStampSummary(newBranchId, stamp, form.getValidationStampReplacements());
         }
 
-        // Properties
-        List<PropertyValue> propertyValues = propertiesService.getPropertyValues(Entity.BRANCH, branchId);
-        List<PropertyCreationForm> propertyCreationForms = Lists.transform(
-                propertyValues,
-                new Function<PropertyValue, PropertyCreationForm>() {
-                    @Override
-                    public PropertyCreationForm apply(PropertyValue propertyValue) {
-                        return new PropertyCreationForm(
-                                propertyValue.getExtension(),
-                                propertyValue.getName(),
-                                propertyValue.getValue()
-                        );
-                    }
-                }
-        );
-        propertiesService.createProperties(
-                Entity.BRANCH,
-                newBranchId,
-                new PropertiesCreationForm(propertyCreationForms)
-        );
         // OK
         return newBranch;
     }
 
-    private ValidationStampSummary cloneValidationStampSummary(int newBranchId, TValidationStamp linkedStamp) {
+    private String applyReplacement(String regex, String replacement, String value) {
+        if (value == null) {
+            return null;
+        } else {
+            return value.replaceAll(regex, replacement);
+        }
+    }
+
+    private PropertyReplacement getPropertyReplacement(Collection<PropertyReplacement> replacements, final String extension, final String name) {
+        return Iterables.find(
+                replacements,
+                new Predicate<PropertyReplacement>() {
+                    @Override
+                    public boolean apply(PropertyReplacement replacement) {
+                        return StringUtils.equals(extension, replacement.getExtension())
+                                && StringUtils.equals(name, replacement.getName());
+                    }
+                }
+        );
+    }
+
+    private ValidationStampSummary cloneValidationStampSummary(int newBranchId, TValidationStamp linkedStamp, Collection<PropertyReplacement> replacements) {
         ValidationStampSummary newValidationStamp = createValidationStamp(
                 newBranchId,
                 new ValidationStampCreationForm(
@@ -375,6 +391,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         linkedStamp.getDescription()
                 )
         );
+
+        // Validation stamp properties
+        replaceProperties(replacements, Entity.VALIDATION_STAMP, linkedStamp.getId(), newValidationStamp.getId());
+
         // Copies any image
         byte[] image = imageValidationStamp(linkedStamp.getId());
         if (image != null) {
@@ -383,6 +403,34 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     image);
         }
         return newValidationStamp;
+    }
+
+    private void replaceProperties(Collection<PropertyReplacement> replacements, Entity entity, int oldEntityId, int newEntityId) {
+        List<PropertyValue> oldProperties = propertiesService.getPropertyValues(entity, oldEntityId);
+        for (PropertyValue oldProperty : oldProperties) {
+            String extension = oldProperty.getExtension();
+            String name = oldProperty.getName();
+            String value = oldProperty.getValue();
+            // Gets any replacement
+            PropertyReplacement replacement = getPropertyReplacement(replacements, extension, name);
+            if (replacement != null) {
+                // Applies the replacement
+                value = applyReplacement(replacement.getRegex(), replacement.getReplacement(), value);
+            }
+            // Creates the property if not empty
+            if (StringUtils.isNotBlank(value)) {
+                propertiesService.createProperties(entity, newEntityId,
+                        new PropertiesCreationForm(
+                                Arrays.asList(
+                                        new PropertyCreationForm(
+                                                extension,
+                                                name,
+                                                value
+                                        )
+                                )
+                        ));
+            }
+        }
     }
 
     @Override
