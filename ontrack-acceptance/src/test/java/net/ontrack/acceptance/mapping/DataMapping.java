@@ -15,4 +15,9 @@ public class DataMapping {
         dataSteps.create_project(project, description);
     }
 
+    @Given("the project $project does not exist")
+    public void project_does_not_exist(String project) {
+        dataSteps.delete_project(project);
+    }
+
 }

@@ -20,6 +20,8 @@
         <seleniumVersion>2.32.0</seleniumVersion>
         <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
+        <!-- Selenium configuration -->
+        <webdriver.timeouts.implicitlywait>5</webdriver.timeouts.implicitlywait>
         <!-- Default base URL for tests -->
         <itUrl>http://localhost:9999/ontrack</itUrl>
         <!-- Port to use when running IT tests -->

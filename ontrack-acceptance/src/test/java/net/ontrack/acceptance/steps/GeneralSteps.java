@@ -2,13 +2,16 @@ package net.ontrack.acceptance.steps;
 
 import net.ontrack.acceptance.pages.HeaderPage;
 import net.ontrack.acceptance.pages.HomePage;
+import net.ontrack.acceptance.pages.LoginPage;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
 import net.thucydides.core.steps.ScenarioSteps;
+import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class GeneralSteps extends ScenarioSteps {
 
@@ -43,5 +46,16 @@ public class GeneralSteps extends ScenarioSteps {
     public void home_cannot_create_project() {
         WebElement button = homePage.getCreateProjectButton();
         assertNull(button);
+    }
+
+    public void general_login(String user, String password) {
+        // Makes sure we are  not logged
+        general_not_logged();
+        // Logs in
+        headerPage.signIn();
+        // Enters credentials and validates
+        pages().get(LoginPage.class).login(user, password);
+        // Validates we are logged in
+        assertTrue("Cannot log user " + user, headerPage.isLogged());
     }
 }

@@ -11,11 +11,15 @@ public class HeaderPage extends AbstractPage {
     }
 
     public boolean isLogged() {
-        return isDefined(By.id("header-signin"));
+        return !isDefined(By.id("header-signin"));
     }
 
     public void signOut() {
         // FIXME Implement net.ontrack.acceptance.pages.HeaderPage.signOut
 
+    }
+
+    public void signIn() {
+        find(By.id("header-signin")).click();
     }
 }
