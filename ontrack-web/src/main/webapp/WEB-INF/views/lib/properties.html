@@ -32,23 +32,25 @@
                 </button>
             </ul>
             <div id="property-add-section" class="hidden alert alert-info">
-                <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
-                    <option value=""></option>
-                    {{#properties}}
-                        <option value="{{extension}}&#x23;{{name}}">{{displayName}}</option>
-                    {{/properties}}
-                </select>
-                <span id="property-add-field"></span>
-                <div>
-                    <button type="button" class="btn btn-primary" onclick="Properties.addProperty()"><@lh key="general.submit" /></button>
-                    <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()"><@lh key="general.cancel" /></button>
-                </div>
-                <div id="property-add-loading" class="progress progress-striped active">
-                    <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
-                </div>
-                <div id="property-add-error" class="alert alert-error">
-                    <div id="property-add-error-message"></div>
-                </div>
+                <form onsubmit="return Properties.addProperty();">
+                    <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
+                        <option value=""></option>
+                        {{#properties}}
+                            <option value="{{extension}}&#x23;{{name}}">{{displayName}}</option>
+                        {{/properties}}
+                    </select>
+                    <span id="property-add-field"></span>
+                    <div>
+                        <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                        <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()"><@lh key="general.cancel" /></button>
+                    </div>
+                    <div id="property-add-loading" class="progress progress-striped active">
+                        <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
+                    </div>
+                    <div id="property-add-error" class="alert alert-error">
+                        <div id="property-add-error-message"></div>
+                    </div>
+                </form>
             </div>
         {{/if}}
     </script>

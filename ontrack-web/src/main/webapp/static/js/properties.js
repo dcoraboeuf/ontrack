@@ -58,6 +58,8 @@ var Properties = function () {
                 $('#property-add-error').show();
 			})
 		});
+        // Does not submit the normal way
+        return false;
     }
 
     function cancelAddProperties () {
