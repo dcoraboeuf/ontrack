@@ -1,5 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.BuildAlreadyExistsException;
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.PromotionLevelDao;
@@ -14,6 +15,7 @@ import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
@@ -248,10 +250,14 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Override
     @Transactional
     public int createBuild(int branch, String name, String description) {
+        try {
         return dbCreate(
                 SQL.BUILD_CREATE,
                 params("branch", branch)
                         .addValue("name", name)
                         .addValue("description", description));
+        } catch (DuplicateKeyException ex) {
+            throw new BuildAlreadyExistsException(name);
+        }
     }
 }

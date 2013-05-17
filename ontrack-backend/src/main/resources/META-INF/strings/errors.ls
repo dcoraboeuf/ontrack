@@ -56,3 +56,6 @@ net.ontrack.backend.PromotionLevelAlreadyExistException
 net.ontrack.backend.AccountAlreadyExistException
     en -> Account with name "{0}" already exists.
     fr -> L'utilisateur de nom "{0}" existe déjà.
+net.ontrack.backend.BuildAlreadyExistsException
+    en -> Build with name "{0}" already exists.
+    fr -> Le build "{0}" existe déjà.
