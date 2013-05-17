@@ -5,8 +5,7 @@ import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class ITControl extends AbstractEnv {
 
@@ -35,6 +34,29 @@ public class ITControl extends AbstractEnv {
         assertEquals(buildName, build.getName());
         assertEquals(branch.getName(), build.getBranch().getName());
         assertEquals(branch.getProject().getName(), build.getBranch().getProject().getName());
+    }
+
+    @Test
+    public void createBuild_twice() {
+        // Prerequisites
+        final BuildSummary build = doCreateBuild();
+        // Call
+        BuildSummary secondBuild = asAdmin(new ControlClientCall<BuildSummary>() {
+            @Override
+            public BuildSummary onCall(ControlUIClient client) {
+                return client.createBuild(
+                        build.getBranch().getProject().getName(),
+                        build.getBranch().getName(),
+                        new BuildCreationForm(
+                                build.getName(),
+                                "Test build",
+                                PropertiesCreationForm.create()
+                        )
+                );
+            }
+        });
+        // Checks
+        assertNull(secondBuild);
     }
 
     @Test
