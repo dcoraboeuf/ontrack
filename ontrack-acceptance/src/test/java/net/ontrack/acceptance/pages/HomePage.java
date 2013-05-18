@@ -11,6 +11,11 @@ public class HomePage extends AbstractPage {
         super(driver);
     }
 
+    @Override
+    public void waitForLoad() {
+        waitFor("#projects");
+    }
+
     public WebElement projectLink(String project) {
         try {
             return find(By.id("projects")).find(By.linkText(project));

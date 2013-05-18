@@ -52,9 +52,9 @@ public class GeneralSteps extends ScenarioSteps {
         // Makes sure we are  not logged
         general_not_logged();
         // Logs in
-        headerPage.signIn();
+        LoginPage loginPage = headerPage.signIn();
         // Enters credentials and validates
-        pages().get(LoginPage.class).login(user, password);
+        loginPage.login(user, password);
         // Validates we are logged in
         assertTrue("Cannot log user " + user, headerPage.isLogged());
     }

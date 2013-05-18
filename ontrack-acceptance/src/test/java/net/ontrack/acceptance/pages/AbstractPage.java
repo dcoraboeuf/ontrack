@@ -23,4 +23,13 @@ public abstract class AbstractPage extends PageObject {
     public boolean isDefined(By selector) {
         return findOptional(selector) != null;
     }
+
+    protected <T extends AbstractPage> T switchAndLoad(Class<T> pageClass) {
+        T page = switchToPage(pageClass);
+        page.waitForLoad();
+        return page;
+    }
+
+    public abstract void waitForLoad();
+
 }
