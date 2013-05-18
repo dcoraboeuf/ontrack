@@ -39,6 +39,8 @@ public class ClientSupport {
     public <T> T anonymous(ManageClientCall<T> call) {
         try {
             return call.onCall(manageClient);
+        } catch (ClientException ex) {
+            throw ex;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +51,8 @@ public class ClientSupport {
         try {
             try {
                 return call.onCall(manageClient);
+            } catch (ClientException ex) {
+                throw ex;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -62,6 +66,8 @@ public class ClientSupport {
         try {
             try {
                 return call.onCall(controlClient);
+            } catch (ClientException ex) {
+                throw ex;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -75,6 +81,8 @@ public class ClientSupport {
         try {
             try {
                 return call.onCall(propertyClient);
+            } catch (ClientException ex) {
+                throw ex;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -88,6 +96,8 @@ public class ClientSupport {
         try {
             try {
                 return call.onCall(adminClient);
+            } catch (ClientException ex) {
+                throw ex;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

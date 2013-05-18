@@ -1,12 +1,13 @@
 package net.ontrack.acceptance.client;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
-import net.ontrack.client.support.ClientSupport;
-import net.ontrack.client.support.ControlClientCall;
-import net.ontrack.client.support.ManageClientCall;
-import net.ontrack.client.support.PropertyClientCall;
+import net.ontrack.client.support.*;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityRoles;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mock.web.MockMultipartFile;
@@ -126,6 +127,52 @@ public abstract class AbstractEnv {
         });
     }
 
+    protected Account doCreateUser() {
+        return doCreateUser(
+                uid("USR"),
+                "Test user",
+                "test@test.com",
+                SecurityRoles.USER,
+                "builtin",
+                "test"
+        );
+    }
+
+    protected Account doCreateUser(final String name, final String fullName, final String email, final String role, final String mode, final String password) {
+        return asAdmin(new AdminClientCall<Account>() {
+            @Override
+            public Account onCall(AdminUIClient ui) {
+                // Finds the account with the same name
+                Account account = Iterables.find(
+                        ui.accounts(),
+                        new Predicate<Account>() {
+                            @Override
+                            public boolean apply(Account a) {
+                                return StringUtils.equals(name, a.getName());
+                            }
+                        },
+                        null
+                );
+                // Deletes it if it exists
+                if (account != null) {
+                    ui.deleteAccount(account.getId());
+                }
+                // Creates the account
+                ID id = ui.createAccount(new AccountCreationForm(
+                        name,
+                        fullName,
+                        email,
+                        role,
+                        mode,
+                        password,
+                        password
+                ));
+                // Gets the account
+                return ui.account(id.getValue());
+            }
+        });
+    }
+
     protected <T> T asAdmin(ManageClientCall<T> call) {
         return client.asUser("admin", "admin", call);
     }
@@ -139,6 +186,10 @@ public abstract class AbstractEnv {
     }
 
     protected <T> T asAdmin(PropertyClientCall<T> call) {
+        return client.asUser("admin", "admin", call);
+    }
+
+    protected <T> T asAdmin(AdminClientCall<T> call) {
         return client.asUser("admin", "admin", call);
     }
 
