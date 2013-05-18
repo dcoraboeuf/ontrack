@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
+
 public abstract class AbstractEnv {
 
     private final ClientSupport client;
@@ -171,6 +174,14 @@ public abstract class AbstractEnv {
                 return ui.account(id.getValue());
             }
         });
+    }
+
+    protected void assertClientMessage(Runnable task, String pattern, Object... params) {
+        try {
+            task.run();
+        } catch (ClientMessageException ex) {
+            assertEquals(format(pattern, params), ex.getMessage());
+        }
     }
 
     protected <T> T asAdmin(ManageClientCall<T> call) {

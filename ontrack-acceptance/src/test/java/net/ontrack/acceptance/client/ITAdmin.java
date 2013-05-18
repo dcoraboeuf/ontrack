@@ -53,4 +53,35 @@ public class ITAdmin extends AbstractEnv {
         });
     }
 
+    @Test
+    public void admin_create_user_with_same_name() {
+        // Prerequisites
+        final Account account = doCreateUser();
+        final String accountName = account.getName();
+        // Creates the same user
+        assertClientMessage(
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        asAdmin(new AdminClientCall<Void>() {
+                            @Override
+                            public Void onCall(AdminUIClient ui) {
+                                ui.createAccount(new AccountCreationForm(
+                                        accountName,
+                                        account.getFullName(),
+                                        account.getEmail(),
+                                        account.getRoleName(),
+                                        account.getMode(),
+                                        "test",
+                                        "test"
+                                ));
+                                return null;
+                            }
+                        });
+                    }
+                },
+                "Account with name \"%s\" already exists.", accountName);
+    }
+
 }
