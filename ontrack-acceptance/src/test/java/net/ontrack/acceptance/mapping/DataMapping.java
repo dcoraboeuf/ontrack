@@ -20,4 +20,9 @@ public class DataMapping {
         dataSteps.delete_project(project);
     }
 
+    @Given("a user is defined with name \"$name\", full name \"$fullName\" and password \"$password\"")
+    public void user_defined(String name, String fullName, String password) {
+        dataSteps.define_user(name, fullName, password);
+    }
+
 }

@@ -1,10 +1,14 @@
 package net.ontrack.acceptance.steps;
 
+import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.ManageUIClient;
+import net.ontrack.client.support.AdminClientCall;
 import net.ontrack.client.support.ClientSupport;
 import net.ontrack.client.support.ManageClientCall;
+import net.ontrack.core.model.AccountCreationForm;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.security.SecurityRoles;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
 import net.thucydides.core.steps.ScenarioSteps;
@@ -47,6 +51,26 @@ public class DataSteps extends ScenarioSteps {
                 if (summary != null) {
                     ui.deleteProject(project);
                 }
+                return null;
+            }
+        });
+    }
+
+    public void define_user(final String name, final String fullName, final String password) {
+        client.asUser("admin", "admin", new AdminClientCall<Void>() {
+            @Override
+            public Void onCall(AdminUIClient ui) {
+                ui.createAccount(
+                        new AccountCreationForm(
+                                name,
+                                fullName,
+                                name + "@test.com",
+                                SecurityRoles.USER,
+                                "builtin",
+                                password,
+                                password
+                        )
+                );
                 return null;
             }
         });

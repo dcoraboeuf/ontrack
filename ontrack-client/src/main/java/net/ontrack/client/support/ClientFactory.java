@@ -1,5 +1,6 @@
 package net.ontrack.client.support;
 
+import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
@@ -28,4 +29,7 @@ public class ClientFactory {
         return new DefaultPropertyUIClient(url);
     }
 
+    public AdminUIClient admin() {
+        return new DefaultAdminUIClient(url);
+    }
 }

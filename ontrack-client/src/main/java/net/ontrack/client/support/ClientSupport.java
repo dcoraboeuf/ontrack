@@ -1,5 +1,6 @@
 package net.ontrack.client.support;
 
+import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
@@ -9,12 +10,14 @@ public class ClientSupport {
     private final ControlUIClient controlClient;
     private final ManageUIClient manageClient;
     private final PropertyUIClient propertyClient;
+    private final AdminUIClient adminClient;
 
     public ClientSupport(String url) {
         ClientFactory clientFactory = ClientFactory.create(url);
         controlClient = clientFactory.control();
         manageClient = clientFactory.manage();
         propertyClient = clientFactory.property();
+        adminClient = clientFactory.admin();
     }
 
     public ControlUIClient getControlClient() {
@@ -27,6 +30,10 @@ public class ClientSupport {
 
     public PropertyUIClient getPropertyClient() {
         return propertyClient;
+    }
+
+    public AdminUIClient getAdminClient() {
+        return adminClient;
     }
 
     public <T> T anonymous(ManageClientCall<T> call) {
@@ -73,6 +80,19 @@ public class ClientSupport {
             }
         } finally {
             propertyClient.logout();
+        }
+    }
+
+    public <T> T asUser(String user, String password, AdminClientCall<T> call) {
+        adminClient.login(user, password);
+        try {
+            try {
+                return call.onCall(adminClient);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            adminClient.logout();
         }
     }
 }
