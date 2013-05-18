@@ -30,6 +30,10 @@ public abstract class AbstractEnv {
         client = new ClientSupport(url);
     }
 
+    protected ClientSupport getClient() {
+        return client;
+    }
+
     protected BranchSummary doCreateBranch() {
         return doCreateBranch(doCreateProject());
     }

@@ -37,11 +37,35 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     /**
      * List of accounts
      */
+    @Override
     @RequestMapping(value = "/accounts", method = RequestMethod.GET)
     public
     @ResponseBody
     List<Account> accounts() {
         return accountService.getAccounts();
+    }
+
+    /**
+     * Getting an account
+     */
+    @Override
+    @RequestMapping(value = "/accounts/{id:\\d+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Account account(@PathVariable int id) {
+        return accountService.getAccount(id);
+    }
+
+    /**
+     * Deleting an account
+     */
+    @Override
+    @RequestMapping(value = "/accounts/{id:\\d+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack deleteAccount(@PathVariable int id) {
+        accountService.deleteAccount(id);
+        return Ack.OK;
     }
 
     /**
@@ -51,8 +75,8 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     @RequestMapping(value = "/accounts", method = RequestMethod.POST)
     public
     @ResponseBody
-    Ack createAccount(@RequestBody AccountCreationForm form) {
-        return accountService.createAccount(form).ack();
+    ID createAccount(@RequestBody AccountCreationForm form) {
+        return accountService.createAccount(form);
     }
 
     /**
