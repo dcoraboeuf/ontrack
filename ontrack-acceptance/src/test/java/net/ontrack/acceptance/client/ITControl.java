@@ -7,15 +7,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ITControl extends AbstractEnv {
+public class ITControl extends AbstractIT {
 
     @Test
     public void createBuild() {
         // Prerequisites
-        final BranchSummary branch = doCreateBranch();
+        final BranchSummary branch = data.doCreateBranch();
         // Creates a build
-        final String buildName = uid("BLD");
-        BuildSummary build = asAdmin(new ControlClientCall<BuildSummary>() {
+        final String buildName = data.uid("BLD");
+        BuildSummary build = data.asAdmin(new ControlClientCall<BuildSummary>() {
             @Override
             public BuildSummary onCall(ControlUIClient client) {
                 return client.createBuild(
@@ -39,9 +39,9 @@ public class ITControl extends AbstractEnv {
     @Test
     public void createBuild_twice() {
         // Prerequisites
-        final BuildSummary build = doCreateBuild();
+        final BuildSummary build = data.doCreateBuild();
         // Call
-        BuildSummary secondBuild = asAdmin(new ControlClientCall<BuildSummary>() {
+        BuildSummary secondBuild = data.asAdmin(new ControlClientCall<BuildSummary>() {
             @Override
             public BuildSummary onCall(ControlUIClient client) {
                 return client.createBuild(
@@ -62,10 +62,10 @@ public class ITControl extends AbstractEnv {
     @Test
     public void createValidationRun() {
         // Prerequisites
-        final ValidationStampSummary validationStamp = doCreateValidationStamp();
-        final BuildSummary build = doCreateBuild(validationStamp.getBranch());
+        final ValidationStampSummary validationStamp = data.doCreateValidationStamp();
+        final BuildSummary build = data.doCreateBuild(validationStamp.getBranch());
         // Creates a validation run
-        ValidationRunSummary validationRun = asAdmin(new ControlClientCall<ValidationRunSummary>() {
+        ValidationRunSummary validationRun = data.asAdmin(new ControlClientCall<ValidationRunSummary>() {
             @Override
             public ValidationRunSummary onCall(ControlUIClient client) {
                 return client.createValidationRun(

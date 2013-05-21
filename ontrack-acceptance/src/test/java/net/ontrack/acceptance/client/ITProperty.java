@@ -13,14 +13,14 @@ import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ITProperty extends AbstractEnv {
+public class ITProperty extends AbstractIT {
 
     @Test
     public void editableProperty_french() {
         // Prerequisites
-        final ProjectSummary project = doCreateProject();
+        final ProjectSummary project = data.doCreateProject();
         // Call
-        List<EditableProperty> editableProperties = asAdmin(new PropertyClientCall<List<EditableProperty>>() {
+        List<EditableProperty> editableProperties = data.asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
             public List<EditableProperty> onCall(PropertyUIClient client) {
                 return client.getEditableProperties(
@@ -54,9 +54,9 @@ public class ITProperty extends AbstractEnv {
     @Test
     public void editableProperty_english() {
         // Prerequisites
-        final ProjectSummary project = doCreateProject();
+        final ProjectSummary project = data.doCreateProject();
         // Call
-        List<EditableProperty> editableProperties = asAdmin(new PropertyClientCall<List<EditableProperty>>() {
+        List<EditableProperty> editableProperties = data.asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
             public List<EditableProperty> onCall(PropertyUIClient client) {
                 return client.getEditableProperties(

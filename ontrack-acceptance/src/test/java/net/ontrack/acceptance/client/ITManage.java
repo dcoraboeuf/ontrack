@@ -12,14 +12,14 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class ITManage extends AbstractEnv {
+public class ITManage extends AbstractIT {
 
     @Test
     public void imageValidationStamp() throws IOException {
         // Prerequisites
-        final ValidationStampSummary validationStamp = doCreateValidationStamp();
+        final ValidationStampSummary validationStamp = data.doCreateValidationStamp();
         // Default image
-        byte[] defaultContent = anonymous(new ManageClientCall<byte[]>() {
+        byte[] defaultContent = data.anonymous(new ManageClientCall<byte[]>() {
             @Override
             public byte[] onCall(ManageUIClient client) {
                 return client.imageValidationStamp(
@@ -36,9 +36,9 @@ public class ITManage extends AbstractEnv {
                 defaultContent
         );
         // Test image
-        final MultipartFile file = mockImage("/images/fire.png");
+        final MultipartFile file = data.mockImage("/images/fire.png");
         // Sets the image
-        Ack ack = asAdmin(new ManageClientCall<Ack>() {
+        Ack ack = data.asAdmin(new ManageClientCall<Ack>() {
             @Override
             public Ack onCall(ManageUIClient client) {
                 return client.setImageValidationStamp(
@@ -52,7 +52,7 @@ public class ITManage extends AbstractEnv {
         assertNotNull(ack);
         assertTrue(ack.isSuccess());
         // Gets the image
-        byte[] content = anonymous(new ManageClientCall<byte[]>() {
+        byte[] content = data.anonymous(new ManageClientCall<byte[]>() {
             @Override
             public byte[] onCall(ManageUIClient client) {
                 return client.imageValidationStamp(
@@ -72,9 +72,9 @@ public class ITManage extends AbstractEnv {
     @Test
     public void imagePromotionLevel() throws IOException {
         // Prerequisites
-        final PromotionLevelSummary promotionLevel = doCreatePromotionLevel();
+        final PromotionLevelSummary promotionLevel = data.doCreatePromotionLevel();
         // Default image
-        byte[] defaultContent = anonymous(new ManageClientCall<byte[]>() {
+        byte[] defaultContent = data.anonymous(new ManageClientCall<byte[]>() {
             @Override
             public byte[] onCall(ManageUIClient client) {
                 return client.imagePromotionLevel(
@@ -91,9 +91,9 @@ public class ITManage extends AbstractEnv {
                 defaultContent
         );
         // Test image
-        final MultipartFile file = mockImage("/images/server.png");
+        final MultipartFile file = data.mockImage("/images/server.png");
         // Sets the image
-        Ack ack = asAdmin(new ManageClientCall<Ack>() {
+        Ack ack = data.asAdmin(new ManageClientCall<Ack>() {
             @Override
             public Ack onCall(ManageUIClient client) {
                 return client.setImagePromotionLevel(
@@ -107,7 +107,7 @@ public class ITManage extends AbstractEnv {
         assertNotNull(ack);
         assertTrue(ack.isSuccess());
         // Gets the image
-        byte[] content = anonymous(new ManageClientCall<byte[]>() {
+        byte[] content = data.anonymous(new ManageClientCall<byte[]>() {
             @Override
             public byte[] onCall(ManageUIClient client) {
                 return client.imagePromotionLevel(

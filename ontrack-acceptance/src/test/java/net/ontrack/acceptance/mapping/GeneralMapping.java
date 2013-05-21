@@ -1,7 +1,7 @@
 package net.ontrack.acceptance.mapping;
 
 import net.ontrack.acceptance.steps.GeneralSteps;
-import net.ontrack.acceptance.support.AccSupport;
+import net.ontrack.acceptance.support.DataSupport;
 import net.thucydides.core.annotations.Steps;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -10,6 +10,8 @@ public class GeneralMapping {
 
     @Steps
     private GeneralSteps generalSteps;
+    @Steps
+    private DataSupport dataSupport;
 
     @When("I am on the home page")
     public void home_page() {
@@ -52,7 +54,7 @@ public class GeneralMapping {
 
     private String getPasswordFor(String user) {
         if ("admin".equals(user)) {
-            return AccSupport.getAdminPassword();
+            return dataSupport.getAdminPassword();
         } else {
             return user;
         }

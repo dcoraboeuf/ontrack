@@ -1,13 +1,13 @@
 package net.ontrack.acceptance.mapping;
 
-import net.ontrack.acceptance.steps.DataSteps;
+import net.ontrack.acceptance.support.DataSupport;
 import net.thucydides.core.annotations.Steps;
 import org.jbehave.core.annotations.Given;
 
 public class DataMapping {
 
     @Steps
-    private DataSteps dataSteps;
+    private DataSupport dataSteps;
 
     @Given("a project $project exists with description \"$description\"")
     public void project_exists(String project, String description) {

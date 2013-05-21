@@ -11,11 +11,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ITAdmin extends AbstractEnv {
+public class ITAdmin extends AbstractIT {
 
     @Test
     public void admin_create_user() {
-        Account account = doCreateUser(
+        Account account = data.doCreateUser(
                 "ui_admin_01",
                 "UI admin 01",
                 "ui-admin-01@test.com",
@@ -34,9 +34,9 @@ public class ITAdmin extends AbstractEnv {
     @Test(expected = ClientForbiddenException.class)
     public void user_cannot_create_user() {
         // Prerequisistes
-        Account account = doCreateUser();
+        Account account = data.doCreateUser();
         // Using this account, tries to create a user
-        getClient().asUser(account.getName(), "test", new AdminClientCall<Void>() {
+        data.getClient().asUser(account.getName(), "test", new AdminClientCall<Void>() {
             @Override
             public Void onCall(AdminUIClient ui) {
                 ui.createAccount(new AccountCreationForm(
@@ -56,15 +56,15 @@ public class ITAdmin extends AbstractEnv {
     @Test
     public void admin_create_user_with_same_name() {
         // Prerequisites
-        final Account account = doCreateUser();
+        final Account account = data.doCreateUser();
         final String accountName = account.getName();
         // Creates the same user
-        assertClientMessage(
+        data.assertClientMessage(
                 new Runnable() {
 
                     @Override
                     public void run() {
-                        asAdmin(new AdminClientCall<Void>() {
+                        data.asAdmin(new AdminClientCall<Void>() {
                             @Override
                             public Void onCall(AdminUIClient ui) {
                                 ui.createAccount(new AccountCreationForm(
