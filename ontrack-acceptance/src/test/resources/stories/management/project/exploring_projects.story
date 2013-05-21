@@ -1,6 +1,8 @@
 Story: Exploring the projects
 
 Scenario: List of projects on the home page
+Meta:
+@smoke true
 
 Given a project TEST1 exists with description "Description for TEST1"
 When I am on the home page
@@ -13,6 +15,8 @@ And I am not logged
 Then I cannot create a project
 
 Scenario: Creating a project
+Meta:
+@prod false
 
 Given the project PRJ1 does not exist
 When I am on the home page
