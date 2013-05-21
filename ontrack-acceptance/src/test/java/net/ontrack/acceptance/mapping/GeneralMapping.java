@@ -3,7 +3,6 @@ package net.ontrack.acceptance.mapping;
 import net.ontrack.acceptance.steps.GeneralSteps;
 import net.ontrack.acceptance.support.AccSupport;
 import net.thucydides.core.annotations.Steps;
-import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
@@ -39,6 +38,11 @@ public class GeneralMapping {
     @Then("I cannot create a project")
     public void home_cannot_create_project() {
         generalSteps.home_cannot_create_project();
+    }
+
+    @Then("I do not see my user name")
+    public void general_no_user_name() {
+        generalSteps.general_no_user_name();
     }
 
     private String getPasswordFor(String user) {

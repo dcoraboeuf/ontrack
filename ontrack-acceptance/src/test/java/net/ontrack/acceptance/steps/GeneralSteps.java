@@ -6,12 +6,9 @@ import net.ontrack.acceptance.pages.LoginPage;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
 import net.thucydides.core.steps.ScenarioSteps;
-import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GeneralSteps extends ScenarioSteps {
 
@@ -48,6 +45,7 @@ public class GeneralSteps extends ScenarioSteps {
         assertNull(button);
     }
 
+    @Step
     public void general_login(String user, String password) {
         // Makes sure we are  not logged
         general_not_logged();
@@ -57,5 +55,11 @@ public class GeneralSteps extends ScenarioSteps {
         loginPage.login(user, password);
         // Validates we are logged in
         assertTrue("Cannot log user " + user, headerPage.isLogged());
+    }
+
+    @Step
+    public void general_no_user_name() {
+        String fullName = headerPage.getSignedUserName();
+        assertNull("User is logged as " + fullName, fullName);
     }
 }
