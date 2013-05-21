@@ -62,4 +62,10 @@ public class GeneralSteps extends ScenarioSteps {
         String fullName = headerPage.getSignedUserName();
         assertNull("User is logged as " + fullName, fullName);
     }
+
+    @Step
+    public void general_user_name(String fullName) {
+        String actualFullName = headerPage.getSignedUserName();
+        assertEquals("User is logged as " + actualFullName + " but expected " + fullName, fullName, actualFullName);
+    }
 }

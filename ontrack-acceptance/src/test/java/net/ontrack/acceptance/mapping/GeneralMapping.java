@@ -45,6 +45,11 @@ public class GeneralMapping {
         generalSteps.general_no_user_name();
     }
 
+    @Then("I see I am connected as \"$fullName\"")
+    public void general_user_name(String fullName) {
+        generalSteps.general_user_name(fullName);
+    }
+
     private String getPasswordFor(String user) {
         if ("admin".equals(user)) {
             return AccSupport.getAdminPassword();

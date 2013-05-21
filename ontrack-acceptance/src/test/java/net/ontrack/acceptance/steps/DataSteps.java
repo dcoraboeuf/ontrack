@@ -10,16 +10,13 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.security.SecurityRoles;
 import net.thucydides.core.annotations.Step;
-import net.thucydides.core.pages.Pages;
-import net.thucydides.core.steps.ScenarioSteps;
 import org.apache.commons.lang3.StringUtils;
 
-public class DataSteps extends ScenarioSteps {
+public class DataSteps {
 
     private final ClientSupport client;
 
-    public DataSteps(Pages pages) {
-        super(pages);
+    public DataSteps() {
         // Base URL
         String url = System.getProperty("webdriver.base.url");
         if (StringUtils.isBlank(url)) {
