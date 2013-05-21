@@ -14,22 +14,22 @@
             </a>
             <ul class="dropdown-menu">
                 <#if secAdmin() >
-                    <li><a href="gui/admin/accounts"><@lh key="accounts" /></a></li>
-                    <li><a href="gui/admin/settings"><@lh key="settings" /></a></li>
-                    <li><a href="gui/admin/allSubscriptions"><@lh key="admin.subscriptions" /></a></li>
+                    <li><a id="header-accounts" href="gui/admin/accounts"><@lh key="accounts" /></a></li>
+                    <li><a id="header-settings" href="gui/admin/settings"><@lh key="settings" /></a></li>
+                    <li><a id="header-all-subscriptions" href="gui/admin/allSubscriptions"><@lh key="admin.subscriptions" /></a></li>
                 </#if>
                 <!-- Profile page -->
-                <li><a href="gui/admin/profile"><@lh key="profile" /></a></li>
+                <li><a id="header-profile" href="gui/admin/profile"><@lh key="profile" /></a></li>
                 <!-- Subscriptions -->
                 <#if secSubscriber()>
-                    <li><a href="gui/admin/subscriptions"><@lh key="subscription.management" /></a></li>
+                    <li><a id="header-subscriptions" href="gui/admin/subscriptions"><@lh key="subscription.management" /></a></li>
                 </#if>
                 <!-- Extensions -->
                 <#list extensionTopLevelActions() as action>
                     <li><a href="${action.path?html}">${action.title?html}</a></li>
                 </#list>
                 <!-- Signing out -->
-                <li><a href="logout"><@lh key="logout" /></a></li>
+                <li><a id="header-signout" href="logout"><@lh key="logout" /></a></li>
             </ul>
         </li>
     <#else/>

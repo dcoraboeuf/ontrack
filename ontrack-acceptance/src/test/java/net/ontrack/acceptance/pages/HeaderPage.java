@@ -20,8 +20,15 @@ public class HeaderPage extends AbstractPage {
     }
 
     public void signOut() {
-        // FIXME Implement net.ontrack.acceptance.pages.HeaderPage.signOut
+        // Displays the user menu
+        displayUserMenu();
+        // Clicks on the signout
+        findBy("#header-signout").click();
+    }
 
+    public void displayUserMenu() {
+        findBy("#header-user").click();
+        waitFor("#header-signout");
     }
 
     public LoginPage signIn() {
