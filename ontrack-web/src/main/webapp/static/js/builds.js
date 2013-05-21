@@ -324,6 +324,49 @@ var Builds = function () {
 	    // Go
 	    location = url;
 	}
+
+    function promoteBuild (project, branch, build) {
+        // Gets the list of promotions
+        AJAX.get({
+            url: 'ui/manage/project/{0}/branch/{1}/promotion_level'.format(project, branch),
+            successFn: function (promotionLevels) {
+                // Displays the dialog
+                Application.dialog({
+                    id: 'build-promotion',
+                    title: loc('build.promote.title', build),
+                    openFn: function () {
+                        $('#build-promotion-description').val('');
+                        $('#build-promotion-promotionLevel').empty();
+                        $.each(promotionLevels, function (index, promotionLevel) {
+                            var option = $('<option></option>')
+                                .attr('value', promotionLevel.name)
+                                .text(promotionLevel.name);
+                            $('#build-promotion-promotionLevel').append(option);
+                        });
+                    },
+                    submitFn: function (closeFn) {
+                        // Collects the data
+                        var promotionLevel = $('#build-promotion-promotionLevel').val();
+                        var description = $('#build-promotion-description').val();
+                        // Call
+                        AJAX.post({
+                            url: 'ui/control/project/{0}/branch/{1}/build/{2}/promotion_level/{3}'.format(project, branch, build, promotionLevel),
+                            data: {
+                                description: description
+                            },
+                            loading: {
+                                el: $('#build-promotion-submit')
+                            },
+                            successFn: function (result) {
+                                closeFn();
+                                location.reload();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
 	
 	return {
 	    // Templating
@@ -331,6 +374,8 @@ var Builds = function () {
 		buildValidationStampTemplate: buildValidationStampTemplate,
 		buildPromotionLevelsTemplate: buildPromotionLevelsTemplate,
 		generateTableBranchBuilds: generateTableBranchBuilds,
+        // Dialogs
+        promoteBuild: promoteBuild,
 		// Filter management
 		showFilter: showFilter,
 		filterFormTemplate: filterFormTemplate,

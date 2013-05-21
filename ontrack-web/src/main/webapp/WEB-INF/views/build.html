@@ -1,6 +1,7 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="build" title=build.name modules=["projects","branches","builds","validation_stamps","audit","properties"] breadcrumbs = {loc("home"): "", build.branch.project.name?html: "gui/project/${build.branch.project.name?html}", build.branch.name?html: "gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"}>
+    <@build_promotion />
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -10,6 +11,9 @@
                     / ${build.name?html}
                 </span>
                 <span class="action action-optional">
+                    <#if secAdmin()>
+                        <span onclick="Builds.promoteBuild('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')"><i class="icon-star"></i> <@lh key="build.promote" /></span>
+                    </#if>
                     <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>

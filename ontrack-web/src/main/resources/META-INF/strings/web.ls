@@ -640,6 +640,17 @@ build.promotion_levels.none
     en -> No promotion
     fr -> Aucune promotion
 
+build.promote
+    en -> Promote
+    fr -> Promouvoir
+
+build.promote.submit
+    en,fr -> @[build.promote]
+
+build.promote.title
+    en -> Promotion of build {0}
+    fr -> Promotion du build {0}
+
 [runs]
 
 validationRun
