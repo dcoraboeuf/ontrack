@@ -79,23 +79,14 @@ public class DataSupport {
 
     @Step
     public void define_user(final String name, final String fullName, final String password) {
-        asAdmin(new AdminClientCall<Void>() {
-            @Override
-            public Void onCall(AdminUIClient ui) {
-                ui.createAccount(
-                        new AccountCreationForm(
-                                name,
-                                fullName,
-                                name + "@test.com",
-                                SecurityRoles.USER,
-                                "builtin",
-                                password,
-                                password
-                        )
-                );
-                return null;
-            }
-        });
+        doCreateUser(
+                name,
+                fullName,
+                name + "@test.com",
+                SecurityRoles.USER,
+                "builtin",
+                password
+        );
     }
 
     @Step
