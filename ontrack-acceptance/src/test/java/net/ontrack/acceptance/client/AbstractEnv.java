@@ -2,6 +2,7 @@ package net.ontrack.acceptance.client;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import net.ontrack.acceptance.support.AccSupport;
 import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.ManageUIClient;
@@ -19,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.lang.String.format;
+import static net.ontrack.acceptance.support.AccSupport.getAdminPassword;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractEnv {
@@ -185,7 +187,7 @@ public abstract class AbstractEnv {
     }
 
     protected <T> T asAdmin(ManageClientCall<T> call) {
-        return client.asUser("admin", "admin", call);
+        return client.asUser("admin", getAdminPassword(), call);
     }
 
     protected <T> T anonymous(ManageClientCall<T> call) {
@@ -193,15 +195,15 @@ public abstract class AbstractEnv {
     }
 
     protected <T> T asAdmin(ControlClientCall<T> call) {
-        return client.asUser("admin", "admin", call);
+        return client.asUser("admin", getAdminPassword(), call);
     }
 
     protected <T> T asAdmin(PropertyClientCall<T> call) {
-        return client.asUser("admin", "admin", call);
+        return client.asUser("admin", getAdminPassword(), call);
     }
 
     protected <T> T asAdmin(AdminClientCall<T> call) {
-        return client.asUser("admin", "admin", call);
+        return client.asUser("admin", getAdminPassword(), call);
     }
 
     protected MultipartFile mockImage(String path) {

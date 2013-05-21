@@ -1,6 +1,7 @@
 package net.ontrack.acceptance.mapping;
 
 import net.ontrack.acceptance.steps.GeneralSteps;
+import net.ontrack.acceptance.support.AccSupport;
 import net.thucydides.core.annotations.Steps;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.Then;
@@ -42,18 +43,9 @@ public class GeneralMapping {
 
     private String getPasswordFor(String user) {
         if ("admin".equals(user)) {
-            return getAdminPassword();
+            return AccSupport.getAdminPassword();
         } else {
             return user;
-        }
-    }
-
-    private String getAdminPassword() {
-        String pwd = System.getProperty("itAdminPassword");
-        if (StringUtils.isNotBlank(pwd)) {
-            return pwd;
-        } else {
-            return "admin";
         }
     }
 
