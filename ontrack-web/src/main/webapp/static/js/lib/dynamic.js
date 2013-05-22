@@ -1,4 +1,4 @@
-define(['common','jquery','require','render','text!template/dynamic-section.html'], function (common, $, require, render) {
+define(['common','jquery','require','render','text!template/dynamic-section.html','ajax'], function (common, $, require, render, section, AJAX) {
 
     $('.dynamic').each(function (index, section) {
         // Gets the data from the section
@@ -85,7 +85,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
                 url += '&count=' + config.count;
             }
             // Starts loading
-            $('#' + id + '-error').hide();
+            $('#' + config.id + '-error').hide();
             // Call
             if (config.data) {
                 AJAX.post ({
@@ -102,33 +102,29 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
                             // Management of the 'more'
                             moreStatus(id, config, data);
                         } catch (message) {
-                            error(id, message);
+                            AJAX.elementErrorMessageFn('#' + config.id + '-error')(message);
                         }
                     },
-                    errorFn: AJAX.simpleAjaxErrorFn(function (message) {
-                        error(id, message);
-                    })
+                    errorFn: AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#' + config.id + '-error'))
                 });
             } else {
                 AJAX.get({
                     url: url,
                     loading: {
                         mode: config.showLoading ? 'container' : 'none',
-                        el: '#' + id + '-loading'
+                        el: '#' + config.id + '-loading'
                     },
                     successFn: function (data) {
                         // Uses the data
                         try {
-                            display(id, append, config, data);
+                            display(config.id, append, config, data);
                             // Management of the 'more'
-                            moreStatus(id, config, data);
+                            moreStatus(config, data);
                         } catch (message) {
-                            error(id, message);
+                            AJAX.elementErrorMessageFn('#' + config.id + '-error')(message);
                         }
                     },
-                    errorFn: AJAX.simpleAjaxErrorFn(function (message) {
-                        error(id, message);
-                    })
+                    errorFn: AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#' + config.id + '-error'))
                 });
             }
         } else {

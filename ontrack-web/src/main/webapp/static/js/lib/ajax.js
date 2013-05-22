@@ -1,4 +1,4 @@
-var AJAX = function () {
+define(function () {
 
     /**
      * Performs a PUT request
@@ -123,7 +123,7 @@ var AJAX = function () {
             } else if (c.mode == 'container') {
                 $(config.el).empty();
                 if (show) {
-                    $(config.el).append('<div class="loading">{0}</div>'.format(loc('general.loading')));
+                    $(config.el).append('<div class="loading">{0}</div>'.format('general.loading'.loc()));
                 }
             } else if (c.mode == 'toggle') {
                 if (show) {
@@ -205,4 +205,4 @@ var AJAX = function () {
         elementErrorMessageFn: elementErrorMessageFn
     };
 
-} ();
+});

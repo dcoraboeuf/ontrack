@@ -22,4 +22,14 @@ define(function () {
         return text.replace(/\n/g, '<br/>');
     };
 
+    String.prototype.loc = function (args) {
+        var code = this;
+        var text = l[code];
+        if (text != null) {
+            return text.format(args);
+        } else {
+            return "##" + code + "##";
+        }
+    };
+
 });

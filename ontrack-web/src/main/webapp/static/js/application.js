@@ -24,20 +24,6 @@ String.prototype.htmlWithLines = function() {
 
 // Global functions
 
-function loc () {
-	var code = arguments[0];
-	var text = l[code];
-	if (text != null) {
-		var params = []	;
-		for (var i = 1 ; i < arguments.length ; i++) {
-			params.push(arguments[i]);
-		}
-		return text.format (params);
-	} else {
-		return "##" + code + "##";
-	}
-}
-
 function formatTimePart (n) {
     if (n < 10) {
         return '0' + n;
