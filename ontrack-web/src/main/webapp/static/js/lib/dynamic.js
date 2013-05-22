@@ -36,7 +36,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
             count: 10,
             more: false,
             showLoading: true,
-            // TODO render: defaultRender,
+            render: defaultRender,
             dataLength: function (data) {
                 return data.length;
             }
@@ -49,6 +49,13 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
         // Initialisation
         init(config);
     });
+
+    function defaultRender (containerId, append, config, data) {
+        // FIXME Use table module
+        table(containerId, false, config, data, function (item) {
+            return String(item).html();
+        });
+    }
 
     function init (config) {
         // Associates the template definition with the ID
@@ -75,6 +82,31 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
         }
     }
 
+    function getConfig(config, name) {
+        return config[name] || config.controller[name];
+    }
+
+    function display (config, append, data) {
+        var containerId = config.id + '-list';
+        var render = getConfig(config, 'render');
+        if (render) {
+            var preProcessingFn = getConfig(config, 'preProcessingFn');
+            // Preprocessing?
+            if (preProcessingFn) {
+                data = preProcessingFn(config, data, append);
+            }
+            // Rendering
+            render(containerId, append, config, data);
+            // Post rendering
+            var postRenderFn = getConfig(config, 'postRenderFn');
+            if (postRenderFn) {
+                postRenderFn(config);
+            }
+        } else {
+            throw '[dynamic] "{0}" section does not define any "render" function.'.format(config.id);
+        }
+    }
+
     function load (config, append) {
         // Gets the loading information
         var url = getUrl(config);
@@ -98,9 +130,9 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
                     successFn: function (data) {
                         // Uses the data
                         try {
-                            display(id, append, config, data);
+                            display(config, append, data);
                             // Management of the 'more'
-                            moreStatus(id, config, data);
+                            moreStatus(config, data);
                         } catch (message) {
                             AJAX.elementErrorMessageFn('#' + config.id + '-error')(message);
                         }
@@ -117,7 +149,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
                     successFn: function (data) {
                         // Uses the data
                         try {
-                            display(config.id, append, config, data);
+                            display(config, append, data);
                             // Management of the 'more'
                             moreStatus(config, data);
                         } catch (message) {
