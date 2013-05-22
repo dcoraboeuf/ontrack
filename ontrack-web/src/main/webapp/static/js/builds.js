@@ -345,12 +345,34 @@ var Builds = function () {
                                 .text(promotionLevel.name);
                             $('#build-promotion-promotionLevel').append(option);
                         });
+                        // TODO Date picker to externalize (see #160)
                         // Date picker
+                        var now = new Date();
                         $('#build-promotion-creation').datepicker('destroy');
                         $('#build-promotion-creation').datepicker({
                             showOtherMonths: true,
                             selectOtherMonths: true
                         });
+                        $('#build-promotion-creation').datepicker('setDate', now);
+                        // Time picker
+                        $('#build-promotion-creation-time').empty();
+                        var currentHour = now.getHours();
+                        var currentQuarter = Math.round(now.getMinutes() / 15);
+                        for (var hour = 0 ; hour < 24 ; hour++) {
+                            var formattedHours = formatTimePart(hour);
+                            for (var quarter = 0 ; quarter < 4 ; quarter++) {
+                                var minutes = quarter * 15;
+                                var formattedMinutes = formatTimePart(minutes);
+                                var formattedTime = "{0}:{1}".format(formattedHours, formattedMinutes);
+                                var option = $('<option></option>')
+                                    .attr('value', hour * 60 + minutes)
+                                    .text(formattedTime);
+                                if (currentHour == hour && currentQuarter == quarter) {
+                                    option.attr('selected', 'selected');
+                                }
+                                $('#build-promotion-creation-time').append(option);
+                            }
+                        }
                     },
                     submitFn: function (closeFn) {
                         // Collects the data
@@ -361,10 +383,16 @@ var Builds = function () {
                             description: description
                         };
                         // Date
+                        var time;
                         var creation = $('#build-promotion-creation').datepicker('getDate');
                         if (creation != null) {
-                            data.creation = creation.getTime();
+                            time = creation.getTime();
+                        } else {
+                            time = new Date().getTime();
                         }
+                        // Time
+                        var selectedTimeInMinutes = Number($('#build-promotion-creation-time').val());
+                        data.creation = time + selectedTimeInMinutes * 60 * 1000;
                         // Call
                         AJAX.post({
                             url: 'ui/control/project/{0}/branch/{1}/build/{2}/promotion_level/{3}'.format(project, branch, build, promotionLevel),

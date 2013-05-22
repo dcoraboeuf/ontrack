@@ -38,6 +38,14 @@ function loc () {
 	}
 }
 
+function formatTimePart (n) {
+    if (n < 10) {
+        return '0' + n;
+    } else {
+        return '' + n;
+    }
+}
+
 // source: http://www.w3schools.com/js/js_cookies.asp
 function getCookie(c_name) {
     var i,x,y,ARRcookies=document.cookie.split(";");
