@@ -147,9 +147,17 @@ var Application = function () {
 		// Sets the submit function
 		$('#' + config.id).unbind('submit');
 		$('#' + config.id).submit(function () {
-			config.submitFn(function () {
-				$('#' + config.id).dialog('close');
-			});
+            try {
+                config.submitFn(function () {
+                    $('#' + config.id).dialog('close');
+                });
+            } catch (e) {
+                if (console) {
+                    console.log(e);
+                } else {
+                    alert(e);
+                }
+            }
 			return false;
 		});
 		// Sets the cancel button (if any)

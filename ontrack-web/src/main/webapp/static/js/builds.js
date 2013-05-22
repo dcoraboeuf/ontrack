@@ -335,7 +335,9 @@ var Builds = function () {
                     id: 'build-promotion',
                     title: loc('build.promote.title', build),
                     openFn: function () {
+                        // No description by default
                         $('#build-promotion-description').val('');
+                        // List of promotion levels
                         $('#build-promotion-promotionLevel').empty();
                         $.each(promotionLevels, function (index, promotionLevel) {
                             var option = $('<option></option>')
@@ -343,17 +345,30 @@ var Builds = function () {
                                 .text(promotionLevel.name);
                             $('#build-promotion-promotionLevel').append(option);
                         });
+                        // Date picker
+                        $('#build-promotion-creation').datepicker('destroy');
+                        $('#build-promotion-creation').datepicker({
+                            showOtherMonths: true,
+                            selectOtherMonths: true
+                        });
                     },
                     submitFn: function (closeFn) {
                         // Collects the data
                         var promotionLevel = $('#build-promotion-promotionLevel').val();
                         var description = $('#build-promotion-description').val();
+                        // Data to send
+                        var data = {
+                            description: description
+                        };
+                        // Date
+                        var creation = $('#build-promotion-creation').datepicker('getDate');
+                        if (creation != null) {
+                            data.creation = creation.getTime();
+                        }
                         // Call
                         AJAX.post({
                             url: 'ui/control/project/{0}/branch/{1}/build/{2}/promotion_level/{3}'.format(project, branch, build, promotionLevel),
-                            data: {
-                                description: description
-                            },
+                            data: data,
                             loading: {
                                 el: $('#build-promotion-submit')
                             },

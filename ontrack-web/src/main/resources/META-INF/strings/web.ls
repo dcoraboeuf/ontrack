@@ -644,6 +644,10 @@ build.promote
     en -> Promote
     fr -> Promouvoir
 
+build.promote.date
+    en -> Promotion date
+    fr -> Date de promotion
+
 build.promote.submit
     en,fr -> @[build.promote]
 

@@ -218,6 +218,9 @@
 <#macro build_promotion>
     <@dialog id="build-promotion">
         <@form_select name="build-promotion-promotionLevel" label=loc('model.promotion_level') />
+        <@form_field name="build-promotion-creation" label=loc('build.promote.date')>
+            <input id="build-promotion-creation" type="text" />
+        </@form_field>
         <@form_memo name="build-promotion-description" label=loc('model.description') required=false />
 
         <@dialog_button id="build-promotion-submit" class="btn-primary" text=loc('build.promote.submit') />
