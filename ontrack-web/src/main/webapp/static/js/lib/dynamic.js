@@ -53,6 +53,7 @@ define(['common','jquery','require'], function (common, $, require) {
     function init (config) {
         // Associates the template definition with the ID
         $(config.section).data('dynamic-config', config);
+        // TODO Sections
         // Loading
         load(config, false);
         // Reloading?
@@ -82,8 +83,6 @@ define(['common','jquery','require'], function (common, $, require) {
                 url += '&offset=' + config.offset;
                 url += '&count=' + config.count;
             }
-            // Logging
-            // console.log('Template.load id={0},url={1},more={2},append={3}'.format(id, url, config.more, append));
             // Starts loading
             $('#' + id + '-error').hide();
             // Call
