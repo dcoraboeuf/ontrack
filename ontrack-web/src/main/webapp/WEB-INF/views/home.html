@@ -1,11 +1,11 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" modules=["projects","audit"]>
+<@layout_std page="home" modules=["audit"]>
 	<div class="container-fluid">
 		<div class="row-fluid">
             <div class="span3">
                 <@panel title=loc("home.projects")>
-                    <@projects create=secAdmin() />
+                    <div id="projects" class="dynamic" dynamic-controller="home.projects"></div>
                 </@panel>
             </div>
 			<div class="span9">
