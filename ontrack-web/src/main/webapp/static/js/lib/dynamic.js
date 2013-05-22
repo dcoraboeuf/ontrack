@@ -1,4 +1,4 @@
-define(['common','jquery','require'], function (common, $, require) {
+define(['common','jquery','require','render','text!template/dynamic-section.html'], function (common, $, require, render) {
 
     $('.dynamic').each(function (index, section) {
         // Gets the data from the section
@@ -53,7 +53,8 @@ define(['common','jquery','require'], function (common, $, require) {
     function init (config) {
         // Associates the template definition with the ID
         $(config.section).data('dynamic-config', config);
-        // TODO Sections
+        // Sections
+        render.renderInto(config.section, 'dynamic-section', config);
         // Loading
         load(config, false);
         // Reloading?

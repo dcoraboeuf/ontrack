@@ -8,6 +8,7 @@
 requirejs.config({
     baseUrl: 'static/js/lib',
     paths: {
-        'app': '../app'
+        'app': '../app',
+        'template': '../app/template'
     }
 });
