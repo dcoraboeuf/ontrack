@@ -9,6 +9,9 @@ requirejs.config({
     baseUrl: 'static/js/lib',
     paths: {
         'app': '../app',
-        'template': '../app/template'
+        'template': '../app/template',
+        'bootstrap': '../../../static/bootstrap/js/bootstrap.min'
     }
 });
+
+require(['jquery','bootstrap']);
