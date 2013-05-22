@@ -1,3 +1,2 @@
-define(function (require) {
-    var dynamic = require('dynamic');
+define(['app/controller/project-list', 'dynamic'], function () {
 });
