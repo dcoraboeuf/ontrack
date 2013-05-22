@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var $ = require("jquery-1.9.0");
+    var $ = require('jquery');
 
     $('.dynamic').each(function (index, section) {
         console.log(section);
