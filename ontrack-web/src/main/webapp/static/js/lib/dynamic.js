@@ -10,10 +10,10 @@ define(['common','jquery','require'], function (common, $, require) {
         }
         // Loads the controller
         var controller = require('app/controller/' + controllerId);
-        // Checks the controller
-        if (typeof controller.load === 'undefined') {
-            throw '[dynamic] Controller {1} defined for section "{0}" does not have any "load" method.'.format(controllerId, id);
-        }
+        // TODO Checks the controller
+        // if (typeof controller.load === 'undefined') {
+        //    throw '[dynamic] Controller {1} defined for section "{0}" does not have any "load" method.'.format(controllerId, id);
+        // }
         // Creates the configuration
         var config = {
             id: id,
