@@ -36,11 +36,11 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
             count: 10,
             more: false,
             showLoading: true,
-            render: defaultRender,
+            render: render.defaultRender,
             dataLength: function (data) {
                 return data.length;
-            }
-            // TODO placeholder: loc('general.empty')
+            },
+            placeholder: 'general.empty'.loc()
         }, config);
         // Logging
         if (console) {
@@ -49,13 +49,6 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
         // Initialisation
         init(config);
     });
-
-    function defaultRender (containerId, append, config, data) {
-        // FIXME Use table module
-        table(containerId, false, config, data, function (item) {
-            return String(item).html();
-        });
-    }
 
     function init (config) {
         // Associates the template definition with the ID
@@ -87,7 +80,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
     }
 
     function display (config, append, data) {
-        var containerId = config.id + '-list';
+        var container = $('#' + config.id + '-content');
         var render = getConfig(config, 'render');
         if (render) {
             var preProcessingFn = getConfig(config, 'preProcessingFn');
@@ -96,7 +89,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
                 data = preProcessingFn(config, data, append);
             }
             // Rendering
-            render(containerId, append, config, data);
+            render(container, append, config, data);
             // Post rendering
             var postRenderFn = getConfig(config, 'postRenderFn');
             if (postRenderFn) {
@@ -104,6 +97,23 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
             }
         } else {
             throw '[dynamic] "{0}" section does not define any "render" function.'.format(config.id);
+        }
+    }
+
+    function moreStatus(config, data) {
+        if (config.more) {
+            var dataCount = config.dataLength(data);
+            config.offset += dataCount;
+            var hasMore = (dataCount >= config.count);
+            if ($.isFunction(config.more)) {
+                config.more(config, data, hasMore);
+            } else {
+                if (hasMore) {
+                    $('#'+ config.id + '-more-section').show();
+                } else {
+                    $('#'+ config.id + '-more-section').hide();
+                }
+            }
         }
     }
 
