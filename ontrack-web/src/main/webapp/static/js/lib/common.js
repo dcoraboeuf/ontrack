@@ -1,5 +1,7 @@
 define(function () {
 
+    var logging = false;
+
     String.prototype.format = function() {
         var args = arguments;
         return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function(m, n) {
@@ -35,7 +37,7 @@ define(function () {
     return {
         log: function (context) {
            return function (message, args) {
-               if (console) {
+               if (logging && console) {
                    if (args) {
                        console.log('[{1}] {0}'.format(message, context), args);
                    } else {
