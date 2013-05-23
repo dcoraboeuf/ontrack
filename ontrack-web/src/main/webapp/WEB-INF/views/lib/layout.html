@@ -9,7 +9,7 @@
 	</#if>
 </#macro>
 
-<#macro layout_root page extension=false style=false script=false scripts=[] modules=[] title="">
+<#macro layout_root page extension=false style=false noscript=false scripts=[] modules=[] title="">
 	<!DOCTYPE html>
 	<html lang="${locSelected()}">
 		<head>
@@ -38,18 +38,24 @@
             <script src="${base}/js/require.js" data-main="${base}/js/boot" type="text/javascript"></script>
 
             <!-- Loading the page specific script -->
-            <#if extension>
+            <#if noscript>
                 <script type="text/javascript">
-                    require(['boot'], function (main) {
-                        require(['extension/${page}']);
-                    });
+                    require(['boot']);
                 </script>
             <#else>
-                <script type="text/javascript">
-                    require(['boot'], function (main) {
-                        require(['app/${page}']);
-                    });
-                </script>
+                <#if extension>
+                    <script type="text/javascript">
+                        require(['boot'], function (main) {
+                            require(['extension/${page}']);
+                        });
+                    </script>
+                <#else>
+                    <script type="text/javascript">
+                        require(['boot'], function (main) {
+                            require(['app/${page}']);
+                        });
+                    </script>
+                </#if>
             </#if>
 
             <!--
@@ -85,8 +91,8 @@
 	</html>
 </#macro>
 
-<#macro layout_basic page extension=false style=false script=false scripts=[] modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
-	<@layout_root page=page extension=extension style=style script=script scripts=scripts modules=modules title=title>
+<#macro layout_basic page extension=false style=false noscript=false scripts=[] modules=[] title="" showSecurity=true showLanguage=true showVersion=true>
+	<@layout_root page=page extension=extension style=style noscript=noscript scripts=scripts modules=modules title=title>
 		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
@@ -122,8 +128,8 @@
 	</@layout_root>
 </#macro>
 
-<#macro layout_std page extension=false style=false script=false scripts=[] modules=[] title="" showSecurity=true breadcrumbs = {}>
-	<@layout_basic page=page extension=extension style=style script=script scripts=scripts modules=modules title=title showSecurity=showSecurity>
+<#macro layout_std page extension=false style=false noscript=false scripts=[] modules=[] title="" showSecurity=true breadcrumbs = {}>
+	<@layout_basic page=page extension=extension style=style noscript=noscript scripts=scripts modules=modules title=title showSecurity=showSecurity>
 		<ul class="breadcrumb">
 			<#list breadcrumbs?keys as key>
 				<#assign link = breadcrumbs[key]>

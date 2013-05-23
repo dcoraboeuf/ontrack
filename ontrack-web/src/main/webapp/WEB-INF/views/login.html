@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="login" showSecurity=false>
+<@layout_std page="login" showSecurity=false noscript=true>
     <form action="j_spring_security_check" method="POST" class="form-horizontal">
         <#if callbackUrl??>
             <input name="callbackUrl" type="hidden" value="${callbackUrl?html}" />
