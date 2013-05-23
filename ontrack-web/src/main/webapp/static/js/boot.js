@@ -14,4 +14,4 @@ requirejs.config({
     }
 });
 
-require(['jquery','bootstrap']);
+require(['jquery','bootstrap','app/controller/information-message','app/controller/user-message']);

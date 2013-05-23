@@ -1,4 +1,4 @@
-define(['handlebars'], function (handlebars) {
+define(['common','handlebars'], function (common, handlebars) {
 
 
     function render (template, model) {
@@ -43,12 +43,14 @@ define(['handlebars'], function (handlebars) {
             // No table defined, or no need to append
             // Some items
             if (items.length && items.length > 0) {
+                common.log('render')('Rendering generated table {0} into '.format(config.id), target);
                 // Direct filling of the container
                 $(target).empty();
                 $(target).append(generateTable(items, itemFn));
             }
             // No items
             else {
+                common.log('render')('Rendering empty table {0} into '.format(config.id), target);
                 $(target).empty();
                 $(target).append('<div class="alert">{0}</div>'.format(config.placeholder));
             }

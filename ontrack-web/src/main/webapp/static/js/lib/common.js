@@ -32,4 +32,18 @@ define(function () {
         }
     };
 
+    return {
+        log: function (context) {
+           return function (message, args) {
+               if (console) {
+                   if (args) {
+                       console.log('[{1}] {0}'.format(message, context), args);
+                   } else {
+                       console.log('[{1}] {0}'.format(message, context));
+                   }
+               }
+           }
+        }
+    }
+
 });

@@ -132,8 +132,10 @@
 			<li class="active"><@layout_title page=page title=title /></li>
 		</ul>
 		<div class="container">
-            <@information_message />
-            <@user_message />
+            <div id="information-message" class="dynamic" dynamic-controller="information-message"></div>
+            <!--
+            <div id="user-message" class="dynamic" dynamic-controller="user-message" />
+            -->
 			<#nested>
 		</div>
 	</@layout_basic>
