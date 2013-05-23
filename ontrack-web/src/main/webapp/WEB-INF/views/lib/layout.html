@@ -133,9 +133,12 @@
 		</ul>
 		<div class="container">
             <div id="information-message" class="dynamic" dynamic-controller="information-message"></div>
-            <!--
-            <div id="user-message" class="dynamic" dynamic-controller="user-message" />
-            -->
+            <#if message??>
+                <div id="layout-user-message" class="alert alert-${message.type}">
+                    ${message.message?html}
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                </div>
+            </#if>
 			<#nested>
 		</div>
 	</@layout_basic>

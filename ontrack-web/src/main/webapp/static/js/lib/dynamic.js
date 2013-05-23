@@ -1,4 +1,4 @@
-define(['common','jquery','require','render','text!template/dynamic-section.html','ajax'], function (common, $, require, render, sectionTemplate, AJAX) {
+define(['require','common','jquery','render','text!template/dynamic-section.html','ajax'], function (require, common, $, render, sectionTemplate, AJAX) {
 
     $('.dynamic').each(function (index, section) {
         // Gets the data from the section

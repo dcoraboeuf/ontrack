@@ -11,7 +11,12 @@ requirejs.config({
         'app': '../app',
         'template': '../app/template',
         'bootstrap': '../../../static/bootstrap/js/bootstrap.min'
+    },
+    shim: {
+        'bootstrap': {
+            deps: ['jquery']
+        }
     }
 });
 
-require(['jquery','bootstrap','app/controller/information-message','app/controller/user-message']);
+require(['jquery','bootstrap','app/controller/information-message']);
