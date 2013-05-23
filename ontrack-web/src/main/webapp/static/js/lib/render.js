@@ -1,13 +1,12 @@
-define(['require','handlebars'], function (require, handlebars) {
+define(['handlebars'], function (handlebars) {
 
 
-    function render (templateId, model) {
-        var template = require('text!template/' + templateId + '.html');
+    function render (template, model) {
         return Handlebars.compile(template)(model);
     }
 
-    function renderInto (target, templateId, model) {
-        $(target).html(render(templateId, model));
+    function renderInto (target, template, model) {
+        $(target).html(render(template, model));
     }
 
     function defaultRender (container, append, config, data) {
@@ -56,6 +55,18 @@ define(['require','handlebars'], function (require, handlebars) {
         }
     }
 
+    function asTable (itemFn) {
+        return function (target, append, config, items) {
+            tableInto(target, append, config, items, itemFn);
+        };
+    }
+
+    function asTableTemplate (rowTemplate) {
+        return asTable (function (item) {
+            return render (rowTemplate, item);
+        });
+    }
+
     return {
         // Low level rendering using templates
         render: render,
@@ -63,7 +74,8 @@ define(['require','handlebars'], function (require, handlebars) {
         // Defaults
         defaultRender: defaultRender,
         // Table rendering
-        tableInto: tableInto
+        tableInto: tableInto,
+        asTableTemplate: asTableTemplate
     }
 
 });

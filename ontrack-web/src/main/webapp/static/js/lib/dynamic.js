@@ -1,4 +1,4 @@
-define(['common','jquery','require','render','text!template/dynamic-section.html','ajax'], function (common, $, require, render, section, AJAX) {
+define(['common','jquery','require','render','text!template/dynamic-section.html','ajax'], function (common, $, require, render, sectionTemplate, AJAX) {
 
     $('.dynamic').each(function (index, section) {
         // Gets the data from the section
@@ -42,10 +42,6 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
             },
             placeholder: 'general.empty'.loc()
         }, config);
-        // Logging
-        if (console) {
-            console.log(config);
-        }
         // Initialisation
         init(config);
     });
@@ -54,7 +50,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
         // Associates the template definition with the ID
         $(config.section).data('dynamic-config', config);
         // Sections
-        render.renderInto(config.section, 'dynamic-section', config);
+        render.renderInto(config.section, sectionTemplate, config);
         // Loading
         load(config, false);
         // Reloading?
@@ -76,7 +72,7 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
     }
 
     function getConfig(config, name) {
-        return config[name] || config.controller[name];
+        return config.controller[name] || config[name];
     }
 
     function display (config, append, data) {
