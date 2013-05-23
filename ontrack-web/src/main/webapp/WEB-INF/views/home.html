@@ -1,15 +1,16 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" modules=["audit"]>
+<@layout_std page="home">
 	<div class="container-fluid">
 		<div class="row-fluid">
             <div class="span3">
-                <@panel title=loc("home.projects")>
+                <section>
+                    <h4><@lh key="home.projects"/></h4>
                     <div id="projects" class="dynamic" dynamic-controller="project-list"></div>
-                </@panel>
+                </section>
             </div>
 			<div class="span9">
-                <@audit />
+                <div id="audit" class="dynamic" />
 			</div>
 		</div>
 	</div>

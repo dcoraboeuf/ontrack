@@ -6,14 +6,14 @@ define(['common','jquery','require','render','text!template/dynamic-section.html
         var controllerId = $(section).attr('dynamic-controller');
         // Checks the controller
         if (!controllerId || controllerId == '') {
-            throw '[dynamic] Controller is not defined for section "{0}".'.format(id);
+            $('#' + id)
+                .addClass('alert')
+                .addClass('alert-error')
+                .text('[dynamic] Controller is not defined for section "{0}".'.format(id))
+                .show();
         }
         // Loads the controller
         var controller = require('app/controller/' + controllerId);
-        // TODO Checks the controller
-        // if (typeof controller.load === 'undefined') {
-        //    throw '[dynamic] Controller {1} defined for section "{0}" does not have any "load" method.'.format(controllerId, id);
-        // }
         // Creates the configuration
         var config = {
             id: id,
