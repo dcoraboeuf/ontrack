@@ -208,3 +208,7 @@ ul.promotions li:first-child i {
     border: solid 1px darkgray;
     margin-bottom: 3px;
 }
+
+#header-signin {
+    margin-left: 1em;
+}
