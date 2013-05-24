@@ -31,7 +31,7 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
      */
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
-        return StringEscapeUtils.escapeHtml4(value);
+        return value == null ? "" : StringEscapeUtils.escapeHtml4(value);
     }
 
     /**
