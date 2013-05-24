@@ -13,6 +13,11 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
         } else {
             item.attr('type', 'button');
         }
+        // Any ID?
+        if (button.id) {
+            item.attr('id', button.id);
+        }
+        // OK
         return item;
     }
 
