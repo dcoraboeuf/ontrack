@@ -19,4 +19,4 @@ requirejs.config({
     }
 });
 
-require(['jquery','bootstrap','app/controller/information-message','common','app/controller/header']);
+require(['jquery','bootstrap','app/controller/information-message','common','dynamic','app/controller/header']);

@@ -12,37 +12,38 @@ define(['require','common','jquery','render','text!template/dynamic-section.html
 
             log('[{0}] Using controller "{1}"'.format(id, controllerId));
             // Loads the controller
-            var controller = require('app/controller/' + controllerId);
-            // Creates the configuration
-            var config = {
-                id: id,
-                section: section,
-                controller: controller
-            };
-            $(section.attributes).each(function (aindex, a) {
-                if (a.nodeName.match(/^dynamic-/)) {
-                    var name = a.nodeName.substring(8);
-                    if (name != 'controller') {
-                        config[name] = a.nodeValue;
+            require(['app/controller/' + controllerId], function (controller) {
+                // Creates the configuration
+                var config = {
+                    id: id,
+                    section: section,
+                    controller: controller
+                };
+                $(section.attributes).each(function (aindex, a) {
+                    if (a.nodeName.match(/^dynamic-/)) {
+                        var name = a.nodeName.substring(8);
+                        if (name != 'controller') {
+                            config[name] = a.nodeValue;
+                        }
                     }
-                }
+                });
+                // Default configuration
+                config = $.extend({}, {
+                    refresh: false,
+                    refreshInterval: 30000, // 30 seconds
+                    offset: 0,
+                    count: 10,
+                    more: false,
+                    showLoading: true,
+                    render: render.defaultRender,
+                    dataLength: function (data) {
+                        return data.length;
+                    },
+                    placeholder: 'general.empty'.loc()
+                }, config);
+                // Initialisation
+                init(config);
             });
-            // Default configuration
-            config = $.extend({}, {
-                refresh: false,
-                refreshInterval: 30000, // 30 seconds
-                offset: 0,
-                count: 10,
-                more: false,
-                showLoading: true,
-                render: render.defaultRender,
-                dataLength: function (data) {
-                    return data.length;
-                },
-                placeholder: 'general.empty'.loc()
-            }, config);
-            // Initialisation
-            init(config);
         }
     });
 
