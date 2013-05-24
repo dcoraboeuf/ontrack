@@ -1,6 +1,6 @@
-define(['text!template/information-message.html','render'], function(template,render) {
+define(['render'], function(render) {
     return {
         url: 'ui/info/message',
-        render: render.asSimpleTemplate(template)
+        render: render.asSimpleTemplate('information-message')
     }
 });

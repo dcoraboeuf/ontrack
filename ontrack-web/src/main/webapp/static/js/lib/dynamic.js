@@ -1,4 +1,4 @@
-define(['require','common','jquery','render','text!template/dynamic-section.html','ajax'], function (require, common, $, render, sectionTemplate, AJAX) {
+define(['require','common','jquery','render','ajax'], function (require, common, $, render, AJAX) {
 
     $('.dynamic').each(function (index, section) {
         // Gets the data from the section
@@ -66,15 +66,16 @@ define(['require','common','jquery','render','text!template/dynamic-section.html
         log('[{0}] Initializing section with: '.format(config.id), config);
         // Sections
         log('[{0}] Initializing section content into: '.format(config.id), config.section);
-        render.renderInto(config.section, sectionTemplate, config);
-        // Loading
-        load(config, false);
-        // Reloading?
-        if (config.refresh) {
-            setInterval(function () {
-                reload(config);
-            }, config.refreshInterval);
-        }
+        render.renderInto(config.section, 'dynamic-section', config, function () {
+            // Loading
+            load(config, false);
+            // Reloading?
+            if (config.refresh) {
+                setInterval(function () {
+                    reload(config);
+                }, config.refreshInterval);
+            }
+        });
     }
 
     function getUrl(config) {

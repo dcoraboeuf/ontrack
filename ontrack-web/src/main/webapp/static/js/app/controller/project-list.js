@@ -1,8 +1,8 @@
-define(['render','text!template/project-row.html'], function (render, template) {
+define(['render'], function (render) {
 
     return {
         url: 'ui/manage/project',
-        render: render.asTableTemplate(template)
+        render: render.asTableTemplate('project-row')
     }
 
 });

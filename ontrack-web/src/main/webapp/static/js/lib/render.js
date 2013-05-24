@@ -1,12 +1,24 @@
 define(['common','handlebars'], function (common, handlebars) {
 
-
-    function render (template, model) {
-        return Handlebars.compile(template)(model);
+    function withTemplate(templateId, templateFn) {
+        require(['text!template/' + templateId + '.html'], function (rawTemplate) {
+            templateFn(Handlebars.compile(rawTemplate));
+        });
     }
 
-    function renderInto (target, template, model) {
-        $(target).html(render(template, model));
+    function render (templateId, model, templateFn) {
+        withTemplate(templateId, function (compiledTemplate) {
+            templateFn(compiledTemplate(model));
+        });
+    }
+
+    function renderInto (target, templateId, model, callbackFn) {
+        render(templateId, model, function (template) {
+            $(target).html(template);
+            if (callbackFn) {
+                callbackFn();
+            }
+        });
     }
 
     function defaultRender (target, append, config, data) {
@@ -21,14 +33,6 @@ define(['common','handlebars'], function (common, handlebars) {
         });
     }
 
-    function fill (contentFn) {
-        return function (target, append, config, items) {
-            var html = contentFn(items, append);
-            $(target).empty();
-            $(target).append(html);
-        }
-    }
-
     /**
      * Uses a {{handleBars}} template for rendering.
      * If <code>dataFn</code> is defined and is:
@@ -38,8 +42,8 @@ define(['common','handlebars'], function (common, handlebars) {
      * </ul>
      * In any other case, data = items
      */
-    function asSimpleTemplate (template, dataFn) {
-        return fill (function (items, append) {
+    function asSimpleTemplate (templateId, dataFn) {
+        return function (target, append, config, items) {
             var data;
             if (dataFn) {
                 if ($.isFunction(dataFn)) {
@@ -51,8 +55,8 @@ define(['common','handlebars'], function (common, handlebars) {
             } else {
                 data = items;
             }
-            return render (template, data);
-        });
+            renderInto(target, templateId, data);
+        }
     }
 
     function generateTableRows (items, rowFn) {
@@ -97,10 +101,14 @@ define(['common','handlebars'], function (common, handlebars) {
         };
     }
 
-    function asTableTemplate (rowTemplate) {
-        return asTable (function (item) {
-            return render (rowTemplate, item);
-        });
+    function asTableTemplate (rowTemplateId) {
+        return function (target, append, config, items) {
+            withTemplate(rowTemplateId, function (compiledTemplate) {
+                tableInto(target, append, config, items, function (item) {
+                    return compiledTemplate(item);
+                });
+            });
+        }
     }
 
     return {
@@ -112,7 +120,6 @@ define(['common','handlebars'], function (common, handlebars) {
         // Basic templating
         asSimpleTemplate: asSimpleTemplate,
         // Table rendering
-        tableInto: tableInto,
         asTableTemplate: asTableTemplate
     }
 
