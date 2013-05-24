@@ -6,6 +6,13 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
         item.text(button.text);
         if (button.action == 'submit') {
             item.addClass('btn-primary').attr('type', 'submit');
+            dialog.form.unbind('submit');
+            dialog.form.submit(function () {
+                if (dialog.submitFn) {
+                    dialog.submitFn(dialog);
+                }
+                return false;
+            });
         } else if (button.action == 'cancel') {
             item.addClass('btn-link').attr('type', 'button');
             item.unbind('click');
@@ -61,6 +68,7 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
             }
             // Customization
             if (form) {
+                dialog.form = form;
                 // Error section
                 $('<div></div>')
                     .addClass('error').addClass('hidden').addClass('alert').addClass('alert-error')

@@ -6,7 +6,10 @@ define(['dialog', 'jquery'], function(dialog, $) {
     function createProject() {
         dialog.show({
             title: 'project.create.title'.loc(),
-            templateId: 'project-create'
+            templateId: 'project-create',
+            submitFn: function (config) {
+                config.closeFn();
+            }
         });
     }
 
