@@ -83,7 +83,10 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
                     $('<div></div>').addClass('control-group').append(controls).appendTo(form);
                 }
             }
-            // TODO Initialization of the content
+            // Initialization of the content
+            if (dialog.initFn) {
+                dialog.initFn(dialog);
+            }
             // Displays the dialog
             $(html).dialog({
                 title: dialog.title,
