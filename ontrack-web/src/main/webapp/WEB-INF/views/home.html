@@ -1,12 +1,15 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home" noscript=true>
+<@layout_std page="home">
 	<div class="container-fluid">
 		<div class="row-fluid">
             <div class="span3">
                 <section>
                     <h4><@lh key="home.projects"/></h4>
                     <div id="projects" class="dynamic" dynamic-controller="project-list" dynamic-createProject="${secAdmin()?string}"></div>
+                    <#if secAdmin()>
+                        <button id="project-create-button" type="button" class="btn"><@lh key="project.create" /></button>
+                    </#if>
                 </section>
             </div>
 			<div class="span9">

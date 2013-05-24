@@ -112,6 +112,8 @@ define(['common','handlebars'], function (common, handlebars) {
     }
 
     return {
+        // Template mgt
+        withTemplate: withTemplate,
         // Low level rendering using templates
         render: render,
         renderInto: renderInto,

@@ -10,13 +10,17 @@ requirejs.config({
     paths: {
         'app': '../app',
         'template': '../app/template',
-        'bootstrap': '../../../static/bootstrap/js/bootstrap.min'
+        'bootstrap': '../../../static/bootstrap/js/bootstrap.min',
+        'jquery-ui': '../../../static/jquery/ui/js/jquery-ui-1.9.2.custom.min'
     },
     shim: {
-        'bootstrap': {
+        'jquery-ui': {
             deps: ['jquery']
+        },
+        'bootstrap': {
+            deps: ['jquery-ui']
         }
     }
 });
 
-require(['jquery','bootstrap','app/controller/information-message','common','dynamic','app/controller/header']);
+require(['jquery','jquery-ui','bootstrap','app/controller/information-message','common','dynamic','app/controller/header']);

@@ -131,13 +131,13 @@ var Application = function () {
 	 * @param openFn Function to call when the dialog is opened. This defaults to no action
 	 */
 	function dialog (config) {
-	    config = $.extend({
-	        submitFn: function (closeFn) {
-	            closeFn();
-	        },
-	        openFn: $.noop,
-	        width: 450
-	    }, config);
+        config = $.extend({
+            submitFn: function (closeFn) {
+                closeFn();
+            },
+            openFn: $.noop,
+            width: 450
+        }, config);
 		// Sets the submit function
 		$('#' + config.id).unbind('submit');
 		$('#' + config.id).submit(function () {
