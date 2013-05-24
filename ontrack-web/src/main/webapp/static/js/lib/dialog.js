@@ -3,7 +3,12 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
     function show (dialog) {
         // Default configuration
         dialog = $.extend({
-            width: 550
+            width: 550,
+            buttons:[{
+                text: 'general.submit'.loc()
+            }, {
+                text: 'general.cancel'.loc()
+            }]
         }, dialog);
         // Checks parameters
         config.check(dialog, 'title');
