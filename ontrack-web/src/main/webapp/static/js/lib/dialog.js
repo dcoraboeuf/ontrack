@@ -59,6 +59,8 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
                 $('#' + dialog.id).dialog('destroy');
                 $('#' + dialog.id).remove();
             };
+            // TODO Default error function
+            dialog.errorFn = $.noop;
             // Form
             var form;
             if ($(html)[0].tagName.toLowerCase() == 'form') {
@@ -70,9 +72,18 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
             if (form) {
                 dialog.form = form;
                 // Error section
-                $('<div></div>')
+                var errorEl = $('<div></div>')
                     .addClass('error').addClass('hidden').addClass('alert').addClass('alert-error')
                     .appendTo(form);
+                // Error function
+                dialog.errorFn = function (message) {
+                    if (message == null) {
+                        errorEl.hide();
+                    } else {
+                        errorEl.text(message);
+                        errorEl.show();
+                    }
+                };
                 // Button section
                 if (dialog.buttons && dialog.buttons.length > 0) {
                     var controls = $('<div></div>').addClass('controls');

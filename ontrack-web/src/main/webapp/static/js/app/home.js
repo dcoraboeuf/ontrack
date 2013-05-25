@@ -1,4 +1,4 @@
-define(['dialog', 'jquery'], function(dialog, $) {
+define(['dialog', 'jquery', 'ajax'], function(dialog, $, ajax) {
 
     /**
      * Creating a project
@@ -8,7 +8,18 @@ define(['dialog', 'jquery'], function(dialog, $) {
             title: 'project.create.title'.loc(),
             templateId: 'project-create',
             submitFn: function (config) {
-                config.closeFn();
+                ajax.post({
+                    url: 'ui/manage/project',
+                    data: {
+                        name: $('#project-name').val(),
+                        description: $('#project-description').val()
+                    },
+                    successFn: function (project) {
+                        config.closeFn();
+                        location.href = 'gui/project/{0}'.format(project.name.html());
+                    },
+                    errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                });
             }
         });
     }
