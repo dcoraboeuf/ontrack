@@ -148,6 +148,14 @@ define(['require','common','jquery','render','ajax'], function (require, common,
         }
     }
 
+    function reload (config) {
+        // Reinitializes the offset and count
+        config.count = 10;
+        config.offset = 0;
+        // Reloads
+        load(config, false);
+    }
+
     function load (config, append) {
         log('[{0}] Loading section'.format(config.id));
         // Gets the loading information
