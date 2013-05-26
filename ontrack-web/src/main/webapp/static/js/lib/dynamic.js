@@ -158,7 +158,7 @@ define(['require','common','jquery','render','ajax'], function (require, common,
     }
 
     function reloadSection (id) {
-        var config = $('#' + id).data('dynamic');
+        var config = getConfig(id);
         if (config) {
             reload(config);
         }
@@ -221,8 +221,13 @@ define(['require','common','jquery','render','ajax'], function (require, common,
         }
     }
 
+    function getSectionConfig (id) {
+        return $('#' + id).data('dynamic');
+    }
+
     return {
-        reloadSection: reloadSection
+        reloadSection: reloadSection,
+        getSectionConfig: getSectionConfig
     }
 
 });

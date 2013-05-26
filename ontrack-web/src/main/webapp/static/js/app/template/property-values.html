@@ -7,7 +7,9 @@
             <span class="description">{{displayName}}:</span>
             {{{html}}}
             {{#editable}}
-                <i class="icon-pencil action" onclick="Properties.editProperty('{{extension}}','{{name}}')"></i>
+                <i class="icon-pencil action property-editor-button"
+                   edition-extension="{{extension}}"
+                   edition-property="{{name}}"></i>
             {{/editable}}
         </li>
     {{/properties}}

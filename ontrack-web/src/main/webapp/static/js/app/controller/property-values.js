@@ -1,9 +1,18 @@
-define(['render'], function (render) {
+define(['render','./property-edition', 'jquery'], function (render, propertyEdition, $) {
 
     return {
         url: function (config) {
             return 'ui/property/{0}/{1}'.format(config.entity, config.entityid);
         },
-        render: render.asSimpleTemplate('property-values', 'properties')
+        render: render.asSimpleTemplate('property-values', 'properties', function (config) {
+            $('.property-editor-button').each(function (index, button) {
+                $(button).click(function () {
+                    propertyEdition.editProperty(
+                        $(button).attr('edition-extension'),
+                        $(button).attr('edition-property')
+                    );
+                });
+            });
+        })
     }
 });

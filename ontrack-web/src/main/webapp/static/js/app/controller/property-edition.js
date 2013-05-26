@@ -102,6 +102,15 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
         return false;
     }
 
+    function editProperty (extension, name) {
+        var config = dynamic.getSectionConfig('property-edition');
+        if (config) {
+            propertyEdition(config);
+            $('#property-add-select').val('{0}#{1}'.format(extension, name));
+            onPropertySelected(config, $('#property-add-select'));
+        }
+    }
+
     return {
         url: function (config) {
             return 'ui/property/{0}/{1}/editable'.format(config.entity, config.entityid);
@@ -121,6 +130,7 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
             });
             // Cancelling the form
             $('#property-add-field-cancel').click(cancelAddProperties);
-        })
+        }),
+        editProperty: editProperty
     }
 });
