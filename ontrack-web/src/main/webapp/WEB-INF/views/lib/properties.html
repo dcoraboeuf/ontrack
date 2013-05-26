@@ -1,59 +1,14 @@
 <#macro properties entity entityId>
     <!-- Property values -->
-    <div id="property-values" class="dynamic"
+    <div id="property-values"
+         class="dynamic"
          dynamic-controller="property-values"
          dynamic-entity="${entity?html}"
-         dynamic-entityId="${entityId?c}"
-         />
+         dynamic-entityId="${entityId?c}"></div>
     <!-- Edition of properties -->
-    <!--@dynamicsection id="property-edition" template="Properties.editablePropertiesTemplate('${entity?html}',${entityId?c})" /-->
-    <script id="property-values-template" type="text/html">
-        <ul class="properties">
-            {{#properties}}
-                <li>
-                    {{#if iconPath}}
-                        <img src="{{iconPath}}" width="24" height="24" />
-                    {{/if}}
-                    <span class="description">{{displayName}}:</span>
-                    {{{html}}}
-                    {{#editable}}
-                        <i class="icon-pencil action" onclick="Properties.editProperty('{{extension}}','{{name}}')"></i>
-                    {{/editable}}
-                </li>
-            {{/properties}}
-        </ul>
-    </script>
-    <script id="property-edition-template" type="text/hml">
-        {{#if properties.length}}
-            <input id="entity" type="hidden" value="${entity?html}" />
-            <input id="entityId" type="hidden" value="${entityId?c}" />
-            <ul class="properties">
-                <button type="button" class="btn" onclick="Properties.addProperties()" style="margin-top:0.5em;margin-bottom:0.5em;">
-                    <i class="icon-plus-sign action"></i>
-                    <@lh key="properties.add" />
-                </button>
-            </ul>
-            <div id="property-add-section" class="hidden alert alert-info">
-                <form onsubmit="return Properties.addProperty();">
-                    <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
-                        <option value=""></option>
-                        {{#properties}}
-                            <option value="{{extension}}&#x23;{{name}}">{{displayName}}</option>
-                        {{/properties}}
-                    </select>
-                    <span id="property-add-field"></span>
-                    <div>
-                        <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
-                        <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()"><@lh key="general.cancel" /></button>
-                    </div>
-                    <div id="property-add-loading" class="progress progress-striped active">
-                        <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
-                    </div>
-                    <div id="property-add-error" class="alert alert-error">
-                        <div id="property-add-error-message"></div>
-                    </div>
-                </form>
-            </div>
-        {{/if}}
-    </script>
+    <div id="property-edition"
+         class="dynamic"
+         dynamic-controller="property-edition"
+         dynamic-entity="${entity?html}"
+         dynamic-entityId="${entityId?c}"></div>
 </#macro>
