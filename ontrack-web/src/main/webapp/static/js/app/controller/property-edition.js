@@ -1,4 +1,4 @@
-define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
+define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
 
     function hideEditionBox(id) {
         $('#' + id + '-loading').hide();
@@ -6,7 +6,7 @@ define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
         $('#' + id + '-field').hide();
     }
 
-    function showEditionBox (config) {
+    function showEditionBox(config) {
         // No error
         $('#' + config.id + '-error').hide();
         // Loading the edition box
@@ -38,7 +38,7 @@ define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
         $('#property-add-section').show();
     }
 
-    function onPropertySelected (config, dropbox) {
+    function onPropertySelected(config, dropbox) {
         var value = $(dropbox).val();
         if (value != "") {
             // Gets the extension and the name
@@ -62,12 +62,12 @@ define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
         }
     }
 
-    function cancelAddProperties () {
+    function cancelAddProperties() {
         hideEditionBox('property-add');
         $('#property-add-section').hide();
     }
 
-    function addProperty (config) {
+    function addProperty(config) {
         var property = $('#property-add-select').val();
         var hash = property.indexOf('#');
         var extension = property.substring(0, hash);
@@ -116,9 +116,11 @@ define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
                 onPropertySelected(config, this);
             });
             // Submitting the form
-            $(config.section).find('form').submit(function() {
+            $(config.section).find('form').submit(function () {
                 return addProperty(config);
             });
+            // Cancelling the form
+            $('#property-add-field-cancel').click(cancelAddProperties);
         })
     }
 });
