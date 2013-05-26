@@ -158,7 +158,7 @@ define(['require','common','jquery','render','ajax'], function (require, common,
     }
 
     function reloadSection (id) {
-        var config = getConfig(id);
+        var config = getSectionConfig(id);
         if (config) {
             reload(config);
         }
