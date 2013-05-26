@@ -63,6 +63,7 @@ define(['require','common','jquery','render','ajax'], function (require, common,
 
     function init (config) {
         log('[{0}] Initializing section with: '.format(config.id), config);
+        $(config.section).data('dynamic', config);
         // Sections
         log('[{0}] Initializing section content into: '.format(config.id), config.section);
         render.renderInto(config.section, 'dynamic-section', config, function () {
@@ -156,6 +157,13 @@ define(['require','common','jquery','render','ajax'], function (require, common,
         load(config, false);
     }
 
+    function reloadSection (id) {
+        var config = $('#' + id).data('dynamic');
+        if (config) {
+            reload(config);
+        }
+    }
+
     function load (config, append) {
         log('[{0}] Loading section'.format(config.id));
         // Gets the loading information
@@ -211,6 +219,10 @@ define(['require','common','jquery','render','ajax'], function (require, common,
                 });
             }
         }
+    }
+
+    return {
+        reloadSection: reloadSection
     }
 
 });

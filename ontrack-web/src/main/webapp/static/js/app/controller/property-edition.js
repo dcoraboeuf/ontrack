@@ -1,4 +1,4 @@
-define(['render','ajax'], function (render, ajax) {
+define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
 
     function hideEditionBox(id) {
         $('#' + id + '-loading').hide();
@@ -90,7 +90,8 @@ define(['render','ajax'], function (render, ajax) {
             successFn: function () {
                 // OK - reloads the property container
                 cancelAddProperties();
-                alert("TODO Template.reload('property-values');");
+                // Reloads the property values
+                dynamic.reloadSection('property-values');
             },
             errorFn: ajax.simpleAjaxErrorFn(function (message) {
                 $('#property-add-error-message').text(message);
