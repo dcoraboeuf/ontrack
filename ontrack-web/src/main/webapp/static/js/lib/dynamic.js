@@ -9,7 +9,6 @@ define(['require','common','jquery','render','ajax'], function (require, common,
         if (!controllerId || controllerId == '') {
             dynamicError({id: id}, 'Controller is not defined');
         } else {
-
             log('[{0}] Using controller "{1}"'.format(id, controllerId));
             // Loads the controller
             require(['app/controller/' + controllerId], function (controller) {
@@ -69,6 +68,10 @@ define(['require','common','jquery','render','ajax'], function (require, common,
         render.renderInto(config.section, 'dynamic-section', config, function () {
             // Loading
             load(config, false);
+            // More item
+            $('#' + config.id + '-more').click(function () {
+                load(config, true);
+            });
             // Reloading?
             if (config.refresh) {
                 setInterval(function () {

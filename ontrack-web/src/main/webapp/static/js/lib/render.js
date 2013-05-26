@@ -79,8 +79,8 @@ define(['common','handlebars'], function (common, handlebars) {
     }
 
     function tableInto (target, append, config, items, itemFn) {
-        if (append === true && $(target).has("tbody").length) {
-            $(target + " tbody").append(generateTableRows(items, itemFn));
+        if (append === true && $(target).has('tbody').length) {
+            $(target).find('tbody').append(generateTableRows(items, itemFn));
         } else {
             // No table defined, or no need to append
             // Some items
