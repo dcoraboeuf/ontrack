@@ -9,6 +9,18 @@ define(['application'], function(application) {
         });
     }
 
+    /**
+     * Creation of a branch
+     */
+    function createBranch() {
+        var project = $('#project').val();
+        // TODO Create branch
+        alert('TODO');
+    }
+
+    // Create branch
+    $('#branch-create-button').click(createBranch);
+
     // Delete project
     $('#command-project-delete').click(deleteProject);
 

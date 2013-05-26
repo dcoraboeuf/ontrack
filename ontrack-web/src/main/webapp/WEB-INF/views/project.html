@@ -32,7 +32,10 @@
             <div class="span3">
                 <section>
                     <h4><@lh key="project.branches" /></h4>
-                    <div id="branches" class="dynamic" dynamic-controller="branch-list" dynamic-project="${project.name?html}" />
+                    <div id="branches" class="dynamic" dynamic-controller="branch-list" dynamic-project="${project.name?html}"></div>
+                    <#if secAdmin()>
+                        <button id="branch-create-button" type="button" class="btn"><@lh key="branch.create" /></button>
+                    </#if>
                 </section>
             </div>
             <div class="span9">
