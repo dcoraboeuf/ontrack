@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="project" title=project.name breadcrumbs = {loc("home"): ""}>
+<@layout_std page="project" title=project.name modules=["audit"] breadcrumbs = {loc("home"): ""}>
     <input id="project" type="hidden" value="${project.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
@@ -39,18 +39,8 @@
                 </section>
             </div>
             <div class="span9">
-                TODO Audit
-                <!-- &project=${project.id} -->
+                <@audit filter="&project=${project.id}" />
             </div>
         </div>
 	</div>
-
-
-    <@dialog id="project-update-dialog">
-        <@form_text idPrefix="project-update-dialog-" name="name" label=loc('project.name') />
-        <@form_memo idPrefix="project-update-dialog-" name="description" label=loc('project.description') required=false />
-
-        <@dialog_button id="project-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
-        <@dialog_button_cancel />
-    </@dialog>
 </@layout_std>

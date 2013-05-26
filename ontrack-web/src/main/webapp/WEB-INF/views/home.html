@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="home">
+<@layout_std page="home" modules=["audit"]>
 	<div class="container-fluid">
 		<div class="row-fluid">
             <div class="span3">
@@ -13,8 +13,7 @@
                 </section>
             </div>
 			<div class="span9">
-                TODO Audit
-                <!--div id="audit" class="dynamic" dynamic-controller="audit" /-->
+                <@audit filter="" />
 			</div>
 		</div>
 	</div>
