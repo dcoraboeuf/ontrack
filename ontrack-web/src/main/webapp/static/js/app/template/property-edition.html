@@ -1,8 +1,6 @@
 {{#if properties.length}}
-    <input id="entity" type="hidden" value="${entity?html}" />
-    <input id="entityId" type="hidden" value="${entityId?c}" />
     <ul class="properties">
-        <button type="button" class="btn" onclick="Properties.addProperties()" style="margin-top:0.5em;margin-bottom:0.5em;">
+        <button id="property-edition-button" type="button" class="btn" style="margin-top:0.5em;margin-bottom:0.5em;">
             <i class="icon-plus-sign action"></i>
             {{loc 'properties.add' }}
         </button>
@@ -17,11 +15,11 @@
             </select>
             <span id="property-add-field"></span>
             <div>
-                <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
-                <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()"><@lh key="general.cancel" /></button>
+                <button type="submit" class="btn btn-primary">{{loc 'general.submit' }}</button>
+                <button type="button" class="btn btn-link" onclick="Properties.cancelAddProperties()">{{loc 'general.cancel' }}</button>
             </div>
             <div id="property-add-loading" class="progress progress-striped active">
-                <div class="bar" style="width: 100%;"><@lh key="general.loading" /></div>
+                <div class="bar" style="width: 100%;">{{loc 'general.loading' }}</div>
             </div>
             <div id="property-add-error" class="alert alert-error">
                 <div id="property-add-error-message"></div>

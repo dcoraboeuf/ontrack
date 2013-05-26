@@ -1,4 +1,4 @@
-define(['common','handlebars'], function (common, handlebars) {
+define(['common', 'handlebars'], function (common, handlebars) {
 
     Handlebars.registerHelper('loc', function (key, options) {
         return key.loc();
@@ -10,13 +10,13 @@ define(['common','handlebars'], function (common, handlebars) {
         });
     }
 
-    function render (templateId, model, templateFn) {
+    function render(templateId, model, templateFn) {
         withTemplate(templateId, function (compiledTemplate) {
             templateFn(compiledTemplate(model));
         });
     }
 
-    function renderInto (target, templateId, model, callbackFn) {
+    function renderInto(target, templateId, model, callbackFn) {
         render(templateId, model, function (template) {
             $(target).html(template);
             if (callbackFn) {
@@ -25,7 +25,7 @@ define(['common','handlebars'], function (common, handlebars) {
         });
     }
 
-    function defaultRender (target, append, config, data) {
+    function defaultRender(target, append, config, data) {
         tableInto(target, false, config, data, function (item) {
             var value;
             if (item.name) {
@@ -46,7 +46,7 @@ define(['common','handlebars'], function (common, handlebars) {
      * </ul>
      * In any other case, data = items
      */
-    function asSimpleTemplate (templateId, dataFn) {
+    function asSimpleTemplate(templateId, dataFn, callbackFn) {
         return function (target, append, config, items) {
             var data;
             if (dataFn) {
@@ -59,26 +59,30 @@ define(['common','handlebars'], function (common, handlebars) {
             } else {
                 data = items;
             }
-            renderInto(target, templateId, data);
+            renderInto(target, templateId, data, function () {
+                if (callbackFn) {
+                    callbackFn(config);
+                }
+            });
         }
     }
 
-    function generateTableRows (items, rowFn) {
+    function generateTableRows(items, rowFn) {
         var html = '';
-        $.each (items, function (index, item) {
+        $.each(items, function (index, item) {
             html += rowFn(item);
         });
         return html;
     }
 
-    function generateTable (items, rowFn) {
+    function generateTable(items, rowFn) {
         var html = '<table class="table table-hover"><tbody>';
         html += generateTableRows(items, rowFn);
         html += '</tbody></table>';
         return html;
     }
 
-    function tableInto (target, append, config, items, itemFn) {
+    function tableInto(target, append, config, items, itemFn) {
         if (append === true && $(target).has('tbody').length) {
             $(target).find('tbody').append(generateTableRows(items, itemFn));
         } else {
@@ -99,13 +103,13 @@ define(['common','handlebars'], function (common, handlebars) {
         }
     }
 
-    function asTable (itemFn) {
+    function asTable(itemFn) {
         return function (target, append, config, items) {
             tableInto(target, append, config, items, itemFn);
         };
     }
 
-    function asTableTemplate (rowTemplateId) {
+    function asTableTemplate(rowTemplateId) {
         return function (target, append, config, items) {
             withTemplate(rowTemplateId, function (compiledTemplate) {
                 tableInto(target, append, config, items, function (item) {
