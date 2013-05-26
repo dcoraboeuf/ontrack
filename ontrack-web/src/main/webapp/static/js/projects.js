@@ -1,15 +1,4 @@
 var Projects = function () {
-	
-	function createProject () {
-		Application.dialogAndSubmit({
-			id: 'project-create-dialog',
-			title: loc('project.create.title'),
-			url: 'ui/manage/project',
-			successFn: function (data) {
-				    location = 'gui/project/' + data.name;
-			    }
-			});
-	}
 
 	function updateProject (name) {
 	    var url = 'ui/manage/project/{0}'.format(name);
@@ -32,20 +21,5 @@ var Projects = function () {
             }
 	    });
 	}
-	
-	function deleteProject (name) {
-		Application.deleteEntity('project', name, '');
-	}
-	
-	return {
-		createProject: createProject,
-		deleteProject: deleteProject,
-		updateProject: updateProject,
-		projectTemplate: Template.config({
-		    url: 'ui/manage/project',
-		    render: Template.asTableTemplate('projectTemplate'),
-		    placeholder: loc('project.empty')
-		})
-	};
 	
 } ();

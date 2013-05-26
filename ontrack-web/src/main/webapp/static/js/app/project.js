@@ -1,11 +1,46 @@
 define(['application','dialog','ajax','jquery'], function(application, dialog, ajax, $) {
 
+    var project = $('#project').val();
+
     /**
-     * Deletion of a project
+     * Deletion the project
      */
     function deleteProject() {
-        application.deleteEntity('project', $('#project').val(), function () {
+        application.deleteEntity('project', project, function () {
             location.href = '';
+        });
+    }
+
+    /**
+     * Update the project
+     */
+    function updateProject() {
+        ajax.get({
+            url: 'ui/manage/project/{0}'.format(project),
+            successFn: function (summary) {
+                dialog.show({
+                    title: 'project.update'.loc(),
+                    templateId: 'project-update',
+                    initFn: function (config) {
+                        config.form.find('#project-name').val(summary.name);
+                        config.form.find('#project-description').val(summary.description);
+                    },
+                    submitFn: function (config) {
+                        ajax.put({
+                            url: 'ui/manage/project/{0}'.format(project),
+                            data: {
+                                name: config.form.find('#project-name').val(),
+                                description: config.form.find('#project-description').val()
+                            },
+                            successFn: function (updatedProject) {
+                                config.closeFn();
+                                location.href = 'gui/project/{0}'.format(updatedProject.name);
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                        });
+                    }
+                });
+            }
         });
     }
 
@@ -40,6 +75,7 @@ define(['application','dialog','ajax','jquery'], function(application, dialog, a
     // Delete project
     $('#command-project-delete').click(deleteProject);
 
-    // TODO Update project
+    // Update project
+    $('#command-project-update').click(updateProject);
 
 });
