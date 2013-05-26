@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="project" title=project.name modules=["audit"] breadcrumbs = {loc("home"): ""}>
+<@layout_std page="project" title=project.name modules=["audit","properties"] breadcrumbs = {loc("home"): ""}>
     <input id="project" type="hidden" value="${project.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
@@ -24,8 +24,7 @@
             </div>
             <div class="muted span12 properties">${project.description?html}</div>
             <div class="span12 properties">
-                TODO Properties
-                <!-- entity="PROJECT" entityId=project.id -->
+                <@properties entity="PROJECT" entityId=project.id />
             </div>
         </div>
         <div class="row-fluid">

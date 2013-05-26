@@ -1,10 +1,12 @@
-<script type="text/javascript" src="${base}/js/properties.js"></script>
-
 <#macro properties entity entityId>
     <!-- Property values -->
-    <@dynamicsection id="property-values" template="Properties.propertiesTemplate('${entity?html}',${entityId?c})" />
+    <div id="property-values" class="dynamic"
+         dynamic-controller="property-values"
+         dynamic-entity="${entity?html}"
+         dynamic-entityId="${entityId?c}"
+         />
     <!-- Edition of properties -->
-    <@dynamicsection id="property-edition" template="Properties.editablePropertiesTemplate('${entity?html}',${entityId?c})" />
+    <!--@dynamicsection id="property-edition" template="Properties.editablePropertiesTemplate('${entity?html}',${entityId?c})" /-->
     <script id="property-values-template" type="text/html">
         <ul class="properties">
             {{#properties}}
