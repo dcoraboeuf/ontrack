@@ -28,45 +28,6 @@ var Properties = function () {
         onPropertySelected($('#property-add-select'));
     }
 
-    function addProperty () {
-        var property = $('#property-add-select').val();
-        var hash = property.indexOf('#');
-        var extension = property.substring(0, hash);
-        var name = property.substring(hash + 1);
-        var value = $('#extension-{0}-{1}'.format(extension, name)).val();
-        var entity = $('#entity').val();
-        var entityId = $('#entityId').val();
-        // No error
-        $('#property-add-error').hide();
-        // Loading the edition box
-		AJAX.post({
-			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(entity, entityId, extension, name),
-			data: {
-			    value: value
-			},
-			loading: {
-			    mode: 'toggle',
-			    el: '#property-add-loading'
-			},
-			successFn: function () {
-                // OK - reloads the property container
-                cancelAddProperties();
-                Template.reload('property-values');
-			},
-			errorFn: AJAX.simpleAjaxErrorFn(function (message) {
-                $('#property-add-error-message').text(message);
-                $('#property-add-error').show();
-			})
-		});
-        // Does not submit the normal way
-        return false;
-    }
-
-    function cancelAddProperties () {
-        hideEditionBox('property-add');
-        $('#property-add-section').hide();
-    }
-
     function hideEditionBox (id) {
         $('#' + id + '-loading').hide();
         $('#' + id + '-error').hide();

@@ -62,6 +62,45 @@ define(['render','ajax'], function (render, ajax) {
         }
     }
 
+    function cancelAddProperties () {
+        hideEditionBox('property-add');
+        $('#property-add-section').hide();
+    }
+
+    function addProperty (config) {
+        var property = $('#property-add-select').val();
+        var hash = property.indexOf('#');
+        var extension = property.substring(0, hash);
+        var name = property.substring(hash + 1);
+        var value = $('#extension-{0}-{1}'.format(extension, name)).val();
+        var entity = config.entity;
+        var entityId = config.entityid;
+        // No error
+        $('#property-add-error').hide();
+        // Loading the edition box
+        ajax.post({
+            url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(entity, entityId, extension, name),
+            data: {
+                value: value
+            },
+            loading: {
+                mode: 'toggle',
+                el: '#property-add-loading'
+            },
+            successFn: function () {
+                // OK - reloads the property container
+                cancelAddProperties();
+                alert("TODO Template.reload('property-values');");
+            },
+            errorFn: ajax.simpleAjaxErrorFn(function (message) {
+                $('#property-add-error-message').text(message);
+                $('#property-add-error').show();
+            })
+        });
+        // Does not submit the normal way
+        return false;
+    }
+
     return {
         url: function (config) {
             return 'ui/property/{0}/{1}/editable'.format(config.entity, config.entityid);
@@ -74,6 +113,10 @@ define(['render','ajax'], function (render, ajax) {
             // Selecting a property
             $('#property-add-select').change(function () {
                 onPropertySelected(config, this);
+            });
+            // Submitting the form
+            $(config.section).find('form').submit(function() {
+                return addProperty(config);
             });
         })
     }
