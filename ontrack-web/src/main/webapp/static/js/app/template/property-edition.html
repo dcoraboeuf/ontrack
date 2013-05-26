@@ -7,7 +7,7 @@
     </ul>
     <div id="property-add-section" class="hidden alert alert-info">
         <form onsubmit="return Properties.addProperty();">
-            <select id="property-add-select" onchange="Properties.onPropertySelected(this)">
+            <select id="property-add-select">
                 <option value=""></option>
                 {{#properties}}
                     <option value="{{extension}}&#x23;{{name}}">{{displayName}}</option>

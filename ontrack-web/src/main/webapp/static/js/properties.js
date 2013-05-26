@@ -73,56 +73,6 @@ var Properties = function () {
         $('#' + id + '-field').hide();
     }
 
-    function showEditionBox (config) {
-        // No error
-        $('#' + config.id + '-error').hide();
-        // Loading the edition box
-		AJAX.get({
-			url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(config.entity, config.entityId, config.extension, config.name),
-			responseType: 'html',
-			loading: {
-			    mode: 'toggle',
-			    el: '#' + config.id + '-loading'
-			},
-			successFn: function (html) {
-                // Display
-                $('#' + config.id + '-field').html(html);
-                // Adjusting the label
-                // Showing the edition box
-                $('#' + config.id + '-field').show();
-			},
-			errorFn: AJAX.simpleAjaxErrorFn(function (message) {
-                // Error
-                $('#' + config.id + '-error-message').text(message);
-                $('#' + config.id + '-error').show();
-            })
-		});
-    }
-
-    function onPropertySelected (dropbox) {
-        var value = $(dropbox).val();
-        if (value != "") {
-            // Gets the extension and the name
-            var hash = value.indexOf('#');
-            var extension = value.substring(0, hash);
-            var name = value.substring(hash + 1);
-            // Entity
-            var entity = $('#entity').val();
-            var entityId = $('#entityId').val();
-            // Prepares the edition box
-            showEditionBox({
-                id: 'property-add',
-                extension: extension,
-                name: name,
-                entity: entity,
-                entityId: entityId
-            });
-        } else {
-            // Hides edition box
-            hideEditionBox('property-add');
-        }
-    }
-
     return {
         propertiesTemplate: propertiesTemplate,
         editablePropertiesTemplate: editablePropertiesTemplate,
