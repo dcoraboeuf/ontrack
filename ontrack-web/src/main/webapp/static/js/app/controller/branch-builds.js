@@ -82,58 +82,64 @@ define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dy
 
     function showFilter() {
         var config = dynamic.getSectionConfig('branch-builds');
-        dialog.show({
-            templateId: 'branch-builds-filter',
-            title: 'query'.loc(),
-            width: 800,
-            buttons: [],
-            initFn: function (config) {
-                // Gets the current filter
-                var filter = getCurrentFilterFn(project, branch)();
-                // Converts into a form (best effort)
-                var form = {
-                    limit: filter.limit,
-                    withPromotionLevel: filter.withPromotionLevel,
-                    sincePromotionLevel: filter.sincePromotionLevel
-                };
-                // Since validation stamp
-                if (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0) {
-                    form.sinceValidationStamp = filter.sinceValidationStamps[0].validationStamp;
-                    if (filter.sinceValidationStamps[0].statuses && filter.sinceValidationStamps[0].statuses.length > 0) {
-                        form.sinceValidationStampStatus = filter.sinceValidationStamps[0].statuses[0];
+        ajax.get({
+            url: 'ui/manage/project/{0}/branch/{1}/filter'.format(config.project, config.branch),
+            successFn: function (branchFilterData) {
+                dialog.show({
+                    templateId: 'branch-builds-filter',
+                    title: 'query'.loc(),
+                    width: 800,
+                    buttons: [],
+                    data: branchFilterData,
+                    initFn: function (config) {
+                        // Gets the current filter
+                        var filter = getCurrentFilterFn(project, branch)();
+                        // Converts into a form (best effort)
+                        var form = {
+                            limit: filter.limit,
+                            withPromotionLevel: filter.withPromotionLevel,
+                            sincePromotionLevel: filter.sincePromotionLevel
+                        };
+                        // Since validation stamp
+                        if (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0) {
+                            form.sinceValidationStamp = filter.sinceValidationStamps[0].validationStamp;
+                            if (filter.sinceValidationStamps[0].statuses && filter.sinceValidationStamps[0].statuses.length > 0) {
+                                form.sinceValidationStampStatus = filter.sinceValidationStamps[0].statuses[0];
+                            }
+                        }
+                        // With validation stamp
+                        if (filter.withValidationStamps && filter.withValidationStamps.length > 0) {
+                            form.withValidationStamp = filter.withValidationStamps[0].validationStamp;
+                            if (filter.withValidationStamps[0].statuses && filter.withValidationStamps[0].statuses.length > 0) {
+                                form.withValidationStampStatus = filter.withValidationStamps[0].statuses[0];
+                            }
+                        }
+                        // Initialization of fields
+                        config.form.find('#withPromotionLevel').val(form.withPromotionLevel);
+                        config.form.find('#sincePromotionLevel').val(form.sincePromotionLevel);
+                        config.form.find('#withValidationStamp').val(form.withValidationStamp);
+                        config.form.find('#withValidationStampStatus').val(form.withValidationStampStatus);
+                        config.form.find('#sinceValidationStamp').val(form.sinceValidationStamp);
+                        config.form.find('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
+                        config.form.find('#limit').val(form.limit);
+                        // Button: cancel
+                        config.form.find('#filter-cancel').click(function () {
+                            config.closeFn();
+                        });
+                        // Button: clear
+                        config.form.find('#filter-clear').click(function () {
+                            clearFilter(config);
+                        });
+                    },
+                    submitFn: function (config) {
+                        // TODO Gets the values
+                        // var form = Application.values('filter-form');
+                        // TODO Submitting the query
+                        // filterWithForm(form);
+                        // OK
+                        config.closeFn();
                     }
-                }
-                // With validation stamp
-                if (filter.withValidationStamps && filter.withValidationStamps.length > 0) {
-                    form.withValidationStamp = filter.withValidationStamps[0].validationStamp;
-                    if (filter.withValidationStamps[0].statuses && filter.withValidationStamps[0].statuses.length > 0) {
-                        form.withValidationStampStatus = filter.withValidationStamps[0].statuses[0];
-                    }
-                }
-                // Initialization of fields
-                config.form.find('#withPromotionLevel').val(form.withPromotionLevel);
-                config.form.find('#sincePromotionLevel').val(form.sincePromotionLevel);
-                config.form.find('#withValidationStamp').val(form.withValidationStamp);
-                config.form.find('#withValidationStampStatus').val(form.withValidationStampStatus);
-                config.form.find('#sinceValidationStamp').val(form.sinceValidationStamp);
-                config.form.find('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
-                config.form.find('#limit').val(form.limit);
-                // Button: cancel
-                config.form.find('#filter-cancel').click(function () {
-                    config.closeFn();
                 });
-                // Button: clear
-                config.form.find('#filter-clear').click(function () {
-                    clearFilter(config);
-                });
-            },
-            submitFn: function (config) {
-                // TODO Gets the values
-                // var form = Application.values('filter-form');
-                // TODO Submitting the query
-                // filterWithForm(form);
-                // OK
-                config.closeFn();
             }
         });
     }

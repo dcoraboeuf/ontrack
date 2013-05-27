@@ -45,8 +45,11 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
         config.check(dialog, 'templateId');
         // Loads the template
         render.withTemplate(dialog.templateId, function (compiledTemplate) {
-            // TODO Model for the template
+            // Model for the template
             var data = {};
+            if (dialog.data) {
+                data = dialog.data;
+            }
             // Gets the HTML to display
             var html = $(compiledTemplate(data));
             // ID
