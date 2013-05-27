@@ -60,7 +60,21 @@
                         {{/decorations}}
                     </td>
                     <td class="build_promotion_level" build="{{name}}">
-                        promotionLevelsFn
+                        {{#if promotionLevels.length}}
+                            <ul class="promotions">
+                                {{#promotionLevels}}
+                                    <li>
+                                        <a class="tooltip-source" href="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">
+                                            <i class="icon-arrow-right"></i>
+                                            <img width="24" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}/image" />
+                                            {{name}}
+                                        </a>
+                                    </li>
+                                {{/promotionLevels}}
+                            </ul>
+                        {{else}}
+                            <span class="muted">{{loc 'build.promotion_levels.none' }}</span>
+                        {{/if}}
                     </td>
                     {{#../branchBuilds.validationStamps}}
                         <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{summary.name}}">
