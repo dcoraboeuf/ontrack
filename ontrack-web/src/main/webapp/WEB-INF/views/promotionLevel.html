@@ -1,7 +1,10 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="promotion_level" title=promotionLevel.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", promotionLevel.branch.project.name?html: "gui/project/${promotionLevel.branch.project.name?html}", promotionLevel.branch.name?html: "gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"}>
-	<div class="container-fluid">
+    <input id="project" type="hidden" value="${promotionLevel.branch.project.name?html}" />
+    <input id="branch" type="hidden" value="${promotionLevel.branch.name?html}" />
+    <input id="promotion_level" type="hidden" value="${promotionLevel.name?html}" />
+    <div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
                 <span class="title">
@@ -11,7 +14,7 @@
                 </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
-                        <span onclick="PromotionLevels.updatePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span id="promotion-level-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="PromotionLevels.editImage();"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
                         <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span onclick="PromotionLevels.deletePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
@@ -53,12 +56,4 @@
 			</div>
 		</div>
 	</div>
-
-    <@dialog id="promotion_level-update-dialog">
-        <@form_text idPrefix="promotion_level-update-dialog-" name="name" label=loc('promotion_level.name') />
-        <@form_memo idPrefix="promotion_level-update-dialog-" name="description" label=loc('promotion_level.description') required=false />
-
-        <@dialog_button id="promotion_level-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
-        <@dialog_button_cancel />
-    </@dialog>
 </@layout_std>

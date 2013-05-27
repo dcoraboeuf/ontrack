@@ -63,6 +63,18 @@ define(function () {
         });
     }
 
+    function showError(text) {
+        $('<div>{0}</div>'.format(text.htmlWithLines())).dialog({
+            title: 'client.error.title'.loc(),
+            modal: true,
+            buttons: {
+                Ok: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    }
+
     // source: http://www.w3schools.com/js/js_cookies.asp
     function getCookie(c_name) {
         var i, x, y, ARRcookies = document.cookie.split(";");
@@ -94,7 +106,7 @@ define(function () {
         return data;
     }
 
-    function deparam (params, coerce) {
+    function deparam(params, coerce) {
         var obj = {},
             coerce_types = { 'true': !0, 'false': !1, 'null': null };
 
@@ -186,9 +198,11 @@ define(function () {
         return obj;
     };
 
+
     return {
         log: log,
         confirmAndCall: confirmAndCall,
+        showError: showError,
         getCookie: getCookie,
         tooltips: tooltips,
         values: values,

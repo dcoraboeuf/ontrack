@@ -143,7 +143,7 @@ define(function () {
      * Default error function for an AJAX error handling
      */
     function defaultAjaxErrorFn (jqXHR, textStatus, errorThrown) {
-        Application.displayError(getAjaxError(jqXHR, textStatus, errorThrown));
+        common.showError(getAjaxError(jqXHR, textStatus, errorThrown));
     }
 
     /**
