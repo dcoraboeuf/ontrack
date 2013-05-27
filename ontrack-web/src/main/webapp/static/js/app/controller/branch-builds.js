@@ -1,4 +1,4 @@
-define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dynamic, common, dialog) {
+define(['render','ajax','dynamic','common','dialog','jquery'], function (render, ajax, dynamic, common, dialog, $) {
 
     function getCurrentFilterFn (project, branch) {
         return function () {
@@ -26,6 +26,50 @@ define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dy
                 };
             }
         }
+    }
+
+    function withFilter (buildFilter) {
+        // Associates the filter with the build section
+        $('#builds').data('filter', buildFilter);
+        // Fills the hash
+        var params = $.param(buildFilter);
+        // Sets as hash
+        location.hash = params;
+        // Reloads
+        dynamic.reloadSection('branch-builds');
+    }
+
+    function filterWithForm (config, form) {
+        // Conversion into a BuildFilter
+        var filter = {
+            sincePromotionLevel: form.sincePromotionLevel,
+            withPromotionLevel: form.withPromotionLevel,
+            limit: form.limit
+        };
+        // sinceValidationStamps
+        if (form.sinceValidationStamp != '') {
+            var statuses = [];
+            if (form.sinceValidationStampStatus != '') {
+                statuses.push(form.sinceValidationStampStatus);
+            }
+            filter.sinceValidationStamps = [{
+                validationStamp: form.sinceValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // withValidationStamps
+        if (form.withValidationStamp != '') {
+            var statuses = [];
+            if (form.withValidationStampStatus != '') {
+                statuses.push(form.withValidationStampStatus);
+            }
+            filter.withValidationStamps = [{
+                validationStamp: form.withValidationStamp,
+                statuses: statuses
+            }];
+        }
+        // Filter
+        withFilter(filter);
     }
 
     function isFilterActive (project, branch) {
@@ -130,14 +174,18 @@ define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dy
                         config.form.find('#filter-clear').click(function () {
                             clearFilter(config);
                         });
-                    },
-                    submitFn: function (config) {
-                        // TODO Gets the values
-                        // var form = Application.values('filter-form');
-                        // TODO Submitting the query
-                        // filterWithForm(form);
-                        // OK
-                        config.closeFn();
+                        // Form: submit
+                        config.form.unbind('submit');
+                        config.form.submit(function () {
+                            // Gets the values
+                            var form = common.values(config.form);
+                            // Submitting the query
+                            filterWithForm(config, form);
+                            // OK
+                            config.closeFn();
+                            // Does not submit
+                            return false;
+                        });
                     }
                 });
             }

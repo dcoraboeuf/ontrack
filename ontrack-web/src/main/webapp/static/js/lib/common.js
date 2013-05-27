@@ -82,11 +82,24 @@ define(function () {
         });
     }
 
+    function values (base) {
+        var data = {};
+        $(base).find('input,textarea,select').each (function (index, field) {
+            if (field.getAttribute('readonly') != 'readonly' && field.getAttribute('disabled') != 'disabled') {
+                var name = field.getAttribute('name');
+                var value = field.value;
+                data[name] = value;
+            }
+        });
+        return data;
+    }
+
     return {
         log: log,
         confirmAndCall: confirmAndCall,
         getCookie: getCookie,
-        tooltips: tooltips
+        tooltips: tooltips,
+        values: values
     }
 
 });
