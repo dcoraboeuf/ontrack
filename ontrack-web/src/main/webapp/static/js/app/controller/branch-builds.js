@@ -38,18 +38,47 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
     }
 
     function generateTableBranchBuilds (target, config, branchBuilds) {
-        render.withTemplate('branch-builds', function (branchBuildTemplate) {
-            $(target).empty();
-            $(target).html(branchBuildTemplate({
-                project: config.project,
-                branch: config.branch,
-                logger: (config.logged == 'true'),
-                branchBuilds: branchBuilds,
-                totalColspan: branchBuilds.validationStamps.length + 4,
-                filterActive: isFilterActive(project, branch)
-            }));
-            // Activates the tooltips
-            common.tooltips();
+
+        render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
+
+            Handlebars.registerHelper('branchBuildValidationStampFn', function (buildName, context, options) {
+                // Looks for the build
+                var oBuild = $.grep(branchBuilds.builds, function (aBuild) {
+                    return aBuild.name == buildName;
+                })[0];
+                // Looks for the validation stamp build
+                var oBuildValidationStamp = oBuild.validationStamps[context.summary.name];
+                // Last run
+                var lastRun;
+                if (oBuildValidationStamp.run) {
+                    lastRun = oBuildValidationStamp.runs[oBuildValidationStamp.runs.length - 1];
+                }
+                // Rendering
+                return branchBuildStamp({
+                    validationStamp: this,
+                    project: config.project,
+                    branch: config.branch,
+                    build: buildName,
+                    buildValidationStamp: oBuildValidationStamp,
+                    lastRun: lastRun
+                });
+            });
+
+            render.withTemplate('branch-builds', function (branchBuildTemplate) {
+                $(target).empty();
+                $(target).html(branchBuildTemplate({
+                    project: config.project,
+                    branch: config.branch,
+                    logger: (config.logged == 'true'),
+                    branchBuilds: branchBuilds,
+                    totalColspan: branchBuilds.validationStamps.length + 4,
+                    filterActive: isFilterActive(project, branch)
+                }));
+
+                // Activates the tooltips
+                common.tooltips();
+            });
+
         });
     }
 

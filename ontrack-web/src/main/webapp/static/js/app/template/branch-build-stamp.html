@@ -1,0 +1,13 @@
+{{#if buildValidationStamp.run}}
+    {{#lastRun}}
+        <a
+            class="tooltip-source"
+            href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../buildValidationStamp/name}}/validation_run/{{runOrder}}"
+            title="<div style='text-align:left;'>{{#events}}- {{status}} {{content}}<br/>{{/events}}{{signature.elapsedTime}} - {{signature.formattedTime}}</div>"
+            data-html="true">
+            <img width="24" height="24" src="static/images/status-{{status}}.png" />
+        </a>
+    {{/lastRun}}
+{{else}}
+    <img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="{{loc 'validationRun.notRun' }}" />
+{{/if}}

@@ -78,7 +78,7 @@
                     </td>
                     {{#../branchBuilds.validationStamps}}
                         <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{summary.name}}">
-                            compactValidationStampFn ../name this
+                            {{{branchBuildValidationStampFn ../name this}}}
                         </td>
                     {{/../branchBuilds.validationStamps}}
                 </tr>
