@@ -8,7 +8,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
             if (filter) {
                 return filter;
             } else if (hash && hash != '' && hash != '#') {
-                filter = $.deparam(hash.substring(1));
+                filter = common.deparam(hash.substring(1));
                 $('#builds').data('filter', filter);
                 return filter;
             } else if (cookie) {
