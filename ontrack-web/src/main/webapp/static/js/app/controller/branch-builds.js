@@ -1,6 +1,6 @@
-define(['render','ajax','dynamic','common','dialog','jquery'], function (render, ajax, dynamic, common, dialog, $) {
+define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (render, ajax, dynamic, common, dialog, $) {
 
-    function getCurrentFilterFn (project, branch) {
+    function getCurrentFilterFn(project, branch) {
         return function () {
             var filter = $('#branch-builds').data('filter');
             var hash = location.hash;
@@ -28,7 +28,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         }
     }
 
-    function withFilter (buildFilter) {
+    function withFilter(buildFilter) {
         // Associates the filter with the build section
         $('#builds').data('filter', buildFilter);
         // Fills the hash
@@ -39,7 +39,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         dynamic.reloadSection('branch-builds');
     }
 
-    function filterWithForm (config, form) {
+    function filterWithForm(config, form) {
         // Conversion into a BuildFilter
         var filter = {
             sincePromotionLevel: form.sincePromotionLevel,
@@ -52,10 +52,12 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
             if (form.sinceValidationStampStatus != '') {
                 statuses.push(form.sinceValidationStampStatus);
             }
-            filter.sinceValidationStamps = [{
-                validationStamp: form.sinceValidationStamp,
-                statuses: statuses
-            }];
+            filter.sinceValidationStamps = [
+                {
+                    validationStamp: form.sinceValidationStamp,
+                    statuses: statuses
+                }
+            ];
         }
         // withValidationStamps
         if (form.withValidationStamp != '') {
@@ -63,16 +65,18 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
             if (form.withValidationStampStatus != '') {
                 statuses.push(form.withValidationStampStatus);
             }
-            filter.withValidationStamps = [{
-                validationStamp: form.withValidationStamp,
-                statuses: statuses
-            }];
+            filter.withValidationStamps = [
+                {
+                    validationStamp: form.withValidationStamp,
+                    statuses: statuses
+                }
+            ];
         }
         // Filter
         withFilter(filter);
     }
 
-    function isFilterActive (project, branch) {
+    function isFilterActive(project, branch) {
         var filter = getCurrentFilterFn(project, branch)();
         return filter.limit != 10
             || filter.withPromotionLevel != ''
@@ -81,7 +85,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
             || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0);
     }
 
-    function buildRadioButtons () {
+    function buildRadioButtons() {
         // Last of the froms
         var froms = $('input[name="buildFrom"]');
         if (froms.length > 0) {
@@ -94,7 +98,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         }
     }
 
-    function setupDiffActions () {
+    function setupDiffActions() {
         $('.diff-action').each(function (index, action) {
             // Action attributes
             var path = $(action).attr('path');
@@ -113,7 +117,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         });
     }
 
-    function clearFilter (config) {
+    function clearFilter(config) {
         // Clears the form
         config.form.find('#withPromotionLevel').val('');
         config.form.find('#sincePromotionLevel').val('');
@@ -137,7 +141,7 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
                     data: branchFilterData,
                     initFn: function (config) {
                         // Gets the current filter
-                        var filter = getCurrentFilterFn(project, branch)();
+                        var filter = getCurrentFilterFn(config.project, config.branch)();
                         // Converts into a form (best effort)
                         var form = {
                             limit: filter.limit,
@@ -192,14 +196,14 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         });
     }
 
-    function setupFilterButton () {
+    function setupFilterButton() {
         $('#filter-button').unbind('click');
         $('#filter-button').click(function () {
             showFilter();
         });
     }
 
-    function generateTableBranchBuilds (target, config, branchBuilds) {
+    function generateTableBranchBuilds(target, config, branchBuilds) {
 
         render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
 
@@ -266,7 +270,9 @@ define(['render','ajax','dynamic','common','dialog','jquery'], function (render,
         url: function (config) {
             return 'ui/manage/project/{0}/branch/{1}/build'.format(config.project, config.branch)
         },
-        data: getCurrentFilterFn(project, branch),
+        data: function (config) {
+            return getCurrentFilterFn(config.project, config.branch)();
+        },
         render: function (target, append, config, branchBuilds) {
             generateTableBranchBuilds(target, config, branchBuilds);
         }
