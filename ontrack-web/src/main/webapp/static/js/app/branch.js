@@ -10,6 +10,37 @@ define(['application','jquery','dialog','ajax'], function(application, $, dialog
         });
     });
 
+    // Updating the branch
+    $('#command-branch-update').click(function () {
+        ajax.get({
+            url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
+            successFn: function (summary) {
+                dialog.show({
+                    title: 'branch.update'.loc(),
+                    templateId: 'branch-update',
+                    initFn: function (config) {
+                        config.form.find('#branch-name').val(summary.name);
+                        config.form.find('#branch-description').val(summary.description);
+                    },
+                    submitFn: function (config) {
+                        ajax.put({
+                            url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
+                            data: {
+                                name: config.form.find('#branch-name').val(),
+                                description: config.form.find('#branch-description').val()
+                            },
+                            successFn: function (updatedBranch) {
+                                config.closeFn();
+                                location.href = 'gui/project/{0}/branch/{1}'.format(updatedBranch.project.name, updatedBranch.name);
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                        });
+                    }
+                });
+            }
+        });
+    });
+
     // Create a promotion level
     $('#promotion-level-create-button').click(function () {
         dialog.show({
