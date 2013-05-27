@@ -37,6 +37,19 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
             || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0);
     }
 
+    function buildRadioButtons () {
+        // Last of the froms
+        var froms = $('input[name="buildFrom"]');
+        if (froms.length > 0) {
+            froms[froms.length - 1].setAttribute('checked', 'checked');
+        }
+        // First of the tos
+        var tos = $('input[name="buildTo"]');
+        if (tos.length > 0) {
+            tos[0].setAttribute('checked', 'checked');
+        }
+    }
+
     function generateTableBranchBuilds (target, config, branchBuilds) {
 
         render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
@@ -91,6 +104,8 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
 
                 // Activates the tooltips
                 common.tooltips();
+                // TODO gridHoverSetup();
+                buildRadioButtons();
             });
 
         });
