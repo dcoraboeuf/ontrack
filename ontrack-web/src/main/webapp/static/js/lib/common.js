@@ -76,10 +76,17 @@ define(function () {
         }
     }
 
+    function tooltips () {
+        $('.tooltip-source').tooltip({
+            placement: 'bottom'
+        });
+    }
+
     return {
         log: log,
         confirmAndCall: confirmAndCall,
-        getCookie: getCookie
+        getCookie: getCookie,
+        tooltips: tooltips
     }
 
 });

@@ -48,6 +48,8 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
                 totalColspan: branchBuilds.validationStamps.length + 4,
                 filterActive: isFilterActive(project, branch)
             }));
+            // Activates the tooltips
+            common.tooltips();
         });
     }
 
