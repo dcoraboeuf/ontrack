@@ -2,9 +2,9 @@ define(function () {
 
     var logging = false;
 
-    String.prototype.format = function() {
+    String.prototype.format = function () {
         var args = arguments;
-        return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function(m, n) {
+        return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
             if (m == "{{") {
                 return "{";
             }
@@ -15,11 +15,11 @@ define(function () {
         });
     };
 
-    String.prototype.html = function() {
+    String.prototype.html = function () {
         return $('<i></i>').text(this).html();
     };
 
-    String.prototype.htmlWithLines = function() {
+    String.prototype.htmlWithLines = function () {
         var text = this.html();
         return text.replace(/\n/g, '<br/>');
     };
@@ -34,7 +34,7 @@ define(function () {
         }
     };
 
-    function log (context) {
+    function log(context) {
         return function (message, args) {
             if (logging && console) {
                 if (args) {
@@ -46,26 +46,40 @@ define(function () {
         }
     }
 
-    function confirmAndCall (text, callback) {
+    function confirmAndCall(text, callback) {
         $('<div>{0}</div>'.format(text)).dialog({
             title: 'general.confirm.title'.loc(),
             dialogClass: 'confirm-dialog',
             modal: true,
             buttons: {
                 Ok: function () {
-                    $( this ).dialog( "close" );
+                    $(this).dialog("close");
                     callback();
                 },
                 Cancel: function () {
-                    $( this ).dialog( "close" );
+                    $(this).dialog("close");
                 }
             }
         });
     }
 
+    // source: http://www.w3schools.com/js/js_cookies.asp
+    function getCookie(c_name) {
+        var i, x, y, ARRcookies = document.cookie.split(";");
+        for (i = 0; i < ARRcookies.length; i++) {
+            x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+            y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+            x = x.replace(/^\s+|\s+$/g, "");
+            if (x == c_name) {
+                return unescape(y);
+            }
+        }
+    }
+
     return {
         log: log,
-        confirmAndCall: confirmAndCall
+        confirmAndCall: confirmAndCall,
+        getCookie: getCookie
     }
 
 });

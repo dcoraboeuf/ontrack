@@ -32,7 +32,14 @@
         </div>
         <div class="row-fluid">
             <div class="span12">
-                <!--@builds project=branch.project.name branch=branch.name /-->
+                <link rel="stylesheet" type="text/css" href="${base}/css/builds.css" />
+                <div id="branch-builds"
+                     class="dynamic"
+                     dynamic-controller="branch-builds"
+                     dynamic-project="${branch.project.name?html}"
+                     dynamic-branch="${branch.name?html}"
+                     dynamic-logged="${ secLogged()?string }"
+                     ></div>
             </div>
         </div>
         <div class="row-fluid">

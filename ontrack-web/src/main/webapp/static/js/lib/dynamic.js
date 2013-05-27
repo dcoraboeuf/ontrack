@@ -177,14 +177,19 @@ define(['require','common','jquery','render','ajax'], function (require, common,
             }
             // Starts loading
             $('#' + config.id + '-error').hide();
+            // Gets the data
+            var data = getConfig(config, 'data');
+            if (data && $.isFunction(data)) {
+                data = data(config);
+            }
             // Call
-            if (config.data) {
+            if (data) {
                 AJAX.post ({
                     url: url,
-                    data: config.data,
+                    data: data,
                     loading: {
                         mode: 'container',
-                        el: '#' + id + '-loading'
+                        el: '#' + config.id + '-loading'
                     },
                     successFn: function (data) {
                         // Uses the data

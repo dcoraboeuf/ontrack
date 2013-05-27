@@ -1,0 +1,77 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th rowspan="3">&nbsp;</th>
+            <th rowspan="3">{{loc 'model.build' }}</th>
+            <th rowspan="3">{{loc 'branch.promotion_levels' }}</th>
+            <th colspan="{{branchBuilds.validationStamps.length}}">
+                {{loc 'branch.validation_stamps' }}
+                {{#if logged}}
+                    <a href="gui/admin/project/{{project}}/branch/{{branch}}/validation_stamp/filter">
+                        <i
+                            id="validation-stamps-filter-button"
+                            class="icon-filter action action-optional {{#if branchBuilds.validationStampsFiltered}}enabled{{/if}}"
+                            title="{{loc 'validation_stamp.filter'}}{{#if branchBuilds.validationStampsFiltered}} - {{loc 'validation_stamp.filter.enabled'}}{{/if}}"></i>
+                    </a>
+                {{/if}}
+            </th>
+        </tr>
+        <tr>
+            {{#branchBuilds.validationStamps}}
+                <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
+                    <a href="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}">
+                        <img class="tooltip-source" width="24" height="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
+                    </a>
+                </th>
+            {{/branchBuilds.validationStamps}}
+        </tr>
+        <tr>
+            {{#branchBuilds.validationStamps}}
+                <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
+                    {{#if decorations.length}}
+                        <ul class="validation-stamp-decoration">
+                            {{#decorations}}
+                                <li><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" /></li>
+                            {{/decorations}}
+                        </ul>
+                    {{/if}}
+                </th>
+            {{/branchBuilds.validationStamps}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#if branchBuilds.builds.length}}
+            {{{rowFn}}}
+        {{else}}
+            <tr>
+                <td colspan="{{totalColspan}}">
+                    <div class="alert alert-warning">{{loc 'branch.nobuild' }}</div>
+                </td>
+            </tr>
+        {{/if}}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="{{totalColspan}}">
+                <!-- Filter -->
+                <button id="filter-button" type="button" class="btn {{#filterActive}}btn-warning{{/filterActive}}">{{loc 'query' }}</button>
+                <!-- Diff actions -->
+                <#list extensionDiffActions() as action>
+                    <button
+                            id="diff-action-${action.extension}-${action.name}"
+                            type="button"
+                            class="btn"
+                            extension="${action.extension}"
+                            name="${action.name}"
+                            path="${action.path?html}"
+                            project="${project?html}"
+                            branch="${branch?html}"
+                            onclick="Builds.diffAction(this)"
+                            >
+                        ${action.title?html}
+                    </button>
+                </#list>
+            </td>
+        </tr>
+    </tfoot>
+</table>
