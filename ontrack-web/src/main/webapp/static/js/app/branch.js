@@ -1,9 +1,17 @@
-define(['jquery','dialog','ajax'], function($, dialog, ajax) {
+define(['application','jquery','dialog','ajax'], function(application, $, dialog, ajax) {
+
+    var project = $('#project').val();
+    var branch = $('#branch').val();
+
+    // Delete the branch
+    $('#command-branch-delete').click(function () {
+        application.deleteEntity('project/{0}/branch'.format(project), branch, function () {
+            location.href = 'gui/project/{0}'.format(project);
+        });
+    });
 
     // Create a promotion level
     $('#promotion-level-create-button').click(function () {
-        var project = $('#project').val();
-        var branch = $('#branch').val();
         dialog.show({
             title: 'promotion_level.create'.loc(),
             templateId: 'promotion-level-create',

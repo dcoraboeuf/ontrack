@@ -19,7 +19,7 @@
                     <#if secAdmin()>
                         <span id="command-branch-update" onclick="Branches.updateBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone"><i class="icon-forward"></i> <@lh key="branch.clone" /></a>
-                        <span id="command-branch-delete" onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                        <span id="command-branch-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                     </#if>
                     <a href="gui/project/${branch.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
