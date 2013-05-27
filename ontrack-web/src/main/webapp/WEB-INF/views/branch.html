@@ -3,6 +3,8 @@
 <#assign branch = decoratedBranch.summary />
 
 <@layout_std page="branch" title=branch.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
+    <input id="project" type="hidden" value="${branch.project.name?html}" />
+    <input id="branch" type="hidden" value="${branch.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">

@@ -1,9 +1,0 @@
-<#macro promotion_level_create project branch>
-    <@dialog id="promotion_level-create-dialog">
-        <@form_text name="name" label=loc('promotion_level.name') />
-        <@form_memo name="description" label=loc('promotion_level.description') required=false />
-
-        <@dialog_button id="promotion_level-create-dialog-submit" class="btn-primary" text=loc('general.create') />
-        <@dialog_button_cancel />
-    </@dialog>
-</#macro>
