@@ -1,0 +1,59 @@
+<form>
+    <p>
+        <@lh key="query.withPromotionLevel" />
+        <select id="withPromotionLevel" name="withPromotionLevel" class="input-medium">
+            <option value="">&nbsp;</option>
+            {{#promotionLevels}}
+                <option value="{{name}}">{{name}}</option>
+            {{/promotionLevels}}
+        </select>
+        <@lh key="query.sincePromotionLevel" />
+        <select id="sincePromotionLevel" name="sincePromotionLevel" class="input-medium">
+            <option value="">&nbsp;</option>
+            {{#promotionLevels}}
+                <option value="{{name}}">{{name}}</option>
+            {{/promotionLevels}}
+        </select>
+    </p>
+    <p>
+        <@lh key="query.withValidationStamp" />
+        <select id="withValidationStamp" name="withValidationStamp" class="input-large">
+            <option value="">&nbsp;</option>
+            {{#validationStamps}}
+                <option value="{{name}}">{{name}}</option>
+            {{/validationStamps}}
+        </select>
+        <@lh key="query.withValidationStamp.status" />
+        <select id="withValidationStampStatus" name="withValidationStampStatus" class="input-medium">
+            <option value="">&nbsp;</option>
+            {{#statuses}}
+                <option value="{{.}}">{{.}}</option>
+            {{/statuses}}
+        </select>
+    </p>
+    <p>
+        <@lh key="query.sinceValidationStamp" />
+        <select id="sinceValidationStamp" name="sinceValidationStamp" class="input-large">
+            <option value="">&nbsp;</option>
+            {{#validationStamps}}
+                <option value="{{name}}">{{name}}</option>
+            {{/validationStamps}}
+        </select>
+        <@lh key="query.sinceValidationStamp.status" />
+        <select id="sinceValidationStampStatus" name="sinceValidationStampStatus" class="input-medium">
+            <option value="">&nbsp;</option>
+            {{#statuses}}
+                <option value="{{.}}">{{.}}</option>
+            {{/statuses}}
+        </select>
+    </p>
+    <p>
+        <@lh key="query.limit" />
+        <input id="limit" name="limit" type="number" class="input-mini" min="1" value="10" max="100" maxlength="3" />
+    </p>
+    <p>
+        <button type="submit" class="btn btn-primary"><@lh key="query.submit" /></button>
+        <button type="button" class="btn" onclick="Builds.clearFilter()"><@lh key="query.clear" /></button>
+        <button id="filter-cancel" type="button" class="btn btn-link">{{loc 'general.close' }}</button>
+    </p>
+</form>
