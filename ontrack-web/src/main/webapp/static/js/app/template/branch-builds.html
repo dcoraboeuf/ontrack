@@ -41,7 +41,34 @@
     </thead>
     <tbody>
         {{#if branchBuilds.builds.length}}
-            {{{rowFn}}}
+            {{#branchBuilds.builds}}
+                <tr>
+                    <td build="{{name}}" style="width:4em;">
+                        <input type="radio" name="buildFrom" value="{{name}}" />
+                        <input type="radio" name="buildTo" value="{{name}}" />
+                    </td>
+                    <td class="branch-build build_header" build="{{name}}">
+                        <a
+                            class="tooltip-source"
+                            href="gui/project/{{../project}}/branch/{{../branch}}/build/{{name}}"
+                            title="{{description}} - {{signature.elapsedTime}} - {{formattedTime}}">
+                            {{name}}
+                        </a>
+                        <!-- Build decorations -->
+                        {{#decorations}}
+                            <span class="decoration label label-{{cls}} decoration-{{cls}} {{cls}}">{{title}}</span>
+                        {{/decorations}}
+                    </td>
+                    <td class="build_promotion_level" build="{{name}}">
+                        promotionLevelsFn
+                    </td>
+                    {{#../branchBuilds.validationStamps}}
+                        <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{summary.name}}">
+                            compactValidationStampFn ../name this
+                        </td>
+                    {{/../branchBuilds.validationStamps}}
+                </tr>
+            {{/branchBuilds.builds}}
         {{else}}
             <tr>
                 <td colspan="{{totalColspan}}">
