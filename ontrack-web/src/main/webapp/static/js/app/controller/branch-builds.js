@@ -50,6 +50,25 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
         }
     }
 
+    function setupDiffActions () {
+        $('.diff-action').each(function (index, action) {
+            // Action attributes
+            var path = $(action).attr('path');
+            var project = $(action).attr('project');
+            var branch = $(action).attr('branch');
+            // From & to
+            var from = $('input[name="buildFrom"]:checked').val();
+            var to = $('input[name="buildTo"]:checked').val();
+            // URL
+            var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
+            // Go
+            $(action).unbind('click');
+            $(action).click(function () {
+                location.href = url;
+            });
+        });
+    }
+
     function generateTableBranchBuilds (target, config, branchBuilds) {
 
         render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
@@ -106,6 +125,7 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
                 common.tooltips();
                 // TODO gridHoverSetup();
                 buildRadioButtons();
+                setupDiffActions();
             });
 
         });
