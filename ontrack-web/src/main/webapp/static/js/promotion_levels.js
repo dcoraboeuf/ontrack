@@ -45,13 +45,6 @@ var PromotionLevels = function () {
                					);
 	}
 	
-	function promotionLevelTemplate (project, branch) {
-	    return Template.config({
-	        url: 'ui/manage/project/{0}/branch/{1}/promotion_level'.format(project,branch),
-	        render: Template.asTableTemplate('promotionLevelTemplate')
-	    });
-	}
-	
 	function editImage () {
 		$('#promotion_level-image-form').toggle();
 	}

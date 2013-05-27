@@ -1,5 +1,3 @@
-<script type="text/javascript" src="${base}/js/promotion_levels.js"></script>
-
 <#macro promotion_level_create project branch>
     <@dialog id="promotion_level-create-dialog">
         <@form_text name="name" label=loc('promotion_level.name') />
@@ -8,37 +6,4 @@
         <@dialog_button id="promotion_level-create-dialog-submit" class="btn-primary" text=loc('general.create') />
         <@dialog_button_cancel />
     </@dialog>
-    <button id="promotion_level-create-button" type="button" class="btn" onclick="PromotionLevels.createPromotionLevel('${project?html}','${branch?html}')"><@lh key="promotion_level.create" /></button>
-</#macro>
-
-
-<#macro promotion_levels project branch id="promotion_levels" create=true>
-    <@dynamicsection id=id template="PromotionLevels.promotionLevelTemplate('${project?html}','${branch?html}')">
-        <#if create>
-            <@promotion_level_create project=project branch=branch />
-        </#if>
-    </@dynamicsection>
-    <script id="promotionLevelTemplate" type="text/html">
-        <tr>
-            <td>
-                <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/promotion_level/{{name}}/image" />
-                <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/promotion_level/{{name}}">{{name}}</a>
-                {{#autoPromote}}
-                    <span class="label label-success"><@lh key="promotion_level.autoPromote" /></span>
-                {{/autoPromote}}
-                {{#description}}
-                    <br/>
-                    <span class="description">{{description}}</span>
-                {{/description}}
-            </td>
-        </tr>
-    </script>
-</#macro>
-
-<#macro promotion_level_img promotionLevel>
-    <img width="24" title="${promotionLevel.name?html}" src="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image" />
-</#macro>
-
-<#macro promotion_level_link promotionLevel>
-    <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}">${promotionLevel.name?html}</a>
 </#macro>

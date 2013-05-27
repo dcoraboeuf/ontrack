@@ -2,7 +2,7 @@
 
 <#assign branch = decoratedBranch.summary />
 
-<@layout_std page="branch" title=branch.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
+<@layout_std page="branch" title=branch.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -15,9 +15,9 @@
                 </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
-                        <span onclick="Branches.updateBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span id="command-branch-update" onclick="Branches.updateBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone"><i class="icon-forward"></i> <@lh key="branch.clone" /></a>
-                        <span onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                        <span id="command-branch-delete" onclick="Branches.deleteBranch('${branch.project.name?html}','${branch.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                     </#if>
                     <a href="gui/project/${branch.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
@@ -30,19 +30,30 @@
         </div>
         <div class="row-fluid">
             <div class="span12">
-                <@builds project=branch.project.name branch=branch.name />
+                <!--@builds project=branch.project.name branch=branch.name /-->
             </div>
         </div>
         <div class="row-fluid">
 			<div class="span3">
-				<@panel title=loc("branch.promotion_levels")>
-                    <@promotion_levels project=branch.project.name branch=branch.name create=secAdmin() />
-				</@panel>
+                <section>
+                    <h4><@lh key="branch.promotion_levels" /></h4>
+                    <div
+                            id="branch-promotion-levels"
+                            class="dynamic"
+                            dynamic-controller="branch-promotion-levels"
+                            dynamic-project="${branch.project.name?html}"
+                            dynamic-branch="${branch.name?html}"
+                            ></div>
+                    <#if secAdmin()>
+                        <button id="promotion-level-create-button" type="button" class="btn"><@lh key="promotion_level.create" /></button>
+                    </#if>
+                </section>
             </div>
             <div class="span3">
-				<@panel title=loc("branch.validation_stamps")>
-					<@validation_stamps project=branch.project.name branch=branch.name create=secAdmin() />
-				</@panel>
+                <section>
+                    <h4><@lh key="branch.validation_stamps" /></h4>
+                    <!--@validation_stamps project=branch.project.name branch=branch.name create=secAdmin() /-->
+                </section>
 			</div>
 			<div class="span6">
 				<@audit filter="&branch=${branch.id}" />
