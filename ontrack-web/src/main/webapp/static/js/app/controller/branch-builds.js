@@ -9,12 +9,12 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 return filter;
             } else if (hash && hash != '' && hash != '#') {
                 filter = common.deparam(hash.substring(1));
-                $('#builds').data('filter', filter);
+                $('#branch-builds').data('filter', filter);
                 return filter;
             } else if (cookie) {
                 var json = eval(cookie);
                 filter = $.parseJSON(json);
-                $('#builds').data('filter', filter);
+                $('#branch-builds').data('filter', filter);
                 return filter;
             } else {
                 return {
@@ -30,7 +30,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
 
     function withFilter(buildFilter) {
         // Associates the filter with the build section
-        $('#builds').data('filter', buildFilter);
+        $('#branch-builds').data('filter', buildFilter);
         // Fills the hash
         var params = $.param(buildFilter);
         // Sets as hash
@@ -252,7 +252,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                     branchBuilds: branchBuilds,
                     diffActions: diffActions,
                     totalColspan: branchBuilds.validationStamps.length + 4,
-                    filterActive: isFilterActive(project, branch)
+                    filterActive: isFilterActive(config.project, config.branch)
                 }));
 
                 // Activates the tooltips
