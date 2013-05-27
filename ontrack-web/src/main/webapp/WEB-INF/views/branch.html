@@ -40,6 +40,19 @@
                      dynamic-branch="${branch.name?html}"
                      dynamic-logged="${ secLogged()?string }"
                      ></div>
+                <!-- Diff actions -->
+                <#list extensionDiffActions() as action>
+                    <div
+                        id="diff-action-${action.extension}-${action.name}-def"
+                        class="hidden extension-diff-action"
+                        extension="${action.extension}"
+                        name="${action.name}"
+                        path="${action.path?html}"
+                        project="${branch.project.name?html}"
+                        branch="${branch.name?html}"
+                        title="${action.title?html}"
+                        ></div>
+                </#list>
             </div>
         </div>
         <div class="row-fluid">

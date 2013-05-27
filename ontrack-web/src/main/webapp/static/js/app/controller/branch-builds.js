@@ -64,6 +64,19 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
                 });
             });
 
+            // Diff actions
+            var diffActions = [];
+            $('.extension-diff-action').each(function (index, def) {
+                diffActions.push({
+                    extension: $(def).attr('extension'),
+                    name: $(def).attr('name'),
+                    path: $(def).attr('path'),
+                    project: $(def).attr('project'),
+                    branch: $(def).attr('branch'),
+                    title: $(def).attr('title')
+                });
+            });
+
             render.withTemplate('branch-builds', function (branchBuildTemplate) {
                 $(target).empty();
                 $(target).html(branchBuildTemplate({
@@ -71,6 +84,7 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
                     branch: config.branch,
                     logger: (config.logged == 'true'),
                     branchBuilds: branchBuilds,
+                    diffActions: diffActions,
                     totalColspan: branchBuilds.validationStamps.length + 4,
                     filterActive: isFilterActive(project, branch)
                 }));
@@ -88,12 +102,7 @@ define(['render','ajax','dynamic','common'], function (render, ajax, dynamic, co
         },
         data: getCurrentFilterFn(project, branch),
         render: function (target, append, config, branchBuilds) {
-            if (append === true && $(target).has('tbody').length) {
-                $(target).find('tbody').append(generateTableBuildRows(project, branch, branchBuilds));
-            } else {
-                // No table defined, or no need to append
-                generateTableBranchBuilds(target, config, branchBuilds);
-            }
+            generateTableBranchBuilds(target, config, branchBuilds);
         }
     }
 

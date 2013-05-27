@@ -97,21 +97,20 @@
                 <!-- Filter -->
                 <button id="filter-button" type="button" class="btn {{#filterActive}}btn-warning{{/filterActive}}">{{loc 'query' }}</button>
                 <!-- Diff actions -->
-                <#list extensionDiffActions() as action>
+                {{#diffActions}}
                     <button
-                            id="diff-action-${action.extension}-${action.name}"
-                            type="button"
-                            class="btn"
-                            extension="${action.extension}"
-                            name="${action.name}"
-                            path="${action.path?html}"
-                            project="${project?html}"
-                            branch="${branch?html}"
-                            onclick="Builds.diffAction(this)"
-                            >
-                        ${action.title?html}
+                        id="diff-action-{{extension}}-{{name}}"
+                        type="button"
+                        class="btn"
+                        extension="{{extension}}"
+                        name="{{name}}"
+                        path="{{path}}"
+                        project="{{project}}"
+                        branch="{{branch}}"
+                        >
+                        {{title}}
                     </button>
-                </#list>
+                {{/diffActions}}
             </td>
         </tr>
     </tfoot>
