@@ -69,6 +69,17 @@ define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dy
         });
     }
 
+    function clearFilter (config) {
+        // Clears the form
+        config.form.find('#withPromotionLevel').val('');
+        config.form.find('#sincePromotionLevel').val('');
+        config.form.find('#withValidationStamp').val('');
+        config.form.find('#withValidationStampStatus').val('');
+        config.form.find('#sinceValidationStamp').val('');
+        config.form.find('#sinceValidationStampStatus').val('');
+        config.form.find('#limit').val('10');
+    }
+
     function showFilter() {
         var config = dynamic.getSectionConfig('branch-builds');
         dialog.show({
@@ -110,6 +121,10 @@ define(['render','ajax','dynamic','common','dialog'], function (render, ajax, dy
                 // Button: cancel
                 config.form.find('#filter-cancel').click(function () {
                     config.closeFn();
+                });
+                // Button: clear
+                config.form.find('#filter-clear').click(function () {
+                    clearFilter(config);
                 });
             },
             submitFn: function (config) {
