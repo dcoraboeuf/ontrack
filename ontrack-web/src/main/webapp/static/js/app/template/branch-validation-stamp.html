@@ -15,7 +15,7 @@
             {{/last}}
             <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
             <!-- Ownership -->
-            <i class="icon-user action action-optional" title="{{loc 'validation_stamp.owner.change' }}" onclick="ValidationStamps.changeOwnerInList('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
+            <i class="icon-user action action-optional validation-stamp-owner" owner-stamp="{{name}}" title="{{loc 'validation_stamp.owner.change' }}"></i>
         {{/if}}
         {{#description}}
             <br/>

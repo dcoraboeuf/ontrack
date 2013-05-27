@@ -1,4 +1,4 @@
-define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
+define(['render','ajax','dynamic','app/validationStamp'], function (render, ajax, dynamic, validationStamp) {
 
     function upValidationStamp (project, branch, stamp) {
         ajax.put({
@@ -56,6 +56,16 @@ define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
                     } else {
                         downValidationStamp(config.project, config.branch, stamp);
                     }
+                });
+            });
+            // Changing the owner
+            $('.validation-stamp-owner').each(function (index, link) {
+                var stamp = $(link).attr('owner-stamp');
+                $(link).unbind('click');
+                $(link).click(function () {
+                    validationStamp.changeOwner(config.project, config.branch, stamp, function () {
+                        dynamic.reloadSection('branch-validation-stamps');
+                    });
                 });
             });
         })
