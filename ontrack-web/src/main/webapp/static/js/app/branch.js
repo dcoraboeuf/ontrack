@@ -1,4 +1,4 @@
-define(['application','jquery','dialog','ajax'], function(application, $, dialog, ajax) {
+define(['application','jquery','dialog','ajax','dynamic'], function(application, $, dialog, ajax, dynamic) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();

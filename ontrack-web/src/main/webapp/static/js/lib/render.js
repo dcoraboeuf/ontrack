@@ -109,12 +109,15 @@ define(['common', 'handlebars'], function (common, handlebars) {
         };
     }
 
-    function asTableTemplate(rowTemplateId) {
+    function asTableTemplate(rowTemplateId, callbackFn) {
         return function (target, append, config, items) {
             withTemplate(rowTemplateId, function (compiledTemplate) {
                 tableInto(target, append, config, items, function (item) {
                     return compiledTemplate(item);
                 });
+                if (callbackFn) {
+                    callbackFn(config);
+                }
             });
         }
     }

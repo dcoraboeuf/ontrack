@@ -1,4 +1,31 @@
-define(['render'], function (render) {
+define(['render','ajax','dynamic'], function (render, ajax, dynamic) {
+
+    function upValidationStamp (project, branch, stamp) {
+        ajax.put({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/up'.format(project, branch, stamp),
+            loading: {
+                el: $('#validation-stamp-{0}-order-loading'.format(stamp)),
+                mode: 'container'
+            },
+            successFn: function () {
+                dynamic.reloadSection('branch-validation-stamps');
+            }
+        })
+    }
+
+    function downValidationStamp (project, branch, stamp) {
+        ajax.put({
+            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/down'.format(project, branch, stamp),
+            loading: {
+                el: $('#validation-stamp-{0}-order-loading'.format(stamp)),
+                mode: 'container'
+            },
+            successFn: function () {
+                dynamic.reloadSection('branch-validation-stamps');
+            }
+        })
+    }
+
 
     return {
         url: function (config) {
@@ -17,7 +44,21 @@ define(['render'], function (render) {
             });
             return stamps;
         },
-        render: render.asTableTemplate('branch-validation-stamp')
+        render: render.asTableTemplate('branch-validation-stamp', function (config) {
+            // Ordering of the validation stamps
+            $('.validation-stamp-order').each(function (index, link) {
+                var stamp = $(link).attr('order-stamp');
+                var direction = $(link).attr('order-direction');
+                $(link).unbind('click');
+                $(link).click(function () {
+                    if (direction == 'up') {
+                        upValidationStamp(config.project, config.branch, stamp);
+                    } else {
+                        downValidationStamp(config.project, config.branch, stamp);
+                    }
+                });
+            });
+        })
     }
 
 });

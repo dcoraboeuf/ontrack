@@ -8,10 +8,10 @@
         {{/owner}}
         {{#if admin}}
             {{^first}}
-                <i class="icon-arrow-up action action-optional" onclick="ValidationStamps.down('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
+                <i class="icon-arrow-up action action-optional validation-stamp-order" order-direction="down" order-stamp="{{name}}"></i>
             {{/first}}
             {{^last}}
-                <i class="icon-arrow-down action action-optional" onclick="ValidationStamps.up('{{branch.project.name}}', '{{branch.name}}', '{{name}}');"></i>
+                <i class="icon-arrow-down action action-optional validation-stamp-order" order-direction="up" order-stamp="{{name}}"></i>
             {{/last}}
             <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
             <!-- Ownership -->
