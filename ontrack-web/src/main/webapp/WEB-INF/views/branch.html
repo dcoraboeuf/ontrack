@@ -54,7 +54,17 @@
             <div class="span3">
                 <section>
                     <h4><@lh key="branch.validation_stamps" /></h4>
-                    <!--@validation_stamps project=branch.project.name branch=branch.name create=secAdmin() /-->
+                    <div
+                            id="branch-validation-stamps"
+                            class="dynamic"
+                            dynamic-controller="branch-validation-stamps"
+                            dynamic-project="${branch.project.name?html}"
+                            dynamic-branch="${branch.name?html}"
+                            dynamic-admin="${secAdmin()?string}"
+                            ></div>
+                    <#if secAdmin()>
+                        <button id="validation_stamp-create-button" type="button" class="btn"><@lh key="validation_stamp.create" /></button>
+                    </#if>
                 </section>
 			</div>
 			<div class="span6">
