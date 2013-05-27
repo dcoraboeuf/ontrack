@@ -63,4 +63,26 @@ define(['application','jquery','dialog','ajax'], function(application, $, dialog
         });
     });
 
+    // Create a validation stamp
+    $('#validation-stamp-create-button').click(function () {
+        dialog.show({
+            title: 'validation_stamp.create'.loc(),
+            templateId: 'validation-stamp-create',
+            submitFn: function (config) {
+                ajax.post({
+                    url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
+                    data: {
+                        name: $('#validation-stamp-name').val(),
+                        description: $('#validation-stamp-description').val()
+                    },
+                    successFn: function (summary) {
+                        config.closeFn();
+                        location.href = 'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(project, branch, summary.name);
+                    },
+                    errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                });
+            }
+        });
+    });
+
 });
