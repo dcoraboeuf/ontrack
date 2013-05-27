@@ -17,7 +17,7 @@
                         <span id="promotion-level-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="PromotionLevels.editImage();"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
                         <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
-                        <span onclick="PromotionLevels.deletePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                        <span id="promotion-level-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
                     <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>

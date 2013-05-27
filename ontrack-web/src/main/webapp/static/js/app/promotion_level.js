@@ -1,8 +1,15 @@
-define(['jquery','ajax','dialog'], function ($, ajax, dialog) {
+define(['jquery','ajax','dialog','application'], function ($, ajax, dialog, application) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
     var promotionLevel = $('#promotion_level').val();
+
+    // Deleting the promotion level
+    $('#promotion-level-delete').click(function () {
+        application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project,branch), promotionLevel, function () {
+            location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+        });
+    });
 
     // Updating the promotion level
     $('#promotion-level-update').click(function () {
