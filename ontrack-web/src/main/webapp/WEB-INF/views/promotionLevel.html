@@ -1,13 +1,14 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="promotion_level" title=promotionLevel.name modules=["projects","branches","builds","validation_stamps","promotion_levels","audit","properties"] breadcrumbs = {loc("home"): "", promotionLevel.branch.project.name?html: "gui/project/${promotionLevel.branch.project.name?html}", promotionLevel.branch.name?html: "gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"}>
+<@layout_std page="promotion_level" title=promotionLevel.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", promotionLevel.branch.project.name?html: "gui/project/${promotionLevel.branch.project.name?html}", promotionLevel.branch.name?html: "gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"}>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
                 <span class="title">
                     <a href="gui/project/${promotionLevel.branch.project.name?html}">${promotionLevel.branch.project.name?html}</a>
                     / <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}">${promotionLevel.branch.name?html}</a>
-                    / <@promotion_level_img promotionLevel=promotionLevel /> ${promotionLevel.name?html}</span>
+                    / <img height="24" width="24" src="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image"> ${promotionLevel.name?html}
+                </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span onclick="PromotionLevels.updatePromotionLevel('${promotionLevel.branch.project.name?html}','${promotionLevel.branch.name?html}','${promotionLevel.name?html}');"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
@@ -34,21 +35,18 @@
         </div>
 		<div class="row-fluid">
             <div class="span7">
-                <h4><@lh key="promotion_level.promotions" /></h4>
-                <@dynamicsection id="promotions" template="PromotionLevels.promotionsTemplate('${promotionLevel.branch.project.name?html}', '${promotionLevel.branch.name?html}', '${promotionLevel.name?html}')" />
-                <script id="promotionTemplate" type="text/html">
-                    <tr>
-                        <td>
-                            <a href="gui/project/{{buildSummary.branch.project.name}}/branch/{{buildSummary.branch.name}}/build/{{buildSummary.name}}">{{buildSummary.name}}</a>
-                        </td>
-                        <td>
-                            {{signature.formattedTime}}
-                        </td>
-                        <td>
-                            <span class="description">{{signature.elapsedTime}}</span>
-                        </td>
-                    </tr>
-                </script>
+                <section>
+                    <h4><@lh key="promotion_level.promotions" /></h4>
+                    <div
+                        id="promotions"
+                        class="dynamic"
+                        dynamic-controller="promotion-level-promotions"
+                        dynamic-project="${promotionLevel.branch.project.name?html}"
+                        dynamic-branch="${promotionLevel.branch.name?html}"
+                        dynamic-promotion_level="${promotionLevel.name?html}"
+                        dynamic-more="true"
+                        ></div>
+                </section>
             </div>
 			<div class="span5">
 				<@audit filter="&promotionLevel=${promotionLevel.id}" />
