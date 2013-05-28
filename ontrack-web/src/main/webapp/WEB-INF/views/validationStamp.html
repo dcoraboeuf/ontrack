@@ -19,7 +19,7 @@
                 </span>
                 <span class="action action-optional">
                     <#if secAdmin()>
-                        <span onclick="ValidationStamps.updateValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
+                        <span id="validation-stamp-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span onclick="ValidationStamps.editImage();"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
                         <span onclick="ValidationStamps.changeOwnerInPage('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}');"><i class="icon-user"></i> <@lh key="validation_stamp.owner.change" /></span>
                         <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
