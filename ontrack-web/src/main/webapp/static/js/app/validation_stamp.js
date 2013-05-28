@@ -1,8 +1,15 @@
-define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax, dialog, application, dynamic) {
+define(['jquery', 'ajax', 'dialog', 'application', 'dynamic', 'app/component/validationStamp'], function ($, ajax, dialog, application, dynamic, validationStampComponent) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
     var validationStamp = $('#validation_stamp').val();
+
+    // Changes the owner
+    function changeOwner() {
+        validationStampComponent.changeOwner(project, branch, validationStamp, function () {
+            location.reload();
+        });
+    }
 
     // Deletes the validation stamp
     function deleteValidationStamp() {
@@ -91,16 +98,12 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax
     }
 
     $('#validation-stamp-update').click(updateValidationStamp);
-
     $('#validation-stamp-image').click(changeImage);
     $('#validation-stamp-image-cancel').click(changeImageCancel);
-
     $('#validation-stamp-delete').click(deleteValidationStamp);
-
+    $('#validation-stamp-owner').click(changeOwner);
     $('#validation-stamp-comment-cancel').click(cancelComment);
-
     $('#validation-stamp-comment-add').click(addComment);
-
     $('#validation-stamp-comment-form').submit(sendComment);
 
 });

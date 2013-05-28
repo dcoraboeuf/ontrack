@@ -1,4 +1,4 @@
-define(['render','ajax','dynamic','app/validationStamp'], function (render, ajax, dynamic, validationStamp) {
+define(['render','ajax','dynamic','app/component/validationStamp'], function (render, ajax, dynamic, validationStamp) {
 
     function upValidationStamp (project, branch, stamp) {
         ajax.put({
