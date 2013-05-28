@@ -2,14 +2,17 @@
 
 <#assign validationStamp = decoratedValidationStamp.summary />
 
-<@layout_std page="validation_stamp" title=validationStamp.name modules=["projects","branches","builds","validation_stamps","audit","properties"] breadcrumbs = {loc("home"): "", validationStamp.branch.project.name?html: "gui/project/${validationStamp.branch.project.name?html}", validationStamp.branch.name?html: "gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}"}>
+<@layout_std page="validation_stamp" title=validationStamp.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", validationStamp.branch.project.name?html: "gui/project/${validationStamp.branch.project.name?html}", validationStamp.branch.name?html: "gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}"}>
+    <input type="hidden" id="project" value="${validationStamp.branch.project.name?html}" />
+    <input type="hidden" id="branch" value="${validationStamp.branch.name?html}" />
+    <input type="hidden" id="validation_stamp" value="${validationStamp.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
                 <span class="title">
                     <a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a>
                     / <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
-                    / <@validation_stamp_img validationStamp=validationStamp /> ${validationStamp.name?html}
+                    / <img height="24" width="24" src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image"> ${validationStamp.name?html}
                     <#list decoratedValidationStamp.decorations as decoration>
                         <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" width="24" height="24" />
                     </#list>
@@ -43,8 +46,8 @@
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image">
                 <input id="validation_stamp.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
                 <p class="help-block"><@lh key="validation_stamp.image.help" /></p>
-                <button id="validation_stamp.image.submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
-                <button id="validation_stamp.image.cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>
+                <button id="validation-stamp-image-submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
+                <button id="validation-stamp-image-cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>
             </form>
             <div class="span12 muted">${validationStamp.description?html}</div>
         </div>
@@ -53,22 +56,28 @@
                 <h4>
                     <@lh key="validation_stamp.comments" />
                     <#if secLogged()>
-                        <img src="${base}/images/comment_add.png" onclick="$('#validation-stamp-comment-form').toggle();$('#validation-stamp-comment').focus();" class="action" title="<@lh key='validation_stamp.comment.add' />" />
+                        <img id="validation-stamp-comment-add" src="${base}/images/comment_add.png" class="action" title="<@lh key='validation_stamp.comment.add' />" />
                     </#if>
                 </h4>
                 <#if secLogged()>
-                    <form id="validation-stamp-comment-form" class="hidden" onsubmit="return ValidationStamps.addComment();">
-                        <input type="hidden" id="validation-stamp-comment-project" value="${validationStamp.branch.project.name?html}" />
-                        <input type="hidden" id="validation-stamp-comment-branch" value="${validationStamp.branch.name?html}" />
-                        <input type="hidden" id="validation-stamp-comment-validationStamp" value="${validationStamp.name?html}" />
+                    <form id="validation-stamp-comment-form" class="hidden">
                         <div class="input-append">
-                            <textarea id="validation-stamp-comment" name="comment" class="span9" rows="1" required="required"></textarea>
+                            <textarea id="validation-stamp-comment" name="comment" class="span7" rows="1" required="required"></textarea>
                             <button id="validation-stamp-comment-submit" type="submit" class="btn"><@lh key="validation_stamp.comment.add" /></button>
-                            <button type="button" class="btn btn-link" onclick="$('#validation-stamp-comment-form').toggle();"><@lh key="general.cancel" /></button>
+                            <button id="validation-stamp-comment-cancel" type="button" class="btn btn-link"><@lh key="general.cancel" /></button>
                         </div>
                     </form>
                 </#if>
-                <@dynamicsection id="validation-stamp-comments" template="ValidationStamps.commentsTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')" />
+                <div
+                    id="validation-stamp-comments"
+                    class="dynamic"
+                    dynamic-controller="validation-stamp-comments"
+                    dynamic-project="${validationStamp.branch.project.name?html}"
+                    dynamic-branch="${validationStamp.branch.name?html}"
+                    dynamic-validation_stamp="${validationStamp.name?html}"
+                    dynamic-more="true"
+                    dynamic-refresh="true"
+                    ></div>
                 <script id="validation-stamp-comment-template" type="text/html">
                     <tr>
                         <td>
@@ -80,7 +89,7 @@
             </div>
             <div class="span4">
                 <h4><@lh key="validationRun.history" /></h4>
-                <@dynamicsection id="validationStampHistory" template="ValidationStamps.validationStampHistoryTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')" />
+                TODO dynamicsection id="validationStampHistory" template="ValidationStamps.validationStampHistoryTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')"
                 <script id="validation-stamp-history-template" type="text/html">
                     <tr>
                         <td width="26">
@@ -110,15 +119,4 @@
 			</div>
 		</div>
 	</div>
-
-    <@dialog id="validation_stamp-update-dialog">
-        <@form_text idPrefix="validation_stamp-update-dialog-" name="name" label=loc('validation_stamp.name') />
-        <@form_memo idPrefix="validation_stamp-update-dialog-" name="description" label=loc('validation_stamp.description') required=false />
-
-        <@dialog_button id="validation_stamp-update-dialog-submit" class="btn-primary" text=loc('general.modify') />
-        <@dialog_button_cancel />
-    </@dialog>
-
-    <@validation_stamp_owner_dialog />
-        
 </@layout_std>
