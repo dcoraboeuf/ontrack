@@ -23,7 +23,7 @@
                         <span id="validation-stamp-image"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
                         <span onclick="ValidationStamps.changeOwnerInPage('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}');"><i class="icon-user"></i> <@lh key="validation_stamp.owner.change" /></span>
                         <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
-                        <span onclick="ValidationStamps.deleteValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                        <span id="validation-stamp-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
                     <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>

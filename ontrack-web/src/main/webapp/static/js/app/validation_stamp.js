@@ -4,6 +4,13 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax
     var branch = $('#branch').val();
     var validationStamp = $('#validation_stamp').val();
 
+    // Deletes the validation stamp
+    function deleteValidationStamp() {
+        application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project, branch), validationStamp, function () {
+            location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+        });
+    }
+
     // Displays the image form
     function changeImage() {
         $('#validation-stamp-image-form').show();
@@ -87,6 +94,8 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax
 
     $('#validation-stamp-image').click(changeImage);
     $('#validation-stamp-image-cancel').click(changeImageCancel);
+
+    $('#validation-stamp-delete').click(deleteValidationStamp);
 
     $('#validation-stamp-comment-cancel').click(cancelComment);
 
