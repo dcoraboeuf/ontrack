@@ -1,12 +1,20 @@
-define(['jquery','ajax','dialog','application'], function ($, ajax, dialog, application) {
+define(['jquery', 'ajax', 'dialog', 'application'], function ($, ajax, dialog, application) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
     var promotionLevel = $('#promotion_level').val();
 
+    function changeImage() {
+        $('#promotion_level-image-form').show();
+    }
+
+    function changeImageCancel() {
+        $('#promotion_level-image-form').hide();
+    }
+
     // Deleting the promotion level
     $('#promotion-level-delete').click(function () {
-        application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project,branch), promotionLevel, function () {
+        application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project, branch), promotionLevel, function () {
             location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
         });
     });
@@ -43,6 +51,14 @@ define(['jquery','ajax','dialog','application'], function ($, ajax, dialog, appl
                 });
             }
         });
+    });
+
+    // Changing the image of the promotion level
+    $('#promotion-level-image').click(function () {
+        changeImage();
+    });
+    $('#promotion-level-image-cancel').click(function () {
+        changeImageCancel();
     });
 
 });

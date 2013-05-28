@@ -15,7 +15,7 @@
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span id="promotion-level-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <span onclick="PromotionLevels.editImage();"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
+                        <span id="promotion-level-image"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
                         <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span id="promotion-level-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
@@ -31,8 +31,8 @@
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image">
                 <input id="promotion_level.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='promotion_level.image.placeholder'/>" />
                 <p class="help-block"><@lh key="promotion_level.image.help" /></p>
-                <button id="promotion_level.image.submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
-                <button id="promotion_level.image.cancel" type="button" class="btn btn-link" onclick="PromotionLevels.editImageCancel()"><@lh key="general.cancel"/></button>
+                <button id="promotion-level-image-submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
+                <button id="promotion-level-image-cancel" type="button" class="btn btn-link"><@lh key="general.cancel"/></button>
             </form>
             <div class="span12 muted">${promotionLevel.description?html}</div>
         </div>
