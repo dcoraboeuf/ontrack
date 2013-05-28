@@ -5,6 +5,7 @@ import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,11 +50,15 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
 
     @Override
     public String toHTML(Strings strings, Locale locale, String path) {
-        return String.format(
-                "<a href=\"%s\">%s</a>",
-                subversionService.getBrowsingURL(path),
-                path
-        );
+        if (StringUtils.isBlank(path)) {
+            return "";
+        } else {
+            return String.format(
+                    "<a href=\"%s\">%s</a>",
+                    subversionService.getBrowsingURL(path),
+                    path
+            );
+        }
     }
 
     @Override
