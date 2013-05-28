@@ -81,30 +81,16 @@
             </div>
             <div class="span4">
                 <h4><@lh key="validationRun.history" /></h4>
-                TODO dynamicsection id="validationStampHistory" template="ValidationStamps.validationStampHistoryTemplate('${validationStamp.branch.project.name?html}', '${validationStamp.branch.name?html}', '${validationStamp.name?html}')"
-                <script id="validation-stamp-history-template" type="text/html">
-                    <tr>
-                        <td width="26">
-                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">
-                                {{#if status}}
-                                    <img src="${base}/images/status-{{status}}.png" height="24" width="24" title="{{status}}" class="tooltip-source" />
-                                {{else}}
-                                    <img src="${base}/images/comment.png" height="24" width="24" />
-                                {{/if}}
-                            </a>
-                        </td>
-                        <td>
-                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}">{{validationRun.build.name}}</a>
-                        </td>
-                        <td width="32">
-                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
-                        </td>
-                        <td>
-                            {{content}}
-                            <span class="elapsed">- <span title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span></span>
-                        </td>
-                    </tr>
-                </script>
+                <div
+                    id="validation-stamp-history"
+                    class="dynamic"
+                    dynamic-controller="validation-stamp-history"
+                    dynamic-project="${validationStamp.branch.project.name?html}"
+                    dynamic-branch="${validationStamp.branch.name?html}"
+                    dynamic-validation_stamp="${validationStamp.name?html}"
+                    dynamic-more="true"
+                    dynamic-refresh="true"
+                    ></div>
             </div>
 			<div class="span4">
                 <@audit filter="&validationStamp=${validationStamp.id}" />

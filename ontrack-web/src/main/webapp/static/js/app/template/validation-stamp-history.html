@@ -1,0 +1,21 @@
+<tr>
+    <td width="26">
+        <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">
+            {{#if status}}
+                <img src="static/images/status-{{status}}.png" height="24" width="24" title="{{status}}" class="tooltip-source" />
+            {{else}}
+                <img src="static/images/comment.png" height="24" width="24" />
+            {{/if}}
+        </a>
+    </td>
+    <td>
+        <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}">{{validationRun.build.name}}</a>
+    </td>
+    <td width="32">
+        <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
+    </td>
+    <td>
+        {{content}}
+        <span class="elapsed">- <span title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span></span>
+    </td>
+</tr>
