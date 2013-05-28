@@ -20,7 +20,7 @@
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span id="validation-stamp-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <span onclick="ValidationStamps.editImage();"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
+                        <span id="validation-stamp-image"><i class="icon-edit"></i> <@lh key="validation_stamp.image.edit" /></span>
                         <span onclick="ValidationStamps.changeOwnerInPage('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}');"><i class="icon-user"></i> <@lh key="validation_stamp.owner.change" /></span>
                         <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span onclick="ValidationStamps.deleteValidationStamp('${validationStamp.branch.project.name?html}','${validationStamp.branch.name?html}','${validationStamp.name?html}')"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
@@ -42,9 +42,9 @@
                 <@properties entity="VALIDATION_STAMP" entityId=validationStamp.id />
             </div>
         </div>
-        <div id="validation_stamp-image-form" class="row-fluid x-dialog">
+        <div id="validation-stamp-image-form" class="row-fluid x-dialog">
             <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image">
-                <input id="validation_stamp.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
+                <input id="validation-stamp-image-file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='validation_stamp.image.placeholder'/>" />
                 <p class="help-block"><@lh key="validation_stamp.image.help" /></p>
                 <button id="validation-stamp-image-submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
                 <button id="validation-stamp-image-cancel" type="button" class="btn btn-link" onclick="ValidationStamps.editImageCancel()"><@lh key="general.cancel"/></button>

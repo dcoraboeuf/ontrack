@@ -4,6 +4,16 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax
     var branch = $('#branch').val();
     var validationStamp = $('#validation_stamp').val();
 
+    // Displays the image form
+    function changeImage() {
+        $('#validation-stamp-image-form').show();
+    }
+
+    // Hides the image form
+    function changeImageCancel() {
+        $('#validation-stamp-image-form').hide();
+    }
+
     // Updating the validation stamp
     function updateValidationStamp() {
         ajax.get({
@@ -74,6 +84,9 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic'], function ($, ajax
     }
 
     $('#validation-stamp-update').click(updateValidationStamp);
+
+    $('#validation-stamp-image').click(changeImage);
+    $('#validation-stamp-image-cancel').click(changeImageCancel);
 
     $('#validation-stamp-comment-cancel').click(cancelComment);
 
