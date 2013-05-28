@@ -248,7 +248,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 $(target).html(branchBuildTemplate({
                     project: config.project,
                     branch: config.branch,
-                    logger: (config.logged == 'true'),
+                    logged: (config.logged == 'true'),
                     branchBuilds: branchBuilds,
                     diffActions: diffActions,
                     totalColspan: branchBuilds.validationStamps.length + 4,
