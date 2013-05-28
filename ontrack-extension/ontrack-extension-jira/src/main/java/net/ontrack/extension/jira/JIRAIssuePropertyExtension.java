@@ -69,6 +69,9 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
 
     @Override
     public String toHTML(final Strings strings, final Locale locale, String value) {
+        if (StringUtils.isBlank(value)) {
+            return "";
+        }
         StringBuilder html = new StringBuilder();
         // For each issue
         html.append(
