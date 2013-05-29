@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="account.delete" breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
+<@layout_std page="account.delete" noscript=true breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
 
     <form action="gui/admin/accounts/${account.id?c}/delete" method="POST">
         <p>
