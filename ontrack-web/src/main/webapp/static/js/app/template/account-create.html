@@ -1,0 +1,60 @@
+<form class="form-horizontal">
+    <!-- General -->
+    <div class="control-group">
+        <label class="control-label" for="name">{{loc 'account.name'}}</label>
+        <div class="controls">
+            <input type="text" id="name" name="name" value="" size="16" maxlength="16" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="fullName">{{loc 'account.fullName'}}</label>
+        <div class="controls">
+            <input type="text" id="fullName" name="fullName" value="" size="40" maxlength="80" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="email">{{loc 'account.email'}}</label>
+        <div class="controls">
+            <input type="email" id="email" name="email" value="" size="40" maxlength="80" required="required" />
+        </div>
+    </div>
+    <!-- Role -->
+    <div class="control-group">
+        <label class="control-label" for="roleName">{{loc 'account.role'}}</label>
+        <div class="controls">
+            <select id="roleName" name="roleName">
+                <option value="ROLE_USER">{{loc 'account.role.ROLE_USER'}}</option>
+                <option value="ROLE_CONTROLLER">{{loc 'account.role.ROLE_CONTROLLER'}}</option>
+                <option value="ROLE_ADMIN">{{loc 'account.role.ROLE_ADMIN'}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="help-inline">
+        <p>{{loc 'account.role.ROLE_ADMIN.help'}}</p>
+        <p>{{loc 'account.role.ROLE_CONTROLLER.help'}}</p>
+        <p>{{loc 'account.role.ROLE_USER.help'}}</p>
+    </div>
+    <!-- Mode -->
+    <div class="control-group">
+        <label class="control-label" for="mode">{{loc 'account.mode'}}</label>
+        <div class="controls">
+            <select id="mode" name="mode">
+                <option value="builtin">{{loc 'account.mode.builtin'}}</option>
+                <option value="ldap">{{loc 'account.mode.ldap'}}</option>
+            </select>
+        </div>
+    </div>
+    <!-- Password and confirmation if mode = builtin -->
+    <div class="control-group account-password">
+        <label class="control-label" for="password">{{loc 'account.password'}}</label>
+        <div class="controls">
+            <input type="password" id="password" name="password" value="" size="16" maxlength="16" required="required" />
+        </div>
+    </div>
+    <div class="control-group account-password">
+        <label class="control-label" for="passwordConfirm">{{loc 'account.password.confirm'}}</label>
+        <div class="controls">
+            <input type="password" id="passwordConfirm" name="passwordConfirm" value="" size="16" maxlength="16" required="required" />
+        </div>
+    </div>
+</form>
