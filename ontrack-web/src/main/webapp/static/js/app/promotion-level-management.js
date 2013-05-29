@@ -121,6 +121,41 @@ define(['jquery','ajax','jquery-ui'], function ($, ajax) {
         }
     }
 
+    function autoPromote (button) {
+        // Gets the promotion level
+        var promotionLevel = $(button).attr('data-promotionLevel');
+        // Current state of the autopromotion
+        var currentAutoPromote = $(button).attr('data-autoPromote');
+        // URL
+        var url = 'ui/manage/project/{0}/branch/{1}/promotion_level/{2}/autopromote'.format(
+            project.html(),
+            branch.html(),
+            promotionLevel.html()
+        );
+        if (currentAutoPromote == 'true') {
+            url += '/unset';
+        } else {
+            url += '/set';
+        }
+        // Call
+        ajax.put({
+            url: url,
+            loading: {
+                el: button
+            },
+            successFn: function (flag) {
+                if (flag.set) {
+                    $(button).attr('data-autoPromote', 'true');
+                    $(button).text('promotion_level.management.notauto'.loc());
+                } else {
+                    $(button).attr('data-autoPromote', 'false');
+                    $(button).text('promotion_level.management.auto'.loc());
+                }
+                initAutoPromote();
+            }
+        });
+    }
+
     // Auto-promotion
     function initAutoPromote() {
         $('.promotionLevelStamps').each(function (index, zone) {
@@ -135,6 +170,12 @@ define(['jquery','ajax','jquery-ui'], function ($, ajax) {
             } else {
                 $('#autoPromoteFlag-' + promotionLevel).hide();
             }
+        });
+        $('.autoPromote').each(function (index, button) {
+            $(button).unbind('click');
+            $(button).click(function () {
+                autoPromote($(button));
+            });
         });
     }
 
