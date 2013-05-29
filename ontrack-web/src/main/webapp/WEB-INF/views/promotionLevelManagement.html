@@ -2,12 +2,22 @@
 
 <#macro stamp mode validationStamp promotionLevel="">
     <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}" data-promotionLevel="${promotionLevel?html}">
-        <@validation_stamp_img validationStamp=validationStamp />
-        <@validation_stamp_link validationStamp=validationStamp />
+        <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}">
+            <img height="24" width="24" src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image" />
+            ${validationStamp.name?html}
+        </a>
     </span>
 </#macro>
 
-<@layout_std page="promotion-level-management" script=true style=true title=loc('branch.promotion_levels') modules=["audit","projects","branches","builds","validation_stamps","promotion_levels"] breadcrumbs = {loc("home"): "", management.branch.project.name?html: "gui/project/${management.branch.project.name?html}", management.branch.name?html: "gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}"}>
+<@layout_std
+    page="promotion-level-management"
+    title=loc('branch.promotion_levels')
+    modules=["audit"]
+    breadcrumbs = {
+        loc("home"): "",
+        management.branch.project.name?html: "gui/project/${management.branch.project.name?html}",
+        management.branch.name?html: "gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}"
+    }>
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -42,8 +52,10 @@
                                     </#if>
                                 </td>
                                 <td>
-                                    <@promotion_level_img promotionLevel=promotionLevelAndStamps.promotionLevel />
-                                    <@promotion_level_link promotionLevel=promotionLevelAndStamps.promotionLevel />
+                                    <a href="gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}/promotion_level/${promotionLevelAndStamps.promotionLevel.name?html}">
+                                        <img height="24" width="24" src="gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}/promotion_level/${promotionLevelAndStamps.promotionLevel.name?html}/image" />
+                                        ${promotionLevelAndStamps.promotionLevel.name?html}
+                                    </a>
                                     <#if promotionLevelAndStamps.promotionLevel.autoPromote>
                                         <span id="autoPromoteFlag-${promotionLevelAndStamps.promotionLevel.name?html}" class="label label-success"><@lh key="promotion_level.autoPromote" /></span>
                                     <#else>
@@ -81,7 +93,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="3">
-                                <@promotion_level_create project=management.branch.project.name branch=management.branch.name />
+                                <button id="promotion-level-create-button" type="button" class="btn"><@lh key="promotion_level.create" /></button>
                             </td>
                         </tr>
                     </tfoot>
