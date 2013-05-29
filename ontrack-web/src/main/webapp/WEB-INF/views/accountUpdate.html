@@ -1,17 +1,37 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="account.update" script=true breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
+<@layout_std page="account_update" title=loc('account.update') breadcrumbs = {loc("home"): "", loc("accounts"): "gui/admin/accounts"}>
 
     <input id="accountId" type="hidden" value="${account.id?c}" />
-    <form id="account-form" class="form-horizontal" onsubmit="AccountUpdate.updateAccount(); return false;">
-        <@form_text name="name" label=loc('account.name') value=account.name />
-        <@form_text name="fullName" label=loc('account.fullName') value=account.fullName />
-        <@form_email name="email" label=loc('account.email') value=account.email/>
-        <@form_select name="roleName" label=loc('account.role')>
-            <@form_select_option value="ROLE_ADMIN" text=loc('account.role.ROLE_ADMIN') selection=account.roleName />
-            <@form_select_option value="ROLE_CONTROLLER" text=loc('account.role.ROLE_CONTROLLER') selection=account.roleName />
-            <@form_select_option value="ROLE_USER" text=loc('account.role.ROLE_USER') selection=account.roleName />
-        </@form_select>
+    <form id="account-form" class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="name"><@lh key="account.name" /></label>
+            <div class="controls">
+                <input type="text" id="name" name="name" value="${account.name?html}" size="40" maxlength="80" required="required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="fullName"><@lh key="account.fullName" /></label>
+            <div class="controls">
+                <input type="text" id="fullName" name="fullName" value="${account.fullName?html}" size="40" maxlength="80" required="required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="email"><@lh key="account.email" /></label>
+            <div class="controls">
+                <input type="email" id="email" name="email" value="${account.email?html}" size="40" maxlength="80" required="required" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="roleName"><@lh key="account.role" /></label>
+            <div class="controls">
+                <select id="roleName" name="roleName">
+                    <option value="ROLE_USER"><@lh key="account.role.ROLE_USER"/></option>
+                    <option value="ROLE_CONTROLLER"><@lh key="account.role.ROLE_CONTROLLER"/></option>
+                    <option value="ROLE_ADMIN"><@lh key="account.role.ROLE_ADMIN"/></option>
+                </select>
+            </div>
+        </div>
         <div class="control-group">
             <div class="controls">
                 <button type="submit" class="btn btn-warning"><@lh key="general.modify" /></button>
