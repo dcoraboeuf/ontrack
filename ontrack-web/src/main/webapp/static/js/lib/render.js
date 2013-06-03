@@ -51,7 +51,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
             var data;
             if (dataFn) {
                 if ($.isFunction(dataFn)) {
-                    data = dataFn(items);
+                    data = dataFn(items, config);
                 } else {
                     data = {};
                     data[dataFn] = items;

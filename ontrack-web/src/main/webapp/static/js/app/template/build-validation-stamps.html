@@ -1,0 +1,57 @@
+<div>
+    <!-- Run and passed -->
+    <div class="build-validation-stamps build-validation-runs">
+        <p>{{loc 'build.validation_stamps.runAndPassed'}}</p>
+        {{#stamps}}
+            {{#if run}}
+                {{#if passed}}
+                    <span class="build-validation-run label">
+                        <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">
+                            <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                            {{name}}
+                        </a>
+                        {{#runs}}
+                            <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
+                        {{/runs}}
+                    </span>
+                {{/if}}
+            {{/if}}
+        {{/stamps}}
+    </div>
+    <!-- Run and not passed -->
+    <div class="build-validation-stamps build-validation-runs">
+        <p>{{loc 'build.validation_stamps.runAndFailed'}}</p>
+        {{#stamps}}
+            {{#if run}}
+                {{^passed}}
+                    <span class="build-validation-run label">
+                        <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">
+                            <img class="tooltip-source" width="24" title="{{../name}}{{#../owner}} - {{fullName}}{{/../owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                            {{name}}
+                        </a>
+                        {{#runs}}
+                            <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
+                        {{/runs}}
+                    </span>
+                {{/passed}}
+            {{/if}}
+        {{/stamps}}
+    </div>
+    <!-- Not run -->
+    <div class="build-validation-stamps build-validation-notruns">
+        <p>{{loc 'build.validation_stamps.notruns'}}</p>
+        {{#stamps}}
+            {{^if run}}
+                <span class="build-validation-run label">
+                    <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">
+                        <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
+                        {{name}}
+                    </a>
+                    {{#runs}}
+                        <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/build/{{../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" /></a>
+                    {{/runs}}
+                </span>
+            {{/if}}
+        {{/stamps}}
+    </div>
+</div>

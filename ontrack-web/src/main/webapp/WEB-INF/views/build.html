@@ -1,7 +1,17 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="build" title=build.name modules=["projects","branches","builds","validation_stamps","audit","properties"] breadcrumbs = {loc("home"): "", build.branch.project.name?html: "gui/project/${build.branch.project.name?html}", build.branch.name?html: "gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"}>
-    <@build_promotion />
+<@layout_std
+    page="build"
+    title=build.name
+    modules=["audit","properties"]
+    breadcrumbs = {
+        loc("home"): "",
+        build.branch.project.name?html: "gui/project/${build.branch.project.name?html}",
+        build.branch.name?html: "gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"
+    }>
+    <input id="project" type="hidden" value="${build.branch.project.name?html}" />
+    <input id="branch" type="hidden" value="${build.branch.name?html}" />
+    <input id="build" type="hidden" value="${build.name?html}" />
 	<div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -24,65 +34,18 @@
         </div>
 		<div class="row-fluid">
             <div class="span9">
-                <@panel title=loc("build.validation_stamps")>
-                    <@dynamicsection
-                        id="build-validation-stamp-list"
-                        template="Builds.buildValidationStampTemplate('${build.branch.project.name?html}', '${build.branch.name?html}', '${build.name?html}')">
-                    </@dynamicsection>
-                    <script id="buildValidationStampsTemplate" type="text/html">
-                        <div>
-                            <!-- Run and passed -->
-                            <div class="build-validation-stamps build-validation-runs">
-                                <p><@lh key="build.validation_stamps.runAndPassed" /></p>
-                                {{#stamps}}
-                                {{#if run}}
-                                    {{#if passed}}
-                                        <span class="build-validation-run label">
-                                            <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
-                                            <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">{{name}}</a>
-                                            {{#runs}}
-                                                <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
-                                            {{/runs}}
-                                        </span>
-                                    {{/if}}
-                                {{/if}}
-                                {{/stamps}}
-                            </div>
-                            <!-- Run and not passed -->
-                            <div class="build-validation-stamps build-validation-runs">
-                                <p><@lh key="build.validation_stamps.runAndFailed" /></p>
-                                {{#stamps}}
-                                    {{#if run}}
-                                        {{^passed}}
-                                            <span class="build-validation-run label">
-                                                <img class="tooltip-source" width="24" title="{{../name}}{{#../owner}} - {{fullName}}{{/../owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
-                                                <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">{{name}}</a>
-                                                {{#runs}}
-                                                    <a href="gui/project/{{../../../../project}}/branch/{{../../../../branch}}/build/{{../../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="&#x23;{{runOrder}} - {{status}}" class="tooltip-source" /></a>
-                                                {{/runs}}
-                                            </span>
-                                        {{/passed}}
-                                    {{/if}}
-                                {{/stamps}}
-                            </div>
-                            <!-- Not run -->
-                            <div class="build-validation-stamps build-validation-notruns">
-                                <p><@lh key="build.validation_stamps.notruns" /></p>
-                                {{#stamps}}
-                                    {{^if run}}
-                                            <span class="build-validation-run label">
-                                                <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
-                                                <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">{{name}}</a>
-                                                {{#runs}}
-                                                    <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/build/{{../../../build}}/validation_stamp/{{../name}}/validation_run/{{runOrder}}"><img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" /></a>
-                                                {{/runs}}
-                                            </span>
-                                    {{/if}}
-                                {{/stamps}}
-                            </div>
-                        </div>
-                    </script>
-                </@panel>
+                <section>
+                    <h4><@lh key="build.validation_stamps" /></h4>
+                    <div
+                        id="build-validation-stamps"
+                        class="dynamic"
+                        dynamic-controller="build-validation-stamps"
+                        dynamic-refresh="true"
+                        dynamic-project="${build.branch.project.name?html}"
+                        dynamic-branch="${build.branch.name?html}"
+                        dynamic-build="${build.name?html}"
+                        />
+                </section>
             </div>
             <div class="span3">
                 <@panel title=loc("build.promotion_levels")>
