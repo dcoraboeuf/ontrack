@@ -43,9 +43,17 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         // Rendering
         render.renderInto(
             $('#revisions'),
-            'revisions-template',
+            'extension/svnexplorer-changelog-revisions',
             revisions,
             function () {
+                // Merge actions
+                $('#revisions').find('.merge-button').each(function (index, action) {
+                    var revision = $(action).attr('revision');
+                    $(action).click(function () {
+                        toggleMergedRevision(revision);
+                    });
+                });
+                // Tooltips
                 common.tooltips();
             }
         );
