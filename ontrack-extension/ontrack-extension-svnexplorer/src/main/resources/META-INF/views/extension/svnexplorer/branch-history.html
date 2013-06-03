@@ -36,8 +36,10 @@
                             <#if promotion.buildSummary??>
                                 <td>
                                     <div class="promotion">
-                                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
-                                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                                        <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
+                                            <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
+                                            ${promotion.promotionLevel.name?html}
+                                        </a>
                                         <br />
                                         <i class="icon-star-empty"></i>
                                         <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
@@ -51,8 +53,10 @@
                             <#else>
                                 <td>
                                     <div class="promotion none">
-                                        <@promotion_level_img promotionLevel=promotion.promotionLevel />
-                                        <@promotion_level_link promotionLevel=promotion.promotionLevel />
+                                        <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
+                                            <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
+                                            ${promotion.promotionLevel.name?html}
+                                        </a>
                                         <br />
                                         <i class="icon-star-empty"></i>
                                         <@lh key="svnexplorer.branch-history.latestBuild.none" />
@@ -70,7 +74,12 @@
     </#list>
 </#macro>
 
-<@layout_std page="svnexplorer.branch-history" title=loc('svnexplorer.branch-history.title', branchHistory.project.name) style=true extension=true modules=["promotion_levels"]>
+<@layout_std
+    page="svnexplorer-branch-history"
+    title=loc('svnexplorer.branch-history.title', branchHistory.project.name)
+    style=true
+    noscript=true
+    extension=true>
 
     <div class="row-fluid">
         <div class="span12 page-title">
