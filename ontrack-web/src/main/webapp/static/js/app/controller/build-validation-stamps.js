@@ -28,9 +28,6 @@ define(['jquery','render'], function($, render) {
                     build: config.build,
                     stamps: stamps
                 }
-            },
-            function (config) {
-
             })
     }
 

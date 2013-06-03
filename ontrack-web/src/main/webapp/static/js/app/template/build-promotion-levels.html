@@ -1,0 +1,13 @@
+{{#if promotionLevels.length}}
+    <ul class="promotions">
+        {{#promotionLevels}}
+            <li>
+                <i class="icon-arrow-right"></i>
+                <img width="24" src="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}/image" />
+                <a class="tooltip-source" href="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
+            </li>
+        {{/promotionLevels}}
+    </ul>
+{{else}}
+    <span class="muted">{{loc 'build.promotion_levels.none'}}</span>
+{{/if}}
