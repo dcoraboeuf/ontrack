@@ -1,0 +1,29 @@
+<table id="files-table" class="table table-striped table-hover table-condensed changelog">
+    <thead>
+    <tr>
+        <th>{{loc 'svnexplorer.changelog.files.path'}}</th>
+        <th>{{loc 'svnexplorer.changelog.files.changes'}}</th>
+    </tr>
+    </thead>
+    <tbody>
+        {{#list}}
+            <tr>
+                <td>
+                    {{path}}
+                    <a href="{{url}}"><i class="icon-info-sign"></i></a>
+                </td>
+                <td>
+                    <ul class="filechange">
+                        {{#changes}}
+                            <li>
+                                <i class="{{changeIcon}}"></i>
+                                <a class="tooltip-source" href="{{url}}" title="{{revisionInfo.message}} ({{revisionInfo.isoDateTime}})">{{revisionInfo.revision}}</a>
+                                ({{revisionInfo.author}})
+                            </li>
+                        {{/changes}}
+                    </ul>
+                </td>
+            </tr>
+        {{/list}}
+    </tbody>
+</table>

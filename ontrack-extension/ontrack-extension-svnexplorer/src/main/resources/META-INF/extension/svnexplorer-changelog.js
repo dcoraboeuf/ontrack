@@ -99,8 +99,15 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             });
         });
         // Rendering
-        $('#files').html(Template.render('files-template', files));
-        Application.tooltips();
+        render.renderInto(
+            $('#files'),
+            'extension/svnexplorer-changelog-files',
+            files,
+            function () {
+                // Tooltips
+                common.tooltips();
+            }
+        );
     }
 
     function displayInfo (data) {
@@ -174,7 +181,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the files
-            AJAX.get({
+            ajax.get({
                 url: 'ui/extension/svnexplorer/changelog/{0}/files'.format(uuid),
                 loading: {
                     el: '#files',
