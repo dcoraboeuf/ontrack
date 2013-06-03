@@ -1,6 +1,9 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="subscription.management" script=true breadcrumbs={loc("home"):""}>
+<@layout_std
+    page="subscriptions"
+    title=loc("subscription.management")
+    breadcrumbs={loc("home"):""}>
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -22,7 +25,9 @@
                             <#list subscriptions as subscription>
                                 <tr id="subscription-${subscription.entityStub.entity?html}-${subscription.entityStub.id?c}" class="subscription">
                                     <td width="24">
-                                        <i class="icon-trash action action-optional" onclick="Subscriptions.unsubscribe('${subscription.entityStub.entity?html}', ${subscription.entityStub.id?c});"></i>
+                                        <i class="icon-trash action action-optional unsubscribe-action"
+                                           entity="${subscription.entityStub.entity?html}"
+                                           entityId="${subscription.entityStub.id?c}"></i>
                                     </td>
                                     <td>
                                         ${subscription.message?html}
