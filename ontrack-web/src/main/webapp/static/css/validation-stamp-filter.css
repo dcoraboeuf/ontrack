@@ -1,0 +1,12 @@
+tr.stamp_line.filtered td.stamp {
+    opacity: 0.25;
+    text-decoration: line-through;
+}
+
+.validation-stamp-check-cell {
+    width:1em;
+}
+
+.validation-stamp-check {
+    vertical-align: baseline;
+}

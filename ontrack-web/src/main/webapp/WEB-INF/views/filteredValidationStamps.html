@@ -1,6 +1,14 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validation_stamp.filter" modules=["validation_stamps"] style=true script=true breadcrumbs = {loc("home"): "", filteredStamps.branch.project.name?html: "gui/project/${filteredStamps.branch.project.name?html}", filteredStamps.branch.name?html: "gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}"}>
+<@layout_std
+    page="validation-stamp-filter"
+    title=loc("validation_stamp.filter")
+    style=true
+    breadcrumbs = {
+        loc("home"): "",
+        filteredStamps.branch.project.name?html: "gui/project/${filteredStamps.branch.project.name?html}",
+        filteredStamps.branch.name?html: "gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}"
+    }>
     <input type="hidden" id="project" value="${filteredStamps.branch.project.name?html}" />
     <input type="hidden" id="branch" value="${filteredStamps.branch.name?html}" />
 	<div class="container-fluid">
@@ -22,20 +30,20 @@
                     <tbody>
                         <#list filteredStamps.list as filteredValidationStamp>
                             <tr id="stamp_line_${filteredValidationStamp.stamp.id?c}" class="stamp_line <#if filteredValidationStamp.filtered>filtered</#if>">
-                                <td style="width:1em;">
+                                <td class="validation-stamp-check-cell">
                                     <input
-                                            style="vertical-align: baseline;"
+                                            class="validation-stamp-check"
                                             type="checkbox"
                                             id="filter_${filteredValidationStamp.stamp.name?html}"
                                             stampId="${filteredValidationStamp.stamp.id?c}"
                                             stamp="${filteredValidationStamp.stamp.name?html}"
-                                            filtered="${filteredValidationStamp.filtered?string}"
-                                            <#if filteredValidationStamp.filtered>checked="checked"</#if>
-                                            onclick="ValidationStampFilter.toggleFilter(this);" />
+                                            filtered="${filteredValidationStamp.filtered?string}" />
                                 </td>
                                 <td class="stamp">
-                                    <@validation_stamp_img validationStamp=filteredValidationStamp.stamp />
-                                    <@validation_stamp_link validationStamp=filteredValidationStamp.stamp />
+                                    <a href="gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}/validation_stamp/${filteredValidationStamp.stamp.name?html}">
+                                        <img width="24" height="24" src="gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}/validation_stamp/${filteredValidationStamp.stamp.name?html}/image" />
+                                        ${filteredValidationStamp.stamp.name?html}
+                                    </a>
                                     <#if filteredValidationStamp.stamp.owner??>
                                         <span class="description">(${filteredValidationStamp.stamp.owner.fullName})</span>
                                     </#if>
@@ -44,6 +52,7 @@
                         </#list>
                     </tbody>
                 </table>
+                <a href="gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}" class="btn"><@lh key="general.close" /></a>
 			</div>
 		</div>
 	</div>
