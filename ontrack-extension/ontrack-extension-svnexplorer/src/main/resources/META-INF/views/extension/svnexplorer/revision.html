@@ -1,7 +1,13 @@
 <#include "/lib/layout.html">
 <#include "/extension/svnexplorer/lib/revision.html" >
 
-<@layout_std page="svnexplorer.revision" title=loc("svnexplorer.revision", info.changeLogRevision.revision?c) modules = [ "promotion_levels" ] style=true extension=true breadcrumbs={loc("home"):""}>
+<@layout_std
+    page="svnexplorer-revision"
+    title=loc("svnexplorer.revision", info.changeLogRevision.revision?c)
+    style=true
+    noscript=true
+    extension=true
+    breadcrumbs={loc("home"):""}>
 
     <div class="row-fluid">
         <div class="span12 page-title">
