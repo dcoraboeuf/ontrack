@@ -1,6 +1,9 @@
-var BranchClone = function () {
+define(['jquery','ajax'], function ($, ajax) {
 
-    function clone (project, branch) {
+    var project = $('#project').val();
+    var branch = $('#branch').val();
+
+    $('#branch-clone-form').submit(function () {
         // Collects the branch properties
         var branchProperties = [];
         $('.branch-property').each (function (index, el) {
@@ -46,7 +49,7 @@ var BranchClone = function () {
             }
         });
         // AJAX call
-        AJAX.post({
+        ajax.post({
             url: 'ui/manage/project/{0}/branch/{1}/clone'.format(project, branch),
             loading: {
                 el: $('#clone-submit')
@@ -59,15 +62,12 @@ var BranchClone = function () {
                 promotionLevelReplacements: promotionLevelExpressions
             },
             successFn: function (summary) {
-                location = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
+                location.href = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
             },
-            errorMessageFn: AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn($('#clone-error')))
+            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#clone-error')))
         });
+        // No regular form submit
         return false;
-    }
+    });
 
-    return {
-        clone: clone
-    };
-
-} ();
+});
