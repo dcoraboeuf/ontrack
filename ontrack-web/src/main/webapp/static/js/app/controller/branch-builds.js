@@ -104,14 +104,14 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             var path = $(action).attr('path');
             var project = $(action).attr('project');
             var branch = $(action).attr('branch');
-            // From & to
-            var from = $('input[name="buildFrom"]:checked').val();
-            var to = $('input[name="buildTo"]:checked').val();
-            // URL
-            var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
             // Go
             $(action).unbind('click');
             $(action).click(function () {
+                // From & to
+                var from = $('input[name="buildFrom"]:checked').val();
+                var to = $('input[name="buildTo"]:checked').val();
+                // URL
+                var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
                 location.href = url;
             });
         });

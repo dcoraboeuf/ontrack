@@ -1,4 +1,4 @@
-var ChangeLog = function () {
+define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
 
     var revisions = null;
     var issues = null;
@@ -41,8 +41,14 @@ var ChangeLog = function () {
             currentLevel = level;
         });
         // Rendering
-        $('#revisions').html(Template.render('revisions-template', revisions));
-        Application.tooltips();
+        render.renderInfo(
+            $('#revisions'),
+            'revisions-template',
+            revisions,
+            function () {
+                common.tooltips();
+            }
+        );
     }
 
     function displayIssues (data) {
@@ -119,7 +125,7 @@ var ChangeLog = function () {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the revisions
-            AJAX.get({
+            ajax.get({
                 url: 'ui/extension/svnexplorer/changelog/{0}/revisions'.format(uuid),
                 loading: {
                     el: '#revisions',
@@ -183,7 +189,7 @@ var ChangeLog = function () {
     }
 
     function changelogErrorFn () {
-        return AJAX.simpleAjaxErrorFn(AJAX.elementErrorMessageFn('#changelog-error'));
+        return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
 
     function init () {
@@ -193,11 +199,6 @@ var ChangeLog = function () {
         $('#info-tab').on('show', loadInfo);
     }
 
-    return {
-        init: init,
-        toggleMergedRevision: toggleMergedRevision
-    };
+    init();
 
-} ();
-
-$(document).ready(ChangeLog.init);
+});

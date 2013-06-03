@@ -42,7 +42,11 @@
 
 </#macro>
 
-<@layout_std page="svnexplorer.changelog" script=true style=true extension=true>
+<@layout_std
+    page="svnexplorer-changelog"
+    title=loc("svnexplorer.changelog")
+    style=true
+    extension=true>
 
     <input id="changelog" type="hidden" value="${summary.uuid?html}" />
 
