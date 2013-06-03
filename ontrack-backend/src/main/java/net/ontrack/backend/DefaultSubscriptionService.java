@@ -152,7 +152,17 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the current user
         int userId = securityUtils.getCurrentAccountId();
         if (userId >= 0) {
-            return unsubscribeUser(userId, entities);
+            Ack ack = Ack.OK;
+            // Subscribes for each entity
+            for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
+                Entity entity = entry.getKey();
+                int entityId = entry.getValue();
+                ack = ack.and(
+                        subscriptionDao.subscribe(userId, entity, entityId)
+                );
+            }
+            // OK
+            return ack;
         } else {
             return Ack.NOK;
         }
@@ -181,17 +191,7 @@ public class DefaultSubscriptionService implements SubscriptionService {
         // Gets the current user
         int userId = securityUtils.getCurrentAccountId();
         if (userId >= 0) {
-            Ack ack = Ack.OK;
-            // Unsubscribes from each entity
-            for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
-                Entity entity = entry.getKey();
-                int entityId = entry.getValue();
-                ack = ack.and(
-                        subscriptionDao.unsubscribe(userId, entity, entityId)
-                );
-            }
-            // OK
-            return ack;
+            return unsubscribeUser(userId, entities);
         } else {
             return Ack.NOK;
         }
