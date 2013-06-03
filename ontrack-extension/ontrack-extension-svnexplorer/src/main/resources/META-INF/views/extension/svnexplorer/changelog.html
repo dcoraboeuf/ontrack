@@ -98,56 +98,6 @@
         <!-- Issue log -->
         <div class="tab-pane" id="issues">
         </div>
-        <script id="issues-template" type="text/html">
-            <table id="issues-table" class="table table-striped table-hover table-condensed changelog">
-                <thead>
-                    <tr>
-                        <th><@lh key="svnexplorer.changelog.issues.key" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.status" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.summary" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.affectedVersions" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.fixVersions" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.assignee" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.updateTime" /></th>
-                        <th><@lh key="svnexplorer.changelog.issues.revision" /></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#list}}
-                        <tr id="issue_{{issue.key}}">
-                            <td><a href="{{issue.url}}">{{issue.key}}</a></td>
-                            <td>
-                                <img src="{{issue.status.iconUrl}}" />
-                                {{issue.status.name}}
-                            </td>
-                            <td>{{issue.summary}}</td>
-                            <td>
-                                <ul class="version">
-                                    {{#issue.affectedVersions}}
-                                        <li class="version"><span class="separator">, </span>{{name}}</li>
-                                    {{/issue.affectedVersions}}
-                                </ul>
-                            </td>
-                            <td>
-                                <ul class="version">
-                                    {{#issue.fixVersions}}
-                                        <li class="version"><span class="separator">, </span>{{name}}</li>
-                                    {{/issue.fixVersions}}
-                                </ul>
-                            </td>
-                            <td>{{issue.assignee}}</td>
-                            <td>{{formattedUpdateTime}}</td>
-                            <td>
-                                {{#lastRevision}}
-                                    <a class="tooltip-source" href="{{revisionUrl}}" title="{{message}} ({{author}})">{{revision}}</a>
-                                    ({{isoDateTime}})
-                                {{/lastRevision}}
-                            </td>
-                        </tr>
-                    {{/list}}
-                </tbody>
-            </table>
-        </script>
 
         <!-- File log -->
         <div class="tab-pane" id="files">

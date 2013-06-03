@@ -67,8 +67,15 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             changeLogIssue.lastRevision = changeLogIssue.revisions[changeLogIssue.revisions.length - 1];
         });
         // Rendering
-        $('#issues').html(Template.render('issues-template', issues));
-        Application.tooltips();
+        render.renderInto(
+            $('#issues'),
+            'extension/svnexplorer-changelog-issues',
+            issues,
+            function () {
+                // Tooltips
+                common.tooltips();
+            }
+        );
     }
 
     function displayFiles (data) {
@@ -150,7 +157,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the issues
-            AJAX.get({
+            ajax.get({
                 url: 'ui/extension/svnexplorer/changelog/{0}/issues'.format(uuid),
                 loading: {
                     el: '#issues',
