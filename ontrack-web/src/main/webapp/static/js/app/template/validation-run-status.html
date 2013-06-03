@@ -1,8 +1,8 @@
 <button id="validation-run-status-button" class="btn btn-link"><i class="icon-comment"></i> {{loc 'validationRunStatus.new'}}</button>
 <form id="validation-run-status-form" class="hidden alert alert-info">
-    <div class="control-group">
+    <div id="validation-run-status-description" class="control-group">
         <div class="controls">
-            <textarea id="validation-run-status-description" columns="40" maxlength="1000" rows="4" class="input-block-level" placeholder="{{loc 'validationRunStatus.description'}}"></textarea>
+            <textarea columns="40" maxlength="1000" rows="4" class="input-block-level" placeholder="{{loc 'validationRunStatus.description'}}"></textarea>
         </div>
     </div>
     {{#if editableProperties.length}}
@@ -25,13 +25,13 @@
     <div class="control-group">
         <div class="controls">
             <!-- Comment -->
-            <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="static/images/comment.png" /> {{loc 'validationRunStatus.status.none'}}</button>
+            <button type="button" class="btn validation-run-status-change" status=""><img width="24" height="24" src="static/images/comment.png" /> {{loc 'validationRunStatus.status.none'}}</button>
             <!-- Available statuses -->
             {{#nextStatusList}}
-                <button type="button" class="btn" onclick="ValidationRun.sendStatus('{{.}}')"><img src="static/images/status-{{.}}.png" /> {{#statusLabel}}{{.}}{{/statusLabel}}</button>
+                <button type="button" class="btn validation-run-status-change" status="{{.}}"><img src="static/images/status-{{.}}.png" /> {{#statusLabel}}{{.}}{{/statusLabel}}</button>
             {{/nextStatusList}}
             <!-- Cancel -->
-            <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()">{{loc 'general.cancel'}}</button>
+            <button id="validation-run-status-cancel" type="button" class="btn btn-link">{{loc 'general.cancel'}}</button>
         </div>
     </div>
 </form>
