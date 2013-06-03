@@ -115,7 +115,7 @@ define(function () {
             } else if (c.mode == 'appendText') {
                 if (show) {
                     $(config.el).addClass('disabled');
-                    $(config.el).append('&nbsp;<span class="ajax-loader"><img src="static/images/ajax-loader.gif" /> {0}</span>'.format(loc('general.loading')));
+                    $(config.el).append('&nbsp;<span class="ajax-loader"><img src="static/images/ajax-loader.gif" /> {0}</span>'.format('general.loading'.loc()));
                 } else {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();
