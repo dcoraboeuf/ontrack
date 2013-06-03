@@ -1,0 +1,22 @@
+<table class="table table-condensed info-files">
+    {{#sensibleFiles}}
+        <tr class="info">
+            <td colspan="2">
+                <a href="{{url}}">{{path}}</a>
+            </td>
+        </tr>
+        {{#changes}}
+            <tr>
+                <td width="32" class="revision-header"><i class="icon-arrow-right"></i></td>
+                <td>
+                    <a href="{{url}}">{{revisionInfo.revision}}</a>
+                    <i>{{changeType}}</i>
+                    - {{revisionInfo.author}}
+                    - {{revisionInfo.isoDateTime}}
+                    <br/>
+                    {{revisionInfo.message}}
+                </td>
+            </tr>
+        {{/changes}}
+    {{/sensibleFiles}}
+</table>

@@ -127,19 +127,36 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             statusInfo.width = Math.round(ratio * reference);
         });
         // Rendering
-        $('#info-status').html(Template.render('info-status-template', info));
+        render.renderInto(
+            $('#info-status'),
+            'extension/svnexplorer-changelog-info-issues',
+            info,
+            function () {
+                // Tooltips
+                common.tooltips();
+            }
+        );
 
         // 2) Sensible files
 
         // None
         if (info.sensibleFiles.length == 0) {
-            $('#info-files').html('<div class="alert alert-info">{0}</div>'.format(loc('svnexplorer.changelog.info.files.none').html()));
+            $('<div></div>')
+                .addClass('alert')
+                .addClass('alert-info')
+                .text('svnexplorer.changelog.info.files.none'.loc())
+                .appendTo($('#info-files'));
         } else {
-            $('#info-files').html(Template.render('info-files-template', info));
+            render.renderInto(
+                $('#info-files'),
+                'extension/svnexplorer-changelog-info-sensible',
+                info,
+                function () {
+                    // Tooltips
+                    common.tooltips();
+                }
+            );
         }
-
-        // OK
-        Application.tooltips();
     }
 
     function loadRevisions () {
@@ -198,7 +215,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the files
-            AJAX.get({
+            ajax.get({
                 url: 'ui/extension/svnexplorer/changelog/{0}/info'.format(uuid),
                 loading: {
                     el: '#info',
