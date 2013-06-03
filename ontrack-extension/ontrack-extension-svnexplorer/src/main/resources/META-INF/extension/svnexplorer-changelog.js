@@ -41,7 +41,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             currentLevel = level;
         });
         // Rendering
-        render.renderInfo(
+        render.renderInto(
             $('#revisions'),
             'revisions-template',
             revisions,
