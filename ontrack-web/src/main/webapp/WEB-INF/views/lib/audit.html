@@ -1,5 +1,4 @@
 <#macro audit id="audit" filter="" title=loc("event.list")>
-
     <section class="panel" id="${id?html}">
         <h4>
             ${title?html}
@@ -15,12 +14,13 @@
             <span id="subscription-notification-message"></span>
             <button type="button" class="close" onclick="$('#subscription-notification').hide();">&times;</button>
         </div>
-        <div id="audit" class="dynamic" dynamic-controller="audit-list" dynamic-more="true" dynamic-refresh="true" dynamic-filter="${filter}"></div>
+        <div
+                id="audit"
+                class="dynamic"
+                dynamic-controller="audit-list"
+                dynamic-more="true"
+                dynamic-refresh="true"
+                dynamic-filter="${filter}"
+                ></div>
      </section>
-
-    <script type="text/javascript">
-        require(['app/audit'], function (audit) {
-            audit.init('${filter}');
-        });
-    </script>
 </#macro>
