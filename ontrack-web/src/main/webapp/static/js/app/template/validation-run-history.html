@@ -1,0 +1,38 @@
+{{#if header}}
+    <tr class="info">
+        <td class="validationRunHistoryHeader">
+            {{#if link}}
+                <a href="{{link}}">{{title}}</a>
+            {{else}}
+                {{title}}
+            {{/if}}
+        </td>
+    </tr>
+{{else}}
+    <tr>
+        <td>
+            <!-- Location info -->
+            {{^thisRun}}
+                {{#thisBuild}}
+                    <!-- This build -->
+                    <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
+                {{/thisBuild}}
+                {{^thisBuild}}
+                    <!-- Other build -->
+                    <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}">{{validationRun.build.name}}</a>
+                    <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
+                {{/thisBuild}}
+            {{/thisRun}}
+            <!-- Image and content -->
+            {{#if status}}
+                <img width="24" height="24" src="static/images/status-{{status}}.png" />
+                <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
+                - {{content}}
+            {{else}}
+                <img width="24" height="24" src="static/images/comment.png" />
+                {{content}}
+            {{/if}}
+            <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
+        </td>
+    </tr>
+{{/if}}

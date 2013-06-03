@@ -1,7 +1,11 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="validationRun" script=true style=true title="#${validationRun.runOrder?string}"
-    modules=["projects","branches","builds","validation_stamps","audit","properties"]
+<@layout_std
+    page="validation-run"
+    noscript=true
+    style=true
+    title="#${validationRun.runOrder?string}"
+    modules=["audit","properties"]
     breadcrumbs = {
         loc("home"): "",
         validationRun.build.branch.project.name?html:
@@ -18,7 +22,10 @@
                     <a href="gui/project/${validationRun.build.branch.project.name?html}">${validationRun.build.branch.project.name?html}</a>
                     / <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}">${validationRun.build.branch.name?html}</a>
                     / <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}">${validationRun.build.name?html}</a>
-                    / <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}"><@validation_stamp_img validationStamp=validationRun.validationStamp /> ${validationRun.validationStamp.name?html}</a>
+                    / <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}">
+                        <img height="24" width="24" src="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}/image" />
+                        ${validationRun.validationStamp.name?html}
+                      </a>
                 / #${validationRun.runOrder?html}</span>
                 <span class="action action-optional">
                     <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
@@ -78,49 +85,17 @@
         </#if>
         <div class="row-fluid">
             <div class="span7">
-                <@panel title=loc("validationRun.history")>
-                    <@dynamicsection id="history" template="ValidationRun.historyTemplate(${validationRun.id?c}, ${validationRun.build.id?c})" />
-                    <script id="historyItemTemplate" type="text/html">
-                        {{#if header}}
-                            <tr class="info">
-                                <td class="validationRunHistoryHeader">
-                                    {{#if link}}
-                                        <a href="{{link}}">{{title}}</a>
-                                    {{else}}
-                                        {{title}}
-                                    {{/if}}
-                                </td>
-                            </tr>
-                        {{else}}
-                            <tr>
-                                <td>
-                                    <!-- Location info -->
-                                    {{^thisRun}}
-                                        {{#thisBuild}}
-                                            <!-- This build -->
-                                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
-                                        {{/thisBuild}}
-                                        {{^thisBuild}}
-                                            <!-- Other build -->
-                                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}">{{validationRun.build.name}}</a>
-                                            <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">&#x23;{{validationRun.runOrder}}</a>
-                                        {{/thisBuild}}
-                                    {{/thisRun}}
-                                    <!-- Image and content -->
-                                    {{#if status}}
-                                        <img width="24" height="24" src="static/images/status-{{status}}.png" />
-                                        <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
-                                        - {{content}}
-                                    {{else}}
-                                        <img width="24" height="24" src="static/images/comment.png" />
-                                        {{content}}
-                                    {{/if}}
-                                    <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>
-                                </td>
-                            </tr>
-                        {{/if}}
-                    </script>
-                </@panel>
+                <section>
+                    <h4><@lh key="validationRun.history" /></h4>
+                    <div
+                        id="validation-run-history"
+                        class="dynamic"
+                        dynamic-controller="validation-run-history"
+                        dynamic-validationrunid="${validationRun.id?c}"
+                        dynamic-validationbuildid="${validationRun.build.id?c}"
+                        dynamic-more="true"
+                        />
+                </section>
             </div>
             <div class="span5">
                 <@audit filter="&validationRun=${validationRun.id?c}" />
