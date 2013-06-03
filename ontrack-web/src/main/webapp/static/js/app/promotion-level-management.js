@@ -1,7 +1,14 @@
-define(['jquery','ajax','jquery-ui'], function ($, ajax) {
+define(['jquery','ajax','app/component/promotionLevel','jquery-ui'], function ($, ajax, promotionLevelComponent) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
+
+    // Creating a promotion level
+    function createPromotionLevel () {
+        promotionLevelComponent.createPromotionLevel(project, branch, function () {
+            location.reload();
+        });
+    }
 
     // Promotion level ordering
     function order (direction, promotionLevel) {
@@ -228,5 +235,8 @@ define(['jquery','ajax','jquery-ui'], function ($, ajax) {
             return true;
         }
     });
+
+    // Creating a promotion level
+    $('#promotion-level-create-button').click(createPromotionLevel);
 
 });
