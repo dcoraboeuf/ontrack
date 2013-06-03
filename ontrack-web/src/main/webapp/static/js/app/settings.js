@@ -1,4 +1,5 @@
-var Settings = function () {
+define(['jquery'], function ($) {
+
 
     function ldapEnabled () {
         var ldapEnabled = $('#ldap-enabled').is(':checked');
@@ -16,12 +17,6 @@ var Settings = function () {
         $('#ldap-enabled').click(ldapEnabled);
     }
 
-    return {
-        init: function () {
-            ldapSetup();
-        }
-    };
+    ldapSetup();
 
-} ();
-
-$(document).ready(Settings.init);
+})
