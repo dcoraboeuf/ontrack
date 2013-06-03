@@ -538,6 +538,14 @@ validation_stamp.filter
     en -> Filter validation stamps
     fr -> Sélectionner les validations
 
+validation_stamp.filter.all
+    en -> Select all
+    fr -> Tout sélectionner
+
+validation_stamp.filter.none
+    en -> Select none
+    fr -> Tout désélectionner
+
 validation_stamp.filter.enabled
     en -> Enabled
     fr -> Actif

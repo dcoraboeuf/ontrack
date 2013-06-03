@@ -52,7 +52,10 @@
                         </#list>
                     </tbody>
                 </table>
-                <a href="gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}" class="btn"><@lh key="general.close" /></a>
+                <!-- Buttons -->
+                <button id="filter-all" type="button" class="btn"><@lh key="validation_stamp.filter.all" /></button>
+                <button id="filter-none" type="button" class="btn"><@lh key="validation_stamp.filter.none" /></button>
+                <a href="gui/project/${filteredStamps.branch.project.name?html}/branch/${filteredStamps.branch.name?html}" class="btn btn-link"><@lh key="general.close" /></a>
 			</div>
 		</div>
 	</div>
