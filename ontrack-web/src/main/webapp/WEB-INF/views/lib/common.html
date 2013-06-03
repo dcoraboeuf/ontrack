@@ -1,108 +1,6 @@
 <#import "/spring.ftl" as spring />
 <#include "/lib/i18n.html" />
 
-<#macro yes_no value>
-	<#if value>
-		<@lh key="general.yes" />
-	<#else>
-		<@lh key="general.no" />
-	</#if>
-</#macro>
-
-<#macro panel id = "" title = "" class = "">
-	<#assign idSection = "" />
-	<#assign idTitle = "" />
-	<#assign idContent = "" />
-	<#if id != "" >
-		<#assign idSection = 'id="' + id + '"' />
-		<#assign idTitle = 'id="' + id + '-title"' />
-		<#assign idContent = 'id="' + id + '-content"' />
-	</#if>
-	<section class="panel ${class?html}" ${idSection}>
-		<#if title != "">
-			<h4 ${idTitle}>${title?html}</h4>
-		</#if>
-		<section ${idContent} class="panel-content">
-			<#nested>
-		</section>
-	</section>
-</#macro>
-
-<#macro dynamicsection id template>
-	<div id="${id?html}">
-		<div id="${id?html}-body" class="dynamic-body">
-            <div id="${id?html}-list" class="dynamic-list">
-            </div>
-			<div id="${id?html}-loading" class="dynamic-loading">
-			</div>
-			<div id="${id?html}-error" class="x-error alert alert-error dynamic-error">
-			</div>
-		</div>
-        <div id="${id?html}-more-section" style="display:none;">
-            <button id="${id?html}-more" type="button" class="btn btn-link" onclick="Template.more('${id?html}')"><@lh key="general.more" /></button>
-        </div>
-        <div id="${id?html}-footer" class="dynamic-footer">
-            <#nested />
-        </div>
-	</div>
-	<script type="text/javascript">
-		$(document).ready(function () {
-            Template.init('${id?html}', ${template});
-		});
-	</script>
-</#macro>
-
-<#macro dialog id>
-	<#assign dialogId = id />
-	<#assign dialogButtons = [] />
-	<#assign content><#nested/></#assign>
-	<@form id=id class="x-dialog">
-		<div id="${id?html}-content">
-			${content}
-		</div>
-		<div id="${id?html}-error" class="x-error alert alert-error"></div>
-		<div id="${id?html}-footer">
-			<#list dialogButtons as dialogButton>
-				${dialogButton}
-			</#list>
-		</div>
-	</@form>
-	<#assign dialogId = "" />
-</#macro>
-
-<#macro dialog_button id text class="" extra="" submit=true>
-	<#if dialogId?? && dialogId != "">
-		<#assign buttonType = "button" />
-		<#if submit>
-			<#assign buttonType = "submit" />
-		</#if>
-		<#assign dialogButton><button id="${id?html}" type="${buttonType?html}" class="btn ${class?html}" ${extra}>${text?html}</button></#assign>
-		<#assign dialogButtons = dialogButtons + [ dialogButton ] />
-	<#else>
-		<#stop "'dialog_button' must be used inside a 'dialog' directive" />
-	</#if>
-</#macro>
-
-<#macro dialog_button_cancel>
-	<#if dialogId?? && dialogId != "">
-		<@dialog_button id=dialogId+"-cancel" class="btn-link" text=loc('general.cancel') submit=false />
-	<#else>
-		<#stop "'dialog_button_cancel' must be used inside a 'dialog' directive" />
-	</#if>
-</#macro>
-
-<#macro form id class="">
-	<form id="${id?html}" class="form-horizontal ${class?html}">
-		<#nested />
-	</form>
-</#macro>
-
-<#macro form_buttons>
-    <@form_field name="controls" label="">
-        <#nested />
-    </@form_field>
-</#macro>
-
 <#macro form_field name label idPrefix="" help="">
     <#assign id = idPrefix + name />
     <div id="${id?html}-line" class="control-group">
@@ -146,15 +44,15 @@
 
 <#macro form_text name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true class="" value="" extra="">
     <@form_field name=name label=label idPrefix=idPrefix help=help>
-    <input name="${name?html}" class="${class?html}" type="text" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> ${extra} />
-</@form_field>
+        <input name="${name?html}" class="${class?html}" type="text" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> ${extra} />
+    </@form_field>
 </#macro>
 
 
 <#macro form_email name label idPrefix="" size=40 maxlength=80 placeholder="" help="" required=true class="" value="" extra="">
     <@form_field name=name label=label idPrefix=idPrefix help=help>
-    <input name="${name?html}" class="${class?html}" type="email" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> ${extra} />
-</@form_field>
+        <input name="${name?html}" class="${class?html}" type="email" id="${id?html}" value="${value?html}" placeholder="${placeholder?html}" size="${size?c}" maxlength="${maxlength?c}" <@input_required required=required /> ${extra} />
+    </@form_field>
 </#macro>
 
 <#macro form_int name label idPrefix="" size=5 maxlength=5 min=0 max=10000 placeholder="" help="" required=true class="" value="">
