@@ -11,58 +11,6 @@ var ValidationRun = function () {
         });
     }
 
-    function historyTemplate (validationRunId, buildId) {
-        return Template.config({
-            url: 'ui/manage/validation_run/{0}/history?u=1'.format(validationRunId),
-            more: true,
-            preProcessingFn: function (validationRunEvents, append) {
-                var list = [];
-                $.each (validationRunEvents, function (index, validationRunEvent) {
-                    // This run?
-                    if (validationRunEvent.validationRun.id == validationRunId) {
-                        if (!thisRun) {
-                            list.push({
-                                header: true,
-                                title: loc('validationRun.history.thisRun')
-                            });
-                            thisRun = true;
-                        }
-                        validationRunEvent.thisBuild = true;
-                        validationRunEvent.thisRun = true;
-                    } else if (validationRunEvent.validationRun.build.id == buildId) {
-                        if (!thisBuild) {
-                            list.push({
-                                header: true,
-                                title: loc('validationRun.history.thisBuild'),
-                                link: 'gui/project/{0}/branch/{1}/build/{2}'.format(
-                                    validationRunEvent.validationRun.build.branch.project.name.html(),
-                                    validationRunEvent.validationRun.build.branch.name.html(),
-                                    validationRunEvent.validationRun.build.name.html()
-                                )
-                            });
-                            thisBuild = true;
-                        }
-                        validationRunEvent.thisBuild = true;
-                        validationRunEvent.thisRun = false;
-                    } else {
-                        if (!otherBuilds) {
-                            list.push({
-                                header: true,
-                                title: loc('validationRun.history.allBuilds')
-                            });
-                            otherBuilds = true;
-                        }
-                        validationRunEvent.thisBuild = false;
-                        validationRunEvent.thisRun = false;
-                    }
-                    list.push(validationRunEvent);
-                });
-                return list;
-            },
-            render: Template.asTableTemplate('historyItemTemplate')
-        });
-    }
-
     function sendStatus (status) {
         // Checks the description (required for Comment only)
         var description = $('#description').val();

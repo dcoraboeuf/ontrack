@@ -122,6 +122,10 @@ define(['common', 'handlebars'], function (common, handlebars) {
         }
     }
 
+    function sameDataFn (data, config) {
+        return data;
+    }
+
     return {
         // Template mgt
         withTemplate: withTemplate,
@@ -130,6 +134,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
         renderInto: renderInto,
         // Defaults
         defaultRender: defaultRender,
+        sameDataFn: sameDataFn,
         // Basic templating
         asSimpleTemplate: asSimpleTemplate,
         // Table rendering

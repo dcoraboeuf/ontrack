@@ -1,0 +1,37 @@
+<button id="validation-run-status-button" class="btn btn-link"><i class="icon-comment"></i> {{loc 'validationRunStatus.new'}}</button>
+<form id="validation-run-status-form" class="hidden alert alert-info">
+    <div class="control-group">
+        <div class="controls">
+            <textarea id="validation-run-status-description" columns="40" maxlength="1000" rows="4" class="input-block-level" placeholder="{{loc 'validationRunStatus.description'}}"></textarea>
+        </div>
+    </div>
+    {{#if editableProperties.length}}
+        <table>
+            <tbody>
+                {{#editableProperties}}
+                    <tr>
+                        <td style="padding-right:1em;">
+                            <label class="control-label" for="{{extension}}-{{name}}-field">{{displayName}}</label>
+                        </td>
+                        <td class="update-status-property" extension="{{extension}}" property="{{name}}">
+                            {{{htmlForEdit}}}
+                        </td>
+                    </tr>
+                {{/editableProperties}}
+            </tbody>
+        </table>
+    {{/if}}
+    <div id="validation-run-status-error" class="hidden alert alert-error"></div>
+    <div class="control-group">
+        <div class="controls">
+            <!-- Comment -->
+            <button type="button" class="btn" onclick="ValidationRun.sendStatus('')"><img width="24" height="24" src="static/images/comment.png" /> {{loc 'validationRunStatus.status.none'}}</button>
+            <!-- Available statuses -->
+            {{#nextStatusList}}
+                <button type="button" class="btn" onclick="ValidationRun.sendStatus('{{.}}')"><img src="static/images/status-{{.}}.png" /> {{#statusLabel}}{{.}}{{/statusLabel}}</button>
+            {{/nextStatusList}}
+            <!-- Cancel -->
+            <button type="button" class="btn btn-link" onclick="ValidationRun.cancelUpdateStatus()">{{loc 'general.cancel'}}</button>
+        </div>
+    </div>
+</form>
