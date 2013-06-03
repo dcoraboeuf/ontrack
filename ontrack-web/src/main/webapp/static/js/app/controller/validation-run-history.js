@@ -1,5 +1,9 @@
 define(['render'], function (render) {
 
+    Handlebars.registerHelper('statusLabel', function(options) {
+        return ('status.' + options.fn(this)).loc();
+    });
+
     return {
         url: function (config) {
             return 'ui/manage/validation_run/{0}/history?u=1'.format(config.validationrunid);
