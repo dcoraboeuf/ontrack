@@ -6,7 +6,6 @@
         <th>{{loc 'svnexplorer.changelog.revisions.author'}}</th>
         <th>{{loc 'svnexplorer.changelog.revisions.date'}}</th>
         <th>{{loc 'svnexplorer.changelog.revisions.message'}}</th>
-        <th>{{loc 'svnexplorer.changelog.revisions.path'}}</th>
     </tr>
     </thead>
     <tbody>
@@ -17,11 +16,10 @@
                         <i class="icon-plus action merge-button" revision="{{revision}}"></i>
                     {{/if}}
                 </td>
-                <td><a href="{{revisionUrl}}">{{revision}}</a></td>
+                <td>{{{indent}}}<a href="{{revisionUrl}}">{{revision}}</a></td>
                 <td>{{author}}</td>
                 <td>{{isoDateTime}}</td>
                 <td>{{{formattedMessage}}}</td>
-                <td>{{path}}</td>
             </tr>
         {{/list}}
     </tbody>

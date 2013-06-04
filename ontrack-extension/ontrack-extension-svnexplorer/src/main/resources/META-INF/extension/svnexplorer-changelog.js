@@ -9,16 +9,28 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         $('tr[parent="{0}"]'.format(parentRevision)).toggle();
     }
 
+    function indent(level) {
+        var s = '';
+        for (var i = 0 ; i < level ; i++) {
+            for (var j = 0 ; j < 4 ; j++) {
+                s += '&#xa0;';
+            }
+        }
+        return s;
+    }
+
     function displayRevisions (data) {
         // Stores the revisions (local cache for display purpose only)
         revisions = data;
         // Computation for the layout
         var currentLevel = 0;
+        var stack = [];
         $.each (revisions.list, function (index, entry) {
             // Merge management
             entry.merge = false;
             entry.merged = false;
             var level = entry.level;
+            entry.indent = indent(level);
             if (level > currentLevel) {
                 var previous = revisions.list[index - 1];
                 // The previous entry is a merge
@@ -26,15 +38,18 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
                 // Parent for this entry
                 entry.merged = true;
                 entry.mergeParent = previous.revision;
-            } else if (level < currentLevel) {
-                // Merge section done
+                // Pushes the merge parent to the stack
+                stack.push(previous);
             } else {
-                // Same level
-                // Copies properties from previous item
-                if (index > 0) {
-                    var previous = revisions.list[index - 1];
-                    entry.merged = previous.merged;
-                    entry.mergeParent = previous.mergeParent;
+                if (level < currentLevel) {
+                    // Lowers the stack
+                    stack.pop();
+                }
+                // Gets the current merge stack
+                if (stack.length > 0) {
+                    var parent = stack[stack.length - 1];
+                    entry.merged = true;
+                    entry.mergeParent = parent.revision;
                 }
             }
             // Change the current level
