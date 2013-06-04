@@ -9,6 +9,7 @@ import net.ontrack.extension.svnexplorer.model.SVNBuild;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,15 +29,13 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
                 branch,
                 new SVNBuild(
                         new BuildSummary(1, "10", "Build 10", branch),
-                        new SVNHistory(trunk)
-                                .add(trunk),
+                        new SVNHistory(trunk),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 ),
                 new SVNBuild(
                         new BuildSummary(1, "10", "Build 10", branch),
-                        new SVNHistory(trunk)
-                                .add(trunk),
+                        new SVNHistory(trunk),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 )
@@ -59,17 +58,17 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
                 branch,
                 new SVNBuild(
                         new BuildSummary(1, "11", "Build 11", branch),
-                        new SVNHistory(ref("tags/11", 110001))
-                                .add(ref("tags/11", 110001))
-                                .add(ref("trunk", 110000)),
+                        new SVNHistory(Arrays.asList(
+                                ref("tags/11", 110001),
+                                ref("trunk", 110000))),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 ),
                 new SVNBuild(
                         new BuildSummary(1, "10", "Build 10", branch),
-                        new SVNHistory(ref("tags/10", 100001))
-                                .add(ref("tags/10", 100001))
-                                .add(ref("trunk", 100000)),
+                        new SVNHistory(Arrays.asList(
+                                ref("tags/10", 100001),
+                                ref("trunk", 100000))),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 )
@@ -95,19 +94,19 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
                 branch,
                 new SVNBuild(
                         new BuildSummary(101, "1.0.1", "Build 1.0.1", branch),
-                        new SVNHistory(ref("tags/11", 112))
-                                .add(ref("tags/1.0.1", 111))
-                                .add(ref("branches/1.0.x", 110))
-                                .add(ref("tags/1.0.0", 101))
-                                .add(ref("trunk", 100)),
+                        new SVNHistory(Arrays.asList(
+                                ref("tags/1.0.1", 111),
+                                ref("branches/1.0.x", 110),
+                                ref("tags/1.0.0", 101),
+                                ref("trunk", 100))),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 ),
                 new SVNBuild(
                         new BuildSummary(9, "0.0.9", "Build 0.0.9", branch),
-                        new SVNHistory(ref("tags/0.0.9", 91))
-                                .add(ref("tags/0.0.9", 91))
-                                .add(ref("trunk", 90)),
+                        new SVNHistory(Arrays.asList(
+                                ref("tags/0.0.9", 91),
+                                ref("trunk", 90))),
                         Collections.<BuildValidationStamp>emptyList(),
                         Collections.<BuildPromotionLevel>emptyList()
                 )

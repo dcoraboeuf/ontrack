@@ -23,4 +23,7 @@ public class SVNHistory {
         return new SVNHistory(target);
     }
 
+    public SVNHistory truncateAbove(int index) {
+        return new SVNHistory(references.subList(index + 1, references.size()));
+    }
 }

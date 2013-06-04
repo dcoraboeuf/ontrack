@@ -84,9 +84,11 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             }
         };
 
+        SVNHistory historyFrom = summary.getBuildFrom().getHistory();
+        SVNHistory historyTo = summary.getBuildTo().getHistory();
         // List of paths on both histories
-        List<String> pathsFrom = Lists.transform(summary.getBuildFrom().getHistory().getReferences(), pathFn);
-        List<String> pathsTo = Lists.transform(summary.getBuildTo().getHistory().getReferences(), pathFn);
+        List<String> pathsFrom = Lists.transform(historyFrom.getReferences(), pathFn);
+        List<String> pathsTo = Lists.transform(historyTo.getReferences(), pathFn);
 
         // Index in the upper history
         Pair<Integer, Integer> commonAncestor = null;
@@ -110,8 +112,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
         // Reference
         String referencePath = pathsFrom.get(fromAncestorIndex);
-        long referenceStartRevision = summary.getBuildFrom().getHistory().getReferences().get(fromAncestorIndex).getRevision();
-        long referenceEndRevision = summary.getBuildTo().getHistory().getReferences().get(toAncestorIndex).getRevision();
+        long referenceStartRevision = historyFrom.getReferences().get(fromAncestorIndex).getRevision();
+        long referenceEndRevision = historyTo.getReferences().get(toAncestorIndex).getRevision();
 
         // Ordering of revisions (we must have start > end)
         if (referenceStartRevision < referenceEndRevision) {
@@ -120,8 +122,19 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             referenceEndRevision = t;
         }
 
-        // Reference
-        return Collections.singletonList(new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision));
+        // Main reference
+        ChangeLogReference mainReference = new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision);
+
+        // Initial list
+        List<ChangeLogReference> references = new ArrayList<>();
+        references.add(mainReference);
+
+        // Looking for valid paths on remaining histories
+        historyFrom = historyFrom.truncateAbove(fromAncestorIndex);
+        historyTo = historyTo.truncateAbove(toAncestorIndex);
+
+        // OK
+        return Collections.singletonList(mainReference);
     }
 
     @Override
