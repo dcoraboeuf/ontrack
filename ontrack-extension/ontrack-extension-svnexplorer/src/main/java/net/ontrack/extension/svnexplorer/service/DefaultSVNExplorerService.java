@@ -76,7 +76,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private ChangeLogReference getChangeLogReference(ChangeLogSummary summary) {// Function that extracts the path from a SVN location
+    protected Collection<ChangeLogReference> getChangeLogReferences(ChangeLogSummary summary) {// Function that extracts the path from a SVN location
         Function<SVNReference, String> pathFn = new Function<SVNReference, String>() {
             @Override
             public String apply(SVNReference reference) {
@@ -121,7 +121,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
 
         // Reference
-        return new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision);
+        return Collections.singletonList(new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision));
     }
 
     @Override
@@ -129,45 +129,49 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     public ChangeLogRevisions getChangeLogRevisions(ChangeLogSummary summary) {
 
         // Reference
-        ChangeLogReference reference = getChangeLogReference(summary);
+        Collection<ChangeLogReference> references = getChangeLogReferences(summary);
 
         // No difference?
-        if (reference.isNone()) {
+        if (references.isEmpty()) {
             return ChangeLogRevisions.none();
         }
 
         // SVN transaction
         try (Transaction ignored = transactionService.start()) {
-            // List of log entries
-            SVNLogEntryCollector logEntryCollector = new SVNLogEntryCollector();
-            // SVN change log
-            subversionService.log(
-                    SVNUtils.toURL(subversionService.getURL(reference.getPath())),
-                    SVNRevision.create(reference.getStart()),
-                    SVNRevision.create(reference.getStart()),
-                    SVNRevision.create(reference.getEnd() + 1),
-                    true, // Stops on copy
-                    false, // No path discovering (yet)
-                    0L, // no limit
-                    true, // Includes merged revisions
-                    logEntryCollector
-            );
-            // Loops through all SVN log entries, taking the merged revisions into account
-            int level = 0;
             List<ChangeLogRevision> revisions = new ArrayList<>();
-            for (SVNLogEntry svnEntry : logEntryCollector.getEntries()) {
-                long revision = svnEntry.getRevision();
-                if (SVNRevision.isValidRevisionNumber(revision)) {
-                    // Conversion
-                    ChangeLogRevision entry = createChangeLogRevision(level, svnEntry);
-                    // Adds it to the list
-                    revisions.add(entry);
-                    // New parent?
-                    if (svnEntry.hasChildren()) {
-                        level++;
+            for (ChangeLogReference reference : references) {
+                if (!reference.isNone()) {
+                    // List of log entries
+                    SVNLogEntryCollector logEntryCollector = new SVNLogEntryCollector();
+                    // SVN change log
+                    subversionService.log(
+                            SVNUtils.toURL(subversionService.getURL(reference.getPath())),
+                            SVNRevision.create(reference.getStart()),
+                            SVNRevision.create(reference.getStart()),
+                            SVNRevision.create(reference.getEnd() + 1),
+                            true, // Stops on copy
+                            false, // No path discovering (yet)
+                            0L, // no limit
+                            true, // Includes merged revisions
+                            logEntryCollector
+                    );
+                    // Loops through all SVN log entries, taking the merged revisions into account
+                    int level = 0;
+                    for (SVNLogEntry svnEntry : logEntryCollector.getEntries()) {
+                        long revision = svnEntry.getRevision();
+                        if (SVNRevision.isValidRevisionNumber(revision)) {
+                            // Conversion
+                            ChangeLogRevision entry = createChangeLogRevision(level, svnEntry);
+                            // Adds it to the list
+                            revisions.add(entry);
+                            // New parent?
+                            if (svnEntry.hasChildren()) {
+                                level++;
+                            }
+                        } else {
+                            level--;
+                        }
                     }
-                } else {
-                    level--;
                 }
             }
             // OK
