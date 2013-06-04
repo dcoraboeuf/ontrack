@@ -38,6 +38,10 @@ svnexplorer.changelog.revisions.message
     en -> Message
     fr -> Message
 
+svnexplorer.changelog.revisions.path
+    en -> Path
+    fr -> Chemin
+
 [issues]
 
 svnexplorer.changelog.issues

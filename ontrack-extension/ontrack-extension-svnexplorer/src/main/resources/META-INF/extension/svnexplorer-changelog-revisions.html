@@ -6,20 +6,22 @@
         <th>{{loc 'svnexplorer.changelog.revisions.author'}}</th>
         <th>{{loc 'svnexplorer.changelog.revisions.date'}}</th>
         <th>{{loc 'svnexplorer.changelog.revisions.message'}}</th>
+        <th>{{loc 'svnexplorer.changelog.revisions.path'}}</th>
     </tr>
     </thead>
     <tbody>
         {{#list}}
             <tr id="revision_{{revision}}" class="{{#merge}}warning{{/merge}} {{#merged}}info hidden{{/merged}}" {{#merged}}parent="{{mergeParent}}"{{/merged}}>
-            <td>
-                {{#if merge}}
-                    <i class="icon-plus action merge-button" revision="{{revision}}"></i>
-                {{/if}}
-            </td>
-            <td><a href="{{revisionUrl}}">{{revision}}</a></td>
-            <td>{{author}}</td>
-            <td>{{isoDateTime}}</td>
-            <td>{{{formattedMessage}}}</td>
+                <td>
+                    {{#if merge}}
+                        <i class="icon-plus action merge-button" revision="{{revision}}"></i>
+                    {{/if}}
+                </td>
+                <td><a href="{{revisionUrl}}">{{revision}}</a></td>
+                <td>{{author}}</td>
+                <td>{{isoDateTime}}</td>
+                <td>{{{formattedMessage}}}</td>
+                <td>{{path}}</td>
             </tr>
         {{/list}}
     </tbody>

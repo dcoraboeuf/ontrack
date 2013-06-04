@@ -172,7 +172,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         long revision = svnEntry.getRevision();
                         if (SVNRevision.isValidRevisionNumber(revision)) {
                             // Conversion
-                            ChangeLogRevision entry = createChangeLogRevision(level, svnEntry);
+                            ChangeLogRevision entry = createChangeLogRevision(reference.getPath(), level, svnEntry);
                             // Adds it to the list
                             revisions.add(entry);
                             // New parent?
@@ -274,6 +274,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Gets information about the revision
         SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
         ChangeLogRevision changeLogRevision = createChangeLogRevision(
+                basicInfo.getPath(),
                 0,
                 revision,
                 basicInfo.getMessage(),
@@ -360,6 +361,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     public ChangeLogRevision apply(Long revision) {
                         SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
                         return createChangeLogRevision(
+                                basicInfo.getPath(),
                                 0,
                                 revision,
                                 basicInfo.getMessage(),
@@ -663,8 +665,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private ChangeLogRevision createChangeLogRevision(int level, SVNLogEntry svnEntry) {
+    private ChangeLogRevision createChangeLogRevision(String path, int level, SVNLogEntry svnEntry) {
         return createChangeLogRevision(
+                path,
                 level,
                 svnEntry.getRevision(),
                 svnEntry.getMessage(),
@@ -673,13 +676,14 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     }
 
-    private ChangeLogRevision createChangeLogRevision(int level, long revision, String message, String author, DateTime revisionDate) {
+    private ChangeLogRevision createChangeLogRevision(String path, int level, long revision, String message, String author, DateTime revisionDate) {
         // Formatted message
         String formattedMessage = jiraService.insertIssueUrlsInMessage(message);
         // Revision URL
         String revisionUrl = subversionService.getRevisionBrowsingURL(revision);
         // OK
         return new ChangeLogRevision(
+                path,
                 level,
                 revision,
                 author,
