@@ -251,7 +251,6 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             var hash = location.hash;
             if (hash != '' && hash != '#') {
                 var tab = hash.substring(1);
-                console.log('Showing tab', '#{0}-tab'.format(tab));
                 $('#{0}-tab'.format(tab)).tab('show');
             }
         });
