@@ -159,7 +159,13 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
+    function loadSummary() {
+        // Nothing to load, just adjust the hash
+        location.hash = "";
+    }
+
     function loadRevisions () {
+        location.hash = "revisions";
         if (revisions == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
@@ -177,6 +183,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
     }
 
     function loadIssues () {
+        location.hash = "issues";
         if (issues == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
@@ -194,6 +201,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
     }
 
     function loadFiles () {
+        location.hash = "files";
         if (files == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
@@ -211,6 +219,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
     }
 
     function loadInfo () {
+        location.hash = "info";
         if (info == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
@@ -232,10 +241,20 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
     }
 
     function init () {
+        $('#summary-tab').on('show', loadSummary);
         $('#revisions-tab').on('show', loadRevisions);
         $('#issues-tab').on('show', loadIssues);
         $('#files-tab').on('show', loadFiles);
         $('#info-tab').on('show', loadInfo);
+        // Initial tab
+        $(document).ready(function () {
+            var hash = location.hash;
+            if (hash != '' && hash != '#') {
+                var tab = hash.substring(1);
+                console.log('Showing tab', '#{0}-tab'.format(tab));
+                $('#{0}-tab'.format(tab)).tab('show');
+            }
+        });
     }
 
     init();
