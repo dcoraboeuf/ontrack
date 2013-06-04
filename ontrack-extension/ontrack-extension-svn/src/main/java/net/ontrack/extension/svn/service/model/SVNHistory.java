@@ -13,6 +13,10 @@ public class SVNHistory {
 
     private final List<SVNReference> references;
 
+    public SVNHistory() {
+        this(Collections.<SVNReference>emptyList());
+    }
+
     public SVNHistory(SVNReference reference) {
         this(Collections.singletonList(reference));
     }

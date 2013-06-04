@@ -86,6 +86,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
         SVNHistory historyFrom = summary.getBuildFrom().getHistory();
         SVNHistory historyTo = summary.getBuildTo().getHistory();
+
         // List of paths on both histories
         List<String> pathsFrom = Lists.transform(historyFrom.getReferences(), pathFn);
         List<String> pathsTo = Lists.transform(historyTo.getReferences(), pathFn);
@@ -130,8 +131,12 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         references.add(mainReference);
 
         // Looking for valid paths on remaining histories
-        historyFrom = historyFrom.truncateAbove(fromAncestorIndex);
-        historyTo = historyTo.truncateAbove(toAncestorIndex);
+        // historyFrom = historyFrom.truncateAbove(fromAncestorIndex);
+        // historyTo = historyTo.truncateAbove(toAncestorIndex);
+
+        // Adds the references from those histories
+        // references.addAll(getChangeLogReferences(historyFrom));
+        // references.addAll(getChangeLogReferences(historyTo));
 
         // OK
         return Collections.singletonList(mainReference);

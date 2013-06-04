@@ -292,7 +292,11 @@ public class DefaultSubversionService implements SubversionService {
         // Gets the reference for this first path
         SVNReference reference = getReference(path);
         // Initializes the history
-        SVNHistory history = new SVNHistory(reference);
+        SVNHistory history = new SVNHistory();
+        // Adds the initial reference if this a branch or trunk
+        if (isTrunkOrBranch(reference.getPath())) {
+            history = history.add(reference);
+        }
         // Loops on copies
         int depth = HISTORY_MAX_DEPTH;
         while (reference != null && depth > 0) {
@@ -300,8 +304,10 @@ public class DefaultSubversionService implements SubversionService {
             // Gets the reference of the source
             SVNReference origin = getOrigin(reference);
             if (origin != null) {
-                // Adds to the history
-                history = history.add(origin);
+                // Adds to the history if this a branch or trunk
+                if (isTrunkOrBranch(origin.getPath())) {
+                    history = history.add(origin);
+                }
                 // Going on
                 reference = origin;
             } else {
