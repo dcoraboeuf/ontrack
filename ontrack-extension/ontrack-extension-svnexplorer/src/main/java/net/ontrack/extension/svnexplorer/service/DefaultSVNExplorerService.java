@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAService;
@@ -25,7 +26,6 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,62 +84,55 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             }
         };
 
+        // Gets the two histories
         SVNHistory historyFrom = summary.getBuildFrom().getHistory();
         SVNHistory historyTo = summary.getBuildTo().getHistory();
 
-        // List of paths on both histories
-        List<String> pathsFrom = Lists.transform(historyFrom.getReferences(), pathFn);
-        List<String> pathsTo = Lists.transform(historyTo.getReferences(), pathFn);
-
-        // Index in the upper history
-        Pair<Integer, Integer> commonAncestor = null;
-        for (int i = 0; i < pathsFrom.size(); i++) {
-            String upperUrl = pathsFrom.get(i);
-            // Index of this URL in the lower history
-            int index = pathsTo.indexOf(upperUrl);
-            // Found!
-            if (index >= 0) {
-                commonAncestor = Pair.of(i, index);
-                break;
+        // Sort them from->to with 'to' having the highest revision
+        {
+            long fromRevision = historyFrom.getReferences().get(0).getRevision();
+            long toRevision = historyTo.getReferences().get(0).getRevision();
+            if (toRevision < fromRevision) {
+                SVNHistory tmp = historyTo;
+                historyTo = historyFrom;
+                historyFrom = tmp;
             }
         }
 
-        // A common ancestor must be found
-        if (commonAncestor == null) {
-            throw new NoCommonAncestorException();
-        }
-        int fromAncestorIndex = commonAncestor.getLeft();
-        int toAncestorIndex = commonAncestor.getRight();
+        // Indexation of the 'from' history using the paths
+        Map<String, SVNReference> historyFromIndex = Maps.uniqueIndex(
+                historyFrom.getReferences(),
+                pathFn
+        );
 
-        // Reference
-        String referencePath = pathsFrom.get(fromAncestorIndex);
-        long referenceStartRevision = historyFrom.getReferences().get(fromAncestorIndex).getRevision();
-        long referenceEndRevision = historyTo.getReferences().get(toAncestorIndex).getRevision();
-
-        // Ordering of revisions (we must have start > end)
-        if (referenceStartRevision < referenceEndRevision) {
-            long t = referenceStartRevision;
-            referenceStartRevision = referenceEndRevision;
-            referenceEndRevision = t;
-        }
-
-        // Main reference
-        ChangeLogReference mainReference = new ChangeLogReference(referencePath, referenceStartRevision, referenceEndRevision);
-
-        // Initial list
+        // List of ranges to collect
         List<ChangeLogReference> references = new ArrayList<>();
-        references.add(mainReference);
 
-        // Looking for valid paths on remaining histories
-        // historyFrom = historyFrom.truncateAbove(fromAncestorIndex);
-        // historyTo = historyTo.truncateAbove(toAncestorIndex);
-
-        // Adds the references from those histories
-        // references.addAll(getChangeLogReferences(historyFrom));
-        // references.addAll(getChangeLogReferences(historyTo));
+        // For each reference on the 'to' history
+        for (SVNReference toReference : historyTo.getReferences()) {
+            // Collects a range of revisions
+            long toRevision = toReference.getRevision();
+            long fromRevision = 0;
+            // Gets any 'from' reference
+            SVNReference fromReference = historyFromIndex.get(toReference.getPath());
+            if (fromReference != null) {
+                fromRevision = fromReference.getRevision();
+                if (fromRevision > toRevision) {
+                    long t = toRevision;
+                    toRevision = fromRevision;
+                    fromRevision = t;
+                }
+            }
+            // Adds this reference
+            references.add(new ChangeLogReference(
+                    toReference.getPath(),
+                    fromRevision,
+                    toRevision
+            ));
+        }
 
         // OK
-        return Collections.singletonList(mainReference);
+        return references;
     }
 
     @Override
@@ -164,9 +157,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // SVN change log
                     subversionService.log(
                             SVNUtils.toURL(subversionService.getURL(reference.getPath())),
+                            SVNRevision.create(reference.getEnd()),
                             SVNRevision.create(reference.getStart()),
-                            SVNRevision.create(reference.getStart()),
-                            SVNRevision.create(reference.getEnd() + 1),
+                            SVNRevision.create(reference.getEnd()),
                             true, // Stops on copy
                             false, // No path discovering (yet)
                             0L, // no limit

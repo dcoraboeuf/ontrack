@@ -78,8 +78,8 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
         assertEquals(1, references.size());
         ChangeLogReference reference = references.iterator().next();
         assertEquals("/project/trunk", reference.getPath());
-        assertEquals(110000, reference.getStart());
-        assertEquals(100000, reference.getEnd());
+        assertEquals(100000, reference.getStart());
+        assertEquals(110000, reference.getEnd());
     }
 
     @Test
@@ -112,17 +112,17 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
         assertNotNull(references);
         assertEquals(2, references.size());
         Iterator<ChangeLogReference> iterator = references.iterator();
-        ChangeLogReference reference0 = iterator.next();
+        ChangeLogReference referenceBranch = iterator.next();
         {
-            assertEquals("/project/trunk", reference0.getPath());
-            assertEquals(100, reference0.getStart());
-            assertEquals(90, reference0.getEnd());
+            assertEquals("/project/branches/1.0.x", referenceBranch.getPath());
+            assertEquals(0, referenceBranch.getStart());
+            assertEquals(110, referenceBranch.getEnd());
         }
-        ChangeLogReference reference1 = iterator.next();
+        ChangeLogReference referenceTrunk = iterator.next();
         {
-            assertEquals("/project/branches/1.0.x", reference1.getPath());
-            assertEquals(110, reference1.getStart());
-            assertEquals(101, reference1.getEnd());
+            assertEquals("/project/trunk", referenceTrunk.getPath());
+            assertEquals(90, referenceTrunk.getStart());
+            assertEquals(100, referenceTrunk.getEnd());
         }
     }
 
