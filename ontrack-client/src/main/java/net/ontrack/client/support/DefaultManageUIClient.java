@@ -87,6 +87,33 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BuildCleanup getBuildCleanup(String project, String branch) {
+        return get(
+                getDefaultLocale(),
+                format(
+                        "/ui/manage/project/%s/branch/%s/cleanup",
+                        project,
+                        branch
+                ),
+                BuildCleanup.class
+        );
+    }
+
+    @Override
+    public Ack setBuildCleanup(String project, String branch, BuildCleanupForm form) {
+        return put(
+                getDefaultLocale(),
+                format(
+                        "/ui/manage/project/%s/branch/%s/cleanup",
+                        project,
+                        branch
+                ),
+                Ack.class,
+                form
+        );
+    }
+
+    @Override
     public BranchSummary createBranch(String project, BranchCreationForm form) {
         return post(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class, form);
     }

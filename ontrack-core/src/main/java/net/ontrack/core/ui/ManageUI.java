@@ -41,6 +41,10 @@ public interface ManageUI {
 
     BranchFilterData getBranchFilterData(String project, String branch);
 
+    BuildCleanup getBuildCleanup(String project, String branch);
+
+    Ack setBuildCleanup(String project, String branch, BuildCleanupForm form);
+
     // Validation stamps
 
     List<ValidationStampSummary> getValidationStampList(String project, String branch);

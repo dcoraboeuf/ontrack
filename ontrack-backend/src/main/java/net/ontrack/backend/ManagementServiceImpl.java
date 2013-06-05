@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
@@ -54,6 +55,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final ValidationRunEventDao validationRunEventDao;
     private final CommentDao commentDao;
     private final EntityDao entityDao;
+    private final BuildCleanupDao buildCleanupDao;
     private final PropertiesService propertiesService;
     private final DecorationService decorationService;
     // Dao -> Summary converters
@@ -114,7 +116,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, PropertiesService propertiesService, DecorationService decorationService) {
+    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, BuildCleanupDao buildCleanupDao, PropertiesService propertiesService, DecorationService decorationService) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
@@ -130,6 +132,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.validationRunEventDao = validationRunEventDao;
         this.commentDao = commentDao;
         this.entityDao = entityDao;
+        this.buildCleanupDao = buildCleanupDao;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
     }
@@ -360,6 +363,49 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
         // OK
         return newBranch;
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public BuildCleanup getBuildCleanup(int branchId) {
+        TBuildCleanup conf = buildCleanupDao.findBuildCleanUp(branchId);
+        if (conf != null) {
+            return new BuildCleanup(
+                    conf.getRetention(),
+                    Sets.newHashSet(
+                            Collections2.transform(
+                                    conf.getExcludedPromotionLevels(),
+                                    new Function<Integer, PromotionLevelSummary>() {
+                                        @Override
+                                        public PromotionLevelSummary apply(Integer promotionLevelId) {
+                                            return getPromotionLevel(promotionLevelId);
+                                        }
+                                    }
+                            )
+                    )
+            );
+        } else {
+            return new BuildCleanup(
+                    0,
+                    Collections.<PromotionLevelSummary>emptySet()
+            );
+        }
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack setBuildCleanup(int branchId, BuildCleanupForm form) {
+        if (form.getRetention() <= 0) {
+            return buildCleanupDao.removeBuildCleanUp(branchId);
+        } else {
+            return buildCleanupDao.saveBuildCleanUp(
+                    branchId,
+                    form.getRetention(),
+                    form.getExcludedPromotionLevels()
+            ).ack();
+        }
     }
 
     private String applyReplacement(String regex, String replacement, String value) {

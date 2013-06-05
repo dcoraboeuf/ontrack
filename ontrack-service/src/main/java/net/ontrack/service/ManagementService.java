@@ -34,6 +34,10 @@ public interface ManagementService {
     BranchSummary updateBranch(int branch, BranchUpdateForm form);
 
     BranchSummary cloneBranch(int branchId, BranchCloneForm form);
+
+    BuildCleanup getBuildCleanup(int branchId);
+
+    Ack setBuildCleanup(int branchId, BuildCleanupForm form);
 	
 	// Validation stamps
 

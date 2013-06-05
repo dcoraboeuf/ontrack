@@ -194,6 +194,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/cleanup", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BuildCleanup getBuildCleanup(@PathVariable String project, @PathVariable String branch) {
+        return managementService.getBuildCleanup(entityConverter.getBranchId(project, branch));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/cleanup", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setBuildCleanup(@PathVariable String project, @PathVariable String branch, @RequestBody BuildCleanupForm form) {
+        return managementService.setBuildCleanup(entityConverter.getBranchId(project, branch), form);
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch", method = RequestMethod.POST)
     public
     @ResponseBody
