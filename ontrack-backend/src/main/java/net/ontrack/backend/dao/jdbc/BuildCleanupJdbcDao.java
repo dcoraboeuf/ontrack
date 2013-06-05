@@ -27,7 +27,7 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
 
     @Override
     @Transactional
-    public ID saveBuildCleanUp(int branch, int schedule, int retention, Set<Integer> excludedPromotionLevels) {
+    public ID saveBuildCleanUp(int branch, int retention, Set<Integer> excludedPromotionLevels) {
         // Is there any previous configuration
         TBuildCleanup conf = findBuildCleanUp(branch);
         if (conf != null) {
@@ -40,7 +40,7 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
         // Inserts
         int id = dbCreate(
                 SQL.BUILD_CLEANUP_INSERT,
-                params("branch", branch).addValue("schedule", schedule).addValue("retention", retention)
+                params("branch", branch).addValue("retention", retention)
         );
         // Excluded promotion levels
         if (excludedPromotionLevels != null) {
@@ -73,7 +73,6 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
                     @Override
                     public TBuildCleanup mapRow(ResultSet rs, int rowNum) throws SQLException {
                         int id = rs.getInt("id");
-                        int schedule = rs.getInt("schedule");
                         int retention = rs.getInt("retention");
                         int branchId = rs.getInt("branch");
                         Set<Integer> excludedPromotionLevels = new HashSet<>();
@@ -87,7 +86,6 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
                         return new TBuildCleanup(
                                 id,
                                 branchId,
-                                schedule,
                                 retention,
                                 excludedPromotionLevels
                         );

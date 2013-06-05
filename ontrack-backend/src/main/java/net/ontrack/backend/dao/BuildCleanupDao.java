@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface BuildCleanupDao {
 
-    ID saveBuildCleanUp(int branch, int schedule, int retention, Set<Integer> excludedPromotionLevels);
+    ID saveBuildCleanUp(int branch, int retention, Set<Integer> excludedPromotionLevels);
 
     Ack removeBuildCleanUp(int branch);
 

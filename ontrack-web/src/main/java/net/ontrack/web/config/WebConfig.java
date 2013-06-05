@@ -20,7 +20,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.jmx.export.MBeanExporter;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -29,8 +28,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +67,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         MappingJacksonHttpMessageConverter mapper = new MappingJacksonHttpMessageConverter();
         mapper.setObjectMapper(jacksonObjectMapper);
         converters.add(mapper);
-    }
-
-    @Bean
-    public Object exporter() throws IOException {
-        MBeanExporter exporter = new MBeanExporter();
-        exporter.setBeans(Collections.<String, Object>singletonMap("bean:name=strings", strings));
-        return exporter;
     }
 
     @Override

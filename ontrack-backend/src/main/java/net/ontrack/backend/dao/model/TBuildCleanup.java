@@ -9,7 +9,6 @@ public class TBuildCleanup {
 
     private final int id;
     private final int branch;
-    private final int schedule;
     private final int retention;
     private final Set<Integer> excludedPromotionLevels;
 
