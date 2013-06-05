@@ -281,6 +281,18 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 basicInfo.getAuthor(),
                 basicInfo.getDateTime()
         );
+        // TODO Gets the first copy event on this path after this revision
+        // SVNLocation firstCopy = subversionService.getFirstCopyAfter(basicInfo.toLocation());
+
+        // Loops over all branches
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary projectSummary : projectList) {
+            List<BranchSummary> branchList = managementService.getBranchList(projectSummary.getId());
+            for (BranchSummary branchSummary : branchList) {
+                // TODO Identifies a possible tag given the path/revision and the first copy
+            }
+        }
+
         // Looks for branches with the corresponding path
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
         // For each branch, looks for the earliest build that contains this revision

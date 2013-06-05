@@ -14,4 +14,8 @@ public class SVNRevisionInfo {
     private final String message;
     private final String revisionUrl;
 
+    public SVNLocation toLocation () {
+        return new SVNLocation(path, revision);
+    }
+
 }
