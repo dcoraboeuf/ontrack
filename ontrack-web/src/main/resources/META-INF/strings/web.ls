@@ -671,6 +671,10 @@ build.promote.title
     en -> Promotion of build {0}
     fr -> Promotion du build {0}
 
+build.cleanup
+    en -> Clean-up configuration
+    fr -> Configuration de la purge
+
 [runs]
 
 validationRun
