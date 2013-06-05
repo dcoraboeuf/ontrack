@@ -97,4 +97,6 @@ public interface SubversionService {
     List<Long> getRevisionsForIssueKey(String key);
 
     boolean isClosed(String path);
+
+    SVNLocation getFirstCopyAfter(SVNLocation location);
 }

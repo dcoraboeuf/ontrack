@@ -138,4 +138,14 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
                 eventRowMapper
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNLocation getFirstCopyAfter(SVNLocation location) {
+        return getFirstItem(
+                "SELECT * FROM SVNCOPYEVENT WHERE COPYFROMPATH = :path AND COPYFROMREVISION >= :revision",
+                params("path", location.getPath()).addValue("revision", location.getRevision()),
+                svnLocationRowMapper
+        );
+    }
 }

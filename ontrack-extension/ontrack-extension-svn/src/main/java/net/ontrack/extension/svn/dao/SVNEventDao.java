@@ -23,4 +23,6 @@ public interface SVNEventDao {
     List<TSVNEvent> getAllEvents(String path);
 
     TSVNEvent getLastEvent(String path);
+
+    SVNLocation getFirstCopyAfter(SVNLocation location);
 }

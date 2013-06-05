@@ -281,52 +281,21 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 basicInfo.getAuthor(),
                 basicInfo.getDateTime()
         );
-        // TODO Gets the first copy event on this path after this revision
-        // SVNLocation firstCopy = subversionService.getFirstCopyAfter(basicInfo.toLocation());
 
+        // Gets the first copy event on this path after this revision
+        SVNLocation firstCopy = subversionService.getFirstCopyAfter(basicInfo.toLocation());
+
+        // Data to collect
+        Collection<RevisionInfoBuild> buildSummaries = new ArrayList<>();
+        List<RevisionPromotions> revisionPromotionsPerBranch = new ArrayList<>();
         // Loops over all branches
         List<ProjectSummary> projectList = managementService.getProjectList();
         for (ProjectSummary projectSummary : projectList) {
             List<BranchSummary> branchList = managementService.getBranchList(projectSummary.getId());
             for (BranchSummary branchSummary : branchList) {
-                // TODO Identifies a possible tag given the path/revision and the first copy
-            }
-        }
-
-        // Looks for branches with the corresponding path
-        Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, basicInfo.getPath());
-        // For each branch, looks for the earliest build that contains this revision
-        Collection<RevisionInfoBuild> buildSummaries = new ArrayList<>();
-        List<RevisionPromotions> revisionPromotionsPerBranch = new ArrayList<>();
-        for (int branchId : branchIds) {
-            // Gets the build SVN path pattern for the branch
-            String buildPathPattern = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
-            if (StringUtils.isNotBlank(buildPathPattern)) {
-                // Location for this revision
-                SVNLocation initialLocation = new SVNLocation(basicInfo.getPath(), basicInfo.getRevision());
-                // Stack of eligible locations
-                Stack<SVNLocation> locations = new Stack<>();
-                locations.push(initialLocation);
-                // Earliest build
-                Integer buildId = null;
-                // Recursive search of eligible locations
-                while (!locations.isEmpty()) {
-                    // Gets the top element
-                    SVNLocation location = locations.pop();
-                    // Is it a build?
-                    buildId = getEarliestBuild(branchId, location, buildPathPattern);
-                    if (buildId != null) {
-                        // Build found - not looking further
-                        locations.clear();
-                    }
-                    // Not a build
-                    else {
-                        // List of copies from this location
-                        Collection<SVNLocation> copies = subversionService.getCopiesFrom(location, SVNLocationSortMode.FROM_NEWEST);
-                        // Adds them to the stack, from the most ancient to the newest
-                        locations.addAll(copies);
-                    }
-                }
+                int branchId = branchSummary.getId();
+                // Identifies a possible build given the path/revision and the first copy
+                Integer buildId = lookupBuild(basicInfo.toLocation(), firstCopy, branchSummary.getId());
                 // Build found
                 if (buildId != null) {
                     // Gets the build information
@@ -352,12 +321,40 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 }
             }
         }
+
         // OK
         return new RevisionInfo(
                 changeLogRevision,
                 buildSummaries,
                 revisionPromotionsPerBranch
         );
+    }
+
+    private Integer lookupBuild(SVNLocation location, SVNLocation firstCopy, int branchId) {
+        // Gets the build path pattern for the branch
+        String buildPathPattern = propertiesService.getPropertyValue(
+                Entity.BRANCH,
+                branchId,
+                SubversionExtension.EXTENSION,
+                SubversionExtension.SUBVERSION_BUILD_PATH
+        );
+        // If not build path is defined, cannot find any build
+        if (StringUtils.isBlank(buildPathPattern)) {
+            return null;
+        }
+        // Revision path
+        else if (SVNExplorerPathUtils.isPathRevision(buildPathPattern)) {
+            return getEarliestBuild(branchId, location, buildPathPattern);
+        }
+        // Tag pattern
+        else {
+            // Uses the copy (if available)
+            if (firstCopy != null) {
+                return getEarliestBuild(branchId, firstCopy, buildPathPattern);
+            } else {
+                return null;
+            }
+        }
     }
 
     @Override

@@ -85,6 +85,12 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
+    public SVNLocation getFirstCopyAfter(SVNLocation location) {
+        return svnEventDao.getFirstCopyAfter(location);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public SVNRevisionPaths getRevisionPaths(long revision) {
         // Result
         final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
