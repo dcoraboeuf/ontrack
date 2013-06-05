@@ -70,8 +70,19 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
         });
     }
 
+    // Clean-up configuration
+    function cleanupBranch() {
+        ajax.get({
+            url: 'ui/manage/project/{0}/branch/{1}/cleanup'.format(project, branch),
+            successFn: function (cleanup) {
+                alert('TODO Show clean-up configuration dialog');
+            }
+        });
+    }
+
     $('#command-branch-delete').click(deleteBranch);
     $('#command-branch-update').click(updateBranch);
+    $('#command-branch-build-cleanup').click(cleanupBranch);
     $('#promotion-level-create-button').click(createPromotionLevel);
     $('#validation-stamp-create-button').click(createValidationStamp);
 
