@@ -151,6 +151,8 @@ public interface ManagementService {
 
     List<Promotion> getPromotions(final Locale locale, int promotionLevelId, int offset, int count);
 
+    Ack removePromotedRun(int buildId, int promotionLevelId);
+
     // Comments
 
     CommentStub createComment (Entity entity, int id, String content);

@@ -3,6 +3,7 @@ package net.ontrack.backend.dao.jdbc;
 import net.ontrack.backend.dao.PromotedRunDao;
 import net.ontrack.backend.dao.model.TPromotedRun;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
 import org.joda.time.DateTime;
@@ -101,6 +102,17 @@ public class PromotedRunJdbcDao extends AbstractJdbcDao implements PromotedRunDa
                 SQL.PROMOTED_RUN_BY_BUILD,
                 params("build", buildId),
                 promotedRunRowMapper
+        );
+    }
+
+    @Override
+    @Transactional
+    public Ack remove(int buildId, int promotionLevelId) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.PROMOTED_RUN_REMOVE,
+                        params("build", buildId).addValue("promotionLevel", promotionLevelId)
+                )
         );
     }
 }

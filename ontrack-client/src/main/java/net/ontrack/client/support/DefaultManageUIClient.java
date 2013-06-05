@@ -387,4 +387,19 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
         );
     }
 
+    @Override
+    public Ack removePromotedRun(String project, String branch, String build, String promotionLevel) {
+        return delete(
+                getDefaultLocale(),
+                format(
+                        "/ui/manage/project/%s/branch/%s/build/%s/promotion_level/%s",
+                        project,
+                        branch,
+                        build,
+                        promotionLevel
+                ),
+                Ack.class
+        );
+    }
+
 }

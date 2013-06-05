@@ -1,6 +1,7 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.backend.dao.model.TPromotedRun;
+import net.ontrack.core.model.Ack;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface PromotedRunDao {
     List<TPromotedRun> findByPromotionLevel(int promotionLevelId, int offset, int count);
 
     List<TPromotedRun> findByBuild(int buildId);
+
+    Ack remove(int buildId, int promotionLevelId);
 }

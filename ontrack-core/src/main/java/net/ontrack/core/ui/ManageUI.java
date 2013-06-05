@@ -130,4 +130,6 @@ public interface ManageUI {
     // Promoted runs
 
     List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);
+
+    Ack removePromotedRun(String project, String branch, String build, String promotionLevel);
 }

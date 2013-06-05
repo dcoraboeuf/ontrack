@@ -1259,6 +1259,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack removePromotedRun(int buildId, int promotionLevelId) {
+        return promotedRunDao.remove(buildId, promotionLevelId);
+    }
+
     private DatedSignature getPromotedRunDatedSignature(TPromotedRun t, Locale locale, DateTime now) {
         return getDatedSignature(
                 locale,

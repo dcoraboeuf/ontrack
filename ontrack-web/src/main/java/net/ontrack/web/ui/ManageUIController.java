@@ -631,6 +631,16 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         );
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack removePromotedRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String promotionLevel) {
+        int buildId = entityConverter.getBuildId(project, branch, build);
+        int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, promotionLevel);
+        return managementService.removePromotedRun(buildId, promotionLevelId);
+    }
+
     @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/statusUpdateData", method = RequestMethod.GET)
     public
     @ResponseBody
