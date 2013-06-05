@@ -1263,7 +1263,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack removePromotedRun(int buildId, int promotionLevelId) {
-        return promotedRunDao.remove(buildId, promotionLevelId);
+        Ack ack = promotedRunDao.remove(buildId, promotionLevelId);
+        if (ack.isSuccess()) {
+            event(
+                    collectEntityContext(
+                            Event.of(EventType.PROMOTED_RUN_REMOVED),
+                            Entity.BUILD, buildId)
+                            .withPromotionLevel(promotionLevelId));
+        }
+        return ack;
     }
 
     private DatedSignature getPromotedRunDatedSignature(TPromotedRun t, Locale locale, DateTime now) {

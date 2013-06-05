@@ -40,6 +40,8 @@ public enum EventType {
 
     PROMOTION_LEVEL_UPDATED,
 
+    PROMOTED_RUN_REMOVED,
+
     VALIDATION_STAMP_COMMENT
 
 }
