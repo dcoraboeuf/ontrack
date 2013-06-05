@@ -259,4 +259,12 @@ public interface SQL {
     String BUILD_CLEANUP_PROMOTION_INSERT = "INSERT INTO BUILD_CLEANUP_PROMOTION (BUILD_CLEANUP, PROMOTION_LEVEL) VALUES (:buildCleanup, :promotionLevel)";
     String BUILD_CLEANUP_FIND_BY_BRANCH = "SELECT * FROM BUILD_CLEANUP WHERE BRANCH = :branch";
     String BUILD_CLEANUP_PROMOTION_BY_ID = "SELECT PROMOTION_LEVEL FROM BUILD_CLEANUP_PROMOTION WHERE BUILD_CLEANUP = :id";
+
+    String BUILD_CLEANUP = "SELECT DISTINCT(B.ID)\n" +
+            "             FROM BUILD B\n" +
+            "             INNER JOIN EVENTS E ON E.BUILD = B.ID AND E.EVENT_TYPE = 'BUILD_CREATED'\n" +
+            "             LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID\n" +
+            "             WHERE B.BRANCH = :branch\n" +
+            "             AND DATEDIFF('DAY', E.EVENT_TIMESTAMP, :now) > :retention\n" +
+            "             AND PR.PROMOTION_LEVEL NOT IN (%s)";
 }

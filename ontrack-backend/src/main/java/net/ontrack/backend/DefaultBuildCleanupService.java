@@ -77,7 +77,9 @@ public class DefaultBuildCleanupService implements ScheduledService, BuildCleanu
             logger.info("[build-cleanup] No clean-up configuration defined");
         } else {
             logger.info("[build-cleanup] Retention={}, excluded promotion levels={}", conf.getRetention(), conf.getExcludedPromotionLevels());
-            // TODO Actual clean-up
+            // Gets the list of builds to delete
+            List<Integer> buildIds = buildCleanupDao.getCandidatesForDeletion(branch, conf.getRetention(), conf.getExcludedPromotionLevels());
+            logger.info("[build-cleanup] {} builds to delete", buildIds.size());
         }
     }
 }

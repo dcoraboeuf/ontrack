@@ -4,6 +4,7 @@ import net.ontrack.backend.dao.model.TBuildCleanup;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
 
+import java.util.List;
 import java.util.Set;
 
 public interface BuildCleanupDao {
@@ -14,4 +15,5 @@ public interface BuildCleanupDao {
 
     TBuildCleanup findBuildCleanUp(int branch);
 
+    List<Integer> getCandidatesForDeletion(int branch, int retention, Set<Integer> excludedPromotionLevels);
 }

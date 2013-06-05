@@ -6,6 +6,8 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.dao.SQLUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -65,6 +68,7 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TBuildCleanup findBuildCleanUp(int branch) {
         return getFirstItem(
                 SQL.BUILD_CLEANUP_FIND_BY_BRANCH,
@@ -91,6 +95,21 @@ public class BuildCleanupJdbcDao extends AbstractJdbcDao implements BuildCleanup
                         );
                     }
                 }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Integer> getCandidatesForDeletion(int branch, int retention, Set<Integer> excludedPromotionLevels) {
+        return getNamedParameterJdbcTemplate().queryForList(
+                String.format(
+                        SQL.BUILD_CLEANUP,
+                        StringUtils.join(excludedPromotionLevels, ",")
+                ),
+                params("branch", branch)
+                        .addValue("retention", retention)
+                        .addValue("now", SQLUtils.toTimestamp(SQLUtils.now())),
+                Integer.class
         );
     }
 }
