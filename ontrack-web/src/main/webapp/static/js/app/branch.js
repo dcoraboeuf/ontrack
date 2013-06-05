@@ -75,7 +75,27 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
         ajax.get({
             url: 'ui/manage/project/{0}/branch/{1}/cleanup'.format(project, branch),
             successFn: function (cleanup) {
-                alert('TODO Show clean-up configuration dialog');
+                dialog.show({
+                    title: 'build.cleanup'.loc(),
+                    templateId: 'branch-build-cleanup',
+                    initFn: function (config) {
+                        config.form.find('#build-cleanup-retention').val(cleanup.retention);
+                    },
+                    submitFn: function (config) {
+                        var retention = config.form.find('#build-cleanup-retention').val();
+                        ajax.put({
+                            url: 'ui/manage/project/{0}/branch/{1}/cleanup'.format(project, branch),
+                            data: {
+                                retention: retention,
+                                excludedPromotionLevels: []
+                            },
+                            successFn: function () {
+                                config.closeFn();
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                        });
+                    }
+                });
             }
         });
     }

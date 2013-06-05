@@ -675,6 +675,10 @@ build.cleanup
     en -> Clean-up configuration
     fr -> Configuration de la purge
 
+build.cleanup.retention
+    en -> Retention days (0 to keep everything)
+    fr -> Jours de rétention (0 pour tout garder)
+
 [runs]
 
 validationRun
