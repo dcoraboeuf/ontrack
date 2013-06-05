@@ -1,8 +1,25 @@
-define(['jquery','dialog','ajax','time'], function ($, dialog, ajax, time) {
+define(['jquery', 'dialog', 'ajax', 'time', 'common'], function ($, dialog, ajax, time, common) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
     var build = $('#build').val();
+
+    /**
+     * Deletion of the build
+     */
+    function buildDelete() {
+        common.confirmAndCall(
+            'build.delete.prompt'.loc(build),
+            function () {
+                ajax.del({
+                    url: 'ui/manage/project/{0}/branch/{1}/build/{2}'.format(project, branch, build),
+                    successFn: function () {
+                        location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+                    }
+                })
+            }
+        );
+    }
 
     /**
      * Promotion for a build
@@ -59,5 +76,6 @@ define(['jquery','dialog','ajax','time'], function ($, dialog, ajax, time) {
     }
 
     $('#build-promote').click(buildPromote);
+    $('#build-delete').click(buildDelete);
 
 });

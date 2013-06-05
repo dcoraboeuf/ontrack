@@ -959,6 +959,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack deleteBuild(int buildId) {
+        return buildDao.delete(buildId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Integer findBuildAfterUsingNumericForm(int branchId, String buildName) {
         return buildDao.findBuildAfterUsingNumericForm(branchId, buildName);

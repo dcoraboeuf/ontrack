@@ -117,6 +117,8 @@ public interface ManageUI {
 
     BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter);
 
+    Ack deleteBuild(String project, String branch, String build);
+
     // Validation runs
 
     List<ValidationRunEvent> getValidationRunHistory(Locale locale, int validationRunId, int offset, int count);

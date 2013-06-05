@@ -113,6 +113,8 @@ public interface ManagementService {
 
     Integer findBuildByName(int branchId, String buildName);
 
+    Ack deleteBuild(int buildId);
+
     /**
      * Finds a build on this branch whose name is the closest. It assumes that build names
      * are in a numeric format.

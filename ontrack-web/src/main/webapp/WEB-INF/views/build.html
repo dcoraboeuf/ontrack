@@ -23,6 +23,7 @@
                 <span class="action action-optional">
                     <#if secAdmin()>
                         <span id="build-promote"><i class="icon-star"></i> <@lh key="build.promote" /></span>
+                        <span id="build-delete"><i class="icon-trash"></i> <@lh key="build.delete" /></span>
                     </#if>
                     <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>

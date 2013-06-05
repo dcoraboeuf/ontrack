@@ -8,6 +8,7 @@ import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.BuildValidationStampFilter;
 import net.ontrack.core.model.Status;
@@ -102,6 +103,17 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 SQL.BUILD_BY_BRANCH_AND_NUMERIC_NAME,
                 params("branch", branchId).addValue("name", buildName),
                 Integer.class
+        );
+    }
+
+    @Override
+    @Transactional
+    public Ack delete(int buildId) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.BUILD_DELETE,
+                        params("id", buildId)
+                )
         );
     }
 
@@ -209,8 +221,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     public TBuild findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
         StringBuilder sql = new StringBuilder(
                 "SELECT VR.BUILD FROM VALIDATION_RUN_STATUS VRS\n" +
-                "INNER JOIN VALIDATION_RUN VR ON VR.ID = VRS.VALIDATION_RUN\n" +
-                "WHERE VR.VALIDATION_STAMP = :validationStamp\n");
+                        "INNER JOIN VALIDATION_RUN VR ON VR.ID = VRS.VALIDATION_RUN\n" +
+                        "WHERE VR.VALIDATION_STAMP = :validationStamp\n");
         // Status criteria
         if (statuses != null && !statuses.isEmpty()) {
             sql.append(format("AND VRS.STATUS IN (%s)\n", getStatusesForSQLInClause(statuses)));
@@ -251,11 +263,11 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Transactional
     public int createBuild(int branch, String name, String description) {
         try {
-        return dbCreate(
-                SQL.BUILD_CREATE,
-                params("branch", branch)
-                        .addValue("name", name)
-                        .addValue("description", description));
+            return dbCreate(
+                    SQL.BUILD_CREATE,
+                    params("branch", branch)
+                            .addValue("name", name)
+                            .addValue("description", description));
         } catch (DuplicateKeyException ex) {
             throw new BuildAlreadyExistsException(name);
         }

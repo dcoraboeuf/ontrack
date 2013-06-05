@@ -1,6 +1,7 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.backend.dao.model.TBuild;
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BuildFilter;
 import net.ontrack.core.model.Status;
 
@@ -29,4 +30,6 @@ public interface BuildDao {
     Integer findByBrandAndName(int branchId, String buildName);
 
     Integer findBuildAfterUsingNumericForm(int branchId, String buildName);
+
+    Ack delete(int buildId);
 }

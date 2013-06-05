@@ -495,6 +495,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return managementService.queryBuilds(locale, branchId, filter);
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack deleteBuild(@PathVariable String project, @PathVariable String branch, @PathVariable String build) {
+        return managementService.deleteBuild(entityConverter.getBuildId(project, branch, build));
+    }
+
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build", method = RequestMethod.POST)
     public
     @ResponseBody

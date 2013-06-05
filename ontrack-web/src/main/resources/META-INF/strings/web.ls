@@ -648,6 +648,14 @@ build.promotion_levels.none
     en -> No promotion
     fr -> Aucune promotion
 
+build.delete
+    en -> Delete
+    fr -> Supprimer
+
+build.delete.prompt
+    en -> You are about to delete the build "{0}". This will delete any associated data. Are you sure to go on?
+    fr -> Vous êtes sur le point de supprimer le build "{0}". Cela supprimera toutes les données associées. Voulez-vous continuer ?
+
 build.promote
     en -> Promote
     fr -> Promouvoir
