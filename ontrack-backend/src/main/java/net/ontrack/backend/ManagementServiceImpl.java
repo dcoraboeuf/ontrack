@@ -376,14 +376,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 FlaggedPromotionLevel.UNFLAGGED
         );
         // Gets the configuration
-        TBuildCleanup conf = buildCleanupDao.findBuildCleanUp(branchId);
+        final TBuildCleanup conf = buildCleanupDao.findBuildCleanUp(branchId);
         if (conf != null) {
             // Flags
-            for (FlaggedPromotionLevel flaggedPromotionLevel : flaggedPromotionLevels) {
-                if (conf.getExcludedPromotionLevels().contains(flaggedPromotionLevel.getSummary().getId())) {
-                    flaggedPromotionLevel.select();
-                }
-            }
+            flaggedPromotionLevels = Lists.transform(
+                    flaggedPromotionLevels,
+                    FlaggedPromotionLevel.selectFn(new Predicate<PromotionLevelSummary>() {
+                        @Override
+                        public boolean apply(PromotionLevelSummary summary) {
+                            return conf.getExcludedPromotionLevels().contains(summary.getId());
+                        }
+                    })
+            );
             // OK
             return new BuildCleanup(
                     conf.getRetention(),

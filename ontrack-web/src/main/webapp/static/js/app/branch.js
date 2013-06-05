@@ -1,4 +1,4 @@
-define(['application','jquery','dialog','ajax','dynamic','app/component/promotionLevel'], function(application, $, dialog, ajax, dynamic, promotionLevelComponent) {
+define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/promotionLevel'], function (application, $, dialog, ajax, dynamic, promotionLevelComponent) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
@@ -79,16 +79,19 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
                     title: 'build.cleanup'.loc(),
                     templateId: 'branch-build-cleanup',
                     data: cleanup,
-                    initFn: function (config) {
-                        config.form.find('#build-cleanup-retention').val(cleanup.retention);
-                    },
                     submitFn: function (config) {
                         var retention = config.form.find('#build-cleanup-retention').val();
+                        var excludedPromotionLevels = [];
+                        config.form.find('input.promotion-level').each(function (index, input) {
+                            if ($(input).is(':checked')) {
+                                excludedPromotionLevels.push(Number($(input).attr('data-promotionlevel')));
+                            }
+                        });
                         ajax.put({
                             url: 'ui/manage/project/{0}/branch/{1}/cleanup'.format(project, branch),
                             data: {
                                 retention: retention,
-                                excludedPromotionLevels: []
+                                excludedPromotionLevels: excludedPromotionLevels
                             },
                             successFn: function () {
                                 config.closeFn();
