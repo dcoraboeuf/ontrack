@@ -679,6 +679,10 @@ build.cleanup.retention
     en -> Retention days (0 to keep everything)
     fr -> Jours de rétention (0 pour tout garder)
 
+build.cleanup.excludedPromotionLevels
+    en -> Excluded promotion levels
+    fr -> Niveaux de promotion exclus
+
 [runs]
 
 validationRun

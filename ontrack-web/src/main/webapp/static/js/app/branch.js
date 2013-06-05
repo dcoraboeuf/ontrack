@@ -78,6 +78,7 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
                 dialog.show({
                     title: 'build.cleanup'.loc(),
                     templateId: 'branch-build-cleanup',
+                    data: cleanup,
                     initFn: function (config) {
                         config.form.find('#build-cleanup-retention').val(cleanup.retention);
                     },

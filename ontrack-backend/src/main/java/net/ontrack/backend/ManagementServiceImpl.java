@@ -5,7 +5,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
@@ -369,26 +368,31 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public BuildCleanup getBuildCleanup(int branchId) {
+        // List of promotion levels
+        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
+        // No exclusion by default
+        List<FlaggedPromotionLevel> flaggedPromotionLevels = Lists.transform(
+                promotionLevelList,
+                FlaggedPromotionLevel.UNFLAGGED
+        );
+        // Gets the configuration
         TBuildCleanup conf = buildCleanupDao.findBuildCleanUp(branchId);
         if (conf != null) {
+            // Flags
+            for (FlaggedPromotionLevel flaggedPromotionLevel : flaggedPromotionLevels) {
+                if (conf.getExcludedPromotionLevels().contains(flaggedPromotionLevel.getSummary().getId())) {
+                    flaggedPromotionLevel.select();
+                }
+            }
+            // OK
             return new BuildCleanup(
                     conf.getRetention(),
-                    Sets.newHashSet(
-                            Collections2.transform(
-                                    conf.getExcludedPromotionLevels(),
-                                    new Function<Integer, PromotionLevelSummary>() {
-                                        @Override
-                                        public PromotionLevelSummary apply(Integer promotionLevelId) {
-                                            return getPromotionLevel(promotionLevelId);
-                                        }
-                                    }
-                            )
-                    )
+                    flaggedPromotionLevels
             );
         } else {
             return new BuildCleanup(
                     0,
-                    Collections.<PromotionLevelSummary>emptySet()
+                    flaggedPromotionLevels
             );
         }
     }

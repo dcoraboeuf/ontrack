@@ -5,4 +5,18 @@
             <input type="number" min="0" max="10000" id="build-cleanup-retention" value="0" size="40" maxlength="5" required="required" />
         </div>
     </div>
+    <div class="control-group">
+        <label class="control-label">{{loc 'build.cleanup.excludedPromotionLevels'}}</label>
+        <div class="controls">
+            {{#promotionLevels}}
+                <p>
+                    <input id="exclude-{{summary.name}}" type="checkbox" style="vertical-align: middle;" />
+                    <label for="exclude-{{summary.name}}" style="display: inline;">
+                        <img width="24" height="24" src="gui/project/{{summary.branch.project.name}}/branch/{{summary.branch.name}}/promotion_level/{{summary.name}}/image" />
+                        {{summary.name}}
+                    </label>
+                </p>
+            {{/promotionLevels}}
+        </div>
+    </div>
 </form>
