@@ -2,9 +2,17 @@
     <ul class="promotions">
         {{#promotionLevels}}
             <li>
-                <i class="icon-arrow-right"></i>
-                <img width="24" src="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}/image" />
-                <a class="tooltip-source" href="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">{{name}}</a>
+                <i class="icon-arrow-right separator"></i>
+                <a class="tooltip-source" href="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">
+                    <img width="24" src="gui/project/{{../project}}/branch/{{../branch}}/promotion_level/{{name}}/image" />
+                    {{name}}
+                </a>
+                {{#if ../admin}}
+                    <i
+                        class="icon-trash action action-optional action-inline promotion-level-remove"
+                        data-promotionlevel="{{../name}}"
+                        ></i>
+                {{/if}}
             </li>
         {{/promotionLevels}}
     </ul>

@@ -85,8 +85,11 @@
 
 /* Action visible only when container is hovered */
 .action.action-optional {
-	opacity: 0.25;
-	float: right;
+    opacity: 0.25;
+    float: right;
+}
+.action.action-optional.action-inline {
+    float: none;
 }
 *:hover > .action.action-optional {
 	opacity: 1.0;
@@ -187,7 +190,7 @@ ul.promotions li {
     display: inline;
 }
 
-ul.promotions li:first-child i {
+ul.promotions li:first-child .separator {
     display: none;
 }
 

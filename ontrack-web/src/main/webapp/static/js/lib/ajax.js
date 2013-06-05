@@ -1,4 +1,4 @@
-define(function () {
+define(['common'], function (common) {
 
     /**
      * Performs a PUT request
