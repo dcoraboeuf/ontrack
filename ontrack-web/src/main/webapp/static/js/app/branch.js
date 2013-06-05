@@ -4,14 +4,14 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
     var branch = $('#branch').val();
 
     // Delete the branch
-    $('#command-branch-delete').click(function () {
+    function deleteBranch() {
         application.deleteEntity('project/{0}/branch'.format(project), branch, function () {
             location.href = 'gui/project/{0}'.format(project);
         });
-    });
+    }
 
     // Updating the branch
-    $('#command-branch-update').click(function () {
+    function updateBranch() {
         ajax.get({
             url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
             successFn: function (summary) {
@@ -39,23 +39,23 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
                 });
             }
         });
-    });
+    }
 
     // Create a promotion level
-    $('#promotion-level-create-button').click(function () {
+    function createPromotionLevel() {
         promotionLevelComponent.createPromotionLevel(project, branch, function (summary) {
             location.href = 'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(project, branch, summary.name);
         });
-    });
+    }
 
     // Create a validation stamp
-    $('#validation-stamp-create-button').click(function () {
+    function createValidationStamp() {
         dialog.show({
             title: 'validation_stamp.create'.loc(),
             templateId: 'validation-stamp-create',
             submitFn: function (config) {
                 ajax.post({
-                    url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project,branch),
+                    url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(project, branch),
                     data: {
                         name: $('#validation-stamp-name').val(),
                         description: $('#validation-stamp-description').val()
@@ -68,6 +68,11 @@ define(['application','jquery','dialog','ajax','dynamic','app/component/promotio
                 });
             }
         });
-    });
+    }
+
+    $('#command-branch-delete').click(deleteBranch);
+    $('#command-branch-update').click(updateBranch);
+    $('#promotion-level-create-button').click(createPromotionLevel);
+    $('#validation-stamp-create-button').click(createValidationStamp);
 
 });
