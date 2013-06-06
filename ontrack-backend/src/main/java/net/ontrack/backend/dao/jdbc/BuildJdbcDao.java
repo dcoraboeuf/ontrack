@@ -8,10 +8,7 @@ import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.BuildFilter;
-import net.ontrack.core.model.BuildValidationStampFilter;
-import net.ontrack.core.model.Status;
+import net.ontrack.core.model.*;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +136,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                 "                    INNER JOIN VALIDATION_RUN_STATUS VRS ON VRS.ID = (SELECT ID FROM VALIDATION_RUN_STATUS WHERE VALIDATION_RUN = R.ID ORDER BY ID DESC LIMIT 1)" +
                 "                    AND R.RUN_ORDER = (SELECT MAX(RUN_ORDER) FROM VALIDATION_RUN WHERE BUILD = R.BUILD AND VALIDATION_STAMP = R.VALIDATION_STAMP)" +
                 "                    ) S ON S.BUILD = B.ID" +
+                "                LEFT JOIN PROPERTIES PP ON PP.BUILD = B.ID" +
                 "                WHERE B.BRANCH = :branch");
         MapSqlParameterSource params = new MapSqlParameterSource("branch", branch);
         Integer sinceBuildId = null;
@@ -203,6 +201,18 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         if (sinceBuildId != null) {
             sql.append(" AND B.ID >= :sinceBuildId");
             params.addValue("sinceBuildId", sinceBuildId);
+        }
+        // Properties
+        PropertyValue withProperty = filter.getWithProperty();
+        if (withProperty != null) {
+            sql.append(" AND PP.EXTENSION = :propertyExtension AND PP.NAME = :propertyName");
+            params.addValue("propertyExtension", withProperty.getExtension());
+            params.addValue("propertyName", withProperty.getName());
+            String withPropertyValue = withProperty.getValue();
+            if (StringUtils.isNotBlank(withPropertyValue)) {
+                sql.append(" AND PP.VALUE REGEXP :propertyValue");
+                params.addValue("propertyValue", withPropertyValue);
+            }
         }
         // Ordering
         sql.append(" ORDER BY B.ID DESC");
