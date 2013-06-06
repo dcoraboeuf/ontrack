@@ -128,12 +128,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
                 String key = String.format("%s-%s", validationStampProperty.getExtension(), validationStampProperty.getName());
                 validationStampIndex.put(
                         key,
-                        new DisplayableProperty(
-                                validationStampProperty.getExtension(),
-                                validationStampProperty.getName(),
-                                validationStampProperty.getDisplayName(),
-                                validationStampProperty.getIconPath()
-                        )
+                        toDisplayableProperty(validationStampProperty)
                 );
             }
         }
@@ -147,12 +142,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
                 String key = String.format("%s-%s", promotionLevelProperty.getExtension(), promotionLevelProperty.getName());
                 promotionLevelIndex.put(
                         key,
-                        new DisplayableProperty(
-                                promotionLevelProperty.getExtension(),
-                                promotionLevelProperty.getName(),
-                                promotionLevelProperty.getDisplayName(),
-                                promotionLevelProperty.getIconPath()
-                        )
+                        toDisplayableProperty(promotionLevelProperty)
                 );
             }
         }
@@ -173,6 +163,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         );
     }
 
+    private DisplayableProperty toDisplayableProperty(DisplayablePropertyValue promotionLevelProperty) {
+        return new DisplayableProperty(
+                promotionLevelProperty.getExtension(),
+                promotionLevelProperty.getName(),
+                promotionLevelProperty.getDisplayName(),
+                promotionLevelProperty.getIconPath()
+        );
+    }
+
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
     public
@@ -185,11 +184,12 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.GET)
     public
     @ResponseBody
-    BranchFilterData getBranchFilterData(@PathVariable String project, @PathVariable String branch) {
+    BranchFilterData getBranchFilterData(Locale locale, @PathVariable String project, @PathVariable String branch) {
         return new BranchFilterData(
                 getPromotionLevelList(project, branch),
                 getValidationStampList(project, branch),
-                Arrays.asList(Status.values())
+                Arrays.asList(Status.values()),
+                propertyUI.getPropertyList(locale, Entity.BUILD)
         );
     }
 

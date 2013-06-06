@@ -19,6 +19,10 @@ public interface PropertyUI {
             Entity entity,
             int entityId);
 
+    List<DisplayableProperty> getPropertyList(
+            Locale locale,
+            Entity entity);
+
     List<EditableProperty> getEditableProperties(
             Locale locale,
             Entity entity,

@@ -42,6 +42,17 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
     }
 
     @Override
+    public List<DisplayableProperty> getPropertyList(Locale locale, Entity entity) {
+        return list(
+                locale,
+                format(
+                        "/ui/property/%s",
+                        entity.name()
+                ),
+                DisplayableProperty.class);
+    }
+
+    @Override
     public List<EditableProperty> getEditableProperties(Locale locale, Entity entity, int entityId) {
         return list(
                 locale,

@@ -5,9 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.EditableProperty;
-import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -15,8 +13,6 @@ import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyValueWithDescriptor;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
-import net.ontrack.core.model.DisplayablePropertyValue;
-import net.ontrack.core.model.PropertyForm;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -114,6 +110,27 @@ public class PropertyUIController extends AbstractUIController implements Proper
         );
         // OK
         return Lists.newArrayList(displayablePropertyValues);
+    }
+
+    @Override
+    @RequestMapping(value = "/{entity}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<DisplayableProperty> getPropertyList(final Locale locale, @PathVariable Entity entity) {
+        return Lists.transform(
+                propertiesService.getProperties(entity),
+                new Function<PropertyExtensionDescriptor, DisplayableProperty>() {
+                    @Override
+                    public DisplayableProperty apply(PropertyExtensionDescriptor descriptor) {
+                        return new DisplayableProperty(
+                                descriptor.getExtension(),
+                                descriptor.getName(),
+                                strings.get(locale, descriptor.getDisplayNameKey()),
+                                descriptor.getIconPath()
+                        );
+                    }
+                }
+        );
     }
 
     /**

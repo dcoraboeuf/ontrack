@@ -39,7 +39,7 @@ public interface ManageUI {
 
     Ack deleteBranch(String project, String name);
 
-    BranchFilterData getBranchFilterData(String project, String branch);
+    BranchFilterData getBranchFilterData(Locale locale, String project, String branch);
 
     BuildCleanup getBuildCleanup(String project, String branch);
 
