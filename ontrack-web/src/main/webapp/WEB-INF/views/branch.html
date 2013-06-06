@@ -23,7 +23,16 @@
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
                         <span id="command-branch-build-cleanup"><i class="icon-time"></i> <@lh key="build.cleanup" /></span>
                     </#if>
+                    <!-- Close button -->
                     <a href="gui/project/${branch.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                    <!-- Switch to another branch -->
+                    <div
+                        id="branch-switch"
+                        class="dynamic"
+                        style="display: inline-block;"
+                        dynamic-controller="branch-switch"
+                        dynamic-project="${branch.project.name?html}"
+                        ></div>
                 </span>
             </div>
             <div class="muted span12 properties">${branch.description?html}</div>

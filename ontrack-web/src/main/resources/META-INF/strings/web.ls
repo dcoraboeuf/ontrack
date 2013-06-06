@@ -417,6 +417,10 @@ branch.update
 	en -> Update branch
 	fr -> Modifier branche
 
+branch.switch
+    en -> Switch to
+    fr -> Aller à
+
 branch.clone
     en -> Clone
     fr -> Cloner

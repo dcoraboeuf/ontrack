@@ -1,0 +1,13 @@
+<div class="btn-group" style="display: inline;">
+    <a class="btn dropdown-toggle btn-small" data-toggle="dropdown" href="#">
+        {{loc 'branch.switch'}}
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        {{#branches}}
+            <li>
+                <a href="gui/project/{{../project}}/branch/{{name}}">{{name}}</a>
+            </li>
+        {{/branches}}
+    </ul>
+</div>
