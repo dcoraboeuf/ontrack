@@ -303,6 +303,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
         int newBranchId = newBranch.getId();
 
+        // Build clean-up configuration
+        TBuildCleanup cleanup = buildCleanupDao.findBuildCleanUp(branchId);
+        Set<Integer> newCleanupExcludedPromotionLevels = new HashSet<>();
+
         // Branch properties
         propertiesService.createProperties(
                 Entity.BRANCH,
@@ -336,6 +340,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     )
             );
 
+            // Clean-up configuration
+            if (cleanup != null && cleanup.getExcludedPromotionLevels().contains(promotionLevel.getId())) {
+                newCleanupExcludedPromotionLevels.add(newPromotionLevel.getId());
+            }
+
             // Promotion level properties
             replaceProperties(form.getPromotionLevelReplacements(), Entity.PROMOTION_LEVEL, promotionLevel.getId(), newPromotionLevel.getId());
 
@@ -358,6 +367,11 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         List<TValidationStamp> unlinkedStamp = validationStampDao.findByNoPromotionLevel(branchId);
         for (TValidationStamp stamp : unlinkedStamp) {
             cloneValidationStampSummary(newBranchId, stamp, form.getValidationStampReplacements());
+        }
+
+        // Saves the clean-up configuration
+        if (cleanup != null) {
+            buildCleanupDao.saveBuildCleanUp(newBranchId, cleanup.getRetention(), newCleanupExcludedPromotionLevels);
         }
 
         // OK
