@@ -1016,7 +1016,18 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBuild(int buildId) {
-        return buildDao.delete(buildId);
+        BuildSummary build = getBuild(buildId);
+        Ack ack = buildDao.delete(buildId);
+        if (ack.isSuccess()) {
+            event(
+                    collectEntityContext(
+                            Event.of(EventType.BUILD_DELETED),
+                            Entity.BRANCH,
+                            build.getBranch().getId())
+                            .withValue("build", build.getName())
+            );
+        }
+        return ack;
     }
 
     @Override

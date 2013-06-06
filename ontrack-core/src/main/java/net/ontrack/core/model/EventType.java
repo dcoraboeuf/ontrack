@@ -42,6 +42,8 @@ public enum EventType {
 
     PROMOTED_RUN_REMOVED,
 
+    BUILD_DELETED,
+
     VALIDATION_STAMP_COMMENT
 
 }
