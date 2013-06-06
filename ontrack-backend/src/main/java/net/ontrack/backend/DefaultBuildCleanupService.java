@@ -79,6 +79,8 @@ public class DefaultBuildCleanupService implements ScheduledService, BuildCleanu
         TBuildCleanup conf = buildCleanupDao.findBuildCleanUp(branch);
         if (conf == null) {
             logger.info("[build-cleanup] No clean-up configuration defined");
+        } else if (conf.getRetention() <= 0) {
+            logger.info("[build-cleanup] Clean-up is disabled");
         } else {
             logger.info("[build-cleanup] Retention={}, excluded promotion levels={}", conf.getRetention(), conf.getExcludedPromotionLevels());
             // Gets the list of builds to delete
