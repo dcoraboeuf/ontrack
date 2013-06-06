@@ -48,6 +48,17 @@
         </select>
     </p>
     <p>
+        {{loc 'query.withProperty' }}
+        <select id="withProperty" name="withProperty" class="input-large">
+            <option value="">&nbsp;</option>
+            {{#properties}}
+                <option value="{{extension}}-{{name}}">{{displayName}}</option>
+            {{/properties}}
+        </select>
+        {{loc 'query.withPropertyValue' }}
+        <input id="withPropertyValue" name="withPropertyValue" type="text" size="10" maxlength="30" class="input-medium" />
+    </p>
+    <p>
         {{loc 'query.limit' }}
         <input id="limit" name="limit" type="number" class="input-mini" min="1" value="10" max="100" maxlength="3" />
     </p>

@@ -12,5 +12,6 @@ public class BuildFilter {
     private final String withPromotionLevel;
     private final List<BuildValidationStampFilter> sinceValidationStamps;
     private final List<BuildValidationStampFilter> withValidationStamps;
+    private final PropertyValue withProperty;
 
 }

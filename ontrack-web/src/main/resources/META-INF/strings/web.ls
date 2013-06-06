@@ -774,6 +774,14 @@ query.sinceValidationStamp.status
     en -> with status
     fr -> avec le statut
 
+query.withProperty
+    en -> With property
+    fr -> Avec la propriété
+
+query.withPropertyValue
+    en -> of value
+    fr -> de valeur
+
 [events]
 
 event.list

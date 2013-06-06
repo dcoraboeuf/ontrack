@@ -72,6 +72,14 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 }
             ];
         }
+        // withProperty
+        if (form.withProperty != '') {
+            filter.withProperty = {};
+            var index = form.withProperty.indexOf('-');
+            filter.withProperty.extension = form.withProperty.substring(0, index);
+            filter.withProperty.name = form.withProperty.substring(index + 1);
+            filter.withProperty.value = form.withPropertyValue;
+        }
         // Filter
         withFilter(filter);
     }
@@ -82,7 +90,8 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             || filter.withPromotionLevel != ''
             || filter.sincePromotionLevel != ''
             || (filter.withValidationStamps && filter.withValidationStamps.length > 0)
-            || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0);
+            || (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0)
+            || (filter.withProperty)
     }
 
     function buildRadioButtons() {
@@ -125,6 +134,8 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         config.form.find('#withValidationStampStatus').val('');
         config.form.find('#sinceValidationStamp').val('');
         config.form.find('#sinceValidationStampStatus').val('');
+        config.form.find('#withProperty').val('');
+        config.form.find('#withPropertyValue').val('');
         config.form.find('#limit').val('10');
     }
 
@@ -146,7 +157,9 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                         var form = {
                             limit: filter.limit,
                             withPromotionLevel: filter.withPromotionLevel,
-                            sincePromotionLevel: filter.sincePromotionLevel
+                            sincePromotionLevel: filter.sincePromotionLevel,
+                            withProperty: '',
+                            withPropertyValue: ''
                         };
                         // Since validation stamp
                         if (filter.sinceValidationStamps && filter.sinceValidationStamps.length > 0) {
@@ -162,6 +175,11 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                                 form.withValidationStampStatus = filter.withValidationStamps[0].statuses[0];
                             }
                         }
+                        // With property
+                        if (filter.withProperty) {
+                            form.withProperty = '{0}-{1}'.format(filter.withProperty.extension, filter.withProperty.name);
+                            form.withPropertyValue = filter.withProperty.value;
+                        }
                         // Initialization of fields
                         config.form.find('#withPromotionLevel').val(form.withPromotionLevel);
                         config.form.find('#sincePromotionLevel').val(form.sincePromotionLevel);
@@ -169,6 +187,8 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                         config.form.find('#withValidationStampStatus').val(form.withValidationStampStatus);
                         config.form.find('#sinceValidationStamp').val(form.sinceValidationStamp);
                         config.form.find('#sinceValidationStampStatus').val(form.sinceValidationStampStatus);
+                        config.form.find('#withProperty').val(form.withProperty);
+                        config.form.find('#withPropertyValue').val(form.withPropertyValue);
                         config.form.find('#limit').val(form.limit);
                         // Button: cancel
                         config.form.find('#filter-cancel').click(function () {
