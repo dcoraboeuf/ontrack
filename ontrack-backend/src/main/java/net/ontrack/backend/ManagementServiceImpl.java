@@ -328,7 +328,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
 
 
-        // Links between promotion levels & validation stamps
+        // Links between validation stamps & promotion levels
+        Map<String,Integer> links = new HashMap<>();
+
+        // Cloning the promotion levels
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
 
             // Creates the new promotion level
@@ -355,18 +358,24 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         newPromotionLevel.getId(),
                         promotionLevelImage);
             }
+
             // Gets all the linked stamps
             List<TValidationStamp> linkedStamps = validationStampDao.findByPromotionLevel(promotionLevel.getId());
             for (TValidationStamp linkedStamp : linkedStamps) {
-                ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, linkedStamp, form.getValidationStampReplacements());
-                // Link to the promotion level
-                linkValidationStampToPromotionLevel(newValidationStamp.getId(), newPromotionLevel.getId());
+                links.put(linkedStamp.getName(), newPromotionLevel.getId());
             }
         }
-        // Gets all the unlinked validation stamps
-        List<TValidationStamp> unlinkedStamp = validationStampDao.findByNoPromotionLevel(branchId);
-        for (TValidationStamp stamp : unlinkedStamp) {
-            cloneValidationStampSummary(newBranchId, stamp, form.getValidationStampReplacements());
+
+        // Gets all the validation stamps
+        List<TValidationStamp> stamps = validationStampDao.findByBranch(branchId);
+        for (TValidationStamp stamp : stamps) {
+            // Clones the validation stamp
+            ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, stamp, form.getValidationStampReplacements());
+            // Link?
+            Integer linkedPromotionLevel = links.get(stamp.getName());
+            if (linkedPromotionLevel != null) {
+                linkValidationStampToPromotionLevel(newValidationStamp.getId(), linkedPromotionLevel);
+            }
         }
 
         // Saves the clean-up configuration
