@@ -1,9 +1,15 @@
-define(['ajax'], function (ajax) {
+define(['ajax','jquery'], function (ajax, $) {
 
     // Context
     var context = location.href.substring(location.href.indexOf('dashboard'));
     // Initial index
     var index = 0;
+
+    // Display function
+    function displayPage(page) {
+        // Title
+        $('#page-title').text(page.title);
+    }
 
     // Refresh function
     function refresh () {
@@ -16,6 +22,7 @@ define(['ajax'], function (ajax) {
                 el: $('#dashboard-loading'),
                 mode: 'toggle'
             },
+            successFn: displayPage,
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#dashboard-error')))
         })
     }
