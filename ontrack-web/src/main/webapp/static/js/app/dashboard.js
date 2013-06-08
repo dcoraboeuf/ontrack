@@ -1,14 +1,56 @@
-define(['ajax','jquery'], function (ajax, $) {
+define(['ajax','jquery','render'], function (ajax, $, render) {
 
     // Context
     var context = location.href.substring(location.href.indexOf('dashboard'));
     // Initial index
     var index = 0;
 
-    // Display function
+    function getPageLayout(page) {
+        if (page.layoutId) {
+            return page.layoutId;
+        } else {
+            return 'dashboard-layout-default';
+        }
+    }
+
+    function getPageSectionLayout(section) {
+        if (section.layoutKey) {
+            return section.layoutKey;
+        } else {
+            return 'default';
+        }
+    }
+
+    function addSectionToLayout(layoutData, layoutKey, sectionRenderFn) {
+        if (!layoutData[layoutKey]) {
+            layoutData[layoutKey] = [];
+        }
+        layoutData[layoutKey].push(sectionRenderFn);
+    }
+
     function displayPage(page) {
         // Title
         $('#page-title').text(page.title);
+
+        // Content
+
+        // Page layout to use
+        var layoutId = getPageLayout(page);
+        render.withTemplate(layoutId, function (layout) {
+            // Data for the layout
+            var layoutData = {};
+            // Loops over all sections of the page
+            $.each(page.sections, function (i, section) {
+                // Layout key for the section
+                var layoutKey = getPageSectionLayout(section);
+                // TODO Rendering function
+                var sectionRenderFn = function () {};
+                // Adds to the layout
+                addSectionToLayout(layoutData, layoutKey, sectionRenderFn);
+            });
+            // Renders the layout
+            $('#page-content').html(layout(layoutData));
+        });
     }
 
     // Refresh function
