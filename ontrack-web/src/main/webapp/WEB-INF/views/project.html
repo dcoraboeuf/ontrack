@@ -19,6 +19,10 @@
                         <span id="command-project-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <span id="command-project-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
                     </#if>
+                    <a href="dashboard/project/${project.name?html}">
+                        <i class="icon-eye-open"></i>
+                        <@lh key="dashboard"/>
+                    </a>
                     <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>

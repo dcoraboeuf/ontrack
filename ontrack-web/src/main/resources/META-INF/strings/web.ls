@@ -857,3 +857,9 @@ search.noResult
 search.submit
     en -> Search
     fr -> Chercher
+
+[dashboard]
+
+dashboard
+    en -> Dashboard
+    fr -> Tableau de bord
