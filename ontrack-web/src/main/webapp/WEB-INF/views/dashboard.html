@@ -3,7 +3,6 @@
 <@layout_root
     page="dashboard"
     title=loc("dashboard") + " - " + dashboard.title
-    noscript=true
     >
     <style>
         body {
@@ -18,8 +17,17 @@
                 </section>
             </div>
         </div>
+        <div id="dashboard-error" class="alert alert-error hidden">
+        </div>
         <div class="row-fluid">
             <div id="dashboard-page" class="span12">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div id="dashboard-loading" class="loading description hidden">
+                    <@lh key="general.loading" />
+                </div>
             </div>
         </div>
 	</div>
