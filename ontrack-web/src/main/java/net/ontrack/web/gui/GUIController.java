@@ -219,6 +219,30 @@ public class GUIController extends AbstractGUIController {
         }
     }
 
+    /**
+     * General dashboard
+     */
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public String generalDashboard() {
+        return "dashboard";
+    }
+
+    /**
+     * Project dashboard
+     */
+    @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public String projectDashboard(@PathVariable String project) {
+        return "dashboard";
+    }
+
+    /**
+     * Branch dashboard
+     */
+    @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public String branchDashboard(@PathVariable String project, @PathVariable String branch) {
+        return "dashboard";
+    }
+
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
         response.setContentType("image/png");
         response.setContentLength(content.length);
