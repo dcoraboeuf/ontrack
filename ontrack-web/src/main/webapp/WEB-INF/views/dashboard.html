@@ -2,6 +2,7 @@
 
 <@layout_root
     page="dashboard"
+    title=loc("dashboard") + " - " + dashboard.title
     noscript=true
     >
     <style>
@@ -13,7 +14,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <section>
-                    <h1><small>TODO Dashboard title</small></h1>
+                    <h1><small>${dashboard.title?html}</small></h1>
                 </section>
             </div>
         </div>

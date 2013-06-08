@@ -7,12 +7,10 @@ import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
+import net.ontrack.service.DashboardService;
 import net.ontrack.service.SearchService;
 import net.ontrack.web.gui.model.GUISearchResult;
-import net.ontrack.web.support.AbstractGUIController;
-import net.ontrack.web.support.ErrorHandler;
-import net.ontrack.web.support.ErrorHandlingMultipartResolver;
-import net.ontrack.web.support.WebUtils;
+import net.ontrack.web.support.*;
 import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
@@ -40,18 +38,22 @@ public class GUIController extends AbstractGUIController {
 
     private final ManageUI manageUI;
     private final ErrorHandlingMultipartResolver errorHandlingMultipartResolver;
+    private final EntityConverter entityConverter;
     private final SearchService searchService;
+    private final DashboardService dashboardService;
     private final Strings strings;
 
     private final byte[] defaultValidationStampImage;
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, SearchService searchService, Strings strings) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
+        this.entityConverter = entityConverter;
         this.searchService = searchService;
+        this.dashboardService = dashboardService;
         this.strings = strings;
         // Reads the default images
         defaultValidationStampImage = WebUtils.readBytes("/default_validation_stamp.png");
@@ -223,7 +225,8 @@ public class GUIController extends AbstractGUIController {
      * General dashboard
      */
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-    public String generalDashboard() {
+    public String generalDashboard(Locale locale, Model model) {
+        model.addAttribute("dashboard", dashboardService.getGeneralDashboard(locale));
         return "dashboard";
     }
 
@@ -231,7 +234,8 @@ public class GUIController extends AbstractGUIController {
      * Project dashboard
      */
     @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public String projectDashboard(@PathVariable String project) {
+    public String projectDashboard(Locale locale, Model model, @PathVariable String project) {
+        model.addAttribute("dashboard", dashboardService.getProjectDashboard(locale, entityConverter.getProjectId(project)));
         return "dashboard";
     }
 
@@ -239,7 +243,8 @@ public class GUIController extends AbstractGUIController {
      * Branch dashboard
      */
     @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public String branchDashboard(@PathVariable String project, @PathVariable String branch) {
+    public String branchDashboard(Locale locale, Model model, @PathVariable String project, @PathVariable String branch) {
+        model.addAttribute("dashboard", dashboardService.getBranchDashboard(locale, entityConverter.getBranchId(project, branch)));
         return "dashboard";
     }
 
