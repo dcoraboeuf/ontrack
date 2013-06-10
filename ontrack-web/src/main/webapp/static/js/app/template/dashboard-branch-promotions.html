@@ -4,7 +4,7 @@
             <tr>
                 {{#promotions}}
                     <td>
-                        <div class="dashboard-branch-promotion">
+                        <div class="dashboard-branch-promotion {{^if buildSummary}}none{{/if}}">
                             <img height="24" width="24" src="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}/image"/>
                             {{promotionLevel.name}}
                             {{#if buildSummary}}

@@ -22,6 +22,10 @@
     background-color: #FFFFFF;
 }
 
+.dashboard-branch-promotion.none {
+    opacity: 0.33;
+}
+
 .dashboard-branch-promotion i {
     opacity: 0.50;
 }
