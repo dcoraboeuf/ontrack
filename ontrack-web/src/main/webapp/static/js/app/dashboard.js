@@ -24,8 +24,12 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
                 mode: 'toggle',
                 el: $('#branch-content-loading')
             },
-            successFn: function (dashboard) {
-
+            successFn: function (content) {
+                // Clears any error
+                $('#branch-content-error').hide();
+                // Title
+                $('#branch-title').text(content.title);
+                // TODO Displays the content
             },
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#branch-content-error')))
         });

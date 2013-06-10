@@ -21,7 +21,12 @@
             <div class="row-fluid">
                 <div class="span12">
                     <section>
-                        <h1><small>${dashboard.title?html}</small></h1>
+                        <h1><small>
+                            ${dashboard.title?html}
+                            <#if branches>
+                                - <span id="branch-title"></span>
+                            </#if>
+                        </small></h1>
                     </section>
                 </div>
             </div>

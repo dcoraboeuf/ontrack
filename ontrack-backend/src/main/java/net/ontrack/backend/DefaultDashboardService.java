@@ -1,9 +1,6 @@
 package net.ontrack.backend;
 
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.Dashboard;
-import net.ontrack.core.model.DashboardStatus;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
@@ -72,8 +69,28 @@ public class DefaultDashboardService implements DashboardService {
     @Transactional(readOnly = true)
     public DashboardStatus getBranchStatus(Locale locale, int branchId) {
         BranchSummary branch = managementService.getBranch(branchId);
+        // TODO Dashboard status providers
+        // OK
         return new DashboardStatus(
-                branch.getProject().getName() + "/" + branch.getName()
+                getBranchTitle(branch)
         );
+    }
+
+    private String getBranchTitle(BranchSummary branch) {
+        return branch.getProject().getName() + "/" + branch.getName();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DashboardPage getBranchPage(Locale locale, int branchId) {
+        BranchSummary branch = managementService.getBranch(branchId);
+        // Empty page
+        DashboardPage page = DashboardPage.create(getBranchTitle(branch));
+        // TODO Dashboard section providers
+        // TODO Last build
+        // TODO All validation stamps
+        // TODO All promotion levels
+        // OK
+        return page;
     }
 }

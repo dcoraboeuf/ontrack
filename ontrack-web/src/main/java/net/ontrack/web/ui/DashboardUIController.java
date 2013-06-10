@@ -1,5 +1,6 @@
 package net.ontrack.web.ui;
 
+import net.ontrack.core.model.DashboardPage;
 import net.ontrack.core.model.DashboardStatus;
 import net.ontrack.service.DashboardService;
 import net.ontrack.web.support.AbstractUIController;
@@ -34,5 +35,16 @@ public class DashboardUIController extends AbstractUIController {
     DashboardStatus getBranchStatus(Locale locale, @PathVariable String project, @PathVariable String branch) {
         return dashboardService.getBranchStatus(locale, entityConverter.getBranchId(project, branch));
     }
+
+    /**
+     * Branch content
+     */
+    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    DashboardPage getBranchPage(Locale locale, @PathVariable String project, @PathVariable String branch) {
+        return dashboardService.getBranchPage(locale, entityConverter.getBranchId(project, branch));
+    }
+
 
 }
