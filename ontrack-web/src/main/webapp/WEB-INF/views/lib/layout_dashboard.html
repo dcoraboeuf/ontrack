@@ -3,15 +3,20 @@
 <#macro layout_dashboard branches=true>
     <@layout_root
         page="dashboard"
-        noscript=true
         title=dashboard.title
         >
+    <!-- Styling info -->
         <style>
             body {
                 padding-top: 0px;
             }
         </style>
         <link rel="stylesheet" type="text/css" href="${base}/css/dashboard.css" />
+        <!-- List of branches -->
+        <#list dashboard.branches as branch>
+            <div class="hidden branch-info" project="${branch.project.name?html}" branch="${branch.name?html}"></div>
+        </#list>
+        <!-- Content -->
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
@@ -23,7 +28,8 @@
             <div class="row-fluid">
                 <#if branches>
                     <div class="span9">
-                        TODO Current branch
+                        <div id="branch-content">
+                        </div>
                     </div>
                     <div class="span3">
                         <#list dashboard.branches as branch>
