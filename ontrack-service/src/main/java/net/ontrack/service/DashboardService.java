@@ -1,11 +1,13 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.Dashboard;
-import net.ontrack.core.model.DashboardPage;
+import net.ontrack.core.model.DashboardStatus;
 
 import java.util.Locale;
 
 public interface DashboardService {
+
+    // Dashboard root
 
     Dashboard getGeneralDashboard(Locale locale);
 
@@ -13,12 +15,7 @@ public interface DashboardService {
 
     Dashboard getBranchDashboard(Locale locale, int branchId);
 
-    @Deprecated
-    DashboardPage getGeneralDashboardPage(Locale locale, int page);
+    // Branch status
 
-    @Deprecated
-    DashboardPage getProjectDashboardPage(Locale locale, int projectId, int page);
-
-    @Deprecated
-    DashboardPage getBranchDashboardPage(Locale locale, int branchId, int page);
+    DashboardStatus getBranchStatus(Locale locale, int branchId);
 }

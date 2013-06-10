@@ -11,6 +11,7 @@
                 padding-top: 0px;
             }
         </style>
+        <link rel="stylesheet" type="text/css" href="${base}/css/dashboard.css" />
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
@@ -27,7 +28,7 @@
                     <div class="span3">
                         <#list dashboard.branches as branch>
                             <div
-                                id="dashboard-branch-status-${branch.project.name?html}-${branch.name?html}"
+                                id="dashboard-branch-status-${branch.id?c}"
                                 class="dynamic"
                                 dynamic-controller="dashboard-branch-status"
                                 dynamic-project="${branch.project.name?html}"

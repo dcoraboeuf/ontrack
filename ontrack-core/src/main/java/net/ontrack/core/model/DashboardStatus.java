@@ -3,7 +3,7 @@ package net.ontrack.core.model;
 import lombok.Data;
 
 @Data
-public class DashboardPage {
+public class DashboardStatus {
 
     private final String title;
 

@@ -1,6 +1,6 @@
 package net.ontrack.web.ui;
 
-import net.ontrack.core.model.DashboardPage;
+import net.ontrack.core.model.DashboardStatus;
 import net.ontrack.service.DashboardService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.EntityConverter;
@@ -25,34 +25,14 @@ public class DashboardUIController extends AbstractUIController {
         this.dashboardService = dashboardService;
     }
 
-
     /**
-     * General dashboard.
+     * Branch status
      */
-    @RequestMapping(value = "/ui/dashboard/page/{page:[0-9]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/status", method = RequestMethod.GET)
     public
     @ResponseBody
-    DashboardPage generalDashboard(Locale locale, @PathVariable int page) {
-        return dashboardService.getGeneralDashboardPage(locale, page);
+    DashboardStatus getBranchStatus(Locale locale, @PathVariable String project, @PathVariable String branch) {
+        return dashboardService.getBranchStatus(locale, entityConverter.getBranchId(project, branch));
     }
 
-    /**
-     * Project dashboard
-     */
-    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/page/{page:[0-9]+}", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    DashboardPage projectDashboard(Locale locale, @PathVariable int page, @PathVariable String project) {
-        return dashboardService.getProjectDashboardPage(locale, entityConverter.getProjectId(project), page);
-    }
-
-    /**
-     * Branch dashboard
-     */
-    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/page/{page:[0-9]+}", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    DashboardPage getBranchDashboardPage(Locale locale, @PathVariable int page, @PathVariable String project, @PathVariable String branch) {
-        return dashboardService.getBranchDashboardPage(locale, entityConverter.getBranchId(project, branch), page);
-    }
 }
