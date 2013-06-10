@@ -21,3 +21,7 @@
 .dashboard-branch-promotion i {
     opacity: 0.50;
 }
+
+.dashboard-branch-validationStamp {
+    display: inline-block;
+}

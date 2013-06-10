@@ -1,0 +1,11 @@
+<div class="dashboard-branch-validationStamps">
+    {{#validationStamps}}
+        <div class="dashboard-branch-validationStamp">
+            <img height="24" width="24" src="gui/project/{{stamp.branch.project.name}}/branch/{{stamp.branch.name}}/validation_stamp/{{stamp.name}}/image"/>
+            {{stamp.name}}
+            {{#if status}}
+                <img height="24" width="24" src="static/images/status-{{status.status}}.png"/>
+            {{/if}}
+        </div>
+    {{/validationStamps}}
+</div>

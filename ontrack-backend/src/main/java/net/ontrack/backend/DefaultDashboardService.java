@@ -90,11 +90,34 @@ public class DefaultDashboardService implements DashboardService {
         DashboardPage page = DashboardPage.create(getBranchTitle(branch));
         // TODO Dashboard section providers
         // TODO Last build
-        // TODO All validation stamps
+        // All validation stamps
+        page = page.withSection(getBranchValidationStampsSection(branchId));
         // All promotion levels
         page = page.withSection(getBranchPromotionsSection(locale, branchId));
         // OK
         return page;
+    }
+
+    private DashboardSection getBranchValidationStampsSection(int branchId) {
+        return new DashboardSection(
+                "dashboard-branch-validationStamps",
+                Collections.singletonMap("validationStamps", Lists.transform(
+                        // Gets the list of validation stamps
+                        managementService.getValidationStampList(branchId),
+                        // Gets the last validation run for each stamp
+                        new Function<ValidationStampSummary, ValidationStampStatus>() {
+                            @Override
+                            public ValidationStampStatus apply(ValidationStampSummary stamp) {
+                                List<ValidationRunStatusStub> statusesForLastBuilds = managementService.getStatusesForLastBuilds(stamp.getId(), 1);
+                                if (statusesForLastBuilds.isEmpty()) {
+                                    return new ValidationStampStatus(stamp, null);
+                                } else {
+                                    return new ValidationStampStatus(stamp, statusesForLastBuilds.get(0));
+                                }
+                            }
+                        }
+                ))
+        );
     }
 
     private DashboardSection getBranchPromotionsSection(final Locale locale, int branchId) {
