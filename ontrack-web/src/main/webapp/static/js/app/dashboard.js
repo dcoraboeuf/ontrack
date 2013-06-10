@@ -1,4 +1,4 @@
-define(['ajax','jquery','render'], function (ajax, $, render) {
+define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
 
     // Gets the list of branches
     var branches = [];
@@ -13,12 +13,22 @@ define(['ajax','jquery','render'], function (ajax, $, render) {
     var index = 0;
 
     // Refresh function
-    function refresh () {
+    function refresh() {
         // Gets the current branch
         var page = index % (branches.length);
         var branch = branches[page];
         // Refreshes the content of the branch
-        $('#branch-content').text(branch.project + '/' + branch.branch);
+        ajax.get({
+            url: 'ui/dashboard/project/{0}/branch/{1}'.format(branch.project, branch.branch),
+            loading: {
+                mode: 'toggle',
+                el: $('#branch-content-loading')
+            },
+            successFn: function (dashboard) {
+
+            },
+            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#branch-content-error')))
+        });
         // Next
         index++;
     }

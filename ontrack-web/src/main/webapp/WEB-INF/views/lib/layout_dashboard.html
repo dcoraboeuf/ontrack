@@ -28,7 +28,12 @@
             <div class="row-fluid">
                 <#if branches>
                     <div class="span9">
+                        <div id="branch-content-error" class="hidden alert alert-error">
+                        </div>
                         <div id="branch-content">
+                        </div>
+                        <div id="branch-content-loading" class="loading hidden">
+                            <@lh key="general.loading" />
                         </div>
                     </div>
                     <div class="span3">
