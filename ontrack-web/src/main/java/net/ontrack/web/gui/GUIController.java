@@ -227,7 +227,7 @@ public class GUIController extends AbstractGUIController {
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String generalDashboard(Locale locale, Model model) {
         model.addAttribute("dashboard", dashboardService.getGeneralDashboard(locale));
-        return "dashboard";
+        return "dashboard-general";
     }
 
     /**
@@ -236,7 +236,7 @@ public class GUIController extends AbstractGUIController {
     @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String projectDashboard(Locale locale, Model model, @PathVariable String project) {
         model.addAttribute("dashboard", dashboardService.getProjectDashboard(locale, entityConverter.getProjectId(project)));
-        return "dashboard";
+        return "dashboard-project";
     }
 
     /**
@@ -245,7 +245,7 @@ public class GUIController extends AbstractGUIController {
     @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String branchDashboard(Locale locale, Model model, @PathVariable String project, @PathVariable String branch) {
         model.addAttribute("dashboard", dashboardService.getBranchDashboard(locale, entityConverter.getBranchId(project, branch)));
-        return "dashboard";
+        return "dashboard-branch";
     }
 
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {

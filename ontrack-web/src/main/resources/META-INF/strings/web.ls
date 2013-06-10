@@ -863,3 +863,15 @@ search.submit
 dashboard
     en -> Dashboard
     fr -> Tableau de bord
+
+dashboard.general
+    en -> General dashboard
+    fr -> Tableau de bord général
+
+dashboard.project
+    en -> {0} project dashboard
+    fr -> Tableau de bord pour le projet {0}
+
+dashboard.branch
+    en -> {0}/{1} branch dashboard
+    fr -> Tableau de bord pour la branche {0}/{1}

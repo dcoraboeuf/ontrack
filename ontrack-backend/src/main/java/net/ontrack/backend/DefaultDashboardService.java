@@ -31,7 +31,7 @@ public class DefaultDashboardService implements DashboardService {
     @Transactional(readOnly = true)
     public Dashboard getGeneralDashboard(Locale locale) {
         return new Dashboard(
-                strings.get(locale, "app.title")
+                strings.get(locale, "dashboard.general")
         );
     }
 
@@ -40,7 +40,7 @@ public class DefaultDashboardService implements DashboardService {
     public Dashboard getProjectDashboard(Locale locale, int projectId) {
         ProjectSummary project = managementService.getProject(projectId);
         return new Dashboard(
-                project.getName()
+                strings.get(locale, "dashboard.project", project.getName())
         );
     }
 
@@ -49,7 +49,7 @@ public class DefaultDashboardService implements DashboardService {
     public Dashboard getBranchDashboard(Locale locale, int branchId) {
         BranchSummary branch = managementService.getBranch(branchId);
         return new Dashboard(
-                branch.getProject().getName() + "/" + branch.getName()
+                strings.get(locale, "dashboard.branch", branch.getProject().getName(), branch.getName())
         );
     }
 
