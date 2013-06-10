@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,8 +31,17 @@ public class DefaultDashboardService implements DashboardService {
     @Override
     @Transactional(readOnly = true)
     public Dashboard getGeneralDashboard(Locale locale) {
+        // Gets the list of branches
+        List<BranchSummary> branchList = new ArrayList<>();
+        for (ProjectSummary projectSummary : managementService.getProjectList()) {
+            for (BranchSummary branchSummary : managementService.getBranchList(projectSummary.getId())) {
+                branchList.add(branchSummary);
+            }
+        }
+        // OK
         return new Dashboard(
-                strings.get(locale, "dashboard.general")
+                strings.get(locale, "dashboard.general"),
+                branchList
         );
     }
 
@@ -39,8 +49,12 @@ public class DefaultDashboardService implements DashboardService {
     @Transactional(readOnly = true)
     public Dashboard getProjectDashboard(Locale locale, int projectId) {
         ProjectSummary project = managementService.getProject(projectId);
+        // Gets the list of branches for this project
+        List<BranchSummary> branchList = managementService.getBranchList(projectId);
+        // OK
         return new Dashboard(
-                strings.get(locale, "dashboard.project", project.getName())
+                strings.get(locale, "dashboard.project", project.getName()),
+                branchList
         );
     }
 
@@ -49,7 +63,8 @@ public class DefaultDashboardService implements DashboardService {
     public Dashboard getBranchDashboard(Locale locale, int branchId) {
         BranchSummary branch = managementService.getBranch(branchId);
         return new Dashboard(
-                strings.get(locale, "dashboard.branch", branch.getProject().getName(), branch.getName())
+                strings.get(locale, "dashboard.branch", branch.getProject().getName(), branch.getName()),
+                Collections.singletonList(branch)
         );
     }
 

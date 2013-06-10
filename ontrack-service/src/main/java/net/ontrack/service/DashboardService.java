@@ -13,9 +13,12 @@ public interface DashboardService {
 
     Dashboard getBranchDashboard(Locale locale, int branchId);
 
+    @Deprecated
     DashboardPage getGeneralDashboardPage(Locale locale, int page);
 
+    @Deprecated
     DashboardPage getProjectDashboardPage(Locale locale, int projectId, int page);
 
+    @Deprecated
     DashboardPage getBranchDashboardPage(Locale locale, int branchId, int page);
 }

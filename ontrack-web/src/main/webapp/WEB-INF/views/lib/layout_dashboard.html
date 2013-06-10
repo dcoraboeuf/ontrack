@@ -25,7 +25,15 @@
                         TODO Current branch
                     </div>
                     <div class="span3">
-                        TODO Branch statuses
+                        <#list dashboard.branches as branch>
+                            <div
+                                id="dashboard-branch-status-${branch.project.name?html}-${branch.name?html}"
+                                class="dynamic"
+                                dynamic-controller="dashboard-branch-status"
+                                dynamic-project="${branch.project.name?html}"
+                                dynamic-branch="${branch.name?html}"
+                                ></div>
+                        </#list>
                     </div>
                 <#else>
                     <div class="span12">
