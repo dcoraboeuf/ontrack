@@ -6,3 +6,18 @@
     margin-left: 5px;
     font-weight: bold;
 }
+
+.dashboard-branch-promotions table {
+    width: 100%;
+}
+
+.dashboard-branch-promotion {
+    border: solid 1px darkgray;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #FFFFFF;
+}
+
+.dashboard-branch-promotion i {
+    opacity: 0.50;
+}

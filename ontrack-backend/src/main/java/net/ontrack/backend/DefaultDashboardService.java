@@ -98,22 +98,19 @@ public class DefaultDashboardService implements DashboardService {
     }
 
     private DashboardSection getBranchPromotionsSection(final Locale locale, int branchId) {
-        // Gets the list of promotions
-        List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
-        // Converts to the list of last promotions
-        List<Promotion> lastPromotions = Lists.transform(
-                promotionLevelList,
-                new Function<PromotionLevelSummary, Promotion>() {
-                    @Override
-                    public Promotion apply(PromotionLevelSummary promotionLevel) {
-                        return managementService.findLastPromotion(locale, promotionLevel.getId());
-                    }
-                }
-        );
-        // OK
         return new DashboardSection(
                 "dashboard-branch-promotions",
-                lastPromotions
+                Collections.singletonMap("promotions", Lists.transform(
+                        // Gets the list of promotions
+                        managementService.getPromotionLevelList(branchId),
+                        // Converts to the list of last promotions
+                        new Function<PromotionLevelSummary, Promotion>() {
+                            @Override
+                            public Promotion apply(PromotionLevelSummary promotionLevel) {
+                                return managementService.findLastPromotion(locale, promotionLevel.getId());
+                            }
+                        }
+                ))
         );
     }
 }
