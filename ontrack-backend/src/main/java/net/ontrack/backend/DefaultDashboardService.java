@@ -1,6 +1,8 @@
 package net.ontrack.backend;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.service.DashboardService;
@@ -99,24 +101,54 @@ public class DefaultDashboardService implements DashboardService {
     }
 
     private DashboardSection getBranchValidationStampsSection(int branchId) {
+        List<ValidationStampStatus> fullList = Lists.transform(
+                // Gets the list of validation stamps
+                managementService.getValidationStampList(branchId),
+                // Gets the last validation run for each stamp
+                new Function<ValidationStampSummary, ValidationStampStatus>() {
+                    @Override
+                    public ValidationStampStatus apply(ValidationStampSummary stamp) {
+                        List<ValidationRunStatusStub> statusesForLastBuilds = managementService.getStatusesForLastBuilds(stamp.getId(), 1);
+                        if (statusesForLastBuilds.isEmpty()) {
+                            return new ValidationStampStatus(stamp, null);
+                        } else {
+                            return new ValidationStampStatus(stamp, statusesForLastBuilds.get(0));
+                        }
+                    }
+                }
+        );
         return new DashboardSection(
                 "dashboard-branch-validationStamps",
-                Collections.singletonMap("validationStamps", Lists.transform(
-                        // Gets the list of validation stamps
-                        managementService.getValidationStampList(branchId),
-                        // Gets the last validation run for each stamp
-                        new Function<ValidationStampSummary, ValidationStampStatus>() {
-                            @Override
-                            public ValidationStampStatus apply(ValidationStampSummary stamp) {
-                                List<ValidationRunStatusStub> statusesForLastBuilds = managementService.getStatusesForLastBuilds(stamp.getId(), 1);
-                                if (statusesForLastBuilds.isEmpty()) {
-                                    return new ValidationStampStatus(stamp, null);
-                                } else {
-                                    return new ValidationStampStatus(stamp, statusesForLastBuilds.get(0));
+                new DashboardBranchValidationStamps(
+                        Lists.newArrayList(Iterables.filter(
+                                fullList,
+                                new Predicate<ValidationStampStatus>() {
+                                    @Override
+                                    public boolean apply(ValidationStampStatus v) {
+                                        return v.getStatus() != null && v.getStatus().getStatus() == Status.PASSED;
+                                    }
                                 }
-                            }
-                        }
-                ))
+                        )),
+                        Lists.newArrayList(Iterables.filter(
+                                fullList,
+                                new Predicate<ValidationStampStatus>() {
+                                    @Override
+                                    public boolean apply(ValidationStampStatus v) {
+                                        return v.getStatus() != null && v.getStatus().getStatus() != Status.PASSED;
+                                    }
+                                }
+                        )),
+                        Lists.newArrayList(Iterables.filter(
+                                fullList,
+                                new Predicate<ValidationStampStatus>() {
+                                    @Override
+                                    public boolean apply(ValidationStampStatus v) {
+                                        return v.getStatus() == null;
+                                    }
+                                }
+                        ))
+
+                )
         );
     }
 

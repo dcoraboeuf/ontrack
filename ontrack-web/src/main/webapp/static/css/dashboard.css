@@ -7,6 +7,10 @@
     font-weight: bold;
 }
 
+.dashboard-section {
+    margin-bottom: 5px;
+}
+
 .dashboard-branch-promotions table {
     width: 100%;
 }
@@ -22,6 +26,26 @@
     opacity: 0.50;
 }
 
-.dashboard-branch-validationStamp {
+.dashboard-branch-validationStamps {
+    border-radius: 10px;
+    border: solid 1px darkgray;
+    padding: 5px;
+}
+
+.dashboard-branch-validationStamps img {
+    margin: 4px;
+}
+
+.dashboard-branch-validationStamps .section {
+    border-radius: 10px;
     display: inline-block;
+    padding: 5px;
+}
+
+.dashboard-branch-validationStamps .failed {
+    background-color: #ee5f5b;
+}
+
+.dashboard-branch-validationStamps .notRuns {
+    opacity: 0.25;
 }
