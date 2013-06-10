@@ -1,5 +1,7 @@
 package net.ontrack.backend;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.ManagementService;
@@ -89,8 +91,29 @@ public class DefaultDashboardService implements DashboardService {
         // TODO Dashboard section providers
         // TODO Last build
         // TODO All validation stamps
-        // TODO All promotion levels
+        // All promotion levels
+        page = page.withSection(getBranchPromotionsSection(locale, branchId));
         // OK
         return page;
+    }
+
+    private DashboardSection getBranchPromotionsSection(final Locale locale, int branchId) {
+        // Gets the list of promotions
+        List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
+        // Converts to the list of last promotions
+        List<Promotion> lastPromotions = Lists.transform(
+                promotionLevelList,
+                new Function<PromotionLevelSummary, Promotion>() {
+                    @Override
+                    public Promotion apply(PromotionLevelSummary promotionLevel) {
+                        return managementService.findLastPromotion(locale, promotionLevel.getId());
+                    }
+                }
+        );
+        // OK
+        return new DashboardSection(
+                "dashboard-branch-promotions",
+                lastPromotions
+        );
     }
 }
