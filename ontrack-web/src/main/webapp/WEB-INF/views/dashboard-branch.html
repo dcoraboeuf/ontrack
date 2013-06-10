@@ -1,27 +1,4 @@
-<#include "/lib/layout.html">
+<#include "/lib/layout_dashboard.html">
 
-<@layout_root
-    page="dashboard-branch"
-    noscript=true
-    title=dashboard.title
-    >
-    <style>
-        body {
-            padding-top: 0px;
-        }
-    </style>
-	<div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
-                <section>
-                    <h1><small>${dashboard.title?html}</small></h1>
-                </section>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12">
-                TODO Current branch
-            </div>
-        </div>
-	</div>
-</@layout_root>
+<@layout_dashboard branches=false>
+</@layout_dashboard>
