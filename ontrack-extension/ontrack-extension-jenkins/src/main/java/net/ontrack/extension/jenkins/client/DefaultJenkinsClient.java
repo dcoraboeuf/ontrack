@@ -51,12 +51,26 @@ public class DefaultJenkinsClient implements JenkinsClient {
                 if (build.has("culprits")) {
                     JsonNode jCulprits = build.get("culprits");
                     if (jCulprits.isArray()) {
+                        // Gets the previous build
+                        JsonNode previousBuild = builds.get(1);
+                        String claim = "";
+                        if (previousBuild.has("action")) {
+                            for (JsonNode jAction : previousBuild.get("action")) {
+                                if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
+                                    claim = jAction.get("claimedBy").getTextValue();
+                                }
+                            }
+                        }
+                        // For each culprit
                         for (JsonNode jCulprit : jCulprits) {
                             String culpritUrl = jCulprit.get("absoluteUrl").getTextValue();
                             JenkinsUser user = getUser(configuration, culpritUrl);
                             if (user != null) {
                                 JenkinsCulprit culprit = new JenkinsCulprit(user);
-                                // TODO Claim?
+                                // Claim?
+                                if (StringUtils.equals(claim, culprit.getId())) {
+                                    culprit = culprit.claim();
+                                }
                                 // OK
                                 culprits.add(culprit);
                             }

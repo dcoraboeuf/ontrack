@@ -11,8 +11,7 @@
                 <tbody>
                     <tr>
                         {{#job.culprits}}
-                            <td>
-                                <!-- TODO Claim -->
+                            <td class="{{#if claim}}jenkins-dashboard-section-culprit-claim{{/if}}">
                                 <img class="jenkins-dashboard-section-culprit" width="100" src="{{imageUrl}}" />
                                 <p class="jenkins-dashboard-section-culprit">
                                     {{fullName}}

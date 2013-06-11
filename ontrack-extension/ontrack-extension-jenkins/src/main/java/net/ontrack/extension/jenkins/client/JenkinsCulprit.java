@@ -16,4 +16,13 @@ public class JenkinsCulprit {
     public JenkinsCulprit(JenkinsUser user) {
         this(user.getId(), user.getFullName(), false, user.getImageUrl());
     }
+
+    public JenkinsCulprit claim() {
+        return new JenkinsCulprit(
+                id,
+                fullName,
+                true,
+                imageUrl
+        );
+    }
 }

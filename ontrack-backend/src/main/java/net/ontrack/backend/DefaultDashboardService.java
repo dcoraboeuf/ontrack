@@ -122,7 +122,6 @@ public class DefaultDashboardService implements DashboardService {
                 }
             }
         }
-        // TODO Last build
         // All validation stamps
         page = page.withSection(getBranchValidationStampsSection(branchId));
         // All promotion levels
