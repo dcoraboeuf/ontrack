@@ -135,6 +135,20 @@ public class DefaultDashboardService implements DashboardService {
         );
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack associateBranchValidationStamp(int branchId, int validationStampId) {
+        return dashboardDao.associateBranchValidationStamp(branchId, validationStampId);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack dissociateBranchValidationStamp(int branchId, int validationStampId) {
+        return dashboardDao.dissociateBranchValidationStamp(branchId, validationStampId);
+    }
+
     private DashboardSection getBranchValidationStampsSection(int branchId) {
         List<ValidationStampStatus> fullList = Lists.transform(
                 // Gets the list of validation stamps

@@ -1,5 +1,6 @@
 package net.ontrack.web.ui;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.DashboardPage;
 import net.ontrack.service.DashboardService;
 import net.ontrack.web.support.AbstractUIController;
@@ -36,6 +37,30 @@ public class DashboardUIController extends AbstractUIController {
     @ResponseBody
     DashboardPage getBranchPage(Locale locale, @PathVariable String project, @PathVariable String branch) {
         return dashboardService.getBranchPage(locale, entityConverter.getBranchId(project, branch));
+    }
+
+    /**
+     * Branch / validation stamp configuration
+     */
+    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack associateBranchValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return dashboardService.associateBranchValidationStamp(
+                entityConverter.getBranchId(project, branch),
+                entityConverter.getValidationStampId(project, branch, validationStamp));
+    }
+
+    /**
+     * Branch / validation stamp configuration
+     */
+    @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack dissociateBranchValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+        return dashboardService.dissociateBranchValidationStamp(
+                entityConverter.getBranchId(project, branch),
+                entityConverter.getValidationStampId(project, branch, validationStamp));
     }
 
 

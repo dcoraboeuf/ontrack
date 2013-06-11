@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery','ajax'], function ($, ajax) {
 
     var project = $('#project').val();
     var branch = $('#branch').val();
@@ -7,11 +7,31 @@ define(['jquery'], function ($) {
         var validationStamp = $(input).attr('data-validation-stamp');
         var validationStampId = $(input).attr('data-validation-stamp-id');
         if (input.is(':checked')) {
-            // selectValidationStamp(validationStamp);
-            $('#validation-stamp-' + validationStampId).addClass('checked');
+            ajax.put({
+                url: 'ui/dashboard/project/{0}/branch/{1}/validation_stamp/{2}'.format(
+                    project,
+                    branch,
+                    validationStamp
+                ),
+                successFn: function (ack) {
+                    if (ack.success) {
+                        $('#validation-stamp-' + validationStampId).addClass('checked');
+                    }
+                }
+            });
         } else {
-            // unselectValidationStamp(validationStamp);
-            $('#validation-stamp-' + validationStampId).removeClass('checked');
+            ajax.del({
+                url: 'ui/dashboard/project/{0}/branch/{1}/validation_stamp/{2}'.format(
+                    project,
+                    branch,
+                    validationStamp
+                ),
+                successFn: function (ack) {
+                    if (ack.success) {
+                        $('#validation-stamp-' + validationStampId).removeClass('checked');
+                    }
+                }
+            });
         }
     }
 

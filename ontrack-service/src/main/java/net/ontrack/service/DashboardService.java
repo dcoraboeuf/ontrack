@@ -1,5 +1,6 @@
 package net.ontrack.service;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Dashboard;
 import net.ontrack.core.model.DashboardBranchAdmin;
 import net.ontrack.core.model.DashboardPage;
@@ -23,4 +24,8 @@ public interface DashboardService {
     // Administration
 
     DashboardBranchAdmin getBranchDashboardAdminData(int branchId);
+
+    Ack associateBranchValidationStamp(int branchId, int validationStampId);
+
+    Ack dissociateBranchValidationStamp(int branchId, int validationStampId);
 }
