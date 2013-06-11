@@ -15,3 +15,8 @@
     background-color: red;
     color: white;
 }
+
+.jenkins-dashboard-section-title {
+    font-size: 200%;
+    font-weight: bold;
+}

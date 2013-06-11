@@ -37,10 +37,33 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
             }
             // Gets the job
             JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, true);
+            String iconPath = null;
+            String css = "";
+            // Gets the state of this job
+            JenkinsJobState jobState = job.getState();
+            switch (jobState) {
+                case RUNNING:
+                    iconPath = "extension/jenkins-job-running.png";
+                    break;
+                case DISABLED:
+                    css += " jenkins-job-disabled";
+                    break;
+                case IDLE:
+                default:
+                    // Nothing
+                    break;
+            }
+            // Gets the last result for this job
+            JenkinsJobResult jobResult = job.getResult();
+            css += " jenkins-result-" + StringUtils.lowerCase(jobResult.name());
             // OK
             return new DashboardSection(
                     "extension/jenkins-dashboard-section",
-                    job
+                    new JenkinsDashboardSectionData(
+                            job,
+                            css,
+                            iconPath
+                    )
             );
         } else {
             return null;
