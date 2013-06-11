@@ -8,6 +8,5 @@ public class JenkinsDashboardSectionData {
 
     private final JenkinsJob job;
     private final String css;
-    private final String iconPath;
 
 }

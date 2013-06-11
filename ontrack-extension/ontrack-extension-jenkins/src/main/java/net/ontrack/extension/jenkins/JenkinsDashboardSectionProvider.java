@@ -39,13 +39,12 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
             }
             // Gets the job
             JenkinsJob job = jenkinsClient.getJob(jenkinsExtension.getConfiguration(), jenkinsJobUrl, true);
-            String iconPath = null;
             String css = "";
             // Gets the state of this job
             JenkinsJobState jobState = job.getState();
             switch (jobState) {
                 case RUNNING:
-                    iconPath = "extension/jenkins-job-running.png";
+                    css += " jenkins-job-running";
                     break;
                 case DISABLED:
                     css += " jenkins-job-disabled";
@@ -63,8 +62,7 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
                     "extension/jenkins-dashboard-section",
                     new JenkinsDashboardSectionData(
                             job,
-                            css,
-                            iconPath
+                            css
                     )
             );
         } else {

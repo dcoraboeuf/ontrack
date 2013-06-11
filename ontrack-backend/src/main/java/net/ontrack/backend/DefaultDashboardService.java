@@ -7,32 +7,28 @@ import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
-import net.ontrack.service.DashboardStatusProvider;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 public class DefaultDashboardService implements DashboardService {
 
     private final ManagementService managementService;
     private final Strings strings;
-    private List<DashboardStatusProvider> dashboardStatusProviders;
     private List<DashboardSectionProvider> dashboardSectionProviders;
 
     @Autowired
     public DefaultDashboardService(ManagementService managementService, Strings strings) {
         this.managementService = managementService;
         this.strings = strings;
-    }
-
-    @Autowired(required = false)
-    public void setDashboardStatusProviders(List<DashboardStatusProvider> dashboardStatusProviders) {
-        this.dashboardStatusProviders = dashboardStatusProviders;
     }
 
     @Autowired(required = false)
@@ -80,27 +76,6 @@ public class DefaultDashboardService implements DashboardService {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public DashboardStatusSection getBranchStatus(Locale locale, int branchId) {
-        BranchSummary branch = managementService.getBranch(branchId);
-        // Status section
-        DashboardStatusSection section = new DashboardStatusSection(getBranchTitle(branch));
-        // Dashboard status providers
-        if (dashboardStatusProviders != null) {
-            for (DashboardStatusProvider dashboardStatusProvider : dashboardStatusProviders) {
-                if (dashboardStatusProvider.apply(Entity.BRANCH, branchId)) {
-                    DashboardStatus status = dashboardStatusProvider.getStatus(Entity.BRANCH, branchId);
-                    if (status != null) {
-                        section = section.withStatus(status);
-                    }
-                }
-            }
-        }
-        // OK
-        return section;
-    }
-
     private String getBranchTitle(BranchSummary branch) {
         return branch.getProject().getName() + "/" + branch.getName();
     }
@@ -122,10 +97,9 @@ public class DefaultDashboardService implements DashboardService {
                 }
             }
         }
+        // TODO One section per configured validation stamp
         // All validation stamps
-        page = page.withSection(getBranchValidationStampsSection(branchId));
-        // All promotion levels
-        page = page.withSection(getBranchPromotionsSection(locale, branchId));
+        // page = page.withSection(getBranchValidationStampsSection(branchId));
         // OK
         return page;
     }
@@ -179,23 +153,6 @@ public class DefaultDashboardService implements DashboardService {
                         ))
 
                 )
-        );
-    }
-
-    private DashboardSection getBranchPromotionsSection(final Locale locale, int branchId) {
-        return new DashboardSection(
-                "dashboard-branch-promotions",
-                Collections.singletonMap("promotions", Lists.transform(
-                        // Gets the list of promotions
-                        managementService.getPromotionLevelList(branchId),
-                        // Converts to the list of last promotions
-                        new Function<PromotionLevelSummary, Promotion>() {
-                            @Override
-                            public Promotion apply(PromotionLevelSummary promotionLevel) {
-                                return managementService.findLastPromotion(locale, promotionLevel.getId());
-                            }
-                        }
-                ))
         );
     }
 }

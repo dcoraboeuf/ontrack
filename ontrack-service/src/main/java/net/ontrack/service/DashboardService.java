@@ -2,7 +2,6 @@ package net.ontrack.service;
 
 import net.ontrack.core.model.Dashboard;
 import net.ontrack.core.model.DashboardPage;
-import net.ontrack.core.model.DashboardStatusSection;
 
 import java.util.Locale;
 
@@ -15,10 +14,6 @@ public interface DashboardService {
     Dashboard getProjectDashboard(Locale locale, int projectId);
 
     Dashboard getBranchDashboard(Locale locale, int branchId);
-
-    // Branch status
-
-    DashboardStatusSection getBranchStatus(Locale locale, int branchId);
 
     // Branch page
 
