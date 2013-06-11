@@ -1,3 +1,8 @@
-<div class="dashboard-branch-status">
+<div class="dashboard-branch-status {{#statusList}} {{css}}{{/statusList}}">
     {{title}}
+    {{#statusList}}
+        {{#if iconPath}}
+            <img height="24" width="24" src="{{iconPath}}" />
+        {{/if}}
+    {{/statusList}}
 </div>
