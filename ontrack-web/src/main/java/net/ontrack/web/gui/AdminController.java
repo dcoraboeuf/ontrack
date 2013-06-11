@@ -10,10 +10,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
-import net.ontrack.service.AccountService;
-import net.ontrack.service.AdminService;
-import net.ontrack.service.ProfileService;
-import net.ontrack.service.SubscriptionService;
+import net.ontrack.service.*;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
 import net.ontrack.service.model.MailConfiguration;
@@ -48,6 +45,7 @@ public class AdminController extends AbstractGUIController {
     private final SecurityUtils securityUtils;
     private final EntityConverter entityConverter;
     private final ProfileService profileService;
+    private final DashboardService dashboardService;
     private final Strings strings;
 
     @Autowired
@@ -56,7 +54,7 @@ public class AdminController extends AbstractGUIController {
             AdminService adminService,
             AccountService accountService,
             ConfigurationExtensionService configurationExtensionService,
-            SubscriptionService subscriptionService, SecurityUtils securityUtils, EntityConverter entityConverter, ProfileService profileService, Strings strings) {
+            SubscriptionService subscriptionService, SecurityUtils securityUtils, EntityConverter entityConverter, ProfileService profileService, DashboardService dashboardService, Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
@@ -65,6 +63,7 @@ public class AdminController extends AbstractGUIController {
         this.securityUtils = securityUtils;
         this.entityConverter = entityConverter;
         this.profileService = profileService;
+        this.dashboardService = dashboardService;
         this.strings = strings;
     }
 
@@ -355,6 +354,17 @@ public class AdminController extends AbstractGUIController {
         redirectAttributes.addFlashAttribute("message", UserMessage.success("entityUnsubscription.done"));
         // Goes to the home page
         return "redirect:/";
+    }
+
+    /**
+     * Dashboard administration for a branch
+     */
+    @RequestMapping(value = "/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public String dashboardAdmin(@PathVariable String project, @PathVariable String branch, Model model) {
+        // Model
+        model.addAttribute("dashboard", dashboardService.getBranchDashboardAdminData(entityConverter.getBranchId(project, branch)));
+        // OK
+        return "dashboard-admin";
     }
 
 }

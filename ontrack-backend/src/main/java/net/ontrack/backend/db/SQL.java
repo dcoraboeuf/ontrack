@@ -267,4 +267,9 @@ public interface SQL {
             "AND DATEDIFF('DAY', E.EVENT_TIMESTAMP, :now) > :retention\n" +
             "AND (SELECT COUNT(*) FROM PROMOTED_RUN PR WHERE PR.BUILD = B.ID AND PR.PROMOTION_LEVEL IN (%s)) = 0\n" +
             "ORDER BY B.ID";
+
+    // Dashboards
+
+    String DASHBOARD_VALIDATION_STAMP_EXISTS = "SELECT VALIDATION_STAMP FROM DASHBOARD_VALIDATION_STAMP WHERE VALIDATION_STAMP = :validationStamp AND BRANCH = :branch";
+
 }

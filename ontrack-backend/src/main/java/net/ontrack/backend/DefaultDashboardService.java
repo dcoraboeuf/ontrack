@@ -4,12 +4,15 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import net.ontrack.backend.dao.DashboardDao;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +26,14 @@ public class DefaultDashboardService implements DashboardService {
 
     private final ManagementService managementService;
     private final Strings strings;
+    private final DashboardDao dashboardDao;
     private List<DashboardSectionProvider> dashboardSectionProviders;
 
     @Autowired
-    public DefaultDashboardService(ManagementService managementService, Strings strings) {
+    public DefaultDashboardService(ManagementService managementService, Strings strings, DashboardDao dashboardDao) {
         this.managementService = managementService;
         this.strings = strings;
+        this.dashboardDao = dashboardDao;
     }
 
     @Autowired(required = false)
@@ -102,6 +107,32 @@ public class DefaultDashboardService implements DashboardService {
         // page = page.withSection(getBranchValidationStampsSection(branchId));
         // OK
         return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public DashboardBranchAdmin getBranchDashboardAdminData(final int branchId) {
+        // Gets the branch
+        BranchSummary branch = managementService.getBranch(branchId);
+        // Validation stamps
+        List<FlaggedValidationStamp> stamps = Lists.transform(
+                managementService.getValidationStampList(branchId),
+                new Function<ValidationStampSummary, FlaggedValidationStamp>() {
+                    @Override
+                    public FlaggedValidationStamp apply(ValidationStampSummary stamp) {
+                        return new FlaggedValidationStamp(
+                                stamp,
+                                dashboardDao.isValidationStampSelectedForBranch(stamp.getId(), branchId)
+                        );
+                    }
+                }
+        );
+        // OK
+        return new DashboardBranchAdmin(
+                branch,
+                stamps
+        );
     }
 
     private DashboardSection getBranchValidationStampsSection(int branchId) {

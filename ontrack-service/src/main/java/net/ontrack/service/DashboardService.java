@@ -1,6 +1,7 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.Dashboard;
+import net.ontrack.core.model.DashboardBranchAdmin;
 import net.ontrack.core.model.DashboardPage;
 
 import java.util.Locale;
@@ -18,4 +19,8 @@ public interface DashboardService {
     // Branch page
 
     DashboardPage getBranchPage(Locale locale, int branchId);
+
+    // Administration
+
+    DashboardBranchAdmin getBranchDashboardAdminData(int branchId);
 }

@@ -875,3 +875,11 @@ dashboard.project
 dashboard.branch
     en -> {0}/{1} branch dashboard
     fr -> Tableau de bord pour la branche {0}/{1}
+
+dashboard.admin
+    en -> Dashboarb set-up
+    fr -> Configuration du tableau de bord
+
+dashboard.admin.help
+    en -> Select the validation stamps that must appear in the dashboard
+    fr -> Sélectionnez les validations qui doivent apparaître dans le tableau de bord

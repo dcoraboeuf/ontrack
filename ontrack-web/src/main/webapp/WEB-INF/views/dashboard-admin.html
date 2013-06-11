@@ -1,0 +1,46 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="dashboard-admin"
+    title=loc('dashboard.admin')
+    style=true
+    breadcrumbs = {
+        loc("home"): "",
+        dashboard.branch.project.name?html: "gui/project/${dashboard.branch.project.name?html}",
+        dashboard.branch.name?html: "gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}"
+    }>
+    <input id="project" type="hidden" value="${dashboard.branch.project.name?html}" />
+    <input id="branch" type="hidden" value="${dashboard.branch.name?html}" />
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${dashboard.branch.project.name?html}">${dashboard.branch.project.name?html}</a>
+                    / <a href="gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}">${dashboard.branch.name?html}</a>
+                    / <@lh key="dashboard.admin" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <p class="description"><@lh key="dashboard.admin.help" /></p>
+                <table class="table table-hover">
+                    <tbody>
+                    <#list dashboard.stamps as stamp>
+                        <tr>
+                            <td id="validation-stamp-${stamp.summary.id?c}" class="<#if stamp.flag>checked</#if>">
+                                <input type="checkbox" class="validation-stamp" data-validation-stamp="${stamp.summary.name?html}" data-validation-stamp-id="${stamp.summary.id?c}"  <#if stamp.flag>checked="checked"</#if> />
+                                <img width="24" height="24" src="gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}/validation_stamp/${stamp.summary.name?html}/image" />
+                                ${stamp.summary.name?html}
+                            </td>
+                        </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</@layout_std>
