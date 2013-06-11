@@ -52,6 +52,8 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
                         $('#' + id + '-section').html($(compiledTemplate(section.data)));
                     });
                 });
+                // Schedule the next refresh in 10s
+                setTimeout(refresh, 10000);
             },
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#branch-content-error')))
         });
@@ -61,6 +63,5 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
 
     // Refreshes the dashboard content
     refresh();
-    setInterval(refresh, 10000);
 
 })

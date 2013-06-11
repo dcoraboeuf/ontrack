@@ -1,3 +1,27 @@
-<div class="dashboard-section jenkins-dashboard-section">
-    <p class="jenkins-dashboard-section-title">{{job.name}}</p>
+<div class="jenkins-dashboard-section dashboard-section {{css}}">
+    <p class="jenkins-dashboard-section-title">
+        {{job.name}}
+        {{#if iconPath}}
+            <img height="24" width="24" src="{{iconPath}}" />
+        {{/if}}
+    </p>
+    {{#if job.culprits.length}}
+        <p class="jenkins-dashboard-section-culprits">
+            <table>
+                <tbody>
+                    <tr>
+                        {{#job.culprits}}
+                            <td>
+                                <!-- TODO Claim -->
+                                <img class="jenkins-dashboard-section-culprit" width="100" src="{{imageUrl}}" />
+                                <p class="jenkins-dashboard-section-culprit">
+                                    {{fullName}}
+                                </p>
+                            </td>
+                        {{/job.culprits}}
+                    </tr>
+                </tbody>
+            </table>
+        </p>
+    {{/if}}
 </div>
