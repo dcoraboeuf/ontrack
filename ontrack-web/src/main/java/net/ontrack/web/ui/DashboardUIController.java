@@ -1,7 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.DashboardPage;
-import net.ontrack.core.model.DashboardStatus;
+import net.ontrack.core.model.DashboardStatusSection;
 import net.ontrack.service.DashboardService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.EntityConverter;
@@ -32,7 +32,7 @@ public class DashboardUIController extends AbstractUIController {
     @RequestMapping(value = "/ui/dashboard/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/status", method = RequestMethod.GET)
     public
     @ResponseBody
-    DashboardStatus getBranchStatus(Locale locale, @PathVariable String project, @PathVariable String branch) {
+    DashboardStatusSection getBranchStatus(Locale locale, @PathVariable String project, @PathVariable String branch) {
         return dashboardService.getBranchStatus(locale, entityConverter.getBranchId(project, branch));
     }
 

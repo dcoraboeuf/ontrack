@@ -6,27 +6,31 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.service.DashboardService;
+import net.ontrack.service.DashboardStatusProvider;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 public class DefaultDashboardService implements DashboardService {
 
     private final ManagementService managementService;
     private final Strings strings;
+    private List<DashboardStatusProvider> dashboardStatusProviders;
 
     @Autowired
     public DefaultDashboardService(ManagementService managementService, Strings strings) {
         this.managementService = managementService;
         this.strings = strings;
+    }
+
+    @Autowired(required = false)
+    public void setDashboardStatusProviders(List<DashboardStatusProvider> dashboardStatusProviders) {
+        this.dashboardStatusProviders = dashboardStatusProviders;
     }
 
     @Override
@@ -71,13 +75,23 @@ public class DefaultDashboardService implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    public DashboardStatus getBranchStatus(Locale locale, int branchId) {
+    public DashboardStatusSection getBranchStatus(Locale locale, int branchId) {
         BranchSummary branch = managementService.getBranch(branchId);
-        // TODO Dashboard status providers
+        // Status section
+        DashboardStatusSection section = new DashboardStatusSection(getBranchTitle(branch));
+        // Dashboard status providers
+        if (dashboardStatusProviders != null) {
+            for (DashboardStatusProvider dashboardStatusProvider : dashboardStatusProviders) {
+                if (dashboardStatusProvider.apply(Entity.BRANCH, branchId)) {
+                    DashboardStatus status = dashboardStatusProvider.getStatus(Entity.BRANCH, branchId);
+                    if (status != null) {
+                        section = section.withStatus(status);
+                    }
+                }
+            }
+        }
         // OK
-        return new DashboardStatus(
-                getBranchTitle(branch)
-        );
+        return section;
     }
 
     private String getBranchTitle(BranchSummary branch) {

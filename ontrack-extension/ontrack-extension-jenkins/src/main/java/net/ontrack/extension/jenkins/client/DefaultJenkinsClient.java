@@ -1,6 +1,7 @@
 package net.ontrack.extension.jenkins.client;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
+import net.ontrack.extension.jenkins.JenkinsJobResult;
 import net.ontrack.extension.jenkins.JenkinsJobState;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -23,9 +24,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
 
     @Override
     public JenkinsJobState getJobState(String jenkinsJobUrl) {
-        JsonNode tree = getJsonNode(jenkinsJobUrl);
-        // Gets the 'color' field
-        String color = tree.get("color").getTextValue();
+        String color = getJobColor(jenkinsJobUrl);
         // Test
         if ("disabled".equals(color)) {
             return JenkinsJobState.DISABLED;
@@ -34,6 +33,29 @@ public class DefaultJenkinsClient implements JenkinsClient {
         } else {
             return JenkinsJobState.IDLE;
         }
+    }
+
+    @Override
+    public JenkinsJobResult getJobResult(String jenkinsJobUrl) {
+        String color = getJobColor(jenkinsJobUrl);
+        // Test
+        if ("disabled".equals(color)) {
+            return JenkinsJobResult.DISABLED;
+        } else if (StringUtils.startsWith(color, "red")) {
+            return JenkinsJobResult.FAILED;
+        } else if (StringUtils.startsWith(color, "yellow")) {
+            return JenkinsJobResult.UNSTABLE;
+        } else if (StringUtils.startsWith(color, "blue")) {
+            return JenkinsJobResult.SUCCESS;
+        } else {
+            return JenkinsJobResult.UNKNOWN;
+        }
+    }
+
+    private String getJobColor(String jenkinsJobUrl) {
+        JsonNode tree = getJsonNode(jenkinsJobUrl);
+        // Gets the 'color' field
+        return tree.get("color").getTextValue();
     }
 
     private JsonNode getJsonNode(String jenkinsJobUrl) {
