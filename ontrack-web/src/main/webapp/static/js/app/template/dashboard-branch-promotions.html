@@ -1,0 +1,20 @@
+<div class="dashboard-branch-promotions dashboard-section">
+    <table width="100%">
+        <tbody>
+            <tr>
+                {{#promotions}}
+                    <td>
+                        <div class="dashboard-branch-promotion {{^if buildSummary}}none{{/if}}">
+                            <img height="24" width="24" src="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}/image"/>
+                            {{promotionLevel.name}}
+                            {{#if buildSummary}}
+                                <i class="icon-star-empty"></i>
+                                <b>{{buildSummary.name}}</b>
+                            {{/if}}
+                        </div>
+                    </td>
+                {{/promotions}}
+            </tr>
+        </tbody>
+    </table>
+</div>

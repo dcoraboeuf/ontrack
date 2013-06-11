@@ -1,0 +1,63 @@
+<#include "/lib/layout.html">
+
+<#macro layout_dashboard branches=true>
+    <@layout_root
+        page="dashboard"
+        title=dashboard.title
+        >
+    <!-- Styling info -->
+        <style>
+            body {
+                padding-top: 0px;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="${base}/css/dashboard.css" />
+        <!-- List of branches -->
+        <#list dashboard.branches as branch>
+            <div class="hidden branch-info" project="${branch.project.name?html}" branch="${branch.name?html}"></div>
+        </#list>
+        <!-- Content -->
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12">
+                    <section>
+                        <h1><small>
+                            ${dashboard.title?html}
+                            <#if branches>
+                                - <span id="branch-title"></span>
+                            </#if>
+                        </small></h1>
+                    </section>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <#if branches>
+                    <div class="span9">
+                        <div id="branch-content-error" class="hidden alert alert-error">
+                        </div>
+                        <div id="branch-content">
+                        </div>
+                        <div id="branch-content-loading" class="loading hidden">
+                            <@lh key="general.loading" />
+                        </div>
+                    </div>
+                    <div class="span3">
+                        <#list dashboard.branches as branch>
+                            <div
+                                id="dashboard-branch-status-${branch.id?c}"
+                                class="dynamic"
+                                dynamic-controller="dashboard-branch-status"
+                                dynamic-project="${branch.project.name?html}"
+                                dynamic-branch="${branch.name?html}"
+                                ></div>
+                        </#list>
+                    </div>
+                <#else>
+                    <div class="span12">
+                        TODO Current branch
+                    </div>
+                </#if>
+            </div>
+        </div>
+    </@layout_root>
+</#macro>
