@@ -29,11 +29,21 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
                 $('#branch-content-error').hide();
                 // Title
                 $('#branch-title').text(content.title);
-                // Displays the content
+                // Clears the content
                 $('#branch-content').empty();
+                // Placeholders
+                $(content.sections).each(function (index, section) {
+                    $('<div></div>')
+                        .attr('id', section.templateId + '-section')
+                        .addClass('loading')
+                        .text('general.loading'.loc())
+                        .appendTo($('#branch-content'));
+                });
+                // Loading
                 $(content.sections).each(function (index, section) {
                     render.withTemplate(section.templateId, function (compiledTemplate) {
-                        $(compiledTemplate(section.data)).appendTo($('#branch-content'));
+                        $('#' + section.templateId + '-section').removeClass('loading');
+                        $('#' + section.templateId + '-section').html($(compiledTemplate(section.data)));
                     });
                 });
             },
