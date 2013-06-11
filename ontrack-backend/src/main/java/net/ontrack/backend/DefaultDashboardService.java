@@ -2,24 +2,23 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.DashboardDao;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.service.DashboardSectionDecorator;
 import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 public class DefaultDashboardService implements DashboardService {
@@ -28,6 +27,7 @@ public class DefaultDashboardService implements DashboardService {
     private final Strings strings;
     private final DashboardDao dashboardDao;
     private List<DashboardSectionProvider> dashboardSectionProviders;
+    private List<DashboardSectionDecorator> dashboardSectionDecorators;
 
     @Autowired
     public DefaultDashboardService(ManagementService managementService, Strings strings, DashboardDao dashboardDao) {
@@ -39,6 +39,11 @@ public class DefaultDashboardService implements DashboardService {
     @Autowired(required = false)
     public void setDashboardSectionProviders(List<DashboardSectionProvider> dashboardSectionProviders) {
         this.dashboardSectionProviders = dashboardSectionProviders;
+    }
+
+    @Autowired(required = false)
+    public void setDashboardSectionDecorators(List<DashboardSectionDecorator> dashboardSectionDecorators) {
+        this.dashboardSectionDecorators = dashboardSectionDecorators;
     }
 
     @Override
@@ -87,26 +92,101 @@ public class DefaultDashboardService implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    public DashboardPage getBranchPage(Locale locale, int branchId) {
+    public DashboardPage getBranchPage(Locale locale, final int branchId) {
         BranchSummary branch = managementService.getBranch(branchId);
-        // Empty page
-        DashboardPage page = DashboardPage.create(getBranchTitle(branch));
+
+        // All sections
+        List<DashboardSection> sections = new ArrayList<>();
+
         // Dashboard section providers
         if (dashboardSectionProviders != null) {
             for (DashboardSectionProvider dashboardSectionProvider : dashboardSectionProviders) {
                 if (dashboardSectionProvider.apply(Entity.BRANCH, branchId)) {
                     DashboardSection section = dashboardSectionProvider.getSection(Entity.BRANCH, branchId);
                     if (section != null) {
-                        page = page.withSection(section);
+                        sections.add(section);
                     }
                 }
             }
         }
-        // TODO One section per configured validation stamp
-        // All validation stamps
-        // page = page.withSection(getBranchValidationStampsSection(branchId));
+
+        // One section per configured validation stamp
+
+        // Gets all validation stamps for the branch
+        List<ValidationStampSummary> stamps = managementService.getValidationStampList(branchId);
+        // Filters them out according to the dashboard configuration
+        Collection<ValidationStampSummary> selectedStamps = Collections2.filter(stamps, new Predicate<ValidationStampSummary>() {
+            @Override
+            public boolean apply(ValidationStampSummary stamp) {
+                return dashboardDao.isValidationStampSelectedForBranch(stamp.getId(), branchId);
+            }
+        });
+        // Collects the statuses
+        Collection<ValidationStampStatus> stampWithStatuses = Collections2.transform(
+                selectedStamps,
+                // Gets the last validation run for each stamp
+                new Function<ValidationStampSummary, ValidationStampStatus>() {
+                    @Override
+                    public ValidationStampStatus apply(ValidationStampSummary stamp) {
+                        List<ValidationRunStatusStub> statusesForLastBuilds = managementService.getStatusesForLastBuilds(stamp.getId(), 1);
+                        if (statusesForLastBuilds.isEmpty()) {
+                            return new ValidationStampStatus(stamp, null);
+                        } else {
+                            return new ValidationStampStatus(stamp, statusesForLastBuilds.get(0));
+                        }
+                    }
+                }
+        );
+        // Generates the sections
+        Collection<DashboardSection> stampSections = Collections2.transform(
+                stampWithStatuses,
+                new Function<ValidationStampStatus, DashboardSection>() {
+                    @Override
+                    public DashboardSection apply(ValidationStampStatus stamp) {
+                        return new DashboardSection(
+                                "dashboard-section",
+                                getValidationStampSection(stamp)
+                        );
+                    }
+                }
+        );
         // OK
-        return page;
+        sections.addAll(stampSections);
+
+        // OK
+        return new DashboardPage(
+                getBranchTitle(branch),
+                sections
+        );
+    }
+
+    private DashboardSectionData getValidationStampSection(ValidationStampStatus stamp) {
+        // CSS classes to apply
+        Collection<String> css = new ArrayList<>();
+        // Status class
+        if (stamp.getStatus() != null) {
+            if (stamp.getStatus().getStatus() == Status.PASSED) {
+                css.add("dashboard-validation-stamp-passed");
+            } else {
+                css.add("dashboard-validation-stamp-failed");
+            }
+        } else {
+            css.add("dashboard-validation-stamp-notrun");
+        }
+        // Additional classes
+        if (dashboardSectionDecorators != null) {
+            for (DashboardSectionDecorator decorator : dashboardSectionDecorators) {
+                Collection<String> classes = decorator.getClasses(Entity.VALIDATION_STAMP, stamp.getStamp().getId());
+                if (classes != null) {
+                    css.addAll(classes);
+                }
+            }
+        }
+        // OK
+        return new DashboardSectionData(
+                stamp.getStamp().getName(),
+                StringUtils.join(css, " ")
+        );
     }
 
     @Override
@@ -147,57 +227,5 @@ public class DefaultDashboardService implements DashboardService {
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack dissociateBranchValidationStamp(int branchId, int validationStampId) {
         return dashboardDao.dissociateBranchValidationStamp(branchId, validationStampId);
-    }
-
-    private DashboardSection getBranchValidationStampsSection(int branchId) {
-        List<ValidationStampStatus> fullList = Lists.transform(
-                // Gets the list of validation stamps
-                managementService.getValidationStampList(branchId),
-                // Gets the last validation run for each stamp
-                new Function<ValidationStampSummary, ValidationStampStatus>() {
-                    @Override
-                    public ValidationStampStatus apply(ValidationStampSummary stamp) {
-                        List<ValidationRunStatusStub> statusesForLastBuilds = managementService.getStatusesForLastBuilds(stamp.getId(), 1);
-                        if (statusesForLastBuilds.isEmpty()) {
-                            return new ValidationStampStatus(stamp, null);
-                        } else {
-                            return new ValidationStampStatus(stamp, statusesForLastBuilds.get(0));
-                        }
-                    }
-                }
-        );
-        return new DashboardSection(
-                "dashboard-branch-validationStamps",
-                new DashboardBranchValidationStamps(
-                        Lists.newArrayList(Iterables.filter(
-                                fullList,
-                                new Predicate<ValidationStampStatus>() {
-                                    @Override
-                                    public boolean apply(ValidationStampStatus v) {
-                                        return v.getStatus() != null && v.getStatus().getStatus() == Status.PASSED;
-                                    }
-                                }
-                        )),
-                        Lists.newArrayList(Iterables.filter(
-                                fullList,
-                                new Predicate<ValidationStampStatus>() {
-                                    @Override
-                                    public boolean apply(ValidationStampStatus v) {
-                                        return v.getStatus() != null && v.getStatus().getStatus() != Status.PASSED;
-                                    }
-                                }
-                        )),
-                        Lists.newArrayList(Iterables.filter(
-                                fullList,
-                                new Predicate<ValidationStampStatus>() {
-                                    @Override
-                                    public boolean apply(ValidationStampStatus v) {
-                                        return v.getStatus() == null;
-                                    }
-                                }
-                        ))
-
-                )
-        );
     }
 }

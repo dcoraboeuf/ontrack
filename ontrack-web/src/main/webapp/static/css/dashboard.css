@@ -10,5 +10,21 @@ table.dashboard td {
     margin-bottom: 5px;
     border-radius: 10px;
     border: solid 1px darkgray;
-    padding: 5px;
+    padding: 15px;
+    font-size: 200%;
+    font-weight: bold;
+}
+
+.dashboard-validation-stamp-passed {
+    background-color: #749a02;
+    color: white;
+}
+
+.dashboard-validation-stamp-failed {
+    background-color: red;
+    color: white;
+}
+
+.dashboard-validation-stamp-notrun {
+    opacity: 0.35;
 }
