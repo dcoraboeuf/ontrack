@@ -4,6 +4,7 @@ import net.ontrack.core.model.DashboardSection;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
+import net.ontrack.extension.jenkins.client.JenkinsJob;
 import net.ontrack.service.DashboardSectionProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
             if (StringUtils.isBlank(jenkinsJobUrl)) {
                 return null;
             }
+            // Gets the job
+            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, true);
             // FIXME OK
             return null;
         } else {

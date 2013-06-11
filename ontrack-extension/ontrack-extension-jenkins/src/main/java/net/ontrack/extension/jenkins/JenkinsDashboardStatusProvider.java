@@ -38,7 +38,7 @@ public class JenkinsDashboardStatusProvider implements DashboardStatusProvider {
             // Initial status
             DashboardStatus status = new DashboardStatus();
             // Gets the job
-            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl);
+            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, false);
             // Gets the state of this job
             JenkinsJobState jobState = job.getState();
             switch (jobState) {

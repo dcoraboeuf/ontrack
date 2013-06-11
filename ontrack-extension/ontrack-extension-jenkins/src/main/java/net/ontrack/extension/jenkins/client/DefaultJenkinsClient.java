@@ -16,6 +16,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DefaultJenkinsClient implements JenkinsClient {
@@ -23,18 +25,63 @@ public class DefaultJenkinsClient implements JenkinsClient {
     private ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
 
     @Override
-    public JenkinsJob getJob(String jenkinsJobUrl) {
+    public JenkinsJob getJob(String jenkinsJobUrl, boolean depth) {
         // Gets the job as JSON
-        JsonNode tree = getJsonNode(jenkinsJobUrl);
+        JsonNode tree = getJsonNode(jenkinsJobUrl, depth);
+
         // Gets the 'color' field
         String color = tree.get("color").getTextValue();
         // Gets the state & result
         JenkinsJobState state = getJobState(color);
         JenkinsJobResult result = getJobResult(color);
+
+        // Culprits
+        List<JenkinsCulprit> culprits = new ArrayList<>();
+        // Gets the list of builds
+        JsonNode builds = tree.get("builds");
+        if (builds.isArray() && builds.size() > 0) {
+            JsonNode build = builds.get(0);
+            if (build.has("building") && build.get("building").getBooleanValue()) {
+                // Gets the list of culprits
+                if (build.has("culprits")) {
+                    JsonNode jCulprits = build.get("culprits");
+                    if (jCulprits.isArray()) {
+                        for (JsonNode jCulprit : jCulprits) {
+                            String culpritUrl = jCulprit.get("absoluteUrl").getTextValue();
+                            JenkinsUser user = getUser(culpritUrl);
+                            if (user != null) {
+                                JenkinsCulprit culprit = new JenkinsCulprit(user);
+                                // TODO Claim?
+                                // OK
+                                culprits.add(culprit);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // OK
         return new JenkinsJob(
                 result,
-                state
+                state,
+                culprits
+        );
+    }
+
+    protected JenkinsUser getUser(String culpritUrl) {
+        // Node
+        JsonNode tree = getJsonNode(culpritUrl, false);
+        // Basic data
+        String id = tree.get("id").getTextValue();
+        String fullName = tree.get("fullName").getTextValue();
+        // TODO Fetch the image URL
+        String imageUrl = null;
+        // OK
+        return new JenkinsUser(
+                id,
+                fullName,
+                imageUrl
         );
     }
 
@@ -62,11 +109,11 @@ public class DefaultJenkinsClient implements JenkinsClient {
         }
     }
 
-    private JsonNode getJsonNode(String jenkinsJobUrl) {
+    private JsonNode getJsonNode(String url, boolean depth) {
         // Gets a client
         DefaultHttpClient client = createClient();
         // Gets the JSON API URL for the job
-        String apiUrl = getAPIURL(jenkinsJobUrl);
+        String apiUrl = getAPIURL(url, depth);
         // Creates the request
         HttpGet get = new HttpGet(apiUrl);
         // Call
@@ -104,12 +151,15 @@ public class DefaultJenkinsClient implements JenkinsClient {
         return tree;
     }
 
-    private String getAPIURL(String jenkinsJobUrl) {
-        StringBuilder b = new StringBuilder(jenkinsJobUrl);
-        if (!jenkinsJobUrl.endsWith("/")) {
+    private String getAPIURL(String url, boolean depth) {
+        StringBuilder b = new StringBuilder(url);
+        if (!url.endsWith("/")) {
             b.append("/");
         }
         b.append("api/json");
+        if (depth) {
+            b.append("?depth=1");
+        }
         return b.toString();
     }
 
