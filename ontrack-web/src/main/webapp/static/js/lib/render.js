@@ -61,7 +61,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
             }
             renderInto(target, templateId, data, function () {
                 if (callbackFn) {
-                    callbackFn(config);
+                    callbackFn(config, data);
                 }
             });
         }
