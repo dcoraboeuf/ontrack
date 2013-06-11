@@ -23,9 +23,22 @@ public class DefaultJenkinsClient implements JenkinsClient {
     private ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
 
     @Override
-    public JenkinsJobState getJobState(String jenkinsJobUrl) {
-        String color = getJobColor(jenkinsJobUrl);
-        // Test
+    public JenkinsJob getJob(String jenkinsJobUrl) {
+        // Gets the job as JSON
+        JsonNode tree = getJsonNode(jenkinsJobUrl);
+        // Gets the 'color' field
+        String color = tree.get("color").getTextValue();
+        // Gets the state & result
+        JenkinsJobState state = getJobState(color);
+        JenkinsJobResult result = getJobResult(color);
+        // OK
+        return new JenkinsJob(
+                result,
+                state
+        );
+    }
+
+    protected JenkinsJobState getJobState(String color) {
         if ("disabled".equals(color)) {
             return JenkinsJobState.DISABLED;
         } else if (StringUtils.endsWith(color, "_anime")) {
@@ -35,10 +48,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
         }
     }
 
-    @Override
-    public JenkinsJobResult getJobResult(String jenkinsJobUrl) {
-        String color = getJobColor(jenkinsJobUrl);
-        // Test
+    protected JenkinsJobResult getJobResult(String color) {
         if ("disabled".equals(color)) {
             return JenkinsJobResult.DISABLED;
         } else if (StringUtils.startsWith(color, "red")) {
@@ -50,12 +60,6 @@ public class DefaultJenkinsClient implements JenkinsClient {
         } else {
             return JenkinsJobResult.UNKNOWN;
         }
-    }
-
-    private String getJobColor(String jenkinsJobUrl) {
-        JsonNode tree = getJsonNode(jenkinsJobUrl);
-        // Gets the 'color' field
-        return tree.get("color").getTextValue();
     }
 
     private JsonNode getJsonNode(String jenkinsJobUrl) {

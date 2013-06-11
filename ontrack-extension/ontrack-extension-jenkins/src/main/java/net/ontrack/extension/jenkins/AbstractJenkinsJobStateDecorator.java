@@ -57,6 +57,6 @@ public abstract class AbstractJenkinsJobStateDecorator implements EntityDecorato
     }
 
     private JenkinsJobState getJenkinsJobState(String jenkinsJobUrl) {
-        return jenkinsClient.getJobState(jenkinsJobUrl);
+        return jenkinsClient.getJob(jenkinsJobUrl).getState();
     }
 }

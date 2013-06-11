@@ -4,6 +4,7 @@ import net.ontrack.core.model.DashboardStatus;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
+import net.ontrack.extension.jenkins.client.JenkinsJob;
 import net.ontrack.service.DashboardStatusProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,10 @@ public class JenkinsDashboardStatusProvider implements DashboardStatusProvider {
             }
             // Initial status
             DashboardStatus status = new DashboardStatus();
+            // Gets the job
+            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl);
             // Gets the state of this job
-            JenkinsJobState jobState = jenkinsClient.getJobState(jenkinsJobUrl);
+            JenkinsJobState jobState = job.getState();
             switch (jobState) {
                 case RUNNING:
                     status = status.withIcon("extension/jenkins-job-running.png");
@@ -51,7 +54,7 @@ public class JenkinsDashboardStatusProvider implements DashboardStatusProvider {
                     break;
             }
             // Gets the last result for this job
-            JenkinsJobResult jobResult = jenkinsClient.getJobResult(jenkinsJobUrl);
+            JenkinsJobResult jobResult = job.getResult();
             status = status.addCss("jenkins-result-" + StringUtils.lowerCase(jobResult.name()));
             // OK
             return status;

@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
+import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.DashboardStatusProvider;
 import net.ontrack.service.ManagementService;
@@ -21,6 +22,7 @@ public class DefaultDashboardService implements DashboardService {
     private final ManagementService managementService;
     private final Strings strings;
     private List<DashboardStatusProvider> dashboardStatusProviders;
+    private List<DashboardSectionProvider> dashboardSectionProviders;
 
     @Autowired
     public DefaultDashboardService(ManagementService managementService, Strings strings) {
@@ -31,6 +33,11 @@ public class DefaultDashboardService implements DashboardService {
     @Autowired(required = false)
     public void setDashboardStatusProviders(List<DashboardStatusProvider> dashboardStatusProviders) {
         this.dashboardStatusProviders = dashboardStatusProviders;
+    }
+
+    @Autowired(required = false)
+    public void setDashboardSectionProviders(List<DashboardSectionProvider> dashboardSectionProviders) {
+        this.dashboardSectionProviders = dashboardSectionProviders;
     }
 
     @Override
@@ -104,7 +111,17 @@ public class DefaultDashboardService implements DashboardService {
         BranchSummary branch = managementService.getBranch(branchId);
         // Empty page
         DashboardPage page = DashboardPage.create(getBranchTitle(branch));
-        // TODO Dashboard section providers
+        // Dashboard section providers
+        if (dashboardSectionProviders != null) {
+            for (DashboardSectionProvider dashboardSectionProvider : dashboardSectionProviders) {
+                if (dashboardSectionProvider.apply(Entity.BRANCH, branchId)) {
+                    DashboardSection section = dashboardSectionProvider.getSection(Entity.BRANCH, branchId);
+                    if (section != null) {
+                        page = page.withSection(section);
+                    }
+                }
+            }
+        }
         // TODO Last build
         // All validation stamps
         page = page.withSection(getBranchValidationStampsSection(branchId));
