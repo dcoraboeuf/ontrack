@@ -16,8 +16,8 @@
     color: white;
 }
 
-.jenkins-dashboard-section {
-    padding: 10px;
+.jenkins-dashboard-section.dashboard-section {
+    padding: 20px;
 }
 
 .jenkins-dashboard-section p {
@@ -29,4 +29,8 @@
     font-weight: bold;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.jenkins-dashboard-section-culprits td {
+    padding: 10px;
 }
