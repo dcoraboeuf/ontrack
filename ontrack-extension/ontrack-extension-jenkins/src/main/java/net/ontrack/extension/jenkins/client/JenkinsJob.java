@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class JenkinsJob {
 
+    private final String name;
     private final JenkinsJobResult result;
     private final JenkinsJobState state;
     private final List<JenkinsCulprit> culprits;

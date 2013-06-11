@@ -29,6 +29,9 @@ public class DefaultJenkinsClient implements JenkinsClient {
         // Gets the job as JSON
         JsonNode tree = getJsonNode(jenkinsJobUrl, depth);
 
+        // Name
+        String name = tree.get("name").getTextValue();
+
         // Gets the 'color' field
         String color = tree.get("color").getTextValue();
         // Gets the state & result
@@ -63,6 +66,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
 
         // OK
         return new JenkinsJob(
+                name,
                 result,
                 state,
                 culprits

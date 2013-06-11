@@ -37,8 +37,11 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
             }
             // Gets the job
             JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, true);
-            // FIXME OK
-            return null;
+            // OK
+            return new DashboardSection(
+                    "extension/jenkins-dashboard-section",
+                    job
+            );
         } else {
             return null;
         }

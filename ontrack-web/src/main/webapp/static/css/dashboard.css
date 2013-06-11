@@ -9,6 +9,16 @@
 
 .dashboard-section {
     margin-bottom: 5px;
+    border-radius: 10px;
+    border: solid 1px darkgray;
+    padding: 5px;
+}
+
+.dashboard-section.dashboard-branch-promotions {
+    margin-bottom: 0px;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
 }
 
 .dashboard-branch-promotions table {
@@ -31,9 +41,6 @@
 }
 
 .dashboard-branch-validationStamps {
-    border-radius: 10px;
-    border: solid 1px darkgray;
-    padding: 5px;
 }
 
 .dashboard-branch-validationStamps img {

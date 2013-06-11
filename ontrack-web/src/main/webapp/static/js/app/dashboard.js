@@ -12,6 +12,10 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
     // Current page
     var index = 0;
 
+    function getSectionId(section) {
+        return section.templateId.replace(/\./g, '_').replace(/\//g, '_');
+    }
+
     // Refresh function
     function refresh() {
         // Gets the current branch
@@ -33,8 +37,9 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
                 $('#branch-content').empty();
                 // Placeholders
                 $(content.sections).each(function (index, section) {
+                    var id = getSectionId(section);
                     $('<div></div>')
-                        .attr('id', section.templateId + '-section')
+                        .attr('id', id + '-section')
                         .addClass('loading')
                         .text('general.loading'.loc())
                         .appendTo($('#branch-content'));
@@ -42,8 +47,9 @@ define(['ajax', 'jquery', 'render'], function (ajax, $, render) {
                 // Loading
                 $(content.sections).each(function (index, section) {
                     render.withTemplate(section.templateId, function (compiledTemplate) {
-                        $('#' + section.templateId + '-section').removeClass('loading');
-                        $('#' + section.templateId + '-section').html($(compiledTemplate(section.data)));
+                        var id = getSectionId(section);
+                        $('#' + id + '-section').removeClass('loading');
+                        $('#' + id + '-section').html($(compiledTemplate(section.data)));
                     });
                 });
             },
