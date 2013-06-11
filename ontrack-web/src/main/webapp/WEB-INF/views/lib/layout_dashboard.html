@@ -4,8 +4,9 @@
     <@layout_root
         page="dashboard"
         title=dashboard.title
+        scope="dashboard"
         >
-    <!-- Styling info -->
+        <!-- Styling info -->
         <style>
             body {
                 padding-top: 0px;
@@ -32,7 +33,7 @@
             </div>
             <div class="row-fluid">
                 <#if branches>
-                    <div class="span9">
+                    <div class="span10">
                         <div id="branch-content-error" class="hidden alert alert-error">
                         </div>
                         <div id="branch-content">
@@ -41,7 +42,7 @@
                             <@lh key="general.loading" />
                         </div>
                     </div>
-                    <div class="span3">
+                    <div class="span2">
                         <#list dashboard.branches as branch>
                             <div
                                 id="dashboard-branch-status-${branch.id?c}"

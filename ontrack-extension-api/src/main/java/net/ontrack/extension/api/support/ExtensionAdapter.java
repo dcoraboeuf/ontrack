@@ -53,4 +53,9 @@ public abstract class ExtensionAdapter implements Extension {
     public Collection<? extends EntityActionExtension> getEntityActions() {
         return Collections.emptyList();
     }
+
+    @Override
+    public String getExtensionStyle(String scope) {
+        return null;
+    }
 }

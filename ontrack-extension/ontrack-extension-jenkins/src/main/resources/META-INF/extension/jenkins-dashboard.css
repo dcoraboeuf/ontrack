@@ -1,0 +1,17 @@
+.jenkins-job-disabled {
+    opacity: 0.45;
+}
+
+.jenkins-result-success {
+    background-color: green;
+    color: white;
+}
+
+.jenkins-result-unstable {
+    background-color: yellow;
+}
+
+.jenkins-result-failed {
+    background-color: red;
+    color: white;
+}

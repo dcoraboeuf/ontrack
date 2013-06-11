@@ -41,4 +41,13 @@ public class JenkinsExtension extends ExtensionAdapter {
                 validationStampJenkinsJobStateDecorator,
                 branchJenkinsJobStateDecorator);
     }
+
+    @Override
+    public String getExtensionStyle(String scope) {
+        if ("dashboard".equals(scope)) {
+            return "extension/jenkins-dashboard.css";
+        } else {
+            return null;
+        }
+    }
 }

@@ -25,4 +25,6 @@ public interface Extension {
     Collection<? extends EntityActionExtension> getEntityActions();
 
     Collection<? extends EntityDecorator> getDecorators();
+
+    String getExtensionStyle(String scope);
 }
