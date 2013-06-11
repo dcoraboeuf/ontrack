@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class ValidationStampJenkinsJobStateDecorator extends AbstractJenkinsJobStateDecorator {
 
     @Autowired
-    public ValidationStampJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator) {
-        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.VALIDATION_STAMP);
+    public ValidationStampJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator, JenkinsConfigurationExtension configurationExtension) {
+        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.VALIDATION_STAMP, configurationExtension);
     }
 }

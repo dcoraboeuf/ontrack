@@ -20,12 +20,14 @@ public abstract class AbstractJenkinsJobStateDecorator implements EntityDecorato
     private final JenkinsClient jenkinsClient;
     private final JenkinsDecorator jenkinsDecorator;
     private final Entity targetEntity;
+    private final JenkinsConfigurationExtension configurationExtension;
 
-    public AbstractJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator, Entity targetEntity) {
+    public AbstractJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator, Entity targetEntity, JenkinsConfigurationExtension configurationExtension) {
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
         this.jenkinsDecorator = jenkinsDecorator;
         this.targetEntity = targetEntity;
+        this.configurationExtension = configurationExtension;
     }
 
     @Override
@@ -57,6 +59,6 @@ public abstract class AbstractJenkinsJobStateDecorator implements EntityDecorato
     }
 
     private JenkinsJobState getJenkinsJobState(String jenkinsJobUrl) {
-        return jenkinsClient.getJob(jenkinsJobUrl, false).getState();
+        return jenkinsClient.getJob(configurationExtension, jenkinsJobUrl, false).getState();
     }
 }

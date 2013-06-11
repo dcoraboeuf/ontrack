@@ -15,11 +15,13 @@ public class JenkinsDashboardStatusProvider implements DashboardStatusProvider {
 
     private final PropertiesService propertiesService;
     private final JenkinsClient jenkinsClient;
+    private final JenkinsExtension jenkinsExtension;
 
     @Autowired
-    public JenkinsDashboardStatusProvider(PropertiesService propertiesService, JenkinsClient jenkinsClient) {
+    public JenkinsDashboardStatusProvider(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsExtension jenkinsExtension) {
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
+        this.jenkinsExtension = jenkinsExtension;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class JenkinsDashboardStatusProvider implements DashboardStatusProvider {
             // Initial status
             DashboardStatus status = new DashboardStatus();
             // Gets the job
-            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, false);
+            JenkinsJob job = jenkinsClient.getJob(jenkinsExtension.getConfiguration(), jenkinsJobUrl, false);
             // Gets the state of this job
             JenkinsJobState jobState = job.getState();
             switch (jobState) {

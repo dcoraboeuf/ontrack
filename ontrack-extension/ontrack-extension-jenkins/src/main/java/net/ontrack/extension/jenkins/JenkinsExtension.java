@@ -1,5 +1,6 @@
 package net.ontrack.extension.jenkins;
 
+import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
@@ -18,16 +19,28 @@ public class JenkinsExtension extends ExtensionAdapter {
     private final JenkinsUrlPropertyDescriptor jenkinsUrlPropertyDescriptor;
     private final ValidationStampJenkinsJobStateDecorator validationStampJenkinsJobStateDecorator;
     private final BranchJenkinsJobStateDecorator branchJenkinsJobStateDecorator;
+    private final JenkinsConfigurationExtension configuration;
 
     @Autowired
     public JenkinsExtension(
             JenkinsUrlPropertyDescriptor jenkinsUrlPropertyDescriptor,
             ValidationStampJenkinsJobStateDecorator validationStampJenkinsJobStateDecorator,
-            BranchJenkinsJobStateDecorator branchJenkinsJobStateDecorator) {
+            BranchJenkinsJobStateDecorator branchJenkinsJobStateDecorator,
+            JenkinsConfigurationExtension configuration) {
         super(EXTENSION);
         this.jenkinsUrlPropertyDescriptor = jenkinsUrlPropertyDescriptor;
         this.validationStampJenkinsJobStateDecorator = validationStampJenkinsJobStateDecorator;
         this.branchJenkinsJobStateDecorator = branchJenkinsJobStateDecorator;
+        this.configuration = configuration;
+    }
+
+    public JenkinsConfigurationExtension getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public List<? extends ConfigurationExtension> getConfigurationExtensions() {
+        return Collections.singletonList(configuration);
     }
 
     @Override

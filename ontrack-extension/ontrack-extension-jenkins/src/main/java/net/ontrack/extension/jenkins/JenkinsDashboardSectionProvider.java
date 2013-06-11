@@ -13,11 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class JenkinsDashboardSectionProvider implements DashboardSectionProvider {
 
+    private final JenkinsExtension jenkinsExtension;
     private final PropertiesService propertiesService;
     private final JenkinsClient jenkinsClient;
 
     @Autowired
-    public JenkinsDashboardSectionProvider(PropertiesService propertiesService, JenkinsClient jenkinsClient) {
+    public JenkinsDashboardSectionProvider(JenkinsExtension jenkinsExtension, PropertiesService propertiesService, JenkinsClient jenkinsClient) {
+        this.jenkinsExtension = jenkinsExtension;
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
     }
@@ -36,7 +38,7 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
                 return null;
             }
             // Gets the job
-            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, true);
+            JenkinsJob job = jenkinsClient.getJob(jenkinsExtension.getConfiguration(), jenkinsJobUrl, true);
             String iconPath = null;
             String css = "";
             // Gets the state of this job

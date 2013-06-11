@@ -1,6 +1,7 @@
 package net.ontrack.extension.jenkins.client;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
+import net.ontrack.extension.jenkins.JenkinsConfigurationExtension;
 import net.ontrack.extension.jenkins.JenkinsJobResult;
 import net.ontrack.extension.jenkins.JenkinsJobState;
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +9,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
@@ -22,10 +24,10 @@ import java.util.List;
 @Component
 public class DefaultJenkinsClient implements JenkinsClient {
 
-    private ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+    private final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
 
     @Override
-    public JenkinsJob getJob(String jenkinsJobUrl, boolean depth) {
+    public JenkinsJob getJob(JenkinsConfigurationExtension configuration, String jenkinsJobUrl, boolean depth) {
         // Gets the job as JSON
         JsonNode tree = getJsonNode(jenkinsJobUrl, depth);
 
@@ -51,7 +53,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
                     if (jCulprits.isArray()) {
                         for (JsonNode jCulprit : jCulprits) {
                             String culpritUrl = jCulprit.get("absoluteUrl").getTextValue();
-                            JenkinsUser user = getUser(culpritUrl);
+                            JenkinsUser user = getUser(configuration, culpritUrl);
                             if (user != null) {
                                 JenkinsCulprit culprit = new JenkinsCulprit(user);
                                 // TODO Claim?
@@ -73,20 +75,51 @@ public class DefaultJenkinsClient implements JenkinsClient {
         );
     }
 
-    protected JenkinsUser getUser(String culpritUrl) {
+    protected JenkinsUser getUser(JenkinsConfigurationExtension configuration, String culpritUrl) {
         // Node
         JsonNode tree = getJsonNode(culpritUrl, false);
         // Basic data
         String id = tree.get("id").getTextValue();
         String fullName = tree.get("fullName").getTextValue();
-        // TODO Fetch the image URL
-        String imageUrl = null;
+        // Fetch the image URL
+        String imageUrl = getUserImageUrl(configuration, id);
         // OK
         return new JenkinsUser(
                 id,
                 fullName,
                 imageUrl
         );
+    }
+
+    private String getUserImageUrl(JenkinsConfigurationExtension configuration, String id) {
+        String url = configuration.getImageUrl();
+        if (StringUtils.isNotBlank(url)) {
+            url = StringUtils.replace(url, "*", id);
+            // Gets a client
+            DefaultHttpClient client = createClient();
+            // Creates the request
+            HttpHead head = new HttpHead(url);
+            // Call
+            HttpResponse response;
+            try {
+                response = client.execute(head);
+            } catch (IOException e) {
+                return getDefaultUserImageUrl();
+            }
+            // Checks the status
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != HttpStatus.SC_OK) {
+                return getDefaultUserImageUrl();
+            } else {
+                return url;
+            }
+        } else {
+            return getDefaultUserImageUrl();
+        }
+    }
+
+    private String getDefaultUserImageUrl() {
+        return "extension/jenkins-user-default.jpg";
     }
 
     protected JenkinsJobState getJobState(String color) {

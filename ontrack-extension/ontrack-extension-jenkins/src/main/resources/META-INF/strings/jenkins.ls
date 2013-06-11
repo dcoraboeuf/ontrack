@@ -2,6 +2,14 @@ jenkins.url
     en -> Jenkins URL
     fr -> URL vers Jenkins
 
+jenkins.configuration
+    en -> Jenkins configuration
+    fr -> Configuration Jenkins
+
+jenkins.configuration.imageUrl
+    en -> Image link (* stands for the ID)
+    fr -> Lien vers les images (* pour l'ID)
+
 jenkins.job.idle
     en -> Idle
     fr -> Inactif
