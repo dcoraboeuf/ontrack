@@ -1,0 +1,35 @@
+<#include "/lib/layout.html">
+
+<@layout_root
+    page="dashboard"
+    title=dashboard.title
+    scope="dashboard"
+    style=true
+    noscript=true
+    >
+    <!-- Styling info -->
+    <style>
+        body {
+            padding-top: 0px;
+        }
+    </style>
+    <!-- List of branches -->
+    <table width="100%">
+        <tbody>
+            <tr>
+                <#list dashboard.branches as branch>
+                    <td>
+                        <div
+                            id="branch-${branch.id?c}"
+                            class="dynamic"
+                            dynamic-controller="dashboard-branch"
+                            dynamic-project="${branch.project.name?html}"
+                            dynamic-branch="${branch.name?html}"
+                            dynamic-refresh="true"
+                            ></div>
+                    </td>
+                </#list>
+            </tr>
+        </tbody>
+    </table>
+</@layout_root>
