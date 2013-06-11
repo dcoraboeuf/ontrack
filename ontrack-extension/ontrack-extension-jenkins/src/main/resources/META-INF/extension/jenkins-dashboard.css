@@ -2,6 +2,22 @@
     opacity: 0.45;
 }
 
+.jenkins-job-running {
+    -webkit-animation: working 2s infinite;
+}
+
+@-webkit-keyframes working {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
 .jenkins-result-success {
     background-color: #749a02;
     color: white;

@@ -8,11 +8,12 @@
     noscript=true
     >
     <!-- List of branches -->
-    <table width="100%">
+    <table width="100%" class="dashboard">
         <tbody>
             <tr>
                 <#list dashboard.branches as branch>
-                    <td>
+                    <td valign="top">
+                        <h1><small>${branch.project.name?html}/${branch.name?html}</small></h1>
                         <div
                             id="branch-${branch.id?c}"
                             class="dynamic"
