@@ -8,11 +8,12 @@
     noscript=true
     >
     <!-- List of branches -->
+    <#assign width = 100 / dashboard.branches?size />
     <table width="100%" class="dashboard">
         <tbody>
             <tr>
                 <#list dashboard.branches as branch>
-                    <td valign="top">
+                    <td valign="top" width="${width}%">
                         <h1><small>${branch.project.name?html}/${branch.name?html}</small></h1>
                         <div
                             id="branch-${branch.id?c}"
