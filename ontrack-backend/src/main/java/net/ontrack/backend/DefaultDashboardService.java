@@ -23,7 +23,6 @@ import java.util.*;
 @Service
 public class DefaultDashboardService implements DashboardService {
 
-    public static final int VALIDATION_STAMP_NAME_MAX_WIDTH = 15;
     private final ManagementService managementService;
     private final Strings strings;
     private final DashboardDao dashboardDao;
@@ -185,7 +184,7 @@ public class DefaultDashboardService implements DashboardService {
         }
         // OK
         return new DashboardSectionData(
-                StringUtils.abbreviate(stamp.getStamp().getName(), VALIDATION_STAMP_NAME_MAX_WIDTH),
+                stamp.getStamp().getName(),
                 StringUtils.join(css, " ")
         );
     }

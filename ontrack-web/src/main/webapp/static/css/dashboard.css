@@ -21,6 +21,8 @@ table.dashboard td {
     padding: 15px;
     font-size: 200%;
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .dashboard-validation-stamp-passed {
