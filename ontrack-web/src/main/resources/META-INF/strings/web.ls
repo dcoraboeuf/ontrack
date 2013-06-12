@@ -877,7 +877,7 @@ dashboard.branch
     fr -> Tableau de bord pour la branche {0}/{1}
 
 dashboard.admin
-    en -> Dashboarb set-up
+    en -> Dashboard set-up
     fr -> Configuration du tableau de bord
 
 dashboard.admin.help
