@@ -33,7 +33,7 @@ public class JenkinsDashboardSectionDecorator implements DashboardSectionDecorat
             String jobUrl = propertiesService.getPropertyValue(Entity.VALIDATION_STAMP, stampId, JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME);
             if (StringUtils.isNotBlank(jobUrl)) {
                 // Gets the corresponding job
-                JenkinsJob job = jenkinsClient.getJob(jenkinsConfiguration, jobUrl, false);
+                JenkinsJob job = jenkinsClient.getJob(jobUrl, false);
                 // State
                 return Collections.singleton("jenkins-job-" + StringUtils.lowerCase(job.getState().name()));
             } else {

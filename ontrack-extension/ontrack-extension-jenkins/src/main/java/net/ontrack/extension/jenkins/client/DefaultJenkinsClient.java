@@ -1,5 +1,8 @@
 package net.ontrack.extension.jenkins.client;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.netbeetle.jackson.ObjectMapperFactory;
 import net.ontrack.extension.jenkins.JenkinsConfigurationExtension;
 import net.ontrack.extension.jenkins.JenkinsJobResult;
@@ -15,19 +18,37 @@ import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Component
 public class DefaultJenkinsClient implements JenkinsClient {
 
     private final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+    private final JenkinsConfigurationExtension jenkinsConfiguration;
+    // Local cache for user data
+    private final LoadingCache<String, JenkinsUser> userCache =
+            CacheBuilder.newBuilder()
+                    .maximumSize(50)
+                    .build(new CacheLoader<String, JenkinsUser>() {
+                        @Override
+                        public JenkinsUser load(String url) throws Exception {
+                            return loadUser(url);
+                        }
+                    });
+
+    @Autowired
+    public DefaultJenkinsClient(JenkinsConfigurationExtension jenkinsConfiguration) {
+        this.jenkinsConfiguration = jenkinsConfiguration;
+    }
 
     @Override
-    public JenkinsJob getJob(JenkinsConfigurationExtension configuration, String jenkinsJobUrl, boolean depth) {
+    public JenkinsJob getJob(String jenkinsJobUrl, boolean depth) {
         // Gets the job as JSON
         JsonNode tree = getJsonNode(jenkinsJobUrl, depth);
 
@@ -64,7 +85,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
                         // For each culprit
                         for (JsonNode jCulprit : jCulprits) {
                             String culpritUrl = jCulprit.get("absoluteUrl").getTextValue();
-                            JenkinsUser user = getUser(configuration, culpritUrl);
+                            JenkinsUser user = getUser(culpritUrl);
                             if (user != null) {
                                 JenkinsCulprit culprit = new JenkinsCulprit(user);
                                 // Claim?
@@ -97,14 +118,22 @@ public class DefaultJenkinsClient implements JenkinsClient {
         return build.has("building") && build.get("building").getBooleanValue();
     }
 
-    protected JenkinsUser getUser(JenkinsConfigurationExtension configuration, String culpritUrl) {
+    protected JenkinsUser getUser(String userUrl) {
+        try {
+            return userCache.get(userUrl);
+        } catch (ExecutionException e) {
+            return null;
+        }
+    }
+
+    protected JenkinsUser loadUser(String culpritUrl) {
         // Node
         JsonNode tree = getJsonNode(culpritUrl, false);
         // Basic data
         String id = tree.get("id").getTextValue();
         String fullName = tree.get("fullName").getTextValue();
         // Fetch the image URL
-        String imageUrl = getUserImageUrl(configuration, id);
+        String imageUrl = getUserImageUrl(id);
         // OK
         return new JenkinsUser(
                 id,
@@ -113,8 +142,8 @@ public class DefaultJenkinsClient implements JenkinsClient {
         );
     }
 
-    private String getUserImageUrl(JenkinsConfigurationExtension configuration, String id) {
-        String url = configuration.getImageUrl();
+    private String getUserImageUrl(String id) {
+        String url = jenkinsConfiguration.getImageUrl();
         if (StringUtils.isNotBlank(url)) {
             url = StringUtils.replace(url, "*", id);
             // Gets a client

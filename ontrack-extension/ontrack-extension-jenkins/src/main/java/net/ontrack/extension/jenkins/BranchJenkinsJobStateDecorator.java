@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class BranchJenkinsJobStateDecorator extends AbstractJenkinsJobStateDecorator {
 
     @Autowired
-    public BranchJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator, JenkinsConfigurationExtension configurationExtension) {
-        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.BRANCH, configurationExtension);
+    public BranchJenkinsJobStateDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsDecorator jenkinsDecorator) {
+        super(propertiesService, jenkinsClient, jenkinsDecorator, Entity.BRANCH);
     }
 }

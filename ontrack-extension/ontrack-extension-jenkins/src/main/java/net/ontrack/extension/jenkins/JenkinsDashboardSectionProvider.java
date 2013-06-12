@@ -38,7 +38,7 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
                 return null;
             }
             // Gets the job
-            JenkinsJob job = jenkinsClient.getJob(jenkinsExtension.getConfiguration(), jenkinsJobUrl, true);
+            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, true);
             String css = "";
             // Gets the state of this job
             JenkinsJobState jobState = job.getState();
