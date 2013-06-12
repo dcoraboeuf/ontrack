@@ -34,6 +34,14 @@ define(function () {
         }
     };
 
+    String.prototype.toCamelCase = function () {
+        return this.replace(
+            /-([a-z])/g,
+            function (m, w) {
+                return w.toUpperCase();
+        });
+    };
+
     function log(context) {
         return function (message, args) {
             if (logging && console) {

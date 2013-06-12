@@ -20,7 +20,7 @@ define(['require','common','jquery','render','ajax'], function (require, common,
                 };
                 $(section.attributes).each(function (aindex, a) {
                     if (a.nodeName.match(/^dynamic-/)) {
-                        var name = a.nodeName.substring(8);
+                        var name = a.nodeName.substring(8).toCamelCase();
                         if (name != 'controller') {
                             config[name] = a.nodeValue;
                         }
