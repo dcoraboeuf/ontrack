@@ -46,7 +46,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
         JsonNode builds = tree.get("builds");
         if (builds.isArray() && builds.size() > 0) {
             JsonNode build = builds.get(0);
-            if (build.has("building") && build.get("building").getBooleanValue()) {
+            if (isBuilding(build) || isFailedOrUnstable(build)) {
                 // Gets the list of culprits
                 if (build.has("culprits")) {
                     JsonNode jCulprits = build.get("culprits");
@@ -54,8 +54,8 @@ public class DefaultJenkinsClient implements JenkinsClient {
                         // Gets the previous build
                         JsonNode previousBuild = builds.get(1);
                         String claim = "";
-                        if (previousBuild.has("action")) {
-                            for (JsonNode jAction : previousBuild.get("action")) {
+                        if (previousBuild.has("actions")) {
+                            for (JsonNode jAction : previousBuild.get("actions")) {
                                 if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
                                     claim = jAction.get("claimedBy").getTextValue();
                                 }
@@ -87,6 +87,14 @@ public class DefaultJenkinsClient implements JenkinsClient {
                 state,
                 culprits
         );
+    }
+
+    private boolean isFailedOrUnstable(JsonNode build) {
+        return build.has("result") && !"SUCCESS".equals(build.get("result").getTextValue());
+    }
+
+    private boolean isBuilding(JsonNode build) {
+        return build.has("building") && build.get("building").getBooleanValue();
     }
 
     protected JenkinsUser getUser(JenkinsConfigurationExtension configuration, String culpritUrl) {
