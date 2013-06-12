@@ -55,6 +55,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final CommentDao commentDao;
     private final EntityDao entityDao;
     private final BuildCleanupDao buildCleanupDao;
+    private final DashboardDao dashboardDao;
     private final PropertiesService propertiesService;
     private final DecorationService decorationService;
     // Dao -> Summary converters
@@ -115,7 +116,28 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     };
 
     @Autowired
-    public ManagementServiceImpl(ValidatorService validatorService, EventService auditService, SecurityUtils securityUtils, Strings strings, AccountDao accountDao, ProjectDao projectDao, BranchDao branchDao, ValidationStampDao validationStampDao, PromotionLevelDao promotionLevelDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, ValidationRunEventDao validationRunEventDao, CommentDao commentDao, EntityDao entityDao, BuildCleanupDao buildCleanupDao, PropertiesService propertiesService, DecorationService decorationService) {
+    public ManagementServiceImpl(
+            ValidatorService validatorService,
+            EventService auditService,
+            SecurityUtils securityUtils,
+            Strings strings,
+            AccountDao accountDao,
+            ProjectDao projectDao,
+            BranchDao branchDao,
+            ValidationStampDao validationStampDao,
+            PromotionLevelDao promotionLevelDao,
+            BuildDao buildDao,
+            PromotedRunDao promotedRunDao,
+            ValidationRunDao validationRunDao,
+            ValidationRunStatusDao validationRunStatusDao,
+            ValidationRunEventDao validationRunEventDao,
+            CommentDao commentDao,
+            EntityDao entityDao,
+            BuildCleanupDao buildCleanupDao,
+            DashboardDao dashboardDao,
+            PropertiesService propertiesService,
+            DecorationService decorationService
+    ) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
         this.strings = strings;
@@ -132,6 +154,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.commentDao = commentDao;
         this.entityDao = entityDao;
         this.buildCleanupDao = buildCleanupDao;
+        this.dashboardDao = dashboardDao;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
     }
@@ -367,10 +390,12 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
 
         // Gets all the validation stamps
+        Map<Integer,Integer> stampMapping = new HashMap<>();
         List<TValidationStamp> stamps = validationStampDao.findByBranch(branchId);
         for (TValidationStamp stamp : stamps) {
             // Clones the validation stamp
             ValidationStampSummary newValidationStamp = cloneValidationStampSummary(newBranchId, stamp, form.getValidationStampReplacements());
+            stampMapping.put(stamp.getId(), newValidationStamp.getId());
             // Link?
             Integer linkedPromotionLevel = links.get(stamp.getName());
             if (linkedPromotionLevel != null) {
@@ -381,6 +406,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // Saves the clean-up configuration
         if (cleanup != null) {
             buildCleanupDao.saveBuildCleanUp(newBranchId, cleanup.getRetention(), newCleanupExcludedPromotionLevels);
+        }
+
+        // Dashboard configuration
+        for (Map.Entry<Integer, Integer> stamp : stampMapping.entrySet()) {
+            int oldId = stamp.getKey();
+            int newId = stamp.getValue();
+            if (dashboardDao.isValidationStampSelectedForBranch(oldId, branchId)) {
+                dashboardDao.associateBranchValidationStamp(newBranchId, newId);
+            }
         }
 
         // OK
@@ -456,7 +490,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return StringUtils.equals(extension, replacement.getExtension())
                                 && StringUtils.equals(name, replacement.getName());
                     }
-                }
+                },
+                null
         );
     }
 
