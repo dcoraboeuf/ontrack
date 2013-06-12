@@ -45,8 +45,17 @@
     margin-bottom: 10px;
 }
 
-.jenkins-dashboard-section-culprits td {
+div.jenkins-dashboard-section-culprit {
     padding: 10px;
+}
+
+img.jenkins-dashboard-section-culprit {
+    width: 100px;
+    height: 150px;
+}
+
+p.jenkins-dashboard-section-culprit {
+    font-size: 50%;
 }
 
 .jenkins-dashboard-section-culprit-claim img {

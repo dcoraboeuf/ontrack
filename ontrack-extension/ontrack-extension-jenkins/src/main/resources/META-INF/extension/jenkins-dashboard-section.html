@@ -6,21 +6,15 @@
         {{/if}}
     </p>
     {{#if job.culprits.length}}
-        <p class="jenkins-dashboard-section-culprits">
-            <table>
-                <tbody>
-                    <tr>
-                        {{#job.culprits}}
-                            <td class="{{#if claim}}jenkins-dashboard-section-culprit-claim{{/if}}">
-                                <img class="jenkins-dashboard-section-culprit" width="100" height="150" src="{{imageUrl}}" />
-                                <p class="jenkins-dashboard-section-culprit">
-                                    {{fullName}}
-                                </p>
-                            </td>
-                        {{/job.culprits}}
-                    </tr>
-                </tbody>
-            </table>
-        </p>
+        <div class="jenkins-dashboard-section-culprits">
+            {{#job.culprits}}
+                <div class="jenkins-dashboard-section-culprit {{#if claim}}jenkins-dashboard-section-culprit-claim{{/if}}">
+                    <img class="jenkins-dashboard-section-culprit" width="100" height="150" src="{{imageUrl}}" />
+                    <p class="jenkins-dashboard-section-culprit">
+                        {{fullName}}
+                    </p>
+                </div>
+            {{/job.culprits}}
+        </div>
     {{/if}}
 </div>
