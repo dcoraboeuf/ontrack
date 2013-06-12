@@ -47,14 +47,16 @@
 
 div.jenkins-dashboard-section-culprit {
     padding: 4px;
+    display: inline-block;
+    text-align: center;
 }
 
-img.jenkins-dashboard-section-culprit {
-    width: 40px;
-    height: 60px;
+.jenkins-dashboard-section-culprit img {
+    width: 80px;
+    height: 120px;
 }
 
-span.jenkins-dashboard-section-culprit {
+.jenkins-dashboard-section-culprit span {
     font-size: 50%;
 }
 
@@ -64,5 +66,6 @@ span.jenkins-dashboard-section-culprit {
 
 .jenkins-dashboard-section-culprit-claim span {
     background-color: green;
+    color: white;
     padding: 3px;
 }

@@ -9,8 +9,9 @@
         <div class="jenkins-dashboard-section-culprits">
             {{#job.culprits}}
                 <div class="jenkins-dashboard-section-culprit {{#if claim}}jenkins-dashboard-section-culprit-claim{{/if}}">
-                    <img class="jenkins-dashboard-section-culprit" src="{{imageUrl}}" />
-                    <span class="jenkins-dashboard-section-culprit">{{fullName}}</span>
+                    <img src="{{imageUrl}}" />
+                    <br/>
+                    <span>{{fullName}}</span>
                 </div>
             {{/job.culprits}}
         </div>

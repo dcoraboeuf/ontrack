@@ -6,12 +6,16 @@ table.dashboard {
     table-layout: fixed;
 }
 
+table.dashboard h1 {
+    margin-top: 0px;
+}
+
 table.dashboard td {
-    padding: 5px;
+    padding: 7.5px;
 }
 
 .dashboard-section {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     border-radius: 10px;
     border: solid 1px darkgray;
     padding: 15px;
