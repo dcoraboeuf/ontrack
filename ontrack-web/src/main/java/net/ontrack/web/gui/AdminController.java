@@ -7,6 +7,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
@@ -46,6 +47,7 @@ public class AdminController extends AbstractGUIController {
     private final EntityConverter entityConverter;
     private final ProfileService profileService;
     private final DashboardService dashboardService;
+    private final ExtensionManager extensionManager;
     private final Strings strings;
 
     @Autowired
@@ -54,7 +56,13 @@ public class AdminController extends AbstractGUIController {
             AdminService adminService,
             AccountService accountService,
             ConfigurationExtensionService configurationExtensionService,
-            SubscriptionService subscriptionService, SecurityUtils securityUtils, EntityConverter entityConverter, ProfileService profileService, DashboardService dashboardService, Strings strings) {
+            SubscriptionService subscriptionService,
+            SecurityUtils securityUtils,
+            EntityConverter entityConverter,
+            ProfileService profileService,
+            DashboardService dashboardService,
+            ExtensionManager extensionManager,
+            Strings strings) {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
@@ -64,6 +72,7 @@ public class AdminController extends AbstractGUIController {
         this.entityConverter = entityConverter;
         this.profileService = profileService;
         this.dashboardService = dashboardService;
+        this.extensionManager = extensionManager;
         this.strings = strings;
     }
 
@@ -365,6 +374,15 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("dashboard", dashboardService.getBranchDashboardAdminData(entityConverter.getBranchId(project, branch)));
         // OK
         return "dashboard-admin";
+    }
+
+    /**
+     * Administration of the extensions
+     */
+    @RequestMapping(value = "/extensions", method = RequestMethod.GET)
+    public String extensions(Locale locale, Model model) {
+        model.addAttribute("extensions", extensionManager.getExtensionTree(locale));
+        return "extensions";
     }
 
 }

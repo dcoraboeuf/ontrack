@@ -190,6 +190,12 @@ settings.general
     en -> General configuration
     fr -> Configuration générale
 
+[extensions]
+
+extensions
+    en -> Extensions
+    fr -> Extensions
+
 [settings.general]
 
 settings.general.baseUrl

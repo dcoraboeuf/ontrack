@@ -1,7 +1,10 @@
 package net.ontrack.backend.extension;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.ExtensionSummary;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
@@ -13,6 +16,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundExc
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
+import net.sf.jstring.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import java.util.*;
 public class DefaultExtensionManager implements ExtensionManager, StartupService {
 
     private final ApplicationContext applicationContext;
+    private final Strings strings;
     private Map<String, Extension> extensionIndex;
     private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
@@ -36,8 +41,9 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private Collection<EntityDecorator> decorators;
 
     @Autowired
-    public DefaultExtensionManager(ApplicationContext applicationContext) {
+    public DefaultExtensionManager(ApplicationContext applicationContext, Strings strings) {
         this.applicationContext = applicationContext;
+        this.strings = strings;
     }
 
     @Override
@@ -147,6 +153,33 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
             }
         }
         return actions;
+    }
+
+    @Override
+    public List<ExtensionSummary> getExtensionTree(final Locale locale) {
+        // Gets the list of extensions
+        List<Extension> extensions = new ArrayList<>(extensionIndex.values());
+        // Sorts by name
+        Collections.sort(extensions, new Comparator<Extension>() {
+            @Override
+            public int compare(Extension o1, Extension o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        // TODO Dependency tree
+        // OK
+        return Lists.transform(
+                extensions,
+                new Function<Extension, ExtensionSummary>() {
+                    @Override
+                    public ExtensionSummary apply(Extension extension) {
+                        return new ExtensionSummary(
+                                extension.getName(),
+                                strings.get(locale, "extension." + extension.getName())
+                        );
+                    }
+                }
+        );
     }
 
     @Override

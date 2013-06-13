@@ -1,0 +1,37 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="extensions"
+    breadcrumbs={
+        loc("home"):""
+    }>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="extensions" />
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table table-hover">
+                    <tbody>
+                        <#list extensions as extension>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="extension" data-extension="${extension.name?html}" />
+                                    ${extension.displayName?html}
+                                    <code>${extension.name?html}</code>
+                                </td>
+                            </tr>
+                        </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</@layout_std>
