@@ -14,6 +14,8 @@ public interface Extension {
 
     String getName();
 
+    Collection<String> getDependencies();
+
     List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors();
 
     List<? extends ConfigurationExtension> getConfigurationExtensions();

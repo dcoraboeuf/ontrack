@@ -2,6 +2,7 @@ package net.ontrack.backend.extension;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ExtensionSummary;
@@ -166,20 +167,38 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        // TODO Dependency tree
-        // OK
-        return Lists.transform(
-                extensions,
-                new Function<Extension, ExtensionSummary>() {
+        // Index of extension summaries
+        TreeMap<String, ExtensionSummary> extensionIndex = new TreeMap<>(Maps.uniqueIndex(
+                Lists.transform(
+                        extensions,
+                        new Function<Extension, ExtensionSummary>() {
+                            @Override
+                            public ExtensionSummary apply(Extension extension) {
+                                return new ExtensionSummary(
+                                        extension.getName(),
+                                        strings.get(locale, "extension." + extension.getName())
+                                );
+                            }
+                        }
+                ),
+                new Function<ExtensionSummary, String>() {
                     @Override
-                    public ExtensionSummary apply(Extension extension) {
-                        return new ExtensionSummary(
-                                extension.getName(),
-                                strings.get(locale, "extension." + extension.getName())
-                        );
+                    public String apply(ExtensionSummary extensionSummary) {
+                        return extensionSummary.getName();
                     }
-                }
-        );
+                }));
+        // Tree of dependencies
+        for (Extension extension : extensions) {
+            String name = extension.getName();
+            ExtensionSummary extensionSummary = extensionIndex.get(name);
+            Collection<String> dependencies = extension.getDependencies();
+            for (String dependency : dependencies) {
+                ExtensionSummary dependencyExtension = extensionIndex.get(dependency);
+                extensionSummary.dependsOn(dependencyExtension);
+            }
+        }
+        // OK
+        return Lists.newArrayList(extensionIndex.values());
     }
 
     @Override

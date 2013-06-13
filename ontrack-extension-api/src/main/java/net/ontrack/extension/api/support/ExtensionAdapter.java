@@ -25,6 +25,11 @@ public abstract class ExtensionAdapter implements Extension {
     }
 
     @Override
+    public Collection<String> getDependencies() {
+        return Collections.emptySet();
+    }
+
+    @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
         return Collections.emptyList();
     }
