@@ -1,11 +1,21 @@
-define(['render', 'jquery'], function (render, $) {
+define(['render', 'jquery', 'ajax', 'dynamic'], function (render, $, ajax, dynamic) {
 
     function selectExtension(extension) {
-
+        ajax.put({
+            url: 'ui/admin/extensions/{0}'.format(extension),
+            successFn: function () {
+                dynamic.reloadSection('extensions')
+            }
+        })
     }
 
     function unselectExtension(extension) {
-
+        ajax.del({
+            url: 'ui/admin/extensions/{0}'.format(extension),
+            successFn: function () {
+                dynamic.reloadSection('extensions')
+            }
+        })
     }
 
     function setup(config) {
