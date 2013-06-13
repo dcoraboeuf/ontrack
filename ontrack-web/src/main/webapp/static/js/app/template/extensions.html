@@ -4,4 +4,12 @@
         {{displayName}}
         <code>{{name}}</code>
     </td>
+    <td>
+        {{#if dependencies.length}}
+            {{loc 'extensions.dependencies' }}
+            {{#dependencies}}
+                <code>{{.}}</code>
+            {{/dependencies}}
+        {{/if}}
+    </td>
 </tr>
