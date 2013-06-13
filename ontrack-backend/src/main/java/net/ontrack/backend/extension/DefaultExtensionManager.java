@@ -3,10 +3,10 @@ package net.ontrack.backend.extension;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.ontrack.backend.dao.ConfigurationDao;
 import net.ontrack.backend.db.StartupService;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ExtensionSummary;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -34,6 +35,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
 
     private final ApplicationContext applicationContext;
     private final Strings strings;
+    private final ConfigurationDao configurationDao;
     private Map<String, Extension> extensionIndex;
     private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
@@ -42,9 +44,10 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private Collection<EntityDecorator> decorators;
 
     @Autowired
-    public DefaultExtensionManager(ApplicationContext applicationContext, Strings strings) {
+    public DefaultExtensionManager(ApplicationContext applicationContext, Strings strings, ConfigurationDao configurationDao) {
         this.applicationContext = applicationContext;
         this.strings = strings;
+        this.configurationDao = configurationDao;
     }
 
     @Override
@@ -156,8 +159,89 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         return actions;
     }
 
+    /**
+     * Enabling an extension must enable all its dependencies
+     */
     @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack enableExtension(String name) {
+        // Set of extensions to enable
+        Set<String> target = new HashSet<>();
+        // Stack of extensions to enable
+        Stack<String> stack = new Stack<>();
+        stack.push(name);
+        // Collects the extensions to enable
+        while (!stack.isEmpty()) {
+            String extensionName = stack.pop();
+            // Gets the extension
+            Extension extension = extensionIndex.get(extensionName);
+            if (extension != null && !target.contains(extensionName)) {
+                target.add(extensionName);
+                // Adds the dependencies to the stack
+                stack.addAll(extension.getDependencies());
+            }
+        }
+        // Enables all selected extensions
+        for (String extensionName : target) {
+            configurationDao.setValue("extension." + extensionName, "true");
+        }
+        // OK
+        return Ack.OK;
+    }
+
+    /**
+     * Disabling an extension must disable all extensions that depend on it.
+     */
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack disableExtension(String name) {
+        // Gets the tree of dependencies
+        TreeMap<String, ExtensionNode> extensionTreeMap = getExtensionTreeMap();
+        // Set of extensions to disable
+        Set<String> target = new HashSet<>();
+        // Stack of extensions to disable
+        Stack<String> stack = new Stack<>();
+        stack.push(name);
+        // Collects the extensions to disable
+        while (!stack.isEmpty()) {
+            String extensionName = stack.pop();
+            // Gets the extension
+            ExtensionNode extension = extensionTreeMap.get(extensionName);
+            if (extension != null && !target.contains(extensionName)) {
+                target.add(extensionName);
+                // Adds the dependencies to the stack
+                stack.addAll(extension.getRequirementFor());
+            }
+        }
+        // Enables all selected extensions
+        for (String extensionName : target) {
+            configurationDao.setValue("extension." + extensionName, "false");
+        }
+        // OK
+        return Ack.OK;
+    }
+
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public List<ExtensionSummary> getExtensionTree(final Locale locale) {
+        TreeMap<String, ExtensionNode> extensionIndex = getExtensionTreeMap();
+        return Lists.transform(
+                Lists.newArrayList(extensionIndex.values()),
+                new Function<ExtensionNode, ExtensionSummary>() {
+                    @Override
+                    public ExtensionSummary apply(ExtensionNode node) {
+                        return new ExtensionSummary(
+                                node.getName(),
+                                strings.get(locale, "extension." + node.getName()),
+                                node.getDependencies(),
+                                node.getRequirementFor()
+                        );
+                    }
+                }
+        );
+    }
+
+    private TreeMap<String, ExtensionNode> getExtensionTreeMap() {
         // Gets the list of extensions
         List<Extension> extensions = new ArrayList<>(extensionIndex.values());
         // Sorts by name
@@ -168,37 +252,33 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
             }
         });
         // Index of extension summaries
-        TreeMap<String, ExtensionSummary> extensionIndex = new TreeMap<>(Maps.uniqueIndex(
+        TreeMap<String, ExtensionNode> extensionIndex = new TreeMap<>(Maps.uniqueIndex(
                 Lists.transform(
                         extensions,
-                        new Function<Extension, ExtensionSummary>() {
+                        new Function<Extension, ExtensionNode>() {
                             @Override
-                            public ExtensionSummary apply(Extension extension) {
-                                return new ExtensionSummary(
-                                        extension.getName(),
-                                        strings.get(locale, "extension." + extension.getName())
-                                );
+                            public ExtensionNode apply(Extension extension) {
+                                return new ExtensionNode(extension.getName());
                             }
                         }
                 ),
-                new Function<ExtensionSummary, String>() {
+                new Function<ExtensionNode, String>() {
                     @Override
-                    public String apply(ExtensionSummary extensionSummary) {
-                        return extensionSummary.getName();
+                    public String apply(ExtensionNode extensionNode) {
+                        return extensionNode.getName();
                     }
                 }));
         // Tree of dependencies
         for (Extension extension : extensions) {
             String name = extension.getName();
-            ExtensionSummary extensionSummary = extensionIndex.get(name);
+            ExtensionNode extensionSummary = extensionIndex.get(name);
             Collection<String> dependencies = extension.getDependencies();
             for (String dependency : dependencies) {
-                ExtensionSummary dependencyExtension = extensionIndex.get(dependency);
+                ExtensionNode dependencyExtension = extensionIndex.get(dependency);
                 extensionSummary.dependsOn(dependencyExtension);
             }
         }
-        // OK
-        return Lists.newArrayList(extensionIndex.values());
+        return extensionIndex;
     }
 
     @Override

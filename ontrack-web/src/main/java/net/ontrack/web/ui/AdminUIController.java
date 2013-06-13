@@ -144,4 +144,25 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
         return extensionManager.getExtensionTree(locale);
     }
 
+    /**
+     * Enabling an extension
+     */
+    @RequestMapping(value = "/extensions/{name}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack enableExtension(@PathVariable String name) {
+        return extensionManager.enableExtension(name);
+    }
+
+    /**
+     * Disabling an extension
+     */
+    @RequestMapping(value = "/extensions/{name}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack disableExtension(@PathVariable String name) {
+        return extensionManager.disableExtension(name);
+    }
+
+
 }

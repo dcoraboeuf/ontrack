@@ -377,6 +377,7 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/extensions", method = RequestMethod.GET)
     public String extensions() {
+        securityUtils.checkIsAdmin();
         return "extensions";
     }
 

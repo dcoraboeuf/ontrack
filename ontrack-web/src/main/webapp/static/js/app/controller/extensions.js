@@ -18,7 +18,7 @@ define(['render', 'jquery', 'ajax', 'dynamic'], function (render, $, ajax, dynam
         })
     }
 
-    function setup(config) {
+    function setup(config, extensions) {
         // Indexation
         var extensionIndex = {};
         $.each(extensions, function (index, extension) {

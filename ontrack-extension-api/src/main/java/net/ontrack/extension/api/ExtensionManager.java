@@ -1,5 +1,6 @@
 package net.ontrack.extension.api;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ExtensionSummary;
 import net.ontrack.core.model.ProjectSummary;
@@ -79,4 +80,14 @@ public interface ExtensionManager {
      * Gets the list of extensions together with their dependencies
      */
     List<ExtensionSummary> getExtensionTree(Locale locale);
+
+    /**
+     * Enabling an extension
+     */
+    Ack enableExtension(String name);
+
+    /**
+     * Disabling an extension
+     */
+    Ack disableExtension(String name);
 }
