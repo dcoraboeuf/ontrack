@@ -1,5 +1,8 @@
 [subversion]
 
+extension.svn
+    en -> Subversion
+
 subversion.configuration
     en -> Subversion configuration
     fr -> Configuration Subversion

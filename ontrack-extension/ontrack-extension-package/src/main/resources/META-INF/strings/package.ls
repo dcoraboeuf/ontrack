@@ -1,3 +1,6 @@
+extension.package
+    en -> Package
+
 package
     en -> Package
     fr -> Package

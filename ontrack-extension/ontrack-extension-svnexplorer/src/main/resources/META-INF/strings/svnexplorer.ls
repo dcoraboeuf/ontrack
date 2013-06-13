@@ -1,5 +1,8 @@
 # Localization for SVNExplorer
 
+extension.svnexplorer
+    en -> SVNExplorer
+
 [sensibleFiles]
 
 svnexplorer.sensibleFiles

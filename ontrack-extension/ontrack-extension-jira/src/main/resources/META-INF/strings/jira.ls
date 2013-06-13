@@ -1,3 +1,6 @@
+extension.jira
+    en -> JIRA
+
 jira.issue
     en -> JIRA issue
     fr -> Ticket JIRA

@@ -1,3 +1,6 @@
+extension.jenkins
+    en -> Jenkins
+
 jenkins.url
     en -> Jenkins URL
     fr -> URL vers Jenkins
