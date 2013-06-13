@@ -24,10 +24,16 @@ define(['render', 'jquery', 'ajax', 'dynamic'], function (render, $, ajax, dynam
         $.each(extensions, function (index, extension) {
             extensionIndex[extension.name] = extension;
         });
-        // TODO Checkbox initialization
         // Actions
         $('.extension').each(function (index, input) {
             var extension = $(input).attr('data-extension');
+            // Checkbox initialization
+            if (extensionIndex[extension].enabled) {
+                $(input).attr('checked', 'checked');
+            } else {
+                $(input).removeAttr('checked');
+            }
+            // Actions
             $(input).change(function () {
                 if ($(input).is(':checked')) {
                     selectExtension(extension);

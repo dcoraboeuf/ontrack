@@ -233,12 +233,18 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
                         return new ExtensionSummary(
                                 node.getName(),
                                 strings.get(locale, "extension." + node.getName()),
+                                isExtensionEnabled(node.getName()),
                                 node.getDependencies(),
                                 node.getRequirementFor()
                         );
                     }
                 }
         );
+    }
+
+    @Override
+    public boolean isExtensionEnabled(String name) {
+        return "true".equals(configurationDao.getValue("extension." + name));
     }
 
     private TreeMap<String, ExtensionNode> getExtensionTreeMap() {

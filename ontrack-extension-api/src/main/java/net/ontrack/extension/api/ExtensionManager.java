@@ -90,4 +90,9 @@ public interface ExtensionManager {
      * Disabling an extension
      */
     Ack disableExtension(String name);
+
+    /**
+     * Is an extension enabled?
+     */
+    boolean isExtensionEnabled(String name);
 }
