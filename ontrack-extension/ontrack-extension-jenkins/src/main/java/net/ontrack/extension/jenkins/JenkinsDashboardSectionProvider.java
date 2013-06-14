@@ -2,6 +2,7 @@ package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.DashboardSection;
 import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
 import net.ontrack.extension.jenkins.client.JenkinsJob;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class JenkinsDashboardSectionProvider implements DashboardSectionProvider {
 
-    private final JenkinsExtension jenkinsExtension;
+    private final ExtensionManager extensionManager;
     private final PropertiesService propertiesService;
     private final JenkinsClient jenkinsClient;
 
     @Autowired
-    public JenkinsDashboardSectionProvider(JenkinsExtension jenkinsExtension, PropertiesService propertiesService, JenkinsClient jenkinsClient) {
-        this.jenkinsExtension = jenkinsExtension;
+    public JenkinsDashboardSectionProvider(ExtensionManager extensionManager, PropertiesService propertiesService, JenkinsClient jenkinsClient) {
+        this.extensionManager = extensionManager;
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
     }
@@ -31,7 +32,9 @@ public class JenkinsDashboardSectionProvider implements DashboardSectionProvider
 
     @Override
     public DashboardSection getSection(Entity entity, int branchId) {
-        if (entity == Entity.BRANCH) {
+        if (!extensionManager.isExtensionEnabled(JenkinsExtension.EXTENSION)) {
+            return null;
+        } else if (entity == Entity.BRANCH) {
             // Gets the Jenkins URL for this branch
             String jenkinsJobUrl = propertiesService.getPropertyValue(Entity.BRANCH, branchId, JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME);
             if (StringUtils.isBlank(jenkinsJobUrl)) {
