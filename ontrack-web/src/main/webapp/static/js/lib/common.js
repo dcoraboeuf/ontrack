@@ -39,8 +39,20 @@ define(function () {
             /-([a-z])/g,
             function (m, w) {
                 return w.toUpperCase();
-        });
+            });
     };
+
+    String.prototype.goto = function () {
+        var base = document.getElementsByTagName('base');
+        var url = this;
+        if (base && base[0] && base[0].href) {
+            if (base[0].href.substr(base[0].href.length - 1) == '/' && url.charAt(0) == '/') {
+                url = url.substr(1);
+            }
+            url = base[0].href + url;
+        }
+        location.href = url;
+    }
 
     function log(context) {
         return function (message, args) {

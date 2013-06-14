@@ -16,7 +16,7 @@ define(['jquery'], function ($) {
     }
 
     $('#header-signin').click(function () {
-        location.href = 'login?callbackUrl={0}'.format(encodeURIComponent(location.href));
+        'login?callbackUrl={0}'.format(encodeURIComponent(location.href)).goto();
     });
 
     $('.language-selection').each(function (index, action) {
