@@ -47,7 +47,7 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
             var name = value.substring(hash + 1);
             // Entity
             var entity = config.entity;
-            var entityId = config.entityid;
+            var entityId = config.entityId;
             // Prepares the edition box
             showEditionBox({
                 id: 'property-add',
@@ -74,7 +74,7 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
         var name = property.substring(hash + 1);
         var value = $('#extension-{0}-{1}'.format(extension, name)).val();
         var entity = config.entity;
-        var entityId = config.entityid;
+        var entityId = config.entityId;
         // No error
         $('#property-add-error').hide();
         // Loading the edition box
@@ -113,7 +113,7 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
 
     return {
         url: function (config) {
-            return 'ui/property/{0}/{1}/editable'.format(config.entity, config.entityid);
+            return 'ui/property/{0}/{1}/editable'.format(config.entity, config.entityId);
         },
         render: render.asSimpleTemplate('property-edition', 'properties', function (config) {
             // Adding a property
