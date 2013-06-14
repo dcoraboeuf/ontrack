@@ -30,8 +30,10 @@ define(['render', 'jquery', 'ajax', 'dynamic'], function (render, $, ajax, dynam
             // Checkbox initialization
             if (extensionIndex[extension].enabled) {
                 $(input).attr('checked', 'checked');
+                $('.extension-row[data-extension="{0}"]'.format(extension)).addClass('checked').removeClass('unchecked');
             } else {
                 $(input).removeAttr('checked');
+                $('.extension-row[data-extension="{0}"]'.format(extension)).addClass('unchecked').removeClass('checked');
             }
             // Actions
             $(input).change(function () {
