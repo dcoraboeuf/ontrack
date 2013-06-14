@@ -4,14 +4,18 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
 import net.ontrack.core.model.PropertyValue;
+import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.test.AbstractIntegrationTest;
 import net.sf.jstring.Strings;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -20,9 +24,24 @@ public class PropertiesServiceTest extends AbstractIntegrationTest {
 
     @Autowired
     private Strings strings;
-
     @Autowired
     private PropertiesService propertiesService;
+    @Autowired
+    private ExtensionManager extensionManager;
+    @Autowired
+    private SecurityUtils securityUtils;
+
+    @Before
+    public void init() {
+        // Makes sure the Jenkins extension is enabled
+        securityUtils.asAdmin(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                extensionManager.enableExtension("jenkins");
+                return null;
+            }
+        });
+    }
 
     @Test
     public void createProperties() {
