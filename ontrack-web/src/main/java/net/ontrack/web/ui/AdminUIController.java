@@ -147,6 +147,7 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     /**
      * Enabling an extension
      */
+    @Override
     @RequestMapping(value = "/extensions/{name}", method = RequestMethod.PUT)
     public
     @ResponseBody
@@ -157,6 +158,7 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     /**
      * Disabling an extension
      */
+    @Override
     @RequestMapping(value = "/extensions/{name}", method = RequestMethod.DELETE)
     public
     @ResponseBody

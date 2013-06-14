@@ -17,4 +17,8 @@ public interface AdminUI {
 
     Ack deleteAccount(int id);
 
+    Ack enableExtension(String name);
+
+    Ack disableExtension(String name);
+
 }

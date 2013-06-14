@@ -52,4 +52,23 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
                 Ack.class
         );
     }
+
+    @Override
+    public Ack enableExtension(String name) {
+        return put(
+                getDefaultLocale(),
+                format("/ui/admin/extensions/%s", name),
+                Ack.class,
+                null
+        );
+    }
+
+    @Override
+    public Ack disableExtension(String name) {
+        return delete(
+                getDefaultLocale(),
+                format("/ui/admin/extensions/%s", name),
+                Ack.class
+        );
+    }
 }

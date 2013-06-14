@@ -1,6 +1,8 @@
 package net.ontrack.acceptance.client;
 
+import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.PropertyUIClient;
+import net.ontrack.client.support.AdminClientCall;
 import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.EditableProperty;
 import net.ontrack.core.model.Entity;
@@ -19,6 +21,16 @@ public class ITProperty extends AbstractIT {
     public void editableProperty_french() {
         // Prerequisites
         final ProjectSummary project = data.doCreateProject();
+        data.asAdmin(new AdminClientCall<Void>() {
+            @Override
+            public Void onCall(AdminUIClient ui) {
+                // Enables 'link' & 'svnexplorer' extensions
+                ui.enableExtension("link");
+                ui.enableExtension("svnexplorer");
+                // OK
+                return null;
+            }
+        });
         // Call
         List<EditableProperty> editableProperties = data.asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
