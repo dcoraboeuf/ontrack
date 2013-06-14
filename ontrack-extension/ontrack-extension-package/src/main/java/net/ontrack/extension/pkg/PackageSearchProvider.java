@@ -5,6 +5,7 @@ import com.google.common.collect.Collections2;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.SearchResult;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.service.GUIService;
 import net.ontrack.service.ManagementService;
@@ -20,12 +21,14 @@ public class PackageSearchProvider implements SearchProvider {
 
     private final PropertiesService propertiesService;
     private final ManagementService managementService;
+    private final ExtensionManager extensionManager;
     private final GUIService guiService;
 
     @Autowired
-    public PackageSearchProvider(PropertiesService propertiesService, ManagementService managementService, GUIService guiService) {
+    public PackageSearchProvider(PropertiesService propertiesService, ManagementService managementService, ExtensionManager extensionManager, GUIService guiService) {
         this.propertiesService = propertiesService;
         this.managementService = managementService;
+        this.extensionManager = extensionManager;
         this.guiService = guiService;
     }
 
@@ -36,18 +39,22 @@ public class PackageSearchProvider implements SearchProvider {
 
     @Override
     public Collection<SearchResult> search(final String pkg) {
-        // Gets the builds that have <token> has value for the <package> property
-        Collection<Integer> buildIds = propertiesService.findEntityByPropertyValue(Entity.BUILD, PackageExtension.EXTENSION, PackagePropertyDescriptor.PACKAGE, pkg);
-        // Gets the build links
-        return Collections2.transform(
-                buildIds,
-                new Function<Integer, SearchResult>() {
-                    @Override
-                    public SearchResult apply(Integer buildId) {
-                        return createBuildResult(buildId, pkg);
+        if (extensionManager.isExtensionEnabled(PackageExtension.EXTENSION)) {
+            // Gets the builds that have <token> has value for the <package> property
+            Collection<Integer> buildIds = propertiesService.findEntityByPropertyValue(Entity.BUILD, PackageExtension.EXTENSION, PackagePropertyDescriptor.PACKAGE, pkg);
+            // Gets the build links
+            return Collections2.transform(
+                    buildIds,
+                    new Function<Integer, SearchResult>() {
+                        @Override
+                        public SearchResult apply(Integer buildId) {
+                            return createBuildResult(buildId, pkg);
+                        }
                     }
-                }
-        );
+            );
+        } else {
+            return null;
+        }
     }
 
     private SearchResult createBuildResult(int buildId, String pkg) {

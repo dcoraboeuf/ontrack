@@ -39,9 +39,10 @@ public class DefaultSearchService implements SearchService {
         Collection<SearchResult> results = new HashSet<>();
         // For each selected provider
         for (SearchProvider provider : providers) {
-            results.addAll(
-                    provider.search(token)
-            );
+            Collection<SearchResult> list = provider.search(token);
+            if (list != null) {
+                results.addAll(list);
+            }
         }
         // OK
         return results;
