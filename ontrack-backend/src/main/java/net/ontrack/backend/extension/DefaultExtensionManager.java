@@ -56,13 +56,13 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     }
 
     @Override
-    public void start() {
+    public synchronized void start() {
         Logger logger = LoggerFactory.getLogger(ExtensionManager.class);
 
         /**
          * Gets the list of extensions
          */
-        Collection<Extension> extensions = applicationContext.getBeansOfType(Extension.class).values();
+        Collection<Extension> extensions = getAllExtensions();
 
         /**
          * Indexation of extensions
@@ -76,58 +76,67 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         decorators = new ArrayList<>();
         for (Extension extension : extensions) {
             String extensionName = extension.getName();
-            logger.info("[extension] Extension={}", extensionName);
-            extensionIndex.put(extensionName, extension);
 
-            /**
-             * Indexation of properties
-             */
+            // Checks for activation
+            if (isExtensionEnabled(extensionName)) {
+                logger.info("[extension] Extension={}", extensionName);
 
-            for (PropertyExtensionDescriptor descriptor : extension.getPropertyExtensionDescriptors()) {
-                String name = descriptor.getName();
-                // Logging
-                logger.info("[extension] Property extension={}, name={}", extensionName, name);
-                // Index per extension
-                Map<String, PropertyExtensionDescriptor> extensionPropertyIndex = propertyIndex.get(extensionName);
-                if (extensionPropertyIndex == null) {
-                    extensionPropertyIndex = new HashMap<>();
-                    propertyIndex.put(extensionName, extensionPropertyIndex);
+                extensionIndex.put(extensionName, extension);
+
+                /**
+                 * Indexation of properties
+                 */
+
+                for (PropertyExtensionDescriptor descriptor : extension.getPropertyExtensionDescriptors()) {
+                    String name = descriptor.getName();
+                    // Logging
+                    logger.info("[extension] Property extension={}, name={}", extensionName, name);
+                    // Index per extension
+                    Map<String, PropertyExtensionDescriptor> extensionPropertyIndex = propertyIndex.get(extensionName);
+                    if (extensionPropertyIndex == null) {
+                        extensionPropertyIndex = new HashMap<>();
+                        propertyIndex.put(extensionName, extensionPropertyIndex);
+                    }
+                    // Index per name
+                    if (extensionPropertyIndex.containsKey(name)) {
+                        logger.warn("[extension] Property name {} already defined for extension {}", name, extensionName);
+                    }
+                    extensionPropertyIndex.put(name, descriptor);
                 }
-                // Index per name
-                if (extensionPropertyIndex.containsKey(name)) {
-                    logger.warn("[extension] Property name {} already defined for extension {}", name, extensionName);
+
+                /**
+                 * Indexation of configurations
+                 */
+                for (ConfigurationExtension configurationExtension : extension.getConfigurationExtensions()) {
+                    // Logging
+                    logger.info("[extension] Configuration extension={}, configuration={}", extensionName, configurationExtension);
+                    // Index per extension
+                    Map<String, ConfigurationExtension> extensionConfigurationIndex = configurationIndex.get(extensionName);
+                    if (extensionConfigurationIndex == null) {
+                        extensionConfigurationIndex = new TreeMap<>();
+                        configurationIndex.put(extensionName, extensionConfigurationIndex);
+                    }
+                    // Adds to the list
+                    extensionConfigurationIndex.put(configurationExtension.getName(), configurationExtension);
                 }
-                extensionPropertyIndex.put(name, descriptor);
+
+                /**
+                 * Indexation of actions
+                 */
+                topLevelActions.addAll(extension.getTopLevelActions());
+                diffActions.addAll(extension.getDiffActions());
+
+                /**
+                 * Indexation of decorators
+                 */
+                decorators.addAll(extension.getDecorators());
             }
-
-            /**
-             * Indexation of configurations
-             */
-            for (ConfigurationExtension configurationExtension : extension.getConfigurationExtensions()) {
-                // Logging
-                logger.info("[extension] Configuration extension={}, configuration={}", extensionName, configurationExtension);
-                // Index per extension
-                Map<String, ConfigurationExtension> extensionConfigurationIndex = configurationIndex.get(extensionName);
-                if (extensionConfigurationIndex == null) {
-                    extensionConfigurationIndex = new TreeMap<>();
-                    configurationIndex.put(extensionName, extensionConfigurationIndex);
-                }
-                // Adds to the list
-                extensionConfigurationIndex.put(configurationExtension.getName(), configurationExtension);
-            }
-
-            /**
-             * Indexation of actions
-             */
-            topLevelActions.addAll(extension.getTopLevelActions());
-            diffActions.addAll(extension.getDiffActions());
-
-            /**
-             * Indexation of decorators
-             */
-            decorators.addAll(extension.getDecorators());
 
         }
+    }
+
+    protected Collection<Extension> getAllExtensions() {
+        return applicationContext.getBeansOfType(Extension.class).values();
     }
 
     @Override
@@ -165,6 +174,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack enableExtension(String name) {
+        // Gets the map of extensions
+        TreeMap<String, ExtensionNode> extensionTreeMap = getExtensionTreeMap();
         // Set of extensions to enable
         Set<String> target = new HashSet<>();
         // Stack of extensions to enable
@@ -174,7 +185,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         while (!stack.isEmpty()) {
             String extensionName = stack.pop();
             // Gets the extension
-            Extension extension = extensionIndex.get(extensionName);
+            ExtensionNode extension = extensionTreeMap.get(extensionName);
             if (extension != null && !target.contains(extensionName)) {
                 target.add(extensionName);
                 // Adds the dependencies to the stack
@@ -185,6 +196,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         for (String extensionName : target) {
             configurationDao.setValue("extension." + extensionName, "true");
         }
+        // Re-initializes the indexes
+        start();
         // OK
         return Ack.OK;
     }
@@ -217,6 +230,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         for (String extensionName : target) {
             configurationDao.setValue("extension." + extensionName, "false");
         }
+        // Re-initializes the indexes
+        start();
         // OK
         return Ack.OK;
     }
@@ -249,7 +264,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
 
     private TreeMap<String, ExtensionNode> getExtensionTreeMap() {
         // Gets the list of extensions
-        List<Extension> extensions = new ArrayList<>(extensionIndex.values());
+        List<Extension> extensions = new ArrayList<>(getAllExtensions());
         // Sorts by name
         Collections.sort(extensions, new Comparator<Extension>() {
             @Override
