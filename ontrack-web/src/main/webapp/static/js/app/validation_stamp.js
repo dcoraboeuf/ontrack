@@ -14,7 +14,7 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic', 'app/component/val
     // Deletes the validation stamp
     function deleteValidationStamp() {
         application.deleteEntity('project/{0}/branch/{1}/validation_stamp'.format(project, branch), validationStamp, function () {
-            location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+            'gui/project/{0}/branch/{1}'.format(project, branch).goto();
         });
     }
 
@@ -49,10 +49,11 @@ define(['jquery', 'ajax', 'dialog', 'application', 'dynamic', 'app/component/val
                             },
                             successFn: function (updatedValidationStamp) {
                                 config.closeFn();
-                                location.href = 'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(
+                                'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(
                                     updatedValidationStamp.branch.project.name,
                                     updatedValidationStamp.branch.name,
-                                    updatedValidationStamp.name);
+                                    updatedValidationStamp.name
+                                ).goto();
                             },
                             errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                         });

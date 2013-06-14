@@ -62,7 +62,7 @@ define(['jquery','ajax'], function ($, ajax) {
                 promotionLevelReplacements: promotionLevelExpressions
             },
             successFn: function (summary) {
-                location.href = 'gui/project/{0}/branch/{1}'.format(project, summary.name);
+                'gui/project/{0}/branch/{1}'.format(project, summary.name).goto();
             },
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#clone-error')))
         });

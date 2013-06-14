@@ -16,7 +16,7 @@ define(['dialog', 'jquery', 'ajax'], function(dialog, $, ajax) {
                     },
                     successFn: function (project) {
                         config.closeFn();
-                        location.href = 'gui/project/{0}'.format(project.name.html());
+                        'gui/project/{0}'.format(project.name.html()).goto();
                     },
                     errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                 });

@@ -3,7 +3,7 @@ define(['jquery','common'], function ($, common) {
         common.confirmAndCall(
             'subversion.indexation.full.confirmation'.loc(),
             function () {
-                location.href = 'gui/extension/svn/indexation/full';
+                'gui/extension/svn/indexation/full'.goto();
             }
         )
     });

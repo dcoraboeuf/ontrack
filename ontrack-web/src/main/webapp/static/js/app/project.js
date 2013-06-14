@@ -7,7 +7,7 @@ define(['application','dialog','ajax','jquery'], function(application, dialog, a
      */
     function deleteProject() {
         application.deleteEntity('project', project, function () {
-            location.href = '';
+            ''.goto();
         });
     }
 
@@ -34,7 +34,7 @@ define(['application','dialog','ajax','jquery'], function(application, dialog, a
                             },
                             successFn: function (updatedProject) {
                                 config.closeFn();
-                                location.href = 'gui/project/{0}'.format(updatedProject.name);
+                                'gui/project/{0}'.format(updatedProject.name).goto();
                             },
                             errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                         });
@@ -61,7 +61,7 @@ define(['application','dialog','ajax','jquery'], function(application, dialog, a
                     },
                     successFn: function (branch) {
                         config.closeFn();
-                        location.href = 'gui/project/{0}/branch/{1}'.format(project, branch.name.html());
+                        'gui/project/{0}/branch/{1}'.format(project, branch.name.html()).goto();
                     },
                     errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                 });

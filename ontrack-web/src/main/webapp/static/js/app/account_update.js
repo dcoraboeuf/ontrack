@@ -7,7 +7,7 @@ define(['jquery', 'ajax', 'common'], function ($, ajax, common) {
             url: 'ui/admin/accounts/{0}/update'.format(accountId),
             data: common.values($('#account-form')),
             successFn: function () {
-                location.href = 'gui/admin/accounts';
+                'gui/admin/accounts'.goto();
             },
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#account-form-error')))
         });

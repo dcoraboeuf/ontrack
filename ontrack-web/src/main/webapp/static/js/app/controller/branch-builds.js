@@ -120,8 +120,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 var from = $('input[name="buildFrom"]:checked').val();
                 var to = $('input[name="buildTo"]:checked').val();
                 // URL
-                var url = '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to);
-                location.href = url;
+                '{0}?project={1}&branch={2}&from={3}&to={4}'.format(path, project, branch, from, to).goto();
             });
         });
     }

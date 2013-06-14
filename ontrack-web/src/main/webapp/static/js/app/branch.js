@@ -6,7 +6,7 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
     // Delete the branch
     function deleteBranch() {
         application.deleteEntity('project/{0}/branch'.format(project), branch, function () {
-            location.href = 'gui/project/{0}'.format(project);
+            'gui/project/{0}'.format(project).goto();
         });
     }
 
@@ -31,7 +31,7 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
                             },
                             successFn: function (updatedBranch) {
                                 config.closeFn();
-                                location.href = 'gui/project/{0}/branch/{1}'.format(updatedBranch.project.name, updatedBranch.name);
+                                'gui/project/{0}/branch/{1}'.format(updatedBranch.project.name, updatedBranch.name).goto();
                             },
                             errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                         });
@@ -44,7 +44,7 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
     // Create a promotion level
     function createPromotionLevel() {
         promotionLevelComponent.createPromotionLevel(project, branch, function (summary) {
-            location.href = 'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(project, branch, summary.name);
+            'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(project, branch, summary.name).goto();
         });
     }
 
@@ -62,7 +62,7 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
                     },
                     successFn: function (summary) {
                         config.closeFn();
-                        location.href = 'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(project, branch, summary.name);
+                        'gui/project/{0}/branch/{1}/validation_stamp/{2}'.format(project, branch, summary.name).goto();
                     },
                     errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                 });

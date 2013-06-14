@@ -14,7 +14,7 @@ define(['jquery', 'dialog', 'ajax', 'time', 'common'], function ($, dialog, ajax
                 ajax.del({
                     url: 'ui/manage/project/{0}/branch/{1}/build/{2}'.format(project, branch, build),
                     successFn: function () {
-                        location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+                        'gui/project/{0}/branch/{1}'.format(project, branch).goto();
                     }
                 })
             }

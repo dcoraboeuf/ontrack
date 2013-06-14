@@ -15,7 +15,7 @@ define(['jquery', 'ajax', 'dialog', 'application'], function ($, ajax, dialog, a
     // Deleting the promotion level
     $('#promotion-level-delete').click(function () {
         application.deleteEntity('project/{0}/branch/{1}/promotion_level'.format(project, branch), promotionLevel, function () {
-            location.href = 'gui/project/{0}/branch/{1}'.format(project, branch);
+            'gui/project/{0}/branch/{1}'.format(project, branch).goto();
         });
     });
 
@@ -40,10 +40,11 @@ define(['jquery', 'ajax', 'dialog', 'application'], function ($, ajax, dialog, a
                             },
                             successFn: function (updatedPromotionLevel) {
                                 config.closeFn();
-                                location.href = 'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(
+                                'gui/project/{0}/branch/{1}/promotion_level/{2}'.format(
                                     updatedPromotionLevel.branch.project.name,
                                     updatedPromotionLevel.branch.name,
-                                    updatedPromotionLevel.name);
+                                    updatedPromotionLevel.name
+                                ).goto();
                             },
                             errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
                         });
