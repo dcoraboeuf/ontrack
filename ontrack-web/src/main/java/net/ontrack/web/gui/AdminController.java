@@ -7,9 +7,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
-import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.*;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -40,7 +40,7 @@ public class AdminController extends AbstractGUIController {
 
     private final AdminService adminService;
     private final AccountService accountService;
-    private final ConfigurationExtensionService configurationExtensionService;
+    private final ExtensionManager extensionManager;
     private final SubscriptionService subscriptionService;
     private final SecurityUtils securityUtils;
     private final EntityConverter entityConverter;
@@ -53,8 +53,7 @@ public class AdminController extends AbstractGUIController {
             ErrorHandler errorHandler,
             AdminService adminService,
             AccountService accountService,
-            ConfigurationExtensionService configurationExtensionService,
-            SubscriptionService subscriptionService,
+            ExtensionManager extensionManager, SubscriptionService subscriptionService,
             SecurityUtils securityUtils,
             EntityConverter entityConverter,
             ProfileService profileService,
@@ -63,7 +62,7 @@ public class AdminController extends AbstractGUIController {
         super(errorHandler);
         this.adminService = adminService;
         this.accountService = accountService;
-        this.configurationExtensionService = configurationExtensionService;
+        this.extensionManager = extensionManager;
         this.subscriptionService = subscriptionService;
         this.securityUtils = securityUtils;
         this.entityConverter = entityConverter;
@@ -177,7 +176,7 @@ public class AdminController extends AbstractGUIController {
         model.addAttribute("general", adminService.getGeneralConfiguration());
         // Gets the list of configuration extensions
         Collection<GUIConfigurationExtension> extensions = Collections2.transform(
-                configurationExtensionService.getConfigurationExtensions(),
+                extensionManager.getConfigurationExtensions(),
                 new Function<ConfigurationExtension, GUIConfigurationExtension>() {
                     @Override
                     public GUIConfigurationExtension apply(ConfigurationExtension extension) {
@@ -267,7 +266,7 @@ public class AdminController extends AbstractGUIController {
             }
         }
         // Saves the configuration
-        String displayNameKey = adminService.saveExtensionConfiguration(extension, name, parameters);
+        String displayNameKey = extensionManager.saveExtensionConfiguration(extension, name, parameters);
         // Success
         redirectAttributes.addFlashAttribute("message", UserMessage.success("settings.extension.saved", new LocalizableMessage(displayNameKey)));
         // OK

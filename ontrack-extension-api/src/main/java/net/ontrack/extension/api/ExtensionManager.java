@@ -14,6 +14,7 @@ import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public interface ExtensionManager {
 
@@ -54,6 +55,11 @@ public interface ExtensionManager {
      * Gets a configuration extension by its extension ID and name
      */
     <T extends ConfigurationExtension> T getConfigurationExtension(String extension, String name);
+
+    /**
+     * Saving the configuration
+     */
+    String saveExtensionConfiguration(String extension, String name, Map<String, String> parameters);
 
     /**
      * Lists of actions that are available at the top level of the application. They are normally
