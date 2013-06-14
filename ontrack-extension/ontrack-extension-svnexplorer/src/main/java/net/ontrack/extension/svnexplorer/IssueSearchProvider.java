@@ -1,6 +1,7 @@
 package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.SearchResult;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.service.GUIService;
@@ -18,12 +19,14 @@ public class IssueSearchProvider implements SearchProvider {
     private final JIRAService jiraService;
     private final SubversionService subversionService;
     private final GUIService guiService;
+    private final ExtensionManager extensionManager;
 
     @Autowired
-    public IssueSearchProvider(JIRAService jiraService, SubversionService subversionService, GUIService guiService) {
+    public IssueSearchProvider(JIRAService jiraService, SubversionService subversionService, GUIService guiService, ExtensionManager extensionManager) {
         this.jiraService = jiraService;
         this.subversionService = subversionService;
         this.guiService = guiService;
+        this.extensionManager = extensionManager;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class IssueSearchProvider implements SearchProvider {
 
     @Override
     public Collection<SearchResult> search(String key) {
-        if (subversionService.isIndexedIssue(key)) {
+        if (extensionManager.isExtensionEnabled(SVNExplorerExtension.EXTENSION) && subversionService.isIndexedIssue(key)) {
             return Collections.singleton(
                     new SearchResult(
                             key,

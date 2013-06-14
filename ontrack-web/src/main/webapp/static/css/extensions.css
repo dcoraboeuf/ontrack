@@ -1,0 +1,8 @@
+tr.extension-row.checked {
+
+}
+
+tr.extension-row.unchecked {
+    opacity: 0.5;
+    text-decoration: line-through;
+}

@@ -4,6 +4,8 @@ import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
+import net.ontrack.extension.jira.JIRAExtension;
+import net.ontrack.extension.svn.SubversionExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +32,14 @@ public class SVNExplorerExtension extends ExtensionAdapter {
         this.sensibleFilesPropertyExtension = sensibleFilesPropertyExtension;
         this.branchHistoryActionController = branchHistoryActionController;
         this.projectRootPathPropertyExtension = projectRootPathPropertyExtension;
+    }
+
+    @Override
+    public Collection<String> getDependencies() {
+        return Arrays.asList(
+                SubversionExtension.EXTENSION,
+                JIRAExtension.EXTENSION
+        );
     }
 
     @Override

@@ -3,9 +3,11 @@ package net.ontrack.extension.svn.service;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.svn.IndexationConfigurationExtension;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
@@ -53,12 +55,13 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final SVNEventDao svnEventDao;
     private final IssueRevisionDao issueRevisionDao;
     private final TransactionTemplate transactionTemplate;
+    private final ExtensionManager extensionManager;
     // Current indexation
     private final AtomicReference<IndexationJob> currentIndexationJob = new AtomicReference<>();
     private final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, JIRAService jiraService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, JIRAService jiraService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager) {
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
         this.transactionService = transactionService;
@@ -67,6 +70,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
         this.issueRevisionDao = issueRevisionDao;
+        this.extensionManager = extensionManager;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
@@ -356,7 +360,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             public void run() {
                 // Configuration
                 int scanInterval = indexationConfigurationExtension.getScanInterval();
-                if (scanInterval > 0) {
+                if (scanInterval > 0 && extensionManager.isExtensionEnabled(SubversionExtension.EXTENSION)) {
                     indexTask();
                 }
             }

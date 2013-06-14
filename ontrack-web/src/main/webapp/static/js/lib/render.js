@@ -116,7 +116,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
                     return compiledTemplate(item);
                 });
                 if (callbackFn) {
-                    callbackFn(config);
+                    callbackFn(config, items);
                 }
             });
         }

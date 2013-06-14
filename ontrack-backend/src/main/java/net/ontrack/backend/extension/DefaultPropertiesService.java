@@ -1,6 +1,8 @@
 package net.ontrack.backend.extension;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.PropertyScopeException;
 import net.ontrack.backend.dao.PropertyDao;
@@ -60,19 +62,35 @@ public class DefaultPropertiesService implements PropertiesService {
     @Override
     @Transactional(readOnly = true)
     public List<PropertyValueWithDescriptor> getPropertyValuesWithDescriptor(Entity entity, int entityId) {
-        return Lists.transform(
-                getPropertyValues(entity, entityId),
-                new Function<PropertyValue, PropertyValueWithDescriptor>() {
-                    @Override
-                    public PropertyValueWithDescriptor apply(PropertyValue value) {
-                        return new PropertyValueWithDescriptor(
-                                extensionManager.getPropertyExtensionDescriptor(
-                                        value.getExtension(),
-                                        value.getName()),
-                                value.getValue()
-                        );
-                    }
-                }
+        return Lists.newArrayList(
+                Collections2.filter(
+                        Collections2.transform(
+                                getPropertyValues(entity, entityId),
+                                new Function<PropertyValue, PropertyValueWithDescriptor>() {
+                                    @Override
+                                    public PropertyValueWithDescriptor apply(PropertyValue value) {
+                                        PropertyExtensionDescriptor propertyExtensionDescriptor;
+                                        try {
+                                            propertyExtensionDescriptor = extensionManager.getPropertyExtensionDescriptor(
+                                                    value.getExtension(),
+                                                    value.getName());
+                                        } catch (PropertyExtensionNotFoundException ex) {
+                                            propertyExtensionDescriptor = null;
+                                        }
+                                        return new PropertyValueWithDescriptor(
+                                                propertyExtensionDescriptor,
+                                                value.getValue()
+                                        );
+                                    }
+                                }
+                        ),
+                        new Predicate<PropertyValueWithDescriptor>() {
+                            @Override
+                            public boolean apply(PropertyValueWithDescriptor it) {
+                                return it.getDescriptor() != null;
+                            }
+                        }
+                )
         );
     }
 

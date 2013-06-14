@@ -190,6 +190,16 @@ settings.general
     en -> General configuration
     fr -> Configuration générale
 
+[extensions]
+
+extensions
+    en -> Extensions
+    fr -> Extensions
+
+extensions.dependencies
+    en -> Depends on
+    fr -> Dépend de
+
 [settings.general]
 
 settings.general.baseUrl

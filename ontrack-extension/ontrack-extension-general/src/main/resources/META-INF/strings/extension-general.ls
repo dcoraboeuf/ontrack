@@ -1,3 +1,7 @@
+extension.general
+    en -> General
+    fr -> Général
+
 extension.general.weather.sunny
     en -> Sunny (0 failure in the last 5 builds)
     fr -> Ensoleillé (0 échec dans les 5 derniers builds)

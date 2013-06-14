@@ -1,3 +1,7 @@
+extension.explanation
+    en -> Explanations
+    fr -> Explications
+
 explanation.configuration
     en -> Explanations configuration
     fr -> Configuration des explications

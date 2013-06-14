@@ -1,0 +1,15 @@
+<tr class="extension-row" data-extension="{{name}}">
+    <td>
+        <input type="checkbox" class="extension" data-extension="{{name}}" />
+        {{displayName}}
+        <code>{{name}}</code>
+    </td>
+    <td>
+        {{#if dependencies.length}}
+            {{loc 'extensions.dependencies' }}
+            {{#dependencies}}
+                <code>{{.}}</code>
+            {{/dependencies}}
+        {{/if}}
+    </td>
+</tr>

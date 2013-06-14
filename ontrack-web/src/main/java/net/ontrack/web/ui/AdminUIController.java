@@ -2,6 +2,7 @@ package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
 import net.ontrack.core.ui.AdminUI;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.ProfileService;
 import net.ontrack.service.SubscriptionService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/ui/admin")
@@ -23,14 +25,16 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     private final AccountService accountService;
     private final SubscriptionService subscriptionService;
     private final ProfileService profileService;
+    private final ExtensionManager extensionManager;
     private final EntityConverter entityConverter;
 
     @Autowired
-    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService, ProfileService profileService, EntityConverter entityConverter) {
+    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService, ProfileService profileService, ExtensionManager extensionManager, EntityConverter entityConverter) {
         super(errorHandler, strings);
         this.accountService = accountService;
         this.subscriptionService = subscriptionService;
         this.profileService = profileService;
+        this.extensionManager = extensionManager;
         this.entityConverter = entityConverter;
     }
 
@@ -129,5 +133,36 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     Ack addFilterValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
         return profileService.addFilterValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp));
     }
+
+    /**
+     * Administration of the extensions
+     */
+    @RequestMapping(value = "/extensions", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ExtensionSummary> extensions(Locale locale) {
+        return extensionManager.getExtensionTree(locale);
+    }
+
+    /**
+     * Enabling an extension
+     */
+    @RequestMapping(value = "/extensions/{name}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack enableExtension(@PathVariable String name) {
+        return extensionManager.enableExtension(name);
+    }
+
+    /**
+     * Disabling an extension
+     */
+    @RequestMapping(value = "/extensions/{name}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack disableExtension(@PathVariable String name) {
+        return extensionManager.disableExtension(name);
+    }
+
 
 }

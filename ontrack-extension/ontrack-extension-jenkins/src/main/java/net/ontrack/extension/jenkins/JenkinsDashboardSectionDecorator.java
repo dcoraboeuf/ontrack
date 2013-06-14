@@ -1,6 +1,7 @@
 package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
 import net.ontrack.extension.jenkins.client.JenkinsJob;
@@ -17,18 +18,20 @@ public class JenkinsDashboardSectionDecorator implements DashboardSectionDecorat
 
     private final PropertiesService propertiesService;
     private final JenkinsClient jenkinsClient;
-    private final JenkinsConfigurationExtension jenkinsConfiguration;
+    private final ExtensionManager extensionManager;
 
     @Autowired
-    public JenkinsDashboardSectionDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, JenkinsConfigurationExtension jenkinsConfiguration) {
+    public JenkinsDashboardSectionDecorator(PropertiesService propertiesService, JenkinsClient jenkinsClient, ExtensionManager extensionManager) {
         this.propertiesService = propertiesService;
         this.jenkinsClient = jenkinsClient;
-        this.jenkinsConfiguration = jenkinsConfiguration;
+        this.extensionManager = extensionManager;
     }
 
     @Override
     public Collection<String> getClasses(Entity entity, int stampId) {
-        if (entity == Entity.VALIDATION_STAMP) {
+        if (!extensionManager.isExtensionEnabled(JenkinsExtension.EXTENSION)) {
+            return null;
+        } else if (entity == Entity.VALIDATION_STAMP) {
             // Gets the Jenkins URL for this validation stamp
             String jobUrl = propertiesService.getPropertyValue(Entity.VALIDATION_STAMP, stampId, JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME);
             if (StringUtils.isNotBlank(jobUrl)) {

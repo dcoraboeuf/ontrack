@@ -1,7 +1,6 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.extension.api.configuration.ConfigurationExtensionService;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -15,7 +14,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -23,14 +21,12 @@ public class DefaultAdminService implements AdminService {
 
     private final ValidatorService validatorService;
     private final ConfigurationService configurationService;
-    private final ConfigurationExtensionService configurationExtensionService;
     private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
 
     @Autowired
-    public DefaultAdminService(ValidatorService validatorService, ConfigurationService configurationService, ConfigurationExtensionService configurationExtensionService) {
+    public DefaultAdminService(ValidatorService validatorService, ConfigurationService configurationService) {
         this.validatorService = validatorService;
         this.configurationService = configurationService;
-        this.configurationExtensionService = configurationExtensionService;
     }
 
     @Override
@@ -131,12 +127,5 @@ public class DefaultAdminService implements AdminService {
         configurationService.set(ConfigurationKey.MAIL_PASSWORD, configuration.getPassword());
         configurationService.set(ConfigurationKey.MAIL_AUTHENTICATION, configuration.isAuthentication());
         configurationService.set(ConfigurationKey.MAIL_START_TLS, configuration.isStartTls());
-    }
-
-    @Override
-    @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public String saveExtensionConfiguration(String extension, String name, Map<String, String> parameters) {
-        return configurationExtensionService.saveExtensionConfiguration(extension, name, parameters);
     }
 }
