@@ -53,25 +53,29 @@ public class DefaultBuildCleanupService implements ScheduledService, BuildCleanu
     @Override
     public void run() {
         logger.info("[build-cleanup] Running the clean-up task...");
-        List<ProjectSummary> projectList = managementService.getProjectList();
-        for (ProjectSummary project : projectList) {
-            List<BranchSummary> branchList = managementService.getBranchList(project.getId());
-            for (BranchSummary branch : branchList) {
-                // Logging
-                logger.info(
-                        "[build-cleanup] Running the clean-up task for project={}, branch={} ...",
-                        project.getName(), branch.getName()
-                );
-                // Clean-up for the branch
-                buildCleanup(branch.getId());
-                // Logging
-                logger.info(
-                        "[build-cleanup] End of the clean-up task for project={}, branch={} ...",
-                        project.getName(), branch.getName()
-                );
+        try {
+            List<ProjectSummary> projectList = managementService.getProjectList();
+            for (ProjectSummary project : projectList) {
+                List<BranchSummary> branchList = managementService.getBranchList(project.getId());
+                for (BranchSummary branch : branchList) {
+                    // Logging
+                    logger.info(
+                            "[build-cleanup] Running the clean-up task for project={}, branch={} ...",
+                            project.getName(), branch.getName()
+                    );
+                    // Clean-up for the branch
+                    buildCleanup(branch.getId());
+                    // Logging
+                    logger.info(
+                            "[build-cleanup] End of the clean-up task for project={}, branch={} ...",
+                            project.getName(), branch.getName()
+                    );
+                }
             }
+            logger.info("[build-cleanup] End of the clean-up task.");
+        } catch (Exception ex) {
+            logger.error("[build-cleanup] Error", ex);
         }
-        logger.info("[build-cleanup] End of the clean-up task.");
     }
 
     private void buildCleanup(int branch) {
