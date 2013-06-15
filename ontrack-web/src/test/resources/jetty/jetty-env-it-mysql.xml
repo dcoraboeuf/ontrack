@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+	<New id="ontrackDataSource" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg>jdbc/ontrack</Arg>
+		<Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="DriverClassName">com.mysql.jdbc.Driver</Set>
+                <Set name="Url">jdbc:mysql://mysql/ontrack</Set>
+                <Set name="Username">root</Set>
+                <Set name="Password">root</Set>
+                <Set name="DefaultAutoCommit">false</Set>
+                <Set name="InitialSize">3</Set>
+                <Set name="MaxActive">6</Set>
+                <Set name="TimeBetweenEvictionRunsMillis">60000</Set>
+                <Set name="ValidationQuery">SELECT 1</Set>
+                <Set name="TestWhileIdle">true</Set>
+            </New>
+		</Arg>
+	</New>
+
+</Configure>
