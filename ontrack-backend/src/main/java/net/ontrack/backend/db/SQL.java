@@ -264,7 +264,7 @@ public interface SQL {
             "FROM BUILD B\n" +
             "INNER JOIN EVENTS E ON E.BUILD = B.ID AND E.EVENT_TYPE = 'BUILD_CREATED'\n" +
             "WHERE B.BRANCH = :branch\n" +
-            "AND DATEDIFF('DAY', E.EVENT_TIMESTAMP, :now) > :retention\n" +
+            "AND TIMESTAMPDIFF(DAY, E.EVENT_TIMESTAMP, :now) > :retention\n" +
             "AND (SELECT COUNT(*) FROM PROMOTED_RUN PR WHERE PR.BUILD = B.ID AND PR.PROMOTION_LEVEL IN (%s)) = 0\n" +
             "ORDER BY B.ID";
 
