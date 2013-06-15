@@ -1,5 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.backend.BuildAlreadyExistsException;
 import net.ontrack.backend.Caches;
 import net.ontrack.backend.dao.BuildDao;
@@ -127,7 +129,7 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Transactional(readOnly = true)
     public List<TBuild> query(int branch, BuildFilter filter) {
         // Query root
-        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.*) FROM BUILD B" +
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.ID) FROM BUILD B" +
                 "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
                 "                LEFT JOIN PROMOTION_LEVEL PL ON PL.ID = PR.PROMOTION_LEVEL" +
                 "                LEFT JOIN (" +
@@ -220,10 +222,17 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         sql.append(" LIMIT :limit");
         params.addValue("limit", filter.getLimit());
         // List of builds
-        return getNamedParameterJdbcTemplate().query(
-                sql.toString(),
-                params,
-                buildRowMapper
+        return Lists.transform(
+                getNamedParameterJdbcTemplate().queryForList(
+                        sql.toString(),
+                        params,
+                        Integer.class),
+                new Function<Integer, TBuild>() {
+                    @Override
+                    public TBuild apply(Integer id) {
+                        return getById(id);
+                    }
+                }
         );
     }
 
