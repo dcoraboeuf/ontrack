@@ -11,6 +11,8 @@ public interface GitRepository {
 
     String getRemote();
 
+    String getBranch();
+
     String getId();
 
     GitRepository sync() throws GitAPIException;

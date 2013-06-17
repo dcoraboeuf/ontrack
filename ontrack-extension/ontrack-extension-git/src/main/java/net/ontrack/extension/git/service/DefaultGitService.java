@@ -68,7 +68,11 @@ public class DefaultGitService implements GitService {
                 securityUtils.asAdmin(new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
-                        doImportBuilds(branchId, form);
+                        try {
+                            doImportBuilds(branchId, form);
+                        } catch (Exception ex) {
+                            logger.error("[git] Cannot import builds", ex);
+                        }
                         return null;
                     }
                 });
@@ -84,6 +88,7 @@ public class DefaultGitService implements GitService {
         // Gets the Git client
         GitClient gitClient = gitClientFactory.getClient(gitConfiguration);
         // Gets the list of tags
+        logger.debug("[git] Getting list of tags");
         Collection<GitTag> tags = gitClient.getTags();
         // Pattern for the tags
         final Pattern tagPattern = getTagRegex(gitConfiguration);
@@ -95,6 +100,7 @@ public class DefaultGitService implements GitService {
             }
         });
         // TODO Creates the builds
+        logger.debug("[git] Creating builds from tags");
         for (GitTag tag : tags) {
             logger.info("[git] Creating build from tag {}", tag.getName());
         }

@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitTag;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 
@@ -16,7 +17,10 @@ public class DefaultGitClient implements GitClient {
         @Override
         public GitTag apply(Ref ref) {
             return new GitTag(
-                    ref.getName()
+                    StringUtils.substringAfter(
+                            ref.getName(),
+                            "refs/tags/"
+                    )
             );
         }
     };

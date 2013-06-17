@@ -17,13 +17,13 @@ public class DefaultGitRepositoryManager implements GitRepositoryManager {
 
     private final Logger logger = LoggerFactory.getLogger(GitRepositoryManager.class);
     private final EnvironmentService environmentService;
-    private final LoadingCache<String, GitRepository> repositoryCache =
+    private final LoadingCache<GitRepositoryKey, GitRepository> repositoryCache =
             CacheBuilder.newBuilder()
                     .maximumSize(10)
-                    .build(new CacheLoader<String, GitRepository>() {
+                    .build(new CacheLoader<GitRepositoryKey, GitRepository>() {
                         @Override
-                        public GitRepository load(String remote) throws Exception {
-                            return createRepositoryManager(remote);
+                        public GitRepository load(GitRepositoryKey key) throws Exception {
+                            return createRepositoryManager(key);
                         }
                     });
 
@@ -32,30 +32,32 @@ public class DefaultGitRepositoryManager implements GitRepositoryManager {
         this.environmentService = environmentService;
     }
 
-    private synchronized GitRepository createRepositoryManager(String remote) {
-        logger.info("[git-repository] Creating repository manager for {}", remote);
+    private synchronized GitRepository createRepositoryManager(GitRepositoryKey key) {
+        String remote = key.getRemote();
+        String branch = key.getBranch();
+        logger.info("[git-repository] Creating repository manager for {} and branch {}", remote, branch);
         // Gets the ID for this remote location
-        String id = getRepositoryId(remote);
-        logger.info("[git-repository] Repository manager id for {} is {}", remote, id);
+        String id = getRepositoryId(remote, branch);
+        logger.info("[git-repository] Repository manager id for {} and branch {} is {}", remote, branch, id);
         // Gets the working directory for this ID
         File wd = environmentService.getWorkingDir("git", String.format("wd-%s", id));
         logger.debug("[git-repository] Repository manager working dir for {} is at {}", id, wd);
         // Creates the repository manager
-        return new DefaultGitRepository(wd, remote, id);
+        return new DefaultGitRepository(wd, remote, branch, id);
     }
 
     @Override
-    public GitRepository getRepository(String remote) {
+    public GitRepository getRepository(String remote, String branch) {
         // Gets the cached repository managed or creates it
         try {
-            return repositoryCache.get(remote);
+            return repositoryCache.get(new GitRepositoryKey(remote, branch));
         } catch (ExecutionException e) {
             throw new GitRepositoryManagerException(remote, e);
         }
     }
 
-    protected String getRepositoryId(String remote) {
-        return remote.replaceAll("[:\\.\\\\/@]", "_");
+    protected String getRepositoryId(String remote, String branch) {
+        return (remote + "_" + branch).replaceAll("[:\\.\\\\/@]", "_");
     }
 
 }
