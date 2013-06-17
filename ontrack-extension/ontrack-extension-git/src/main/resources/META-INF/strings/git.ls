@@ -14,3 +14,9 @@ git.branch
 git.tag
     en -> Git tag pattern
     fr -> Motif pour les tags Git
+
+[changelog]
+
+git.changelog
+    en -> Change log
+    fr -> Changements

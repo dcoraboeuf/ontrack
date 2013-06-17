@@ -14,5 +14,12 @@
     <artifactId>ontrack-extension-git</artifactId>
     <name>ontrack Extension Git</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-web-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

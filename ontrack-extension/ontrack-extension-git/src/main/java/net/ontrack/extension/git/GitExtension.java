@@ -1,11 +1,14 @@
 package net.ontrack.extension.git;
 
+import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -15,13 +18,21 @@ public class GitExtension extends ExtensionAdapter {
     private final GitRemoteProperty gitRemoteProperty;
     private final GitBranchProperty gitBranchProperty;
     private final GitTagProperty gitTagProperty;
+    private final GitChangeLogAction gitChangeLogAction;
 
     @Autowired
-    public GitExtension(GitRemoteProperty gitRemoteProperty, GitBranchProperty gitBranchProperty, GitTagProperty gitTagProperty) {
+    public GitExtension(GitRemoteProperty gitRemoteProperty, GitBranchProperty gitBranchProperty, GitTagProperty gitTagProperty,
+                        GitChangeLogAction gitChangeLogAction) {
         super(EXTENSION);
         this.gitRemoteProperty = gitRemoteProperty;
         this.gitBranchProperty = gitBranchProperty;
         this.gitTagProperty = gitTagProperty;
+        this.gitChangeLogAction = gitChangeLogAction;
+    }
+
+    @Override
+    public Collection<? extends ActionExtension> getDiffActions() {
+        return Collections.singleton(gitChangeLogAction);
     }
 
     @Override
