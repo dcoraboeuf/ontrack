@@ -3,6 +3,7 @@ package net.ontrack.extension.git;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.web.support.AbstractGUIController;
@@ -12,18 +13,32 @@ import net.sf.jstring.LocalizableMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/gui/extension/git/import-builds")
 public class GitImportBuildsAction extends AbstractGUIController implements EntityActionExtension<BranchSummary> {
 
     private final PropertiesService propertiesService;
+    private final ManageUI manageUI;
 
     @Autowired
-    public GitImportBuildsAction(ErrorHandler errorHandler, PropertiesService propertiesService) {
+    public GitImportBuildsAction(ErrorHandler errorHandler, PropertiesService propertiesService, ManageUI manageUI) {
         super(errorHandler);
         this.propertiesService = propertiesService;
+        this.manageUI = manageUI;
+    }
+
+    @RequestMapping(value = "/{projectName:[A-Za-z0-9_\\.\\-]+}/{branchName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public String importBuildsConfig(Locale locale, @PathVariable String projectName, @PathVariable String branchName, Model model) {
+        model.addAttribute("branch", manageUI.getBranch(projectName, branchName));
+        // OK
+        return "extension/git/import-builds";
     }
 
     @Override
