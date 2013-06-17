@@ -5,6 +5,24 @@
     title=loc("git.import-builds")
     noscript=true
     style=true
-    extension=true>
+    extension=true
+    breadcrumbs={
+        loc("home"): "",
+        branch.project.name?html: "gui/project/${branch.project.name?html}",
+        branch.name?html: "gui/project/${branch.project.name?html}/branch/${branch.name?html}"
+    }>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <span class="title">
+                <a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
+                / <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a>
+                / <@lh key="git.import-builds" />
+            </span>
+            <span class="action action-optional">
+                <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+            </span>
+        </div>
+    </div>
 
 </@layout_std>
