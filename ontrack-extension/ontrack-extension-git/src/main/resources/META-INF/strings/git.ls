@@ -20,3 +20,9 @@ git.tag
 git.changelog
     en -> Change log
     fr -> Changements
+
+[import-builds]
+
+git.import-builds
+    en -> Import builds
+    fr -> Importer les builds

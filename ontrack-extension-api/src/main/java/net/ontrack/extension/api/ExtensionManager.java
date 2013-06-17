@@ -1,9 +1,6 @@
 package net.ontrack.extension.api;
 
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ExtensionSummary;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
@@ -81,6 +78,11 @@ public interface ExtensionManager {
      * Gets the list of actions that apply to a project
      */
     Collection<EntityActionExtension<ProjectSummary>> getProjectActions();
+
+    /**
+     * Gets the list of actions that apply to a branch
+     */
+    Collection<EntityActionExtension<BranchSummary>> getBranchActions();
 
     /**
      * Gets the list of extensions together with their dependencies

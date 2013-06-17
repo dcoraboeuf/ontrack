@@ -119,6 +119,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
         variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));
         variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, securityUtils, manageUI));
+        variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, securityUtils, manageUI));
         variables.put("extensionStyles", new FnExtensionStyles(extensionManager));
         // OK
         c.setFreemarkerVariables(variables);

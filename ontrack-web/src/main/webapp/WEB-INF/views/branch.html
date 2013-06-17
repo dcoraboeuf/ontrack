@@ -16,6 +16,14 @@
                     </#list>
                 </span>
                 <span class="action action-optional">
+                    <#list extensionBranchActions(branch.project.name, branch.name) as branchAction>
+                        <a href="${branchAction.url?html}" class="<#if branchAction.css??>${branchAction.css?html}</#if>">
+                            <#if branchAction.icon??>
+                                <i class="${branchAction.icon?html}"></i>
+                            </#if>
+                            ${branchAction.title?html}
+                        </a>
+                    </#list>
                     <#if secAdmin()>
                         <span id="command-branch-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone"><i class="icon-forward"></i> <@lh key="branch.clone" /></a>

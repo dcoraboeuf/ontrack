@@ -1,6 +1,7 @@
 package net.ontrack.extension.git;
 
 import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,23 @@ public class GitExtension extends ExtensionAdapter {
     private final GitBranchProperty gitBranchProperty;
     private final GitTagProperty gitTagProperty;
     private final GitChangeLogAction gitChangeLogAction;
+    private final GitImportBuildsAction gitImportBuildsAction;
 
     @Autowired
     public GitExtension(GitRemoteProperty gitRemoteProperty, GitBranchProperty gitBranchProperty, GitTagProperty gitTagProperty,
-                        GitChangeLogAction gitChangeLogAction) {
+                        GitChangeLogAction gitChangeLogAction,
+                        GitImportBuildsAction gitImportBuildsAction) {
         super(EXTENSION);
         this.gitRemoteProperty = gitRemoteProperty;
         this.gitBranchProperty = gitBranchProperty;
         this.gitTagProperty = gitTagProperty;
         this.gitChangeLogAction = gitChangeLogAction;
+        this.gitImportBuildsAction = gitImportBuildsAction;
+    }
+
+    @Override
+    public Collection<? extends EntityActionExtension> getEntityActions() {
+        return Collections.singleton(gitImportBuildsAction);
     }
 
     @Override
