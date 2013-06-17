@@ -21,6 +21,9 @@ net.ontrack.backend.TemplateMergeException
 net.ontrack.backend.security.AsAdminCallException
     en -> [E-007] Error while running code as administrator.
 
+net.ontrack.backend.CannotCreateWorkingDirException
+    en -> [E-008] Cannot create working directory.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

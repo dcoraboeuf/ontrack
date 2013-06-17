@@ -35,3 +35,6 @@ git.import-builds.override
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
     en -> [GIT-001] Project remote repository is not configured.
+
+net.ontrack.extension.git.client.impl.GitRepositoryManagerException
+    en -> [GIT-002] Cannot get the repository manager for remote at {0}
