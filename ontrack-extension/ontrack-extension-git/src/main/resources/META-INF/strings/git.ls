@@ -26,3 +26,7 @@ git.changelog
 git.import-builds
     en -> Import builds
     fr -> Importer les builds
+
+git.import-builds.override
+    en -> Override the existing builds
+    fr -> Remplacer les builds existants

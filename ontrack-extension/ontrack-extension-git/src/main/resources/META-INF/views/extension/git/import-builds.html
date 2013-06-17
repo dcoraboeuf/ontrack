@@ -19,9 +19,25 @@
                 / <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a>
                 / <@lh key="git.import-builds" />
             </span>
-            <span class="action action-optional">
-                <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
-            </span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form class="form-horizontal" action="gui/extension/git/import-builds/${branch.project.name?html}/${branch.name?html}" method="POST">
+                <div class="control-group">
+                    <label class="control-label" for="override-builds"><@lh key="git.import-builds.override"/></label>
+                    <div class="controls">
+                        <input type="checkbox" id="override-builds" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                        <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}" class="btn btn-link"><@lh key="general.close" /></a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
