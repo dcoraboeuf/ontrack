@@ -38,3 +38,7 @@ net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
 
 net.ontrack.extension.git.client.impl.GitRepositoryManagerException
     en -> [GIT-002] Cannot get the repository manager for remote at {0}
+
+net.ontrack.extension.git.client.impl.GitException
+    en -> [GIT-003] GIT API exception
+
