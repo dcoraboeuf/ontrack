@@ -42,3 +42,5 @@ net.ontrack.extension.git.client.impl.GitRepositoryManagerException
 net.ontrack.extension.git.client.impl.GitException
     en -> [GIT-003] GIT API exception
 
+net.ontrack.extension.git.client.impl.GitNotSyncException
+    en -> [GIT-004] Git repository not initialized. A call to the sync() method is probably missing.

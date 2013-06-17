@@ -1,5 +1,7 @@
 package net.ontrack.extension.git.service;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
@@ -17,6 +19,8 @@ import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
 import net.ontrack.service.ManagementService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -25,10 +29,12 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 @Service
 public class DefaultGitService implements GitService {
 
+    private final Logger logger = LoggerFactory.getLogger(GitService.class);
     private final SecurityUtils securityUtils;
     private final PropertiesService propertiesService;
     private final ManagementService managementService;
@@ -79,8 +85,30 @@ public class DefaultGitService implements GitService {
         GitClient gitClient = gitClientFactory.getClient(gitConfiguration);
         // Gets the list of tags
         Collection<GitTag> tags = gitClient.getTags();
-        // TODO Filters the tags according to the branch tag pattern
+        // Pattern for the tags
+        final Pattern tagPattern = getTagRegex(gitConfiguration);
+        // Filters the tags according to the branch tag pattern
+        tags = Collections2.filter(tags, new Predicate<GitTag>() {
+            @Override
+            public boolean apply(GitTag tag) {
+                return tagPattern.matcher(tag.getName()).matches();
+            }
+        });
         // TODO Creates the builds
+        for (GitTag tag : tags) {
+            logger.info("[git] Creating build from tag {}", tag.getName());
+        }
+    }
+
+    private Pattern getTagRegex(GitConfiguration gitConfiguration) {
+        final Pattern tagPattern;
+        String tag = gitConfiguration.getTag();
+        if (StringUtils.isNotBlank(tag)) {
+            tagPattern = Pattern.compile(tag.replaceAll("\\*", ".*"));
+        } else {
+            tagPattern = Pattern.compile(".*");
+        }
+        return tagPattern;
     }
 
     private void checkGitConfiguration(GitConfiguration gitConfiguration) {

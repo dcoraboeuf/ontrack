@@ -1,6 +1,7 @@
 package net.ontrack.extension.git.client.impl;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 public class DefaultGitRepositoryTest {
 
     @Test
-    public void sync_clone() throws IOException {
+    public void sync_clone() throws IOException, GitAPIException {
         DefaultGitRepository repository = createRepo(
                 "git://github.com/dcoraboeuf/ontrack.git",
                 "sync_clone");

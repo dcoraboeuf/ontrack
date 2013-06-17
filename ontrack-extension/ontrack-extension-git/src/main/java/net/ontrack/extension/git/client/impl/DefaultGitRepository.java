@@ -36,7 +36,7 @@ public class DefaultGitRepository implements GitRepository {
     }
 
     @Override
-    public synchronized GitRepository sync() {
+    public synchronized GitRepository sync() throws GitAPIException {
         // Clone or update
         if (git == null) {
             git = cloneRemote();
@@ -48,20 +48,20 @@ public class DefaultGitRepository implements GitRepository {
         return this;
     }
 
-    protected synchronized Git cloneRemote() {
-        try {
-            return new CloneCommand()
-                    .setBranch("master")
-                    .setDirectory(wd)
-                    .setURI(remote)
-                    .call();
-        } catch (GitAPIException e) {
-            throw translationException(e);
+    @Override
+    public Git git() {
+        if (git == null) {
+            throw new GitNotSyncException();
         }
+        return git;
     }
 
-    protected GitException translationException(GitAPIException e) {
-        throw new GitException(e);
+    protected synchronized Git cloneRemote() throws GitAPIException {
+        return new CloneCommand()
+                .setBranch("master")
+                .setDirectory(wd)
+                .setURI(remote)
+                .call();
     }
 
 }
