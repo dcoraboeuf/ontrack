@@ -21,6 +21,7 @@ public class DefaultGitClient implements GitClient {
 
     @Override
     public Collection<GitTag> getTags() {
+        repository.sync();
         // FIXME Implement net.ontrack.extension.git.client.impl.DefaultGitClient.getTags
         return null;
     }

@@ -13,4 +13,19 @@ public class DefaultGitRepository implements GitRepository {
         this.remote = remote;
         this.id = id;
     }
+
+    @Override
+    public synchronized void sync() {
+        // Clone or update
+        if (isSetup()) {
+            // FIXME Pull
+        } else {
+            // FIXME Clone
+        }
+    }
+
+    @Override
+    public synchronized boolean isSetup() {
+        return new File(wd, ".git").exists();
+    }
 }
