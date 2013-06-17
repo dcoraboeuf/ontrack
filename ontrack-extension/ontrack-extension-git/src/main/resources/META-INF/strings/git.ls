@@ -30,3 +30,8 @@ git.import-builds
 git.import-builds.override
     en -> Override the existing builds
     fr -> Remplacer les builds existants
+
+[errors]
+
+net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
+    en -> [GIT-001] Project remote repository is not configured.
