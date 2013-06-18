@@ -40,7 +40,10 @@ net.ontrack.extension.git.client.impl.GitRepositoryManagerException
     en -> [GIT-002] Cannot get the repository manager for remote at {0}
 
 net.ontrack.extension.git.client.impl.GitException
-    en -> [GIT-003] GIT API exception
+    en -> [GIT-003] Git API exception
 
 net.ontrack.extension.git.client.impl.GitNotSyncException
     en -> [GIT-004] Git repository not initialized. A call to the sync() method is probably missing.
+
+net.ontrack.extension.git.client.impl.GitIOException
+    en -> [GIT-005] Git IO exception
