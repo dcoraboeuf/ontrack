@@ -1,10 +1,7 @@
 package net.ontrack.extension.git.service;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.BuildCreationForm;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.PropertiesCreationForm;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -15,6 +12,7 @@ import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
 import net.ontrack.extension.git.client.GitTag;
+import net.ontrack.extension.git.model.ChangeLogBuild;
 import net.ontrack.extension.git.model.ChangeLogSummary;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
@@ -29,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -87,9 +86,30 @@ public class DefaultGitService implements GitService {
     }
 
     @Override
-    public ChangeLogSummary getChangeLogSummary(Locale locale, int branchId, int buildFromId, int buildToId) {
-        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getChangeLogSummary
-        return null;
+    public ChangeLogSummary getChangeLogSummary(Locale locale, int branchId, int from, int to) {
+        // Gets the branch
+        BranchSummary branch = managementService.getBranch(branchId);
+        // Gets the build information
+        ChangeLogBuild buildFrom = getBuild(locale, from);
+        ChangeLogBuild buildTo = getBuild(locale, to);
+        // OK
+        return new ChangeLogSummary(
+                UUID.randomUUID().toString(),
+                branch,
+                buildFrom,
+                buildTo
+        );
+    }
+
+    protected ChangeLogBuild getBuild(Locale locale, int buildId) {
+        // Gets the build basic information
+        BuildSummary build = managementService.getBuild(buildId);
+        // OK
+        return new ChangeLogBuild(
+                build,
+                managementService.getBuildValidationStamps(locale, build.getId()),
+                managementService.getBuildPromotionLevels(locale, build.getId())
+        );
     }
 
     protected void doImportBuilds(int branchId, GitImportBuildsForm form) {

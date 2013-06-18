@@ -21,6 +21,14 @@ git.changelog
     en -> Change log
     fr -> Changements
 
+git.changelog.summary
+    en -> Summary
+    fr -> Général
+
+git.changelog.commits
+    en -> Commits
+    fr -> Commits
+
 [import-builds]
 
 git.import-builds
