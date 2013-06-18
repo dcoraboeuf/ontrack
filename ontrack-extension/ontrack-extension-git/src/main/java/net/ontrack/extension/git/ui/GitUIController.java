@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.git.model.ChangeLog;
+import net.ontrack.extension.git.model.ChangeLogCommits;
 import net.ontrack.extension.git.model.ChangeLogRequest;
 import net.ontrack.extension.git.model.ChangeLogSummary;
 import net.ontrack.extension.git.service.GitService;
@@ -13,10 +14,7 @@ import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -55,5 +53,34 @@ public class GitUIController extends AbstractUIController implements GitUI {
         logCache.put(summary.getUuid(), new ChangeLog(summary));
         // OK
         return summary;
+    }
+
+    @Override
+    @RequestMapping(value = "/changelog/{uuid}/commits", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChangeLogCommits getChangeLogCommits(@PathVariable String uuid) {
+        // Gets the change log
+        ChangeLog changeLog = getChangeLog(uuid);
+        // Cached?
+        ChangeLogCommits commits = changeLog.getCommits();
+        if (commits != null) {
+            return commits;
+        }
+        // Loads the revisions
+        commits = gitService.getChangeLogCommits(changeLog.getSummary());
+        // Stores in cache
+        changeLog.setCommits(commits);
+        // OK
+        return commits;
+    }
+
+    private ChangeLog getChangeLog(String uuid) {
+        ChangeLog changeLog = logCache.getIfPresent(uuid);
+        if (changeLog != null) {
+            return changeLog;
+        } else {
+            throw new ChangeLogUUIDException(uuid);
+        }
     }
 }

@@ -62,3 +62,7 @@ net.ontrack.extension.git.client.impl.GitIOException
 
 net.ontrack.extension.git.client.impl.GitCommitNotFoundException
     en -> [GIT-006] Cannot find any commit for object "{0}"
+
+net.ontrack.extension.git.ui.ChangeLogUUIDException
+    en -> [GIT-007] Change log with UUID {0} cannot be found
+

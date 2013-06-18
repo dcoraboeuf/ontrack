@@ -12,10 +12,7 @@ import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
 import net.ontrack.extension.git.client.GitTag;
-import net.ontrack.extension.git.model.ChangeLogBuild;
-import net.ontrack.extension.git.model.ChangeLogSummary;
-import net.ontrack.extension.git.model.GitConfiguration;
-import net.ontrack.extension.git.model.GitImportBuildsForm;
+import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
 import org.apache.commons.lang3.StringUtils;
@@ -99,6 +96,12 @@ public class DefaultGitService implements GitService {
                 buildFrom,
                 buildTo
         );
+    }
+
+    @Override
+    public ChangeLogCommits getChangeLogCommits(ChangeLogSummary summary) {
+        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getChangeLogCommits
+        return null;
     }
 
     protected ChangeLogBuild getBuild(Locale locale, int buildId) {

@@ -6,7 +6,7 @@ import lombok.Data;
 public class ChangeLog {
 
     private final ChangeLogSummary summary;
-    // private ChangeLogRevisions revisions;
+    private ChangeLogCommits commits;
     // private ChangeLogIssues issues;
     // private ChangeLogFiles files;
     // private ChangeLogInfo info;
