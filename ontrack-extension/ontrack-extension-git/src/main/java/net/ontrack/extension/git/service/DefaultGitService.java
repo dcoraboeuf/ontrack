@@ -15,6 +15,7 @@ import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
 import net.ontrack.extension.git.client.GitTag;
+import net.ontrack.extension.git.model.ChangeLogSummary;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
 import net.ontrack.service.ControlService;
@@ -27,6 +28,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -82,6 +84,12 @@ public class DefaultGitService implements GitService {
                 });
             }
         });
+    }
+
+    @Override
+    public ChangeLogSummary getChangeLogSummary(Locale locale, int branchId, int buildFromId, int buildToId) {
+        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getChangeLogSummary
+        return null;
     }
 
     protected void doImportBuilds(int branchId, GitImportBuildsForm form) {
