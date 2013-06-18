@@ -100,8 +100,24 @@ public class DefaultGitService implements GitService {
 
     @Override
     public ChangeLogCommits getChangeLogCommits(ChangeLogSummary summary) {
-        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getChangeLogCommits
-        return null;
+        // Gets the branch ID
+        int branchId = summary.getBranch().getId();
+        // Gets the client client for this branch
+        GitClient gitClient = getGitClient(branchId);
+        // Gets the configuration
+        GitConfiguration gitConfiguration = gitClient.getConfiguration();
+        // Gets the tag boundaries
+        String tagFrom = summary.getBuildFrom().getBuildSummary().getName();
+        String tagTo = summary.getBuildTo().getBuildSummary().getName();
+        String tagPattern = gitConfiguration.getTag();
+        if (StringUtils.isNotBlank(tagPattern)) {
+            tagFrom = StringUtils.replace(tagPattern, "*", tagFrom);
+            tagTo = StringUtils.replace(tagPattern, "*", tagTo);
+        }
+        // Gets the commits
+        gitClient.log(tagFrom, tagTo);
+        // OK
+        return new ChangeLogCommits();
     }
 
     protected ChangeLogBuild getBuild(Locale locale, int buildId) {
@@ -115,13 +131,18 @@ public class DefaultGitService implements GitService {
         );
     }
 
-    protected void doImportBuilds(int branchId, GitImportBuildsForm form) {
+    protected GitClient getGitClient(int branchId) {
         // Gets the branch Git configuration
         GitConfiguration gitConfiguration = getGitConfiguration(branchId);
         // Checks the configuration
-        checkGitConfiguration(gitConfiguration);
+        gitConfiguration = checkGitConfiguration(gitConfiguration);
         // Gets the Git client
-        GitClient gitClient = gitClientFactory.getClient(gitConfiguration);
+        return gitClientFactory.getClient(gitConfiguration);
+    }
+
+    protected void doImportBuilds(int branchId, GitImportBuildsForm form) {
+        // Gets the branch Git client
+        GitClient gitClient = getGitClient(branchId);
         // Gets the list of tags
         logger.debug("[git] Getting list of tags");
         Collection<GitTag> tags = gitClient.getTags();
@@ -157,9 +178,13 @@ public class DefaultGitService implements GitService {
         return tagPattern;
     }
 
-    private void checkGitConfiguration(GitConfiguration gitConfiguration) {
+    private GitConfiguration checkGitConfiguration(GitConfiguration gitConfiguration) {
         if (StringUtils.isBlank(gitConfiguration.getRemote())) {
             throw new GitProjectRemoteNotConfiguredException();
+        } else if (StringUtils.isBlank(gitConfiguration.getBranch())) {
+            return gitConfiguration.withDefaultBranch();
+        } else {
+            return gitConfiguration;
         }
     }
 

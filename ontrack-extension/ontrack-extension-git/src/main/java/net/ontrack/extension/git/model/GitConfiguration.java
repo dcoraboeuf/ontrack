@@ -9,4 +9,7 @@ public class GitConfiguration {
     private final String branch;
     private final String tag;
 
+    public GitConfiguration withDefaultBranch() {
+        return new GitConfiguration(remote, "master", tag);
+    }
 }
