@@ -104,12 +104,12 @@ public class DefaultGitClient implements GitClient {
             // List of commits
             for (RevCommit revCommit : revCommits) {
                 // Gets the corresponding commit
-                GitCommit commit = commitIndex.get(revCommit.getId().toString());
+                GitCommit commit = commitIndex.get(getId(revCommit));
                 // Gets the parents
                 RevCommit[] parents = revCommit.getParents();
                 if (parents != null) {
                     for (RevCommit parent : parents) {
-                        GitCommit parentCommit = commitIndex.get(parent.getId().toString());
+                        GitCommit parentCommit = commitIndex.get(getId(parent));
                         commit.addParent(parentCommit);
                     }
                 }
@@ -124,9 +124,13 @@ public class DefaultGitClient implements GitClient {
 
     }
 
+    private String getId(RevCommit revCommit) {
+        return revCommit.getId().getName();
+    }
+
     private GitCommit toCommit(RevCommit revCommit) {
         return new GitCommit(
-                revCommit.getId().toString(),
+                getId(revCommit),
                 toPerson(revCommit.getAuthorIdent()),
                 toPerson(revCommit.getCommitterIdent()),
                 new DateTime(1000L * revCommit.getCommitTime(), DateTimeZone.UTC),
