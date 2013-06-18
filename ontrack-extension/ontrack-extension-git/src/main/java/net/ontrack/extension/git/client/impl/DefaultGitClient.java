@@ -1,7 +1,9 @@
 package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.client.GitPerson;
@@ -16,15 +18,11 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
 
 public class DefaultGitClient implements GitClient {
-
-    private final Logger logger = LoggerFactory.getLogger(GitClient.class);
 
     private final GitRepository repository;
     private final GitConfiguration configuration;
@@ -74,7 +72,7 @@ public class DefaultGitClient implements GitClient {
     }
 
     @Override
-    public GitCommit log(String from, String to) {
+    public List<GitCommit> log(String from, String to) {
         try {
             // Client
             Git git = repository.sync().git();
@@ -82,23 +80,42 @@ public class DefaultGitClient implements GitClient {
             ObjectId oFrom = git.getRepository().resolve(from);
             ObjectId oTo = git.getRepository().resolve(to);
             // Log
-            Iterable<RevCommit> revCommits = git.log().addRange(oFrom, oTo).call();
+            Iterable<RevCommit> log = git.log().addRange(oFrom, oTo).call();
+            List<RevCommit> revCommits = Lists.newArrayList(log);
+            // Conversion
+            List<GitCommit> commits = Lists.transform(
+                    revCommits,
+                    new Function<RevCommit, GitCommit>() {
+                        @Override
+                        public GitCommit apply(RevCommit rev) {
+                            return toCommit(rev);
+                        }
+                    }
+            );
             // Indexation
-            // Root
-            GitCommit root = null;
-            // Iteration
+            ImmutableMap<String, GitCommit> commitIndex = Maps.uniqueIndex(
+                    commits,
+                    new Function<GitCommit, String>() {
+                        @Override
+                        public String apply(GitCommit commit) {
+                            return commit.getId();
+                        }
+                    });
+            // List of commits
             for (RevCommit revCommit : revCommits) {
-                // Logging
-                logger.debug("[git] Commit: {}", revCommit.getId());
-                // Commit
-                GitCommit commit = toCommit(revCommit);
-                // Root?
-                if (root == null) {
-                    root = commit;
+                // Gets the corresponding commit
+                GitCommit commit = commitIndex.get(revCommit.getId().toString());
+                // Gets the parents
+                RevCommit[] parents = revCommit.getParents();
+                if (parents != null) {
+                    for (RevCommit parent : parents) {
+                        GitCommit parentCommit = commitIndex.get(parent.getId().toString());
+                        commit.addParent(parentCommit);
+                    }
                 }
             }
             // OK
-            return root;
+            return commits;
         } catch (GitAPIException e) {
             throw translationException(e);
         } catch (IOException e) {
@@ -109,6 +126,7 @@ public class DefaultGitClient implements GitClient {
 
     private GitCommit toCommit(RevCommit revCommit) {
         return new GitCommit(
+                revCommit.getId().toString(),
                 toPerson(revCommit.getAuthorIdent()),
                 toPerson(revCommit.getCommitterIdent()),
                 new DateTime(1000L * revCommit.getCommitTime(), DateTimeZone.UTC),

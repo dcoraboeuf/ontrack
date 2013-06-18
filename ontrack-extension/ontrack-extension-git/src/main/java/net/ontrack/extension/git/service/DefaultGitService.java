@@ -11,6 +11,7 @@ import net.ontrack.extension.git.GitRemoteProperty;
 import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
+import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.client.GitTag;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
@@ -23,6 +24,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -115,9 +117,9 @@ public class DefaultGitService implements GitService {
             tagTo = StringUtils.replace(tagPattern, "*", tagTo);
         }
         // Gets the commits
-        gitClient.log(tagFrom, tagTo);
+        List<GitCommit> commits = gitClient.log(tagFrom, tagTo);
         // OK
-        return new ChangeLogCommits();
+        return new ChangeLogCommits(commits);
     }
 
     protected ChangeLogBuild getBuild(Locale locale, int buildId) {
