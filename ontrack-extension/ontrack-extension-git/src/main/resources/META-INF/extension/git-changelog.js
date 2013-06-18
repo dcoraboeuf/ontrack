@@ -5,6 +5,16 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
         commits = data;
+        // Rendering
+        render.renderInto(
+            $('#commits'),
+            'extension/git-changelog-revisions',
+            commits,
+            function () {
+                // Tooltips
+                common.tooltips();
+            }
+        );
     }
 
     function loadSummary() {
