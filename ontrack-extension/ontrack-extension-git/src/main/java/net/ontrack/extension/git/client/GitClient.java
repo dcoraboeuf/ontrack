@@ -10,5 +10,5 @@ public interface GitClient {
 
     GitConfiguration getConfiguration();
 
-    void log(String from, String to);
+    GitCommit log(String from, String to);
 }
