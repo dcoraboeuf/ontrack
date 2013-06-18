@@ -1,14 +1,17 @@
 package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitTag;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
-import java.util.Collection;
+import java.util.*;
 
 public class DefaultGitClient implements GitClient {
 
@@ -16,11 +19,14 @@ public class DefaultGitClient implements GitClient {
     private final Function<Ref, GitTag> gitTagFunction = new Function<Ref, GitTag>() {
         @Override
         public GitTag apply(Ref ref) {
+            RevCommit commit = repository.getCommitForTag(ref);
+            String tagName = StringUtils.substringAfter(
+                    ref.getName(),
+                    "refs/tags/"
+            );
             return new GitTag(
-                    StringUtils.substringAfter(
-                            ref.getName(),
-                            "refs/tags/"
-                    )
+                    tagName,
+                    new DateTime(1000L * commit.getCommitTime(), DateTimeZone.UTC)
             );
         }
     };
@@ -32,9 +38,18 @@ public class DefaultGitClient implements GitClient {
     @Override
     public Collection<GitTag> getTags() {
         try {
-            return Collections2.transform(
-                    repository.sync().git().tagList().call(),
-                    gitTagFunction);
+            List<GitTag> tags = new ArrayList<>(
+                    Lists.transform(
+                            repository.sync().git().tagList().call(),
+                            gitTagFunction)
+            );
+            Collections.sort(tags, new Comparator<GitTag>() {
+                @Override
+                public int compare(GitTag o1, GitTag o2) {
+                    return o1.getTime().compareTo(o2.getTime());
+                }
+            });
+            return tags;
         } catch (GitAPIException e) {
             throw translationException(e);
         }

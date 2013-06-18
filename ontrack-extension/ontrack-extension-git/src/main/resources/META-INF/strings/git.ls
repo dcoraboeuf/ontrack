@@ -51,3 +51,6 @@ net.ontrack.extension.git.client.impl.GitNotSyncException
 
 net.ontrack.extension.git.client.impl.GitIOException
     en -> [GIT-005] Git IO exception
+
+net.ontrack.extension.git.client.impl.GitCommitNotFoundException
+    en -> [GIT-006] Cannot find any commit for object "{0}"

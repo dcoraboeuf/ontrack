@@ -14,6 +14,7 @@ import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,14 +62,14 @@ public class DefaultGitServiceTest {
 
         GitClient gitClient = mock(GitClient.class);
         when(gitClient.getTags()).thenReturn(Arrays.asList(
-                new GitTag("ontrack-0.7"),
-                new GitTag("ontrack-0.7"),
-                new GitTag("ontrack-0.8"),
-                new GitTag("ontrack-0.9"),
-                new GitTag("ontrack-1.9"),
-                new GitTag("ontrack-1.10"),
-                new GitTag("ontrack-1.11"),
-                new GitTag("ontrack-1.12")
+                new GitTag("ontrack-0.6", new DateTime(2013, 6, 18, 0, 6)),
+                new GitTag("ontrack-0.7", new DateTime(2013, 6, 18, 0, 7)),
+                new GitTag("ontrack-0.8", new DateTime(2013, 6, 18, 0, 8)),
+                new GitTag("ontrack-0.9", new DateTime(2013, 6, 18, 0, 9)),
+                new GitTag("ontrack-1.9", new DateTime(2013, 6, 18, 1, 9)),
+                new GitTag("ontrack-1.10", new DateTime(2013, 6, 18, 1, 10)),
+                new GitTag("ontrack-1.11", new DateTime(2013, 6, 18, 1, 11)),
+                new GitTag("ontrack-1.12", new DateTime(2013, 6, 18, 1, 12))
         ));
         when(gitClientFactory.getClient(any(GitConfiguration.class))).thenReturn(gitClient);
 
