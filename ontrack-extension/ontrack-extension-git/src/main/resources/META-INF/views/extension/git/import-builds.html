@@ -32,6 +32,12 @@
                     </div>
                 </div>
                 <div class="control-group">
+                    <label class="control-label" for="tagPattern"><@lh key="git.import-builds.tagPattern"/></label>
+                    <div class="controls">
+                        <input type="text" id="tagPattern" name="tagPattern" size="40" maxlength="120" />
+                    </div>
+                </div>
+                <div class="control-group">
                     <div class="controls">
                         <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}" class="btn btn-link"><@lh key="general.close" /></a>

@@ -31,6 +31,10 @@ git.import-builds.override
     en -> Override the existing builds
     fr -> Remplacer les builds existants
 
+git.import-builds.tagPattern
+    en -> Tag regular expression to extract the build name
+    fr -> Expression regulière pour extraire le nom du build depuis le nom du tag
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException

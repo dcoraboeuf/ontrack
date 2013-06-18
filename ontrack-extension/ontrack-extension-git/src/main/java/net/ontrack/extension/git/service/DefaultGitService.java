@@ -1,10 +1,10 @@
 package net.ontrack.extension.git.service;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.BranchSummary;
+import net.ontrack.core.model.BuildCreationForm;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -17,6 +17,7 @@ import net.ontrack.extension.git.client.GitClientFactory;
 import net.ontrack.extension.git.client.GitTag;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
+import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -38,6 +40,7 @@ public class DefaultGitService implements GitService {
     private final SecurityUtils securityUtils;
     private final PropertiesService propertiesService;
     private final ManagementService managementService;
+    private final ControlService controlService;
     private final GitClientFactory gitClientFactory;
     // Threads for the import
     private final ExecutorService executorImportBuilds = Executors.newFixedThreadPool(
@@ -52,10 +55,11 @@ public class DefaultGitService implements GitService {
             SecurityUtils securityUtils,
             PropertiesService propertiesService,
             ManagementService managementService,
-            GitClientFactory gitClientFactory) {
+            ControlService controlService, GitClientFactory gitClientFactory) {
         this.securityUtils = securityUtils;
         this.propertiesService = propertiesService;
         this.managementService = managementService;
+        this.controlService = controlService;
         this.gitClientFactory = gitClientFactory;
     }
 
@@ -91,28 +95,33 @@ public class DefaultGitService implements GitService {
         logger.debug("[git] Getting list of tags");
         Collection<GitTag> tags = gitClient.getTags();
         // Pattern for the tags
-        final Pattern tagPattern = getTagRegex(gitConfiguration);
-        // Filters the tags according to the branch tag pattern
-        tags = Collections2.filter(tags, new Predicate<GitTag>() {
-            @Override
-            public boolean apply(GitTag tag) {
-                return tagPattern.matcher(tag.getName()).matches();
-            }
-        });
-        // TODO Creates the builds
+        final Pattern tagPattern = getTagRegex(form);
+        // Creates the builds
         logger.debug("[git] Creating builds from tags");
         for (GitTag tag : tags) {
-            logger.info("[git] Creating build from tag {}", tag.getName());
+            String tagName = tag.getName();
+            // Filters the tags according to the branch tag pattern
+            Matcher matcher = tagPattern.matcher(tagName);
+            if (matcher.matches()) {
+                logger.info("[git] Creating build for tag {}", tagName);
+                String buildName = matcher.group(1);
+                logger.info("[git] Creating build {} from tag {}", buildName, tagName);
+                controlService.createBuild(branchId, new BuildCreationForm(
+                        buildName,
+                        "Imported from Git tag " + tagName,
+                        PropertiesCreationForm.create()
+                ));
+            }
         }
     }
 
-    private Pattern getTagRegex(GitConfiguration gitConfiguration) {
+    private Pattern getTagRegex(GitImportBuildsForm form) {
         final Pattern tagPattern;
-        String tag = gitConfiguration.getTag();
+        String tag = form.getTagPattern();
         if (StringUtils.isNotBlank(tag)) {
-            tagPattern = Pattern.compile(tag.replaceAll("\\*", ".*"));
+            tagPattern = Pattern.compile(tag);
         } else {
-            tagPattern = Pattern.compile(".*");
+            tagPattern = Pattern.compile("(.*)");
         }
         return tagPattern;
     }

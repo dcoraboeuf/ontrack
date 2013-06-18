@@ -6,5 +6,6 @@ import lombok.Data;
 public class GitImportBuildsForm {
 
     private boolean override;
+    private String tagPattern;
 
 }
