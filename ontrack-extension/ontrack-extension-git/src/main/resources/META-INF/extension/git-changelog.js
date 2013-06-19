@@ -1,20 +1,53 @@
-define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
+define(['jquery', 'ajax', 'render', 'common'], function ($, ajax, render, common) {
 
     var commits = null;
 
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
         commits = data;
-        // Rendering
-        render.renderInto(
-            $('#commits'),
-            'extension/git-changelog-commits',
-            commits,
-            function () {
-                // Tooltips
-                common.tooltips();
-            }
-        );
+        // TODO Extracts the plotting in a separate module
+        // Size
+        var canvas = document.getElementById('commits-canvas');
+        canvas.width = commits.plot.width;
+        canvas.height = commits.plot.height;
+        // Context
+        var ctx = canvas.getContext('2d');
+        // All items
+        $.each(commits.plot.items, function (index, item) {
+            drawItem(ctx, item);
+        });
+    }
+
+    var COLORS = [
+        'black',
+        'red',
+        'green',
+        'blue'
+    ];
+
+    function getColor(item) {
+        if (item.color) {
+            return COLORS[item.color.index % COLORS.length];
+        } else {
+            return 'black';
+        }
+    }
+
+    function drawLine(context, item) {
+        context.beginPath();
+        context.moveTo(item.a.x, item.a.y);
+        context.lineTo(item.b.x, item.b.y);
+        context.lineWidth = item.width;
+        context.strokeStyle = getColor(item);
+        context.stroke();
+    }
+
+    function drawItem(ctx, item) {
+        if ('line' == item.type) {
+            drawLine(ctx, item);
+        } else {
+            common.log('plot')('Unknown item type: {0}', item.type);
+        }
     }
 
     function loadSummary() {
@@ -40,11 +73,11 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
-    function changelogErrorFn () {
+    function changelogErrorFn() {
         return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
 
-    function init () {
+    function init() {
         $('#summary-tab').on('show', loadSummary);
         $('#commits-tab').on('show', loadCommits);
         // Initial tab
