@@ -14,4 +14,20 @@ public class GPlot {
         items.add(item);
         return this;
     }
+
+    public int getWidth() {
+        int width = 0;
+        for (GItem item : items) {
+            width = Math.max(width, item.getMaxX());
+        }
+        return width;
+    }
+
+    public int getHeight() {
+        int height = 0;
+        for (GItem item : items) {
+            height = Math.max(height, item.getMaxY());
+        }
+        return height;
+    }
 }

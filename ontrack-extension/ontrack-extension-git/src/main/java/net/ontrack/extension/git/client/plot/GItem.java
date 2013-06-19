@@ -4,4 +4,7 @@ public interface GItem {
 
     String getType();
 
+    int getMaxX();
+
+    int getMaxY();
 }

@@ -19,4 +19,13 @@ public class GLine extends AbstractGItem {
         return new GLine(color, a, b, width);
     }
 
+    @Override
+    public int getMaxX() {
+        return Math.max(a.getMaxX(), b.getMaxX());
+    }
+
+    @Override
+    public int getMaxY() {
+        return Math.max(a.getMaxY(), b.getMaxY());
+    }
 }

@@ -3,10 +3,12 @@ package net.ontrack.extension.git.client.plot;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class GPoint {
+@EqualsAndHashCode(callSuper = false)
+public class GPoint extends AbstractGItem {
 
     private final int x;
     private final int y;
@@ -17,5 +19,15 @@ public class GPoint {
 
     public GPoint ty(int offset) {
         return of(x, y + offset);
+    }
+
+    @Override
+    public int getMaxX() {
+        return x;
+    }
+
+    @Override
+    public int getMaxY() {
+        return y;
     }
 }
