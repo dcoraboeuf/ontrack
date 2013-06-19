@@ -24,9 +24,20 @@ define(function () {
         context.stroke();
     }
 
+    function drawOval(context, item) {
+        context.beginPath();
+        var centerX = item.c.x + item.d.w / 2.0;
+        var centerY = item.c.y + item.d.h / 2.0;
+        context.arc(centerX, centerY, item.d.w / 2.0, 0, 2 * Math.PI, false);
+        context.fillStyle = getColor(item);
+        context.fill();
+    }
+
     function drawItem(ctx, item) {
         if ('line' == item.type) {
             drawLine(ctx, item);
+        } else if ('oval' == item.type) {
+                drawOval(ctx, item);
         } else {
             common.log('plot')('Unknown item type: {0}', item.type);
         }
@@ -34,8 +45,8 @@ define(function () {
 
     function draw(canvas, plot) {
         // Size
-        canvas.width = plot.width;
-        canvas.height = plot.height;
+        canvas.width = plot.width + 2;
+        canvas.height = plot.height + 2;
         // Context
         var ctx = canvas.getContext('2d');
         // All items

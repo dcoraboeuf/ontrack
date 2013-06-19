@@ -51,7 +51,8 @@ public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
     @Override
     protected void drawCommitDot(int x, int y, int w, int h) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawCommitDot
+        // TODO Color
+        plot.add(GOval.of(GColor.of(0), point(x, y), GDim.of(w, h)));
 
     }
 
