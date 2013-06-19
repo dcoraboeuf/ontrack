@@ -1,9 +1,8 @@
 package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.client.GitPerson;
@@ -83,7 +82,7 @@ public class DefaultGitClient implements GitClient {
             Iterable<RevCommit> log = git.log().addRange(oFrom, oTo).call();
             List<RevCommit> revCommits = Lists.newArrayList(log);
             // Conversion
-            List<GitCommit> commits = Lists.transform(
+            return Lists.transform(
                     revCommits,
                     new Function<RevCommit, GitCommit>() {
                         @Override
@@ -92,30 +91,6 @@ public class DefaultGitClient implements GitClient {
                         }
                     }
             );
-            // Indexation
-            ImmutableMap<String, GitCommit> commitIndex = Maps.uniqueIndex(
-                    commits,
-                    new Function<GitCommit, String>() {
-                        @Override
-                        public String apply(GitCommit commit) {
-                            return commit.getId();
-                        }
-                    });
-            // List of commits
-            for (RevCommit revCommit : revCommits) {
-                // Gets the corresponding commit
-                GitCommit commit = commitIndex.get(getId(revCommit));
-                // Gets the parents
-                RevCommit[] parents = revCommit.getParents();
-                if (parents != null) {
-                    for (RevCommit parent : parents) {
-                        GitCommit parentCommit = commitIndex.get(getId(parent));
-                        commit.addParent(parentCommit);
-                    }
-                }
-            }
-            // OK
-            return commits;
         } catch (GitAPIException e) {
             throw translationException(e);
         } catch (IOException e) {
@@ -135,8 +110,25 @@ public class DefaultGitClient implements GitClient {
                 toPerson(revCommit.getCommitterIdent()),
                 new DateTime(1000L * revCommit.getCommitTime(), DateTimeZone.UTC),
                 revCommit.getFullMessage(),
-                revCommit.getShortMessage()
+                revCommit.getShortMessage(),
+                getCommitIds(revCommit.getParents())
         );
+    }
+
+    private Collection<String> getCommitIds(RevCommit[] commits) {
+        if (commits == null || commits.length == 0) {
+            return Collections.emptySet();
+        } else {
+            return Collections2.transform(
+                    Arrays.asList(commits),
+                    new Function<RevCommit, String>() {
+                        @Override
+                        public String apply(RevCommit commit) {
+                            return getId(commit);
+                        }
+                    }
+            );
+        }
     }
 
     private GitPerson toPerson(PersonIdent ident) {

@@ -8,7 +8,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         // Rendering
         render.renderInto(
             $('#commits'),
-            'extension/git-changelog-revisions',
+            'extension/git-changelog-commits',
             commits,
             function () {
                 // Tooltips

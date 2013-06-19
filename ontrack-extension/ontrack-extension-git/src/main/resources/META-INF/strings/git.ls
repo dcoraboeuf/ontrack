@@ -29,6 +29,19 @@ git.changelog.commits
     en -> Commits
     fr -> Commits
 
+git.changelog.commits.id
+    en,fr -> SHA-1
+
+git.changelog.commits.author
+    en -> Author
+    fr -> Auteur
+
+git.changelog.commits.committer
+    en,fr -> Committer
+
+git.changelog.commits.message
+    en,fr -> Message
+
 [import-builds]
 
 git.import-builds
