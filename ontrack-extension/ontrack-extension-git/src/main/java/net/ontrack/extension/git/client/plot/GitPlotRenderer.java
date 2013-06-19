@@ -8,8 +8,10 @@ import org.eclipse.jgit.revplot.PlotLane;
 
 public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
+    public static final int DEFAULT_ROW_HEIGHT = 24;
+
     private final GPlot plot;
-    private final int rowHeight = 100;
+    private final int rowHeight = DEFAULT_ROW_HEIGHT;
     private int rowIndex;
 
     public GitPlotRenderer(PlotCommitList<PlotLane> commitList) {
