@@ -30,7 +30,7 @@ public class DefaultGitClient implements GitClient {
     private final Function<Ref, GitTag> gitTagFunction = new Function<Ref, GitTag>() {
         @Override
         public GitTag apply(Ref ref) {
-            RevCommit commit = repository.getCommitForTag(ref);
+            RevCommit commit = repository.getCommitForTag(ref.getObjectId());
             String tagName = StringUtils.substringAfter(
                     ref.getName(),
                     "refs/tags/"
@@ -81,18 +81,30 @@ public class DefaultGitClient implements GitClient {
             // Gets boundaries
             ObjectId oFrom = gitRepository.resolve(from);
             ObjectId oTo = gitRepository.resolve(to);
-            // Log
-            // Iterable<RevCommit> log = git.log().addRange(oFrom, oTo).call();
 
+            // Corresponding commits
+            RevCommit commitFrom = repository.getCommitForTag(oFrom);
+            RevCommit commitTo = repository.getCommitForTag(oTo);
+
+            // Ordering of commits
+            if (commitFrom.getCommitTime() < commitTo.getCommitTime()) {
+                RevCommit t = commitFrom;
+                commitFrom = commitTo;
+                commitTo = t;
+            }
+
+            // Log
             PlotWalk walk = new PlotWalk(gitRepository);
-            walk.markStart(walk.lookupCommit(oFrom));
-            walk.markStart(walk.lookupCommit(oTo));
+            walk.markStart(walk.lookupCommit(commitFrom.getId()));
+            walk.markUninteresting(walk.lookupCommit(commitTo.getId()));
             PlotCommitList<PlotLane> commitList = new PlotCommitList<>();
             commitList.source(walk);
-            commitList.fillTo(1000); // TODO How to set the maximum?
+            commitList.fillTo(1000); // TODO How to set the maximum? See RevWalkUtils#count ?
 
+            // Rendering
             GitPlotRenderer renderer = new GitPlotRenderer(commitList);
             return renderer.getPlot();
+
         } catch (GitAPIException e) {
             throw translationException(e);
         } catch (IOException e) {

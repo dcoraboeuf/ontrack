@@ -3,6 +3,7 @@ package net.ontrack.extension.git.client.impl;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepository;
@@ -86,9 +87,9 @@ public class DefaultGitRepository implements GitRepository {
     }
 
     @Override
-    public RevCommit getCommitForTag(Ref tag) {
+    public RevCommit getCommitForTag(ObjectId tag) {
         try {
-            Iterator<RevCommit> commits = git.log().add(tag.getObjectId()).setMaxCount(1).call().iterator();
+            Iterator<RevCommit> commits = git.log().add(tag).setMaxCount(1).call().iterator();
             if (commits.hasNext()) {
                 return commits.next();
             } else {

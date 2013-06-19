@@ -2,7 +2,7 @@ package net.ontrack.extension.git.client.impl;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.File;
@@ -21,5 +21,5 @@ public interface GitRepository {
 
     Git git();
 
-    RevCommit getCommitForTag(Ref tag);
+    RevCommit getCommitForTag(ObjectId tag);
 }
