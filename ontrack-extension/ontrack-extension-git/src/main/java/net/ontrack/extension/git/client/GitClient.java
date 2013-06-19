@@ -1,9 +1,9 @@
 package net.ontrack.extension.git.client;
 
+import net.ontrack.extension.git.client.plot.GitPlot;
 import net.ontrack.extension.git.model.GitConfiguration;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface GitClient {
 
@@ -11,5 +11,5 @@ public interface GitClient {
 
     GitConfiguration getConfiguration();
 
-    List<GitCommit> log(String from, String to);
+    GitPlot log(String from, String to);
 }
