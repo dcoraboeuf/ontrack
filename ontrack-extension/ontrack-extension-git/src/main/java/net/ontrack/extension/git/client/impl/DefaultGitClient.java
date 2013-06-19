@@ -4,8 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitTag;
-import net.ontrack.extension.git.client.plot.GitPlot;
-import net.ontrack.extension.git.client.plot.GitPlotLane;
+import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.client.plot.GitPlotRenderer;
 import net.ontrack.extension.git.model.GitConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +14,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revplot.PlotCommitList;
+import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.joda.time.DateTime;
@@ -73,7 +73,7 @@ public class DefaultGitClient implements GitClient {
     }
 
     @Override
-    public GitPlot log(String from, String to) {
+    public GPlot log(String from, String to) {
         try {
             // Client
             Git git = repository.sync().git();
@@ -87,7 +87,7 @@ public class DefaultGitClient implements GitClient {
             PlotWalk walk = new PlotWalk(gitRepository);
             walk.markStart(walk.lookupCommit(oFrom));
             walk.markStart(walk.lookupCommit(oTo));
-            PlotCommitList<GitPlotLane> commitList = new PlotCommitList<>();
+            PlotCommitList<PlotLane> commitList = new PlotCommitList<>();
             commitList.source(walk);
             commitList.fillTo(1000); // TODO How to set the maximum?
 

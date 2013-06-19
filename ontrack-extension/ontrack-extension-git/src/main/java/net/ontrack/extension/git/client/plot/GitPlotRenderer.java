@@ -4,21 +4,26 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revplot.AbstractPlotRenderer;
 import org.eclipse.jgit.revplot.PlotCommit;
 import org.eclipse.jgit.revplot.PlotCommitList;
+import org.eclipse.jgit.revplot.PlotLane;
 
-public class GitPlotRenderer extends AbstractPlotRenderer<GitPlotLane, GitColor> {
+public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
-    private final GitPlot plot;
+    private final GPlot plot;
+    private final int rowHeight = 100;
+    private int rowIndex;
 
-    public GitPlotRenderer(PlotCommitList<GitPlotLane> commitList) {
+    public GitPlotRenderer(PlotCommitList<PlotLane> commitList) {
         // Plot to create
-        plot = new GitPlot();
+        plot = new GPlot();
         // Loops over the commits
-        for (PlotCommit<GitPlotLane> commit : commitList) {
-            paintCommit(commit, 100);
+        rowIndex = 0;
+        for (PlotCommit<PlotLane> commit : commitList) {
+            paintCommit(commit, rowHeight);
+            rowIndex++;
         }
     }
 
-    public GitPlot getPlot() {
+    public GPlot getPlot() {
         return plot;
     }
 
@@ -29,15 +34,17 @@ public class GitPlotRenderer extends AbstractPlotRenderer<GitPlotLane, GitColor>
     }
 
     @Override
-    protected GitColor laneColor(GitPlotLane myLane) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.laneColor
-        return null;
+    protected GColor laneColor(PlotLane myLane) {
+        if (myLane == null) {
+            return new GColor(0);
+        } else {
+            return new GColor(myLane.getPosition());
+        }
     }
 
     @Override
-    protected void drawLine(GitColor gitColor, int x1, int y1, int x2, int y2, int width) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawLine
-
+    protected void drawLine(GColor color, int x1, int y1, int x2, int y2, int width) {
+        plot.add(GLine.of(color, point(x1, y1), point(x2, y2), width));
     }
 
     @Override
@@ -56,5 +63,9 @@ public class GitPlotRenderer extends AbstractPlotRenderer<GitPlotLane, GitColor>
     protected void drawText(String msg, int x, int y) {
         // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawText
 
+    }
+
+    private GPoint point(int x1, int y1) {
+        return GPoint.of(x1, y1).ty(rowIndex * rowHeight);
     }
 }

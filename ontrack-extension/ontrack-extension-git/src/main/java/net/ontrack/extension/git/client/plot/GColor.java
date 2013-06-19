@@ -3,5 +3,8 @@ package net.ontrack.extension.git.client.plot;
 import lombok.Data;
 
 @Data
-public class GitPlot {
+public class GColor {
+
+    private final int index;
+
 }

@@ -12,7 +12,7 @@ import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
 import net.ontrack.extension.git.client.GitTag;
-import net.ontrack.extension.git.client.plot.GitPlot;
+import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
@@ -116,7 +116,7 @@ public class DefaultGitService implements GitService {
             tagTo = StringUtils.replace(tagPattern, "*", tagTo);
         }
         // Gets the commits
-        GitPlot plot = gitClient.log(tagFrom, tagTo);
+        GPlot plot = gitClient.log(tagFrom, tagTo);
         // OK
         return new ChangeLogCommits(plot);
     }

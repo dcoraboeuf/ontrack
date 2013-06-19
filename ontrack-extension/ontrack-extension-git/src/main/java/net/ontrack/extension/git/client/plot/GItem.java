@@ -1,7 +1,7 @@
 package net.ontrack.extension.git.client.plot;
 
-import lombok.Data;
+public interface GItem {
 
-@Data
-public class GitColor {
+    String getType();
+
 }
