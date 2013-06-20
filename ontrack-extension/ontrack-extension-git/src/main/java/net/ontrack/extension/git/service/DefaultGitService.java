@@ -8,10 +8,7 @@ import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.extension.git.GitBranchProperty;
-import net.ontrack.extension.git.GitExtension;
-import net.ontrack.extension.git.GitRemoteProperty;
-import net.ontrack.extension.git.GitTagProperty;
+import net.ontrack.extension.git.*;
 import net.ontrack.extension.git.client.*;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
@@ -126,6 +123,14 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
         // Gets the commits
         GitLog log = gitClient.log(tagFrom, tagTo);
+        // Link?
+        String commitLinkValue = propertiesService.getPropertyValue(Entity.PROJECT, summary.getBranch().getProject().getId(), GitExtension.EXTENSION, GitCommitLinkProperty.NAME);
+        final String commitLinkFormat;
+        if (StringUtils.isNotBlank(commitLinkValue)) {
+            commitLinkFormat = StringUtils.replace(commitLinkValue, "*", "%s");
+        } else {
+            commitLinkFormat = "";
+        }
         // OK
         final DateTime now = TimeUtils.now();
         return new ChangeLogCommits(
@@ -141,6 +146,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
                                         return new GitUICommit(
                                                 commit,
+                                                String.format(commitLinkFormat, commit.getId()),
                                                 elapsedTime,
                                                 formattedTime
                                         );
