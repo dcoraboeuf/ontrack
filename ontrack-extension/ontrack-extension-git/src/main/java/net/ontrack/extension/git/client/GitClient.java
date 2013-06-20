@@ -11,7 +11,7 @@ public interface GitClient {
 
     GitConfiguration getConfiguration();
 
-    GPlot log(String from, String to);
+    GitLog log(String from, String to);
 
     void sync();
 }

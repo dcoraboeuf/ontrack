@@ -2,8 +2,7 @@ package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import net.ontrack.extension.git.client.GitClient;
-import net.ontrack.extension.git.client.GitTag;
+import net.ontrack.extension.git.client.*;
 import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.client.plot.GitPlotRenderer;
 import net.ontrack.extension.git.model.GitConfiguration;
@@ -11,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revplot.PlotCommitList;
@@ -73,7 +73,7 @@ public class DefaultGitClient implements GitClient {
     }
 
     @Override
-    public GPlot log(String from, String to) {
+    public GitLog log(String from, String to) {
         try {
             // Client
             Git git = repository.git();
@@ -103,10 +103,43 @@ public class DefaultGitClient implements GitClient {
 
             // Rendering
             GitPlotRenderer renderer = new GitPlotRenderer(commitList);
-            return renderer.getPlot();
+            GPlot plot = renderer.getPlot();
+
+            // Gets the commits
+            List<GitCommit> commits = Lists.transform(
+                    renderer.getCommits(),
+                    new Function<RevCommit, GitCommit>() {
+                        @Override
+                        public GitCommit apply(RevCommit rev) {
+                            return toCommit(rev);
+                        }
+                    }
+            );
+
+            // OK
+            return new GitLog(
+                    plot,
+                    commits
+            );
+
         } catch (IOException e) {
             throw new GitIOException(e);
         }
+    }
+
+    private String getId(RevCommit revCommit) {
+        return revCommit.getId().getName();
+    }
+
+    private GitCommit toCommit(RevCommit revCommit) {
+        return new GitCommit(
+                getId(revCommit),
+                toPerson(revCommit.getAuthorIdent()),
+                toPerson(revCommit.getCommitterIdent()),
+                new DateTime(1000L * revCommit.getCommitTime(), DateTimeZone.UTC),
+                revCommit.getFullMessage(),
+                revCommit.getShortMessage()
+        );
     }
 
     @Override
@@ -116,7 +149,13 @@ public class DefaultGitClient implements GitClient {
         } catch (GitAPIException e) {
             throw translationException(e);
         }
+    }
 
+    private GitPerson toPerson(PersonIdent ident) {
+        return new GitPerson(
+                ident.getName(),
+                ident.getEmailAddress()
+        );
     }
 
     protected GitException translationException(GitAPIException e) {

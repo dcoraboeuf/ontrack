@@ -11,8 +11,8 @@ import net.ontrack.extension.git.GitRemoteProperty;
 import net.ontrack.extension.git.GitTagProperty;
 import net.ontrack.extension.git.client.GitClient;
 import net.ontrack.extension.git.client.GitClientFactory;
+import net.ontrack.extension.git.client.GitLog;
 import net.ontrack.extension.git.client.GitTag;
-import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
@@ -121,9 +121,9 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
             tagTo = StringUtils.replace(tagPattern, "*", tagTo);
         }
         // Gets the commits
-        GPlot plot = gitClient.log(tagFrom, tagTo);
+        GitLog log = gitClient.log(tagFrom, tagTo);
         // OK
-        return new ChangeLogCommits(plot);
+        return new ChangeLogCommits(log);
     }
 
     @Override

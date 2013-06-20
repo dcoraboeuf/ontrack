@@ -1,11 +1,11 @@
 package net.ontrack.extension.git.model;
 
 import lombok.Data;
-import net.ontrack.extension.git.client.plot.GPlot;
+import net.ontrack.extension.git.client.GitLog;
 
 @Data
 public class ChangeLogCommits {
 
-    private final GPlot plot;
+    private final GitLog log;
 
 }

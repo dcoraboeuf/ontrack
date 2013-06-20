@@ -5,24 +5,37 @@ import org.eclipse.jgit.revplot.AbstractPlotRenderer;
 import org.eclipse.jgit.revplot.PlotCommit;
 import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
+import org.eclipse.jgit.revwalk.RevCommit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
     public static final int DEFAULT_ROW_HEIGHT = 24;
-
     private final GPlot plot;
+    private final List<RevCommit> commits;
     private final int rowHeight = DEFAULT_ROW_HEIGHT;
+    private PlotCommit<PlotLane> currentCommit;
     private int rowIndex;
 
     public GitPlotRenderer(PlotCommitList<PlotLane> commitList) {
         // Plot to create
         plot = new GPlot();
+        // List of commit IDs
+        commits = new ArrayList<>();
         // Loops over the commits
         rowIndex = 0;
         for (PlotCommit<PlotLane> commit : commitList) {
+            commits.add(commit);
+            currentCommit = commit;
             paintCommit(commit, rowHeight);
             rowIndex++;
         }
+    }
+
+    public List<RevCommit> getCommits() {
+        return commits;
     }
 
     public GPlot getPlot() {
@@ -51,9 +64,13 @@ public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
     @Override
     protected void drawCommitDot(int x, int y, int w, int h) {
-        // TODO Color
-        plot.add(GOval.of(GColor.of(0), point(x, y), GDim.of(w, h)));
-
+        plot.add(
+                GOval.of(
+                        laneColor(currentCommit.getLane()),
+                        point(x, y),
+                        GDim.of(w, h)
+                )
+        );
     }
 
     @Override

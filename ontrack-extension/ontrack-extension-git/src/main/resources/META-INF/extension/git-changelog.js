@@ -6,7 +6,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         // Stores the commits (local cache for display purpose only)
         commits = data;
         // Plotting
-        plot.draw(document.getElementById('commits-canvas'), commits.plot);
+        plot.draw(document.getElementById('commits-canvas'), commits.log.plot);
     }
 
     function loadSummary() {
