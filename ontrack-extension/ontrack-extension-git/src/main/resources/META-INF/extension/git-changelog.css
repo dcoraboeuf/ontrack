@@ -1,0 +1,8 @@
+table.git-changelog-commits tbody tr {
+    height: 24px !important;
+}
+
+table.git-changelog tbody tr td {
+    padding-bottom: 0px;
+    padding-top: 0px;
+}

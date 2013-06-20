@@ -36,6 +36,7 @@
 <@layout_std
     page="git-changelog"
     title=loc("git.changelog")
+    style=true
     extension=true>
 
     <input id="changelog" type="hidden" value="${summary.uuid?html}" />
@@ -80,7 +81,6 @@
 
         <!-- Commits -->
         <div class="tab-pane" id="commits">
-            <canvas id="commits-canvas" />
         </div>
     </div>
 

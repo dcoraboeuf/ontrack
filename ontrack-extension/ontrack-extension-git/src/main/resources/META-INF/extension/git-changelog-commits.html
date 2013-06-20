@@ -1,0 +1,42 @@
+<table>
+    <tbody>
+        <tr>
+            <td valign="top">
+                <table class="table table-condensed git-changelog">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <canvas id="commits-canvas" width="24" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td valign="top">
+                <table id="revisions-table" class="table table-condensed table-hover git-changelog git-changelog-commits">
+                    <thead>
+                        <tr>
+                            <th>{{loc 'git.changelog.commits.id'}}</th>
+                            <th>{{loc 'git.changelog.commits.author'}}</th>
+                            <th>{{loc 'git.changelog.commits.message'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#commits}}
+                            <tr>
+                                <td><code>{{id}}</code></td>
+                                <td>{{author.name}}</td>
+                                <td>{{shortMessage}}</td>
+                            </tr>
+                        {{/commits}}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

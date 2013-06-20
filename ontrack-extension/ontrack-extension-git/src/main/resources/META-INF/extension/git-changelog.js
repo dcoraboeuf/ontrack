@@ -5,8 +5,18 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
         commits = data;
-        // Plotting
-        plot.draw(document.getElementById('commits-canvas'), commits.log.plot);
+        // Rendering
+        render.renderInto(
+            $('#commits'),
+            'extension/git-changelog-commits',
+            commits.log,
+            function () {
+                // Plotting
+                plot.draw(document.getElementById('commits-canvas'), commits.log.plot);
+                // Tooltips
+                common.tooltips();
+            }
+        );
     }
 
     function loadSummary() {
