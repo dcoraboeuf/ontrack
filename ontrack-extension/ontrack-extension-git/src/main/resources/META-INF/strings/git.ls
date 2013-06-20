@@ -42,6 +42,10 @@ git.changelog.commits.committer
 git.changelog.commits.message
     en,fr -> Message
 
+git.changelog.commits.timestamp
+    en -> Timestamp
+    fr -> Date
+
 [import-builds]
 
 git.import-builds

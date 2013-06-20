@@ -10,6 +10,6 @@ public interface GitUI {
 
     ChangeLogSummary getChangeLogSummary(Locale locale, ChangeLogRequest request);
 
-    ChangeLogCommits getChangeLogCommits(String uuid);
+    ChangeLogCommits getChangeLogCommits(Locale locale, String uuid);
 
 }

@@ -6,6 +6,6 @@ import net.ontrack.extension.git.client.GitLog;
 @Data
 public class ChangeLogCommits {
 
-    private final GitLog log;
+    private final GitUILog log;
 
 }

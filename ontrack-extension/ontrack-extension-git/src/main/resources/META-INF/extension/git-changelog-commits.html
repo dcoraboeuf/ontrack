@@ -24,14 +24,16 @@
                             <th>{{loc 'git.changelog.commits.id'}}</th>
                             <th>{{loc 'git.changelog.commits.author'}}</th>
                             <th>{{loc 'git.changelog.commits.message'}}</th>
+                            <th>{{loc 'git.changelog.commits.timestamp'}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#commits}}
                             <tr>
-                                <td><code>{{id}}</code></td>
-                                <td>{{author.name}}</td>
-                                <td>{{shortMessage}}</td>
+                                <td><code>{{commit.id}}</code></td>
+                                <td>{{commit.author.name}}</td>
+                                <td>{{commit.shortMessage}}</td>
+                                <td class="tooltip-source" title="{{formattedTime}}">{{elapsedTime}}</td>
                             </tr>
                         {{/commits}}
                     </tbody>

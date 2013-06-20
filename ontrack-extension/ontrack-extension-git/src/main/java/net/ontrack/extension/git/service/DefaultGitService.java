@@ -1,23 +1,25 @@
 package net.ontrack.extension.git.service;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.support.TimeUtils;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.GitBranchProperty;
 import net.ontrack.extension.git.GitExtension;
 import net.ontrack.extension.git.GitRemoteProperty;
 import net.ontrack.extension.git.GitTagProperty;
-import net.ontrack.extension.git.client.GitClient;
-import net.ontrack.extension.git.client.GitClientFactory;
-import net.ontrack.extension.git.client.GitLog;
-import net.ontrack.extension.git.client.GitTag;
+import net.ontrack.extension.git.client.*;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.api.ScheduledService;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
 
     private final Logger logger = LoggerFactory.getLogger(GitService.class);
     private final SecurityUtils securityUtils;
+    private final Strings strings;
     private final PropertiesService propertiesService;
     private final ManagementService managementService;
     private final ControlService controlService;
@@ -57,10 +60,11 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Autowired
     public DefaultGitService(
             SecurityUtils securityUtils,
-            PropertiesService propertiesService,
+            Strings strings, PropertiesService propertiesService,
             ManagementService managementService,
             ControlService controlService, GitClientFactory gitClientFactory) {
         this.securityUtils = securityUtils;
+        this.strings = strings;
         this.propertiesService = propertiesService;
         this.managementService = managementService;
         this.controlService = controlService;
@@ -105,7 +109,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
-    public ChangeLogCommits getChangeLogCommits(ChangeLogSummary summary) {
+    public ChangeLogCommits getChangeLogCommits(final Locale locale, ChangeLogSummary summary) {
         // Gets the branch ID
         int branchId = summary.getBranch().getId();
         // Gets the client client for this branch
@@ -123,7 +127,28 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         // Gets the commits
         GitLog log = gitClient.log(tagFrom, tagTo);
         // OK
-        return new ChangeLogCommits(log);
+        final DateTime now = TimeUtils.now();
+        return new ChangeLogCommits(
+                new GitUILog(
+                        log.getPlot(),
+                        Lists.transform(
+                                log.getCommits(),
+                                new Function<GitCommit, GitUICommit>() {
+                                    @Override
+                                    public GitUICommit apply(GitCommit commit) {
+                                        DateTime time = commit.getCommitTime();
+                                        String formattedTime = TimeUtils.format(locale, time);
+                                        String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
+                                        return new GitUICommit(
+                                                commit,
+                                                elapsedTime,
+                                                formattedTime
+                                        );
+                                    }
+                                }
+                        )
+                )
+        );
     }
 
     @Override

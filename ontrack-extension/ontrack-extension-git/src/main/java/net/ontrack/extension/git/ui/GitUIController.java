@@ -59,7 +59,7 @@ public class GitUIController extends AbstractUIController implements GitUI {
     @RequestMapping(value = "/changelog/{uuid}/commits", method = RequestMethod.GET)
     public
     @ResponseBody
-    ChangeLogCommits getChangeLogCommits(@PathVariable String uuid) {
+    ChangeLogCommits getChangeLogCommits(Locale locale, @PathVariable String uuid) {
         // Gets the change log
         ChangeLog changeLog = getChangeLog(uuid);
         // Cached?
@@ -68,7 +68,7 @@ public class GitUIController extends AbstractUIController implements GitUI {
             return commits;
         }
         // Loads the revisions
-        commits = gitService.getChangeLogCommits(changeLog.getSummary());
+        commits = gitService.getChangeLogCommits(locale, changeLog.getSummary());
         // Stores in cache
         changeLog.setCommits(commits);
         // OK

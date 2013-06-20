@@ -12,5 +12,5 @@ public interface GitService {
 
     ChangeLogSummary getChangeLogSummary(Locale locale, int branchId, int buildFromId, int buildToId);
 
-    ChangeLogCommits getChangeLogCommits(ChangeLogSummary summary);
+    ChangeLogCommits getChangeLogCommits(Locale locale, ChangeLogSummary summary);
 }

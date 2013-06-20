@@ -14,6 +14,7 @@ import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
+import net.sf.jstring.Strings;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ public class DefaultGitServiceTest {
     private ManagementService managementService;
     private ControlService controlService;
     private GitClientFactory gitClientFactory;
+    private Strings strings;
 
     @Before
     public void before() {
@@ -38,9 +40,10 @@ public class DefaultGitServiceTest {
         managementService = mock(ManagementService.class);
         controlService = mock(ControlService.class);
         gitClientFactory = mock(GitClientFactory.class);
+        strings = mock(Strings.class);
         service = new DefaultGitService(
                 securityUtils,
-                propertiesService,
+                strings, propertiesService,
                 managementService,
                 controlService,
                 gitClientFactory
