@@ -15,6 +15,10 @@ git.tag
     en -> Git tag pattern
     fr -> Motif pour les tags Git
 
+git.commitLink
+    en -> Commit link
+    fr -> Lien pour commit
+
 [changelog]
 
 git.changelog
