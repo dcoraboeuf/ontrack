@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DefaultGitRepositoryTest {
@@ -18,8 +17,7 @@ public class DefaultGitRepositoryTest {
                 "git://github.com/dcoraboeuf/ontrack.git",
                 "master",
                 "sync_clone");
-        GitRepository repo = repository.sync();
-        assertNotNull(repo);
+        repository.sync();
         assertTrue(".git created", new File(repository.wd(), ".git").exists());
     }
 

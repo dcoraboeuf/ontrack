@@ -52,7 +52,7 @@ public class DefaultGitClient implements GitClient {
         try {
             List<GitTag> tags = new ArrayList<>(
                     Lists.transform(
-                            repository.sync().git().tagList().call(),
+                            repository.git().tagList().call(),
                             gitTagFunction)
             );
             Collections.sort(tags, new Comparator<GitTag>() {
@@ -76,7 +76,7 @@ public class DefaultGitClient implements GitClient {
     public GPlot log(String from, String to) {
         try {
             // Client
-            Git git = repository.sync().git();
+            Git git = repository.git();
             Repository gitRepository = git.getRepository();
             // Gets boundaries
             ObjectId oFrom = gitRepository.resolve(from);
@@ -104,12 +104,19 @@ public class DefaultGitClient implements GitClient {
             // Rendering
             GitPlotRenderer renderer = new GitPlotRenderer(commitList);
             return renderer.getPlot();
-
-        } catch (GitAPIException e) {
-            throw translationException(e);
         } catch (IOException e) {
             throw new GitIOException(e);
         }
+    }
+
+    @Override
+    public void sync() {
+        try {
+            repository.sync();
+        } catch (GitAPIException e) {
+            throw translationException(e);
+        }
+
     }
 
     protected GitException translationException(GitAPIException e) {

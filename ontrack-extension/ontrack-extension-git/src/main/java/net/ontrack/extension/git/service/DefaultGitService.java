@@ -16,24 +16,29 @@ import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
+import net.ontrack.service.api.ScheduledService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class DefaultGitService implements GitService {
+public class DefaultGitService implements GitService, GitIndexation, ScheduledService {
 
     private final Logger logger = LoggerFactory.getLogger(GitService.class);
     private final SecurityUtils securityUtils;
@@ -119,6 +124,49 @@ public class DefaultGitService implements GitService {
         GPlot plot = gitClient.log(tagFrom, tagTo);
         // OK
         return new ChangeLogCommits(plot);
+    }
+
+    @Override
+    public void run() {
+        logger.info("[git] Running the indexation task...");
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary project : projectList) {
+            // Gets the Git remote for this project
+            String gitRemote = propertiesService.getPropertyValue(Entity.PROJECT, project.getId(), GitExtension.EXTENSION, GitRemoteProperty.NAME);
+            if (StringUtils.isNotBlank(gitRemote)) {
+                // List of branches for the project
+                List<BranchSummary> branchList = managementService.getBranchList(project.getId());
+                for (BranchSummary branch : branchList) {
+                    // Logging
+                    logger.info(
+                            "[git] Running the indexation task for project={}, branch={} ...",
+                            project.getName(), branch.getName()
+                    );
+                    // Indexation for the branch
+                    syncBranch(branch.getId());
+                    // Logging
+                    logger.info(
+                            "[git] End of the indexation task for project={}, branch={} ...",
+                            project.getName(), branch.getName()
+                    );
+                }
+            }
+        }
+        logger.info("[git] End of the indexation task.");
+    }
+
+    protected void syncBranch(int branchId) {
+        getGitClient(branchId).sync();
+    }
+
+    @Override
+    public Runnable getTask() {
+        return this;
+    }
+
+    @Override
+    public Trigger getTrigger() {
+        return new PeriodicTrigger(5, TimeUnit.MINUTES);
     }
 
     protected ChangeLogBuild getBuild(Locale locale, int buildId) {

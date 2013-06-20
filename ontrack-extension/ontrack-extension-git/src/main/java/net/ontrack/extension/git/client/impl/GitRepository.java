@@ -17,7 +17,7 @@ public interface GitRepository {
 
     String getId();
 
-    GitRepository sync() throws GitAPIException;
+    void sync() throws GitAPIException;
 
     Git git();
 

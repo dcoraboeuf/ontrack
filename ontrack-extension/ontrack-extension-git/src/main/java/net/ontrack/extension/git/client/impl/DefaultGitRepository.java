@@ -4,7 +4,6 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -53,7 +52,7 @@ public class DefaultGitRepository implements GitRepository {
     }
 
     @Override
-    public synchronized GitRepository sync() throws GitAPIException {
+    public synchronized void sync() throws GitAPIException {
         // Clone or update?
         if (new File(wd, ".git").exists()) {
             // Fetch
@@ -62,8 +61,6 @@ public class DefaultGitRepository implements GitRepository {
             // Clone
             cloneRemote();
         }
-        // OK
-        return this;
     }
 
     @Override
