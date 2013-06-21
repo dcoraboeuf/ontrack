@@ -1,0 +1,21 @@
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>Change type</th>
+            <th>Path</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#list}}
+            <tr>
+                <td>
+                    {{diff.changeType}}
+                </td>
+                <td>
+                    {{diff.oldPath}}
+                    {{diff.newPath}}
+                </td>
+            </tr>
+        {{/list}}
+    </tbody>
+</table>

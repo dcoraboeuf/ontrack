@@ -9,14 +9,15 @@ import net.ontrack.extension.git.model.GitConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.AbstractTreeIterator;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -124,6 +125,86 @@ public class DefaultGitClient implements GitClient {
 
         } catch (IOException e) {
             throw new GitIOException(e);
+        }
+    }
+
+    @Override
+    public List<GitDiffEntry> diff(String from, String to) {
+        try {
+            // Client
+            Git git = repository.git();
+            Repository gitRepository = git.getRepository();
+            // Gets boundaries
+            ObjectId oFrom = gitRepository.resolve(from);
+            ObjectId oTo = gitRepository.resolve(to);
+
+            // Corresponding commits
+            RevCommit commitFrom = repository.getCommitForTag(oFrom);
+            RevCommit commitTo = repository.getCommitForTag(oTo);
+
+            // Ordering of commits
+            if (commitFrom.getCommitTime() < commitTo.getCommitTime()) {
+                RevCommit t = commitFrom;
+                commitFrom = commitTo;
+                commitTo = t;
+            }
+
+            // Diff command
+            List<DiffEntry> entries = git.diff()
+                    .setShowNameAndStatusOnly(true)
+                    .setOldTree(getTreeIterator(commitFrom.getId()))
+                    .setOldTree(getTreeIterator(commitTo.getId()))
+                    .call();
+
+            // OK
+            return Lists.transform(
+                    entries,
+                    new Function<DiffEntry, GitDiffEntry>() {
+                        @Override
+                        public GitDiffEntry apply(DiffEntry diff) {
+                            return new GitDiffEntry(
+                                    toChangeType(diff.getChangeType()),
+                                    diff.getOldPath(),
+                                    diff.getNewPath()
+                            );
+                        }
+                    }
+            );
+
+        } catch (IOException e) {
+            throw new GitIOException(e);
+        } catch (GitAPIException e) {
+            throw translationException(e);
+        }
+    }
+
+    private GitChangeType toChangeType(DiffEntry.ChangeType changeType) {
+        switch (changeType) {
+            case ADD:
+                return GitChangeType.ADD;
+            case COPY:
+                return GitChangeType.COPY;
+            case DELETE:
+                return GitChangeType.DELETE;
+            case MODIFY:
+                return GitChangeType.MODIFY;
+            case RENAME:
+                return GitChangeType.RENAME;
+            default:
+                throw new IllegalArgumentException("Unknown diff change type: " + changeType);
+        }
+    }
+
+    private AbstractTreeIterator getTreeIterator(ObjectId id)
+            throws IOException {
+        final CanonicalTreeParser p = new CanonicalTreeParser();
+        Repository db = repository.git().getRepository();
+        final ObjectReader or = db.newObjectReader();
+        try {
+            p.reset(or, new RevWalk(db).parseTree(id));
+            return p;
+        } finally {
+            or.release();
         }
     }
 

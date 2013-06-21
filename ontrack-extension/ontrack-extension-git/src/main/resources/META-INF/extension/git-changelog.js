@@ -1,6 +1,7 @@
 define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render, common, plot) {
 
     var commits = null;
+    var files = null;
 
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
@@ -16,6 +17,17 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
                 // Tooltips
                 common.tooltips();
             }
+        );
+    }
+
+    function displayFiles(data) {
+        // Stores the files (local cache for display purpose only)
+        files = data;
+        // Rendering
+        render.renderInto(
+            $('#files'),
+            'extension/git-changelog-files',
+            files
         );
     }
 
@@ -42,6 +54,24 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         }
     }
 
+    function loadFiles() {
+        location.hash = "files";
+        if (files == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the files
+            ajax.get({
+                url: 'ui/extension/git/changelog/{0}/files'.format(uuid),
+                loading: {
+                    el: '#files',
+                    mode: 'appendText'
+                },
+                successFn: displayFiles,
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn() {
         return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
@@ -49,6 +79,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
     function init() {
         $('#summary-tab').on('show', loadSummary);
         $('#commits-tab').on('show', loadCommits);
+        $('#files-tab').on('show', loadFiles);
         // Initial tab
         $(document).ready(function () {
             var hash = location.hash;

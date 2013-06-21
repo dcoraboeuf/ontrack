@@ -8,6 +8,6 @@ public class ChangeLog {
     private final ChangeLogSummary summary;
     private ChangeLogCommits commits;
     // private ChangeLogIssues issues;
-    // private ChangeLogFiles files;
+    private ChangeLogFiles files;
     // private ChangeLogInfo info;
 }

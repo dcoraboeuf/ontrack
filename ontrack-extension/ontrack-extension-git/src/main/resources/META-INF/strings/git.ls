@@ -50,6 +50,10 @@ git.changelog.commits.timestamp
     en -> Timestamp
     fr -> Date
 
+git.changelog.files
+    en -> Files
+    fr -> Fichiers
+
 [import-builds]
 
 git.import-builds

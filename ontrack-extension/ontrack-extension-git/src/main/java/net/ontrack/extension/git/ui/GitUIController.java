@@ -4,10 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.ui.ManageUI;
-import net.ontrack.extension.git.model.ChangeLog;
-import net.ontrack.extension.git.model.ChangeLogCommits;
-import net.ontrack.extension.git.model.ChangeLogRequest;
-import net.ontrack.extension.git.model.ChangeLogSummary;
+import net.ontrack.extension.git.model.*;
 import net.ontrack.extension.git.service.GitService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
@@ -73,6 +70,26 @@ public class GitUIController extends AbstractUIController implements GitUI {
         changeLog.setCommits(commits);
         // OK
         return commits;
+    }
+
+    @Override
+    @RequestMapping(value = "/changelog/{uuid}/files", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChangeLogFiles getChangeLogFiles(Locale locale, @PathVariable String uuid) {
+        // Gets the change log
+        ChangeLog changeLog = getChangeLog(uuid);
+        // Cached?
+        ChangeLogFiles files = changeLog.getFiles();
+        if (files != null) {
+            return files;
+        }
+        // Loads the files
+        files = gitService.getChangeLogFiles(locale, changeLog.getSummary());
+        // Stores in cache
+        changeLog.setFiles(files);
+        // OK
+        return files;
     }
 
     private ChangeLog getChangeLog(String uuid) {

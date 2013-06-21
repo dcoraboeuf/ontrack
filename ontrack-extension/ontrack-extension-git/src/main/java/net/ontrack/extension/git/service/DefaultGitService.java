@@ -158,6 +158,41 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
+    public ChangeLogFiles getChangeLogFiles(Locale locale, ChangeLogSummary summary) {
+        // Gets the branch ID
+        int branchId = summary.getBranch().getId();
+        // Gets the client client for this branch
+        GitClient gitClient = getGitClient(branchId);
+        // Gets the configuration
+        GitConfiguration gitConfiguration = gitClient.getConfiguration();
+        // Gets the tag boundaries
+        String tagFrom = summary.getBuildFrom().getBuildSummary().getName();
+        String tagTo = summary.getBuildTo().getBuildSummary().getName();
+        String tagPattern = gitConfiguration.getTag();
+        if (StringUtils.isNotBlank(tagPattern)) {
+            tagFrom = StringUtils.replace(tagPattern, "*", tagFrom);
+            tagTo = StringUtils.replace(tagPattern, "*", tagTo);
+        }
+        // Diff
+        List<GitDiffEntry> entries = gitClient.diff(tagFrom, tagTo);
+        // TODO OK
+        return new ChangeLogFiles(
+                Lists.transform(
+                        entries,
+                        new Function<GitDiffEntry, ChangeLogFile>() {
+                            @Override
+                            public ChangeLogFile apply(GitDiffEntry entry) {
+                                return new ChangeLogFile(
+                                        entry,
+                                        "" // TODO Gets the URL of the change
+                                );
+                            }
+                        }
+                )
+        );
+    }
+
+    @Override
     public void run() {
         logger.info("[git] Running the indexation task...");
         List<ProjectSummary> projectList = managementService.getProjectList();
