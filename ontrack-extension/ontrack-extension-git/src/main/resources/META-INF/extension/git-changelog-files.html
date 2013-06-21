@@ -1,19 +1,25 @@
 <table class="table table-condensed table-hover">
     <thead>
         <tr>
-            <th>Change type</th>
-            <th>Path</th>
+            <th>{{loc 'git.changelog.files.changeType'}}</th>
+            <th>{{loc 'git.changelog.files.path'}}</th>
         </tr>
     </thead>
     <tbody>
         {{#list}}
             <tr>
                 <td>
-                    {{diff.changeType}}
+                    <img height="16" width="16"
+                         class="tooltip-source"
+                         src="extension/git-{{changeType}}.png"
+                         title="{{git_changetype changeType}}" />
                 </td>
                 <td>
-                    {{diff.oldPath}}
-                    {{diff.newPath}}
+                    {{path}}
+                    {{#if path2}}
+                        <i class="icon-arrow-right"></i>
+                        {{path2}}
+                    {{/if}}
                 </td>
             </tr>
         {{/list}}

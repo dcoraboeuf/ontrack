@@ -54,6 +54,30 @@ git.changelog.files
     en -> Files
     fr -> Fichiers
 
+git.changelog.files.changeType
+    en -> Change type
+    fr -> Changement
+
+git.changelog.files.changeType.ADD
+    en -> Added
+    fr -> Ajouté
+git.changelog.files.changeType.COPY
+    en -> Copied
+    fr -> Copié
+git.changelog.files.changeType.DELETE
+    en -> Deleted
+    fr -> Supprimé
+git.changelog.files.changeType.MODIFY
+    en -> Modified
+    fr -> Modifié
+git.changelog.files.changeType.RENAME
+    en -> Renamed
+    fr -> Renommé
+
+git.changelog.files.path
+    en -> Path
+    fr -> Chemin
+
 [import-builds]
 
 git.import-builds

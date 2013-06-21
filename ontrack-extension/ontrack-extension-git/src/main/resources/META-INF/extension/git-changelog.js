@@ -1,5 +1,9 @@
 define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render, common, plot) {
 
+    Handlebars.registerHelper('git_changetype', function (key, options) {
+        return 'git.changelog.files.changeType.{0}'.format(key).loc();
+    });
+
     var commits = null;
     var files = null;
 
@@ -27,7 +31,11 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         render.renderInto(
             $('#files'),
             'extension/git-changelog-files',
-            files
+            files,
+            function () {
+                // Tooltips
+                common.tooltips();
+            }
         );
     }
 

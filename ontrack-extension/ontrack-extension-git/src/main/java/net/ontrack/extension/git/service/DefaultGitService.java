@@ -182,14 +182,29 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                         new Function<GitDiffEntry, ChangeLogFile>() {
                             @Override
                             public ChangeLogFile apply(GitDiffEntry entry) {
-                                return new ChangeLogFile(
-                                        entry,
-                                        "" // TODO Gets the URL of the change
-                                );
+                                // TODO URL to the change
+                                return toChangeLogFile(entry);
                             }
                         }
                 )
         );
+    }
+
+    private ChangeLogFile toChangeLogFile(GitDiffEntry entry) {
+        switch (entry.getChangeType()) {
+            case ADD:
+                return ChangeLogFile.of(GitChangeType.ADD, entry.getNewPath());
+            case COPY:
+                return ChangeLogFile.of(GitChangeType.COPY, entry.getOldPath(), entry.getNewPath());
+            case DELETE:
+                return ChangeLogFile.of(GitChangeType.DELETE, entry.getOldPath());
+            case MODIFY:
+                return ChangeLogFile.of(GitChangeType.MODIFY, entry.getOldPath());
+            case RENAME:
+                return ChangeLogFile.of(GitChangeType.RENAME, entry.getOldPath(), entry.getNewPath());
+            default:
+                throw new IllegalArgumentException("Unknown change type: " + entry.getChangeType());
+        }
     }
 
     @Override
