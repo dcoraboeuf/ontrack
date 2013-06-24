@@ -1,13 +1,12 @@
 package net.ontrack.extension.git.service;
 
-import net.ontrack.extension.git.model.ChangeLogCommits;
-import net.ontrack.extension.git.model.ChangeLogFiles;
-import net.ontrack.extension.git.model.ChangeLogSummary;
-import net.ontrack.extension.git.model.GitImportBuildsForm;
+import net.ontrack.extension.git.model.*;
 
 import java.util.Locale;
 
 public interface GitService {
+
+    GitConfiguration getGitConfiguration(int branchId);
 
     void importBuilds(int branchId, GitImportBuildsForm form);
 

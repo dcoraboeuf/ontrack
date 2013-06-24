@@ -124,7 +124,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         // Gets the commits
         GitLog log = gitClient.log(tagFrom, tagTo);
         // Link?
-        String commitLinkValue = propertiesService.getPropertyValue(Entity.PROJECT, summary.getBranch().getProject().getId(), GitExtension.EXTENSION, GitCommitLinkProperty.NAME);
+        String commitLinkValue = gitConfiguration.getCommitLink();
         final String commitLinkFormat;
         if (StringUtils.isNotBlank(commitLinkValue)) {
             commitLinkFormat = StringUtils.replace(commitLinkValue, "*", "%s");
@@ -176,7 +176,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         // Diff
         final GitDiff diff = gitClient.diff(tagFrom, tagTo);
         // File change links
-        String fileChangeLinkValue = propertiesService.getPropertyValue(Entity.PROJECT, summary.getBranch().getProject().getId(), GitExtension.EXTENSION, GitFileAtCommitLinkProperty.NAME);
+        String fileChangeLinkValue = gitConfiguration.getFileAtCommitLink();
         final String fileChangeLinkFormat;
         if (StringUtils.isNotBlank(fileChangeLinkValue)) {
             fileChangeLinkFormat = StringUtils.replace(
@@ -228,12 +228,12 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         logger.info("[git] Running the indexation task...");
         List<ProjectSummary> projectList = managementService.getProjectList();
         for (ProjectSummary project : projectList) {
-            // Gets the Git remote for this project
-            String gitRemote = propertiesService.getPropertyValue(Entity.PROJECT, project.getId(), GitExtension.EXTENSION, GitRemoteProperty.NAME);
-            if (StringUtils.isNotBlank(gitRemote)) {
-                // List of branches for the project
-                List<BranchSummary> branchList = managementService.getBranchList(project.getId());
-                for (BranchSummary branch : branchList) {
+            // List of branches for the project
+            List<BranchSummary> branchList = managementService.getBranchList(project.getId());
+            for (BranchSummary branch : branchList) {
+                // Gets the configuration for this branch
+                GitConfiguration configuration = getGitConfiguration(branch.getId());
+                if (configuration.withDefaults().isValid()) {
                     // Logging
                     logger.info(
                             "[git] Running the indexation task for project={}, branch={} ...",
@@ -334,7 +334,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
     }
 
-    private GitConfiguration getGitConfiguration(int branchId) {
+    @Override
+    public GitConfiguration getGitConfiguration(int branchId) {
         // Gets the branch
         BranchSummary branch = managementService.getBranch(branchId);
         // Project Id
@@ -343,7 +344,9 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         return new GitConfiguration(
                 propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitRemoteProperty.NAME),
                 propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitBranchProperty.NAME),
-                propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitTagProperty.NAME)
+                propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitTagProperty.NAME),
+                propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitCommitLinkProperty.NAME),
+                propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitFileAtCommitLinkProperty.NAME)
         );
     }
 }

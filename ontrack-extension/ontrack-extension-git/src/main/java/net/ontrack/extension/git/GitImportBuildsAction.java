@@ -7,6 +7,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.extension.git.model.GitImportBuildsForm;
 import net.ontrack.extension.git.service.GitService;
 import net.ontrack.web.support.AbstractGUIController;
@@ -83,8 +84,9 @@ public class GitImportBuildsAction extends AbstractGUIController implements Enti
 
     @Override
     public boolean isEnabled(BranchSummary summary) {
-        String remote = propertiesService.getPropertyValue(Entity.PROJECT, summary.getProject().getId(), GitExtension.EXTENSION, GitRemoteProperty.NAME);
-        String branch = propertiesService.getPropertyValue(Entity.BRANCH, summary.getId(), GitExtension.EXTENSION, GitBranchProperty.NAME);
+        GitConfiguration configuration = gitService.getGitConfiguration(summary.getId());
+        String remote = configuration.getRemote();
+        String branch = configuration.getBranch();
         return StringUtils.isNotBlank(remote) && StringUtils.isNotBlank(branch);
     }
 
