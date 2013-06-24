@@ -2,6 +2,7 @@ package net.ontrack.extension.git.service;
 
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.GitBranchProperty;
 import net.ontrack.extension.git.GitExtension;
@@ -41,13 +42,14 @@ public class DefaultGitServiceTest {
         controlService = mock(ControlService.class);
         gitClientFactory = mock(GitClientFactory.class);
         strings = mock(Strings.class);
+        ExtensionManager extensionManager = mock(ExtensionManager.class);
         service = new DefaultGitService(
                 securityUtils,
                 strings, propertiesService,
                 managementService,
                 controlService,
-                gitClientFactory
-        );
+                gitClientFactory,
+                extensionManager);
     }
 
     @Test

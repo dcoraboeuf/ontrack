@@ -7,6 +7,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
 import net.ontrack.extension.git.client.*;
@@ -46,6 +47,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     private final ManagementService managementService;
     private final ControlService controlService;
     private final GitClientFactory gitClientFactory;
+    private final ExtensionManager extensionManager;
     // Threads for the import
     private final ExecutorService executorImportBuilds = Executors.newFixedThreadPool(
             1,
@@ -53,19 +55,26 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                     .setDaemon(true)
                     .setNameFormat("git-import-builds-%s")
                     .build());
+    private List<GitConfigurator> gitConfigurators;
 
     @Autowired
     public DefaultGitService(
             SecurityUtils securityUtils,
             Strings strings, PropertiesService propertiesService,
             ManagementService managementService,
-            ControlService controlService, GitClientFactory gitClientFactory) {
+            ControlService controlService, GitClientFactory gitClientFactory, ExtensionManager extensionManager) {
         this.securityUtils = securityUtils;
         this.strings = strings;
         this.propertiesService = propertiesService;
         this.managementService = managementService;
         this.controlService = controlService;
         this.gitClientFactory = gitClientFactory;
+        this.extensionManager = extensionManager;
+    }
+
+    @Autowired(required = false)
+    public void setGitConfigurators(List<GitConfigurator> gitConfigurators) {
+        this.gitConfigurators = gitConfigurators;
     }
 
     @Override
@@ -258,7 +267,14 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
 
     @Override
     public Runnable getTask() {
-        return this;
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (extensionManager.isExtensionEnabled(GitExtension.EXTENSION)) {
+                    DefaultGitService.this.run();
+                }
+            }
+        };
     }
 
     @Override
@@ -340,13 +356,24 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         BranchSummary branch = managementService.getBranch(branchId);
         // Project Id
         int projectId = branch.getProject().getId();
+        // Empty configuration
+        GitConfiguration configuration = GitConfiguration.empty();
+        // Configurators
+        if (gitConfigurators != null) {
+            for (GitConfigurator gitConfigurator : gitConfigurators) {
+                configuration = gitConfigurator.configure(configuration, branch);
+            }
+        }
         // Properties
-        return new GitConfiguration(
-                propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitRemoteProperty.NAME),
-                propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitBranchProperty.NAME),
-                propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitTagProperty.NAME),
-                propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitCommitLinkProperty.NAME),
-                propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitFileAtCommitLinkProperty.NAME)
-        );
+        configuration = configuration
+                .withRemote(propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitRemoteProperty.NAME))
+                .withBranch(propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitBranchProperty.NAME))
+                .withTag(propertiesService.getPropertyValue(Entity.BRANCH, branchId, GitExtension.EXTENSION, GitTagProperty.NAME))
+                .withCommitLink(propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitCommitLinkProperty.NAME))
+                .withFileAtCommitLink(propertiesService.getPropertyValue(Entity.PROJECT, projectId, GitExtension.EXTENSION, GitFileAtCommitLinkProperty.NAME));
+        // Defaults
+        configuration = configuration.withDefaults();
+        // OK
+        return configuration;
     }
 }
