@@ -1,0 +1,50 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="git-import-builds"
+    title=loc("git.import-builds")
+    noscript=true
+    style=true
+    extension=true
+    breadcrumbs={
+        loc("home"): "",
+        branch.project.name?html: "gui/project/${branch.project.name?html}",
+        branch.name?html: "gui/project/${branch.project.name?html}/branch/${branch.name?html}"
+    }>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <span class="title">
+                <a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
+                / <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a>
+                / <@lh key="git.import-builds" />
+            </span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <form class="form-horizontal" action="gui/extension/git/import-builds/${branch.project.name?html}/${branch.name?html}" method="POST">
+                <div class="control-group">
+                    <label class="control-label" for="override-builds"><@lh key="git.import-builds.override"/></label>
+                    <div class="controls">
+                        <input type="checkbox" id="override-builds" name="override" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="tagPattern"><@lh key="git.import-builds.tagPattern"/></label>
+                    <div class="controls">
+                        <input type="text" id="tagPattern" name="tagPattern" size="40" maxlength="120" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary"><@lh key="general.submit" /></button>
+                        <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}" class="btn btn-link"><@lh key="general.close" /></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</@layout_std>

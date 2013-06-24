@@ -57,4 +57,11 @@ public final class TimeUtils {
         String elapsed = PeriodFormat.wordBased(locale).print(period);
         return strings.get(locale, "event.ago", elapsed, author);
     }
+
+    public static String elapsed(Strings strings, Locale locale, DateTime timestamp, DateTime now) {
+        Period period = new Period(timestamp, now);
+        period = compress(period);
+        String elapsed = PeriodFormat.wordBased(locale).print(period);
+        return strings.get(locale, "event.ago.simple", elapsed);
+    }
 }

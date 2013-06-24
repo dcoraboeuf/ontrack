@@ -24,6 +24,8 @@
         <module>ontrack-extension-svnexplorer</module>
         <module>ontrack-extension-package</module>
         <module>ontrack-extension-general</module>
+        <module>ontrack-extension-git</module>
+        <module>ontrack-extension-github</module>
     </modules>
 
     <dependencies>

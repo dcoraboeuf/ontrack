@@ -172,6 +172,20 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         return actions;
     }
 
+    @Override
+    public Collection<EntityActionExtension<BranchSummary>> getBranchActions() {
+        Collection<EntityActionExtension<BranchSummary>> actions = new ArrayList<>();
+        for (Extension extension : extensionIndex.values()) {
+            Collection<? extends EntityActionExtension> entityActions = extension.getEntityActions();
+            for (EntityActionExtension entityAction : entityActions) {
+                if (entityAction.getScope() == Entity.BRANCH) {
+                    actions.add(entityAction);
+                }
+            }
+        }
+        return actions;
+    }
+
     /**
      * Enabling an extension must enable all its dependencies
      */

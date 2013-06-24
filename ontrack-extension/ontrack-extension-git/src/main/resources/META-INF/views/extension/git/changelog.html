@@ -1,0 +1,92 @@
+<#include "/lib/layout.html">
+
+<#macro build_info build>
+    <h1><small>
+        <@lh key="model.build" />
+        <a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/build/${build.buildSummary.name?html}">${build.buildSummary.name}</a>
+    </small></h1>
+
+    <h1><small><@lh key="build.validation_stamps" /></small></h1>
+    <#list build.buildValidationStamps as buildValidationStamp>
+    <span class="label validation_stamp <#if !buildValidationStamp.run>notrun</#if>">
+        <img class="tooltip-source" width="24" title="${buildValidationStamp.name}<#if buildValidationStamp.owner??> - ${buildValidationStamp.owner.fullName?html}</#if>" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+        <a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}">${buildValidationStamp.name?html}</a>
+        <#list buildValidationStamp.runs as run>
+            <a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/build/${build.buildSummary.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}"><img src="static/images/status-${run.status?html}.png" title="&#x23;${run.runOrder?c} - ${run.status?html}" class="tooltip-source" /></a>
+        </#list>
+    </span>
+    </#list>
+
+    <h1><small><@lh key="build.promotion_levels" /></small></h1>
+    <#if build.buildPromotionLevels?size == 0>
+        <span class="muted"><@lh key="build.promotion_levels.none" /></span>
+        <#else>
+            <ul class="promotions">
+                <#list build.buildPromotionLevels as buildPromotionLevel>
+                    <li>
+                        <i class="icon-arrow-right"></i>
+                        <img width="24" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}/image" />
+                        <a class="tooltip-source" href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}" title="${buildPromotionLevel.signature.elapsedTime?html} - ${buildPromotionLevel.signature.formattedTime?html}">${buildPromotionLevel.name?html}</a>
+                    </li>
+                </#list>
+            </ul>
+    </#if>
+</#macro>
+
+<@layout_std
+    page="git-changelog"
+    title=loc("git.changelog")
+    style=true
+    extension=true>
+
+    <input id="changelog" type="hidden" value="${summary.uuid?html}" />
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${summary.branch.project.name?html}">${summary.branch.project.name?html}</a>
+                    /
+                    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}">${summary.branch.name?html}</a>
+                    /
+                    ${summary.buildFrom.buildSummary.name?html}
+                    <i class="icon-arrow-right" style="vertical-align: baseline;"></i>
+                    ${summary.buildTo.buildSummary.name?html}
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <div id="changelog-error" class="hidden alert alert-error"></div>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a id="summary-tab" href="#summary" data-toggle="tab"><@lh key="git.changelog.summary" /></a></li>
+        <li><a id="commits-tab" href="#commits" data-toggle="tab"><@lh key="git.changelog.commits" /></a></li>
+        <li><a id="files-tab" href="#files" data-toggle="tab"><@lh key="git.changelog.files" /></a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="summary">
+            <div class="row-fluid">
+                <!-- Build from -->
+                <div class="span6">
+                    <@build_info build=summary.buildFrom />
+                </div>
+                <!-- Build to -->
+                <div class="span6">
+                    <@build_info build=summary.buildTo />
+                </div>
+            </div>
+        </div>
+
+        <!-- Commits -->
+        <div class="tab-pane" id="commits">
+        </div>
+
+        <!-- Files -->
+        <div class="tab-pane" id="files">
+        </div>
+    </div>
+
+</@layout_std>
