@@ -45,7 +45,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
     }
 
     function loadCommits() {
-        location.hash = "revisions";
+        location.hash = "commits";
         if (commits == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
