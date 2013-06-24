@@ -1,0 +1,2 @@
+extension.github
+    en -> GitHub
