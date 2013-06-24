@@ -174,16 +174,32 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
             tagTo = StringUtils.replace(tagPattern, "*", tagTo);
         }
         // Diff
-        List<GitDiffEntry> entries = gitClient.diff(tagFrom, tagTo);
-        // TODO OK
+        final GitDiff diff = gitClient.diff(tagFrom, tagTo);
+        // File change links
+        String fileChangeLinkValue = propertiesService.getPropertyValue(Entity.PROJECT, summary.getBranch().getProject().getId(), GitExtension.EXTENSION, GitFileAtCommitLinkProperty.NAME);
+        final String fileChangeLinkFormat;
+        if (StringUtils.isNotBlank(fileChangeLinkValue)) {
+            fileChangeLinkFormat = StringUtils.replace(
+                    StringUtils.replace(fileChangeLinkValue, "$", "%2$s"),
+                    "*",
+                    "%1$s");
+        } else {
+            fileChangeLinkFormat = "";
+        }
+        // OK
         return new ChangeLogFiles(
                 Lists.transform(
-                        entries,
+                        diff.getEntries(),
                         new Function<GitDiffEntry, ChangeLogFile>() {
                             @Override
                             public ChangeLogFile apply(GitDiffEntry entry) {
-                                // TODO URL to the change
-                                return toChangeLogFile(entry);
+                                return toChangeLogFile(entry).withUrl(
+                                        String.format(
+                                                fileChangeLinkFormat,
+                                                entry.getReferenceId(diff.getFrom(), diff.getTo()),
+                                                entry.getReferencePath()
+                                        )
+                                );
                             }
                         }
                 )

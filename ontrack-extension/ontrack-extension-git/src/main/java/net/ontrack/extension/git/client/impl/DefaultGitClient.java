@@ -129,7 +129,7 @@ public class DefaultGitClient implements GitClient {
     }
 
     @Override
-    public List<GitDiffEntry> diff(String from, String to) {
+    public GitDiff diff(String from, String to) {
         try {
             // Client
             Git git = repository.git();
@@ -153,23 +153,26 @@ public class DefaultGitClient implements GitClient {
             List<DiffEntry> entries = git.diff()
                     .setShowNameAndStatusOnly(true)
                     .setOldTree(getTreeIterator(commitFrom.getId()))
-                    .setOldTree(getTreeIterator(commitTo.getId()))
+                    .setNewTree(getTreeIterator(commitTo.getId()))
                     .call();
 
             // OK
-            return Lists.transform(
-                    entries,
-                    new Function<DiffEntry, GitDiffEntry>() {
-                        @Override
-                        public GitDiffEntry apply(DiffEntry diff) {
-                            return new GitDiffEntry(
-                                    toChangeType(diff.getChangeType()),
-                                    diff.getOldPath(),
-                                    diff.getNewPath()
-                            );
-                        }
-                    }
-            );
+            return new GitDiff(
+                    commitFrom,
+                    commitTo,
+                    Lists.transform(
+                            entries,
+                            new Function<DiffEntry, GitDiffEntry>() {
+                                @Override
+                                public GitDiffEntry apply(DiffEntry diff) {
+                                    return new GitDiffEntry(
+                                            toChangeType(diff.getChangeType()),
+                                            diff.getOldPath(),
+                                            diff.getNewPath()
+                                    );
+                                }
+                            }
+                    ));
 
         } catch (IOException e) {
             throw new GitIOException(e);

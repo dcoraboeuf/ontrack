@@ -18,18 +18,20 @@ public class GitExtension extends ExtensionAdapter {
     public static final String EXTENSION = "git";
     private final GitRemoteProperty gitRemoteProperty;
     private final GitCommitLinkProperty gitCommitLinkProperty;
+    private final GitFileAtCommitLinkProperty gitFileAtCommitLinkProperty;
     private final GitBranchProperty gitBranchProperty;
     private final GitTagProperty gitTagProperty;
     private final GitChangeLogAction gitChangeLogAction;
     private final GitImportBuildsAction gitImportBuildsAction;
 
     @Autowired
-    public GitExtension(GitRemoteProperty gitRemoteProperty, GitCommitLinkProperty gitCommitLinkProperty, GitBranchProperty gitBranchProperty, GitTagProperty gitTagProperty,
+    public GitExtension(GitRemoteProperty gitRemoteProperty, GitCommitLinkProperty gitCommitLinkProperty, GitFileAtCommitLinkProperty gitFileAtCommitLinkProperty, GitBranchProperty gitBranchProperty, GitTagProperty gitTagProperty,
                         GitChangeLogAction gitChangeLogAction,
                         GitImportBuildsAction gitImportBuildsAction) {
         super(EXTENSION);
         this.gitRemoteProperty = gitRemoteProperty;
         this.gitCommitLinkProperty = gitCommitLinkProperty;
+        this.gitFileAtCommitLinkProperty = gitFileAtCommitLinkProperty;
         this.gitBranchProperty = gitBranchProperty;
         this.gitTagProperty = gitTagProperty;
         this.gitChangeLogAction = gitChangeLogAction;
@@ -51,6 +53,7 @@ public class GitExtension extends ExtensionAdapter {
         return Arrays.asList(
                 gitRemoteProperty,
                 gitCommitLinkProperty,
+                gitFileAtCommitLinkProperty,
                 gitBranchProperty,
                 gitTagProperty
         );

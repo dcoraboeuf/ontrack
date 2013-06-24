@@ -21,4 +21,8 @@ public class ChangeLogFile {
     public static ChangeLogFile of(GitChangeType changeType, String path, String path2) {
         return new ChangeLogFile(changeType, path, path2, "");
     }
+
+    public ChangeLogFile withUrl(String url) {
+        return new ChangeLogFile(changeType, path, path2, url);
+    }
 }

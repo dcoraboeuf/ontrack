@@ -15,5 +15,5 @@ public interface GitClient {
 
     void sync();
 
-    List<GitDiffEntry> diff(String from, String to);
+    GitDiff diff(String from, String to);
 }

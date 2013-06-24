@@ -3,6 +3,7 @@
         <tr>
             <th>{{loc 'git.changelog.files.changeType'}}</th>
             <th>{{loc 'git.changelog.files.path'}}</th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +20,11 @@
                     {{#if path2}}
                         <i class="icon-arrow-right"></i>
                         {{path2}}
+                    {{/if}}
+                </td>
+                <td>
+                    {{#if url}}
+                        <a href="{{url}}"><i class="icon-info-sign"></i></a>
                     {{/if}}
                 </td>
             </tr>

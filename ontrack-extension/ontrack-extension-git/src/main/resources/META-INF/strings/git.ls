@@ -19,6 +19,10 @@ git.commitLink
     en -> Commit link
     fr -> Lien pour commit
 
+git.fileAtCommitLink
+    en -> File at commit link
+    fr -> Lien pour fichier et commit
+
 [changelog]
 
 git.changelog
