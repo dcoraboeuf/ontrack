@@ -1,7 +1,5 @@
 package net.ontrack.core.tree;
 
-import net.ontrack.core.tree.support.Markup;
-
 public interface Node<D> {
 
     D getData();
@@ -17,4 +15,6 @@ public interface Node<D> {
     Iterable<Node<D>> getChildren();
 
     Node<D> append(Node<D> child);
+
+    void visit(NodeVisitor<D> nodeVisitor);
 }

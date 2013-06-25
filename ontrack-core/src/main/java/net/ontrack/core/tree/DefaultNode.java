@@ -37,6 +37,15 @@ public class DefaultNode<D> implements Node<D> {
     }
 
     @Override
+    public void visit(NodeVisitor<D> nodeVisitor) {
+        nodeVisitor.start(this);
+        for (Node<D> child : children) {
+            child.visit(nodeVisitor);
+        }
+        nodeVisitor.end(this);
+    }
+
+    @Override
     public D getData() {
         return data;
     }

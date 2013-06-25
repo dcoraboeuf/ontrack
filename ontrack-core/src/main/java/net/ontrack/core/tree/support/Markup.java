@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,5 +35,9 @@ public class Markup {
     public Markup attr(String name, String value) {
         attributes.put(name, value);
         return this;
+    }
+
+    public boolean isText() {
+        return type == null;
     }
 }

@@ -35,8 +35,8 @@ public class MessageAnnotationUtilsTest {
     );
 
     @Test
-    public void annotate_issue_with_one_match() {
-        Node<Markup> root = MessageAnnotationUtils.annotate(
+    public void annotate_as_node_issue_with_one_match() {
+        Node<Markup> root = MessageAnnotationUtils.annotateAsNode(
                 "#177 One match",
                 Arrays.asList(
                         issueMessageAnnotator
@@ -78,8 +78,30 @@ public class MessageAnnotationUtilsTest {
     }
 
     @Test
-    public void annotate_issue_and_number_with_one_match() {
-        Node<Markup> root = MessageAnnotationUtils.annotate(
+    public void annotate_as_html_issue_with_no_match() {
+        String html = MessageAnnotationUtils.annotate(
+                "No match",
+                Arrays.asList(
+                        issueMessageAnnotator
+                )
+        );
+        assertEquals("No match", html);
+    }
+
+    @Test
+    public void annotate_as_html_issue_with_one_match() {
+        String html = MessageAnnotationUtils.annotate(
+                "#177 One match",
+                Arrays.asList(
+                        issueMessageAnnotator
+                )
+        );
+        assertEquals("<link url=\"http://test/id/177\">#177</link> One match", html);
+    }
+
+    @Test
+    public void annotate_as_node_issue_and_number_with_one_match() {
+        Node<Markup> root = MessageAnnotationUtils.annotateAsNode(
                 "#177 One match",
                 Arrays.asList(
                         issueMessageAnnotator,
@@ -125,6 +147,18 @@ public class MessageAnnotationUtilsTest {
             );
             assertTrue(reminder.isLeaf());
         }
+    }
+
+    @Test
+    public void annotate_as_html_issue_and_number_with_one_match() {
+        String html = MessageAnnotationUtils.annotate(
+                "#177 One match",
+                Arrays.asList(
+                        issueMessageAnnotator,
+                        numberMessageAnnotator
+                )
+        );
+        assertEquals("<link url=\"http://test/id/177\">#<emphasis>177</emphasis></link> One match", html);
     }
 
 }

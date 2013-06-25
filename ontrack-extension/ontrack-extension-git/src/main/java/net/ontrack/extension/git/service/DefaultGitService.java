@@ -8,8 +8,6 @@ import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MessageAnnotationUtils;
 import net.ontrack.core.support.TimeUtils;
-import net.ontrack.core.tree.Node;
-import net.ontrack.core.tree.support.Markup;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
@@ -164,11 +162,11 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                         String formattedTime = TimeUtils.format(locale, time);
                                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
                                         // Annotated message
-                                        Node<Markup> root = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
+                                        String annotatedMessage = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
                                         // OK
                                         return new GitUICommit(
                                                 commit,
-                                                root,
+                                                annotatedMessage,
                                                 String.format(commitLinkFormat, commit.getId()),
                                                 elapsedTime,
                                                 formattedTime
