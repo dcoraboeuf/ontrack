@@ -19,6 +19,11 @@ public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<
     }
 
     @Override
+    public Iterable<Node<D>> getChildren() {
+        return this;
+    }
+
+    @Override
     public Iterator<Node<D>> iterator() {
         return children.iterator();
     }
@@ -58,7 +63,7 @@ public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<
             for (Node<D> child : children) {
                 newKids.add(child.transform(transformer, factory));
             }
-            t = factory.node(data, newKids);
+            t = factory.node(newKids);
         }
         return transformer.transform(t);
     }

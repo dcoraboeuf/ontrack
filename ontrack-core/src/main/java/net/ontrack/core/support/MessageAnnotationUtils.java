@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public final class MessageAnnotationUtils {
-    public static Node<MessageAnnotation> annotate(String text, List<MessageAnnotator> messageAnnotators) {
+    public static Node<MessageAnnotation> annotate(String text, List<? extends MessageAnnotator> messageAnnotators) {
         final NodeFactory<MessageAnnotation> factory = new DefaultNodeFactory<>();
         Node<MessageAnnotation> root = factory.leaf(MessageAnnotation.text(text));
         for (final MessageAnnotator messageAnnotator : messageAnnotators) {
@@ -24,7 +24,6 @@ public final class MessageAnnotationUtils {
                         if (StringUtils.isNotBlank(text)) {
                             Collection<MessageAnnotation> annotations = messageAnnotator.annotate(text);
                             return factory.node(
-                                    MessageAnnotation.empty(),
                                     Collections2.transform(
                                             annotations,
                                             new Function<MessageAnnotation, Node<MessageAnnotation>>() {

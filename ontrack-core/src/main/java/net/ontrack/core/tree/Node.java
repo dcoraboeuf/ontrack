@@ -14,4 +14,6 @@ public interface Node<D> extends Collection<Node<D>> {
 
     boolean isLeaf();
 
+    Iterable<Node<D>> getChildren();
+
 }

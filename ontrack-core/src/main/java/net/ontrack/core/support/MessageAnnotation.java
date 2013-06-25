@@ -14,8 +14,12 @@ public class MessageAnnotation {
     private final String type;
     private final Map<String, String> attributes;
 
-    public MessageAnnotation(String type) {
+    protected MessageAnnotation(String type) {
         this(type, new HashMap<String, String>());
+    }
+
+    public static MessageAnnotation of(String type) {
+        return new MessageAnnotation(type);
     }
 
     public static MessageAnnotation text(String text) {
