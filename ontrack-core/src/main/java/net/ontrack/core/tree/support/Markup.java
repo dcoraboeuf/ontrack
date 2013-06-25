@@ -17,7 +17,7 @@ public class Markup {
     private final Map<String, String> attributes;
 
     public static Markup text(String text) {
-        return new Markup(null, text, Collections.<String, String>emptyMap());
+        return new Markup(null, text, null);
     }
 
     public static Markup of(String type) {
