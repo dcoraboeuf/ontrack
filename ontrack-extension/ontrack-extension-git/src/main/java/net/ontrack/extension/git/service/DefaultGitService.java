@@ -6,7 +6,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.support.MessageAnnotation;
+import net.ontrack.core.support.MessageAnnotationUtils;
+import net.ontrack.core.support.MessageAnnotator;
 import net.ontrack.core.support.TimeUtils;
+import net.ontrack.core.tree.Node;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
@@ -21,6 +25,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.security.access.annotation.Secured;
@@ -56,6 +61,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                     .setNameFormat("git-import-builds-%s")
                     .build());
     private List<GitConfigurator> gitConfigurators;
+    private List<MessageAnnotator> gitMessageAnnotators;
 
     @Autowired
     public DefaultGitService(
@@ -75,6 +81,12 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Autowired(required = false)
     public void setGitConfigurators(List<GitConfigurator> gitConfigurators) {
         this.gitConfigurators = gitConfigurators;
+    }
+
+    @Autowired(required = false)
+    @Qualifier("git")
+    public void setGitMessageAnnotators(List<MessageAnnotator> gitMessageAnnotators) {
+        this.gitMessageAnnotators = gitMessageAnnotators;
     }
 
     @Override
@@ -150,11 +162,16 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                 new Function<GitCommit, GitUICommit>() {
                                     @Override
                                     public GitUICommit apply(GitCommit commit) {
+                                        // Times
                                         DateTime time = commit.getCommitTime();
                                         String formattedTime = TimeUtils.format(locale, time);
                                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
+                                        // Annotated message
+                                        Node<MessageAnnotation> root = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
+                                        // OK
                                         return new GitUICommit(
                                                 commit,
+                                                root,
                                                 String.format(commitLinkFormat, commit.getId()),
                                                 elapsedTime,
                                                 formattedTime
