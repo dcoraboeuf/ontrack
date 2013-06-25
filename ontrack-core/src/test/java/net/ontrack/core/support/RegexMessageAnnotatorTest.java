@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class RegexMessageAnnotatorTest {
 
-    public static final String REGEX = "#(\\d+)";
+    public static final String REGEX = "(#\\d+)";
     private final Function<String, MessageAnnotation> annotationFunction = new Function<String, MessageAnnotation>() {
         @Override
         public MessageAnnotation apply(String match) {
@@ -36,8 +36,36 @@ public class RegexMessageAnnotatorTest {
         assertNotNull(annotations);
         assertEquals(
                 Arrays.asList(
-                        annotationFunction.apply("177"),
+                        annotationFunction.apply("#177"),
                         MessageAnnotation.text(" match here.")
+                ),
+                annotations);
+    }
+
+    @Test
+    public void several_matches() {
+        Collection<MessageAnnotation> annotations = new RegexMessageAnnotator(REGEX, annotationFunction).annotate("#177 #178 matches.");
+        assertNotNull(annotations);
+        assertEquals(
+                Arrays.asList(
+                        annotationFunction.apply("#177"),
+                        MessageAnnotation.text(" "),
+                        annotationFunction.apply("#178"),
+                        MessageAnnotation.text(" matches.")
+                ),
+                annotations);
+    }
+
+    @Test
+    public void identical_matches() {
+        Collection<MessageAnnotation> annotations = new RegexMessageAnnotator(REGEX, annotationFunction).annotate("#177 #177 matches.");
+        assertNotNull(annotations);
+        assertEquals(
+                Arrays.asList(
+                        annotationFunction.apply("#177"),
+                        MessageAnnotation.text(" "),
+                        annotationFunction.apply("#177"),
+                        MessageAnnotation.text(" matches.")
                 ),
                 annotations);
     }
