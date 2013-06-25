@@ -6,11 +6,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.core.support.MessageAnnotation;
 import net.ontrack.core.support.MessageAnnotationUtils;
-import net.ontrack.core.support.MessageAnnotator;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.tree.Node;
+import net.ontrack.core.tree.support.Markup;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
@@ -25,7 +24,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.security.access.annotation.Secured;
@@ -61,7 +59,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                     .setNameFormat("git-import-builds-%s")
                     .build());
     private List<GitConfigurator> gitConfigurators;
-    private List<MessageAnnotator> gitMessageAnnotators;
+    private List<GitMessageAnnotator> gitMessageAnnotators;
 
     @Autowired
     public DefaultGitService(
@@ -84,8 +82,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Autowired(required = false)
-    @Qualifier("git")
-    public void setGitMessageAnnotators(List<MessageAnnotator> gitMessageAnnotators) {
+    public void setGitMessageAnnotators(List<GitMessageAnnotator> gitMessageAnnotators) {
         this.gitMessageAnnotators = gitMessageAnnotators;
     }
 
@@ -167,7 +164,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                         String formattedTime = TimeUtils.format(locale, time);
                                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
                                         // Annotated message
-                                        Node<MessageAnnotation> root = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
+                                        Node<Markup> root = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
                                         // OK
                                         return new GitUICommit(
                                                 commit,
