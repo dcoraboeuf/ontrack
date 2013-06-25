@@ -3,6 +3,7 @@ package net.ontrack.core.support;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,22 +13,15 @@ import java.util.Map;
 public class MessageAnnotation {
 
     private final String type;
+    private final String text;
     private final Map<String, String> attributes;
 
-    protected MessageAnnotation(String type) {
-        this(type, new HashMap<String, String>());
-    }
-
     public static MessageAnnotation of(String type) {
-        return new MessageAnnotation(type);
+        return new MessageAnnotation(type, null, new HashMap<String, String>());
     }
 
-    public static MessageAnnotation text(String text) {
-        return new MessageAnnotation("text").attr("text", text);
-    }
-
-    public static MessageAnnotation empty() {
-        return new MessageAnnotation("node");
+    public static MessageAnnotation t(String text) {
+        return of(null).text(text);
     }
 
     public MessageAnnotation attr(String name, String value) {
@@ -37,5 +31,17 @@ public class MessageAnnotation {
 
     public String attr(String name) {
         return attributes.get(name);
+    }
+
+    public MessageAnnotation text(String text) {
+        return new MessageAnnotation(type, text, attributes);
+    }
+
+    public boolean isText() {
+        return type == null;
+    }
+
+    public boolean hasText() {
+        return StringUtils.isNotBlank(text);
     }
 }

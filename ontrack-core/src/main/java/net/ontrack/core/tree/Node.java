@@ -1,8 +1,8 @@
 package net.ontrack.core.tree;
 
-import java.util.Collection;
+import net.ontrack.core.tree.support.Markup;
 
-public interface Node<D> extends Collection<Node<D>> {
+public interface Node<D> {
 
     D getData();
 
@@ -16,4 +16,5 @@ public interface Node<D> extends Collection<Node<D>> {
 
     Iterable<Node<D>> getChildren();
 
+    Node<D> append(Node<D> child);
 }

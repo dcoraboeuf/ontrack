@@ -32,7 +32,7 @@ public class RegexMessageAnnotator extends AbstractMessageAnnotator {
             // Previous section
             if (mStart > start) {
                 String previous = text.substring(start, mStart);
-                annotations.add(MessageAnnotation.text(previous));
+                annotations.add(MessageAnnotation.t(previous));
             }
             // Match
             String match = m.group(1);
@@ -44,7 +44,7 @@ public class RegexMessageAnnotator extends AbstractMessageAnnotator {
         // End
         if (start < text.length() - 1) {
             String reminder = text.substring(start);
-            annotations.add(MessageAnnotation.text(reminder));
+            annotations.add(MessageAnnotation.t(reminder));
         }
         // OK
         return annotations;

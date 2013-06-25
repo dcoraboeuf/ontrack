@@ -6,6 +6,6 @@ public interface NodeFactory<D> {
 
     Node<D> leaf(D data);
 
-    Node<D> node(Collection<Node<D>> children);
+    Node<D> node(D data, Collection<Node<D>> children);
 
 }

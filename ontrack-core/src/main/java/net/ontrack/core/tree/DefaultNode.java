@@ -1,8 +1,15 @@
 package net.ontrack.core.tree;
 
-import java.util.*;
+import lombok.ToString;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<D> {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+@ToString
+public class DefaultNode<D> implements Node<D> {
 
     private final NodeFactory<D> factory;
     private final D data;
@@ -20,17 +27,13 @@ public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<
 
     @Override
     public Iterable<Node<D>> getChildren() {
+        return children;
+    }
+
+    @Override
+    public Node<D> append(Node<D> child) {
+        children.add(child);
         return this;
-    }
-
-    @Override
-    public Iterator<Node<D>> iterator() {
-        return children.iterator();
-    }
-
-    @Override
-    public int size() {
-        return children.size();
     }
 
     @Override
@@ -39,11 +42,13 @@ public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<
     }
 
     @Override
+    @JsonIgnore
     public NodeFactory<D> getFactory() {
         return factory;
     }
 
     @Override
+    @JsonIgnore
     public boolean isLeaf() {
         return children.isEmpty();
     }
@@ -61,9 +66,18 @@ public class DefaultNode<D> extends AbstractCollection<Node<D>> implements Node<
         } else {
             List<Node<D>> newKids = new ArrayList<>();
             for (Node<D> child : children) {
-                newKids.add(child.transform(transformer, factory));
+                Node<D> newKid = child.transform(transformer, factory);
+                if (newKid.getData() == null) {
+                    // If the returned transformed node does not contain
+                    // any data, only its oyn children are added
+                    for (Node<D> grandChild : newKid.getChildren()) {
+                        newKids.add(grandChild);
+                    }
+                } else {
+                    newKids.add(newKid);
+                }
             }
-            t = factory.node(newKids);
+            t = factory.node(data, newKids);
         }
         return transformer.transform(t);
     }

@@ -15,7 +15,7 @@ public class RegexMessageAnnotatorTest {
     private final Function<String, MessageAnnotation> annotationFunction = new Function<String, MessageAnnotation>() {
         @Override
         public MessageAnnotation apply(String match) {
-            return new MessageAnnotation("test").attr("match", match);
+            return MessageAnnotation.of("test").attr("match", match);
         }
     };
 
@@ -25,7 +25,7 @@ public class RegexMessageAnnotatorTest {
         assertNotNull(annotations);
         assertEquals(
                 Arrays.asList(
-                        MessageAnnotation.text("No match here.")
+                        MessageAnnotation.t("No match here.")
                 ),
                 annotations);
     }
@@ -37,7 +37,7 @@ public class RegexMessageAnnotatorTest {
         assertEquals(
                 Arrays.asList(
                         annotationFunction.apply("#177"),
-                        MessageAnnotation.text(" match here.")
+                        MessageAnnotation.t(" match here.")
                 ),
                 annotations);
     }
@@ -49,9 +49,9 @@ public class RegexMessageAnnotatorTest {
         assertEquals(
                 Arrays.asList(
                         annotationFunction.apply("#177"),
-                        MessageAnnotation.text(" "),
+                        MessageAnnotation.t(" "),
                         annotationFunction.apply("#178"),
-                        MessageAnnotation.text(" matches.")
+                        MessageAnnotation.t(" matches.")
                 ),
                 annotations);
     }
@@ -63,9 +63,9 @@ public class RegexMessageAnnotatorTest {
         assertEquals(
                 Arrays.asList(
                         annotationFunction.apply("#177"),
-                        MessageAnnotation.text(" "),
+                        MessageAnnotation.t(" "),
                         annotationFunction.apply("#177"),
-                        MessageAnnotation.text(" matches.")
+                        MessageAnnotation.t(" matches.")
                 ),
                 annotations);
     }

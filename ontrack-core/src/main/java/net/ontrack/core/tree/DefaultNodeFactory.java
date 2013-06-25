@@ -9,7 +9,7 @@ public class DefaultNodeFactory<D> implements NodeFactory<D> {
     }
 
     @Override
-    public Node<D> node(Collection<Node<D>> children) {
-        return new DefaultNode<>(this, null, children);
+    public Node<D> node(D data, Collection<Node<D>> children) {
+        return new DefaultNode<>(this, data, children);
     }
 }
