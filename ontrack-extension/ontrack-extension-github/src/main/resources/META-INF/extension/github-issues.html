@@ -15,6 +15,9 @@
                 </td>
                 <td>
                     {{title}}
+                    {{#labels}}
+                        <span class="label" style="background-color: #{{color}}">{{name}}</span>
+                    {{/labels}}
                 </td>
                 <td>
                     <a href="{{assignee.url}}">{{assignee.login}}</a>
