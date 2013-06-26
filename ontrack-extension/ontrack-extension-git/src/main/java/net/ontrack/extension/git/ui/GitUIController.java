@@ -97,7 +97,8 @@ public class GitUIController extends AbstractUIController implements GitUI {
         return files;
     }
 
-    private ChangeLog getChangeLog(String uuid) {
+    @Override
+    public ChangeLog getChangeLog(String uuid) {
         ChangeLog changeLog = logCache.getIfPresent(uuid);
         if (changeLog != null) {
             return changeLog;

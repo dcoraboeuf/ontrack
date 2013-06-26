@@ -30,7 +30,7 @@ public class GitHubMessageAnnotator implements GitMessageAnnotator {
             final String project = gitHubService.getGitHubProject(branch.getProject().getId());
             if (StringUtils.isNotBlank(project)) {
                 return new RegexMessageAnnotator(
-                        "(#\\d+)",
+                        GitHubExtension.GITHUB_ISSUE_PATTERN,
                         new Function<String, MessageAnnotation>() {
                             @Override
                             public MessageAnnotation apply(String token) {

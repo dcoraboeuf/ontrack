@@ -15,6 +15,7 @@ import java.util.List;
 public class GitHubExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "github";
+    public static final String GITHUB_ISSUE_PATTERN = "(#\\d+)";
     private final GitHubProjectProperty gitHubProjectProperty;
 
     @Autowired

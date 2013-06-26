@@ -1,15 +1,14 @@
 package net.ontrack.extension.git.ui;
 
-import net.ontrack.extension.git.model.ChangeLogCommits;
-import net.ontrack.extension.git.model.ChangeLogFiles;
-import net.ontrack.extension.git.model.ChangeLogRequest;
-import net.ontrack.extension.git.model.ChangeLogSummary;
+import net.ontrack.extension.git.model.*;
 
 import java.util.Locale;
 
 public interface GitUI {
 
     ChangeLogSummary getChangeLogSummary(Locale locale, ChangeLogRequest request);
+
+    ChangeLog getChangeLog(String uuid);
 
     ChangeLogCommits getChangeLogCommits(Locale locale, String uuid);
 
