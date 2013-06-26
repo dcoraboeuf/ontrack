@@ -80,7 +80,7 @@ public class DefaultGitHubService implements GitHubService {
         Pattern p = Pattern.compile(GitHubExtension.GITHUB_ISSUE_PATTERN);
         Matcher m = p.matcher(message);
         while (m.find()) {
-            int id = Integer.parseInt(m.group(1), 10);
+            int id = Integer.parseInt(m.group(1).substring(1), 10);
             ids.add(id);
         }
         return ids;

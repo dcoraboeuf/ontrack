@@ -10,6 +10,9 @@ import net.ontrack.extension.git.model.GitUICommit;
 import net.ontrack.extension.git.ui.GitUI;
 import net.ontrack.extension.github.model.GitHubIssue;
 import net.ontrack.extension.github.service.GitHubService;
+import net.ontrack.web.support.AbstractUIController;
+import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,14 +25,15 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-public class GitHubChangeLogIssuesContributor implements GitChangeLogContributor {
+public class GitHubChangeLogIssuesContributor extends AbstractUIController implements GitChangeLogContributor {
 
     private final ExtensionManager extensionManager;
     private final GitHubService gitHubService;
     private final GitUI gitUI;
 
     @Autowired
-    public GitHubChangeLogIssuesContributor(ExtensionManager extensionManager, GitHubService gitHubService, GitUI gitUI) {
+    public GitHubChangeLogIssuesContributor(ErrorHandler errorHandler, Strings strings, ExtensionManager extensionManager, GitHubService gitHubService, GitUI gitUI) {
+        super(errorHandler, strings);
         this.extensionManager = extensionManager;
         this.gitHubService = gitHubService;
         this.gitUI = gitUI;
