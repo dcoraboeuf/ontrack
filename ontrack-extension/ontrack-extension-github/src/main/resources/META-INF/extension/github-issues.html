@@ -1,3 +1,4 @@
+<link type="text/css" rel="stylesheet" href="extension/github-issues.css" />
 <table class="table">
     <thead>
         <tr>
@@ -10,7 +11,7 @@
     <tbody>
         {{#issues}}
             <tr>
-                <td>
+                <td class="github-issue-{{state}}">
                     <a href="{{url}}">#{{id}}</a>
                 </td>
                 <td>
@@ -22,7 +23,7 @@
                 <td>
                     <a href="{{assignee.url}}">{{assignee.login}}</a>
                 </td>
-                <td>
+                <td class="github-milestone-{{state}}">
                     <a href="{{milestone.url}}">{{milestone.title}}</a>
                 </td>
             </tr>
