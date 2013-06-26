@@ -8,8 +8,12 @@ import net.ontrack.extension.github.service.GitHubService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-@Component
+@Controller
 public class GitHubChangeLogIssuesContributor implements GitChangeLogContributor {
 
     private final ExtensionManager extensionManager;
@@ -34,5 +38,10 @@ public class GitHubChangeLogIssuesContributor implements GitChangeLogContributor
                 "issues",
                 "github.changelog.issues"
         );
+    }
+
+    @RequestMapping(value = "/ui/extension/github/issues/{uuid}", method = RequestMethod.GET)
+    public void issues (@PathVariable String uuid) {
+
     }
 }
