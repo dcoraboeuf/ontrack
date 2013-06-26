@@ -19,6 +19,7 @@ public class DefaultGitHubClientTest {
         assertEquals(
                 new GitHubIssue(
                         2,
+                        "https://github.com/dcoraboeuf/ontrack/issues/2",
                         "Management of projects",
                         new GitHubUser("dcoraboeuf"),
                         Arrays.asList(new GitHubLabel("feature", "0b02e1")),

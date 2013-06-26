@@ -46,6 +46,7 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
         // Conversion
         return new GitHubIssue(
                 id,
+                issue.getHtmlUrl(),
                 issue.getTitle(),
                 toUser(issue.getAssignee()),
                 toLabels(issue.getLabels()),

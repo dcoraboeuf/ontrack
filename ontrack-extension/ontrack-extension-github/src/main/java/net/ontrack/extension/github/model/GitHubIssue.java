@@ -9,6 +9,7 @@ import java.util.List;
 public class GitHubIssue {
 
     private final int id;
+    private final String url;
     private final String title;
     private final GitHubUser assignee;
     private final List<GitHubLabel> labels;
