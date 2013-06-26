@@ -15,4 +15,5 @@ public interface GitUI {
 
     ChangeLogFiles getChangeLogFiles(Locale locale, String uuid);
 
+    boolean isGitConfigured(int branchId);
 }

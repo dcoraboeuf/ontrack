@@ -21,4 +21,6 @@ public interface SVNExplorerUI {
     IssueInfo getIssueInfo(Locale locale, String key);
 
     BranchHistory getBranchHistory(Locale locale, String projectName);
+
+    boolean isChangeLogAvailable(int branchId);
 }

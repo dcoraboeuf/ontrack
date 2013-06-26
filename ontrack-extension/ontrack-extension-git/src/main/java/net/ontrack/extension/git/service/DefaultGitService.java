@@ -86,6 +86,12 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
+    public boolean isGitConfigured(int branchId) {
+        GitConfiguration configuration = getGitConfiguration(branchId);
+        return configuration.isValid();
+    }
+
+    @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
         executorImportBuilds.submit(new Runnable() {

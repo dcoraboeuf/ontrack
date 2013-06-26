@@ -1,5 +1,6 @@
 package net.ontrack.extension.svnexplorer;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
@@ -26,6 +27,10 @@ public class ChangeLogActionController extends AbstractGUIController implements 
         this.ui = ui;
     }
 
+    @Override
+    public boolean isApplicable(Entity entity, int branchId) {
+        return entity == Entity.BRANCH && ui.isChangeLogAvailable(branchId);
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String changeLogPage (Locale locale, String project, String branch, String from, String to, Model model) {

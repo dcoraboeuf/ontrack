@@ -1,5 +1,7 @@
 package net.ontrack.extension.api.action;
 
+import net.ontrack.core.model.Entity;
+
 public interface ActionExtension {
 
     String getExtension();
@@ -11,4 +13,6 @@ public interface ActionExtension {
     String getPath();
 
     String getTitleKey();
+
+    boolean isApplicable(Entity entity, int entityId);
 }

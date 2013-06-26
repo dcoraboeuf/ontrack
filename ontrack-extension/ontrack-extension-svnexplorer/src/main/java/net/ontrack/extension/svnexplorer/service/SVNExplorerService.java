@@ -21,4 +21,6 @@ public interface SVNExplorerService {
     IssueInfo getIssueInfo(Locale locale, String key);
 
     BranchHistory getBranchHistory(int project, Locale locale);
+
+    boolean isSvnExplorerConfigured(int branchId);
 }

@@ -6,6 +6,7 @@ import net.ontrack.extension.api.action.ActionExtension;
 import net.sf.jstring.Strings;
 
 import java.util.Collection;
+import java.util.List;
 
 public class FnExtensionTopLevelActions extends AbstractFnExtensionActions {
 
@@ -14,7 +15,7 @@ public class FnExtensionTopLevelActions extends AbstractFnExtensionActions {
     }
 
     @Override
-    protected Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager) {
+    protected Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments) {
         return extensionManager.getTopLevelActions();
     }
 }

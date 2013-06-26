@@ -1,5 +1,6 @@
 package net.ontrack.extension.git;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.git.model.ChangeLogRequest;
 import net.ontrack.extension.git.model.ChangeLogSummary;
@@ -24,6 +25,11 @@ public class GitChangeLogAction extends AbstractGUIController implements ActionE
     public GitChangeLogAction(ErrorHandler errorHandler, GitUI ui) {
         super(errorHandler);
         this.ui = ui;
+    }
+
+    @Override
+    public boolean isApplicable(Entity entity, int branchId) {
+        return entity == Entity.BRANCH && ui.isGitConfigured(branchId);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
