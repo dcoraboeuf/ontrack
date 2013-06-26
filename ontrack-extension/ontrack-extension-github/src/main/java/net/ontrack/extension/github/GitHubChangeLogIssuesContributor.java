@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +51,9 @@ public class GitHubChangeLogIssuesContributor implements GitChangeLogContributor
     }
 
     @RequestMapping(value = "/ui/extension/github/issues/{uuid}", method = RequestMethod.GET)
-    public List<GitHubIssue> issues(Locale locale, @PathVariable String uuid) {
+    public
+    @ResponseBody
+    List<GitHubIssue> issues(Locale locale, @PathVariable String uuid) {
         // Gets the change log
         int branchId = gitUI.getChangeLog(uuid).getSummary().getBranch().getId();
         ChangeLogCommits changeLog = gitUI.getChangeLogCommits(locale, uuid);

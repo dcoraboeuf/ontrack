@@ -1,6 +1,7 @@
 package net.ontrack.extension.github.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.BranchSummary;
@@ -56,14 +57,17 @@ public class DefaultGitHubService implements GitHubService {
             }
             // Gets the issues
             return Lists.newArrayList(
-                    Collections2.transform(
-                            issues,
-                            new Function<Integer, GitHubIssue>() {
-                                @Override
-                                public GitHubIssue apply(Integer id) {
-                                    return gitHubClient.getIssue(project, id);
-                                }
-                            }
+                    Collections2.filter(
+                            Collections2.transform(
+                                    issues,
+                                    new Function<Integer, GitHubIssue>() {
+                                        @Override
+                                        public GitHubIssue apply(Integer id) {
+                                            return gitHubClient.getIssue(project, id);
+                                        }
+                                    }
+                            ),
+                            Predicates.notNull()
                     )
             );
         } else {
