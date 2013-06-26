@@ -9,7 +9,7 @@ import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.github.GitHubExtension;
 import net.ontrack.extension.github.GitHubProjectProperty;
-import net.ontrack.extension.github.client.GitHubClient;
+import net.ontrack.extension.github.client.OntrackGitHubClient;
 import net.ontrack.extension.github.model.GitHubIssue;
 import net.ontrack.service.ManagementService;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +25,10 @@ public class DefaultGitHubService implements GitHubService {
 
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
-    private final GitHubClient gitHubClient;
+    private final OntrackGitHubClient gitHubClient;
 
     @Autowired
-    public DefaultGitHubService(ManagementService managementService, PropertiesService propertiesService, GitHubClient gitHubClient) {
+    public DefaultGitHubService(ManagementService managementService, PropertiesService propertiesService, OntrackGitHubClient gitHubClient) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.gitHubClient = gitHubClient;

@@ -8,3 +8,8 @@ github.project
 github.changelog.issues
     en -> GitHub issues
     fr -> Tickets GitHub
+
+[errors]
+
+net.ontrack.extension.github.client.OntrackGitHubClientException
+    en -> [GITHUB-001] Error while accessing GitHub.

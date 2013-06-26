@@ -8,12 +8,13 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DefaultGitHubClientTest {
 
     @Test
     public void getIssue() {
-        GitHubClient client = new DefaultGitHubClient();
+        OntrackGitHubClient client = new DefaultOntrackGitHubClient();
         GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", 2);
         assertEquals(
                 new GitHubIssue(
@@ -31,6 +32,13 @@ public class DefaultGitHubClientTest {
                         new DateTime(2013, 4, 17, 18, 48, 53, DateTimeZone.UTC)
                 ),
                 issue);
+    }
+
+    @Test
+    public void getIssue_not_found() {
+        OntrackGitHubClient client = new DefaultOntrackGitHubClient();
+        GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", 98000);
+        assertNull(issue);
     }
 
 }

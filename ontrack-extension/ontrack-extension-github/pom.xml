@@ -20,6 +20,12 @@
             <artifactId>ontrack-extension-git</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- GitHub API -->
+        <dependency>
+            <groupId>org.eclipse.mylyn.github</groupId>
+            <artifactId>org.eclipse.egit.github.core</artifactId>
+            <version>2.1.5</version>
+        </dependency>
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
