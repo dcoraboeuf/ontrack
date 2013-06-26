@@ -61,6 +61,11 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     }
 
     @Override
+    public boolean isChangeLogAvailable(int branchId) {
+        return svnExplorerService.isSvnExplorerConfigured(branchId);
+    }
+
+    @Override
     @RequestMapping(value = "/changelog", method = RequestMethod.POST)
     public
     @ResponseBody

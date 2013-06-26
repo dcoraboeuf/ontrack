@@ -1,5 +1,6 @@
 package net.ontrack.extension.svn;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.action.ActionExtension;
@@ -50,6 +51,12 @@ public class IndexationActionController extends AbstractGUIController implements
     @Override
     public String getTitleKey() {
         return "subversion.indexation";
+    }
+
+    @Override
+    public boolean isApplicable(Entity entity, int entityId) {
+        // FIXME Implement net.ontrack.extension.svn.IndexationActionController.isApplicable
+        return false;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

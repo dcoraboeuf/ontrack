@@ -1,4 +1,4 @@
-define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render, common, plot) {
+define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, ajax, render, common, plot, require) {
 
     Handlebars.registerHelper('git_changetype', function (key, options) {
         return 'git.changelog.files.changeType.{0}'.format(key).loc();
@@ -6,6 +6,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
 
     var commits = null;
     var files = null;
+    var extensionDataIndex = {};
 
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
@@ -39,13 +40,26 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         );
     }
 
+    function displayExtension(extension, extensionName, data) {
+        var extensionId = extension + '-' + extensionName;
+        // Stores the data (local cache for display purpose only)
+        extensionDataIndex[extensionId] = data;
+        // Rendering
+        require(['extension/{0}.js'.format(extensionId)], function (m) {
+            m.display(
+                $('#' + extensionId),
+                data
+            );
+        });
+    }
+
     function loadSummary() {
         // Nothing to load, just adjust the hash
         location.hash = "";
     }
 
     function loadCommits() {
-        location.hash = "revisions";
+        location.hash = "commits";
         if (commits == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
@@ -80,6 +94,28 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         }
     }
 
+    function loadExtension(extension, extensionName) {
+        var extensionId = extension + '-' + extensionName;
+        location.hash = extensionId;
+        var extensionData = extensionDataIndex[extensionId];
+        if (extensionData == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the data
+            ajax.get({
+                url: 'ui/extension/{0}/{1}/{2}'.format(extension, extensionName, uuid),
+                loading: {
+                    el: '#{0}'.format(extensionId),
+                    mode: 'appendText'
+                },
+                successFn: function (data) {
+                    displayExtension(extension, extensionName, data);
+                },
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn() {
         return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
@@ -88,6 +124,14 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         $('#summary-tab').on('show', loadSummary);
         $('#commits-tab').on('show', loadCommits);
         $('#files-tab').on('show', loadFiles);
+        // Extensions
+        $('.changelog-extension').each(function (index, def) {
+            var extension = $(def).attr('data-extension');
+            var extensionName = $(def).attr('data-extension-name');
+            $(def).on('show', function () {
+                loadExtension(extension, extensionName);
+            });
+        });
         // Initial tab
         $(document).ready(function () {
             var hash = location.hash;

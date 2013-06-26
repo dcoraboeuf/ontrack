@@ -64,6 +64,20 @@
         <li class="active"><a id="summary-tab" href="#summary" data-toggle="tab"><@lh key="git.changelog.summary" /></a></li>
         <li><a id="commits-tab" href="#commits" data-toggle="tab"><@lh key="git.changelog.commits" /></a></li>
         <li><a id="files-tab" href="#files" data-toggle="tab"><@lh key="git.changelog.files" /></a></li>
+        <#list extensions as extension>
+            <li>
+                <a
+                    id="${extension.extension?html}-${extension.name?html}-tab"
+                    href="#${extension.extension?html}-${extension.name?html}"
+                    class="changelog-extension"
+                    data-toggle="tab"
+                    data-extension="${extension.extension?html}"
+                    data-extension-name="${extension.name?html}"
+                    >
+                    <@lh key=extension.titleKey />
+                    </a>
+            </li>
+        </#list>
     </ul>
 
     <div class="tab-content">
@@ -87,6 +101,13 @@
         <!-- Files -->
         <div class="tab-pane" id="files">
         </div>
+
+        <!-- Extensions -->
+        <#list extensions as extension>
+            <div class="tab-pane" id="${extension.extension?html}-${extension.name?html}">
+            </div>
+        </#list>
+
     </div>
 
 </@layout_std>

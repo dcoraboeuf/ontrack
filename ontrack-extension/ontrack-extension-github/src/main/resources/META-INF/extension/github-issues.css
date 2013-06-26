@@ -1,0 +1,9 @@
+.github-issue-closed {
+    text-decoration: line-through;
+    color: #808080;
+}
+
+.github-milestone-closed {
+    text-decoration: line-through;
+    color: #808080;
+}

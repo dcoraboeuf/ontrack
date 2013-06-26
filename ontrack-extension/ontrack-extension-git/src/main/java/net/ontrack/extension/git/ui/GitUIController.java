@@ -37,6 +37,11 @@ public class GitUIController extends AbstractUIController implements GitUI {
     }
 
     @Override
+    public boolean isGitConfigured(int branchId) {
+        return gitService.isGitConfigured(branchId);
+    }
+
+    @Override
     @RequestMapping(value = "/changelog", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -92,7 +97,8 @@ public class GitUIController extends AbstractUIController implements GitUI {
         return files;
     }
 
-    private ChangeLog getChangeLog(String uuid) {
+    @Override
+    public ChangeLog getChangeLog(String uuid) {
         ChangeLog changeLog = logCache.getIfPresent(uuid);
         if (changeLog != null) {
             return changeLog;

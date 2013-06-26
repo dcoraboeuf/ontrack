@@ -8,7 +8,7 @@
     <parent>
         <artifactId>ontrack-extension</artifactId>
         <groupId>net.ontrack</groupId>
-        <version>1.22-SNAPSHOT</version>
+        <version>1.23-SNAPSHOT</version>
     </parent>
 
     <artifactId>ontrack-extension-github</artifactId>
@@ -19,6 +19,33 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ontrack-extension-git</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <!-- GitHub API -->
+        <dependency>
+            <groupId>org.eclipse.mylyn.github</groupId>
+            <artifactId>org.eclipse.egit.github.core</artifactId>
+            <version>2.1.5</version>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

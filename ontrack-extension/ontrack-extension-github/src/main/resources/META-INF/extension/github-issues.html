@@ -1,0 +1,32 @@
+<link type="text/css" rel="stylesheet" href="extension/github-issues.css" />
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{loc 'github.changelog.issues.id'}}</th>
+            <th>{{loc 'github.changelog.issues.title'}}</th>
+            <th>{{loc 'github.changelog.issues.assignee'}}</th>
+            <th>{{loc 'github.changelog.issues.milestone'}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#issues}}
+            <tr>
+                <td class="github-issue-{{state}}">
+                    <a href="{{url}}">#{{id}}</a>
+                </td>
+                <td>
+                    {{title}}
+                    {{#labels}}
+                        <span class="label" style="background-color: #{{color}}">{{name}}</span>
+                    {{/labels}}
+                </td>
+                <td>
+                    <a href="{{assignee.url}}">{{assignee.login}}</a>
+                </td>
+                <td class="github-milestone-{{state}}">
+                    <a href="{{milestone.url}}">{{milestone.title}}</a>
+                </td>
+            </tr>
+        {{/issues}}
+    </tbody>
+</table>

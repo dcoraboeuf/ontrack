@@ -15,12 +15,17 @@ import java.util.List;
 public class GitHubExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "github";
+    public static final String GITHUB_ISSUE_PATTERN = "(#\\d+)";
     private final GitHubProjectProperty gitHubProjectProperty;
 
     @Autowired
     public GitHubExtension(GitHubProjectProperty gitHubProjectProperty) {
         super(EXTENSION);
         this.gitHubProjectProperty = gitHubProjectProperty;
+    }
+
+    public static String getIssueUrl(String project, String id) {
+        return String.format("https://github.com/%s/issues/%s", project, id);
     }
 
     @Override

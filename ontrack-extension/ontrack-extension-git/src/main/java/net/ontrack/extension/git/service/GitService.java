@@ -15,4 +15,6 @@ public interface GitService {
     ChangeLogCommits getChangeLogCommits(Locale locale, ChangeLogSummary summary);
 
     ChangeLogFiles getChangeLogFiles(Locale locale, ChangeLogSummary summary);
+
+    boolean isGitConfigured(int branchId);
 }

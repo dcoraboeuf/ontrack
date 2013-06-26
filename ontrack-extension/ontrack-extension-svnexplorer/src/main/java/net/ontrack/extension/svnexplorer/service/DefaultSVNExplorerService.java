@@ -494,6 +494,12 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
+    @Override
+    public boolean isSvnExplorerConfigured(int branchId) {
+        String buildPathPattern = propertiesService.getPropertyValue(Entity.BRANCH, branchId, SubversionExtension.EXTENSION, SubversionExtension.SUBVERSION_BUILD_PATH);
+        return StringUtils.isNotBlank(buildPathPattern);
+    }
+
     private BranchHistoryLine collectHistory(Locale locale, SVNTreeNode node) {
         // Line itself
         BranchHistoryLine line = createBranchHistoryLine(locale, node.getLocation());

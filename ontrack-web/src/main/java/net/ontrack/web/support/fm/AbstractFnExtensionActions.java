@@ -10,7 +10,6 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.web.gui.model.GUIAction;
 import net.sf.jstring.Strings;
-import org.apache.commons.lang3.Validate;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Collection;
@@ -30,12 +29,9 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
     }
 
     @Override
-    public Object exec(List list) throws TemplateModelException {
-        // Checks
-        Validate.notNull(list, "List of arguments is required");
-        Validate.isTrue(list.size() == 0, "No argument is needed");
+    public Collection<GUIAction> exec(List list) throws TemplateModelException {
         // Gets the list of top level actions
-        Collection<? extends ActionExtension> actions = getActions(extensionManager);
+        Collection<? extends ActionExtension> actions = getActions(extensionManager, list);
         // Filter on access rights
         actions = Collections2.filter(
                 actions,
@@ -47,6 +43,12 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
                     }
                 }
         );
+        // OK
+        return toGUIActions(actions);
+
+    }
+
+    private Collection<GUIAction> toGUIActions(Collection<? extends ActionExtension> actions) {
         // Gets the locale from the context
         final Locale locale = LocaleContextHolder.getLocale();
         // Converts to GUI actions
@@ -66,5 +68,5 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
         );
     }
 
-    protected abstract Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager);
+    protected abstract Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments);
 }
