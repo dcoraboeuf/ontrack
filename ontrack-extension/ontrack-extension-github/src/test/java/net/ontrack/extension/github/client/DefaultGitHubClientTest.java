@@ -21,12 +21,14 @@ public class DefaultGitHubClientTest {
                         2,
                         "https://github.com/dcoraboeuf/ontrack/issues/2",
                         "Management of projects",
-                        new GitHubUser("dcoraboeuf"),
+                        new GitHubUser("dcoraboeuf", "https://github.com/dcoraboeuf"),
                         Arrays.asList(new GitHubLabel("feature", "0b02e1")),
                         GitHubState.closed,
                         new GitHubMilestone(
                                 "0.1",
-                                GitHubState.closed
+                                GitHubState.closed,
+                                1,
+                                "https://github.com/dcoraboeuf/ontrack/issues?milestone=1&state=open"
                         ),
                         new DateTime(2013, 1, 25, 20, 32, 29, DateTimeZone.UTC),
                         new DateTime(2013, 4, 17, 18, 48, 53, DateTimeZone.UTC),

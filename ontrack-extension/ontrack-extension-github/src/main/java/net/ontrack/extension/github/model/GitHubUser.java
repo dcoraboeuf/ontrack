@@ -6,5 +6,6 @@ import lombok.Data;
 public class GitHubUser {
 
     private final String login;
+    private final String url;
 
 }

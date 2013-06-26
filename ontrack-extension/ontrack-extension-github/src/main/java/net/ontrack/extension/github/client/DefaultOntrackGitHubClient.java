@@ -51,7 +51,7 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
                 toUser(issue.getAssignee()),
                 toLabels(issue.getLabels()),
                 toState(issue.getState()),
-                toMilestone(issue.getMilestone()),
+                toMilestone(project, issue.getMilestone()),
                 toDateTime(issue.getCreatedAt()),
                 toDateTime(issue.getUpdatedAt()),
                 toDateTime(issue.getClosedAt())
@@ -66,10 +66,12 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
         }
     }
 
-    private GitHubMilestone toMilestone(Milestone milestone) {
+    private GitHubMilestone toMilestone(String project, Milestone milestone) {
         return new GitHubMilestone(
                 milestone.getTitle(),
-                toState(milestone.getState())
+                toState(milestone.getState()),
+                milestone.getNumber(),
+                String.format("https://github.com/%s/issues?milestone=%d&state=open", project, milestone.getNumber())
         );
     }
 
@@ -97,7 +99,8 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
             return null;
         } else {
             return new GitHubUser(
-                    user.getLogin()
+                    user.getLogin(),
+                    user.getHtmlUrl()
             );
         }
     }

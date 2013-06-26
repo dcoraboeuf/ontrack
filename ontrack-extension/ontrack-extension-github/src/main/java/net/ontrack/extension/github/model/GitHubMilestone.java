@@ -7,5 +7,7 @@ public class GitHubMilestone {
 
     private final String title;
     private final GitHubState state;
+    private final int number;
+    private final String url;
 
 }

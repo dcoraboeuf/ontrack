@@ -13,9 +13,15 @@
                 <td>
                     <a href="{{url}}">#{{id}}</a>
                 </td>
-                <td>{{title}}</td>
-                <td>{{assignee.login}}</td>
-                <td>{{milestone.title}}</td>
+                <td>
+                    {{title}}
+                </td>
+                <td>
+                    <a href="{{assignee.url}}">{{assignee.login}}</a>
+                </td>
+                <td>
+                    <a href="{{milestone.url}}">{{milestone.title}}</a>
+                </td>
             </tr>
         {{/issues}}
     </tbody>
