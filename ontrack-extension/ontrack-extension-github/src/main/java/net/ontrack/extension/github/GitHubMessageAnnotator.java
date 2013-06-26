@@ -2,13 +2,12 @@ package net.ontrack.extension.github;
 
 import com.google.common.base.Function;
 import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.Entity;
 import net.ontrack.core.support.MessageAnnotation;
 import net.ontrack.core.support.MessageAnnotator;
 import net.ontrack.core.support.RegexMessageAnnotator;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.service.GitMessageAnnotator;
+import net.ontrack.extension.github.service.GitHubService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,22 +16,18 @@ import org.springframework.stereotype.Component;
 public class GitHubMessageAnnotator implements GitMessageAnnotator {
 
     private final ExtensionManager extensionManager;
-    private final PropertiesService propertiesService;
+    private final GitHubService gitHubService;
 
     @Autowired
-    public GitHubMessageAnnotator(ExtensionManager extensionManager, PropertiesService propertiesService) {
+    public GitHubMessageAnnotator(ExtensionManager extensionManager, GitHubService gitHubService) {
         this.extensionManager = extensionManager;
-        this.propertiesService = propertiesService;
+        this.gitHubService = gitHubService;
     }
 
     @Override
     public MessageAnnotator annotator(BranchSummary branch) {
         if (extensionManager.isExtensionEnabled(GitHubExtension.EXTENSION)) {
-            final String project = propertiesService.getPropertyValue(
-                    Entity.PROJECT,
-                    branch.getProject().getId(),
-                    GitHubExtension.EXTENSION,
-                    GitHubProjectProperty.NAME);
+            final String project = gitHubService.getGitHubProject(branch.getProject().getId());
             if (StringUtils.isNotBlank(project)) {
                 return new RegexMessageAnnotator(
                         "(#\\d+)",

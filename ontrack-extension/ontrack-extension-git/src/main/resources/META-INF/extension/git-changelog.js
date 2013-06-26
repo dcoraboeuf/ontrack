@@ -6,6 +6,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
 
     var commits = null;
     var files = null;
+    var extensionDataIndex = {};
 
     function displayCommits(data) {
         // Stores the commits (local cache for display purpose only)
@@ -80,6 +81,28 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         }
     }
 
+    function loadExtension(extension, extensionName) {
+        var extensionId = extension + '-' + extensionName;
+        location.hash = extensionId;
+        var extensionData = extensionDataIndex[extensionId];
+        if (extensionData == null) {
+            // UUID for the change log
+            var uuid = $('#changelog').val();
+            // Loads the data
+            ajax.get({
+                url: 'ui/extension/{0}/{1}/{2}'.format(extension, extensionName, uuid),
+                loading: {
+                    el: '#{0}'.format(extensionId),
+                    mode: 'appendText'
+                },
+                successFn: function (data) {
+                    displayExtension(extension, extensionName, data);
+                },
+                errorFn: changelogErrorFn()
+            });
+        }
+    }
+
     function changelogErrorFn() {
         return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
@@ -88,6 +111,14 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
         $('#summary-tab').on('show', loadSummary);
         $('#commits-tab').on('show', loadCommits);
         $('#files-tab').on('show', loadFiles);
+        // Extensions
+        $('.changelog-extension').each(function (index, def) {
+            var extension = $(def).attr('data-extension');
+            var extensionName = $(def).attr('data-extension-name');
+            $(def).on('show', function () {
+                loadExtension(extension, extensionName);
+            });
+        });
         // Initial tab
         $(document).ready(function () {
             var hash = location.hash;

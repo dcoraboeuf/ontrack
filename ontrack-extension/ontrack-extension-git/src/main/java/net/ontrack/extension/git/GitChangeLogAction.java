@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -20,11 +23,17 @@ import java.util.Locale;
 public class GitChangeLogAction extends AbstractGUIController implements ActionExtension {
 
     private final GitUI ui;
+    private Collection<GitChangeLogContributor> changeLogContributors;
 
     @Autowired
     public GitChangeLogAction(ErrorHandler errorHandler, GitUI ui) {
         super(errorHandler);
         this.ui = ui;
+    }
+
+    @Autowired(required = false)
+    public void setChangeLogContributors(Collection<GitChangeLogContributor> changeLogContributors) {
+        this.changeLogContributors = changeLogContributors;
     }
 
     @Override
@@ -39,6 +48,19 @@ public class GitChangeLogAction extends AbstractGUIController implements ActionE
         // Loads the summary
         ChangeLogSummary summary = ui.getChangeLogSummary(locale, request);
         model.addAttribute("summary", summary);
+        // Extensions
+        List<GitChangeLogExtension> extensionList = new ArrayList<>();
+        if (changeLogContributors != null) {
+            for (GitChangeLogContributor changeLogContributor : changeLogContributors) {
+                // Available?
+                if (changeLogContributor.isApplicable(summary.getBranch())) {
+                    // Gets the information to place into the model
+                    GitChangeLogExtension extension = changeLogContributor.getExtension(summary.getBranch());
+                    extensionList.add(extension);
+                }
+            }
+        }
+        model.addAttribute("extensions", extensionList);
         // OK
         return "extension/git/changelog";
     }
