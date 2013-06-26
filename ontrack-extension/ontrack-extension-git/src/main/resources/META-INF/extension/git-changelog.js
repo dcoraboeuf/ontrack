@@ -1,4 +1,4 @@
-define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render, common, plot) {
+define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, ajax, render, common, plot, require) {
 
     Handlebars.registerHelper('git_changetype', function (key, options) {
         return 'git.changelog.files.changeType.{0}'.format(key).loc();
@@ -38,6 +38,19 @@ define(['jquery', 'ajax', 'render', 'common', 'plot'], function ($, ajax, render
                 common.tooltips();
             }
         );
+    }
+
+    function displayExtension(extension, extensionName, data) {
+        var extensionId = extension + '-' + extensionName;
+        // Stores the data (local cache for display purpose only)
+        extensionDataIndex[extensionId] = data;
+        // Rendering
+        require(['extension/{0}.js'.format(extensionId)], function (m) {
+            m.display(
+                $('#' + extensionId),
+                data
+            );
+        });
     }
 
     function loadSummary() {

@@ -1,0 +1,22 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{loc 'github.changelog.issues.id'}}</th>
+            <th>{{loc 'github.changelog.issues.title'}}</th>
+            <th>{{loc 'github.changelog.issues.assignee'}}</th>
+            <th>{{loc 'github.changelog.issues.milestone'}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#issues}}
+            <tr>
+                <td>
+                    <a href="{{url}}">#{{id}}</a>
+                </td>
+                <td>{{title}}</td>
+                <td>{{assignee.login}}</td>
+                <td>{{milestone.title}}</td>
+            </tr>
+        {{/issues}}
+    </tbody>
+</table>
