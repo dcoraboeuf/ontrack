@@ -7,6 +7,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MessageAnnotationUtils;
+import net.ontrack.core.support.MessageAnnotator;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -122,7 +123,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
-    public ChangeLogCommits getChangeLogCommits(final Locale locale, ChangeLogSummary summary) {
+    public ChangeLogCommits getChangeLogCommits(final Locale locale, final ChangeLogSummary summary) {
         // Gets the branch ID
         int branchId = summary.getBranch().getId();
         // Gets the client client for this branch
@@ -162,7 +163,17 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                         String formattedTime = TimeUtils.format(locale, time);
                                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
                                         // Annotated message
-                                        String annotatedMessage = MessageAnnotationUtils.annotate(commit.getShortMessage(), gitMessageAnnotators);
+                                        String annotatedMessage = MessageAnnotationUtils.annotate(
+                                                commit.getShortMessage(),
+                                                Lists.transform(
+                                                        gitMessageAnnotators,
+                                                        new Function<GitMessageAnnotator, MessageAnnotator>() {
+                                                            @Override
+                                                            public MessageAnnotator apply(GitMessageAnnotator gitMessageAnnotator) {
+                                                                return gitMessageAnnotator.annotator(summary.getBranch());
+                                                            }
+                                                        }
+                                                ));
                                         // OK
                                         return new GitUICommit(
                                                 commit,
