@@ -23,6 +23,10 @@ public class GitHubExtension extends ExtensionAdapter {
         this.gitHubProjectProperty = gitHubProjectProperty;
     }
 
+    public static String getIssueUrl(String project, String id) {
+        return String.format("https://github.com/%s/issues/%s", project, id);
+    }
+
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
         return Arrays.asList(
