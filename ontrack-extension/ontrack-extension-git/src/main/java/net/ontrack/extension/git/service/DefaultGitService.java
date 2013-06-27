@@ -346,14 +346,35 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
             // Filters the tags according to the branch tag pattern
             Matcher matcher = tagPattern.matcher(tagName);
             if (matcher.matches()) {
+                // Build name
                 logger.info("[git] Creating build for tag {}", tagName);
                 String buildName = matcher.group(1);
-                logger.info("[git] Creating build {} from tag {}", buildName, tagName);
-                controlService.createBuild(branchId, new BuildCreationForm(
-                        buildName,
-                        "Imported from Git tag " + tagName,
-                        PropertiesCreationForm.create()
-                ));
+                logger.info("[git] Build {} from tag {}", buildName, tagName);
+                // Existing build?
+                boolean createBuild;
+                Integer buildId = managementService.findBuildByName(branchId, buildName);
+                if (buildId != null) {
+                    if (form.isOverride()) {
+                        // Deletes the build
+                        logger.info("[git] Deleting existing build {}", buildName);
+                        createBuild = managementService.deleteBuild(buildId).isSuccess();
+                    } else {
+                        // Keeps the build
+                        logger.info("[git] Build {} already exists", buildName);
+                        createBuild = false;
+                    }
+                } else {
+                    createBuild = true;
+                }
+                // Actual creation
+                if (createBuild) {
+                    logger.info("[git] Creating build {} from tag {}", buildName, tagName);
+                    controlService.createBuild(branchId, new BuildCreationForm(
+                            buildName,
+                            "Imported from Git tag " + tagName,
+                            PropertiesCreationForm.create()
+                    ));
+                }
             }
         }
     }
