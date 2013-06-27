@@ -115,6 +115,12 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
+    public GitCommitInfo getCommitInfo(Locale locale, String commit) {
+        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getCommitInfo
+        return null;
+    }
+
+    @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
         executorImportBuilds.submit(new Runnable() {

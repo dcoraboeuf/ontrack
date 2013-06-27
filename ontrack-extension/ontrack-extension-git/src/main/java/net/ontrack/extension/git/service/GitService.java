@@ -19,4 +19,6 @@ public interface GitService {
     boolean isGitConfigured(int branchId);
 
     boolean isCommitDefined(String commit);
+
+    GitCommitInfo getCommitInfo(Locale locale, String commit);
 }

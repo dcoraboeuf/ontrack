@@ -42,6 +42,11 @@ public class GitUIController extends AbstractUIController implements GitUI {
     }
 
     @Override
+    public GitCommitInfo getCommitInfo(Locale locale, String commit) {
+        return gitService.getCommitInfo(locale, commit);
+    }
+
+    @Override
     @RequestMapping(value = "/changelog", method = RequestMethod.POST)
     public
     @ResponseBody
