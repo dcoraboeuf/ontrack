@@ -16,4 +16,6 @@ public interface GitClient {
     void sync();
 
     GitDiff diff(String from, String to);
+
+    boolean isCommitDefined(String commit);
 }

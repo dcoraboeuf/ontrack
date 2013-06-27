@@ -181,6 +181,15 @@ public class DefaultGitClient implements GitClient {
         }
     }
 
+    @Override
+    public boolean isCommitDefined(String commit) {
+        try {
+            return repository.git().getRepository().resolve(commit + "^0") != null;
+        } catch (IOException e) {
+            throw new GitIOException(e);
+        }
+    }
+
     private GitChangeType toChangeType(DiffEntry.ChangeType changeType) {
         switch (changeType) {
             case ADD:

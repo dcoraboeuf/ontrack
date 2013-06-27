@@ -96,6 +96,12 @@ git.import-builds.tagPattern
     en -> Tag regular expression to extract the build name
     fr -> Expression regulière pour extraire le nom du build depuis le nom du tag
 
+[search]
+
+git.search.commit
+    en -> Commit {0}
+    fr -> Commit {0}
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException

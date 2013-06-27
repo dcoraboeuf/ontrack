@@ -92,6 +92,29 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
+    public boolean isCommitDefined(String commit) {
+        // Gets the list of projects
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary project : projectList) {
+            int projectId = project.getId();
+            List<BranchSummary> branchList = managementService.getBranchList(projectId);
+            for (BranchSummary branch : branchList) {
+                int branchId = branch.getId();
+                GitConfiguration configuration = getGitConfiguration(branchId);
+                if (configuration.isValid()) {
+                    // Gets the client client for this branch
+                    GitClient gitClient = getGitClient(branchId);
+                    // Is the commit defined for this branch?
+                    if (gitClient.isCommitDefined(commit)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
         executorImportBuilds.submit(new Runnable() {
