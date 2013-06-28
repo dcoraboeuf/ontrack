@@ -10,6 +10,7 @@ function show_help {
 		echo "Application:"
 		echo "  -a, --appid=appid          ID of the application to create on Cloudbees (ontrack-test by default)"
 		echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
+		echo "  -p, --profile=profile      Profile to use (default is 'prod' but could be 'it' for integration tests) -- used only at creation time"
 		echo "Database:"
 		echo "  -d, --database=dbname      ID of the database to create on Cloudbees (ontrack-test by default)."
 		echo "  -cd, --create-database     Creates the database from scratch (not done by default)"
@@ -29,6 +30,7 @@ ONTRACK_VERSION=
 ONTRACK_WAR=
 ONTRACK_DB_CREATE=no
 ONTRACK_APP_CREATE=no
+ONTRACK_APP_PROFILE=prod
 
 for i in "$@"
 do
@@ -58,6 +60,9 @@ do
 		-ca|--create-application)
 			ONTRACK_APP_CREATE=yes
 			;;
+		-p=*|--profile=*)
+			ONTRACK_APP_PROFILE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		*)
 			echo "Unknown option: $i"
 			show_help
@@ -78,7 +83,8 @@ fi
 echo Ontrack CB application name      : $ONTRACK_APP
 echo Ontrack CB database name         : $ONTRACK_DB
 echo Ontrack CB database creation     : $ONTRACK_DB_CREATE
-echo Ontrack CB application  creation : $ONTRACK_APP_CREATE
+echo Ontrack CB application creation  : $ONTRACK_APP_CREATE
+echo Ontrack CB application profile   : $ONTRACK_APP_PROFILE
 if [ "$ONTRACK_VERSION" == "" ]
 then
 	echo Ontrack WAR to deploy            : $ONTRACK_WAR
@@ -154,7 +160,7 @@ then
 	echo Setting the production profile...
 	echo Setting the home directory...
 	echo Setting the DB profile to mysql...
-	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=prod -P ontrack.home=/private/ontrack/$ONTRACK_APP -P dbinit.profile=mysql
+	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=$ONTRACK_APP_PROFILE -P ontrack.home="/private/ontrack/$ONTRACK_APP" -P dbinit.profile=mysql
 	echo Parameters have been set.
 
 	echo Application $ONTRACK_APP has been created.
