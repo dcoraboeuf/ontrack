@@ -1,5 +1,7 @@
 package net.ontrack.core.support;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.core.tree.*;
 import net.ontrack.core.tree.support.Markup;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +14,18 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
 public final class MessageAnnotationUtils {
+
+    public static List<String> annotate(List<String> texts, final List<? extends MessageAnnotator> messageAnnotators) {
+        return Lists.transform(
+                texts,
+                new Function<String, String>() {
+                    @Override
+                    public String apply(String text) {
+                        return annotate(text, messageAnnotators);
+                    }
+                }
+        );
+    }
 
     public static String annotate(String text, List<? extends MessageAnnotator> messageAnnotators) {
         Node<Markup> root = annotateAsNode(text, messageAnnotators);

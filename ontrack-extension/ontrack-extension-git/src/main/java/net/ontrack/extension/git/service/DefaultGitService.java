@@ -290,8 +290,11 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                         String formattedTime = TimeUtils.format(locale, time);
                         String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
                         // Annotated message
-                        String annotatedMessage = MessageAnnotationUtils.annotate(
-                                commit.getShortMessage(),
+                        List<String> annotatedMessages = MessageAnnotationUtils.annotate(
+                                Arrays.asList(
+                                        commit.getShortMessage(),
+                                        commit.getFullMessage()
+                                ),
                                 Lists.transform(
                                         gitMessageAnnotators,
                                         new Function<GitMessageAnnotator, MessageAnnotator>() {
@@ -304,7 +307,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                         // OK
                         return new GitUICommit(
                                 commit,
-                                annotatedMessage,
+                                annotatedMessages.get(0),
+                                annotatedMessages.get(1),
                                 String.format(commitLinkFormat, commit.getId()),
                                 elapsedTime,
                                 formattedTime
