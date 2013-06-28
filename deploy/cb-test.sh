@@ -15,6 +15,7 @@ function show_help {
 
 # General environment
 ONTRACK_REPO=https://repository-dcoraboeuf.forge.cloudbees.com/release/net/ontrack/ontrack-web
+ONTRACK_WD=target/deploy
 
 # Input data
 ONTRACK_DB=ontrack-test
@@ -71,9 +72,12 @@ echo Ontrack CB database name         : $ONTRACK_DB
 echo Ontrack CB database creation     : $ONTRACK_DB_CREATE
 echo Ontrack CB application  creation : $ONTRACK_APP_CREATE
 
+# General set-up
+mkdir -p $ONTRACK_WD
+
 # Getting the application
 rm -f ontrack.war
-curl --show-error --fail --output ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
 if [ "$?" != "0" ]
 then
 	echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
@@ -142,3 +146,7 @@ then
 	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack
 fi
 
+# Deploying the application
+echo Starting deployment...
+bees app:deploy --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WD/ontrack.war
+echo Deployment finished.
