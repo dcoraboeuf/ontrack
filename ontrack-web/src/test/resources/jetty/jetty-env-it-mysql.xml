@@ -3,7 +3,7 @@
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
 
 	<New id="ontrackDataSource" class="org.eclipse.jetty.plus.jndi.Resource">
-		<Arg>jdbc/ontrack</Arg>
+        <Arg>java:comp/env/jdbc/ontrack</Arg>
 		<Arg>
             <New class="org.apache.commons.dbcp.BasicDataSource">
                 <Set name="DriverClassName">com.mysql.jdbc.Driver</Set>

@@ -161,7 +161,7 @@ then
 
 	# Binding the database
 
-	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias jdbc/ontrack
+	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack
 fi
 
 # Deploying the application

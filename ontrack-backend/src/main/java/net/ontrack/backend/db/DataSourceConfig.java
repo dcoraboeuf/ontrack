@@ -18,7 +18,7 @@ public class DataSourceConfig {
 	public DataSource dataSource() throws IllegalArgumentException, NamingException {
 		JndiObjectFactoryBean factory = new JndiObjectFactoryBean();
 		factory.setExpectedType(DataSource.class);
-		factory.setJndiName("jdbc/ontrack");
+		factory.setJndiName("java:comp/env/jdbc/ontrack");
 		factory.afterPropertiesSet();
 		DataSource dataSource = (DataSource) factory.getObject();
 		return dataSource;
