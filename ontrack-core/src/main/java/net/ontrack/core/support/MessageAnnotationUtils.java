@@ -36,7 +36,7 @@ public final class MessageAnnotationUtils {
             public void start(Node<Markup> node) {
                 Markup m = node.getData();
                 if (m != null) {
-                    if (m.isText()) {
+                    if (m.isOnlyText()) {
                         html.append(escapeHtml4(m.getText()));
                     } else {
                         html.append("<").append(m.getType());
@@ -56,7 +56,7 @@ public final class MessageAnnotationUtils {
             @Override
             public void end(Node<Markup> node) {
                 Markup m = node.getData();
-                if (m != null && !m.isText() && !node.isLeaf()) {
+                if (m != null && !m.isOnlyText() && !node.isLeaf()) {
                     html.append("</").append(m.getType()).append(">");
                 }
             }

@@ -3,6 +3,7 @@ package net.ontrack.core.tree.support;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,8 @@ public class Markup {
         return this;
     }
 
-    public boolean isText() {
+    @JsonIgnore
+    public boolean isOnlyText() {
         return type == null;
     }
 }
