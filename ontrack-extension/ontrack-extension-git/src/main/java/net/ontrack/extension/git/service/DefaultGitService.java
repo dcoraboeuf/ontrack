@@ -1,6 +1,7 @@
 package net.ontrack.extension.git.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
@@ -13,6 +14,7 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
 import net.ontrack.extension.git.client.*;
+import net.ontrack.extension.git.GitCommitNotFoundException;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
@@ -28,10 +30,7 @@ import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -116,8 +115,60 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
 
     @Override
     public GitCommitInfo getCommitInfo(Locale locale, String commit) {
-        // FIXME Implement net.ontrack.extension.git.service.DefaultGitService.getCommitInfo
-        return null;
+        GitCommit theGitCommit = null;
+        BranchSummary theBranch = null;
+        GitConfiguration theConfiguration = null;
+        // For all projects & branches
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary projectSummary : projectList) {
+            List<BranchSummary> branchList = managementService.getBranchList(projectSummary.getId());
+            for (BranchSummary branchSummary : branchList) {
+                int branchId = branchSummary.getId();
+                final GitConfiguration configuration = getGitConfiguration(branchId);
+                if (configuration.isValid()) {
+                    // Gets the client client for this branch
+                    GitClient gitClient = getGitClient(branchId);
+                    // Gets the commit
+                    GitCommit gitCommit = gitClient.getCommitFor(commit);
+                    if (gitCommit != null) {
+                        // Reference commit
+                        if (theGitCommit == null) {
+                            theGitCommit = gitCommit;
+                            theBranch = branchSummary;
+                            theConfiguration = configuration;
+                        }
+                        // Gets the earliest tag on this branch that contains this commit
+                        String tag = gitClient.getEarliestTagForCommit(
+                                gitCommit.getId(),
+                                new Predicate<String>() {
+                                    @Override
+                                    public boolean apply(String tagName) {
+                                        return configuration.isValidTagName(tagName);
+                                    }
+                                }
+                        );
+                        // TODO If a tag is provided, gets the corresponding build name
+                    }
+                }
+            }
+        }
+        // Found
+        if (theGitCommit != null) {
+            // UI Commit
+            GitUICommit uiCommit = toUICommits(
+                    locale,
+                    theBranch, // Cannot be null since theGitCommit is not null
+                    theConfiguration, // Cannot be null since theGitCommit is not null
+                    Arrays.asList(theGitCommit)).get(0);
+            // OK
+            return new GitCommitInfo(
+                    uiCommit
+            );
+        }
+        // Not found
+        else {
+            throw new GitCommitNotFoundException(commit);
+        }
     }
 
     @Override
@@ -160,7 +211,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Override
     public ChangeLogCommits getChangeLogCommits(final Locale locale, final ChangeLogSummary summary) {
         // Gets the branch ID
-        int branchId = summary.getBranch().getId();
+        final BranchSummary branch = summary.getBranch();
+        int branchId = branch.getId();
         // Gets the client client for this branch
         GitClient gitClient = getGitClient(branchId);
         // Gets the configuration
@@ -175,6 +227,17 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
         // Gets the commits
         GitLog log = gitClient.log(tagFrom, tagTo);
+        List<GitCommit> commits = log.getCommits();
+        List<GitUICommit> uiCommits = toUICommits(locale, branch, gitConfiguration, commits);
+        return new ChangeLogCommits(
+                new GitUILog(
+                        log.getPlot(),
+                        uiCommits
+                )
+        );
+    }
+
+    protected List<GitUICommit> toUICommits(final Locale locale, final BranchSummary branch, GitConfiguration gitConfiguration, List<GitCommit> commits) {
         // Link?
         String commitLinkValue = gitConfiguration.getCommitLink();
         final String commitLinkFormat;
@@ -185,42 +248,37 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
         // OK
         final DateTime now = TimeUtils.now();
-        return new ChangeLogCommits(
-                new GitUILog(
-                        log.getPlot(),
-                        Lists.transform(
-                                log.getCommits(),
-                                new Function<GitCommit, GitUICommit>() {
-                                    @Override
-                                    public GitUICommit apply(GitCommit commit) {
-                                        // Times
-                                        DateTime time = commit.getCommitTime();
-                                        String formattedTime = TimeUtils.format(locale, time);
-                                        String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
-                                        // Annotated message
-                                        String annotatedMessage = MessageAnnotationUtils.annotate(
-                                                commit.getShortMessage(),
-                                                Lists.transform(
-                                                        gitMessageAnnotators,
-                                                        new Function<GitMessageAnnotator, MessageAnnotator>() {
-                                                            @Override
-                                                            public MessageAnnotator apply(GitMessageAnnotator gitMessageAnnotator) {
-                                                                return gitMessageAnnotator.annotator(summary.getBranch());
-                                                            }
-                                                        }
-                                                ));
-                                        // OK
-                                        return new GitUICommit(
-                                                commit,
-                                                annotatedMessage,
-                                                String.format(commitLinkFormat, commit.getId()),
-                                                elapsedTime,
-                                                formattedTime
-                                        );
-                                    }
-                                }
-                        )
-                )
+        return Lists.transform(
+                commits,
+                new Function<GitCommit, GitUICommit>() {
+                    @Override
+                    public GitUICommit apply(GitCommit commit) {
+                        // Times
+                        DateTime time = commit.getCommitTime();
+                        String formattedTime = TimeUtils.format(locale, time);
+                        String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
+                        // Annotated message
+                        String annotatedMessage = MessageAnnotationUtils.annotate(
+                                commit.getShortMessage(),
+                                Lists.transform(
+                                        gitMessageAnnotators,
+                                        new Function<GitMessageAnnotator, MessageAnnotator>() {
+                                            @Override
+                                            public MessageAnnotator apply(GitMessageAnnotator gitMessageAnnotator) {
+                                                return gitMessageAnnotator.annotator(branch);
+                                            }
+                                        }
+                                ));
+                        // OK
+                        return new GitUICommit(
+                                commit,
+                                annotatedMessage,
+                                String.format(commitLinkFormat, commit.getId()),
+                                elapsedTime,
+                                formattedTime
+                        );
+                    }
+                }
         );
     }
 

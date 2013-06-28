@@ -1,4 +1,4 @@
-package net.ontrack.extension.git.client.impl;
+package net.ontrack.extension.git;
 
 import net.sf.jstring.support.CoreException;
 

@@ -1,5 +1,6 @@
 package net.ontrack.extension.git.client.impl;
 
+import net.ontrack.extension.git.GitCommitNotFoundException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

@@ -1,7 +1,9 @@
 package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import net.ontrack.extension.git.GitCommitNotFoundException;
 import net.ontrack.extension.git.client.*;
 import net.ontrack.extension.git.client.plot.GPlot;
 import net.ontrack.extension.git.client.plot.GitPlotRenderer;
@@ -32,10 +34,7 @@ public class DefaultGitClient implements GitClient {
         @Override
         public GitTag apply(Ref ref) {
             RevCommit commit = repository.getCommitForTag(ref.getObjectId());
-            String tagName = StringUtils.substringAfter(
-                    ref.getName(),
-                    "refs/tags/"
-            );
+            String tagName = getTagNameFromRef(ref);
             return new GitTag(
                     tagName,
                     new DateTime(1000L * commit.getCommitTime(), DateTimeZone.UTC)
@@ -46,6 +45,13 @@ public class DefaultGitClient implements GitClient {
     public DefaultGitClient(GitRepository repository, GitConfiguration configuration) {
         this.repository = repository;
         this.configuration = configuration;
+    }
+
+    private String getTagNameFromRef(Ref ref) {
+        return StringUtils.substringAfter(
+                ref.getName(),
+                "refs/tags/"
+        );
     }
 
     @Override
@@ -187,6 +193,92 @@ public class DefaultGitClient implements GitClient {
             return repository.git().getRepository().resolve(commit + "^0") != null;
         } catch (IOException e) {
             throw new GitIOException(e);
+        }
+    }
+
+    @Override
+    public GitCommit getCommitFor(String commit) {
+        try {
+            Repository repo = repository.git().getRepository();
+            return toCommit(
+                    new RevWalk(repo).lookupCommit(
+                            repo.resolve(commit + "^0")
+                    )
+            );
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Emulates the
+     * <a href="https://www.kernel.org/pub/software/scm/git/docs/git-describe.html"><code>describe</code></a>
+     * command.
+     * <p/>
+     * For each committish supplied, git describe will first look for a tag which tags exactly that commit.
+     * Annotated tags will always be preferred over lightweight tags, and tags with newer dates will always
+     * be preferred over tags with older dates. If an exact match is found, its name will be output and
+     * searching will stop.
+     * <p/>
+     * If an exact match was not found, git describe will walk back through the commit history to locate an
+     * ancestor commit which has been tagged. The ancestor’s tag will be output along with an abbreviation of
+     * the input committish’s SHA1.
+     * <p/>
+     * If multiple tags were found during the walk then the tag which has the fewest commits different from the
+     * input committish will be selected and output. Here fewest commits different is defined as the number of
+     * commits which would be shown by git log tag..input will be the smallest number of commits possible.
+     */
+    @Override
+    public String getEarliestTagForCommit(String gitCommitId, Predicate<String> tagNamePredicate) {
+        try {
+            // Client
+            Git git = repository.git();
+            Repository gitRepository = git.getRepository();
+
+            // 1 - look for exact match
+            Map<String, String> commitTagIndex = new HashMap<>();
+            List<Ref> tagRefs = git.tagList().call();
+            for (Ref tagRef : tagRefs) {
+                // Indexation
+                String tagName = getTagNameFromRef(tagRef);
+                if (tagNamePredicate.apply(tagName)) {
+                    // Gets the corresponding commit
+                    RevCommit revCommit = repository.getCommitForTag(tagRef.getObjectId());
+                    commitTagIndex.put(revCommit.getId().getName(), tagName);
+                    // Equality?
+                    if (revCommit.getId().getName().equals(gitCommitId)) {
+                        return tagName;
+                    }
+                }
+            }
+
+            // 2 - walking back to the history
+
+            // Gets boundaries
+            ObjectId headObjectId = gitRepository.resolve("HEAD");
+            ObjectId commitObjectId = gitRepository.resolve(gitCommitId);
+            if (commitObjectId == null) {
+                throw new GitCommitNotFoundException(gitCommitId);
+            }
+            // Walk
+            RevWalk walk = new RevWalk(gitRepository);
+            walk.markStart(walk.lookupCommit(headObjectId));
+            walk.markUninteresting(walk.lookupCommit(commitObjectId));
+            // List of commits between the commit and the HEAD
+            String tag = null;
+            for (RevCommit revCommit : walk) {
+                // Gets the corresponding tag
+                String candidateTagName = commitTagIndex.get(revCommit.getId().getName());
+                if (candidateTagName != null && tagNamePredicate.apply(candidateTagName)) {
+                    tag = candidateTagName;
+                }
+            }
+            // OK
+            return tag;
+        } catch (IOException ex) {
+            throw new GitIOException(ex);
+        } catch (GitAPIException e) {
+            throw new GitException(e);
         }
     }
 

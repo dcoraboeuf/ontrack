@@ -1,5 +1,6 @@
 package net.ontrack.extension.git.client;
 
+import com.google.common.base.Predicate;
 import net.ontrack.extension.git.model.GitConfiguration;
 
 import java.util.Collection;
@@ -18,4 +19,8 @@ public interface GitClient {
     GitDiff diff(String from, String to);
 
     boolean isCommitDefined(String commit);
+
+    GitCommit getCommitFor(String commit);
+
+    String getEarliestTagForCommit(String gitCommitId, Predicate<String> tagNamePredicate);
 }
