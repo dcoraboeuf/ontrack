@@ -151,19 +151,17 @@ then
 	fi
 
 	echo Setting the JDK version to 1.7...
-	bees config:set --appid $ONTRACK_APP -R java_version=1.7
-
 	echo Setting the production profile...
-	bees config:set --appid $ONTRACK_APP -P spring.profiles.active=prod
-
-	echo Setting the home directory
-	bees config:set --appid $ONTRACK_APP -P ontrack.home=/private/ontrack/$ONTRACK_APP
+	echo Setting the home directory...
+	echo Setting the DB profile to mysql...
+	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=prod -P ontrack.home=/private/ontrack/$ONTRACK_APP -P dbinit.profile=mysql
+	echo Parameters have been set.
 
 	echo Application $ONTRACK_APP has been created.
 
 	# Binding the database
 
-	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack
+	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias jdbc/ontrack
 fi
 
 # Deploying the application
