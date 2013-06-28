@@ -1,16 +1,78 @@
-<#macro commit_summary commit title=false>
+<#macro commit_summary info title=false>
 
     <div class="row-fluid">
         <div class="span12">
             <#if title>
-                <#assign revisionLink><a href="${info.changeLogRevision.revisionUrl}">${info.changeLogRevision.revision?c}</a></#assign>
-                <h1><small><a href="${commit.commit.link?html}">${commit.commit.commit.id?html}</a></small></h1>
+                <h1><small><a href="${info.commit.link?html}">${info.commit.commit.id?html}</a></small></h1>
             </#if>
-            <b>${commit.commit.commit.author.name?html}</b>
-            <span class="description">(${commit.commit.commit.author.email?html})</span>
+            <b>${info.commit.commit.author.name?html}</b>
+            <span class="description">(${info.commit.commit.author.email?html})</span>
             <div class="git-commit-message">
-                ${commit.commit.fullAnnotatedMessage}
+                ${info.commit.fullAnnotatedMessage}
             </div>
+        </div>
+    </div>
+
+</#macro>
+
+<#macro commit_builds info>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="git.commit.builds" /></small></h1>
+            <#if info.builds?size == 0>
+                <div class="alert alert-info"><@lh key="git.commit.builds.none" /></div>
+            <#else>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><@lh key="model.project" /></th>
+                            <th><@lh key="model.branch" /></th>
+                            <th><@lh key="model.build" /></th>
+                            <th><@lh key="build.promotion_levels" /></th>
+                            <th><@lh key="build.validation_stamps" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <#list info.builds as build>
+                            <tr>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
+                                </td>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}">${build.build.branch.name?html}</a>
+                                </td>
+                                <td>
+                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
+                                </td>
+                                <td>
+                                    <ul class="promotions">
+                                        <#list build.buildPromotionLevels as buildPromotionLevel>
+                                            <li>
+                                                <i class="icon-arrow-right"></i>
+                                                <img width="24" title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
+                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
+                                            </li>
+                                        </#list>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <#list build.buildValidationStamps as buildValidationStamp>
+                                        <#if buildValidationStamp.run>
+                                            <#assign run = buildValidationStamp.runs?first />
+                                            <span class="label validationStamp">
+                                                <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                                <img width="24" src="static/images/status-${run.status}.png" />
+                                            </span>
+                                        </#if>
+                                    </#list>
+                                </td>
+                            </tr>
+                        </#list>
+                    </tbody>
+                </table>
+            </#if>
         </div>
     </div>
 

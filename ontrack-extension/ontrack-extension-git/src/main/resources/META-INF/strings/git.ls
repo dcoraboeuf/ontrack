@@ -107,6 +107,13 @@ git.search.commit
 git.commit
     en,fr -> Commit {0}
 
+git.commit.builds
+    en,fr -> Builds
+
+git.commit.builds.none
+    en -> The commit does not appear in any build.
+    fr -> Ce commit n'apparait dans aucun build.
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
