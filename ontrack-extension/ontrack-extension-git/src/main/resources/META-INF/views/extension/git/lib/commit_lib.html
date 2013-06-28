@@ -1,0 +1,17 @@
+<#macro commit_summary commit title=false>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <#if title>
+                <#assign revisionLink><a href="${info.changeLogRevision.revisionUrl}">${info.changeLogRevision.revision?c}</a></#assign>
+                <h1><small><a href="${commit.commit.link?html}">${commit.commit.commit.id?html}</a></small></h1>
+            </#if>
+            <b>${commit.commit.commit.author.name?html}</b>
+            <span class="description">(${commit.commit.commit.author.email?html})</span>
+            <div class="git-commit-message">
+                ${commit.commit.annotatedMessage}
+            </div>
+        </div>
+    </div>
+
+</#macro>

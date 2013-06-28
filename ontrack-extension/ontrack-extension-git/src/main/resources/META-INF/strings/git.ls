@@ -102,6 +102,11 @@ git.search.commit
     en -> Commit {0}
     fr -> Commit {0}
 
+[commit]
+
+git.commit
+    en,fr -> Commit {0}
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException

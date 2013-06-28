@@ -1,0 +1,7 @@
+.git-commit-message {
+    border-left: solid 2px gray;
+    padding-left: 1em;
+    background-color: #F0F0F0;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
