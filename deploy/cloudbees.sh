@@ -5,12 +5,17 @@ function show_help {
         echo "Ontrack Cloudbees deployment script."
 		echo ""
 		echo "Available options are:"
+		echo "General:"
 		echo "  -h, --help                 Displays this help"
-		echo "  -v, --version=version      Sets the ontrack version to deploy (required)"
+		echo "Application:"
 		echo "  -a, --appid=appid          ID of the application to create on Cloudbees (ontrack-test by default)"
+		echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
+		echo "Database:"
 		echo "  -d, --database=dbname      ID of the database to create on Cloudbees (ontrack-test by default)."
 		echo "  -cd, --create-database     Creates the database from scratch (not done by default)"
-		echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
+		echo "Version to deploy, either one of the following options:"
+		echo "  -v, --version=version      Sets the ontrack version to deploy"
+		echo "  -w, --war=warfile          Path to the WAR file to deploy"
 }
 
 # General environment
@@ -21,6 +26,7 @@ ONTRACK_WD=target/deploy
 ONTRACK_DB=ontrack-test
 ONTRACK_APP=ontrack-test
 ONTRACK_VERSION=
+ONTRACK_WAR=
 ONTRACK_DB_CREATE=no
 ONTRACK_APP_CREATE=no
 
@@ -33,6 +39,9 @@ do
 			;;
 		-v=*|--version=*)
 			ONTRACK_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-w=*|--war=*)
+			ONTRACK_WAR=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		-a=*|--appid=*)
 			ONTRACK_APP=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -58,30 +67,39 @@ do
 done
 
 # Checks
-if [ "$ONTRACK_VERSION" == "" ]
+if [ "$ONTRACK_VERSION" == "" -a "$ONTRACK_WAR" == "" ]
 then
-	echo Ontrack version -v is required.
+	echo "Ontrack version (--version) or WAR file (--war) is required."
 	show_help
 	exit 1
 fi
 
 # Echo
-echo Ontrack version to deploy        : $ONTRACK_VERSION
 echo Ontrack CB application name      : $ONTRACK_APP
 echo Ontrack CB database name         : $ONTRACK_DB
 echo Ontrack CB database creation     : $ONTRACK_DB_CREATE
 echo Ontrack CB application  creation : $ONTRACK_APP_CREATE
+if [ "$ONTRACK_VERSION" == "" ]
+then
+	echo Ontrack WAR to deploy            : $ONTRACK_WAR
+else
+	echo Ontrack version to deploy        : $ONTRACK_VERSION
+fi
 
 # General set-up
 mkdir -p $ONTRACK_WD
 
 # Getting the application
-rm -f ontrack.war
-curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
-if [ "$?" != "0" ]
+if [ "$ONTRACK_WAR" == "" ]
 then
-	echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
-	exit 1
+	rm -f $ONTRACK_WD/ontrack.war
+	curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+	if [ "$?" != "0" ]
+	then
+		echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
+		exit 1
+	fi
+	ONTRACK_WAR=$ONTRACK_WD/ontrack.war
 fi
 
 # Creating the database, deleting it if necessary
@@ -147,6 +165,6 @@ then
 fi
 
 # Deploying the application
-echo Starting deployment...
-bees app:deploy --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WD/ontrack.war
+echo Starting deployment of $ONTRACK_WAR on $ONTRACK_APP...
+bees app:deploy --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WAR
 echo Deployment finished.
