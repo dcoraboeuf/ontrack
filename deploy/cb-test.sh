@@ -59,3 +59,8 @@ bees config:set --appid $ONTRACK_APP -P ontrack.home=/private/ontrack/$ONTRACK_A
 
 echo Application $ONTRACK_APP has been created.
 
+# Binding the database
+
+bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack
+
+
