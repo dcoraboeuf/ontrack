@@ -9,12 +9,14 @@ function show_help {
 		echo "  -v, --version=version   Sets the ontrack version to deploy (required)"
 		echo "  -a, --appid=appid       ID of the application to create on Cloudbees (ontrack-test by default)"
 		echo "  -d, --database=dbname   ID of the database to create on Cloudbees (ontrack-test by default)."
+		echo "  -cd, --create-database  Creates the database from scratch (not done by default)"
 }
 
 # Input data
 ONTRACK_DB=ontrack-test
 ONTRACK_APP=ontrack-test
 ONTRACK_VERSION=
+ONTRACK_DB_CREATE=no
 
 for i in "$@"
 do
@@ -32,8 +34,16 @@ do
 		-d=*|--database=*)
 			ONTRACK_DB=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
+		-d=*|--database=*)
+			ONTRACK_DB=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-cd|--create-database)
+			ONTRACK_DB_CREATE=yes
+			;;
 		*)
-				# unknown option
+			echo "Unknown option: $i"
+			show_help
+			exit 1
 		;;
 	esac
 done
@@ -47,30 +57,34 @@ then
 fi
 
 # Echo
-echo Ontrack version to deploy   : $ONTRACK_VERSION
-echo Ontrack CB application name : $ONTRACK_APP
-echo Ontrack CB database name    : $ONTRACK_DB
+echo Ontrack version to deploy    : $ONTRACK_VERSION
+echo Ontrack CB application name  : $ONTRACK_APP
+echo Ontrack CB database name     : $ONTRACK_DB
+echo Ontrack CB database creation : $ONTRACK_DB_CREATE
 
 # Creating the database, deleting it if necessary
-bees db:list | grep $ONTRACK_DB
-if [ "$?" == "0" ]
+if [ "$ONTRACK_DB_CREATE" == "yes" ]
 then
-	echo Deleting database $ONTRACK_DB...
-	bees db:delete --force $ONTRACK_DB
+	bees db:list | grep $ONTRACK_DB
+	if [ "$?" == "0" ]
+	then
+		echo Deleting database $ONTRACK_DB...
+		bees db:delete --force $ONTRACK_DB
+		if [ "$?" != "0" ]
+		then
+			echo Could not delete the database.
+			exit 1
+		fi
+	fi
+	echo Creating database $ONTRACK_DB...
+	bees db:create --username $ONTRACK_DB --password $ONTRACK_DB $ONTRACK_DB
 	if [ "$?" != "0" ]
 	then
-		echo Could not delete the database.
+		echo Could not create the database.
 		exit 1
 	fi
+	echo Database $ONTRACK_DB has been created.
 fi
-echo Creating database $ONTRACK_DB...
-bees db:create --username $ONTRACK_DB --password $ONTRACK_DB $ONTRACK_DB
-if [ "$?" != "0" ]
-then
-	echo Could not create the database.
-	exit 1
-fi
-echo Database $ONTRACK_DB has been created.
 
 # Creating the application, deleting it if necessary
 bees app:list | grep $ONTRACK_APP
