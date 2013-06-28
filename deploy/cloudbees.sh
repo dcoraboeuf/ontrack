@@ -93,7 +93,9 @@ mkdir -p $ONTRACK_WD
 if [ "$ONTRACK_WAR" == "" ]
 then
 	rm -f $ONTRACK_WD/ontrack.war
-	curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+	ONTRACK_URL=$ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+	echo Downloading ontrack from $ONTRACK_URL
+	curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_URL
 	if [ "$?" != "0" ]
 	then
 		echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
