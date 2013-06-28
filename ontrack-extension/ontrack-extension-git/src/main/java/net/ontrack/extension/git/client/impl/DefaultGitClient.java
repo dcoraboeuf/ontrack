@@ -201,7 +201,7 @@ public class DefaultGitClient implements GitClient {
         try {
             Repository repo = repository.git().getRepository();
             return toCommit(
-                    new RevWalk(repo).lookupCommit(
+                    new RevWalk(repo).parseCommit(
                             repo.resolve(commit + "^0")
                     )
             );

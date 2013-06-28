@@ -73,10 +73,10 @@ public class DefaultGitClientTest {
         assertNotNull(commit);
         assertEquals(id, commit.getId());
         assertEquals("#175 Jenkins decorations", commit.getShortMessage());
-        assertEquals("#175 Jenkins decorations", commit.getFullMessage());
-        assertEquals(new DateTime(2013, 6, 12, 0, 53, 25, DateTimeZone.UTC), commit.getCommitTime());
+        assertEquals("#175 Jenkins decorations\n", commit.getFullMessage());
+        assertEquals(new DateTime(2013, 6, 12, 7, 53, 25, DateTimeZone.UTC), commit.getCommitTime());
         assertNotNull(commit.getAuthor());
-        assertEquals("dcoraboeuf", commit.getAuthor().getName());
+        assertEquals("Damien Coraboeuf", commit.getAuthor().getName());
     }
 
 }
