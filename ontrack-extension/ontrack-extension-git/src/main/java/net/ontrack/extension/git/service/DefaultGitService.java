@@ -14,7 +14,6 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.*;
 import net.ontrack.extension.git.client.*;
-import net.ontrack.extension.git.GitCommitNotFoundException;
 import net.ontrack.extension.git.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
@@ -118,6 +117,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         GitCommit theGitCommit = null;
         BranchSummary theBranch = null;
         GitConfiguration theConfiguration = null;
+        Collection<BuildInfo> buildSummaries = new ArrayList<>();
+        List<BranchPromotions> revisionPromotionsPerBranch = new ArrayList<>();
         // For all projects & branches
         List<ProjectSummary> projectList = managementService.getProjectList();
         for (ProjectSummary projectSummary : projectList) {
@@ -138,7 +139,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                             theConfiguration = configuration;
                         }
                         // Gets the earliest tag on this branch that contains this commit
-                        String tag = gitClient.getEarliestTagForCommit(
+                        String tagName = gitClient.getEarliestTagForCommit(
                                 gitCommit.getId(),
                                 new Predicate<String>() {
                                     @Override
@@ -147,7 +148,36 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                                     }
                                 }
                         );
-                        // TODO If a tag is provided, gets the corresponding build name
+                        // If a tag is provided, gets the corresponding build name
+                        if (StringUtils.isNotBlank(tagName)) {
+                            // Gets the build name from the tag (we usually do otherwise)
+                            String buildName = configuration.getBuildNameFromTagName(tagName);
+                            // Gets the build from the ontrack database
+                            Integer buildId = managementService.findBuildByName(branchId, buildName);
+                            // Build found
+                            if (buildId != null) {
+                                // Gets the build information
+                                BuildSummary buildSummary = managementService.getBuild(buildId);
+                                // Gets the promotion levels & validation stamps
+                                List<BuildPromotionLevel> promotionLevels = managementService.getBuildPromotionLevels(locale, buildId);
+                                List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
+                                // Adds to the list
+                                buildSummaries.add(
+                                        new BuildInfo(
+                                                buildSummary,
+                                                promotionLevels,
+                                                buildValidationStamps
+                                        ));
+                                // Gets the promotions for this branch
+                                List<Promotion> promotions = managementService.getPromotionsForBranch(locale, branchId, buildId);
+                                if (promotions != null && !promotions.isEmpty()) {
+                                    revisionPromotionsPerBranch.add(new BranchPromotions(
+                                            managementService.getBranch(branchId),
+                                            promotions
+                                    ));
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -162,7 +192,9 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                     Arrays.asList(theGitCommit)).get(0);
             // OK
             return new GitCommitInfo(
-                    uiCommit
+                    uiCommit,
+                    buildSummaries,
+                    revisionPromotionsPerBranch
             );
         }
         // Not found

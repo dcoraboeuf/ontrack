@@ -286,8 +286,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         SVNLocation firstCopy = subversionService.getFirstCopyAfter(basicInfo.toLocation());
 
         // Data to collect
-        Collection<RevisionInfoBuild> buildSummaries = new ArrayList<>();
-        List<RevisionPromotions> revisionPromotionsPerBranch = new ArrayList<>();
+        Collection<BuildInfo> buildSummaries = new ArrayList<>();
+        List<BranchPromotions> revisionPromotionsPerBranch = new ArrayList<>();
         // Loops over all branches
         List<ProjectSummary> projectList = managementService.getProjectList();
         for (ProjectSummary projectSummary : projectList) {
@@ -305,15 +305,15 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
                     // Adds to the list
                     buildSummaries.add(
-                            new RevisionInfoBuild(
+                            new BuildInfo(
                                     buildSummary,
                                     promotionLevels,
                                     buildValidationStamps
                             ));
                     // Gets the promotions for this branch
-                    List<Promotion> promotions = getPromotionsForBranch(locale, branchId, buildId);
+                    List<Promotion> promotions = managementService.getPromotionsForBranch(locale, branchId, buildId);
                     if (promotions != null && !promotions.isEmpty()) {
-                        revisionPromotionsPerBranch.add(new RevisionPromotions(
+                        revisionPromotionsPerBranch.add(new BranchPromotions(
                                 managementService.getBranch(branchId),
                                 promotions
                         ));
@@ -548,20 +548,6 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
         // OK
         return line;
-    }
-
-    private List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
-        // List of promotions for this branch
-        List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
-        return Lists.transform(
-                promotionLevelList,
-                new Function<PromotionLevelSummary, Promotion>() {
-                    @Override
-                    public Promotion apply(PromotionLevelSummary promotionLevel) {
-                        return managementService.getEarliestPromotionForBuild(locale, buildId, promotionLevel.getId());
-                    }
-                }
-        );
     }
 
     /**

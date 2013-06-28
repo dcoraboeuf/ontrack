@@ -352,7 +352,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
 
         // Links between validation stamps & promotion levels
-        Map<String,Integer> links = new HashMap<>();
+        Map<String, Integer> links = new HashMap<>();
 
         // Cloning the promotion levels
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
@@ -390,7 +390,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
 
         // Gets all the validation stamps
-        Map<Integer,Integer> stampMapping = new HashMap<>();
+        Map<Integer, Integer> stampMapping = new HashMap<>();
         List<TValidationStamp> stamps = validationStampDao.findByBranch(branchId);
         for (TValidationStamp stamp : stamps) {
             // Clones the validation stamp
@@ -1476,6 +1476,21 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Promotion> getPromotionsForBranch(final Locale locale, int branchId, final int buildId) {
+        // List of promotions for this branch
+        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
+        return Lists.transform(
+                promotionLevelList,
+                new Function<PromotionLevelSummary, Promotion>() {
+                    @Override
+                    public Promotion apply(PromotionLevelSummary promotionLevel) {
+                        return getEarliestPromotionForBuild(locale, buildId, promotionLevel.getId());
+                    }
+                }
+        );
+    }
 
     // Comments
 

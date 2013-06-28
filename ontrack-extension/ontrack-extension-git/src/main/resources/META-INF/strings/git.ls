@@ -125,3 +125,5 @@ net.ontrack.extension.git.client.impl.GitCommitNotFoundException
 net.ontrack.extension.git.ui.ChangeLogUUIDException
     en -> [GIT-007] Change log with UUID {0} cannot be found
 
+net.ontrack.extension.git.model.GitTagNameNoMatchException
+    en -> [GIT-008] Tag "{0}" does not match the "{1}" pattern.
