@@ -114,6 +114,18 @@ git.commit.builds.none
     en -> The commit does not appear in any build.
     fr -> Ce commit n'apparait dans aucun build.
 
+git.commit.promotions
+    en -> Associated promotions
+    fr -> Promotions associées
+
+git.commit.promotions.none
+    en -> The commit was never promoted.
+    fr -> Ce commit n'a jamais été promu.
+
+git.commit.promotions.notForThisPromotionLevel
+    en -> The commmit was never promoted to this promotion level.
+    fr -> Ce commit n'a jamais été promu à ce niveau de promotion.
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
