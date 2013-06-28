@@ -47,4 +47,7 @@ then
 	echo Could not create the application.
 	exit 1
 fi
+echo Setting the JDK version to 1.7...
+bees config:set --appid ontrack-test -Rjava_version=1.7
 echo Application $ONTRACK_APP has been created.
+
