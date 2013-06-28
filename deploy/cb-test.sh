@@ -13,6 +13,9 @@ function show_help {
 		echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
 }
 
+# General environment
+ONTRACK_REPO=https://repository-dcoraboeuf.forge.cloudbees.com/release/net/ontrack/ontrack-web
+
 # Input data
 ONTRACK_DB=ontrack-test
 ONTRACK_APP=ontrack-test
@@ -67,6 +70,15 @@ echo Ontrack CB application name      : $ONTRACK_APP
 echo Ontrack CB database name         : $ONTRACK_DB
 echo Ontrack CB database creation     : $ONTRACK_DB_CREATE
 echo Ontrack CB application  creation : $ONTRACK_APP_CREATE
+
+# Getting the application
+rm -f ontrack.war
+curl --show-error --fail --output ontrack.war $ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+if [ "$?" != "0" ]
+then
+	echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
+	exit 1
+fi
 
 # Creating the database, deleting it if necessary
 if [ "$ONTRACK_DB_CREATE" == "yes" ]
