@@ -47,7 +47,15 @@ then
 	echo Could not create the application.
 	exit 1
 fi
+
 echo Setting the JDK version to 1.7...
-bees config:set --appid ontrack-test -Rjava_version=1.7
+bees config:set --appid $ONTRACK_APP -R java_version=1.7
+
+echo Setting the production profile...
+bees config:set --appid $ONTRACK_APP -P spring.profiles.active=prod
+
+echo Setting the home directory
+bees config:set --appid $ONTRACK_APP -P ontrack.home=/private/ontrack/$ONTRACK_APP
+
 echo Application $ONTRACK_APP has been created.
 
