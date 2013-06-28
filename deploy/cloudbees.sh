@@ -161,7 +161,7 @@ then
 
 	# Binding the database
 
-	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack
+	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack maxActive=5 maxIdle=2 maxWait=30000 removeAbandoned=true removeAbandonedTimeout=60 logAbandoned=true validationQuery="SELECT 1" testOnBorrow=true defaultAutoCommit=false
 fi
 
 # Deploying the application
