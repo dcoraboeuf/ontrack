@@ -16,6 +16,7 @@ public class GitUICommit {
 
     private final GitCommit commit;
     private final String annotatedMessage;
+    private final String fullAnnotatedMessage;
     private final String link;
     private final String elapsedTime;
     private final String formattedTime;

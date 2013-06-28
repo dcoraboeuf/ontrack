@@ -6,6 +6,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.github.GitHubExtension;
@@ -73,6 +74,22 @@ public class DefaultGitHubService implements GitHubService {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public Collection<ProjectSummary> getProjectsWithIssue(int issue) {
+        Collection<ProjectSummary> result = new ArrayList<>();
+        for (ProjectSummary projectSummary : managementService.getProjectList()) {
+            int projectId = projectSummary.getId();
+            String gitHubProject = getGitHubProject(projectId);
+            if (StringUtils.isNotBlank(gitHubProject)) {
+                GitHubIssue gitHubIssue = gitHubClient.getIssue(gitHubProject, issue);
+                if (gitHubIssue != null) {
+                    result.add(projectSummary);
+                }
+            }
+        }
+        return result;
     }
 
     private Collection<Integer> getIssueIds(String message) {

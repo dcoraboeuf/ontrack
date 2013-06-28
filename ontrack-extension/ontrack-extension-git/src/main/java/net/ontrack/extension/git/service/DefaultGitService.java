@@ -1,6 +1,7 @@
 package net.ontrack.extension.git.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
@@ -28,10 +29,7 @@ import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -92,6 +90,120 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
+    public boolean isCommitDefined(String commit) {
+        // Gets the list of projects
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary project : projectList) {
+            int projectId = project.getId();
+            List<BranchSummary> branchList = managementService.getBranchList(projectId);
+            for (BranchSummary branch : branchList) {
+                int branchId = branch.getId();
+                GitConfiguration configuration = getGitConfiguration(branchId);
+                if (configuration.isValid()) {
+                    // Gets the client client for this branch
+                    GitClient gitClient = getGitClient(branchId);
+                    // Is the commit defined for this branch?
+                    if (gitClient.isCommitDefined(commit)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public GitCommitInfo getCommitInfo(Locale locale, String commit) {
+        GitCommit theGitCommit = null;
+        BranchSummary theBranch = null;
+        GitConfiguration theConfiguration = null;
+        Collection<BuildInfo> buildSummaries = new ArrayList<>();
+        List<BranchPromotions> revisionPromotionsPerBranch = new ArrayList<>();
+        // For all projects & branches
+        List<ProjectSummary> projectList = managementService.getProjectList();
+        for (ProjectSummary projectSummary : projectList) {
+            List<BranchSummary> branchList = managementService.getBranchList(projectSummary.getId());
+            for (BranchSummary branchSummary : branchList) {
+                int branchId = branchSummary.getId();
+                final GitConfiguration configuration = getGitConfiguration(branchId);
+                if (configuration.isValid()) {
+                    // Gets the client client for this branch
+                    GitClient gitClient = getGitClient(branchId);
+                    // Gets the commit
+                    GitCommit gitCommit = gitClient.getCommitFor(commit);
+                    if (gitCommit != null) {
+                        // Reference commit
+                        if (theGitCommit == null) {
+                            theGitCommit = gitCommit;
+                            theBranch = branchSummary;
+                            theConfiguration = configuration;
+                        }
+                        // Gets the earliest tag on this branch that contains this commit
+                        String tagName = gitClient.getEarliestTagForCommit(
+                                gitCommit.getId(),
+                                new Predicate<String>() {
+                                    @Override
+                                    public boolean apply(String tagName) {
+                                        return configuration.isValidTagName(tagName);
+                                    }
+                                }
+                        );
+                        // If a tag is provided, gets the corresponding build name
+                        if (StringUtils.isNotBlank(tagName)) {
+                            // Gets the build name from the tag (we usually do otherwise)
+                            String buildName = configuration.getBuildNameFromTagName(tagName);
+                            // Gets the build from the ontrack database
+                            Integer buildId = managementService.findBuildByName(branchId, buildName);
+                            // Build found
+                            if (buildId != null) {
+                                // Gets the build information
+                                BuildSummary buildSummary = managementService.getBuild(buildId);
+                                // Gets the promotion levels & validation stamps
+                                List<BuildPromotionLevel> promotionLevels = managementService.getBuildPromotionLevels(locale, buildId);
+                                List<BuildValidationStamp> buildValidationStamps = managementService.getBuildValidationStamps(locale, buildId);
+                                // Adds to the list
+                                buildSummaries.add(
+                                        new BuildInfo(
+                                                buildSummary,
+                                                promotionLevels,
+                                                buildValidationStamps
+                                        ));
+                                // Gets the promotions for this branch
+                                List<Promotion> promotions = managementService.getPromotionsForBranch(locale, branchId, buildId);
+                                if (promotions != null && !promotions.isEmpty()) {
+                                    revisionPromotionsPerBranch.add(new BranchPromotions(
+                                            managementService.getBranch(branchId),
+                                            promotions
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Found
+        if (theGitCommit != null) {
+            // UI Commit
+            GitUICommit uiCommit = toUICommits(
+                    locale,
+                    theBranch, // Cannot be null since theGitCommit is not null
+                    theConfiguration, // Cannot be null since theGitCommit is not null
+                    Arrays.asList(theGitCommit)).get(0);
+            // OK
+            return new GitCommitInfo(
+                    uiCommit,
+                    buildSummaries,
+                    revisionPromotionsPerBranch
+            );
+        }
+        // Not found
+        else {
+            throw new GitCommitNotFoundException(commit);
+        }
+    }
+
+    @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
         executorImportBuilds.submit(new Runnable() {
@@ -131,7 +243,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Override
     public ChangeLogCommits getChangeLogCommits(final Locale locale, final ChangeLogSummary summary) {
         // Gets the branch ID
-        int branchId = summary.getBranch().getId();
+        final BranchSummary branch = summary.getBranch();
+        int branchId = branch.getId();
         // Gets the client client for this branch
         GitClient gitClient = getGitClient(branchId);
         // Gets the configuration
@@ -146,6 +259,17 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
         // Gets the commits
         GitLog log = gitClient.log(tagFrom, tagTo);
+        List<GitCommit> commits = log.getCommits();
+        List<GitUICommit> uiCommits = toUICommits(locale, branch, gitConfiguration, commits);
+        return new ChangeLogCommits(
+                new GitUILog(
+                        log.getPlot(),
+                        uiCommits
+                )
+        );
+    }
+
+    protected List<GitUICommit> toUICommits(final Locale locale, final BranchSummary branch, GitConfiguration gitConfiguration, List<GitCommit> commits) {
         // Link?
         String commitLinkValue = gitConfiguration.getCommitLink();
         final String commitLinkFormat;
@@ -156,42 +280,41 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         }
         // OK
         final DateTime now = TimeUtils.now();
-        return new ChangeLogCommits(
-                new GitUILog(
-                        log.getPlot(),
-                        Lists.transform(
-                                log.getCommits(),
-                                new Function<GitCommit, GitUICommit>() {
-                                    @Override
-                                    public GitUICommit apply(GitCommit commit) {
-                                        // Times
-                                        DateTime time = commit.getCommitTime();
-                                        String formattedTime = TimeUtils.format(locale, time);
-                                        String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
-                                        // Annotated message
-                                        String annotatedMessage = MessageAnnotationUtils.annotate(
-                                                commit.getShortMessage(),
-                                                Lists.transform(
-                                                        gitMessageAnnotators,
-                                                        new Function<GitMessageAnnotator, MessageAnnotator>() {
-                                                            @Override
-                                                            public MessageAnnotator apply(GitMessageAnnotator gitMessageAnnotator) {
-                                                                return gitMessageAnnotator.annotator(summary.getBranch());
-                                                            }
-                                                        }
-                                                ));
-                                        // OK
-                                        return new GitUICommit(
-                                                commit,
-                                                annotatedMessage,
-                                                String.format(commitLinkFormat, commit.getId()),
-                                                elapsedTime,
-                                                formattedTime
-                                        );
-                                    }
-                                }
-                        )
-                )
+        return Lists.transform(
+                commits,
+                new Function<GitCommit, GitUICommit>() {
+                    @Override
+                    public GitUICommit apply(GitCommit commit) {
+                        // Times
+                        DateTime time = commit.getCommitTime();
+                        String formattedTime = TimeUtils.format(locale, time);
+                        String elapsedTime = TimeUtils.elapsed(strings, locale, time, now);
+                        // Annotated message
+                        List<String> annotatedMessages = MessageAnnotationUtils.annotate(
+                                Arrays.asList(
+                                        commit.getShortMessage(),
+                                        commit.getFullMessage()
+                                ),
+                                Lists.transform(
+                                        gitMessageAnnotators,
+                                        new Function<GitMessageAnnotator, MessageAnnotator>() {
+                                            @Override
+                                            public MessageAnnotator apply(GitMessageAnnotator gitMessageAnnotator) {
+                                                return gitMessageAnnotator.annotator(branch);
+                                            }
+                                        }
+                                ));
+                        // OK
+                        return new GitUICommit(
+                                commit,
+                                annotatedMessages.get(0),
+                                annotatedMessages.get(1),
+                                String.format(commitLinkFormat, commit.getId()),
+                                elapsedTime,
+                                formattedTime
+                        );
+                    }
+                }
         );
     }
 
@@ -346,14 +469,35 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
             // Filters the tags according to the branch tag pattern
             Matcher matcher = tagPattern.matcher(tagName);
             if (matcher.matches()) {
+                // Build name
                 logger.info("[git] Creating build for tag {}", tagName);
                 String buildName = matcher.group(1);
-                logger.info("[git] Creating build {} from tag {}", buildName, tagName);
-                controlService.createBuild(branchId, new BuildCreationForm(
-                        buildName,
-                        "Imported from Git tag " + tagName,
-                        PropertiesCreationForm.create()
-                ));
+                logger.info("[git] Build {} from tag {}", buildName, tagName);
+                // Existing build?
+                boolean createBuild;
+                Integer buildId = managementService.findBuildByName(branchId, buildName);
+                if (buildId != null) {
+                    if (form.isOverride()) {
+                        // Deletes the build
+                        logger.info("[git] Deleting existing build {}", buildName);
+                        createBuild = managementService.deleteBuild(buildId).isSuccess();
+                    } else {
+                        // Keeps the build
+                        logger.info("[git] Build {} already exists", buildName);
+                        createBuild = false;
+                    }
+                } else {
+                    createBuild = true;
+                }
+                // Actual creation
+                if (createBuild) {
+                    logger.info("[git] Creating build {} from tag {}", buildName, tagName);
+                    controlService.createBuild(branchId, new BuildCreationForm(
+                            buildName,
+                            "Imported from Git tag " + tagName,
+                            PropertiesCreationForm.create()
+                    ));
+                }
             }
         }
     }

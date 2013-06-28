@@ -1,0 +1,31 @@
+<#include "/lib/layout.html">
+<#include "/extension/git/lib/commit_lib.html" >
+
+<@layout_std
+    page="git-commit"
+    title=loc("git.commit", commit.commit.commit.id)
+    style=true
+    noscript=true
+    extension=true
+    breadcrumbs={
+        loc("home"):""
+    }>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="${commit.commit.link?html}">${commit.commit.commit.id}</a>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <@commit_summary info = commit />
+
+    <@commit_builds info = commit />
+
+    <@commit_promotions info = commit />
+
+</@layout_std>

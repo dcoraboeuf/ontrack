@@ -35,6 +35,12 @@ github.changelog.issues.closedAt
     en -> Closed
     fr -> Fermée
 
+[search]
+
+github.search.issue
+    en -> Issue {0} for project {1}
+    fr -> Ticket {0} pour le projet {1}
+
 [errors]
 
 net.ontrack.extension.github.client.OntrackGitHubClientException

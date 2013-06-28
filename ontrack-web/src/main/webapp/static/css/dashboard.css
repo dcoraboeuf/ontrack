@@ -38,3 +38,9 @@ table.dashboard td {
 .dashboard-validation-stamp-notrun {
     opacity: 0.35;
 }
+
+#logo {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+}

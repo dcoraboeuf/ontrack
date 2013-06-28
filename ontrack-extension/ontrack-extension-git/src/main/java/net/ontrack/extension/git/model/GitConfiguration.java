@@ -6,6 +6,9 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class GitConfiguration {
@@ -75,5 +78,27 @@ public class GitConfiguration {
 
     public GitConfiguration withDefaultBranch() {
         return new GitConfiguration(remote, "master", tag, commitLink, fileAtCommitLink);
+    }
+
+    public boolean isValidTagName(String tagName) {
+        if (StringUtils.isBlank(tag)) {
+            return true;
+        } else {
+            return Pattern.matches(StringUtils.replace(tag, "*", ".*"), tagName);
+        }
+    }
+
+    public String getBuildNameFromTagName(String tagName) {
+        if (StringUtils.isBlank(tag)) {
+            return tagName;
+        } else {
+            Pattern p = Pattern.compile(StringUtils.replace(tag, "*", "(.*)"));
+            Matcher m = p.matcher(tagName);
+            if (m.matches()) {
+                return m.group(1);
+            } else {
+                throw new GitTagNameNoMatchException(tagName, tag);
+            }
+        }
     }
 }

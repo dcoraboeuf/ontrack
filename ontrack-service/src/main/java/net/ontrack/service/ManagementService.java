@@ -6,28 +6,28 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 public interface ManagementService {
-	
-	// Projects
 
-	ProjectSummary createProject(ProjectCreationForm form);
+    // Projects
 
-	List<ProjectSummary> getProjectList();
+    ProjectSummary createProject(ProjectCreationForm form);
 
-	ProjectSummary getProject(int id);
+    List<ProjectSummary> getProjectList();
 
-	Ack deleteProject(int id);
+    ProjectSummary getProject(int id);
+
+    Ack deleteProject(int id);
 
     ProjectSummary updateProject(int id, ProjectUpdateForm form);
-	
-	// Branches
 
-	List<BranchSummary> getBranchList(int project);
+    // Branches
 
-	BranchSummary getBranch(int id);
+    List<BranchSummary> getBranchList(int project);
+
+    BranchSummary getBranch(int id);
 
     DecoratedBranch getDecoratedBranch(Locale locale, int branchId);
 
-	BranchSummary createBranch(int project, BranchCreationForm form);
+    BranchSummary createBranch(int project, BranchCreationForm form);
 
     Ack deleteBranch(int branchId);
 
@@ -38,12 +38,12 @@ public interface ManagementService {
     BuildCleanup getBuildCleanup(int branchId);
 
     Ack setBuildCleanup(int branchId, BuildCleanupForm form);
-	
-	// Validation stamps
 
-	List<ValidationStampSummary> getValidationStampList(int branch);
+    // Validation stamps
 
-	ValidationStampSummary getValidationStamp(int id);
+    List<ValidationStampSummary> getValidationStampList(int branch);
+
+    ValidationStampSummary getValidationStamp(int id);
 
     DecoratedValidationStamp getDecoratedValidationStamp(Locale locale, int validationStampId);
 
@@ -51,9 +51,9 @@ public interface ManagementService {
 
     ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form);
 
-	Ack imageValidationStamp(int validationStampId, MultipartFile image);
+    Ack imageValidationStamp(int validationStampId, MultipartFile image);
 
-	byte[] imageValidationStamp(int validationStampId);
+    byte[] imageValidationStamp(int validationStampId);
 
     Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId);
 
@@ -71,7 +71,7 @@ public interface ManagementService {
 
     Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form);
 
-    Collection<Comment> getValidationStampComments (Locale locale, int validationStampId, int offset, int count);
+    Collection<Comment> getValidationStampComments(Locale locale, int validationStampId, int offset, int count);
 
     // Promotion levels
 
@@ -102,16 +102,16 @@ public interface ManagementService {
     PromotionLevelSummary getPromotionLevelForValidationStamp(int validationStamp);
 
     boolean isPromotionLevelComplete(int build, int promotionLevel);
-	
-	// Builds
+
+    // Builds
 
     BranchBuilds getBuildList(Locale locale, int branchId, int offset, int count);
 
     BranchBuilds queryBuilds(Locale locale, int branch, BuildFilter filter);
 
-	BuildSummary findLastBuildWithValidationStamp(int validationStampId, Set<Status> statuses);
+    BuildSummary findLastBuildWithValidationStamp(int validationStampId, Set<Status> statuses);
 
-	BuildSummary findLastBuildWithPromotionLevel(int promotionLevelId);
+    BuildSummary findLastBuildWithPromotionLevel(int promotionLevelId);
 
     BuildSummary getLastBuild(int branch);
 
@@ -125,15 +125,15 @@ public interface ManagementService {
      */
     Integer findBuildAfterUsingNumericForm(int branchId, String buildName);
 
-	BuildSummary getBuild(int build);
+    BuildSummary getBuild(int build);
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, int buildId);
 
     List<BuildPromotionLevel> getBuildPromotionLevels(Locale locale, int buildId);
-	
-	// Validation runs
-	
-	ValidationRunSummary getValidationRun (int validationRunId);
+
+    // Validation runs
+
+    ValidationRunSummary getValidationRun(int validationRunId);
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
 
@@ -159,11 +159,13 @@ public interface ManagementService {
 
     Ack removePromotedRun(int buildId, int promotionLevelId);
 
+    List<Promotion> getPromotionsForBranch(Locale locale, int branchId, int buildId);
+
     // Comments
 
-    CommentStub createComment (Entity entity, int id, String content);
-	
-	// Common
+    CommentStub createComment(Entity entity, int id, String content);
 
-	int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
+    // Common
+
+    int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
 }

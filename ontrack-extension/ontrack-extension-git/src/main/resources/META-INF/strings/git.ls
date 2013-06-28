@@ -96,6 +96,36 @@ git.import-builds.tagPattern
     en -> Tag regular expression to extract the build name
     fr -> Expression regulière pour extraire le nom du build depuis le nom du tag
 
+[search]
+
+git.search.commit
+    en -> Commit {0}
+    fr -> Commit {0}
+
+[commit]
+
+git.commit
+    en,fr -> Commit {0}
+
+git.commit.builds
+    en,fr -> Builds
+
+git.commit.builds.none
+    en -> The commit does not appear in any build.
+    fr -> Ce commit n'apparait dans aucun build.
+
+git.commit.promotions
+    en -> Associated promotions
+    fr -> Promotions associées
+
+git.commit.promotions.none
+    en -> The commit was never promoted.
+    fr -> Ce commit n'a jamais été promu.
+
+git.commit.promotions.notForThisPromotionLevel
+    en -> The commmit was never promoted to this promotion level.
+    fr -> Ce commit n'a jamais été promu à ce niveau de promotion.
+
 [errors]
 
 net.ontrack.extension.git.service.GitProjectRemoteNotConfiguredException
@@ -119,3 +149,5 @@ net.ontrack.extension.git.client.impl.GitCommitNotFoundException
 net.ontrack.extension.git.ui.ChangeLogUUIDException
     en -> [GIT-007] Change log with UUID {0} cannot be found
 
+net.ontrack.extension.git.model.GitTagNameNoMatchException
+    en -> [GIT-008] Tag "{0}" does not match the "{1}" pattern.

@@ -1,4 +1,4 @@
-package net.ontrack.extension.svnexplorer.model;
+package net.ontrack.extension.git.model;
 
 import lombok.Data;
 import net.ontrack.core.model.BranchPromotions;
@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-public class RevisionInfo {
+public class GitCommitInfo {
 
-    private final ChangeLogRevision changeLogRevision;
+    private final GitUICommit commit;
     private final Collection<BuildInfo> builds;
     private final List<BranchPromotions> promotionsPerBranch;
 

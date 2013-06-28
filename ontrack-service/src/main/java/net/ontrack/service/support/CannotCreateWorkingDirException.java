@@ -1,4 +1,4 @@
-package net.ontrack.backend;
+package net.ontrack.service.support;
 
 import net.sf.jstring.support.CoreException;
 
