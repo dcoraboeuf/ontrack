@@ -3,16 +3,18 @@ package net.ontrack.extension.git.client.impl;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import net.ontrack.extension.git.GitCommitNotFoundException;
+import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.service.EnvironmentService;
 import net.ontrack.service.support.DirEnvironmentService;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class DefaultGitClientTest {
 
@@ -62,6 +64,19 @@ public class DefaultGitClientTest {
             }
         });
         assertNull(tag);
+    }
+
+    @Test
+    public void getCommitFor() {
+        String id = "a661c5f8c38fc461228423cbc2484da722130d8b";
+        GitCommit commit = client.getCommitFor(id);
+        assertNotNull(commit);
+        assertEquals(id, commit.getId());
+        assertEquals("#175 Jenkins decorations", commit.getShortMessage());
+        assertEquals("#175 Jenkins decorations", commit.getFullMessage());
+        assertEquals(new DateTime(2013, 6, 12, 0, 53, 25, DateTimeZone.UTC), commit.getCommitTime());
+        assertNotNull(commit.getAuthor());
+        assertEquals("dcoraboeuf", commit.getAuthor().getName());
     }
 
 }
