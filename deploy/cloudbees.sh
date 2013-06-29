@@ -20,8 +20,9 @@ function show_help {
 }
 
 # General environment
-ONTRACK_REPO=https://repository-dcoraboeuf.forge.cloudbees.com/release/net/ontrack/ontrack-web
 ONTRACK_WD=target/deploy
+ONTRACK_OWNER=dcoraboeuf
+ONTRACK_REPO=https://repository-$ONTRACK_OWNER.forge.cloudbees.com/release/net/ontrack/ontrack-web
 
 # Input data
 ONTRACK_DB=ontrack-test
@@ -160,7 +161,7 @@ then
 	echo Setting the production profile...
 	echo Setting the home directory...
 	echo Setting the DB profile to mysql...
-	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=$ONTRACK_APP_PROFILE -P ontrack.home="/private/ontrack/$ONTRACK_APP" -P dbinit.profile=mysql
+	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=$ONTRACK_APP_PROFILE -P ontrack.home=//private/$ONTRACK_OWNER/ontrack/$ONTRACK_APP -P dbinit.profile=mysql
 	echo Parameters have been set.
 
 	echo Application $ONTRACK_APP has been created.
