@@ -11,7 +11,7 @@ public class DirEnvironmentService implements EnvironmentService {
     private final File homeDir;
 
     public DirEnvironmentService(File homeDir) {
-        this.homeDir = homeDir;
+        this.homeDir = homeDir.getAbsoluteFile();
     }
 
     @Override
