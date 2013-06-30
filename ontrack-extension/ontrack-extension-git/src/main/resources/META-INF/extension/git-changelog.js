@@ -67,7 +67,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, a
             ajax.get({
                 url: 'ui/extension/git/changelog/{0}/commits'.format(uuid),
                 loading: {
-                    el: '#revisions',
+                    el: '#commits',
                     mode: 'appendText'
                 },
                 successFn: displayCommits,
