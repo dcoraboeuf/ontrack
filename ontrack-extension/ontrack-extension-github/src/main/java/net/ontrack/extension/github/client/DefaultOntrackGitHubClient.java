@@ -4,23 +4,23 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.extension.github.model.*;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Label;
-import org.eclipse.egit.github.core.Milestone;
-import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.*;
 import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
+
+    public static final int ISSUE_COMMITS_MAX_NUMBER = 40;
 
     @Override
     public GitHubIssue getIssue(String project, int id) {
@@ -56,6 +56,45 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
                 toDateTime(issue.getUpdatedAt()),
                 toDateTime(issue.getClosedAt())
         );
+    }
+
+    @Override
+    public List<GitHubCommit> getCommitsForIssue(String project, int id) {
+        String owner = StringUtils.substringBefore(project, "/");
+        String name = StringUtils.substringAfter(project, "/");
+        // GitHub client (non authentified)
+        GitHubClient client = new GitHubClient();
+        // Issue service
+        IssueService issueService = new IssueService(client);
+        // Commit service
+        CommitService commitService = new CommitService(client);
+        // Gets the events for the issue
+        PageIterator<IssueEvent> eventsIterator = issueService.pageIssueEvents(owner, name, id, ISSUE_COMMITS_MAX_NUMBER);
+        if (eventsIterator.hasNext()) {
+            List<GitHubCommit> commits = new ArrayList<>();
+            Collection<IssueEvent> events = eventsIterator.next();
+            for (IssueEvent event : events) {
+                String commitId = event.getCommitId();
+                if (StringUtils.isNotBlank(commitId)) {
+                    try {
+                        RepositoryCommit commit = commitService.getCommit(
+                                RepositoryId.create(owner, name),
+                                commitId
+                        );
+                        commits.add(new GitHubCommit(
+                                commit.getSha(),
+                                commit.getCommit().getAuthor().getName(),
+                                commit.getCommit().getMessage()
+                        ));
+                    } catch (IOException e) {
+                        throw new OntrackGitHubClientException(e);
+                    }
+                }
+            }
+            return commits;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private DateTime toDateTime(Date date) {

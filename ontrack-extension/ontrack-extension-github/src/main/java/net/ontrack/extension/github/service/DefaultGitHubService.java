@@ -9,10 +9,14 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.client.GitCommit;
+import net.ontrack.extension.git.model.GitCommitInfo;
+import net.ontrack.extension.git.service.GitService;
 import net.ontrack.extension.github.GitHubExtension;
 import net.ontrack.extension.github.GitHubProjectProperty;
 import net.ontrack.extension.github.client.OntrackGitHubClient;
+import net.ontrack.extension.github.model.GitHubCommit;
 import net.ontrack.extension.github.model.GitHubIssue;
+import net.ontrack.extension.github.model.GitHubIssueInfo;
 import net.ontrack.service.ManagementService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +32,14 @@ public class DefaultGitHubService implements GitHubService {
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final OntrackGitHubClient gitHubClient;
+    private final GitService gitService;
 
     @Autowired
-    public DefaultGitHubService(ManagementService managementService, PropertiesService propertiesService, OntrackGitHubClient gitHubClient) {
+    public DefaultGitHubService(ManagementService managementService, PropertiesService propertiesService, OntrackGitHubClient gitHubClient, GitService gitService) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.gitHubClient = gitHubClient;
+        this.gitService = gitService;
     }
 
     @Override
@@ -90,6 +96,30 @@ public class DefaultGitHubService implements GitHubService {
             }
         }
         return result;
+    }
+
+    @Override
+    public GitHubIssueInfo getIssueInfo(Locale locale, int projectId, int issueKey) {
+        // Gets the project information
+        String project = getGitHubProject(projectId);
+        // Gets the details about the issue
+        GitHubIssue issue = gitHubClient.getIssue(project, issueKey);
+        if (issue == null) {
+            throw new GitHubIssueNotFoundException(project, issueKey);
+        }
+        // Gets the list of commit IDs for this issue
+        List<GitHubCommit> commits = gitHubClient.getCommitsForIssue(project, issueKey);
+        // Gets the commit info for the last commit
+        GitCommitInfo commitInfo = null;
+        if (!commits.isEmpty()) {
+            commitInfo = gitService.getCommitInfo(locale, commits.get(0).getId());
+        }
+        // OK
+        return new GitHubIssueInfo(
+                issue,
+                commitInfo,
+                commits
+        );
     }
 
     private Collection<Integer> getIssueIds(String message) {

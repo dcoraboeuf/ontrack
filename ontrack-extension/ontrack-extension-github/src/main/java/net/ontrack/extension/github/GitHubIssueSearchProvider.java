@@ -9,6 +9,7 @@ import net.ontrack.extension.github.service.GitHubService;
 import net.ontrack.service.GUIService;
 import net.ontrack.service.SearchProvider;
 import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.LocalizableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +30,15 @@ public class GitHubIssueSearchProvider extends AbstractGUIController implements 
     private final ExtensionManager extensionManager;
     private final GitHubService gitHubService;
     private final GUIService guiService;
+    private final EntityConverter entityConverter;
 
     @Autowired
-    public GitHubIssueSearchProvider(ErrorHandler errorHandler, ExtensionManager extensionManager, GitHubService gitHubService, GUIService guiService) {
+    public GitHubIssueSearchProvider(ErrorHandler errorHandler, ExtensionManager extensionManager, GitHubService gitHubService, GUIService guiService, EntityConverter entityConverter) {
         super(errorHandler);
         this.extensionManager = extensionManager;
         this.gitHubService = gitHubService;
         this.guiService = guiService;
+        this.entityConverter = entityConverter;
     }
 
     @Override
@@ -67,9 +70,11 @@ public class GitHubIssueSearchProvider extends AbstractGUIController implements 
     }
 
     @RequestMapping(value = "/gui/extension/github/project/{project:[A-Za-z0-9_\\.\\-]+}/issue/{issue:\\d+}", method = RequestMethod.GET)
-    public String commit(Locale locale, @PathVariable String project, @PathVariable String issue, Model model) {
+    public String commit(Locale locale, @PathVariable String project, @PathVariable int issue, Model model) {
+        // Gets the project id
+        int projectId = entityConverter.getProjectId(project);
         // Issue info
-        // TODO model.addAttribute("commit", gitUI.getCommitInfo(locale, commit));
+        model.addAttribute("info", gitHubService.getIssueInfo(locale, projectId, issue));
         // OK
         return "extension/github/issue";
     }
