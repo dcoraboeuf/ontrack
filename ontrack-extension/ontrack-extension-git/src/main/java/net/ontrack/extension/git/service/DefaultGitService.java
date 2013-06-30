@@ -457,6 +457,9 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     protected void doImportBuilds(int branchId, GitImportBuildsForm form) {
         // Gets the branch Git client
         GitClient gitClient = getGitClient(branchId);
+        // Makes sure of synchronization
+        logger.debug("[git] Synchronizing before importing");
+        gitClient.sync();
         // Gets the list of tags
         logger.debug("[git] Getting list of tags");
         Collection<GitTag> tags = gitClient.getTags();
