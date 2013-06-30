@@ -1,0 +1,60 @@
+<#include "/lib/layout.html">
+<#include "/extension/git/lib/commit_lib.html" >
+
+<@layout_std
+    page="github-issue"
+    title="#" + info.issue.id?c
+    noscript=true
+    extension=true
+    breadcrumbs={
+    loc("home"):""
+    }>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small>
+                <a href="${info.issue.url?html}">
+                    <img src="extension/github.jpg" />
+                </a>
+                <a href="${info.issue.url?html}">
+                    #${info.issue.id?c}
+                </a>
+                ${info.issue.title?html}
+            </small></h1>
+            <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
+        </div>
+    </div>
+
+    <@commit_summary info = info.commitInfo title = true />
+
+    <@commit_builds info = info.commitInfo />
+
+    <@commit_promotions info = info.commitInfo />
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="github.issue.commits" /></small></h1>
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><@lh key="github.commit.id" /></th>
+                        <th><@lh key="github.commit.author" /></th>
+                        <th><@lh key="github.commit.message" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list info.commits as commit>
+                        <tr>
+                            <td>
+                                <a href="/gui/extension/git/commit/${commit.id?html}"><code>${commit.id?html}</code></a>
+                            </td>
+                            <td>${commit.author?html}</td>
+                            <td>${commit.message?html}</td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</@layout_std>

@@ -116,6 +116,7 @@ public class DefaultGitHubService implements GitHubService {
         }
         // OK
         return new GitHubIssueInfo(
+                managementService.getProject(projectId),
                 issue,
                 commitInfo,
                 commits

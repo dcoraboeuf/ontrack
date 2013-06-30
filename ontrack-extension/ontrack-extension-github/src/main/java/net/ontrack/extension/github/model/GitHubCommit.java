@@ -7,6 +7,6 @@ public class GitHubCommit {
 
     private final String id;
     private final String author;
-    private final String shortMessage;
+    private final String message;
 
 }

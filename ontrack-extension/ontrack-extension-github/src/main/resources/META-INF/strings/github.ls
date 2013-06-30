@@ -41,6 +41,24 @@ github.search.issue
     en -> Issue {0} for project {1}
     fr -> Ticket {0} pour le projet {1}
 
+[issue]
+
+github.issue.commits
+    en -> List of associated commits
+    fr -> Liste des commits associés
+
+github.commit.id
+    en -> Id
+    fr -> Id
+
+github.commit.author
+    en -> Author
+    fr -> Auteur
+
+github.commit.message
+    en -> Message
+    fr -> Message
+
 [errors]
 
 net.ontrack.extension.github.client.OntrackGitHubClientException
