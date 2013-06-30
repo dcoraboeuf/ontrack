@@ -44,7 +44,7 @@ github.search.issue
 [errors]
 
 net.ontrack.extension.github.client.OntrackGitHubClientException
-    en -> [GITHUB-001] Error while accessing GitHub.
+    en -> [GITHUB-001] Error while accessing GitHub: {0}
 
 net.ontrack.extension.github.service.GitHubIssueNotFoundException
     en -> [GITHUB-002] Cannot find issue {1} for project {0}.

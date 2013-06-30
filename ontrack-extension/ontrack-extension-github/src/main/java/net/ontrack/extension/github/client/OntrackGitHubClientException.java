@@ -6,6 +6,6 @@ import java.io.IOException;
 
 public class OntrackGitHubClientException extends CoreException {
     public OntrackGitHubClientException(IOException e) {
-        super(e);
+        super(e, e);
     }
 }
