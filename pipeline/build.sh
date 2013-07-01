@@ -74,6 +74,21 @@ do
 		--push)
 			GIT_PUSH=yes
 			;;
+		--ontrack)
+			ONTRACK=yes
+			;;
+		--ontrack-branch=*)
+			ONTRACK_BRANCH=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-url=*)
+			ONTRACK_URL=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-user=*)
+			ONTRACK_USER=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-password=*)
+			ONTRACK_PASSWORD=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		*)
 			echo "Unknown option: $i"
 			show_help
