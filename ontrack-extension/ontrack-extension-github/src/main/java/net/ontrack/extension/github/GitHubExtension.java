@@ -17,11 +17,13 @@ public class GitHubExtension extends ExtensionAdapter {
     public static final String EXTENSION = "github";
     public static final String GITHUB_ISSUE_PATTERN = "(#\\d+)";
     private final GitHubProjectProperty gitHubProjectProperty;
+    private final GitHubAuthenticationProperty gitHubAuthenticationProperty;
 
     @Autowired
-    public GitHubExtension(GitHubProjectProperty gitHubProjectProperty) {
+    public GitHubExtension(GitHubProjectProperty gitHubProjectProperty, GitHubAuthenticationProperty gitHubAuthenticationProperty) {
         super(EXTENSION);
         this.gitHubProjectProperty = gitHubProjectProperty;
+        this.gitHubAuthenticationProperty = gitHubAuthenticationProperty;
     }
 
     public static String getIssueUrl(String project, String id) {
@@ -31,7 +33,8 @@ public class GitHubExtension extends ExtensionAdapter {
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
         return Arrays.asList(
-                gitHubProjectProperty
+                gitHubProjectProperty,
+                gitHubAuthenticationProperty
         );
     }
 

@@ -5,6 +5,12 @@ github.project
     en -> GitHub project
     fr -> Projet GitHub
 
+github.authentication
+    en -> Authentication (client_id&client_secret)
+    en -> Authentification (client_id&client_secret)
+
+[changelog]
+
 github.changelog.issues
     en -> GitHub issues
     fr -> Tickets GitHub
