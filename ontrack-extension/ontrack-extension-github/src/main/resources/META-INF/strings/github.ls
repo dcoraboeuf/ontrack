@@ -62,7 +62,11 @@ github.issue.commit
 
 github.issue.createdAt
     en -> Created on {0} at {1}
-    fr -> Créé le {0} à {1}
+    fr -> Créée le {0} à {1}
+
+github.issue.updatedAt
+    en -> Updated on {0} at {1}
+    fr -> Modifiée le {0} à {1}
 
 github.issue.commit.none
     en -> No commit is associated with this issue.

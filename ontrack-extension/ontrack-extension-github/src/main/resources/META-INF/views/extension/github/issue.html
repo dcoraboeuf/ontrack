@@ -33,7 +33,11 @@
             <!-- Creation date -->
             <i class="icon-calendar"></i>
             ${ loc ('github.issue.createdAt', locFormatDate(info.issue.createdAt), locFormatTime(info.issue.createdAt)) }
-            <!-- TODO Update date -->
+            <!-- Update date -->
+            <#if info.issue.updatedAt??>
+                <i class="icon-calendar"></i>
+                ${ loc ('github.issue.updatedAt', locFormatDate(info.issue.updatedAt), locFormatTime(info.issue.updatedAt)) }
+            </#if>
             <!-- Description -->
             <div class="github-issue-body">
                 ${info.issue.bodyHtml!''}
