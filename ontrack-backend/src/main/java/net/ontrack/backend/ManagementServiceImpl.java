@@ -1235,6 +1235,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack deleteValidationRun(int validationRunId) {
+        return validationRunDao.deleteById(validationRunId);
+    }
+
     // Validation run status
 
     @Override

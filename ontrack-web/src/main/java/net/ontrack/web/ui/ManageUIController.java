@@ -638,6 +638,16 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/validation_run/{runOrder:[0-9]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack deleteValidationRun(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @PathVariable String validationStamp, @PathVariable int runOrder) {
+        return managementService.deleteValidationRun(entityConverter.getValidationRunId(
+                project, branch, build, validationStamp, runOrder
+        ));
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/promotions", method = RequestMethod.GET)
     public
     @ResponseBody

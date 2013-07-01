@@ -1,6 +1,7 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.backend.dao.model.TValidationRun;
+import net.ontrack.core.model.Ack;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ValidationRunDao {
     List<TValidationRun> findLastRunsOfBuildByValidationStamp(int validationStamp, int limit);
 
     int createValidationRun(int build, int validationStamp, String description);
+
+    Ack deleteById(int validationRunId);
 }

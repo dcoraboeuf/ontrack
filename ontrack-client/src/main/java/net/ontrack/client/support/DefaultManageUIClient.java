@@ -398,6 +398,22 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack deleteValidationRun(String project, String branch, String build, String validationStamp, int runOrder) {
+        return delete(
+                getDefaultLocale(),
+                format(
+                        "/ui/manage/project/%s/branch/%s/build/%s/validation_stamp/%s/validation_run/%d",
+                        project,
+                        branch,
+                        build,
+                        validationStamp,
+                        runOrder
+                ),
+                Ack.class
+        );
+    }
+
+    @Override
     public List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count) {
         return list(
                 locale,

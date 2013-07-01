@@ -133,6 +133,8 @@ public interface ManageUI {
 
     Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form);
 
+    Ack deleteValidationRun(String project, String branch, String build, String validationStamp, int runOrder);
+
     // Promoted runs
 
     List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);

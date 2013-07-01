@@ -147,6 +147,8 @@ public interface ManagementService {
 
     List<ValidationRunStatusStub> getStatusesForLastBuilds(int validationStampId, int count);
 
+    Ack deleteValidationRun(int validationRunId);
+
     // Promoted runs
 
     PromotedRunSummary getPromotedRun(int buildId, int promotionLevel);

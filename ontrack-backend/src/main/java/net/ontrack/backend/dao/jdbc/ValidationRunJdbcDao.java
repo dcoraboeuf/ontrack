@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.backend.dao.model.TValidationRun;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -99,5 +100,16 @@ public class ValidationRunJdbcDao extends AbstractJdbcDao implements ValidationR
                         .addValue("validationStamp", validationStamp)
                         .addValue("description", description)
                         .addValue("runOrder", count + 1));
+    }
+
+    @Override
+    @Transactional
+    public Ack deleteById(int validationRunId) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATION_RUN_DELETE,
+                        params("id", validationRunId)
+                )
+        );
     }
 }
