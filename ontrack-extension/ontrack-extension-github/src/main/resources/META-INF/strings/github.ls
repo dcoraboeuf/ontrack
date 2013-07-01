@@ -48,9 +48,21 @@ github.search.issue
 
 [issue]
 
+github.issue.state.closed
+    en -> Closed
+    fr -> Fermée
+
+github.issue.state.open
+    en -> Open
+    fr -> Ouverte
+
 github.issue.commit
     en -> Last commit
     fr -> Dernier commit
+
+github.issue.commit.none
+    en -> No commit is associated with this issue.
+    fr -> Aucun commit n'est associé à ce ticket.
 
 github.issue.commits
     en -> List of associated commits
