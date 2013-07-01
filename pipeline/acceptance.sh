@@ -83,6 +83,7 @@ done
 
 # Checks
 check "$MVN" "Maven executable (--mvn) is required."
+check "$TEST_URL" "Test URL (--url) is required."
 if [ "$ONTRACK" == "yes" ]
 then
 	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
@@ -90,17 +91,39 @@ then
 	check "$ONTRACK_VALIDATION" "ontrack validation stamp (--ontrack-validation) is required."
 fi
 
+# Values
+echo Notifying ontrack:         ${ONTRACK}
+if [ "$ONTRACK" == "yes" ]
+then
+	echo ontrack branch:            ${ONTRACK_BRANCH}
+	echo ontrack URL:               ${ONTRACK_URL}
+	echo ontrack validation stamp:  ${ONTRACK_VALIDATION}
+fi
+echo URL to test:               ${TEST_URL}
+
+# Gets the version to test
+VERSION=`curl --silent $TEST_URL/ui/manage/version`
+if [ "$VERSION" == "" ]
+then
+	echo Could not get version information.
+	exit 1
+fi
+echo Testing against version $VERSION
+
 # Runs the acceptance tests
 ${MVN} clean verify -pl ontrack-acceptance -am -P it -DitUrl=${TEST_URL}
 if [ "$?" != "0" ]
 then
 	echo Failed acceptance tests.
-	exit 1
+	STATUS=FAILED
+else
+	echo Passed acceptance tests.
+	STATUS=PASSED
 fi
 
 # ontrack validation run
 if [ "$ONTRACK" == "yes" ]
 then
-	# echo Notifying the build creation at ${ONTRACK_URL}
-	# curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
+	echo Notifying the build creation at ${ONTRACK_URL}
+	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build/ontrack-${VERSION}/validation_stamp/${ONTRACK_VALIDATION}" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"status\":\"${STATUS}\",\"description\":\"Run by acceptance.sh\"}"
 fi
