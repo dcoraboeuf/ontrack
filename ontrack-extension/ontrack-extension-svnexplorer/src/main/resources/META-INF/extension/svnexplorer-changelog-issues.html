@@ -45,4 +45,16 @@
             </tr>
         {{/list}}
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="8">
+                {{#if list.length}}
+                    <button id="svnexplorer-changelog-issues-openall" type="button" class="btn btn-link">
+                        <img src="extension/jira.png" />
+                        {{loc 'svnexplorer.changelog.issues.openAll'}}
+                    </button>
+                {{/if}}
+            </td>
+        </tr>
+    </tfoot>
 </table>

@@ -83,6 +83,10 @@ svnexplorer.changelog.issues.revision
     en -> Last revision
     fr -> Dernière révision
 
+svnexplorer.changelog.issues.openAll
+    en -> Open all issues in JIRA
+    fr -> Ouvrir tous les tickets dans JIRA
+
 [files]
 
 svnexplorer.changelog.files

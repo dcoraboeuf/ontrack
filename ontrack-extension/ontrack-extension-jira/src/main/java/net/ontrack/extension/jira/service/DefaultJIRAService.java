@@ -146,6 +146,11 @@ public class DefaultJIRAService implements JIRAService {
         return JIRAExtension.ISSUE_PATTERN.matcher(token).matches();
     }
 
+    @Override
+    public String getJIRAURL() {
+        return configurationExtension.getUrl();
+    }
+
     private JIRAStatus toStatus(BasicStatus status) {
         return new JIRAStatus(
                 status.getName(),

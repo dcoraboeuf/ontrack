@@ -87,6 +87,27 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
             'extension/svnexplorer-changelog-issues',
             issues,
             function () {
+                // 'Open all issues' button
+                $('#svnexplorer-changelog-issues-openall').click(function () {
+                    if (issues.list.length == 0) {
+                        // Does nothing
+                    } else if (issues.list.length == 1) {
+                        var url = 'http://jira.isabelteam.be/browse/' + issues.list[0].issue.key;
+                        window.open(url, '_blank');
+                    } else {
+                        var url = issues.jiraUrl + '/secure/IssueNavigator.jspa?reset=true&mode=hide&jqlQuery=';
+                        var query = 'key in (';
+                        $.each (issues.list, function (index, issue) {
+                            if (index > 0) {
+                                query += ',';
+                            }
+                            query += "'" + issue.issue.key + "'";
+                        });
+                        query += ')';
+                        url += encodeURIComponent(query);
+                        window.open(url, '_blank');
+                    }
+                });
                 // Tooltips
                 common.tooltips();
             }
