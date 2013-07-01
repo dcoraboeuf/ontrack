@@ -18,7 +18,12 @@ define(['jquery', 'application'], function ($, application) {
                 validationStamp),
             validationRunOrder,
             function () {
-                ''.goto();
+                'gui/project/{0}/branch/{1}/build/{2}'
+                    .format(
+                        project,
+                        branch,
+                        build)
+                    .goto();
             },
             function (data) {
                 return data.runOrder;
