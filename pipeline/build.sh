@@ -189,7 +189,7 @@ fi
 if [ "$ONTRACK" == "yes" ]
 then
 	echo Notifying the build creation at ${ONTRACK_URL}
-	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"${VERSION}\",\"description\":\"Created by build.sh\"}"
+	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
 fi
 
 # Clean-up & termination
