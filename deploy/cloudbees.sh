@@ -114,7 +114,7 @@ fi
 # Creating the database, deleting it if necessary
 if [ "$ONTRACK_DB_CREATE" == "yes" ]
 then
-	bees db:list | grep $ONTRACK_DB
+	bees db:list | grep -e "$ONTRACK_DB$"
 	if [ "$?" == "0" ]
 	then
 		echo Deleting database $ONTRACK_DB...
@@ -138,7 +138,7 @@ fi
 # Creating the application, deleting it if necessary
 if [ "$ONTRACK_APP_CREATE" == "yes" ]
 then
-	bees app:list | grep $ONTRACK_APP
+	bees app:list | grep -e "$ONTRACK_APP$"
 	if [ "$?" == "0" ]
 	then
 		echo Deleting application $ONTRACK_APP...
