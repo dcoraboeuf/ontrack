@@ -60,6 +60,10 @@ github.issue.commit
     en -> Last commit
     fr -> Dernier commit
 
+github.issue.createdAt
+    en -> Created on {0} at {1}
+    fr -> Créé le {0} à {1}
+
 github.issue.commit.none
     en -> No commit is associated with this issue.
     fr -> Aucun commit n'est associé à ce ticket.

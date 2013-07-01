@@ -30,7 +30,9 @@
             <!-- Meta info -->
             <!-- Author -->
             <i class="icon-user"></i> <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
-            <!-- TODO Creation date -->
+            <!-- Creation date -->
+            <i class="icon-calendar"></i>
+            ${ loc ('github.issue.createdAt', locFormatDate(info.issue.createdAt), locFormatTime(info.issue.createdAt)) }
             <!-- TODO Update date -->
             <!-- Description -->
             <div class="github-issue-body">
