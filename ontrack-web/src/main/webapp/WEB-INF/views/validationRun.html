@@ -2,7 +2,6 @@
 
 <@layout_std
     page="validation-run"
-    noscript=true
     style=true
     title="#${validationRun.runOrder?string}"
     modules=["audit","properties"]
@@ -16,6 +15,11 @@
             "gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}"}>
 	<div class="container-fluid">
         <input id="validationRunId" type="hidden" value="${validationRun.id?c}" />
+        <input id="project" type="hidden" value="${validationRun.build.branch.project.name?html}" />
+        <input id="branch" type="hidden" value="${validationRun.build.branch.name?html}" />
+        <input id="build" type="hidden" value="${validationRun.build.name?html}" />
+        <input id="validationStamp" type="hidden" value="${validationRun.validationStamp.name?html}" />
+        <input id="validationRunOrder" type="hidden" value="${validationRun.runOrder?c}" />
 		<div class="row-fluid">
             <div class="span12 page-title">
                 <span class="title">
@@ -26,8 +30,11 @@
                         <img height="24" width="24" src="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/validation_stamp/${validationRun.validationStamp.name?html}/image" />
                         ${validationRun.validationStamp.name?html}
                       </a>
-                / #${validationRun.runOrder?html}</span>
+                / #${validationRun.runOrder?c}</span>
                 <span class="action action-optional">
+                    <#if secAdmin()>
+                        <span id="validation-run-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
+                    </#if>
                     <a href="gui/project/${validationRun.build.branch.project.name?html}/branch/${validationRun.build.branch.name?html}/build/${validationRun.build.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
                 </span>
             </div>

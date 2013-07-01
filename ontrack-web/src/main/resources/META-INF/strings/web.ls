@@ -703,6 +703,11 @@ validationRun
     en -> Run
     fr -> Exécution
 
+validation_run.delete.prompt
+	en -> Are you sure to delete the "{0}" validation run and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer l'exécution "{0}" et toutes ses informations associées?
+
+
 validationRun.notRun
     en -> Not run
     fr -> Non exécuté
