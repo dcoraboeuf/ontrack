@@ -1239,7 +1239,19 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationRun(int validationRunId) {
-        return validationRunDao.deleteById(validationRunId);
+        ValidationRunSummary run = getValidationRun(validationRunId);
+        Ack ack = validationRunDao.deleteById(validationRunId);
+        if (ack.isSuccess()) {
+            event(
+                    Event.of(EventType.VALIDATION_RUN_DELETED)
+                            .withValue("validation_run", "#" + run.getRunOrder())
+                            .withProject(run.getBuild().getBranch().getProject().getId())
+                            .withBranch(run.getBuild().getBranch().getId())
+                            .withBuild(run.getBuild().getId())
+                            .withValidationStamp(run.getValidationStamp().getId())
+            );
+        }
+        return ack;
     }
 
     // Validation run status

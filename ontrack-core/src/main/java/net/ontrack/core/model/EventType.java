@@ -44,6 +44,8 @@ public enum EventType {
 
     BUILD_DELETED,
 
+    VALIDATION_RUN_DELETED,
+
     VALIDATION_STAMP_COMMENT
 
 }

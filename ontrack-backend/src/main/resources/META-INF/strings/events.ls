@@ -60,6 +60,10 @@ event.VALIDATION_RUN_CREATED
 	en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ is $status$.
 	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est $status$.
 
+event.VALIDATION_RUN_DELETED
+	en -> Run $validation_run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ has been deleted.
+	fr -> L'exécution $validation_run$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ a été supprimé.
+
 event.VALIDATION_RUN_STATUS
     en -> $VALIDATION_RUN|Run$ of $VALIDATION_STAMP$ for build $BUILD$ of branch $BRANCH$ of $PROJECT$ has changed its status to $status$.
 	fr -> L'$VALIDATION_RUN|exécution$ de $VALIDATION_STAMP$ pour le build $BUILD$ de la branche $BRANCH$ de $PROJECT$ est passée au statut $status$.
