@@ -16,6 +16,11 @@ function show_help {
 	echo "Release numbering:"                         
 	echo "    -v,--version=<release>        Version to prepare (by default extracted from the POM, by deleting the -SNAPSHOT prefix)"
 	echo "    -nv,--next-version=<release>  Next version to prepare (by default, the prepared version where the last digit is incremented by 1)"
+	echo "Ontrack on Ontrack:"
+	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
+	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
+	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
+	echo "    --ontrack-user                ontrack user"
 }
 
 # Check function
@@ -37,6 +42,11 @@ NEXUS_URL=dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/
 VERSION=
 NEXT_VERSION=
 GIT_PUSH=no
+ONTRACK=no
+ONTRACK_BRANCH=1.x
+ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
+ONTRACK_USER=
+ONTRACK_PASSWORD=
 
 # Command central
 for i in "$@"
@@ -74,6 +84,11 @@ done
 
 # Checks
 check "$MVN" "Maven executable (--mvn) is required."
+if [ "$ONTRACK" == "yes" ]
+then
+	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
+	check "$ONTRACK_PASSWORD" "ontrack user (--ontrack-password) is required."
+fi
 
 # Preparation of the version
 
@@ -98,7 +113,13 @@ echo Next version to promote:   ${NEXT_VERSION}
 echo Repository ID:             ${NEXUS_ID}
 echo Repository URL:            ${NEXUS_URL}
 echo Pushing to Git:            ${GIT_PUSH}
-
+echo Notifying ontrack:         ${ONTRACK}
+if [ "$ONTRACK" == "yes" ]
+then
+	echo ontrack branch:            ${ONTRACK_BRANCH}
+	echo ontrack URL:               ${ONTRACK_URL}
+fi
+	
 # Cleaning the environment
 echo Cleaning the environment...
 git checkout -- .
@@ -147,6 +168,13 @@ if [ "$GIT_PUSH" == "yes" ]
 then
 	git push
 	git push --tags
+fi
+
+# ontrack
+if [ "$ONTRACK" == "yes" ]
+then
+	echo Notifying the build creation at ${ONTRACK_URL}
+	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"${VERSION}\",\"description\":\"Created by build.sh\"}"
 fi
 
 # Clean-up & termination
