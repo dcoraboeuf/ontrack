@@ -110,6 +110,10 @@ git.commit
 git.commit.builds
     en,fr -> Builds
 
+git.commit.commitTime.detailed
+    en -> {0} at {1}
+    fr -> {0} à {1}
+
 git.commit.builds.none
     en -> The commit does not appear in any build.
     fr -> Ce commit n'apparait dans aucun build.

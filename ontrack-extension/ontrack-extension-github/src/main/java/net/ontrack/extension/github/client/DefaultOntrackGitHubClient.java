@@ -96,6 +96,7 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
                         commits.add(new GitHubCommit(
                                 commit.getSha(),
                                 commit.getCommit().getAuthor().getName(),
+                                new DateTime(commit.getCommit().getAuthor().getDate(), DateTimeZone.UTC),
                                 commit.getCommit().getMessage()
                         ));
                     } catch (IOException e) {

@@ -21,7 +21,9 @@ public class FnLocFormatTime extends AbstractFnLocFormat<DateTime> {
 
     @Override
     protected String format(DateTime o, Locale locale) {
-        return o.toString(DateTimeFormat.shortTime().withLocale(locale));
+        return o.toString(DateTimeFormat.shortTime().withLocale(locale)) +
+                " " +
+                o.getZone().getID();
     }
 
 }

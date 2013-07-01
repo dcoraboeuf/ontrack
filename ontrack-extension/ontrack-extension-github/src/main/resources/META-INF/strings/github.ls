@@ -88,6 +88,10 @@ github.commit.message
     en -> Message
     fr -> Message
 
+github.commit.commitTime
+    en -> Commit time
+    fr -> Date de commit
+
 [errors]
 
 net.ontrack.extension.github.client.OntrackGitHubClientException

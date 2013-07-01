@@ -56,7 +56,7 @@ public class FnLocFormatDateTest {
         String value = String.valueOf(d);
         assertEquals("2013-07-01T13:13:25.000Z", value);
         Object result = fn.exec(Arrays.asList(value));
-        assertEquals("1:13 PM", result);
+        assertEquals("1:13 PM UTC", result);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class FnLocFormatDateTest {
         String value = String.valueOf(d);
         assertEquals("2013-07-01T13:13:25.000Z", value);
         Object result = fn.exec(Arrays.asList(value));
-        assertEquals("13:13", result);
+        assertEquals("13:13 UTC", result);
     }
 
 }

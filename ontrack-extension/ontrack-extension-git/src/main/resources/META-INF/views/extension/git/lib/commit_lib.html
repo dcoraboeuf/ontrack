@@ -5,8 +5,11 @@
             <#if title != "">
                 <h1><small>${title?html} <a href="${info.commit.link?html}"><code>${info.commit.commit.id?html}</code></a></small></h1>
             </#if>
+            <i class="icon-user"></i>
             <b>${info.commit.commit.author.name?html}</b>
             <span class="description">(${info.commit.commit.author.email?html})</span>
+            <i class="icon-calendar"></i>
+            ${ loc ('git.commit.commitTime.detailed', locFormatDate(info.commit.commit.commitTime), locFormatTime(info.commit.commit.commitTime)) }
             <div class="git-commit-message">
                 ${info.commit.fullAnnotatedMessage}
             </div>

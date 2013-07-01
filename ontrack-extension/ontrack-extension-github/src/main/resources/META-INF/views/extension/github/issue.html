@@ -62,6 +62,7 @@
                             <th><@lh key="github.commit.id" /></th>
                             <th><@lh key="github.commit.author" /></th>
                             <th><@lh key="github.commit.message" /></th>
+                            <th><@lh key="github.commit.commitTime" /></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,6 +73,9 @@
                                 </td>
                                 <td>${commit.author?html}</td>
                                 <td>${commit.message?html}</td>
+                                <td>
+                                    ${ loc ('git.commit.commitTime.detailed', locFormatDate(commit.commitTime), locFormatTime(commit.commitTime)) }
+                                </td>
                             </tr>
                         </#list>
                     </tbody>
