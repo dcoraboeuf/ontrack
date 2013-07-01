@@ -4,6 +4,7 @@ import net.ontrack.extension.github.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 
@@ -15,7 +16,7 @@ public class DefaultGitHubClientTest {
     @Test
     public void getIssue() {
         OntrackGitHubClient client = new DefaultOntrackGitHubClient();
-        GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", 2);
+        GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", Mockito.mock(GitHubClientConfigurator.class), 2);
         assertEquals(
                 new GitHubIssue(
                         2,
@@ -40,7 +41,7 @@ public class DefaultGitHubClientTest {
     @Test
     public void getIssue_not_found() {
         OntrackGitHubClient client = new DefaultOntrackGitHubClient();
-        GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", 98000);
+        GitHubIssue issue = client.getIssue("dcoraboeuf/ontrack", Mockito.mock(GitHubClientConfigurator.class), 98000);
         assertNull(issue);
     }
 

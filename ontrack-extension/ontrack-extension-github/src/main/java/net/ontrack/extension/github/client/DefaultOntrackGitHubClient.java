@@ -23,9 +23,10 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
     public static final int ISSUE_COMMITS_MAX_NUMBER = 40;
 
     @Override
-    public GitHubIssue getIssue(String project, int id) {
+    public GitHubIssue getIssue(String project, GitHubClientConfigurator configurator, int id) {
         // GitHub client (non authentified)
         GitHubClient client = new GitHubClient();
+        configurator.configure(client);
         // Issue service using this client
         IssueService service = new IssueService(client);
         // Gets the repository for this project
@@ -59,11 +60,12 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
     }
 
     @Override
-    public List<GitHubCommit> getCommitsForIssue(String project, int id) {
+    public List<GitHubCommit> getCommitsForIssue(String project, GitHubClientConfigurator configurator, int id) {
         String owner = StringUtils.substringBefore(project, "/");
         String name = StringUtils.substringAfter(project, "/");
         // GitHub client (non authentified)
         GitHubClient client = new GitHubClient();
+        configurator.configure(client);
         // Issue service
         IssueService issueService = new IssueService(client);
         // Commit service

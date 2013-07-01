@@ -6,8 +6,7 @@ github.project
     fr -> Projet GitHub
 
 github.authentication
-    en -> Authentication (client_id&client_secret)
-    en -> Authentification (client_id&client_secret)
+    en,fr -> GitHub API token
 
 [changelog]
 

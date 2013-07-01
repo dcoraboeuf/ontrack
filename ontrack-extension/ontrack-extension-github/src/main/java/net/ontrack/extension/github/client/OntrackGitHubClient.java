@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OntrackGitHubClient {
 
-    GitHubIssue getIssue(String project, int id);
+    GitHubIssue getIssue(String project, GitHubClientConfigurator configurator, int id);
 
-    List<GitHubCommit> getCommitsForIssue(String project, int id);
+    List<GitHubCommit> getCommitsForIssue(String project, GitHubClientConfigurator configurator, int id);
 }
