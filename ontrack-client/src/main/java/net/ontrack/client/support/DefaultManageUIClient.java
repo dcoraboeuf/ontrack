@@ -37,6 +37,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public String getVersion() {
+        return get(getDefaultLocale(), "/ui/manage/version", String.class);
+    }
+
+    @Override
     public List<ProjectSummary> getProjectList() {
         return list(getDefaultLocale(), "/ui/manage/project", ProjectSummary.class);
     }

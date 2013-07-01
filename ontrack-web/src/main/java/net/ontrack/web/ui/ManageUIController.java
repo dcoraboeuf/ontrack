@@ -16,6 +16,7 @@ import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,18 +34,26 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     private final ProfileService profileService;
     private final PropertyUI propertyUI;
     private final ObjectMapper objectMapper;
+    private final String version;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, PropertyUI propertyUI, ObjectMapper objectMapper) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
         this.securityUtils = securityUtils;
         this.profileService = profileService;
         this.propertyUI = propertyUI;
         this.objectMapper = objectMapper;
+        this.version = version;
     }
 
     // Projects
+
+    @Override
+    @RequestMapping(value = "/ui/manage/version", method = RequestMethod.GET)
+    public @ResponseBody String getVersion() {
+        return version;
+    }
 
     @Override
     @RequestMapping(value = "/ui/manage/project", method = RequestMethod.GET)

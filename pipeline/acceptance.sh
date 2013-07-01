@@ -92,3 +92,15 @@ fi
 
 # Runs the acceptance tests
 ${MVN} clean verify -pl ontrack-acceptance -am -P it -DitUrl=${TEST_URL}
+if [ "$?" != "0" ]
+then
+	echo Failed acceptance tests.
+	exit 1
+fi
+
+# ontrack validation run
+if [ "$ONTRACK" == "yes" ]
+then
+	# echo Notifying the build creation at ${ONTRACK_URL}
+	# curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
+fi

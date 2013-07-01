@@ -9,6 +9,10 @@ import java.util.Locale;
 
 public interface ManageUI {
 
+    // Gets the current version
+
+    String getVersion();
+
     // Projects
 
     List<ProjectSummary> getProjectList();
