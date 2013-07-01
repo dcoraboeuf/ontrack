@@ -1,104 +1,117 @@
 #!/bin/bash
 
-# How to perform a release?
-#
-# Set the following variables:
-# MVN 			= path to Maven executable (can be as simple as "mvn" only)
-# NEXUS_ID 		= ID for the Maven repository to deploy againt. Can be used to map with credentials in the Maven settings.xml file
-# NEXUS_URL		= URL of the Maven repository to deploy to (see below)
-#
-# Then just execute the command:
-# ./build.sh
-#
-# It will:
-# - execute all the tests
-# - package the application
-# - export the application artifacts on the NEXUS_URL defined above
-# - prepare all the POM files for the next release
-#
-# The release creates a commit for the preparation of the next release and this has to be pushed as well.
-#
-# The application artifacts are:
-# - the WAR
-# - the Jenkins plug-in (.hpi)
+# Help function
+function show_help {
+	echo "Ontrack build script."
+	echo ""
+	echo "Available options are:"
+	echo "General:"
+	echo "    -h, --help                    Displays this help"
+	echo "Settings:"                        
+	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
+	echo "    -ri,--repo-id=<id>            ID of the Maven repository to use for the deployment of artifacts ('dcoraboeuf-release' by default)"
+	echo "    -ru,--repo-url=<url>          URL of the Maven repository to use for the deployment of artifacts"
+	echo "                                  ('dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/' by default)"
+	echo "    --push                        Pushes to the remote Git"
+	echo "Release numbering:"                         
+	echo "    -v,--version=<release>        Version to prepare (by default extracted from the POM, by deleting the -SNAPSHOT prefix)"
+	echo "    -nv,--next-version=<release>  Next version to prepare (by default, the prepared version where the last digit is incremented by 1)"
+}
 
-# How to use Git as Maven repository?
-#
-# In a directory $DIR, clone of the dcoraboeuf/mvnrepo repository
-# git clone git@github.com:dcoraboeuf/mvnrepo.git $DIR
-#
-# Use this directory as target for the release:
-# export NEXUS_ID=git-mvrepo
-# export NEXUS_URL=file:/$DIR
-#
-# Perform the release operation as indicated above.
-#
-# You can then commit the artifacts and push as usual.
+# Check function
+function check {
+	if [ "$1" == "" ]
+	then
+		echo $2
+		exit 1
+	fi
+}
 
-#############################
-# Check environment variables
-#############################
-
-if [ "$MVN" == "" ]
-then
-	echo MVN is required.
-	exit 1
-fi
-
-if [ "$NEXUS_URL" == "" ]
-then
-        echo NEXUS_URL is required.
-        exit 1
-fi
-
-if [ "$NEXUS_ID" == "" ]
-then
-        echo NEXUS_ID is required.
-        exit 1
-fi
-
-# Listing environment
-echo "MVN          = ${MVN}"
-echo "NEXUS_URL    = ${NEXUS_URL}"
-echo "NEXUS_ID     = ${NEXUS_ID}"
-
-##########################
-# General MVN options
-##########################
-
+# General environment
 export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=128m -Djava.net.preferIPv4Stack=true"
 
-##########################
-# Preparation of the build
-##########################
+# Defaults
+MVN=mvn
+NEXUS_ID=dcoraboeuf-release
+NEXUS_URL=dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/
+VERSION=
+NEXT_VERSION=
+GIT_PUSH=no
 
-# Gets the version number from the POM
-VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/1\.([0-9]+)\-SNAPSHOT/\1/'`
-echo Current version is $VERSION
+# Command central
+for i in "$@"
+do
+	case $i in
+		-h|--help)
+			show_help
+			exit 0
+			;;
+		-m=*|--mvn=*)
+			MVN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-ri=*|--repo-id=*)
+			NEXUS_ID=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-ru=*|--repo-url=*)
+			NEXUS_URL=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-v=*|--version=*)
+			VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-nv=*|--next-version=*)
+			NEXT_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--push)
+			GIT_PUSH=yes
+			;;
+		*)
+			echo "Unknown option: $i"
+			show_help
+			exit 1
+		;;
+	esac
+done
 
-# Gets the next version
-let "NEXT_VERSION=$VERSION+1"
-echo Next version is $NEXT_VERSION
+# Checks
+check "$MVN" "Maven executable (--mvn) is required."
 
-# Release number is made of the version and the build number
-RELEASE=1.${VERSION}
-echo Building release ${RELEASE}...
+# Preparation of the version
 
+if [ "$VERSION" == "" ]
+then
+	# Gets the version number from the POM
+	VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/([A-Za-z\.0-9]+)\-SNAPSHOT/\1/'`
+fi
 
-#####################################################
-# Runs the build itself and as much tests as possible
-#####################################################
+# Preparation of the next version
+if [ "$NEXT_VERSION" == "" ]
+then
+	VERSION_LAST_DIGIT=`echo $VERSION | sed -re 's/.*\.([0-9]+)$/\1/'`
+	VERSION_PREFIX=`echo $VERSION | sed -re 's/(.*)\.[0-9]+$/\1/'`
+	let "NEXT_VERSION_NUMBER=$VERSION_LAST_DIGIT+1"
+	NEXT_VERSION="$VERSION_PREFIX.$NEXT_VERSION_NUMBER"
+fi
 
-# Clean
+# All variables
+echo Version to build:          ${VERSION}
+echo Next version to promote:   ${NEXT_VERSION}
+echo Repository ID:             ${NEXUS_ID}
+echo Repository URL:            ${NEXUS_URL}
+echo Pushing to Git:            ${GIT_PUSH}
+
+# Cleaning the environment
+echo Cleaning the environment...
 git checkout -- .
 
-# Changing the versions
-${MVN} versions:set -DnewVersion=${RELEASE} -DgenerateBackupPoms=false
+# Updating the versions
+echo Updating versions...
+${MVN} versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
 
 # Special case for Jenkins
-sed -i "s/1.${VERSION}-SNAPSHOT/${RELEASE}/" ontrack-jenkins/pom.xml
+sed -i "s/${VERSION}-SNAPSHOT/${VERSION}/" ontrack-jenkins/pom.xml
 
 # Maven build
+echo Launching build...
 ${MVN} clean install -P it -P it-jetty -DaltDeploymentRepository=${NEXUS_ID}::default::${NEXUS_URL}
 if [ $? -ne 0 ]
 then
@@ -107,38 +120,35 @@ then
 fi
 
 # Deployment of artifacts
-${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${RELEASE}
-${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${RELEASE}
+echo Deployment of artifacts...
+${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
+${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
 
-##################################################################
-# After the build is complete, create the tag in Git and pushes it
-##################################################################
-
-echo Tagging...
+# After the build is complete, create the tag
 
 # Tag
-TAG=ontrack-${RELEASE}
-# Tagging the build
+TAG=ontrack-${VERSION}
+echo Tagging to $TAG
 git tag ${TAG}
 
-#########################################
 # Increment the version number and commit
-#########################################
 
 # Update the version locally
-${MVN} versions:set -DnewVersion=1.${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
+${MVN} versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
 
 # Again, special case for Jenkins
-sed -i "s/${RELEASE}<\/version>/1.${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-jenkins/pom.xml
+sed -i "s/${VERSION}<\/version>/${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-jenkins/pom.xml
 
 # Commits the update
-git commit -am "Starting development of 1.${NEXT_VERSION}"
+git commit -am "Starting development of ${NEXT_VERSION}"
 
+# Pushing
+if [ "$GIT_PUSH" == "yes" ]
+then
+	git push
+	git push --tags
+fi
 
-########################
 # Clean-up & termination
-########################
-
 git checkout -- .
-
-echo Done.
+echo Build done.
