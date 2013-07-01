@@ -1,9 +1,9 @@
-<#macro commit_summary info title=false>
+<#macro commit_summary info title="">
 
     <div class="row-fluid">
         <div class="span12">
-            <#if title>
-                <h1><small><a href="${info.commit.link?html}">${info.commit.commit.id?html}</a></small></h1>
+            <#if title != "">
+                <h1><small>${title?html} <a href="${info.commit.link?html}"><code>${info.commit.commit.id?html}</code></a></small></h1>
             </#if>
             <b>${info.commit.commit.author.name?html}</b>
             <span class="description">(${info.commit.commit.author.email?html})</span>

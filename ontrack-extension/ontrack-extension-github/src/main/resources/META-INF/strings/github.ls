@@ -48,6 +48,10 @@ github.search.issue
 
 [issue]
 
+github.issue.commit
+    en -> Last commit
+    fr -> Dernier commit
+
 github.issue.commits
     en -> List of associated commits
     fr -> Liste des commits associés

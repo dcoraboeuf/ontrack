@@ -4,6 +4,7 @@
 <@layout_std
     page="github-issue"
     title="#" + info.issue.id?c
+    style=true
     noscript=true
     extension=true
     breadcrumbs={
@@ -21,11 +22,14 @@
                 </a>
                 ${info.issue.title?html}
             </small></h1>
-            <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
+            <i class="icon-user"></i> <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
+            <div class="github-issue-body">
+                ${info.issue.bodyHtml!''}
+            </div>
         </div>
     </div>
 
-    <@commit_summary info = info.commitInfo title = true />
+    <@commit_summary info = info.commitInfo title = loc('github.issue.commit') + ":" />
 
     <@commit_builds info = info.commitInfo />
 

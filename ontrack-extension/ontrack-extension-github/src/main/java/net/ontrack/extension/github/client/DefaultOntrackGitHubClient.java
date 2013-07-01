@@ -15,6 +15,7 @@ import org.joda.time.DateTimeZone;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.*;
 
 @Component
@@ -25,7 +26,14 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
     @Override
     public GitHubIssue getIssue(String project, GitHubClientConfigurator configurator, int id) {
         // GitHub client (non authentified)
-        GitHubClient client = new GitHubClient();
+        GitHubClient client = new GitHubClient() {
+            @Override
+            protected HttpURLConnection configureRequest(HttpURLConnection request) {
+                HttpURLConnection connection = super.configureRequest(request);
+                connection.setRequestProperty(HEADER_ACCEPT, "application/vnd.github.v3.full+json");
+                return connection;
+            }
+        };
         configurator.configure(client);
         // Issue service using this client
         IssueService service = new IssueService(client);
@@ -49,6 +57,8 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
                 id,
                 issue.getHtmlUrl(),
                 issue.getTitle(),
+                issue.getBodyText(),
+                issue.getBodyHtml(),
                 toUser(issue.getAssignee()),
                 toLabels(issue.getLabels()),
                 toState(issue.getState()),
