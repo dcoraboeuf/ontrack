@@ -107,10 +107,12 @@ fi
 
 # Preparation of the version
 
+CURRENT_VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/([A-Za-z\.0-9]+)\-SNAPSHOT/\1/'`
+
 if [ "$VERSION" == "" ]
 then
 	# Gets the version number from the POM
-	VERSION=`${MVN} help:evaluate -Dexpression=project.version $MVN_OPTIONS | grep -E "^[A-Za-z\.0-9]+-SNAPSHOT$" | sed -re 's/([A-Za-z\.0-9]+)\-SNAPSHOT/\1/'`
+	VERSION=${CURRENT_VERSION}
 fi
 
 # Preparation of the next version
@@ -123,6 +125,7 @@ then
 fi
 
 # All variables
+echo Current version:           ${CURRENT_VERSION}
 echo Version to build:          ${VERSION}
 echo Next version to promote:   ${NEXT_VERSION}
 echo Repository ID:             ${NEXUS_ID}
@@ -144,7 +147,7 @@ echo Updating versions...
 ${MVN} versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
 
 # Special case for Jenkins
-sed -i "s/${VERSION}-SNAPSHOT/${VERSION}/" ontrack-jenkins/pom.xml
+sed -i "s/${CURRENT_VERSION}-SNAPSHOT/${VERSION}/" ontrack-jenkins/pom.xml
 
 # Maven build
 echo Launching build...
