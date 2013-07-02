@@ -22,6 +22,7 @@ function show_help {
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
 	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
 	echo "    --ontrack-user                ontrack user"
+	echo "    --ontrack-password            ontrack password"
 }
 
 # Check function

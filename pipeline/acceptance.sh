@@ -16,6 +16,7 @@ function show_help {
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
 	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
 	echo "    --ontrack-user                ontrack user"
+	echo "    --ontrack-password            ontrack password"
 	echo "    --ontrack-validation          ontrack associated validation stamp"
 }
 
@@ -124,6 +125,6 @@ fi
 # ontrack validation run
 if [ "$ONTRACK" == "yes" ]
 then
-	echo Notifying the build creation at ${ONTRACK_URL}
+	echo Notifying the validation stamp ${ONTRACK_VALIDATION} at ${ONTRACK_URL}
 	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build/ontrack-${VERSION}/validation_stamp/${ONTRACK_VALIDATION}" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"status\":\"${STATUS}\",\"description\":\"Run by acceptance.sh\"}"
 fi

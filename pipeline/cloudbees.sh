@@ -2,21 +2,28 @@
 
 # Help function
 function show_help {
-        echo "Ontrack Cloudbees deployment script."
-		echo ""
-		echo "Available options are:"
-		echo "General:"
-		echo "  -h, --help                 Displays this help"
-		echo "Application:"
-		echo "  -a, --appid=appid          ID of the application to create on Cloudbees (ontrack-test by default)"
-		echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
-		echo "  -p, --profile=profile      Profile to use (default is 'prod' but could be 'it' for integration tests) -- used only at creation time"
-		echo "Database:"
-		echo "  -d, --database=dbname      ID of the database to create on Cloudbees (ontrack-test by default)."
-		echo "  -cd, --create-database     Creates the database from scratch (not done by default)"
-		echo "Version to deploy, either one of the following options:"
-		echo "  -v, --version=version      Sets the ontrack version to deploy"
-		echo "  -w, --war=warfile          Path to the WAR file to deploy"
+	echo "Ontrack Cloudbees deployment script."
+	echo ""
+	echo "Available options are:"
+	echo "General:"
+	echo "  -h, --help                 Displays this help"
+	echo "Application:"
+	echo "  -a, --appid=appid          ID of the application to create on Cloudbees (ontrack-test by default)"
+	echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
+	echo "  -p, --profile=profile      Profile to use (default is 'prod' but could be 'it' for integration tests) -- used only at creation time"
+	echo "Database:"
+	echo "  -d, --database=dbname      ID of the database to create on Cloudbees (ontrack-test by default)."
+	echo "  -cd, --create-database     Creates the database from scratch (not done by default)"
+	echo "Version to deploy, either one of the following options:"
+	echo "  -v, --version=version      Sets the ontrack version to deploy"
+	echo "  -w, --war=warfile          Path to the WAR file to deploy"
+	echo "Ontrack on Ontrack:"
+	echo "    --ontrack                Notification of the deployment to an ontrack instance"
+	echo "    --ontrack-branch         ontrack branch associated ('1.x' by default)"
+	echo "    --ontrack-url            ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
+	echo "    --ontrack-user           ontrack user"
+	echo "    --ontrack-password       ontrack password"
+	echo "    --ontrack-promotion      ontrack promotion level to assign"
 }
 
 # General environment
@@ -32,6 +39,12 @@ ONTRACK_WAR=
 ONTRACK_DB_CREATE=no
 ONTRACK_APP_CREATE=no
 ONTRACK_APP_PROFILE=prod
+ONTRACK=no
+ONTRACK_BRANCH=1.x
+ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
+ONTRACK_USER=
+ONTRACK_PASSWORD=
+ONTRACK_PROMOTION=
 
 for i in "$@"
 do
@@ -64,6 +77,24 @@ do
 		-p=*|--profile=*)
 			ONTRACK_APP_PROFILE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
+		--ontrack)
+			ONTRACK=yes
+			;;
+		--ontrack-branch=*)
+			ONTRACK_BRANCH=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-url=*)
+			ONTRACK_URL=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-user=*)
+			ONTRACK_USER=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-password=*)
+			ONTRACK_PASSWORD=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--ontrack-promotion=*)
+			ONTRACK_PROMOTION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		*)
 			echo "Unknown option: $i"
 			show_help
@@ -79,6 +110,13 @@ then
 	show_help
 	exit 1
 fi
+if [ "$ONTRACK" == "yes" ]
+then
+	check "$ONTRACK_VERSION" "ontrack version (--version) is required."
+	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
+	check "$ONTRACK_PASSWORD" "ontrack user (--ontrack-password) is required."
+	check "$ONTRACK_PROMOTION" "ontrack promotion level (--ontrack-promotion) is required."
+fi
 
 # Echo
 echo Ontrack CB application name      : $ONTRACK_APP
@@ -91,6 +129,13 @@ then
 	echo Ontrack WAR to deploy            : $ONTRACK_WAR
 else
 	echo Ontrack version to deploy        : $ONTRACK_VERSION
+fi
+echo Notifying ontrack                : ${ONTRACK}
+if [ "$ONTRACK" == "yes" ]
+then
+	echo ontrack branch                   : ${ONTRACK_BRANCH}
+	echo ontrack URL                      : ${ONTRACK_URL}
+	echo ontrack promotion level          : ${ONTRACK_PROMOTION}
 fi
 
 # General set-up
@@ -175,3 +220,10 @@ fi
 echo Starting deployment of $ONTRACK_WAR on $ONTRACK_APP...
 bees app:deploy --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WAR
 echo Deployment finished.
+
+# ontrack promoted run
+if [ "$ONTRACK" == "yes" ]
+then
+	echo Notifying the promoted run ${ONTRACK_PROMOTION} at ${ONTRACK_URL}
+	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build/ontrack-${VERSION}/promotion_level/${ONTRACK_PROMOTION}" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"description\":\"Run by cloudbees.sh\"}"
+fi
