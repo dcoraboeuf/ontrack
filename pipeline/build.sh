@@ -9,6 +9,7 @@ function show_help {
 	echo "    -h, --help                    Displays this help"
 	echo "Settings:"                        
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
+	echo "    -ms,--mvn-settings=<path>     Path to some additional Maven settings file"
 	echo "    -ri,--repo-id=<id>            ID of the Maven repository to use for the deployment of artifacts ('dcoraboeuf-release' by default)"
 	echo "    -ru,--repo-url=<url>          URL of the Maven repository to use for the deployment of artifacts"
 	echo "                                  ('dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/' by default)"
@@ -39,6 +40,7 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=tru
 
 # Defaults
 MVN=mvn
+MVN_SETTINGS=
 NEXUS_ID=dcoraboeuf-release
 NEXUS_URL=dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/
 VERSION=
@@ -61,6 +63,9 @@ do
 			;;
 		-m=*|--mvn=*)
 			MVN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		-ms=*,--mvn-settings=*)
+			MVN_SETTINGS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		-ri=*|--repo-id=*)
 			NEXUS_ID=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -131,6 +136,7 @@ then
 fi
 
 # All variables
+echo Maven settings:            ${MVN_SETTINGS}
 echo Current version:           ${CURRENT_VERSION}
 echo Version to build:          ${VERSION}
 echo Next version to promote:   ${NEXT_VERSION}
@@ -174,9 +180,16 @@ fi
 # Deployment of artifacts
 if [ "$DEPLOY" == "yes" ]
 then
+	# Settings file
+	SETTINGS=
+	if [ "$MVN_SETTINGS" != "" ]
+	then
+		SETTINGS="--settings ${MVN_SETTINGS}"
+	fi
+	# Actual deployment
 	echo Deployment of artifacts...
-	${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
-	${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
+	${MVN} ${SETTINGS} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
+	${MVN} ${SETTINGS} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
 fi
 	
 # After the build is complete, create the tag
