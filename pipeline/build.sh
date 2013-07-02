@@ -13,6 +13,7 @@ function show_help {
 	echo "    -ru,--repo-url=<url>          URL of the Maven repository to use for the deployment of artifacts"
 	echo "                                  ('dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/' by default)"
 	echo "    --push                        Pushes to the remote Git"
+	echo "    --deploy                      Uploads the artifacts to the repository"
 	echo "Release numbering:"                         
 	echo "    -v,--version=<release>        Version to prepare (by default extracted from the POM, by deleting the -SNAPSHOT prefix)"
 	echo "    -nv,--next-version=<release>  Next version to prepare (by default, the prepared version where the last digit is incremented by 1)"
@@ -42,6 +43,7 @@ NEXUS_URL=dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/
 VERSION=
 NEXT_VERSION=
 GIT_PUSH=no
+DEPLOY=no
 ONTRACK=no
 ONTRACK_BRANCH=1.x
 ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
@@ -73,6 +75,9 @@ do
 			;;
 		--push)
 			GIT_PUSH=yes
+			;;
+		--deploy)
+			DEPLOY=yes
 			;;
 		--ontrack)
 			ONTRACK=yes
@@ -128,14 +133,18 @@ fi
 echo Current version:           ${CURRENT_VERSION}
 echo Version to build:          ${VERSION}
 echo Next version to promote:   ${NEXT_VERSION}
-echo Repository ID:             ${NEXUS_ID}
-echo Repository URL:            ${NEXUS_URL}
 echo Pushing to Git:            ${GIT_PUSH}
 echo Notifying ontrack:         ${ONTRACK}
 if [ "$ONTRACK" == "yes" ]
 then
 	echo ontrack branch:            ${ONTRACK_BRANCH}
 	echo ontrack URL:               ${ONTRACK_URL}
+fi
+echo Deploying the artifacts:   ${DEPLOY}
+if [ "$DEPLOY" == "yes" ]
+then
+	echo Repository ID:             ${NEXUS_ID}
+	echo Repository URL:            ${NEXUS_URL}
 fi
 	
 # Cleaning the environment
@@ -159,10 +168,13 @@ then
 fi
 
 # Deployment of artifacts
-echo Deployment of artifacts...
-${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
-${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
-
+if [ "$DEPLOY" == "yes" ]
+then
+	echo Deployment of artifacts...
+	${MVN} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
+	${MVN} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
+fi
+	
 # After the build is complete, create the tag
 
 # Tag
