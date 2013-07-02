@@ -34,7 +34,7 @@ function check {
 }
 
 # General environment
-export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=128m -Djava.net.preferIPv4Stack=true"
+export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=true"
 
 # Defaults
 MVN=mvn
