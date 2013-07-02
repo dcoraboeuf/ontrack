@@ -5,14 +5,11 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.BranchSummary;
-import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
-import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.model.GitCommitInfo;
 import net.ontrack.extension.git.service.GitService;
 import net.ontrack.extension.github.GitHubExtension;
-import net.ontrack.extension.github.GitHubProjectProperty;
 import net.ontrack.extension.github.client.GitHubClientConfigurator;
 import net.ontrack.extension.github.client.GitHubClientConfiguratorFactory;
 import net.ontrack.extension.github.client.OntrackGitHubClient;
@@ -32,27 +29,18 @@ import java.util.regex.Pattern;
 public class DefaultGitHubService implements GitHubService {
 
     private final ManagementService managementService;
-    private final PropertiesService propertiesService;
     private final OntrackGitHubClient gitHubClient;
     private final GitHubClientConfiguratorFactory gitHubClientConfiguratorFactory;
     private final GitService gitService;
+    private final GitHubConfigurationService gitHubConfigurationService;
 
     @Autowired
-    public DefaultGitHubService(ManagementService managementService, PropertiesService propertiesService, OntrackGitHubClient gitHubClient, GitHubClientConfiguratorFactory gitHubClientConfiguratorFactory, GitService gitService) {
+    public DefaultGitHubService(ManagementService managementService, OntrackGitHubClient gitHubClient, GitHubClientConfiguratorFactory gitHubClientConfiguratorFactory, GitService gitService, GitHubConfigurationService gitHubConfigurationService) {
         this.managementService = managementService;
-        this.propertiesService = propertiesService;
         this.gitHubClient = gitHubClient;
         this.gitHubClientConfiguratorFactory = gitHubClientConfiguratorFactory;
         this.gitService = gitService;
-    }
-
-    @Override
-    public String getGitHubProject(int projectId) {
-        return propertiesService.getPropertyValue(
-                Entity.PROJECT,
-                projectId,
-                GitHubExtension.EXTENSION,
-                GitHubProjectProperty.NAME);
+        this.gitHubConfigurationService = gitHubConfigurationService;
     }
 
     @Override
@@ -62,7 +50,7 @@ public class DefaultGitHubService implements GitHubService {
         // GitHubClient configuration
         final GitHubClientConfigurator configurator = gitHubClientConfiguratorFactory.getGitHubConfigurator(branch.getProject().getId());
         // Gets the GitHub project
-        final String project = getGitHubProject(branch.getProject().getId());
+        final String project = gitHubConfigurationService.getGitHubProject(branch.getProject().getId());
         if (StringUtils.isNotBlank(project)) {
             Set<Integer> issues = new TreeSet<>();
             for (GitCommit commit : commits) {
@@ -94,7 +82,7 @@ public class DefaultGitHubService implements GitHubService {
         Collection<ProjectSummary> result = new ArrayList<>();
         for (ProjectSummary projectSummary : managementService.getProjectList()) {
             int projectId = projectSummary.getId();
-            String gitHubProject = getGitHubProject(projectId);
+            String gitHubProject = gitHubConfigurationService.getGitHubProject(projectId);
             if (StringUtils.isNotBlank(gitHubProject)) {
                 GitHubClientConfigurator configurator = gitHubClientConfiguratorFactory.getGitHubConfigurator(projectId);
                 GitHubIssue gitHubIssue = gitHubClient.getIssue(gitHubProject, configurator, issue);
@@ -110,7 +98,7 @@ public class DefaultGitHubService implements GitHubService {
     public GitHubIssueInfo getIssueInfo(Locale locale, int projectId, int issueKey) {
         GitHubClientConfigurator configurator = gitHubClientConfiguratorFactory.getGitHubConfigurator(projectId);
         // Gets the project information
-        String project = getGitHubProject(projectId);
+        String project = gitHubConfigurationService.getGitHubProject(projectId);
         // Gets the details about the issue
         GitHubIssue issue = gitHubClient.getIssue(project, configurator, issueKey);
         if (issue == null) {

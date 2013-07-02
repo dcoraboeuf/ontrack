@@ -11,8 +11,6 @@ import java.util.Locale;
 
 public interface GitHubService {
 
-    String getGitHubProject(int projectId);
-
     List<GitHubIssue> getGitHubIssues(int branchId, List<GitCommit> commits);
 
     Collection<ProjectSummary> getProjectsWithIssue(int issue);

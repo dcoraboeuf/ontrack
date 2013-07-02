@@ -7,7 +7,7 @@ import net.ontrack.core.support.MessageAnnotator;
 import net.ontrack.core.support.RegexMessageAnnotator;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.git.service.GitMessageAnnotator;
-import net.ontrack.extension.github.service.GitHubService;
+import net.ontrack.extension.github.service.GitHubConfigurationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,18 +16,18 @@ import org.springframework.stereotype.Component;
 public class GitHubMessageAnnotator implements GitMessageAnnotator {
 
     private final ExtensionManager extensionManager;
-    private final GitHubService gitHubService;
+    private final GitHubConfigurationService gitHubConfigurationService;
 
     @Autowired
-    public GitHubMessageAnnotator(ExtensionManager extensionManager, GitHubService gitHubService) {
+    public GitHubMessageAnnotator(ExtensionManager extensionManager, GitHubConfigurationService gitHubConfigurationService) {
         this.extensionManager = extensionManager;
-        this.gitHubService = gitHubService;
+        this.gitHubConfigurationService = gitHubConfigurationService;
     }
 
     @Override
     public MessageAnnotator annotator(BranchSummary branch) {
         if (extensionManager.isExtensionEnabled(GitHubExtension.EXTENSION)) {
-            final String project = gitHubService.getGitHubProject(branch.getProject().getId());
+            final String project = gitHubConfigurationService.getGitHubProject(branch.getProject().getId());
             if (StringUtils.isNotBlank(project)) {
                 return new RegexMessageAnnotator(
                         GitHubExtension.GITHUB_ISSUE_PATTERN,

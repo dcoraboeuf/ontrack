@@ -9,6 +9,7 @@ import net.ontrack.extension.git.model.ChangeLogCommits;
 import net.ontrack.extension.git.model.GitUICommit;
 import net.ontrack.extension.git.ui.GitUI;
 import net.ontrack.extension.github.model.GitHubIssue;
+import net.ontrack.extension.github.service.GitHubConfigurationService;
 import net.ontrack.extension.github.service.GitHubService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
@@ -29,20 +30,22 @@ public class GitHubChangeLogIssuesContributor extends AbstractUIController imple
 
     private final ExtensionManager extensionManager;
     private final GitHubService gitHubService;
+    private final GitHubConfigurationService gitHubConfigurationService;
     private final GitUI gitUI;
 
     @Autowired
-    public GitHubChangeLogIssuesContributor(ErrorHandler errorHandler, Strings strings, ExtensionManager extensionManager, GitHubService gitHubService, GitUI gitUI) {
+    public GitHubChangeLogIssuesContributor(ErrorHandler errorHandler, Strings strings, ExtensionManager extensionManager, GitHubService gitHubService, GitHubConfigurationService gitHubConfigurationService, GitUI gitUI) {
         super(errorHandler, strings);
         this.extensionManager = extensionManager;
         this.gitHubService = gitHubService;
+        this.gitHubConfigurationService = gitHubConfigurationService;
         this.gitUI = gitUI;
     }
 
     @Override
     public boolean isApplicable(BranchSummary branch) {
         return extensionManager.isExtensionEnabled(GitHubExtension.EXTENSION) &&
-                StringUtils.isNotBlank(gitHubService.getGitHubProject(branch.getProject().getId()));
+                StringUtils.isNotBlank(gitHubConfigurationService.getGitHubProject(branch.getProject().getId()));
     }
 
     @Override
