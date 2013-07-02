@@ -155,3 +155,6 @@ net.ontrack.extension.git.ui.ChangeLogUUIDException
 
 net.ontrack.extension.git.model.GitTagNameNoMatchException
     en -> [GIT-008] Tag "{0}" does not match the "{1}" pattern.
+
+net.ontrack.extension.git.client.impl.GitCannotCloneException
+    en -> [GIT-009] Cloning of repository seems to have failed at {0}.

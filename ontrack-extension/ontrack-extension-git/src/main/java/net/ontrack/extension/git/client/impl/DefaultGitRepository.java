@@ -107,6 +107,11 @@ public class DefaultGitRepository implements GitRepository {
                 .setURI(remote)
                 .setBranchesToClone(Collections.singleton(branch))
                 .call();
+        // Check
+        if (!new File(wd, ".git").exists()) {
+            throw new GitCannotCloneException(wd);
+        }
+        // Done
         logger.debug("[git] Clone done for {}", remote);
     }
 
