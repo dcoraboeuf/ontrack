@@ -22,11 +22,15 @@ import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
 
 public class DefaultGitClient implements GitClient {
+
+    private final Logger logger = LoggerFactory.getLogger(GitClient.class);
 
     private final GitRepository repository;
     private final GitConfiguration configuration;
@@ -243,6 +247,7 @@ public class DefaultGitClient implements GitClient {
                 String tagName = getTagNameFromRef(tagRef);
                 if (tagNamePredicate.apply(tagName)) {
                     // Gets the corresponding commit
+                    logger.debug("[gitclient] Looking commit for tag {}", tagName);
                     RevCommit revCommit = repository.getCommitForTag(tagRef.getObjectId());
                     commitTagIndex.put(revCommit.getId().getName(), tagName);
                     // Equality?
