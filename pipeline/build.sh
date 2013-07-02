@@ -151,6 +151,9 @@ fi
 echo Cleaning the environment...
 git checkout -- .
 
+# Adding the version number in a property file
+echo version=${VERSION} > version.properties
+
 # Updating the versions
 echo Updating versions...
 ${MVN} versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
