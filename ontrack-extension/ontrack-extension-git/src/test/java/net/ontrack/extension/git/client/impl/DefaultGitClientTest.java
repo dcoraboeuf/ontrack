@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import net.ontrack.extension.git.GitCommitNotFoundException;
 import net.ontrack.extension.git.client.GitCommit;
+import net.ontrack.extension.git.client.GitLog;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.service.EnvironmentService;
 import net.ontrack.service.support.DirEnvironmentService;
@@ -13,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -36,6 +38,15 @@ public class DefaultGitClientTest {
         );
         // Sync
         client.sync();
+    }
+
+    @Test
+    public void log() {
+        GitLog log = client.log("ontrack-1.17", "ontrack-1.18");
+        assertNotNull(log);
+        List<GitCommit> commits = log.getCommits();
+        assertNotNull(commits);
+        assertEquals(8, commits.size());
     }
 
     @Test(expected = GitCommitNotFoundException.class)
