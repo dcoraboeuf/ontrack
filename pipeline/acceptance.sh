@@ -10,7 +10,8 @@ function show_help {
 	echo "Settings:"                        
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
 	echo "Test settings:"
-	echo "    -u,--url                      URL of the application to test"
+	echo "    -u,--url=<url>                URL of the application to test"
+	echo "    -v,--version=<version>        Used to check the version of the application being tested"
 	echo "Ontrack on Ontrack:"
 	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
@@ -41,6 +42,7 @@ ONTRACK_USER=
 ONTRACK_PASSWORD=
 ONTRACK_VALIDATION=
 TEST_URL=
+TEST_VERSION=
 
 # Command central
 for i in "$@"
@@ -74,6 +76,9 @@ do
 		-u=*|--url=*)
 			TEST_URL=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
+		-v=*|--version=*)
+			TEST_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		*)
 			echo "Unknown option: $i"
 			show_help
@@ -101,6 +106,7 @@ then
 	echo ontrack validation stamp:  ${ONTRACK_VALIDATION}
 fi
 echo URL to test:               ${TEST_URL}
+echo Version to test:           ${TEST_VERSION}
 
 # Gets the version to test
 VERSION=`curl --silent $TEST_URL/ui/manage/version`
@@ -110,6 +116,11 @@ then
 	exit 1
 fi
 echo Testing against version $VERSION
+if [ "$TEST_VERSION" != "" -a "$TEST_VERSION" != "$VERSION" ]
+then
+	echo Expected version ${TEST_VERSION} but was ${VERSION}
+	exit 1
+fi
 
 # Runs the acceptance tests
 ${MVN} clean verify -pl ontrack-acceptance -am -P it -DitUrl=${TEST_URL}
