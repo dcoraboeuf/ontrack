@@ -8,7 +8,7 @@
     <parent>
         <artifactId>ontrack-extension</artifactId>
         <groupId>net.ontrack</groupId>
-        <version>1.24.3-SNAPSHOT</version>
+        <version>1.24.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>ontrack-extension-jenkins</artifactId>
