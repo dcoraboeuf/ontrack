@@ -64,7 +64,7 @@ do
 		-m=*|--mvn=*)
 			MVN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
-		-ms=*,--mvn-settings=*)
+		-ms=*|--mvn-settings=*)
 			MVN_SETTINGS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		-ri=*|--repo-id=*)
