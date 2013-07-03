@@ -41,6 +41,31 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
         });
     }
 
+    // Create a build
+    function createBuild() {
+        dialog.show({
+            title: 'build.create'.loc(),
+            templateId: 'build-create',
+            submitFn: function (config) {
+                ajax.post({
+                    url: 'ui/control/project/{0}/branch/{1}/build'.format(project, branch),
+                    data: {
+                        name: $('#build-name').val(),
+                        description: $('#build-description').val(),
+                        properties: {
+                            list: []
+                        }
+                    },
+                    successFn: function (summary) {
+                        config.closeFn();
+                        'gui/project/{0}/branch/{1}/build/{2}'.format(project, branch, summary.name).goto();
+                    },
+                    errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                });
+            }
+        });
+    }
+
     // Create a promotion level
     function createPromotionLevel() {
         promotionLevelComponent.createPromotionLevel(project, branch, function (summary) {
@@ -104,6 +129,7 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
         });
     }
 
+    $('#command-branch-build-create').click(createBuild);
     $('#command-branch-delete').click(deleteBranch);
     $('#command-branch-update').click(updateBranch);
     $('#command-branch-build-cleanup').click(cleanupBranch);

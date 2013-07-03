@@ -630,6 +630,10 @@ promotion_level.promotions
 
 [builds]
 
+build.create
+    en -> Create build
+    fr -> Créér un build
+
 build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations

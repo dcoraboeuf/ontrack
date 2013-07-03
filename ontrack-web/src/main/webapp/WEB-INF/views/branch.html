@@ -25,6 +25,7 @@
                         </a>
                     </#list>
                     <#if secAdmin()>
+                        <span id="command-branch-build-create"><i class="icon-play-circle"></i> <@lh key="build.create" /></span>
                         <span id="command-branch-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
                         <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone"><i class="icon-forward"></i> <@lh key="branch.clone" /></a>
                         <span id="command-branch-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
