@@ -22,4 +22,14 @@
             </tr>
         {{/if}}
     </tbody>
+    {{#promotionLevel.autoPromote}}
+        <tfoot>
+            <tr>
+                <td colspan="2">
+                    <span class="label label-success">{{loc 'promotion_level.autoPromote' }}</span>
+                    <span class="description">{{loc 'promotion_level.autoPromote.help'}}</span>
+                </td>
+            </tr>
+        </tfoot>
+    {{/promotionLevel.autoPromote}}
 </table>

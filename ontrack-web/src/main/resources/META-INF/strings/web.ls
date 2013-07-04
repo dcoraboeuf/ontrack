@@ -589,6 +589,15 @@ promotion_level.description
 promotion_level.autoPromote
     en -> Auto promotion
     fr -> Auto promotion
+promotion_level.autoPromote.help
+    en -> ...
+        This promotion level is automatically granted when all the associated
+        validation stamps have been passed.
+        ...
+    fr -> ...
+        Ce niveau de promotion est assigné automatiquement quand toutes les
+        validations ont été exécutées avec succès.
+        ...
 promotion_level.image
 	en,fr -> Image
 promotion_level.image.edit
