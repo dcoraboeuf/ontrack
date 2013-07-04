@@ -75,6 +75,38 @@ define(['jquery', 'dialog', 'ajax', 'time', 'common'], function ($, dialog, ajax
         });
     }
 
+    // Updating the build
+    function buildUpdate() {
+        ajax.get({
+            url: 'ui/manage/project/{0}/branch/{1}/build/{2}'.format(project, branch, build),
+            successFn: function (summary) {
+                dialog.show({
+                    title: 'build.update'.loc(),
+                    templateId: 'build-update',
+                    initFn: function (config) {
+                        config.form.find('#build-name').val(summary.name);
+                        config.form.find('#build-description').val(summary.description);
+                    },
+                    submitFn: function (config) {
+                        ajax.put({
+                            url: 'ui/manage/project/{0}/branch/{1}/build/{2}'.format(project, branch, build),
+                            data: {
+                                name: config.form.find('#build-name').val(),
+                                description: config.form.find('#build-description').val()
+                            },
+                            successFn: function (updatedBuild) {
+                                config.closeFn();
+                                'gui/project/{0}/branch/{1}/build/{2}'.format(updatedBuild.branch.project.name, updatedBuild.branch.name, updatedBuild.name).goto();
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(config.errorFn)
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    $('#build-update').click(buildUpdate);
     $('#build-promote').click(buildPromote);
     $('#build-delete').click(buildDelete);
 

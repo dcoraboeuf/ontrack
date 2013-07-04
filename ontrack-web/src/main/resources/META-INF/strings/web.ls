@@ -634,6 +634,10 @@ build.create
     en -> Create build
     fr -> Créér un build
 
+build.update
+    en -> Update build
+    fr -> Modifier build
+
 build.validation_stamps
 	en -> Validation stamps
 	fr -> Validations
