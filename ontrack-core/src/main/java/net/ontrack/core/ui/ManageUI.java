@@ -105,6 +105,8 @@ public interface ManageUI {
 
     PromotionLevelManagementData getPromotionLevelManagementData (String project, String branch);
 
+    PromotionLevelAndStamps getPromotionLevelValidationStamps(String project, String branch, String promotionLevel);
+
     Flag setPromotionLevelAutoPromote(String project, String branch, String promotionLevel);
 
     Flag unsetPromotionLevelAutoPromote(String project, String branch, String promotionLevel);

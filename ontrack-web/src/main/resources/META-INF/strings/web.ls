@@ -604,6 +604,10 @@ promotion_level.image.success
 	en -> Successful upload of the image.
 	fr -> L'image a été chargée correctement.
 
+promotion_level.validation_stamps
+    en -> Validation stamps
+    fr -> Validations
+
 promotion_level.management.dropzone
     en -> Drop validation stamps here
     fr -> Ajouter les validations içi

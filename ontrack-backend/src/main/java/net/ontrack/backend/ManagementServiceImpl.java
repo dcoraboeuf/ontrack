@@ -114,6 +114,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             );
         }
     };
+    private final Function<PromotionLevelSummary, PromotionLevelAndStamps> promotionLevelAndStampsFunction = new Function<PromotionLevelSummary, PromotionLevelAndStamps>() {
+        @Override
+        public PromotionLevelAndStamps apply(PromotionLevelSummary promotionLevelSummary) {
+            // Gets the list of stamps for this promotion level
+            List<ValidationStampSummary> stamps = getValidationStampForPromotionLevel(promotionLevelSummary.getId());
+            // OK
+            return new PromotionLevelAndStamps(promotionLevelSummary).withStamps(stamps);
+        }
+    };
 
     @Autowired
     public ManagementServiceImpl(
@@ -869,17 +878,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         // List of promotion levels for this branch
         List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
         // List of promotion levels with stamps
-        List<PromotionLevelAndStamps> promotionLevelAndStampsList = Lists.transform(promotionLevelList, new Function<PromotionLevelSummary, PromotionLevelAndStamps>() {
-            @Override
-            public PromotionLevelAndStamps apply(PromotionLevelSummary promotionLevelSummary) {
-                // Gets the list of stamps for this promotion level
-                List<ValidationStampSummary> stamps = getValidationStampForPromotionLevel(promotionLevelSummary.getId());
-                // OK
-                return new PromotionLevelAndStamps(promotionLevelSummary).withStamps(stamps);
-            }
-        });
+        List<PromotionLevelAndStamps> promotionLevelAndStampsList = Lists.transform(promotionLevelList, promotionLevelAndStampsFunction);
         // OK
         return new PromotionLevelManagementData(branch, freeValidationStampList, promotionLevelAndStampsList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PromotionLevelAndStamps getPromotionLevelValidationStamps(int promotionLevelId) {
+        return promotionLevelAndStampsFunction.apply(getPromotionLevel(promotionLevelId));
     }
 
     @Override

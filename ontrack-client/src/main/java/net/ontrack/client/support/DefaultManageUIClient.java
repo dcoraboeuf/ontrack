@@ -296,6 +296,14 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public PromotionLevelAndStamps getPromotionLevelValidationStamps(String project, String branch, String promotionLevel) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/project/%s/branch/%s/promotion_level/%s", project, branch, promotionLevel),
+                PromotionLevelAndStamps.class);
+    }
+
+    @Override
     public Flag setPromotionLevelAutoPromote(String project, String branch, String promotionLevel) {
         return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/promotion_level/%s/autopromote/set", project, branch, promotionLevel), Flag.class, null);
     }

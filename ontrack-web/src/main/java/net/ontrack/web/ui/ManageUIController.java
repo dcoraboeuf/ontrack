@@ -517,6 +517,16 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/promotion_level/{promotionLevel:[A-Za-z0-9_\\.\\-]+}/validation_stamps", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    PromotionLevelAndStamps getPromotionLevelValidationStamps(@PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+        return managementService.getPromotionLevelValidationStamps(
+                entityConverter.getPromotionLevelId(project, branch, promotionLevel)
+        );
+    }
+
+    @Override
     public BranchBuilds getBuilds(Locale locale, String project, String branch, BuildFilter filter) {
         int branchId = entityConverter.getBranchId(project, branch);
         return managementService.queryBuilds(locale, branchId, filter);

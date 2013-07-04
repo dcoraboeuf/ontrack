@@ -95,6 +95,8 @@ public interface ManagementService {
 
     PromotionLevelManagementData getPromotionLevelManagementData(int branchId);
 
+    PromotionLevelAndStamps getPromotionLevelValidationStamps(int promotionLevelId);
+
     Flag setPromotionLevelAutoPromote(int promotionLevelId);
 
     Flag unsetPromotionLevelAutoPromote(int promotionLevelId);
