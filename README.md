@@ -17,4 +17,4 @@ http://repository-dcoraboeuf.forge.cloudbees.com/release/org/jenkins-ci/plugins/
 
 The `ontrack` application is self-hosted on:
 
-http://ontrack-test.dcoraboeuf.cloudbees.net/gui/project/ontrack/branch/1.x
+http://ontrack.dcoraboeuf.cloudbees.net/gui/project/ontrack/branch/1.x
