@@ -32,4 +32,6 @@ public interface BuildDao {
     Integer findBuildAfterUsingNumericForm(int branchId, String buildName);
 
     Ack delete(int buildId);
+
+    Ack updateBuild(int buildId, String name, String description);
 }

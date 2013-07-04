@@ -51,7 +51,9 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 
     @Override
     @RequestMapping(value = "/ui/manage/version", method = RequestMethod.GET)
-    public @ResponseBody String getVersion() {
+    public
+    @ResponseBody
+    String getVersion() {
         return version;
     }
 
@@ -587,6 +589,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     BuildSummary getBuild(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
         int buildId = entityConverter.getBuildId(project, branch, name);
         return managementService.getBuild(buildId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/{build:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    BuildSummary updateBuild(@PathVariable String project, @PathVariable String branch, @PathVariable String build, @RequestBody BranchUpdateForm form) {
+        return managementService.updateBuild(
+                entityConverter.getBuildId(project, branch, build),
+                form
+        );
     }
 
     @Override

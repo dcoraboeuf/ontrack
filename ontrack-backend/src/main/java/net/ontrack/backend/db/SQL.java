@@ -50,6 +50,8 @@ public interface SQL {
 
     String BUILD_DELETE = "DELETE FROM BUILD WHERE ID = :id";
 
+    String BUILD_UPDATE = "UPDATE BUILD SET NAME = :name, DESCRIPTION = :description WHERE ID = :id";
+
     // Validation stamps
 
     long VALIDATION_STAMP_IMAGE_MAXSIZE = 4096;

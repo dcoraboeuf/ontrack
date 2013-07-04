@@ -14,6 +14,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
@@ -114,6 +115,22 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                         params("id", buildId)
                 )
         );
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.BUILD, key = "#buildId")
+    public Ack updateBuild(int buildId, String name, String description) {
+        try {
+            return Ack.one(
+                    getNamedParameterJdbcTemplate().update(
+                            SQL.BUILD_UPDATE,
+                            params("id", buildId).addValue("name", name).addValue("description", description)
+                    )
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new BuildAlreadyExistsException(name);
+        }
     }
 
     @Override

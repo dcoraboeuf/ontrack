@@ -113,6 +113,8 @@ public interface ManageUI {
 
     BuildSummary getBuild(String project, String branch, String name);
 
+    BuildSummary updateBuild(String project, String branch, String build, BranchUpdateForm form);
+
     BuildSummary getLastBuild(String project, String branch);
 
     BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);

@@ -52,6 +52,10 @@ event.BUILD_CREATED
 	en -> Build $BUILD$ has been created for the $BRANCH$ in the $PROJECT$ project.
 	fr -> Le build $BUILD$ a été créé pour la branche $BRANCH$ du projet $PROJECT$.
 
+event.BUILD_UPDATED
+	en -> Build $BUILD$ has been update for the $BRANCH$ in the $PROJECT$ project.
+	fr -> Le build $BUILD$ a été modifié pour la branche $BRANCH$ du projet $PROJECT$.
+
 event.BUILD_DELETED
 	en -> Build $build$ has been deleted from the $BRANCH$ in the $PROJECT$ project.
 	fr -> Le build $build$ a été supprimé pour la branche $BRANCH$ du projet $PROJECT$.

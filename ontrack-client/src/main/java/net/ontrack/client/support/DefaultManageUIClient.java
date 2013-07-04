@@ -330,6 +330,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public BuildSummary updateBuild(String project, String branch, String build, BranchUpdateForm form) {
+        return put(
+                getDefaultLocale(),
+                format("/ui/manage/project/%s/branch/%s/build/%s", project, branch, build),
+                BuildSummary.class,
+                form
+        );
+    }
+
+    @Override
     public BuildSummary getLastBuild(String project, String branch) {
         return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/last", project, branch), BuildSummary.class);
     }

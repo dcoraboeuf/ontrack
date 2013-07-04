@@ -1089,6 +1089,31 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public BuildSummary updateBuild(int buildId, BranchUpdateForm form) {
+        // Validation
+        validate(form, NameDescription.class);
+        // Loads existing build
+        BuildSummary existingBuild = getBuild(buildId);
+        // Query
+        buildDao.updateBuild(
+                buildId,
+                form.getName(),
+                form.getDescription()
+        );
+        // Audit
+        event(Event.of(EventType.BUILD_UPDATED)
+                .withProject(existingBuild.getBranch().getProject().getId())
+                .withBranch(existingBuild.getBranch().getId())
+                .withBuild(existingBuild.getId())
+                .withBuild(existingBuild.getId())
+        );
+        // OK
+        return getBuild(buildId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Integer findBuildAfterUsingNumericForm(int branchId, String buildName) {
         return buildDao.findBuildAfterUsingNumericForm(branchId, buildName);

@@ -119,6 +119,8 @@ public interface ManagementService {
 
     Ack deleteBuild(int buildId);
 
+    BuildSummary updateBuild(int buildId, BranchUpdateForm form);
+
     /**
      * Finds a build on this branch whose name is the closest. It assumes that build names
      * are in a numeric format.
