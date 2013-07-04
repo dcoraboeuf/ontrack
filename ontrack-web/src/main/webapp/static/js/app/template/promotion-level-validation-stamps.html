@@ -1,0 +1,25 @@
+<table class="table table-condensed">
+    <tbody>
+        {{#if validationStamps.length}}
+            {{#validationStamps}}
+                <tr>
+                    <td width="30">
+                        <img width="24" height="24" src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                    </td>
+                    <td>
+                        <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
+                        {{#owner}}
+                            <span class="description">({{fullName}})</span>
+                        {{/owner}}
+                    </td>
+                </tr>
+            {{/validationStamps}}
+        {{else}}
+            <tr>
+                <td colspan="2" class="description">
+                    {{loc 'promotion_level.validation_stamps.none'}}
+                </td>
+            </tr>
+        {{/if}}
+    </tbody>
+</table>

@@ -608,6 +608,10 @@ promotion_level.validation_stamps
     en -> Validation stamps
     fr -> Validations
 
+promotion_level.validation_stamps.none
+    en -> No validation stamp associated to this promotion level.
+    fr -> Aucune validation n'est associée à ce niveau de promotion.
+
 promotion_level.management.dropzone
     en -> Drop validation stamps here
     fr -> Ajouter les validations içi
