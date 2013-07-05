@@ -36,6 +36,11 @@ public class DataMapping {
         dataSteps.create_validation_stamp(project, branch, validationStamp, description);
     }
 
+    @Given("the validation stamp $project/$branch/$validationStamp is associated with $promotionLevel")
+    public void validation_stamp_associated_to_promotion_level(String project, String branch, String validationStamp, String promotionLevel) {
+        dataSteps.associate_validation_stamp_with_promotion_level(project, branch, validationStamp, promotionLevel);
+    }
+
     @Given("a user is defined with name \"$name\", full name \"$fullName\" and password \"$password\"")
     public void user_defined(String name, String fullName, String password) {
         dataSteps.define_user(name, fullName, password);

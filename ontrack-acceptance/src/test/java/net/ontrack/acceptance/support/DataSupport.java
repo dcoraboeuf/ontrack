@@ -193,6 +193,17 @@ public class DataSupport {
     }
 
     @Step
+    public void associate_validation_stamp_with_promotion_level(final String project, final String branch, final String validationStamp, final String promotionLevel) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ui.linkValidationStampToPromotionLevel(project, branch, validationStamp, promotionLevel);
+                return null;
+            }
+        });
+    }
+
+    @Step
     public void define_user(final String name, final String fullName, final String password) {
         doCreateUser(
                 name,
