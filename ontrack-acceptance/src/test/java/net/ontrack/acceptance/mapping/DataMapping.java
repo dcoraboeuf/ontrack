@@ -28,6 +28,14 @@ public class DataMapping {
         dataSteps.create_promotion_level(project, branch, promotionLevel, description);
     }
 
+    @Given("a validation stamp $project/$branch/$validationStamp exists with description \"$description\"")
+    public void validation_stamp_exist(String project, String branch, String validationStamp, String description) {
+        dataSteps.ensure_project_exists(project);
+        dataSteps.ensure_branch_exists(project, branch);
+        dataSteps.delete_validation_stamp(project, branch, validationStamp);
+        dataSteps.create_validation_stamp(project, branch, validationStamp, description);
+    }
+
     @Given("a user is defined with name \"$name\", full name \"$fullName\" and password \"$password\"")
     public void user_defined(String name, String fullName, String password) {
         dataSteps.define_user(name, fullName, password);

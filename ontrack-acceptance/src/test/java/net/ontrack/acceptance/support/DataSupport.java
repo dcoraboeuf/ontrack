@@ -161,6 +161,38 @@ public class DataSupport {
     }
 
     @Step
+    public void create_validation_stamp(final String project, final String branch, final String validationStamp, final String description) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ui.createValidationStamp(
+                        project,
+                        branch,
+                        new ValidationStampCreationForm(
+                                validationStamp,
+                                description
+                        )
+                );
+                return null;
+            }
+        });
+    }
+
+    @Step
+    public void delete_validation_stamp(final String project, final String branch, final String validationStamp) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ValidationStampSummary summary = ui.getValidationStamp(project, branch, validationStamp);
+                if (summary != null) {
+                    ui.deleteValidationStamp(project, branch, validationStamp);
+                }
+                return null;
+            }
+        });
+    }
+
+    @Step
     public void define_user(final String name, final String fullName, final String password) {
         doCreateUser(
                 name,
