@@ -1,13 +1,8 @@
 package net.ontrack.acceptance.steps;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import net.ontrack.acceptance.pages.PromotionLevelPage;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
-import org.apache.commons.lang3.StringUtils;
-
-import static org.junit.Assert.assertEquals;
 
 public class PromotionLevelSteps extends AbstractSteps {
 
@@ -25,16 +20,10 @@ public class PromotionLevelSteps extends AbstractSteps {
 
     @Step
     public void promotion_level_validation_stamp_presence_check(final String validationStamp) {
-        String value = Iterables.find(
+        any(
                 promotionLevelPage.getValidationStamps(),
-                new Predicate<String>() {
-                    @Override
-                    public boolean apply(String stamp) {
-                        return StringUtils.equals(validationStamp, stamp);
-                    }
-                },
-                null
+                validationStamp,
+                "Could not find validation stamp " + validationStamp
         );
-        assertEquals("Could not find validation stamp " + validationStamp, validationStamp, value);
     }
 }
