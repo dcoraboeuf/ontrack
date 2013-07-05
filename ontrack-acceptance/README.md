@@ -63,3 +63,26 @@ must do it.
 
 A typical solution is to use the [Jenkins Xvnc plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvnc+Plugin) when
 running with Jenkins.
+
+## Filtering the tests to be executed
+
+### Running a story only
+
+Run the acceptance tests (`net.ontrack.acceptance.JBehaveTestCase`) with the system property `story.name` set
+to the name of the story (for example: `promotion_level_management.story`).
+
+### Filtering using meta-information
+
+The JBehave meta-filter property can be used to filter acceptance tests using @meta annotations in stories.
+
+For example, to run only the tests that are compatible with production, run with the following settings:
+
+```
+"-Dmetafilter=-prod false"
+```
+
+To run only the smoke tests:
+
+```
+"-Dmetafilter=+smoke true"
+```
