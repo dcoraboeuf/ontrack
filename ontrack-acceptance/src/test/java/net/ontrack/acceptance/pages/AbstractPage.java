@@ -1,5 +1,6 @@
 package net.ontrack.acceptance.pages;
 
+import net.thucydides.core.annotations.WhenPageOpens;
 import net.thucydides.core.pages.PageObject;
 import net.thucydides.core.pages.PageUrls;
 import org.apache.commons.lang3.StringUtils;
@@ -47,5 +48,13 @@ public abstract class AbstractPage extends PageObject {
     }
 
     public abstract void waitForLoad();
+
+    @WhenPageOpens
+    public void checkForError() {
+        WebElement error = findOptional(By.id("error-page-message"));
+        if (error != null) {
+            throw new ErrorPageException(error.getText());
+        }
+    }
 
 }
