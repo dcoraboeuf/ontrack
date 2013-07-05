@@ -5,12 +5,11 @@ import net.ontrack.acceptance.pages.HomePage;
 import net.ontrack.acceptance.pages.LoginPage;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
-import net.thucydides.core.steps.ScenarioSteps;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.Assert.*;
 
-public class GeneralSteps extends ScenarioSteps {
+public class GeneralSteps extends AbstractSteps {
 
     private final HeaderPage headerPage;
     private final HomePage homePage;

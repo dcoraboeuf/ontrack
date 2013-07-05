@@ -1,8 +1,10 @@
 package net.ontrack.acceptance.pages;
 
+import com.google.common.base.Function;
 import net.thucydides.core.annotations.WhenPageOpens;
 import net.thucydides.core.pages.PageObject;
 import net.thucydides.core.pages.PageUrls;
+import net.thucydides.core.pages.WebElementFacade;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -10,6 +12,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public abstract class AbstractPage extends PageObject {
+
+    protected static final Function<WebElementFacade,String> elGetTextFn = new Function<WebElementFacade, String>() {
+        @Override
+        public String apply(WebElementFacade el) {
+            return el.getText();
+        }
+    };
 
     public AbstractPage(WebDriver driver) {
         super(driver);
