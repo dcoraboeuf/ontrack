@@ -7,6 +7,7 @@ import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.EditableProperty;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -17,10 +18,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class ITProperty extends AbstractIT {
 
-    @Test
-    public void editableProperty_french() {
-        // Prerequisites
-        final ProjectSummary project = data.doCreateProject();
+    @Before
+    public void before() {
         data.asAdmin(new AdminClientCall<Void>() {
             @Override
             public Void onCall(AdminUIClient ui) {
@@ -31,6 +30,12 @@ public class ITProperty extends AbstractIT {
                 return null;
             }
         });
+    }
+
+    @Test
+    public void editableProperty_french() {
+        // Prerequisites
+        final ProjectSummary project = data.doCreateProject();
         // Call
         List<EditableProperty> editableProperties = data.asAdmin(new PropertyClientCall<List<EditableProperty>>() {
             @Override
