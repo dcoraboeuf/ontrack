@@ -8,6 +8,7 @@ import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.*;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.support.NotFoundException;
 import net.thucydides.core.annotations.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +65,23 @@ public class DataSupport {
     }
 
     @Step
+    public void ensure_project_exists(final String project) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                try {
+                    ui.getProject(project);
+                    // Already exists
+                } catch (NotFoundException ex) {
+                    // Creates it
+                    create_project(project, "Description for " + project);
+                }
+                return null;
+            }
+        });
+    }
+
+    @Step
     public void delete_project(final String project) {
         asAdmin(new ManageClientCall<Void>() {
             @Override
@@ -71,6 +89,71 @@ public class DataSupport {
                 ProjectSummary summary = ui.getProject(project);
                 if (summary != null) {
                     ui.deleteProject(project);
+                }
+                return null;
+            }
+        });
+    }
+
+    @Step
+    public void create_branch(final String project, final String branch, final String description) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ui.createBranch(
+                        project,
+                        new BranchCreationForm(
+                                branch,
+                                description
+                        ));
+                return null;
+            }
+        });
+    }
+
+    @Step
+    public void ensure_branch_exists(final String project, final String branch) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                try {
+                    ui.getBranch(project, branch);
+                    // Already exists
+                } catch (NotFoundException ex) {
+                    // Creates it
+                    create_branch(project, branch, "Description for " + branch);
+                }
+                return null;
+            }
+        });
+    }
+
+    @Step
+    public void create_promotion_level(final String project, final String branch, final String promotionLevel, final String description) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ui.createPromotionLevel(
+                        project,
+                        branch,
+                        new PromotionLevelCreationForm(
+                                promotionLevel,
+                                description
+                        )
+                );
+                return null;
+            }
+        });
+    }
+
+    @Step
+    public void delete_promotion_level(final String project, final String branch, final String promotionLevel) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                PromotionLevelSummary summary = ui.getPromotionLevel(project, branch, promotionLevel);
+                if (summary != null) {
+                    ui.deletePromotionLevel(project, branch, promotionLevel);
                 }
                 return null;
             }

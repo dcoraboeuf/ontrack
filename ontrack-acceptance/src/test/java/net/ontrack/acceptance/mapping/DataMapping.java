@@ -20,6 +20,14 @@ public class DataMapping {
         dataSteps.delete_project(project);
     }
 
+    @Given("a promotion level $project/$branch/$promotionLevel exists with description \"$description\"")
+    public void promotion_level_exist(String project, String branch, String promotionLevel, String description) {
+        dataSteps.ensure_project_exists(project);
+        dataSteps.ensure_branch_exists(project, branch);
+        dataSteps.delete_promotion_level(project, branch, promotionLevel);
+        dataSteps.create_promotion_level(project, branch, promotionLevel, description);
+    }
+
     @Given("a user is defined with name \"$name\", full name \"$fullName\" and password \"$password\"")
     public void user_defined(String name, String fullName, String password) {
         dataSteps.define_user(name, fullName, password);
