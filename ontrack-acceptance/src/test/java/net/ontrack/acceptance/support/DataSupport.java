@@ -8,7 +8,6 @@ import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.*;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.support.NotFoundException;
 import net.thucydides.core.annotations.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,11 +68,7 @@ public class DataSupport {
         asAdmin(new ManageClientCall<Void>() {
             @Override
             public Void onCall(ManageUIClient ui) {
-                try {
-                    ui.getProject(project);
-                    // Already exists
-                } catch (NotFoundException ex) {
-                    // Creates it
+                if (ui.getProject(project) == null) {
                     create_project(project, "Description for " + project);
                 }
                 return null;
@@ -116,11 +111,7 @@ public class DataSupport {
         asAdmin(new ManageClientCall<Void>() {
             @Override
             public Void onCall(ManageUIClient ui) {
-                try {
-                    ui.getBranch(project, branch);
-                    // Already exists
-                } catch (NotFoundException ex) {
-                    // Creates it
+                if (ui.getBranch(project, branch) == null) {
                     create_branch(project, branch, "Description for " + branch);
                 }
                 return null;
