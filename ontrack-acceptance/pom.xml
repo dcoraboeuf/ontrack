@@ -16,7 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <thucydides.version>0.9.125</thucydides.version>
+        <thucydides.version>0.9.131-NS</thucydides.version>
         <seleniumVersion>2.32.0</seleniumVersion>
         <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
