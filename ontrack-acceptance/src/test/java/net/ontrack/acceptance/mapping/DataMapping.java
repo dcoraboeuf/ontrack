@@ -28,6 +28,11 @@ public class DataMapping {
         dataSteps.create_promotion_level(project, branch, promotionLevel, description);
     }
 
+    @Given("the promotion level $project/$branch/$promotionLevel is auto promoted")
+    public void promotion_level_auto_promoted(String project, String branch, String promotionLevel) {
+        dataSteps.promotion_level_auto_promote(project, branch, promotionLevel);
+    }
+
     @Given("a validation stamp $project/$branch/$validationStamp exists with description \"$description\"")
     public void validation_stamp_exist(String project, String branch, String validationStamp, String description) {
         dataSteps.ensure_project_exists(project);

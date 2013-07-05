@@ -161,6 +161,17 @@ public class DataSupport {
     }
 
     @Step
+    public void promotion_level_auto_promote(final String project, final String branch, final String promotionLevel) {
+        asAdmin(new ManageClientCall<Void>() {
+            @Override
+            public Void onCall(ManageUIClient ui) {
+                ui.setPromotionLevelAutoPromote(project, branch, promotionLevel);
+                return null;
+            }
+        });
+    }
+
+    @Step
     public void create_validation_stamp(final String project, final String branch, final String validationStamp, final String description) {
         asAdmin(new ManageClientCall<Void>() {
             @Override
