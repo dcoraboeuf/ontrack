@@ -4,6 +4,8 @@ import net.ontrack.acceptance.pages.PromotionLevelPage;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.pages.Pages;
 
+import static org.junit.Assert.assertTrue;
+
 public class PromotionLevelSteps extends AbstractSteps {
 
     private final PromotionLevelPage promotionLevelPage;
@@ -24,6 +26,14 @@ public class PromotionLevelSteps extends AbstractSteps {
                 promotionLevelPage.getValidationStamps(),
                 validationStamp,
                 "Could not find validation stamp " + validationStamp
+        );
+    }
+
+    @Step
+    public void promotion_level_is_auto_promoted() {
+        assertTrue(
+                "The promotion level is not indicated as promoted",
+                promotionLevelPage.isAutoPromoted()
         );
     }
 }

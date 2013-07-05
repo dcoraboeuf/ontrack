@@ -25,4 +25,8 @@ public class PromotionLevelPage extends AbstractPage {
                 elGetTextFn
         );
     }
+
+    public boolean isAutoPromoted() {
+        return isElementVisible(By.id("promotion-level-auto-promotion"));
+    }
 }

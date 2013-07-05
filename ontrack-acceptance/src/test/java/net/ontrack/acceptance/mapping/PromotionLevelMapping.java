@@ -20,4 +20,9 @@ public class PromotionLevelMapping {
         promotionLevelSteps.promotion_level_validation_stamp_presence_check(validationStamp);
     }
 
+    @Then("on the promotion level page, I see that the promotion level is autopromoted")
+    public void promotion_level_is_auto_promoted() {
+        promotionLevelSteps.promotion_level_is_auto_promoted();
+    }
+
 }
