@@ -5,7 +5,8 @@ import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ITControl extends AbstractIT {
 
@@ -41,22 +42,27 @@ public class ITControl extends AbstractIT {
         // Prerequisites
         final BuildSummary build = data.doCreateBuild();
         // Call
-        BuildSummary secondBuild = data.asAdmin(new ControlClientCall<BuildSummary>() {
-            @Override
-            public BuildSummary onCall(ControlUIClient client) {
-                return client.createBuild(
-                        build.getBranch().getProject().getName(),
-                        build.getBranch().getName(),
-                        new BuildCreationForm(
-                                build.getName(),
-                                "Test build",
-                                PropertiesCreationForm.create()
-                        )
-                );
-            }
-        });
-        // Checks
-        assertNull(secondBuild);
+        data.assertClientMessage(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        data.asAdmin(new ControlClientCall<BuildSummary>() {
+                            @Override
+                            public BuildSummary onCall(ControlUIClient client) {
+                                return client.createBuild(
+                                        build.getBranch().getProject().getName(),
+                                        build.getBranch().getName(),
+                                        new BuildCreationForm(
+                                                build.getName(),
+                                                "Test build",
+                                                PropertiesCreationForm.create()
+                                        )
+                                );
+                            }
+                        });
+                    }
+                },
+                "Build with name \"%s\" already exists.", build.getName());
     }
 
     @Test
