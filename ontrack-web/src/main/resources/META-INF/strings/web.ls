@@ -415,6 +415,10 @@ account.updated
     en -> Account has been updated.
     fr -> L'utilisateur a été mis à jour.
 
+account.passwordReset
+    en -> Reset password
+    fr -> Réinitialiser le mot de passe
+
 [home]
 
 home
