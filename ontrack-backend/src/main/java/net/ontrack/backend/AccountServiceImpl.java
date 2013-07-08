@@ -186,4 +186,20 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             return Ack.NOK;
         }
     }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack changeEmail(int id, EmailChangeForm form) {
+        // Gets the existing account
+        Account account = getAccount(id);
+        // Checks the mode
+        if ("builtin".equals(account.getMode())) {
+            // DAO
+            return accountDao.changeEmail(id, form.getPassword(), form.getEmail());
+        } else {
+            // Cannot change password in this case
+            return Ack.NOK;
+        }
+    }
 }

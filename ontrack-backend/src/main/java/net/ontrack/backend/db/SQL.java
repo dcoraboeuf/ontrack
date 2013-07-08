@@ -218,6 +218,8 @@ public interface SQL {
 
     String ACCOUNT_CHANGE_PASSWORD = "UPDATE ACCOUNTS SET PASSWORD = :newPassword WHERE ID = :id AND MODE = 'builtin' AND PASSWORD = :oldPassword";
 
+    String ACCOUNT_CHANGE_EMAIL = "UPDATE ACCOUNTS SET EMAIL = :email WHERE ID = :id AND MODE = 'builtin' AND PASSWORD = :password";
+
     // Configuration
 
     String CONFIGURATION_GET = "SELECT VALUE FROM CONFIGURATION WHERE NAME = :name";

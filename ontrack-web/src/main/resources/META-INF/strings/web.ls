@@ -138,6 +138,24 @@ profile.changePassword.nok
     en -> Password has not been changed. The old password may have been incorrect.
     fr -> Votre mot de passe n'a pas été changé. L'ancien mot de passe était peut-être incorrect.
 
+profile.changeEmail
+    en -> Change email
+    fr -> Changer de courriel
+
+profile.changeEmail.ok
+    en -> ...
+        Email has been changed. The change will be effective after
+        you have sign out and in again.
+        ...
+    fr -> ...
+        Votre courriel a été changé. Le changement sera effectif
+        après votre reconnexion.
+        ...
+
+profile.changeEmail.nok
+    en -> Email has not been changed. The password may have been incorrect.
+    fr -> Votre courriel n'a pas été changé. Votre mot de passe était peut-être incorrect.
+
 [password]
 
 password
@@ -167,6 +185,28 @@ password.submit
 password.confirmationNok
     en -> The password confirmation is not correct.
     fr -> La confirmation du mot de passe est incorrecte.
+
+[email]
+
+email.change
+    en -> Email change
+    fr -> Changement de courriel
+
+email.change.user
+    en -> User
+    fr -> Utilisateur
+
+email.change.password
+    en -> Checking the password
+    fr -> Vérification du mot de passe
+
+email.change.email
+    en -> New email
+    fr -> Nouveau courriel
+
+email.change.submit
+    en -> Change
+    fr -> Changer
 
 [settings]
 

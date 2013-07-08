@@ -155,6 +155,20 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
         );
     }
 
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.ACCOUNT, key = "#id")
+    public Ack changeEmail(int id, String password, String email) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.ACCOUNT_CHANGE_EMAIL,
+                        params("id", id)
+                                .addValue("password", encodePassword(password))
+                                .addValue("email", email)
+                )
+        );
+    }
+
     private String encodePassword(String password) {
         return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
     }

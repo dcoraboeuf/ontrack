@@ -25,4 +25,6 @@ public interface AccountDao {
     void updateAccount(int id, String name, String fullName, String email, String roleName);
 
     Ack changePassword(int id, String oldPassword, String newPassword);
+
+    Ack changeEmail(int id, String password, String email);
 }

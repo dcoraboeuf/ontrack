@@ -1,0 +1,28 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="email" title=loc('email.change') breadcrumbs={loc("home"):"", loc("profile"):"gui/admin/profile"}>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="email.change" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/admin/profile"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <form id="email-form" action="gui/admin/email" method="POST" class="form-horizontal">
+            <@form_text name="user" label=loc('email.change.user') value=secDisplayName() extra='readOnly="readOnly"' />
+            <@form_password name="password" label=loc('email.change.password') />
+            <@form_email name="email" label=loc('email.change.email') />
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-warning"><@lh key="email.change.submit" /></button>
+                    <a href="gui/admin/profile" class="btn btn-link"><@lh key="general.cancel" /></a>
+                </div>
+            </div>
+            <div id="email-error" class="alert alert-error hidden"></div>
+        </form>
+    </div>
+</@layout_std>

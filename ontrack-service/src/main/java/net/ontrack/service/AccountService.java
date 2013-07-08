@@ -23,4 +23,6 @@ public interface AccountService {
     void updateAccount(int id, AccountUpdateForm form);
 
     Ack changePassword(int id, PasswordChangeForm form);
+
+    Ack changeEmail(int accountId, EmailChangeForm form);
 }

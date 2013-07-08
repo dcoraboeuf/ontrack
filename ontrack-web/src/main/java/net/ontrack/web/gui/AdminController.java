@@ -160,6 +160,40 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * Request to change his email
+     */
+    @RequestMapping(value = "/email", method = RequestMethod.GET)
+    public String email() {
+        securityUtils.checkIsLogged();
+        return "email";
+    }
+
+    /**
+     * Actual change of his email
+     */
+    @RequestMapping(value = "/email", method = RequestMethod.POST)
+    public String email(final EmailChangeForm form, RedirectAttributes redirectAttributes) {
+        final int accountId = securityUtils.getCurrentAccountId();
+        Ack ack = securityUtils.asAdmin(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.changeEmail(accountId, form);
+            }
+        });
+        if (ack.isSuccess()) {
+            // Success message
+            WebUtils.userMessage(redirectAttributes, UserMessage.success("profile.changeEmail.ok"));
+            // Back to the profile
+            return "redirect:/gui/admin/profile";
+        } else {
+            // Error message
+            WebUtils.userMessage(redirectAttributes, UserMessage.error("profile.changeEmail.nok"));
+            // Back to the change page
+            return "redirect:/gui/admin/email";
+        }
+    }
+
+    /**
      * Settings page
      */
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
