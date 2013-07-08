@@ -26,6 +26,15 @@ function show_help {
 	echo "    --ontrack-promotion      ontrack promotion level to assign"
 }
 
+# Check function
+function check {
+	if [ "$1" == "" ]
+	then
+		echo $2
+		exit 1
+	fi
+}
+
 # General environment
 ONTRACK_WD=target/deploy
 ONTRACK_OWNER=dcoraboeuf
