@@ -419,6 +419,10 @@ account.passwordReset
     en -> Reset password
     fr -> Réinitialiser le mot de passe
 
+account.passwordReset.title
+    en -> Reset password for {0}
+    fr -> Réinitialiser du mot de passe de {0}
+
 [home]
 
 home

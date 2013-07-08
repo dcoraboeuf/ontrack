@@ -362,6 +362,17 @@ public class AdminController extends AbstractGUIController {
         redirectAttributes.addFlashAttribute("message", UserMessage.success("account.deleted"));
         return "redirect:/gui/admin/accounts";
     }
+    @RequestMapping(value = "/accounts/{id:\\d+}/passwordReset", method = RequestMethod.GET)
+    public String passwordReset(Model model, @PathVariable int id) {
+        securityUtils.checkIsAdmin();
+        model.addAttribute("account", accountService.getAccount(id));
+        return "accountPasswordReset";
+    }
+
+    /**
+     * Request to reset the password of an account
+     */
+
 
     /**
      * Unsubscription query
