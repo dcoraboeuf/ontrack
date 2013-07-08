@@ -24,7 +24,9 @@
                     <td>
                         <a href="gui/admin/accounts/${account.id?c}/update" class="btn btn-warning"><@lh key="general.modify" /></a>
                         <#if accountId != account.id>
-                            <a href="gui/admin/accounts/${account.id?c}/passwordReset" class="btn btn-warning"><@lh key="account.passwordReset" /></a>
+                            <#if account.mode == "builtin">
+                                <a href="gui/admin/accounts/${account.id?c}/passwordReset" class="btn btn-warning"><@lh key="account.passwordReset" /></a>
+                            </#if>
                             <a href="gui/admin/accounts/${account.id?c}/delete" class="btn btn-danger"><@lh key="general.delete" /></a>
                         </#if>
                     </td>

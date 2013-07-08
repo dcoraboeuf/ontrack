@@ -25,4 +25,6 @@ public interface AccountService {
     Ack changePassword(int id, PasswordChangeForm form);
 
     Ack changeEmail(int accountId, EmailChangeForm form);
+
+    Ack resetPassword(int id, String password);
 }

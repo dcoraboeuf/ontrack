@@ -95,6 +95,18 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     }
 
     /**
+     * Password reset
+     */
+    @RequestMapping(value = "/accounts/{id:\\d+}/passwordReset", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack accountPasswordReset(@PathVariable int id, @RequestBody AccountPasswordResetForm form) {
+        return accountService.resetPassword(
+                id,
+                form.getPassword());
+    }
+
+    /**
      * Deletion of a subscription
      */
     @RequestMapping(value = "/subscriptions/{entity}/{id:\\d+}", method = RequestMethod.DELETE)

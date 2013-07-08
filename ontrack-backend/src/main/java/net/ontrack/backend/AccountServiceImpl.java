@@ -202,4 +202,20 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             return Ack.NOK;
         }
     }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack resetPassword(int id, String password) {
+        // Gets the existing account
+        Account account = getAccount(id);
+        // Checks the mode
+        if ("builtin".equals(account.getMode())) {
+            // DAO
+            return accountDao.resetPassword(id, password);
+        } else {
+            // Cannot change password in this case
+            return Ack.NOK;
+        }
+    }
 }

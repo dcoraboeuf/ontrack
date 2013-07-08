@@ -169,6 +169,18 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
         );
     }
 
+    @Override
+    @Transactional
+    public Ack resetPassword(int id, String password) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.ACCOUNT_RESET_PASSWORD,
+                        params("id", id)
+                                .addValue("password", encodePassword(password))
+                )
+        );
+    }
+
     private String encodePassword(String password) {
         return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
     }
