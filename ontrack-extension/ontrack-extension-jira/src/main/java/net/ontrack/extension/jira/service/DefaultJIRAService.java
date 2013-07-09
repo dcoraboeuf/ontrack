@@ -7,7 +7,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
-import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.JIRAField;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
@@ -55,12 +54,14 @@ public class DefaultJIRAService implements JIRAService {
     @Override
     public Set<String> extractIssueKeysFromMessage(String message) {
         Set<String> result = new HashSet<>();
-        Matcher matcher = JIRAExtension.ISSUE_PATTERN.matcher(message);
+        Matcher matcher = JIRAConfigurationExtension.ISSUE_PATTERN.matcher(message);
         while (matcher.find()) {
             // Gets the issue
             String issueKey = matcher.group();
             // Adds to the result
-            result.add(issueKey);
+            if (configurationExtension.isIssue(issueKey)) {
+                result.add(issueKey);
+            }
         }
         // OK
         return result;
@@ -72,12 +73,14 @@ public class DefaultJIRAService implements JIRAService {
         String htmlMessage = StringEscapeUtils.escapeHtml4(message);
         // Replaces each issue by a link
         StringBuffer html = new StringBuffer();
-        Matcher matcher = JIRAExtension.ISSUE_PATTERN.matcher(htmlMessage);
+        Matcher matcher = JIRAConfigurationExtension.ISSUE_PATTERN.matcher(htmlMessage);
         while (matcher.find()) {
             String key = matcher.group();
-            String href = getIssueURL(key);
-            String link = String.format("<a href=\"%s\">%s</a>", href, key);
-            matcher.appendReplacement(html, link);
+            if (configurationExtension.isIssue(key)) {
+                String href = getIssueURL(key);
+                String link = String.format("<a href=\"%s\">%s</a>", href, key);
+                matcher.appendReplacement(html, link);
+            }
         }
         matcher.appendTail(html);
         // OK
@@ -142,8 +145,7 @@ public class DefaultJIRAService implements JIRAService {
 
     @Override
     public boolean isIssue(String token) {
-        // TODO List of excluded projects (see #97)
-        return JIRAExtension.ISSUE_PATTERN.matcher(token).matches();
+        return configurationExtension.isIssue(token);
     }
 
     @Override

@@ -8,13 +8,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Component
 public class JIRAExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "jira";
-    public static final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
     private final JIRAIssuePropertyExtension issuePropertyExtension;
     private final JIRAConfigurationExtension configurationExtension;
 

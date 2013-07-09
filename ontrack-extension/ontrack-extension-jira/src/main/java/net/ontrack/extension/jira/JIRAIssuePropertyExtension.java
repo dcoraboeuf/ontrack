@@ -20,12 +20,13 @@ import java.util.Locale;
 public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     private static final String ISSUE_SEPARATORS = ",; ";
-
     private final JIRAConfigurationExtension jiraConfigurationExtension;
+    private final JIRAService jiraService;
 
     @Autowired
-    public JIRAIssuePropertyExtension(JIRAConfigurationExtension jiraConfigurationExtension) {
+    public JIRAIssuePropertyExtension(JIRAConfigurationExtension jiraConfigurationExtension, JIRAService jiraService) {
         this.jiraConfigurationExtension = jiraConfigurationExtension;
+        this.jiraService = jiraService;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     public void validate(String value) throws InputException {
         String[] issues = parseIssues(value);
         for (String issue : issues) {
-            if (!JIRAExtension.ISSUE_PATTERN.matcher(issue).matches()) {
+            if (!jiraService.isIssue(issue)) {
                 throw new JIRAIssuePatternException(issue);
             }
         }
