@@ -16,8 +16,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-// FIXME Caching
-
 public abstract class AbstractJdbcDao extends NamedParameterJdbcDaoSupport {
 
     private final Function<Object, String> quoteFn = new Function<Object, String>() {
