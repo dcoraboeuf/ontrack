@@ -24,6 +24,9 @@ net.ontrack.backend.security.AsAdminCallException
 net.ontrack.backend.CannotCreateWorkingDirException
     en -> [E-008] Cannot create working directory.
 
+net.ontrack.backend.dao.jdbc.FilterIOException
+    en -> [E-009] Cannot save/read filter.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException
