@@ -44,7 +44,6 @@ public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
     @Override
     protected int drawLabel(int x, int y, Ref ref) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawLabel
         return 0;
     }
 
@@ -75,14 +74,10 @@ public class GitPlotRenderer extends AbstractPlotRenderer<PlotLane, GColor> {
 
     @Override
     protected void drawBoundaryDot(int x, int y, int w, int h) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawBoundaryDot
-
     }
 
     @Override
     protected void drawText(String msg, int x, int y) {
-        // FIXME Implement net.ontrack.extension.git.client.plot.GitPlotRenderer.drawText
-
     }
 
     private GPoint point(int x1, int y1) {
