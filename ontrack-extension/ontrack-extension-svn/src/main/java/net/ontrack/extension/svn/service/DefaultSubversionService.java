@@ -397,9 +397,8 @@ public class DefaultSubversionService implements SubversionService {
         return org.apache.commons.lang.StringUtils.isNotBlank(path) && Pattern.matches(".+/trunk", path);
     }
 
-    private RuntimeException translateSVNException(SVNException e) {
-        // FIXME Uses a proper exception
-        return new RuntimeException(e);
+    private SubversionException translateSVNException(SVNException e) {
+        return new SubversionException(e);
     }
 
     protected SVNWCClient getWCClient() {
