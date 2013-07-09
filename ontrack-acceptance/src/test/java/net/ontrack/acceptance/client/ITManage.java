@@ -2,9 +2,7 @@ package net.ontrack.acceptance.client;
 
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.PromotionLevelSummary;
-import net.ontrack.core.model.ValidationStampSummary;
+import net.ontrack.core.model.*;
 import org.junit.Test;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -122,6 +120,28 @@ public class ITManage extends AbstractIT {
                 file.getBytes(),
                 content
         );
+    }
+
+    @Test
+    public void createProject() {
+        // No prerequisite
+        // Call
+        ProjectSummary summary = data.asAdmin(new ManageClientCall<ProjectSummary>() {
+            @Override
+            public ProjectSummary onCall(ManageUIClient ui) {
+                return ui.createProject(
+                        new ProjectCreationForm(
+                                "ui_createProject",
+                                "ui_createProject description"
+                        )
+                );
+            }
+        });
+        // Checks
+        assertNotNull(summary);
+        assertTrue(summary.getId() > 0);
+        assertEquals("ui_createProject", summary.getName());
+        assertEquals("ui_createProject description", summary.getDescription());
     }
 
 }
