@@ -21,6 +21,10 @@ jira.configuration.password
     en -> JIRA password
     fr -> Mot de passe JIRA
 
+jira.configuration.exclusions
+    en -> Projects & issues to exclude (comma-separated)
+    fr -> Projets & tickets à ignorer (séparés par des virgules)
+
 net.ontrack.extension.jira.JIRAIssuePatternException
     en -> {0} is not a valid JIRA issue
     fr -> {0} ne représente pas un ticket JIRA

@@ -16,9 +16,11 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
     public static final String URL = "url";
     public static final String USER = "user";
     public static final String PASSWORD = "password";
+    public static final String EXCLUSIONS = "exclusions";
     private String url;
     private String user;
     private String password;
+    private String exclusions;
 
     public String getUrl() {
         return url;
@@ -30,6 +32,10 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getExclusions() {
+        return exclusions;
     }
 
     @Override
@@ -53,7 +59,8 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
         return Lists.newArrayList(
                 new TextConfigurationExtensionField(URL, "jira.configuration.url", "http://jira", getUrl()),
                 new TextConfigurationExtensionField(USER, "jira.configuration.user", "", getUser()),
-                new PasswordConfigurationExtensionField(PASSWORD, "jira.configuration.password", getPassword())
+                new PasswordConfigurationExtensionField(PASSWORD, "jira.configuration.password", getPassword()),
+                new TextConfigurationExtensionField(EXCLUSIONS, "jira.configuration.exclusions", "", getExclusions())
         );
     }
 
@@ -68,6 +75,9 @@ public class JIRAConfigurationExtension implements ConfigurationExtension {
                 break;
             case PASSWORD:
                 password = value;
+                break;
+            case EXCLUSIONS:
+                exclusions = value;
                 break;
         }
     }
