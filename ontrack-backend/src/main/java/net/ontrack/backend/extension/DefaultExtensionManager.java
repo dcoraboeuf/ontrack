@@ -12,6 +12,7 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.action.EntityActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionField;
 import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundException;
@@ -41,7 +42,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private Map<String, Extension> extensionIndex;
     private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
-    private Collection<ActionExtension> topLevelActions;
+    private Collection<TopActionExtension> topLevelActions;
     private Collection<ActionExtension> diffActions;
     private Collection<EntityDecorator> decorators;
 
@@ -144,7 +145,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     }
 
     @Override
-    public Collection<? extends ActionExtension> getTopLevelActions() {
+    public Collection<? extends TopActionExtension> getTopLevelActions() {
         return topLevelActions;
     }
 

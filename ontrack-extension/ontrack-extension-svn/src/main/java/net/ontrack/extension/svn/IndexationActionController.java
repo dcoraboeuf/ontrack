@@ -1,9 +1,8 @@
 package net.ontrack.extension.svn;
 
-import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.svn.service.IndexationService;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.web.support.AbstractGUIController;
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/gui/extension/svn/indexation")
-public class IndexationActionController extends AbstractGUIController implements ActionExtension {
+public class IndexationActionController extends AbstractGUIController implements TopActionExtension {
 
     private final IndexationService indexationService;
 
@@ -51,12 +50,6 @@ public class IndexationActionController extends AbstractGUIController implements
     @Override
     public String getTitleKey() {
         return "subversion.indexation";
-    }
-
-    @Override
-    public boolean isApplicable(Entity entity, int entityId) {
-        // FIXME Implement net.ontrack.extension.svn.IndexationActionController.isApplicable
-        return false;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

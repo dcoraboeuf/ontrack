@@ -7,7 +7,7 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.web.gui.model.GUIAction;
 import net.sf.jstring.Strings;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,13 +31,13 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
     @Override
     public Collection<GUIAction> exec(List list) throws TemplateModelException {
         // Gets the list of top level actions
-        Collection<? extends ActionExtension> actions = getActions(extensionManager, list);
+        Collection<? extends TopActionExtension> actions = getActions(extensionManager, list);
         // Filter on access rights
         actions = Collections2.filter(
                 actions,
-                new Predicate<ActionExtension>() {
+                new Predicate<TopActionExtension>() {
                     @Override
-                    public boolean apply(ActionExtension action) {
+                    public boolean apply(TopActionExtension action) {
                         String role = action.getRole();
                         return role == null || securityUtils.hasRole(role);
                     }
@@ -48,15 +48,15 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
 
     }
 
-    private Collection<GUIAction> toGUIActions(Collection<? extends ActionExtension> actions) {
+    private Collection<GUIAction> toGUIActions(Collection<? extends TopActionExtension> actions) {
         // Gets the locale from the context
         final Locale locale = LocaleContextHolder.getLocale();
         // Converts to GUI actions
         return Collections2.transform(
                 actions,
-                new Function<ActionExtension, GUIAction>() {
+                new Function<TopActionExtension, GUIAction>() {
                     @Override
-                    public GUIAction apply(ActionExtension action) {
+                    public GUIAction apply(TopActionExtension action) {
                         return new GUIAction(
                                 action.getExtension(),
                                 action.getName(),
@@ -68,5 +68,5 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
         );
     }
 
-    protected abstract Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments);
+    protected abstract Collection<? extends TopActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments);
 }

@@ -3,6 +3,7 @@ package net.ontrack.extension.api;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.api.action.EntityActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
@@ -62,7 +63,7 @@ public interface ExtensionManager {
      * Lists of actions that are available at the top level of the application. They are normally
      * display in the contextual menu for the user.
      */
-    Collection<? extends ActionExtension> getTopLevelActions();
+    Collection<? extends TopActionExtension> getTopLevelActions();
 
     /**
      * Lists of actions that can be defined for the difference between two builds

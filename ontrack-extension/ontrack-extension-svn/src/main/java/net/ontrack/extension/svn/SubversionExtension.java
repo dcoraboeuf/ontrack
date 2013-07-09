@@ -1,6 +1,6 @@
 package net.ontrack.extension.svn;
 
-import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.support.ExtensionAdapter;
@@ -49,7 +49,7 @@ public class SubversionExtension extends ExtensionAdapter {
     }
 
     @Override
-    public Collection<? extends ActionExtension> getTopLevelActions() {
+    public Collection<? extends TopActionExtension> getTopLevelActions() {
         return Collections.singletonList(indexationActionController);
     }
 }

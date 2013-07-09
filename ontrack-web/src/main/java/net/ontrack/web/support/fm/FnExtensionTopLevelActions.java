@@ -2,7 +2,7 @@ package net.ontrack.web.support.fm;
 
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.api.action.ActionExtension;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.sf.jstring.Strings;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class FnExtensionTopLevelActions extends AbstractFnExtensionActions {
     }
 
     @Override
-    protected Collection<? extends ActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments) {
+    protected Collection<? extends TopActionExtension> getActions(ExtensionManager extensionManager, List<String> arguments) {
         return extensionManager.getTopLevelActions();
     }
 }
