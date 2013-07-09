@@ -28,7 +28,19 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         }
     }
 
-    function withFilter(buildFilter) {
+    function saveFilterFn (project, branch, filterName) {
+        return function (filter) {
+            ajax.put({
+                url: 'ui/admin/project/{0}/branch/{1}/filter'.format(project, branch),
+                data: {
+                    filterName: filterName,
+                    filter: filter
+                }
+            })
+        }
+    }
+
+    function withFilter(buildFilter, postFilterFn) {
         // Associates the filter with the build section
         $('#branch-builds').data('filter', buildFilter);
         // Fills the hash
@@ -37,9 +49,13 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         location.hash = params;
         // Reloads
         dynamic.reloadSection('branch-builds');
+        // Post filter
+        if (postFilterFn) {
+            postFilterFn(buildFilter);
+        }
     }
 
-    function filterWithForm(config, form) {
+    function filterWithForm(config, form, postFilterFn) {
         // Conversion into a BuildFilter
         var filter = {
             sincePromotionLevel: form.sincePromotionLevel,
@@ -81,7 +97,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             filter.withProperty.value = form.withPropertyValue;
         }
         // Filter
-        withFilter(filter);
+        withFilter(filter, postFilterFn);
     }
 
     function isFilterActive(project, branch) {
@@ -139,9 +155,9 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
     }
 
     function showFilter() {
-        var config = dynamic.getSectionConfig('branch-builds');
+        var section = dynamic.getSectionConfig('branch-builds');
         ajax.get({
-            url: 'ui/manage/project/{0}/branch/{1}/filter'.format(config.project, config.branch),
+            url: 'ui/manage/project/{0}/branch/{1}/filter'.format(section.project, section.branch),
             successFn: function (branchFilterData) {
                 dialog.show({
                     templateId: 'branch-builds-filter',
@@ -208,6 +224,20 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                             config.closeFn();
                             // Does not submit
                             return false;
+                        });
+                        // Form: save
+                        config.form.find('#filter-save').unbind('click');
+                        config.form.find('#filter-save').click(function () {
+                            // Gets the filter name
+                            var filterName = config.form.find('#filter-name').val();
+                            if (filterName.trim() != '') {
+                                // Gets the values
+                                var form = common.values(config.form);
+                                // Submitting the query
+                                filterWithForm(config, form, saveFilterFn(section.project, section.branch, filterName));
+                                // Closed the dialog
+                                config.closeFn();
+                            }
                         });
                     }
                 });

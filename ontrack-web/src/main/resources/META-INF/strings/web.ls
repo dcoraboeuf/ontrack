@@ -830,6 +830,10 @@ query.submit
     en -> Search
     fr -> Rechercher
 
+query.save
+    en -> Filter & save
+    fr -> Filter & enregistrer
+
 query.clear
     en -> Clear
     fr -> Effacer
