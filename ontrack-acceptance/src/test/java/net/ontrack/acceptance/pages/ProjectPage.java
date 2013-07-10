@@ -11,8 +11,7 @@ public class ProjectPage extends AbstractStdPage {
 
     @Override
     public void waitForLoad() {
-        // FIXME Implement net.ontrack.acceptance.pages.ProjectPage.waitForLoad
-
+        waitForRenderedElements(By.cssSelector("span.title"));
     }
 
     public String getProjectName() {

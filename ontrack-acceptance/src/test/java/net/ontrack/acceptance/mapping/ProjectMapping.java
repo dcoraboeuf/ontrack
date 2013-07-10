@@ -20,6 +20,11 @@ public class ProjectMapping {
         projectSteps.create_project(name, description);
     }
 
+    @When("I close the project page")
+    public void project_page_close() {
+        projectSteps.project_page_close();
+    }
+
     @Then("I am on the $name project page")
     public void project_page_check(String name) {
         projectSteps.project_page_check(name);

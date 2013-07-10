@@ -31,4 +31,9 @@ public class ProjectSteps extends AbstractSteps {
         String projectName = projectPage.getProjectName();
         assertEquals(String.format("Not on the %s project page", name), name, projectName);
     }
+
+    @Step
+    public void project_page_close() {
+        projectPage.close();
+    }
 }
