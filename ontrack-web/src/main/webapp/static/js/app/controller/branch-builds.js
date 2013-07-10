@@ -253,6 +253,28 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         });
     }
 
+    function setupSavedFilters(config, branchBuilds) {
+        $('.saved-filter').each(function (index, a) {
+            var filterName = $(a).attr('data-filter-name');
+            // Looking for the corresponding filter
+            var filter = null;
+            $.each(branchBuilds.savedBuildFilters, function (i, savedBuildFilter) {
+                if (savedBuildFilter.filterName == filterName) {
+                    filter = savedBuildFilter.filter;
+                }
+            });
+            // In case of filter found, makes a link
+            if (filter != null) {
+                $(a).click(function () {
+                    withFilter(filter);
+                });
+            // Filter not found, do not display it
+            } else {
+                $(a).remove();
+            }
+        })
+    }
+
     function generateTableBranchBuilds(target, config, branchBuilds) {
 
         render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
@@ -311,6 +333,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 buildRadioButtons();
                 setupDiffActions();
                 setupFilterButton(config.logged == 'true');
+                setupSavedFilters(config, branchBuilds);
             });
 
         });

@@ -834,6 +834,10 @@ query.save
     en -> Filter & save
     fr -> Filter & enregistrer
 
+query.nofilter
+    en -> No saved filter
+    fr -> Aucun filtre enregistré
+
 query.clear
     en -> Clear
     fr -> Effacer
