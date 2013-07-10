@@ -87,6 +87,18 @@ public class DefaultProfileService implements ProfileService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<SavedBuildFilter> getFilters(int branchId) {
+        // Gets the current user
+        final int accountId = securityUtils.getCurrentAccountId();
+        if (accountId > 0) {
+            return filterDao.getFilters(accountId, branchId);
+        } else {
+            throw new IllegalStateException("No current account");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public FilteredValidationStamps getFilteredValidationStamps(int branchId) {
         // Gets the current user
         final int accountId = securityUtils.getCurrentAccountId();

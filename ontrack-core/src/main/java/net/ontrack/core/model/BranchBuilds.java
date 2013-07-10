@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -20,9 +21,10 @@ public class BranchBuilds {
     private final List<Status> statusList;
     private final List<BuildCompleteStatus> builds;
     private final boolean validationStampsFiltered;
+    private final List<SavedBuildFilter> savedBuildFilters;
 
     public BranchBuilds(List<DecoratedValidationStamp> validationStamps, List<PromotionLevelSummary> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
-        this(validationStamps, promotionLevels, statusList, builds, false);
+        this(validationStamps, promotionLevels, statusList, builds, false, Collections.<SavedBuildFilter>emptyList());
     }
 
     public BranchBuilds filterStamps(final Set<Integer> filteredStampIds) {
@@ -40,10 +42,26 @@ public class BranchBuilds {
                                 }
                             }
                     ),
-                    true // Filtered!
+                    true, // Filtered!
+                    savedBuildFilters
             );
         } else {
             return this;
+        }
+    }
+
+    public BranchBuilds withSavedBuildFilters(List<SavedBuildFilter> filters) {
+        if (filters == null || filters.isEmpty()) {
+            return this;
+        } else {
+            return new BranchBuilds(
+                    validationStamps,
+                    promotionLevels,
+                    statusList,
+                    builds,
+                    validationStampsFiltered,
+                    filters
+            );
         }
     }
 

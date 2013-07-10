@@ -4,6 +4,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.FilteredValidationStamps;
 import net.ontrack.core.model.SavedBuildFilter;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ProfileService {
@@ -17,4 +18,6 @@ public interface ProfileService {
     Set<Integer> getFilteredValidationStampIds(int branchId);
 
     Ack saveFilter(int branchId, SavedBuildFilter savedBuildFilter);
+
+    List<SavedBuildFilter> getFilters(int branchId);
 }

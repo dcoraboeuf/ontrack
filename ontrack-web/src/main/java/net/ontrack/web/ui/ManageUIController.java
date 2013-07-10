@@ -555,6 +555,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
             Set<Integer> filteredStampIds = profileService.getFilteredValidationStampIds(branchId);
             // Operating the filter
             builds = builds.filterStamps(filteredStampIds);
+            // Gets the list of saved filters
+            builds = builds.withSavedBuildFilters(profileService.getFilters(branchId));
         }
         // Setting the cookie for the filter
         CookieGenerator cookie = new CookieGenerator();
