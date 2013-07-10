@@ -1,5 +1,6 @@
 package net.ontrack.acceptance.pages;
 
+import net.ontrack.acceptance.dialog.ProjectCreationDialog;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -26,5 +27,12 @@ public class HomePage extends AbstractPage {
 
     public WebElement getCreateProjectButton() {
         return findOptional(By.id("project-create-button"));
+    }
+
+    public ProjectCreationDialog openProjectCreationDialog() {
+        $("#project-create-button").click();
+        ProjectCreationDialog dialog = new ProjectCreationDialog(getDriver());
+        dialog.waitForLoad();
+        return dialog;
     }
 }
