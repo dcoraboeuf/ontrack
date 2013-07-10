@@ -22,4 +22,6 @@ Given the project PRJ1 does not exist
 When I am on the home page
 And I am logged as "admin"
 And I create a PRJ1 project with description "Description for the PRJ1 project"
+Then I am on the PRJ1 project page
+When I close the project page
 Then I see the PRJ1 project with description "Description for the PRJ1 project"

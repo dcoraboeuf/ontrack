@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.List;
 
 @DefaultUrl("http://localhost:8080/gui/project/{1}/branch/{2}/promotion_level/{3}")
-public class PromotionLevelPage extends AbstractPage {
+public class PromotionLevelPage extends AbstractStdPage {
 
     public PromotionLevelPage(WebDriver driver) {
         super(driver);
