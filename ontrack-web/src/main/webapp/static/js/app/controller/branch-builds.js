@@ -154,11 +154,12 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         config.form.find('#limit').val('10');
     }
 
-    function showFilter() {
+    function showFilter(logged) {
         var section = dynamic.getSectionConfig('branch-builds');
         ajax.get({
             url: 'ui/manage/project/{0}/branch/{1}/filter'.format(section.project, section.branch),
             successFn: function (branchFilterData) {
+                branchFilterData.logged = logged;
                 dialog.show({
                     templateId: 'branch-builds-filter',
                     title: 'query'.loc(),
@@ -245,10 +246,10 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         });
     }
 
-    function setupFilterButton() {
+    function setupFilterButton(logged) {
         $('#filter-button').unbind('click');
         $('#filter-button').click(function () {
-            showFilter();
+            showFilter(logged);
         });
     }
 
@@ -309,7 +310,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 // TODO gridHoverSetup();
                 buildRadioButtons();
                 setupDiffActions();
-                setupFilterButton();
+                setupFilterButton(config.logged == 'true');
             });
 
         });

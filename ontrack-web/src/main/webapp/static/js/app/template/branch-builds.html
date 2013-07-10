@@ -95,15 +95,19 @@
         <tr>
             <td colspan="{{totalColspan}}">
                 <!-- Filter -->
-                <div class="btn-group">
+                {{#if logged}}
+                    <div class="btn-group">
+                        <button id="filter-button" class="btn {{#filterActive}}btn-warning{{/filterActive}}">{{loc 'query' }}</button>
+                        <button class="btn dropdown-toggle {{#filterActive}}btn-warning{{/filterActive}}" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <!-- dropdown menu links -->
+                        </ul>
+                    </div>
+                {{else}}
                     <button id="filter-button" class="btn {{#filterActive}}btn-warning{{/filterActive}}">{{loc 'query' }}</button>
-                    <button class="btn dropdown-toggle {{#filterActive}}btn-warning{{/filterActive}}" data-toggle="dropdown">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <!-- dropdown menu links -->
-                    </ul>
-                </div>
+                {{/if}}
                 <!-- Diff actions -->
                 {{#diffActions}}
                     <button
