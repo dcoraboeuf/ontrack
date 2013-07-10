@@ -105,7 +105,10 @@
                             {{#if branchBuilds.savedBuildFilters.length}}
                                 {{#branchBuilds.savedBuildFilters}}
                                     <li>
-                                        <a data-filter-name="{{name}}" class="action saved-filter">{{name}}</a>
+                                        <a>
+                                            <span data-filter-name="{{name}}" class="action saved-filter">{{name}}</span>
+                                            <i data-filter-name="{{name}}" class="action action-optional action-inline saved-filter-delete icon-trash"></i>
+                                        </a>
                                     </li>
                                 {{/branchBuilds.savedBuildFilters}}
                             {{else}}

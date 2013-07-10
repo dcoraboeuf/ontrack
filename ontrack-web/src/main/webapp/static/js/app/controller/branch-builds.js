@@ -29,7 +29,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         }
     }
 
-    function saveFilter (project, branch, filter) {
+    function saveFilter(project, branch, filter) {
         ajax.put({
             url: 'ui/admin/project/{0}/branch/{1}/filter'.format(project, branch),
             data: filter
@@ -254,6 +254,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
     }
 
     function setupSavedFilters(config, branchBuilds) {
+        // Activating existing filters
         $('.saved-filter').each(function (index, a) {
             var filterName = $(a).attr('data-filter-name');
             // Looking for the corresponding filter
@@ -268,11 +269,26 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 $(a).click(function () {
                     withFilter(filter);
                 });
-            // Filter not found, do not display it
+                // Filter not found, do not display it
             } else {
                 $(a).remove();
             }
-        })
+        });
+        // Deleting filters
+        $('.saved-filter-delete').each(function (index, a) {
+            var filterName = $(a).attr('data-filter-name');
+            $(a).click(function () {
+                ajax.del({
+                    url: 'ui/admin/project/{0}/branch/{1}/filter/{2}'.format(
+                        config.project,
+                        config.branch,
+                        filterName),
+                    successFn: function () {
+                        dynamic.reloadSection('branch-builds');
+                    }
+                })
+            });
+        });
     }
 
     function generateTableBranchBuilds(target, config, branchBuilds) {

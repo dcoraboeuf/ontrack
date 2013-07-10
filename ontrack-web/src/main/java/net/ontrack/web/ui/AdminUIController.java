@@ -157,6 +157,16 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     }
 
     /**
+     * Deleting a build filter
+     */
+    @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/filter/{name:.*}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack saveFilter(@PathVariable String project, @PathVariable String branch, @PathVariable String name) {
+        return profileService.deleteFilter(entityConverter.getBranchId(project, branch), name);
+    }
+
+    /**
      * Administration of the extensions
      */
     @RequestMapping(value = "/extensions", method = RequestMethod.GET)

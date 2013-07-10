@@ -65,6 +65,19 @@ public class FilterJdbcDao extends AbstractJdbcDao implements FilterDao {
         );
     }
 
+    @Override
+    @Transactional
+    public Ack deleteFilter(int accountId, int branchId, String name) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.ACCOUNT_FILTER_DELETE,
+                        params("account", accountId)
+                                .addValue("branch", branchId)
+                                .addValue("filterName", name)
+                )
+        );
+    }
+
     protected BuildFilter fromDB(String filter) {
         try {
             return objectMapper.readValue(filter, BuildFilter.class);

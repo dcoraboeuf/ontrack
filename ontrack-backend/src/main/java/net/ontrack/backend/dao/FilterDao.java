@@ -10,4 +10,6 @@ public interface FilterDao {
     Ack saveFilter(int accountId, int branchId, BuildFilter buildFilter);
 
     List<BuildFilter> getFilters(int accountId, int branchId);
+
+    Ack deleteFilter(int accountId, int branchId, String name);
 }

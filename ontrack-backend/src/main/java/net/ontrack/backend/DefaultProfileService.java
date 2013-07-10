@@ -98,6 +98,18 @@ public class DefaultProfileService implements ProfileService {
     }
 
     @Override
+    @Transactional
+    public Ack deleteFilter(int branchId, String name) {
+        // Gets the current user
+        final int accountId = securityUtils.getCurrentAccountId();
+        if (accountId > 0) {
+            return filterDao.deleteFilter(accountId, branchId, name);
+        } else {
+            throw new IllegalStateException("No current account");
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public FilteredValidationStamps getFilteredValidationStamps(int branchId) {
         // Gets the current user

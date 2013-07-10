@@ -20,4 +20,6 @@ public interface ProfileService {
     Ack saveFilter(int branchId, BuildFilter savedBuildFilter);
 
     List<BuildFilter> getFilters(int branchId);
+
+    Ack deleteFilter(int branchId, String name);
 }
