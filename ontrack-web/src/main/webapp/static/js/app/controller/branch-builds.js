@@ -242,7 +242,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             showFilter(config.logged == 'true');
         });
         // Filter name
-        var filterName = getCurrentFilterFn(config.project, config.branch).name;
+        var filterName = getCurrentFilterFn(config.project, config.branch)().name;
         if (filterName && filterName != '') {
             $('#filter-button').text(
                 '{0} - {1}'.format(
