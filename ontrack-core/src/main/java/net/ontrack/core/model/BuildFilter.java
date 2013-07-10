@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 public class BuildFilter {
 
+    private final String name;
     private final int limit;
     private final String sincePromotionLevel;
     private final String withPromotionLevel;
@@ -14,4 +15,15 @@ public class BuildFilter {
     private final List<BuildValidationStampFilter> withValidationStamps;
     private final PropertyValue withProperty;
 
+    public BuildFilter withName(String name) {
+        return new BuildFilter(
+                name,
+                limit,
+                sincePromotionLevel,
+                withPromotionLevel,
+                sinceValidationStamps,
+                withValidationStamps,
+                withProperty
+        );
+    }
 }

@@ -4,7 +4,6 @@ import net.ontrack.backend.dao.FilterDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BuildFilter;
-import net.ontrack.core.model.SavedBuildFilter;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,11 @@ public class FilterJdbcDao extends AbstractJdbcDao implements FilterDao {
 
     @Override
     @Transactional
-    public Ack saveFilter(int accountId, int branchId, SavedBuildFilter savedBuildFilter) {
+    public Ack saveFilter(int accountId, int branchId, BuildFilter buildFilter) {
         // Deletes any previous filter with this name
         MapSqlParameterSource params = params("account", accountId)
                 .addValue("branch", branchId)
-                .addValue("filterName", savedBuildFilter.getFilterName());
+                .addValue("filterName", buildFilter.getName());
         getNamedParameterJdbcTemplate().update(
                 SQL.ACCOUNT_FILTER_DELETE,
                 params
@@ -45,25 +44,22 @@ public class FilterJdbcDao extends AbstractJdbcDao implements FilterDao {
         return Ack.one(
                 getNamedParameterJdbcTemplate().update(
                         SQL.ACCOUNT_FILTER_INSERT,
-                        params.addValue("filter", toDB(savedBuildFilter.getFilter()))
+                        params.addValue("filter", toDB(buildFilter))
                 )
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<SavedBuildFilter> getFilters(int accountId, int branchId) {
+    public List<BuildFilter> getFilters(int accountId, int branchId) {
         return getNamedParameterJdbcTemplate().query(
                 SQL.ACCOUNT_FILTER_LIST,
                 params("account", accountId)
                         .addValue("branch", branchId),
-                new RowMapper<SavedBuildFilter>() {
+                new RowMapper<BuildFilter>() {
                     @Override
-                    public SavedBuildFilter mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new SavedBuildFilter(
-                                rs.getString("filterName"),
-                                fromDB(rs.getString("filter"))
-                        );
+                    public BuildFilter mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return fromDB(rs.getString("filter")).withName(rs.getString("filterName"));
                     }
                 }
         );

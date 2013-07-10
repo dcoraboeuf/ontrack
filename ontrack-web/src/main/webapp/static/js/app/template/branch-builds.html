@@ -105,11 +105,11 @@
                             {{#if branchBuilds.savedBuildFilters.length}}
                                 {{#branchBuilds.savedBuildFilters}}
                                     <li>
-                                        <a data-filter-name="{{filterName}}" class="action saved-filter">{{filterName}}</a>
+                                        <a data-filter-name="{{name}}" class="action saved-filter">{{name}}</a>
                                     </li>
                                 {{/branchBuilds.savedBuildFilters}}
                             {{else}}
-                                <li>{{loc 'query.nofilter'}}</li>
+                                <li class="disabled"><a>{{loc 'query.nofilter'}}</a></li>
                             {{/if}}
                         </ul>
                     </div>

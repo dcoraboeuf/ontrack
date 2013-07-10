@@ -18,6 +18,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 return filter;
             } else {
                 return {
+                    name: '',
                     limit: 10,
                     sincePromotionLevel: '',
                     withPromotionLevel: '',
@@ -28,16 +29,11 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         }
     }
 
-    function saveFilterFn (project, branch, filterName) {
-        return function (filter) {
-            ajax.put({
-                url: 'ui/admin/project/{0}/branch/{1}/filter'.format(project, branch),
-                data: {
-                    filterName: filterName,
-                    filter: filter
-                }
-            })
-        }
+    function saveFilter (project, branch, filter) {
+        ajax.put({
+            url: 'ui/admin/project/{0}/branch/{1}/filter'.format(project, branch),
+            data: filter
+        })
     }
 
     function withFilter(buildFilter, postFilterFn) {
@@ -55,9 +51,10 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         }
     }
 
-    function filterWithForm(config, form, postFilterFn) {
+    function filterWithForm(config, form) {
         // Conversion into a BuildFilter
         var filter = {
+            name: form.filterName,
             sincePromotionLevel: form.sincePromotionLevel,
             withPromotionLevel: form.withPromotionLevel,
             limit: form.limit
@@ -96,8 +93,12 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             filter.withProperty.name = form.withProperty.substring(index + 1);
             filter.withProperty.value = form.withPropertyValue;
         }
+        // Saving the filter if a name is provided
+        if (filter.name && filter.name != '') {
+            saveFilter(config.project, config.branch, filter);
+        }
         // Filter
-        withFilter(filter, postFilterFn);
+        withFilter(filter);
     }
 
     function isFilterActive(project, branch) {
@@ -152,6 +153,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         config.form.find('#withProperty').val('');
         config.form.find('#withPropertyValue').val('');
         config.form.find('#limit').val('10');
+        config.form.find('#filterName').val('');
     }
 
     function showFilter(logged) {
@@ -171,6 +173,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                         var filter = getCurrentFilterFn(config.project, config.branch)();
                         // Converts into a form (best effort)
                         var form = {
+                            filterName: filter.name,
                             limit: filter.limit,
                             withPromotionLevel: filter.withPromotionLevel,
                             sincePromotionLevel: filter.sincePromotionLevel,
@@ -206,6 +209,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                         config.form.find('#withProperty').val(form.withProperty);
                         config.form.find('#withPropertyValue').val(form.withPropertyValue);
                         config.form.find('#limit').val(form.limit);
+                        config.form.find('#filterName').val(form.filterName);
                         // Button: cancel
                         config.form.find('#filter-cancel').click(function () {
                             config.closeFn();
@@ -220,26 +224,11 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                             // Gets the values
                             var form = common.values(config.form);
                             // Submitting the query
-                            $('#branch-builds').data('filterName', '');
-                            filterWithForm(config, form);
+                            filterWithForm(section, form);
                             // OK
                             config.closeFn();
                             // Does not submit
                             return false;
-                        });
-                        // Form: save
-                        config.form.find('#filter-save').unbind('click');
-                        config.form.find('#filter-save').click(function () {
-                            // Gets the filter name
-                            var filterName = config.form.find('#filter-name').val();
-                            if (filterName.trim() != '') {
-                                // Gets the values
-                                var form = common.values(config.form);
-                                // Submitting the query
-                                filterWithForm(config, form, saveFilterFn(section.project, section.branch, filterName));
-                                // Closed the dialog
-                                config.closeFn();
-                            }
                         });
                     }
                 });
@@ -247,13 +236,13 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         });
     }
 
-    function setupFilterButton(logged) {
+    function setupFilterButton(config) {
         $('#filter-button').unbind('click');
         $('#filter-button').click(function () {
-            showFilter(logged);
+            showFilter(config.logged == 'true');
         });
         // Filter name
-        var filterName = $('#branch-builds').data('filterName');
+        var filterName = getCurrentFilterFn(config.project, config.branch).name;
         if (filterName && filterName != '') {
             $('#filter-button').text(
                 '{0} - {1}'.format(
@@ -270,14 +259,13 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             // Looking for the corresponding filter
             var filter = null;
             $.each(branchBuilds.savedBuildFilters, function (i, savedBuildFilter) {
-                if (savedBuildFilter.filterName == filterName) {
-                    filter = savedBuildFilter.filter;
+                if (savedBuildFilter.name == filterName) {
+                    filter = savedBuildFilter;
                 }
             });
             // In case of filter found, makes a link
             if (filter != null) {
                 $(a).click(function () {
-                    $('#branch-builds').data('filterName', filterName);
                     withFilter(filter);
                 });
             // Filter not found, do not display it
@@ -344,7 +332,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 // TODO gridHoverSetup();
                 buildRadioButtons();
                 setupDiffActions();
-                setupFilterButton(config.logged == 'true');
+                setupFilterButton(config);
                 setupSavedFilters(config, branchBuilds);
             });
 

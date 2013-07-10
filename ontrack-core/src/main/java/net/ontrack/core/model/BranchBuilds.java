@@ -21,10 +21,10 @@ public class BranchBuilds {
     private final List<Status> statusList;
     private final List<BuildCompleteStatus> builds;
     private final boolean validationStampsFiltered;
-    private final List<SavedBuildFilter> savedBuildFilters;
+    private final List<BuildFilter> savedBuildFilters;
 
     public BranchBuilds(List<DecoratedValidationStamp> validationStamps, List<PromotionLevelSummary> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
-        this(validationStamps, promotionLevels, statusList, builds, false, Collections.<SavedBuildFilter>emptyList());
+        this(validationStamps, promotionLevels, statusList, builds, false, Collections.<BuildFilter>emptyList());
     }
 
     public BranchBuilds filterStamps(final Set<Integer> filteredStampIds) {
@@ -50,7 +50,7 @@ public class BranchBuilds {
         }
     }
 
-    public BranchBuilds withSavedBuildFilters(List<SavedBuildFilter> filters) {
+    public BranchBuilds withSavedBuildFilters(List<BuildFilter> filters) {
         if (filters == null || filters.isEmpty()) {
             return this;
         } else {

@@ -830,9 +830,9 @@ query.submit
     en -> Search
     fr -> Rechercher
 
-query.save
-    en -> Filter & save
-    fr -> Filter & enregistrer
+query.name
+    en -> Filter name
+    fr -> Nom du filtre
 
 query.nofilter
     en -> No saved filter

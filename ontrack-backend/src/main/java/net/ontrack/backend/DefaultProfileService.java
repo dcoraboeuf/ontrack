@@ -75,7 +75,7 @@ public class DefaultProfileService implements ProfileService {
 
     @Override
     @Transactional
-    public Ack saveFilter(int branchId, SavedBuildFilter savedBuildFilter) {
+    public Ack saveFilter(int branchId, BuildFilter savedBuildFilter) {
         // Gets the current user
         final int accountId = securityUtils.getCurrentAccountId();
         if (accountId > 0) {
@@ -87,7 +87,7 @@ public class DefaultProfileService implements ProfileService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SavedBuildFilter> getFilters(int branchId) {
+    public List<BuildFilter> getFilters(int branchId) {
         // Gets the current user
         final int accountId = securityUtils.getCurrentAccountId();
         if (accountId > 0) {

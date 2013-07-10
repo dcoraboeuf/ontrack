@@ -1,13 +1,13 @@
 package net.ontrack.backend.dao;
 
 import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.SavedBuildFilter;
+import net.ontrack.core.model.BuildFilter;
 
 import java.util.List;
 
 public interface FilterDao {
 
-    Ack saveFilter(int accountId, int branchId, SavedBuildFilter savedBuildFilter);
+    Ack saveFilter(int accountId, int branchId, BuildFilter buildFilter);
 
-    List<SavedBuildFilter> getFilters(int accountId, int branchId);
+    List<BuildFilter> getFilters(int accountId, int branchId);
 }

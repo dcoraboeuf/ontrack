@@ -152,8 +152,8 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     @RequestMapping(value = "/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/filter", method = RequestMethod.PUT)
     public
     @ResponseBody
-    Ack saveFilter(@PathVariable String project, @PathVariable String branch, @RequestBody SavedBuildFilter savedBuildFilter) {
-        return profileService.saveFilter(entityConverter.getBranchId(project, branch), savedBuildFilter);
+    Ack saveFilter(@PathVariable String project, @PathVariable String branch, @RequestBody BuildFilter buildFilter) {
+        return profileService.saveFilter(entityConverter.getBranchId(project, branch), buildFilter);
     }
 
     /**
