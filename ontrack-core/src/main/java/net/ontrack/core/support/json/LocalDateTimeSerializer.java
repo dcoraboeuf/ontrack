@@ -1,4 +1,4 @@
-package net.ontrack.web.support.json;
+package net.ontrack.core.support.json;
 
 import java.io.IOException;
 

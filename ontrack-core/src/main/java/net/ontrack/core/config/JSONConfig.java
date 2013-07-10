@@ -1,8 +1,8 @@
-package net.ontrack.web.config;
+package net.ontrack.core.config;
 
 import com.netbeetle.jackson.ObjectMapperFactory;
-import net.ontrack.web.support.json.LocalTimeDeserializer;
-import net.ontrack.web.support.json.LocalTimeSerializer;
+import net.ontrack.core.support.json.LocalTimeDeserializer;
+import net.ontrack.core.support.json.LocalTimeSerializer;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ext.JodaDeserializers.LocalDateDeserializer;
