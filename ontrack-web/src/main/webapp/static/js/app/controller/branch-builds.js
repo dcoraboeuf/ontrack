@@ -220,6 +220,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                             // Gets the values
                             var form = common.values(config.form);
                             // Submitting the query
+                            $('#branch-builds').data('filterName', '');
                             filterWithForm(config, form);
                             // OK
                             config.closeFn();
@@ -251,6 +252,16 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         $('#filter-button').click(function () {
             showFilter(logged);
         });
+        // Filter name
+        var filterName = $('#branch-builds').data('filterName');
+        if (filterName && filterName != '') {
+            $('#filter-button').text(
+                '{0} - {1}'.format(
+                    'query'.loc(),
+                    filterName
+                )
+            );
+        }
     }
 
     function setupSavedFilters(config, branchBuilds) {
@@ -266,6 +277,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
             // In case of filter found, makes a link
             if (filter != null) {
                 $(a).click(function () {
+                    $('#branch-builds').data('filterName', filterName);
                     withFilter(filter);
                 });
             // Filter not found, do not display it
