@@ -383,6 +383,10 @@ account.mode.builtin
 account.mode.ldap
     en,fr -> LDAP
 
+account.locale
+    en -> Language
+    fr -> Langage
+
 account.password
     en -> Password
     fr -> Mot de passe

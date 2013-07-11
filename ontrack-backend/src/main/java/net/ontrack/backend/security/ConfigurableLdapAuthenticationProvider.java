@@ -16,6 +16,7 @@ import org.springframework.security.ldap.authentication.LdapAuthenticationProvid
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 @Service
@@ -75,11 +76,11 @@ public class ConfigurableLdapAuthenticationProvider implements AuthenticationPro
                             });
                         } else {
                             // Temporary account
-                            account = new Account(0, name, details.getFullName(), "", SecurityRoles.USER, "ldap");
+                            account = new Account(0, name, details.getFullName(), "", SecurityRoles.USER, "ldap", Locale.ENGLISH);
                         }
                     } else {
                         // Temporary account
-                        account = new Account(0, name, name, "", SecurityRoles.USER, "ldap");
+                        account = new Account(0, name, name, "", SecurityRoles.USER, "ldap", Locale.ENGLISH);
                     }
                 }
                 // OK

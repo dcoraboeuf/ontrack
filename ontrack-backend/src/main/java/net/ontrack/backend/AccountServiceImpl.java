@@ -14,6 +14,7 @@ import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
 import net.ontrack.service.AccountService;
 import net.ontrack.service.EventService;
+import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 public class AccountServiceImpl extends AbstractServiceImpl implements AccountService {
 
+    private final Strings strings;
     private final AccountDao accountDao;
     private final CommentDao commentDao;
     private final ValidationRunStatusDao validationRunStatusDao;
@@ -42,15 +44,17 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                         t.getFullName(),
                         t.getEmail(),
                         t.getRoleName(),
-                        t.getMode()
+                        t.getMode(),
+                        strings.getSupportedLocales().filterForLookup(t.getLocale())
                 );
             }
         }
     };
 
     @Autowired
-    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao) {
+    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao) {
         super(validatorService, eventService);
+        this.strings = strings;
         this.accountDao = accountDao;
         this.commentDao = commentDao;
         this.validationRunStatusDao = validationRunStatusDao;

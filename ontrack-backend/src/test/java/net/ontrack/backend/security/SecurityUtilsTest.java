@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -57,7 +59,7 @@ public class SecurityUtilsTest {
     }
 
     private void withRole(String role) {
-        withAccount(new AccountAuthentication(new Account(1, "user", "User", "user@ontrack.net", role, "builtin")));
+        withAccount(new AccountAuthentication(new Account(1, "user", "User", "user@ontrack.net", role, "builtin", Locale.ENGLISH)));
     }
 
     private void withAccount(AccountAuthentication authentication) {

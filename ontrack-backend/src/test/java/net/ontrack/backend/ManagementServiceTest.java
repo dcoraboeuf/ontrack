@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -29,7 +30,7 @@ public class ManagementServiceTest extends AbstractValidationTest {
 
     @Before
     public void asAdmin() {
-        AccountAuthentication authentication = new AccountAuthentication(new Account(1, "admin", "Administrator", "admin@ontrack.net", SecurityRoles.ADMINISTRATOR, "builtin"));
+        AccountAuthentication authentication = new AccountAuthentication(new Account(1, "admin", "Administrator", "admin@ontrack.net", SecurityRoles.ADMINISTRATOR, "builtin", Locale.ENGLISH));
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);

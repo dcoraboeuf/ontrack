@@ -2,6 +2,8 @@ package net.ontrack.core.model;
 
 import lombok.Data;
 
+import java.util.Locale;
+
 @Data
 public class Account {
 
@@ -11,5 +13,6 @@ public class Account {
     private final String email;
     private final String roleName;
     private final String mode;
+    private final Locale locale;
 
 }
