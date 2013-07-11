@@ -1,5 +1,6 @@
 package net.ontrack.dao;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -8,6 +9,7 @@ import org.joda.time.LocalTime;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Locale;
 
 public final class SQLUtils {
 
@@ -56,4 +58,12 @@ public final class SQLUtils {
 		}
 	}
 
+    public static Locale toLocale(ResultSet rs, String columnName) throws SQLException {
+        String value = rs.getString(columnName);
+        if (StringUtils.isBlank(value)) {
+            return Locale.ENGLISH;
+        } else {
+            return Locale.forLanguageTag(value);
+        }
+    }
 }

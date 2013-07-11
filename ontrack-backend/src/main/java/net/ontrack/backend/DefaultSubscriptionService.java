@@ -2,9 +2,7 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.*;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.SubscriptionDao;
@@ -35,7 +33,6 @@ import static java.lang.String.format;
 public class DefaultSubscriptionService implements SubscriptionService {
 
     private final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
-
     private final SecurityUtils securityUtils;
     private final ConfigurationService configurationService;
     private final SubscriptionDao subscriptionDao;
@@ -84,9 +81,10 @@ public class DefaultSubscriptionService implements SubscriptionService {
             // Loads the entity name
             String name = entityDao.getEntityName(entity, entityId);
             EntityStub entityStub = new EntityStub(entity, entityId, name);
+            // Gets the locale from the account (see ticket #81)
+            Locale locale = accountDao.getByID(accountId).getLocale();
             // Confirmation message
-            // TODO Gets the locale from the account (see ticket #81)
-            String message = getUnsubscriptionConfirmationMessage(entityStub, Locale.ENGLISH);
+            String message = getUnsubscriptionConfirmationMessage(entityStub, locale);
             // OK
             return new SubscriptionEntityInfo(entityStub, message);
         } else {
@@ -233,12 +231,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
             logger.debug("[publish] event={}, no-account", event.getId());
             return;
         }
-        // TODO Collects all the languages (not possible yet, see ticket #81)
-        Locale locale = Locale.ENGLISH;
-        logger.debug("[publish] event={}, locale={}", event.getId(), locale);
-        // TODO Generates one message per language (see ticket #81)
-        for (TAccount account : accounts) {
-            String email = account.getEmail();
+        // Groups accounts per language
+        ImmutableListMultimap<Locale, TAccount> accountsPerLocale = Multimaps.index(accounts, new Function<TAccount, Locale>() {
+            @Override
+            public Locale apply(TAccount t) {
+                return t.getLocale();
+            }
+        });
+        // Collects all the languages (not possible yet, see ticket #81)
+        for (Locale locale : accountsPerLocale.keySet()) {
+            logger.debug("[publish] event={}, locale={}", event.getId(), locale);
             // Gets the GUI version
             GUIEvent guiEvent = guiEventService.toGUIEvent(event, locale, DateTime.now(DateTimeZone.UTC));
             // Initial template
@@ -247,29 +249,33 @@ public class DefaultSubscriptionService implements SubscriptionService {
             // Gets the title
             String title = strings.get(locale, "event.message");
             model.add("title", title);
-            // Gets the list of entities the account is registered to
-            Set<EntityID> subscriptions = subscriptionDao.findEntitiesByAccount(account.getId());
-            // Unsubscription links
-            // We actually need one distinct link per entity
-            Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values(), subscriptions);
-            model.add("links", links);
-            // Generates the message HTML content
-            String content = templateService.generate("event.html", locale, model);
-            // Creates a HTML message
-            Message message = new Message(
-                    title,
-                    new MessageContent(
-                            MessageContentType.HTML,
-                            content));
-            // Publication
-            logger.debug("[publish] event={}, locale={}, account={}", event.getId(), locale, email);
-            messageService.sendMessage(
-                    message,
-                    new MessageDestination(
-                            MessageChannel.EMAIL,
-                            Collections.singletonList(email)
-                    )
-            );
+            // For each account in this language
+            for (TAccount account : accountsPerLocale.get(locale)) {
+                String email = account.getEmail();
+                // Gets the list of entities the account is registered to
+                Set<EntityID> subscriptions = subscriptionDao.findEntitiesByAccount(account.getId());
+                // Unsubscription links
+                // We actually need one distinct link per entity
+                Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values(), subscriptions);
+                model.add("links", links);
+                // Generates the message HTML content
+                String content = templateService.generate("event.html", locale, model);
+                // Creates a HTML message
+                Message message = new Message(
+                        title,
+                        new MessageContent(
+                                MessageContentType.HTML,
+                                content));
+                // Publication
+                logger.debug("[publish] event={}, locale={}, account={}", event.getId(), locale, email);
+                messageService.sendMessage(
+                        message,
+                        new MessageDestination(
+                                MessageChannel.EMAIL,
+                                Collections.singletonList(email)
+                        )
+                );
+            }
         }
         logger.debug("[publish] [end] event={}", event.getId());
     }

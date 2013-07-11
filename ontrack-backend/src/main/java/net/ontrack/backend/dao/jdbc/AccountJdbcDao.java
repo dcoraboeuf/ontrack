@@ -8,6 +8,7 @@ import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.dao.SQLUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,7 +37,8 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
                     rs.getString("fullName"),
                     rs.getString("email"),
                     rs.getString("roleName"),
-                    rs.getString("mode"));
+                    rs.getString("mode"),
+                    SQLUtils.toLocale(rs, "locale"));
         }
     };
 
