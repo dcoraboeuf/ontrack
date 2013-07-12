@@ -200,6 +200,7 @@ echo Tagging to $TAG
 git tag ${TAG}
 
 # Increment the version number and commit
+echo Changing to the next version
 
 # Update the version locally
 ${MVN} versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
@@ -208,13 +209,16 @@ ${MVN} versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=f
 sed -i "s/${VERSION}<\/version>/${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-jenkins/pom.xml
 
 # Commits the update
+echo Committing the next version changes
 git commit -am "Starting development of ${NEXT_VERSION}"
 
 # Pushing
 if [ "$GIT_PUSH" == "yes" ]
 then
-	git push
-	git push --tags
+	echo Pushing to the remote repository
+	git push --verbose
+	echo Pushing the tags to the remote repository
+	git push --tags --verbose
 fi
 
 # ontrack
@@ -224,6 +228,5 @@ then
 	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
 fi
 
-# Clean-up & termination
-git checkout -- .
+# End
 echo Build done.
