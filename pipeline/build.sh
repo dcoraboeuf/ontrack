@@ -162,8 +162,8 @@ git checkout -- .
 echo version=${VERSION} > version.properties
 
 # Updating the versions
-echo Updating versions...
-${MVN} versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
+echo Updating versions to ${VERSION}
+${MVN} --quiet versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
 
 # Special case for Jenkins
 sed -i "s/${CURRENT_VERSION}-SNAPSHOT/${VERSION}/" ontrack-jenkins/pom.xml
@@ -200,10 +200,10 @@ echo Tagging to $TAG
 git tag ${TAG}
 
 # Increment the version number and commit
-echo Changing to the next version
+echo Changing to the next version: ${NEXT_VERSION}-SNAPSHOT
 
 # Update the version locally
-${MVN} versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
+${MVN} --quiet versions:set -DnewVersion=${NEXT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false
 
 # Again, special case for Jenkins
 sed -i "s/${VERSION}<\/version>/${NEXT_VERSION}-SNAPSHOT<\/version>/" ontrack-jenkins/pom.xml
