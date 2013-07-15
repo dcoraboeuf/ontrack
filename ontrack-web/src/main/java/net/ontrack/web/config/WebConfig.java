@@ -107,6 +107,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         Map<String, Object> variables = new HashMap<>();
         variables.put("loc", new FnLoc(strings));
         variables.put("locSelected", new FnLocSelected());
+        variables.put("locLanguages", new FnLocLanguages(strings));
         variables.put("locFormatDate", new FnLocFormatDate(strings));
         variables.put("locFormatTime", new FnLocFormatTime(strings));
         variables.put("secLogged", new FnSecLogged(securityUtils));

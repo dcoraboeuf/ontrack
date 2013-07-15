@@ -9,8 +9,9 @@
 			<b class="caret"></b>
 		</a>
 		<ul class="dropdown-menu">
-			<li><a name="en" class="language-selection" data-language="en"><@lh key="language.en" /></a></li>
-			<li><a name="fr" class="language-selection" data-language="fr"><@lh key="language.fr" /></a></li>
+            <#list locLanguages() as lang>
+                <li><a name="${lang}" class="language-selection" data-language="${lang}"><@lh key="language." + lang /></a></li>
+            </#list>
 		</ul>
 	</li>
 </#macro>
