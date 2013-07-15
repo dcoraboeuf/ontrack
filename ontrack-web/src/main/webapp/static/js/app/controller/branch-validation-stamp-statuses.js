@@ -42,7 +42,7 @@ define(['flot.stack'], function (flot) {
                     if (!seriesPerStatus[status]) {
                         seriesPerStatus[status] = [];
                     }
-                    seriesPerStatus[status].push([stampIndex, count]);
+                    seriesPerStatus[status].push([count, stampIndex]);
                 }
                 stampIndex++;
             }
@@ -55,6 +55,11 @@ define(['flot.stack'], function (flot) {
                     data: seriesPerStatus[status]
                 })
             }
+            // Ticks for the validation stamps
+            var ticks = [];
+            for (var i = 0 ; i < stamps.length ; i++) {
+                ticks.push([i, stamps[i]])
+            }
             // Plotting
             $(chart).plot(
                 series,
@@ -63,16 +68,18 @@ define(['flot.stack'], function (flot) {
                         stack: true,
                         bars: {
                             show: true,
-                            barWidth: 1.0,
-                            lineWidth: 0
+                            barWidth: 0.8,
+                            lineWidth: 0,
+                            horizontal: true,
+                            align: 'center'
                         }
                     },
                     xaxis: {
-                        tickSize: 1
-                    },
-                    yaxis: {
                         tickSize: 1,
                         tickDecimals: 0
+                    },
+                    yaxis: {
+                        ticks: ticks
                     }
                 }
             );
