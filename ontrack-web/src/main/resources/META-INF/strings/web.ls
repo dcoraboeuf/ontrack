@@ -126,6 +126,10 @@ profile
     en -> Profile
     fr -> Profil
 
+profile.changeLanguage
+    en -> Change language for reports
+    fr -> Changer de langage pour les rapports
+
 profile.changePassword
     en -> Change password
     fr -> Changer de mot de passe
@@ -384,8 +388,8 @@ account.mode.ldap
     en,fr -> LDAP
 
 account.locale
-    en -> Language
-    fr -> Langage
+    en -> Language used for reports
+    fr -> Langage utilisé pour les rapports
 
 account.password
     en -> Password

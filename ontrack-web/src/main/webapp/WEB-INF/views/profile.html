@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 
-<@layout_std page="profile" breadcrumbs={loc("home"):""} noscript=true>
+<@layout_std page="profile" breadcrumbs={loc("home"):""}>
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span12 page-title">
@@ -29,6 +29,19 @@
                     <a class="btn" href="gui/admin/password"><@lh key="profile.changePassword" /></a>
                     <a class="btn" href="gui/admin/email"><@lh key="profile.changeEmail" /></a>
                 </#if>
+                <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <@lh key="profile.changeLanguage" />
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <#list locLanguages() as lang>
+                            <li>
+                                <a data-language="${lang}" class="profile-language"><@lh key="language." + lang /></a>
+                            </li>
+                        </#list>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
