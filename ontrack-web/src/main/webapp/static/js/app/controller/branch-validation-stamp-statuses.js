@@ -22,10 +22,21 @@ define(['flot.stack'], function (flot) {
                     )
             )
                 .appendTo(container);
+            // Colours per status
+            var colours = {};
+            colours['PASSED'] = '#11FF11';
+            colours['INTERRUPTED'] = '#666666';
+            colours['FAILED'] = '#DD0000';
+            colours['INVESTIGATED'] = '#3290E3';
+            colours['FIXED'] = '#CCED47';
+            colours['DEFECTIVE'] = '#FA8219';
+            colours['EXPLAINED'] = '#875624';
             // Indexation per status
+            var stamps = [];
             var seriesPerStatus = {};
             var stampIndex = 0;
             for (var stamp in data.table) {
+                stamps.push(stamp);
                 for (var status in data.table[stamp]) {
                     var count = data.table[stamp][status];
                     if (!seriesPerStatus[status]) {
@@ -40,6 +51,7 @@ define(['flot.stack'], function (flot) {
             for (var status in seriesPerStatus) {
                 series.push({
                     label: status,
+                    color: colours[status],
                     data: seriesPerStatus[status]
                 })
             }
@@ -51,8 +63,16 @@ define(['flot.stack'], function (flot) {
                         stack: true,
                         bars: {
                             show: true,
-                            barWidth: 1.0
+                            barWidth: 1.0,
+                            lineWidth: 0
                         }
+                    },
+                    xaxis: {
+                        tickSize: 1
+                    },
+                    yaxis: {
+                        tickSize: 1,
+                        tickDecimals: 0
                     }
                 }
             );
