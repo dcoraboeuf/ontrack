@@ -55,10 +55,14 @@
                         'template': '../app/template',
                         'bootstrap': '../../bootstrap/js/bootstrap.min',
                         'jquery-ui': '../../jquery/ui/js/jquery-ui-1.9.2.custom.min',
+                        'flot':'jquery.flot',
                         'extension': '../../../../extension'
                     },
                     shim: {
                         'jquery-ui': {
+                            deps: ['jquery']
+                        },
+                        'flot': {
                             deps: ['jquery']
                         },
                         'bootstrap': {
