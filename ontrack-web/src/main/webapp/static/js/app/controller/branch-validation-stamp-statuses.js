@@ -10,18 +10,6 @@ define(['flot.stack'], function (flot) {
         render: function (container, append, config, data) {
             var id = config.id;
             var chartId = '{0}-chart'.format(id);
-            var width = $('#{0}-title'.format(id)).width();
-            // FIXME var height = Object.keys(data.table).length * 20;
-            var height = 400;
-            var chart = $(
-                '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
-                    .format(
-                        chartId,
-                        width,
-                        height
-                    )
-            )
-                .appendTo(container);
             // Colours per status
             var colours = {};
             colours['PASSED'] = '#11FF11';
@@ -55,6 +43,21 @@ define(['flot.stack'], function (flot) {
                     data: seriesPerStatus[status]
                 })
             }
+            // Preparation of the chart area
+            var width = $('#{0}-title'.format(id)).width();
+            var height = Math.max(
+                stamps.length * 36, // Rows
+                Object.keys(seriesPerStatus).length * 36 // Legend
+            );
+            var chart = $(
+                '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
+                    .format(
+                        chartId,
+                        width,
+                        height
+                    )
+            )
+                .appendTo(container);
             // Ticks for the validation stamps
             var ticks = [];
             for (var i = 0 ; i < stamps.length ; i++) {

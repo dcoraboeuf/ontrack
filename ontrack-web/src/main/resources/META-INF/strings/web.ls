@@ -554,6 +554,10 @@ branch-validation-stamp-statuses
     en -> Validation stamps statuses
     fr -> Statuts des validations
 
+branch-validation-stamp-statuses.statuses
+    en -> # of builds with the status
+    fr -> Nbre de builds avec le statut
+
 [validation_stamps]
 
 validation_stamp.empty
