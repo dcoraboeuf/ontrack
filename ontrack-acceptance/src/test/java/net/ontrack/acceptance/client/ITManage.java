@@ -125,6 +125,7 @@ public class ITManage extends AbstractIT {
     @Test
     public void createProject() {
         // No prerequisite
+        data.delete_project("ui_createProject");
         // Call
         ProjectSummary summary = data.asAdmin(new ManageClientCall<ProjectSummary>() {
             @Override
