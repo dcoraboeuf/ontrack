@@ -149,8 +149,4 @@ public interface ManageUI {
 
     Ack removePromotedRun(String project, String branch, String build, String promotionLevel);
 
-    // Stats & charts
-
-    ChartTable getChartBranchValidationStampStatuses(String project, String branch);
-
 }
