@@ -5,6 +5,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
 
 import java.util.List;
+import java.util.Locale;
 
 public interface AccountDao {
 
@@ -29,4 +30,6 @@ public interface AccountDao {
     Ack changeEmail(int id, String password, String email);
 
     Ack resetPassword(int id, String password);
+
+    Ack changeLanguage(int accountId, Locale lang);
 }

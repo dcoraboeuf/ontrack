@@ -2,7 +2,7 @@ define(['jquery', 'ajax'], function ($, ajax) {
 
     function changeProfileLanguage(lang) {
         ajax.put({
-            url: 'ui/admin/language/{0}'.format(lang),
+            url: 'ui/admin/profile/language/{0}'.format(lang),
             successFn: function () {
                 location.reload()
             }

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AccountServiceImpl extends AbstractServiceImpl implements AccountService {
@@ -221,5 +222,12 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             // Cannot change password in this case
             return Ack.NOK;
         }
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack changeLanguage(int id, String lang) {
+        return accountDao.changeLanguage(id, strings.getSupportedLocales().filterForLookup(new Locale(lang)));
     }
 }

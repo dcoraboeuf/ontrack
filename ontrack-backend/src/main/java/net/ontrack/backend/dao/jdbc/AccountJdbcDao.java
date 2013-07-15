@@ -24,6 +24,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
@@ -179,6 +180,19 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
                         SQL.ACCOUNT_RESET_PASSWORD,
                         params("id", id)
                                 .addValue("password", encodePassword(password))
+                )
+        );
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.ACCOUNT, key = "#id")
+    public Ack changeLanguage(int id, Locale lang) {
+        return Ack.one(
+                getNamedParameterJdbcTemplate().update(
+                        SQL.ACCOUNT_CHANGE_LOCALE,
+                        params("id", id)
+                                .addValue("locale", lang.toString())
                 )
         );
     }

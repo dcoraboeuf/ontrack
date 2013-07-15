@@ -1,6 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.AdminUI;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.AccountService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 @Controller
 @RequestMapping("/ui/admin")
@@ -27,15 +29,45 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     private final ProfileService profileService;
     private final ExtensionManager extensionManager;
     private final EntityConverter entityConverter;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService, ProfileService profileService, ExtensionManager extensionManager, EntityConverter entityConverter) {
+    public AdminUIController(ErrorHandler errorHandler, Strings strings, AccountService accountService, SubscriptionService subscriptionService, ProfileService profileService, ExtensionManager extensionManager, EntityConverter entityConverter, SecurityUtils securityUtils) {
         super(errorHandler, strings);
         this.accountService = accountService;
         this.subscriptionService = subscriptionService;
         this.profileService = profileService;
         this.extensionManager = extensionManager;
         this.entityConverter = entityConverter;
+        this.securityUtils = securityUtils;
+    }
+
+    /**
+     * Changes the language for the current account
+     */
+    @RequestMapping(value = "/profile/language/{lang:[a-z_]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack changeProfileLanguage(@PathVariable final String lang) {
+        final Account currentAccount = securityUtils.getCurrentAccount();
+        if (currentAccount != null) {
+            return securityUtils.asAdmin(new Callable<Ack>() {
+                @Override
+                public Ack call() throws Exception {
+                    Ack ack = accountService.changeLanguage(currentAccount.getId(), lang);
+                    if (ack.isSuccess()) {
+                        currentAccount.setLocale(
+                                // Making sure to get the locale that has actually been
+                                // saved after having been filtered
+                                accountService.getAccount(currentAccount.getId()).getLocale()
+                        );
+                    }
+                    return ack;
+                }
+            });
+        } else {
+            return Ack.NOK;
+        }
     }
 
     /**
