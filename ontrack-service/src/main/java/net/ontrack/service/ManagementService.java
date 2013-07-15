@@ -178,4 +178,6 @@ public interface ManagementService {
     // Stats & charts
 
     ChartTable getChartBranchValidationStampStatuses(int branchId);
+
+    Map<String,Integer> getChartBranchValidationStampRetries(int branchId);
 }

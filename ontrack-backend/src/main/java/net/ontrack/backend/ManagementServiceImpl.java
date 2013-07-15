@@ -1599,6 +1599,26 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return table;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, Integer> getChartBranchValidationStampRetries(int branchId) {
+        List<ValidationStampSummary> stamps = getValidationStampList(branchId);
+        List<String> stampNames = Lists.transform(
+                stamps,
+                new Function<ValidationStampSummary, String>() {
+                    @Override
+                    public String apply(ValidationStampSummary stamp) {
+                        return stamp.getName();
+                    }
+                }
+        );
+        Map<String,Integer> results = new LinkedHashMap<>();
+        for (ValidationStampSummary stamp : stamps) {
+            int numberOfPassed = validationRunDao.getCountOfStatusForValidationStamp(stamp.getId(), Status.PASSED);
+        }
+        return results;
+    }
+
     protected Event collectEntityContext(Event event, Entity entity, int id) {
         Event e = event.withEntity(entity, id);
         // Gets the entities in the content

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 @Controller
 public class ChartUIController extends AbstractUIController {
 
@@ -31,6 +33,15 @@ public class ChartUIController extends AbstractUIController {
     @ResponseBody
     ChartTable getChartBranchValidationStampStatuses(@PathVariable String project, @PathVariable String branch) {
         return managementService.getChartBranchValidationStampStatuses(
+                entityConverter.getBranchId(project, branch)
+        );
+    }
+
+    @RequestMapping(value = "/ui/chart/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/chart/validation_stamp_retries", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Integer> getChartBranchValidationStampRetries(@PathVariable String project, @PathVariable String branch) {
+        return managementService.getChartBranchValidationStampRetries(
                 entityConverter.getBranchId(project, branch)
         );
     }

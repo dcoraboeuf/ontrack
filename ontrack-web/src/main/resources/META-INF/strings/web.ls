@@ -554,9 +554,17 @@ branch-validation-stamp-statuses
     en -> Validation stamps statuses
     fr -> Statuts des validations
 
-branch-validation-stamp-statuses.statuses
-    en -> # of builds with the status
-    fr -> Nbre de builds avec le statut
+branch-validation-stamp-statuses.description
+    en -> Number of builds per validation stamp and status
+    fr -> Nombre de builds par validation et par statut
+
+branch-validation-stamp-retries
+    en -> Validation stamps retries
+    fr -> Nouvelles tentatives pour les validations
+
+branch-validation-stamp-retries.description
+    en -> Number of PASSED validation stamps that were achieved after at least one re-run
+    fr -> Nombre de validations PASSED qui ont été acquises après une nouvelle tentative
 
 [validation_stamps]
 
