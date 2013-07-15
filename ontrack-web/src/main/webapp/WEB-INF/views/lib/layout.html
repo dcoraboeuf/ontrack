@@ -56,6 +56,7 @@
                         'bootstrap': '../../bootstrap/js/bootstrap.min',
                         'jquery-ui': '../../jquery/ui/js/jquery-ui-1.9.2.custom.min',
                         'flot':'jquery.flot',
+                        'flot.stack':'jquery.flot.stack',
                         'extension': '../../../../extension'
                     },
                     shim: {
@@ -64,6 +65,9 @@
                         },
                         'flot': {
                             deps: ['jquery']
+                        },
+                        'flot.stack': {
+                            deps: ['flot']
                         },
                         'bootstrap': {
                             deps: ['jquery-ui']
