@@ -28,7 +28,7 @@
         <#list charts as chart>
             <div class="row-fluid">
                 <div class="span12">
-                    <h1><small><@lh key=chart.id /></small></h1>
+                    <h1 id="${chart.id?html}-title"><small><@lh key=chart.id /></small></h1>
                     <div
                         id="${chart.id?html}"
                         class="dynamic"
