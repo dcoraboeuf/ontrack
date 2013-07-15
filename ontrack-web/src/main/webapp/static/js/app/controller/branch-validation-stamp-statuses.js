@@ -22,39 +22,30 @@ define(['flot.stack'], function (flot) {
                     )
             )
                 .appendTo(container);
-            // Series
-            var countsPerStatus = {};
+            // Indexation per status
+            var seriesPerStatus = {};
+            var stampIndex = 0;
             for (var stamp in data.table) {
                 for (var status in data.table[stamp]) {
                     var count = data.table[stamp][status];
-                    if (!countsPerStatus[status]) {
-                        countsPerStatus[status] = [];
+                    if (!seriesPerStatus[status]) {
+                        seriesPerStatus[status] = [];
                     }
-                    countsPerStatus[status].push(count);
+                    seriesPerStatus[status].push([stampIndex, count]);
                 }
+                stampIndex++;
             }
-            // FIXME Options
-            // FIXME Plotting
+            // Getting the series in flot format
+            var series = [];
+            for (var status in seriesPerStatus) {
+                series.push({
+                    label: status,
+                    data: seriesPerStatus[status]
+                })
+            }
+            // Plotting
             $(chart).plot(
-                [{
-                    label: 'PASSED',
-                    data: [[
-                        0, 2
-                    ], [
-                        1, 4
-                    ], [
-                        2, 0
-                    ]]
-                }, {
-                    label: 'FAILED',
-                    data: [[
-                        0, 8
-                    ], [
-                        1, 0
-                    ], [
-                        2, 4
-                    ]]
-                }],
+                series,
                 {
                     series: {
                         stack: true,
