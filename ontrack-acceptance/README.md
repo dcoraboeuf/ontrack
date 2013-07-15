@@ -78,7 +78,7 @@ The JBehave meta-filter property can be used to filter acceptance tests using @m
 For example, to run only the tests that are compatible with production, run with the following settings:
 
 ```
-"-Dmetafilter=-prod false"
+"-Dmetafilter=+prod true"
 ```
 
 To run only the smoke tests:

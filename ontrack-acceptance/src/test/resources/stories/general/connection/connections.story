@@ -1,8 +1,6 @@
 Story: Connecting (or not) to the application
 
 Scenario: Not logged in
-Meta:
-@prod false
 
 Given a user is defined with name "test01", full name "Test 01" and password "test01"
 When I am on the home page
@@ -10,8 +8,6 @@ And I am not logged
 Then I do not see my user name
 
 Scenario: Signing in and out
-Meta:
-@prod false
 
 Given a user is defined with name "test02", full name "Test 02" and password "test02"
 When I am on the home page
