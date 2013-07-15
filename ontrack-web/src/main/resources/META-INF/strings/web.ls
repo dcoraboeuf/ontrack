@@ -546,6 +546,10 @@ branch.actions
     en -> Branch actions
     fr -> Actions sur la branche
 
+branch.charts
+    en -> Charts
+    fr -> Graphiques
+
 [validation_stamps]
 
 validation_stamp.empty
