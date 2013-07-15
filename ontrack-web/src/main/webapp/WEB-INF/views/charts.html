@@ -1,0 +1,28 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="charts"
+    title=loc("branch.charts")
+    breadcrumbs = {
+        loc("home"): "",
+        branch.project.name?html: "gui/project/${branch.project.name?html}",
+        branch.name?html: "gui/project/${branch.project.name?html}/branch/${branch.name?html}"
+    }>
+    <input id="project" type="hidden" value="${branch.project.name?html}" />
+    <input id="branch" type="hidden" value="${branch.name?html}" />
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
+                    / <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a>
+                    / <@lh key="branch.charts" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+	</div>
+
+</@layout_std>

@@ -42,7 +42,6 @@ public class GUIController extends AbstractGUIController {
     private final SearchService searchService;
     private final DashboardService dashboardService;
     private final Strings strings;
-
     private final byte[] defaultValidationStampImage;
     private final byte[] defaultPromotionLevelImage;
 
@@ -80,6 +79,14 @@ public class GUIController extends AbstractGUIController {
         model.addAttribute("decoratedBranch", manageUI.getDecoratedBranch(locale, project, name));
         // OK
         return "branch";
+    }
+
+    @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/charts", method = RequestMethod.GET)
+    public String getBranchCharts(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
+        // Loads the details
+        model.addAttribute("branch", manageUI.getBranch(project, name));
+        // OK
+        return "charts";
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/clone", method = RequestMethod.GET)
