@@ -6,6 +6,7 @@ import net.ontrack.backend.dao.ValidationRunDao;
 import net.ontrack.backend.dao.model.TValidationRun;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.Status;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -110,6 +111,15 @@ public class ValidationRunJdbcDao extends AbstractJdbcDao implements ValidationR
                         SQL.VALIDATION_RUN_DELETE,
                         params("id", validationRunId)
                 )
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getCountOfStatusForValidationStamp(int validationStamp, Status status) {
+        return getNamedParameterJdbcTemplate().queryForInt(
+                SQL.VALIDATION_RUN_COUNT_OF_STATUS_AND_VALIDATION_STAMP,
+                params("validationStamp", validationStamp).addValue("status", status.name())
         );
     }
 }

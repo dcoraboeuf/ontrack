@@ -1574,6 +1574,31 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return entityDao.getEntityId(entity, name, parentIds);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ChartTable getChartBranchValidationStampStatuses(int branchId) {
+        List<ValidationStampSummary> stamps = getValidationStampList(branchId);
+        List<String> stampNames = Lists.transform(
+                stamps,
+                new Function<ValidationStampSummary, String>() {
+                    @Override
+                    public String apply(ValidationStampSummary stamp) {
+                        return stamp.getName();
+                    }
+                }
+        );
+        ChartTable table = ChartTable.create(stampNames);
+        // Collects statuses for each stamp
+        for (ValidationStampSummary stamp : stamps) {
+            for (Status status : Status.values()) {
+                int count = validationRunDao.getCountOfStatusForValidationStamp(stamp.getId(), status);
+                table.put(stamp.getName(), status.name(), count);
+            }
+        }
+        // OK
+        return table;
+    }
+
     protected Event collectEntityContext(Event event, Entity entity, int id) {
         Event e = event.withEntity(entity, id);
         // Gets the entities in the content

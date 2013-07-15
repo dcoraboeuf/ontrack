@@ -3,6 +3,7 @@
 <@layout_std
     page="charts"
     title=loc("branch.charts")
+    noscript=true
     breadcrumbs = {
         loc("home"): "",
         branch.project.name?html: "gui/project/${branch.project.name?html}",
@@ -23,6 +24,22 @@
                 </span>
             </div>
         </div>
+
+        <#list charts as chart>
+            <div class="row-fluid">
+                <div class="span12">
+                    <h1><small><@lh key=chart.id /></small></h1>
+                    <div
+                        id="${chart.id?html}"
+                        class="dynamic"
+                        dynamic-controller="${chart.id?html}"
+                        dynamic-project="${branch.project.name?html}"
+                        dynamic-branch="${branch.name?html}"
+                        />
+                </div>
+            </div>
+        </#list>
+
 	</div>
 
 </@layout_std>

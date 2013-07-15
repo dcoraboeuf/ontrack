@@ -3,6 +3,7 @@ package net.ontrack.web.ui;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Table;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
@@ -707,6 +708,16 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         int buildId = entityConverter.getBuildId(project, branch, build);
         int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, promotionLevel);
         return managementService.removePromotedRun(buildId, promotionLevelId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/chart/validation_stamp_statuses", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ChartTable getChartBranchValidationStampStatuses(@PathVariable String project, @PathVariable String branch) {
+        return managementService.getChartBranchValidationStampStatuses(
+                entityConverter.getBranchId(project, branch)
+        );
     }
 
     @RequestMapping(value = "/ui/manage/validation_run/{validationRunId:[0-9]+}/statusUpdateData", method = RequestMethod.GET)

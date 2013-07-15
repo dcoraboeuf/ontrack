@@ -67,17 +67,17 @@ public interface ManageUI {
 
     byte[] imageValidationStamp(String project, String branch, String name);
 
-    Ack linkValidationStampToPromotionLevel (String project, String branch, String validationStamp, String promotionLevel);
+    Ack linkValidationStampToPromotionLevel(String project, String branch, String validationStamp, String promotionLevel);
 
-    Ack unlinkValidationStampToPromotionLevel (String project, String branch, String validationStamp);
+    Ack unlinkValidationStampToPromotionLevel(String project, String branch, String validationStamp);
 
-    Ack upValidationStamp (String project, String branch, String validationStamp);
+    Ack upValidationStamp(String project, String branch, String validationStamp);
 
-    Ack downValidationStamp (String project, String branch, String validationStamp);
+    Ack downValidationStamp(String project, String branch, String validationStamp);
 
-    Ack setValidationStampOwner (String project, String branch, String validationStamp, int ownerId);
+    Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId);
 
-    Ack unsetValidationStampOwner (String project, String branch, String validationStamp);
+    Ack unsetValidationStampOwner(String project, String branch, String validationStamp);
 
     Ack addValidationStampComment(String project, String branch, String validationStamp, ValidationStampCommentForm form);
 
@@ -103,7 +103,7 @@ public interface ManageUI {
 
     Ack downPromotionLevel(String project, String branch, String promotionLevel);
 
-    PromotionLevelManagementData getPromotionLevelManagementData (String project, String branch);
+    PromotionLevelManagementData getPromotionLevelManagementData(String project, String branch);
 
     PromotionLevelAndStamps getPromotionLevelValidationStamps(String project, String branch, String promotionLevel);
 
@@ -121,7 +121,7 @@ public interface ManageUI {
 
     BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);
 
-	BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
+    BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name);
 
@@ -148,4 +148,9 @@ public interface ManageUI {
     List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);
 
     Ack removePromotedRun(String project, String branch, String build, String promotionLevel);
+
+    // Stats & charts
+
+    ChartTable getChartBranchValidationStampStatuses(String project, String branch);
+
 }

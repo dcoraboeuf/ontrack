@@ -467,4 +467,12 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
         );
     }
 
+    @Override
+    public ChartTable getChartBranchValidationStampStatuses(String project, String branch) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/project/%s/branch/%s/chart/validation_stamp_statuses", project, branch),
+                ChartTable.class);
+    }
+
 }

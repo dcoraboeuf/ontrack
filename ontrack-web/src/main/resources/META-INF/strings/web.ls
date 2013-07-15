@@ -550,6 +550,10 @@ branch.charts
     en -> Charts
     fr -> Graphiques
 
+branch-validation-stamp-statuses
+    en -> Validation stamps statuses
+    fr -> Statuts des validations
+
 [validation_stamps]
 
 validation_stamp.empty

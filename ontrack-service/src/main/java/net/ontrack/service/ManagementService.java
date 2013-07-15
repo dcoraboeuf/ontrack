@@ -174,4 +174,8 @@ public interface ManagementService {
     // Common
 
     int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
+
+    // Stats & charts
+
+    ChartTable getChartBranchValidationStampStatuses(int branchId);
 }

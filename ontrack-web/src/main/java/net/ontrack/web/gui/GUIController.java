@@ -3,6 +3,7 @@ package net.ontrack.web.gui;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import net.ontrack.core.model.ChartDefinition;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.support.InputException;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
@@ -85,6 +87,11 @@ public class GUIController extends AbstractGUIController {
     public String getBranchCharts(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
         model.addAttribute("branch", manageUI.getBranch(project, name));
+        // All charts
+        // FIXME #203 #204 #205 Uses injection
+        model.addAttribute("charts", Arrays.asList(
+                new ChartDefinition("branch-validation-stamp-statuses")
+        ));
         // OK
         return "charts";
     }
