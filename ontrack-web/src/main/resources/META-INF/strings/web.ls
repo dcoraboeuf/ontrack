@@ -473,6 +473,10 @@ project.export
     en -> Export
     fr -> Exporter
 
+project.export.message
+    en -> Please wait while the export of the project is created...
+    fr -> Veuillez patienter tandis que l'export du projet est préparé...
+
 [branches]
 
 branch.empty

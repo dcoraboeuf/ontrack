@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import net.ontrack.core.model.ChartDefinition;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.DashboardService;
@@ -44,11 +45,12 @@ public class GUIController extends AbstractGUIController {
     private final SearchService searchService;
     private final DashboardService dashboardService;
     private final Strings strings;
+    private final SecurityUtils securityUtils;
     private final byte[] defaultValidationStampImage;
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings, SecurityUtils securityUtils) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
@@ -56,6 +58,7 @@ public class GUIController extends AbstractGUIController {
         this.searchService = searchService;
         this.dashboardService = dashboardService;
         this.strings = strings;
+        this.securityUtils = securityUtils;
         // Reads the default images
         defaultValidationStampImage = WebUtils.readBytes("/default_validation_stamp.png");
         defaultPromotionLevelImage = WebUtils.readBytes("/default_promotion_level.png");
@@ -73,6 +76,16 @@ public class GUIController extends AbstractGUIController {
         model.addAttribute("project", manageUI.getProject(name));
         // OK
         return "project";
+    }
+
+    @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/export", method = RequestMethod.GET)
+    public String exportProject(Model model, @PathVariable String name) {
+        securityUtils.checkIsAdmin();
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // FIXME Launching the export asynchronously
+        // OK
+        return "project-export";
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
