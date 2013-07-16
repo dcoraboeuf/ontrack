@@ -9,7 +9,12 @@ define(['jquery', 'ajax'], function ($, ajax) {
             successFn: function (ack) {
                 if (ack.success) {
                     $('#project-export-loading').hide();
-                    alert("Success");
+                    // Download ready
+                    $('#project-export-ready').show();
+                    $('#project-export-link').attr(
+                        'href',
+                        'gui/project/export/{0}'.format(projectExportUID)
+                    )
                 } else {
                     // Going on...
                     window.setTimeout(check, 5000);
