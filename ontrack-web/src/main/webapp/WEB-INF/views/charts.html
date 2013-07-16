@@ -29,6 +29,9 @@
             <div class="row-fluid">
                 <div class="span12">
                     <h1 id="${chart.id?html}-title"><small><@lh key=chart.id /></small></h1>
+                    <div class="description">
+                        <@lh key = chart.id + ".description" />
+                    </div>
                     <div
                         id="${chart.id?html}"
                         class="dynamic"

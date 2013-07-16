@@ -1612,9 +1612,46 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                     }
                 }
         );
-        Map<String,Integer> results = new LinkedHashMap<>();
+        Map<String, Integer> results = new LinkedHashMap<>();
         for (ValidationStampSummary stamp : stamps) {
-            int numberOfPassed = validationRunDao.getCountOfStatusForValidationStamp(stamp.getId(), Status.PASSED);
+            // Indexation per build -> run -> last status
+            Map<Integer, TreeMap<Integer, Status>> index = new HashMap<>();
+            // Gets all the events
+            List<ValidationRunEvent> events = getValidationRunsForValidationStamp(Locale.ENGLISH, stamp.getId(), 0, Integer.MAX_VALUE);
+            // Inverts the list order, in order to get the events from the oldest to the newest
+            events = new ArrayList<>(events);
+            Collections.reverse(events);
+            // Collecting each event
+            for (ValidationRunEvent event : events) {
+                if (event.getStatus() != null) {
+                    // Build
+                    int build = event.getValidationRun().getBuild().getId();
+                    // Run map
+                    TreeMap<Integer, Status> runMap = index.get(build);
+                    if (runMap == null) {
+                        runMap = new TreeMap<>();
+                        index.put(build, runMap);
+                    }
+                    // Last status
+                    runMap.put(event.getValidationRun().getRunOrder(), event.getStatus());
+                }
+            }
+            // We have now a list of the last statuses of each run of each build
+            // We now must check the last status of each last run
+            // If PASSED, we must know if there were some runs before
+            for (TreeMap<Integer, Status> runMap : index.values()) {
+                if (runMap.size() > 1) {
+                    Status lastStatus = runMap.get(runMap.lastKey());
+                    if (lastStatus == Status.PASSED) {
+                        Integer count = results.get(stamp.getName());
+                        if (count == null) {
+                            results.put(stamp.getName(), 1);
+                        } else {
+                            results.put(stamp.getName(), count + 1);
+                        }
+                    }
+                }
+            }
         }
         return results;
     }
