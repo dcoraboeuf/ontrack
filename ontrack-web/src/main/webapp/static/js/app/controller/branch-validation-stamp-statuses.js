@@ -78,7 +78,6 @@ define(['flot.stack'], function (flot) {
                         }
                     },
                     xaxis: {
-                        tickSize: 1,
                         tickDecimals: 0
                     },
                     yaxis: {
