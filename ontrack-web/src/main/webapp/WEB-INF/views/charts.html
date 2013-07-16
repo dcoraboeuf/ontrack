@@ -25,10 +25,16 @@
             </div>
         </div>
 
+        <!-- Links -->
+        <#list charts as chart>
+            <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/charts#${chart.id}_link" class="btn"><@lh key=chart.id /></a>
+        </#list>
+
+        <!-- Sections -->
         <#list charts as chart>
             <div class="row-fluid">
                 <div class="span12">
-                    <h1 id="${chart.id?html}-title"><small><@lh key=chart.id /></small></h1>
+                    <h1 id="${chart.id?html}-title"><small><a name="${chart.id}_link"><@lh key=chart.id /></a></small></h1>
                     <div class="description">
                         <@lh key = chart.id + ".description" />
                     </div>
