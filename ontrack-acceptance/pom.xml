@@ -277,6 +277,32 @@
                 </plugins>
             </build>
         </profile>
+		
+        <profile>
+            <id>it-prod</id>
+            <build>
+                <plugins>
+
+                    <!-- Running integration tests for production -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*TestCase.java</include>
+                            </includes>
+                            <argLine>-Xmx512m</argLine>
+                            <systemPropertyVariables>
+                                <webdriver.driver>${webdriver.driver}</webdriver.driver>
+                                <webdriver.base.url>${itUrl}</webdriver.base.url>
+								<metafilter>+prod true</metafilter>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+					
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>
