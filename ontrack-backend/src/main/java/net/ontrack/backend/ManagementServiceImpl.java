@@ -5,6 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
@@ -21,6 +22,7 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -1601,17 +1603,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Integer> getChartBranchValidationStampRetries(int branchId) {
+    public List<Pair<String, Integer>> getChartBranchValidationStampRetries(int branchId) {
         List<ValidationStampSummary> stamps = getValidationStampList(branchId);
-        List<String> stampNames = Lists.transform(
-                stamps,
-                new Function<ValidationStampSummary, String>() {
-                    @Override
-                    public String apply(ValidationStampSummary stamp) {
-                        return stamp.getName();
-                    }
-                }
-        );
         Map<String, Integer> results = new LinkedHashMap<>();
         for (ValidationStampSummary stamp : stamps) {
             // Indexation per build -> run -> last status
@@ -1653,7 +1646,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 }
             }
         }
-        return results;
+        // Gets the maps as pairs
+        List<Pair<String, Integer>> pairs = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : results.entrySet()) {
+            pairs.add(Pair.of(entry.getKey(), entry.getValue()));
+        }
+        // Sorts from the highest count to the lowest
+        Collections.sort(pairs, Ordering.natural().onResultOf(new Function<Pair<String, Integer>, Integer>() {
+            @Override
+            public Integer apply(Pair<String, Integer> pair) {
+                return pair.getRight();
+            }
+        }));
+        // OK
+        return pairs;
     }
 
     protected Event collectEntityContext(Event event, Entity entity, int id) {

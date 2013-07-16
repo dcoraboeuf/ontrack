@@ -6,6 +6,7 @@ import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
+import java.util.List;
 
 @Controller
 public class ChartUIController extends AbstractUIController {
@@ -40,7 +41,7 @@ public class ChartUIController extends AbstractUIController {
     @RequestMapping(value = "/ui/chart/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/chart/validation_stamp_retries", method = RequestMethod.GET)
     public
     @ResponseBody
-    Map<String, Integer> getChartBranchValidationStampRetries(@PathVariable String project, @PathVariable String branch) {
+    List<Pair<String,Integer>> getChartBranchValidationStampRetries(@PathVariable String project, @PathVariable String branch) {
         return managementService.getChartBranchValidationStampRetries(
                 entityConverter.getBranchId(project, branch)
         );

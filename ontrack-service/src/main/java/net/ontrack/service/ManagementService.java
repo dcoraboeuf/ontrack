@@ -1,6 +1,7 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -179,5 +180,5 @@ public interface ManagementService {
 
     ChartTable getChartBranchValidationStampStatuses(int branchId);
 
-    Map<String,Integer> getChartBranchValidationStampRetries(int branchId);
+    List<Pair<String,Integer>> getChartBranchValidationStampRetries(int branchId);
 }

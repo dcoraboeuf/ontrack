@@ -14,11 +14,12 @@ define(['flot'], function (flot) {
             var serie = [];
             var ticks = [];
             var index = 0;
-            for (var stamp in data) {
-                var count = data[stamp];
-                ticks.push([index, stamp]);
-                serie.push([count, index++]);
-            }
+            $.each(data, function (i, pair) {
+                var stamp = pair.key;
+                var count = pair.value;
+                ticks.push([i, stamp]);
+                serie.push([count, i]);
+            });
             // Preparation of the chart area
             var width = $('#{0}-title'.format(id)).width();
             var height = serie.length * 24;
