@@ -469,6 +469,10 @@ project.description
 project.branches
 	en,fr -> Branches
 
+project.export
+    en -> Export
+    fr -> Exporter
+
 [branches]
 
 branch.empty
