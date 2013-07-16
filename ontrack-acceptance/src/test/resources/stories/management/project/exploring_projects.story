@@ -9,12 +9,16 @@ When I am on the home page
 Then I see the TEST1 project with description "Description for TEST1"
 
 Scenario: Creating a project only for administrators
+Meta:
+@prod true
 
 When I am on the home page
 And I am not logged
 Then I cannot create a project
 
 Scenario: Creating a project
+Meta:
+@prod true
 
 Given the project PRJ1 does not exist
 When I am on the home page
