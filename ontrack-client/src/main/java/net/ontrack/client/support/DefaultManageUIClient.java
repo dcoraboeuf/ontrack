@@ -67,6 +67,33 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public String exportProjectLaunch(String project) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/project/%s", project),
+                String.class
+        );
+    }
+
+    @Override
+    public Ack exportProjectCheck(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/%s/check", uuid),
+                Ack.class
+        );
+    }
+
+    @Override
+    public ProjectData exportProjectDownload(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/%s", uuid),
+                ProjectData.class
+        );
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }

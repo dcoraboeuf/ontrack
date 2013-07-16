@@ -7,6 +7,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.core.ui.PropertyUI;
+import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.ProfileService;
 import net.ontrack.web.support.EntityConverter;
@@ -32,22 +33,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     private final SecurityUtils securityUtils;
     private final ManagementService managementService;
     private final ProfileService profileService;
+    private final ExportService exportService;
     private final PropertyUI propertyUI;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, ExportService exportService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
         this.securityUtils = securityUtils;
         this.profileService = profileService;
+        this.exportService = exportService;
         this.propertyUI = propertyUI;
         this.objectMapper = objectMapper;
         this.version = version;
     }
-
-    // Projects
 
     @Override
     @RequestMapping(value = "/ui/manage/version", method = RequestMethod.GET)
@@ -56,6 +57,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     String getVersion() {
         return version;
     }
+
+    // Projects
 
     @Override
     @RequestMapping(value = "/ui/manage/project", method = RequestMethod.GET)
@@ -99,6 +102,33 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
                 form
         );
     }
+
+    // Project IO
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    String exportProjectLaunch(@PathVariable String project) {
+        return exportService.exportProjectLaunch(entityConverter.getProjectId(project));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/{uuid}/check", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack exportProjectCheck(@PathVariable String uuid) {
+        return exportService.exportProjectCheck(uuid);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/{uuid}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ProjectData exportProjectDownload(@PathVariable String uuid) {
+        return exportService.exportProjectDownload(uuid);
+    }
+
 
     // Branches
 

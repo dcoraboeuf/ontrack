@@ -83,7 +83,8 @@ public class GUIController extends AbstractGUIController {
         securityUtils.checkIsAdmin();
         // Loads the project details
         model.addAttribute("project", manageUI.getProject(name));
-        // FIXME Launching the export asynchronously
+        // Launching the export asynchronously
+        model.addAttribute("projectExportUID", manageUI.exportProjectLaunch(name));
         // OK
         return "project-export";
     }

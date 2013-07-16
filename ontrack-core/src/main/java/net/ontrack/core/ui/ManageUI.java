@@ -25,6 +25,14 @@ public interface ManageUI {
 
     ProjectSummary updateProject(String name, ProjectUpdateForm form);
 
+    // Project I/O
+
+    String exportProjectLaunch(String project);
+
+    Ack exportProjectCheck(String uuid);
+
+    ProjectData exportProjectDownload(String uuid);
+
     // Branches
 
     List<BranchSummary> getBranchList(String project);

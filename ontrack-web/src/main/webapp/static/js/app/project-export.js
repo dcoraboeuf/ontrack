@@ -1,27 +1,25 @@
 define(['jquery', 'ajax'], function ($, ajax) {
 
     var project = $('#project').val();
+    var projectExportUID = $('#projectExportUID').val();
 
     function check() {
         ajax.get({
-            url: 'ui/io/project/{0}'.format(project),
-            successFn: function () {
-                $('#project-export-loading').hide();
-                console.log("Success");
-            },
-            errorFn: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status == 204) {
-                    // No content
+            url: 'ui/manage/export/{0}/check'.format(projectExportUID),
+            successFn: function (ack) {
+                if (ack.success) {
+                    $('#project-export-loading').hide();
+                    alert("Success");
+                } else {
                     // Going on...
                     window.setTimeout(check, 5000);
-                } else {
-                    $('#project-export-loading').hide();
-                    ajax.elementErrorMessageFn($('#project-export-error'))(
-                        ajax.getAjaxError(jqXHR, textStatus, errorThrown)
-                    );
                 }
-            }
-        });
+            },
+            errorFn: ajax.simpleAjaxErrorFn(function (message) {
+                $('#project-export-loading').hide();
+                ajax.elementErrorMessageFn($('#project-export-error'))(message);
+            })
+        })
     }
 
     window.setTimeout(check, 5000)
