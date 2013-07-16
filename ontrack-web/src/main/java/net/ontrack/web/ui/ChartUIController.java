@@ -46,4 +46,13 @@ public class ChartUIController extends AbstractUIController {
                 entityConverter.getBranchId(project, branch)
         );
     }
+
+    @RequestMapping(value = "/ui/chart/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/chart/validation_stamp_runs_without_failure", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Pair<String,Integer>> getChartBranchValidationStampRunsWithoutFailure(@PathVariable String project, @PathVariable String branch) {
+        return managementService.getChartBranchValidationStampRunsWithoutFailure(
+                entityConverter.getBranchId(project, branch)
+        );
+    }
 }

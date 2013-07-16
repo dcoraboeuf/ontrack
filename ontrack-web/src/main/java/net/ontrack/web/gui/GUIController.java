@@ -88,10 +88,10 @@ public class GUIController extends AbstractGUIController {
         // Loads the details
         model.addAttribute("branch", manageUI.getBranch(project, name));
         // All charts
-        // FIXME #203 #204 #205 Uses injection
         model.addAttribute("charts", Arrays.asList(
                 new ChartDefinition("branch-validation-stamp-statuses"),
-                new ChartDefinition("branch-validation-stamp-retries")
+                new ChartDefinition("branch-validation-stamp-retries"),
+                new ChartDefinition("branch-validation-stamp-runs-without-failure")
         ));
         // OK
         return "charts";

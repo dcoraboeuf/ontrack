@@ -1675,6 +1675,59 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return pairs;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Pair<String, Integer>> getChartBranchValidationStampRunsWithoutFailure(int branchId) {
+        List<ValidationStampSummary> stamps = getValidationStampList(branchId);
+        List<Pair<String, Integer>> result = new ArrayList<>();
+        for (ValidationStampSummary stamp : stamps) {
+            // Indexation per run -> first status
+            Map<Integer, Status> index = new TreeMap<>();
+            // Gets all the events
+            List<ValidationRunEvent> events = getValidationRunsForValidationStamp(Locale.ENGLISH, stamp.getId(), 0, Integer.MAX_VALUE);
+            // Collecting each event
+            for (ValidationRunEvent event : events) {
+                if (event.getStatus() != null) {
+                    // Indexation
+                    index.put(event.getValidationRun().getId(), event.getStatus());
+                }
+            }
+            // We have now a list of the first statuses of each run
+            // Converting in pairs
+            List<Pair<Integer, Status>> runs = new ArrayList<>();
+            for (Map.Entry<Integer, Status> entry : index.entrySet()) {
+                runs.add(Pair.of(entry.getKey(), entry.getValue()));
+            }
+            // Sorting from the oldest run to the newest
+            Collections.sort(runs, Ordering.natural().reverse().onResultOf(new Function<Pair<Integer, Status>, Integer>() {
+                @Override
+                public Integer apply(Pair<Integer, Status> pair) {
+                    return pair.getLeft();
+                }
+            }));
+            // We must now count elements in this list until we reach a PASSED status
+            int count = 0;
+            for (Pair<Integer, Status> run : runs) {
+                if (run.getRight() != Status.PASSED) {
+                    break;
+                } else {
+                    count++;
+                }
+            }
+            // Stores the result
+            result.add(Pair.of(stamp.getName(), count));
+        }
+        // Sorting by count
+        Collections.sort(result, Ordering.natural().onResultOf(new Function<Pair<String, Integer>, Integer>() {
+            @Override
+            public Integer apply(Pair<String, Integer> pair) {
+                return pair.getRight();
+            }
+        }));
+        // OK
+        return result;
+    }
+
     protected Event collectEntityContext(Event event, Entity entity, int id) {
         Event e = event.withEntity(entity, id);
         // Gets the entities in the content

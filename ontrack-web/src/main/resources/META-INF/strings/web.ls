@@ -563,8 +563,33 @@ branch-validation-stamp-retries
     fr -> Nouvelles tentatives pour les validations
 
 branch-validation-stamp-retries.description
-    en -> Number of PASSED validation stamps that were achieved after at least one re-run
-    fr -> Nombre de validations PASSED qui ont été acquises après une nouvelle tentative
+    en -> ...
+        Number of PASSED validation stamps that were achieved after at least one re-run. The validation stamps
+        are ordered using the highest number of retries first. It means that the top-most validation stamps
+        are the most unstable.
+        ...
+    fr -> ...
+        Nombre de validations PASSED qui ont été acquises après une nouvelle tentative. Les validations sont
+        triées dans l'ordre croissant du nombre de tentatives. Cela signifie que les validations du haut
+        sont les plus instables.
+        ...
+
+branch-validation-stamp-runs-without-failure
+    en -> Number of runs without failure
+    fr -> Nombre d'exécutions depuis le dernier échec
+
+branch-validation-stamp-runs-without-failure.description
+    en -> ...
+        Indicates the number of times that a validation stamp has run since the last failure. The higher this number,
+        the better the validation stamp is. The validation stamps are sorted from the highest number of runs without
+        failure to the lowest. It means that the validation stamps at the top are the more stable. Counts > 30 are
+        truncated.
+        ...
+    fr -> ...
+        Indiques le nombre de fois qu'une validation a été exécutée depuis le dernier échec. Le plus haut ce nombre
+        est, meilleure est la validation. Les validations sont triées dans l'ordre décroissant du nombre d'exécutions
+        sans échec. Cela signifie que les validations du haut sont les plus stables. Les nombres > 30 sont tronqués.
+        ...
 
 [validation_stamps]
 
