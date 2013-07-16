@@ -41,7 +41,7 @@ public class ChartUIController extends AbstractUIController {
     @RequestMapping(value = "/ui/chart/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/chart/validation_stamp_retries", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<Pair<String,Integer>> getChartBranchValidationStampRetries(@PathVariable String project, @PathVariable String branch) {
+    List<Pair<String,Double>> getChartBranchValidationStampRetries(@PathVariable String project, @PathVariable String branch) {
         return managementService.getChartBranchValidationStampRetries(
                 entityConverter.getBranchId(project, branch)
         );

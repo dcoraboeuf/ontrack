@@ -16,9 +16,9 @@ define(['flot'], function (flot) {
             var index = 0;
             $.each(data, function (i, pair) {
                 var stamp = pair.key;
-                var count = pair.value;
+                var percentage = pair.value;
                 ticks.push([i, stamp]);
-                serie.push([count, i]);
+                serie.push([percentage * 100.0, i]);
             });
             // Preparation of the chart area
             var width = $('#{0}-title'.format(id)).width();

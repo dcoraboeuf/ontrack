@@ -180,5 +180,5 @@ public interface ManagementService {
 
     ChartTable getChartBranchValidationStampStatuses(int branchId);
 
-    List<Pair<String,Integer>> getChartBranchValidationStampRetries(int branchId);
+    List<Pair<String,Double>> getChartBranchValidationStampRetries(int branchId);
 }

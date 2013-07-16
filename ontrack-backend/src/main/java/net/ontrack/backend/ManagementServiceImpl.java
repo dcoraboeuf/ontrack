@@ -1603,9 +1603,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    public List<Pair<String, Integer>> getChartBranchValidationStampRetries(int branchId) {
+    public List<Pair<String, Double>> getChartBranchValidationStampRetries(int branchId) {
         List<ValidationStampSummary> stamps = getValidationStampList(branchId);
-        Map<String, Integer> results = new LinkedHashMap<>();
+        Map<String, Integer> retries = new HashMap<>();
+        Map<String, Integer> totals = new HashMap<>();
         for (ValidationStampSummary stamp : stamps) {
             // Indexation per build -> run -> last status
             Map<Integer, TreeMap<Integer, Status>> index = new HashMap<>();
@@ -1633,28 +1634,40 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // We now must check the last status of each last run
             // If PASSED, we must know if there were some runs before
             for (TreeMap<Integer, Status> runMap : index.values()) {
+                // Total count
+                Integer total = totals.get(stamp.getName());
+                if (total == null) {
+                    totals.put(stamp.getName(), runMap.size());
+                } else {
+                    totals.put(stamp.getName(), total + runMap.size());
+                }
+                // # of retries
                 if (runMap.size() > 1) {
                     Status lastStatus = runMap.get(runMap.lastKey());
                     if (lastStatus == Status.PASSED) {
-                        Integer count = results.get(stamp.getName());
+                        Integer count = retries.get(stamp.getName());
                         if (count == null) {
-                            results.put(stamp.getName(), 1);
+                            retries.put(stamp.getName(), 1);
                         } else {
-                            results.put(stamp.getName(), count + 1);
+                            retries.put(stamp.getName(), count + 1);
                         }
                     }
                 }
             }
         }
         // Gets the maps as pairs
-        List<Pair<String, Integer>> pairs = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : results.entrySet()) {
-            pairs.add(Pair.of(entry.getKey(), entry.getValue()));
+        List<Pair<String, Double>> pairs = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : retries.entrySet()) {
+            String stamp = entry.getKey();
+            int retryCount = entry.getValue();
+            int totalCount = totals.get(stamp);
+            double percentage = retryCount / (double) totalCount;
+            pairs.add(Pair.of(stamp, percentage));
         }
         // Sorts from the highest count to the lowest
-        Collections.sort(pairs, Ordering.natural().onResultOf(new Function<Pair<String, Integer>, Integer>() {
+        Collections.sort(pairs, Ordering.natural().onResultOf(new Function<Pair<String, Double>, Double>() {
             @Override
-            public Integer apply(Pair<String, Integer> pair) {
+            public Double apply(Pair<String, Double> pair) {
                 return pair.getRight();
             }
         }));
