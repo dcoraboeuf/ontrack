@@ -56,42 +56,51 @@ define(['flot.stack'], function (flot) {
                 stamps.length * 36, // Rows
                 Object.keys(seriesPerStatus).length * 36 // Legend
             );
-            var chart = $(
-                '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
-                    .format(
-                        chartId,
-                        width,
-                        height
-                    )
-            )
-                .appendTo(container);
-            // Ticks for the validation stamps
-            var ticks = [];
-            for (var i = 0 ; i < stamps.length ; i++) {
-                ticks.push([i, stamps[i]])
-            }
-            // Plotting
-            $(chart).plot(
-                series,
-                {
-                    series: {
-                        stack: true,
-                        bars: {
-                            show: true,
-                            barWidth: 0.8,
-                            lineWidth: 0,
-                            horizontal: true,
-                            align: 'center'
-                        }
-                    },
-                    xaxis: {
-                        tickDecimals: 0
-                    },
-                    yaxis: {
-                        ticks: ticks
-                    }
+            // Not enough data
+            if (height == 0) {
+                $('<div></div>')
+                    .addClass('alert')
+                    .addClass('alert-warning')
+                    .text('branch.charts.nodata'.loc())
+                    .appendTo(container);
+            } else {
+                var chart = $(
+                    '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
+                        .format(
+                            chartId,
+                            width,
+                            height
+                        )
+                )
+                    .appendTo(container);
+                // Ticks for the validation stamps
+                var ticks = [];
+                for (var i = 0 ; i < stamps.length ; i++) {
+                    ticks.push([i, stamps[i]])
                 }
-            );
+                // Plotting
+                $(chart).plot(
+                    series,
+                    {
+                        series: {
+                            stack: true,
+                            bars: {
+                                show: true,
+                                barWidth: 0.8,
+                                lineWidth: 0,
+                                horizontal: true,
+                                align: 'center'
+                            }
+                        },
+                        xaxis: {
+                            tickDecimals: 0
+                        },
+                        yaxis: {
+                            ticks: ticks
+                        }
+                    }
+                );
+            }
         }
     }
 

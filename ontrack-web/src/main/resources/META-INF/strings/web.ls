@@ -550,6 +550,10 @@ branch.charts
     en -> Charts
     fr -> Graphiques
 
+branch.charts.nodata
+    en -> Not enough data is available.
+    fr -> Pas assez de données.
+
 branch-validation-stamp-statuses
     en -> Validation stamps statuses
     fr -> Statuts des validations

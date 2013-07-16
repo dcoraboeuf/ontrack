@@ -23,37 +23,46 @@ define(['flot'], function (flot) {
             // Preparation of the chart area
             var width = $('#{0}-title'.format(id)).width();
             var height = serie.length * 24;
-            var chart = $(
-                '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
-                    .format(
-                        chartId,
-                        width,
-                        height
-                    )
-            )
-                .appendTo(container);
-            // Plotting
-            $(chart).plot(
-                [ serie ],
-                {
-                    series: {
-                        bars: {
-                            show: true,
-                            barWidth: 0.8,
-                            lineWidth: 0,
-                            horizontal: true,
-                            align: 'center'
+            // Not enough data
+            if (height == 0) {
+                $('<div></div>')
+                    .addClass('alert')
+                    .addClass('alert-warning')
+                    .text('branch.charts.nodata'.loc())
+                    .appendTo(container);
+            } else {
+                var chart = $(
+                    '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
+                        .format(
+                            chartId,
+                            width,
+                            height
+                        )
+                )
+                    .appendTo(container);
+                // Plotting
+                $(chart).plot(
+                    [ serie ],
+                    {
+                        series: {
+                            bars: {
+                                show: true,
+                                barWidth: 0.8,
+                                lineWidth: 0,
+                                horizontal: true,
+                                align: 'center'
+                            }
+                        },
+                        xaxis: {
+                            tickDecimals: 0,
+                            max: 30
+                        },
+                        yaxis: {
+                            ticks: ticks
                         }
-                    },
-                    xaxis: {
-                        tickDecimals: 0,
-                        max: 30
-                    },
-                    yaxis: {
-                        ticks: ticks
                     }
-                }
-            );
+                );
+            }
         }
     }
 
