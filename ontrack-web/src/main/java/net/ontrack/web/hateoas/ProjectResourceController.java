@@ -1,7 +1,7 @@
 package net.ontrack.web.hateoas;
 
-import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.ui.ManageUI;
+import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/rest/project")
-public class ProjectResourceController {
+public class ProjectResourceController extends AbstractResourceController {
 
     private final ManageUI manageUI;
     private final ProjectResourceAssembler projectResourceAssembler;
 
     @Autowired
-    public ProjectResourceController(ManageUI manageUI, ProjectResourceAssembler projectResourceAssembler) {
+    public ProjectResourceController(Strings strings, ManageUI manageUI, ProjectResourceAssembler projectResourceAssembler) {
+        super(strings);
         this.manageUI = manageUI;
         this.projectResourceAssembler = projectResourceAssembler;
     }
@@ -31,8 +32,7 @@ public class ProjectResourceController {
     public
     @ResponseBody
     ProjectResource projectGet(@PathVariable String name) {
-        ProjectSummary p = manageUI.getProject(name);
-        return projectResourceAssembler.toResource(p);
+        return projectResourceAssembler.toResource(manageUI.getProject(name));
     }
 
 }
