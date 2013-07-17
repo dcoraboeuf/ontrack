@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/rest/project")
 public class ProjectResourceController extends AbstractResourceController {
@@ -24,8 +26,10 @@ public class ProjectResourceController extends AbstractResourceController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public void projectList() {
-
+    public
+    @ResponseBody
+    List<ProjectResource> projectList() {
+        return projectResourceAssembler.toResources(manageUI.getProjectList());
     }
 
     @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
