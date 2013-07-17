@@ -13,7 +13,7 @@ public class ProjectResourceAssembler extends ResourceAssemblerSupport<ProjectSu
 
     @Override
     public ProjectResource toResource(ProjectSummary entity) {
-        return createResourceWithId(entity.getName(), entity);
+        return createResourceWithId(entity.getId(), entity);
     }
 
     @Override

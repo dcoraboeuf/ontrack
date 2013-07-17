@@ -1,6 +1,6 @@
 package net.ontrack.web.hateoas;
 
-import net.ontrack.core.ui.ManageUI;
+import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,13 +15,13 @@ import java.util.List;
 @RequestMapping("/rest/project")
 public class ProjectResourceController extends AbstractResourceController {
 
-    private final ManageUI manageUI;
+    private final ManagementService managementService;
     private final ProjectResourceAssembler projectResourceAssembler;
 
     @Autowired
-    public ProjectResourceController(Strings strings, ManageUI manageUI, ProjectResourceAssembler projectResourceAssembler) {
+    public ProjectResourceController(Strings strings, ManagementService managementService, ProjectResourceAssembler projectResourceAssembler) {
         super(strings);
-        this.manageUI = manageUI;
+        this.managementService = managementService;
         this.projectResourceAssembler = projectResourceAssembler;
     }
 
@@ -29,14 +29,14 @@ public class ProjectResourceController extends AbstractResourceController {
     public
     @ResponseBody
     List<ProjectResource> projectList() {
-        return projectResourceAssembler.toResources(manageUI.getProjectList());
+        return projectResourceAssembler.toResources(managementService.getProjectList());
     }
 
-    @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
     public
     @ResponseBody
-    ProjectResource projectGet(@PathVariable String name) {
-        return projectResourceAssembler.toResource(manageUI.getProject(name));
+    ProjectResource projectGet(@PathVariable int id) {
+        return projectResourceAssembler.toResource(managementService.getProject(id));
     }
 
 }
