@@ -1,13 +1,13 @@
 package net.ontrack.web.hateoas;
 
+import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.ProjectCreationForm;
+import net.ontrack.core.model.ProjectUpdateForm;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,11 +34,32 @@ public class ProjectResourceController extends AbstractResourceController {
         return projectResourceAssembler.toResources(managementService.getProjectList());
     }
 
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ProjectResource projectCreate(@RequestBody ProjectCreationForm form) {
+        return projectResourceAssembler.toResource(managementService.createProject(form));
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     ProjectResource projectGet(@PathVariable int id) {
         return projectResourceAssembler.toResource(managementService.getProject(id));
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ProjectResource projectUpdate(@PathVariable int id, @RequestBody ProjectUpdateForm form) {
+        return projectResourceAssembler.toResource(managementService.updateProject(id, form));
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack projectDelete(@PathVariable int id) {
+        return managementService.deleteProject(id);
     }
 
     @RequestMapping(value = "/{id}/branch", method = RequestMethod.GET)
