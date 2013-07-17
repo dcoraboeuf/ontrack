@@ -1,12 +1,12 @@
 package net.ontrack.core.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
 
 public class ChartTable {
 
-    private final Map<String, Map<String, Integer>> support = new HashMap<>();
+    private final Map<String, Map<String, Integer>> support = new LinkedHashMap<>();
 
     private ChartTable() {
     }
@@ -23,7 +23,13 @@ public class ChartTable {
         support.get(row).put(column, count);
     }
 
-    public Map<String, Map<String, Integer>> getTable() {
-        return support;
+    public List<Pair<String, Map<String, Integer>>> getTable() {
+        List<Pair<String, Map<String, Integer>>> pairs = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Integer>> entry : support.entrySet()) {
+            String stamp = entry.getKey();
+            Map<String, Integer> statuses = entry.getValue();
+            pairs.add(Pair.of(stamp, statuses));
+        }
+        return pairs;
     }
 }

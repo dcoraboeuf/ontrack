@@ -23,18 +23,20 @@ define(['flot.stack'], function (flot) {
             var stamps = [];
             var seriesPerStatus = {};
             var stampIndex = 0;
-            for (var stamp in data.table) {
+            $.each(data.table, function (index, pair) {
+                var stamp = pair.key;
+                var statuses = pair.value;
                 // Total for the stamp
                 var total = 0;
-                for (var status in data.table[stamp]) {
-                    var count = data.table[stamp][status];
+                for (var status in statuses) {
+                    var count = statuses[status];
                     total += count;
                 }
                 if (total > 0) {
                     stamps.push(stamp);
                     // Per status
-                    for (var status in data.table[stamp]) {
-                        var count = data.table[stamp][status];
+                    for (var status in statuses) {
+                        var count = statuses[status];
                         if (!seriesPerStatus[status]) {
                             seriesPerStatus[status] = [];
                         }
@@ -42,7 +44,7 @@ define(['flot.stack'], function (flot) {
                     }
                     stampIndex++;
                 }
-            }
+            });
             // Getting the series in flot format
             var series = [];
             for (var status in seriesPerStatus) {
