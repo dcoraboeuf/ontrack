@@ -24,22 +24,24 @@ define(['flot.stack'], function (flot) {
             var seriesPerStatus = {};
             var stampIndex = 0;
             for (var stamp in data.table) {
-                stamps.push(stamp);
                 // Total for the stamp
                 var total = 0;
                 for (var status in data.table[stamp]) {
                     var count = data.table[stamp][status];
                     total += count;
                 }
-                // Per status
-                for (var status in data.table[stamp]) {
-                    var count = data.table[stamp][status];
-                    if (!seriesPerStatus[status]) {
-                        seriesPerStatus[status] = [];
+                if (total > 0) {
+                    stamps.push(stamp);
+                    // Per status
+                    for (var status in data.table[stamp]) {
+                        var count = data.table[stamp][status];
+                        if (!seriesPerStatus[status]) {
+                            seriesPerStatus[status] = [];
+                        }
+                        seriesPerStatus[status].push([100.0 * count / total, stampIndex]);
                     }
-                    seriesPerStatus[status].push([100.0 * count / total, stampIndex]);
+                    stampIndex++;
                 }
-                stampIndex++;
             }
             // Getting the series in flot format
             var series = [];
@@ -75,7 +77,7 @@ define(['flot.stack'], function (flot) {
                     .appendTo(container);
                 // Ticks for the validation stamps
                 var ticks = [];
-                for (var i = 0 ; i < stamps.length ; i++) {
+                for (var i = 0; i < stamps.length; i++) {
                     ticks.push([i, stamps[i]])
                 }
                 // Plotting
