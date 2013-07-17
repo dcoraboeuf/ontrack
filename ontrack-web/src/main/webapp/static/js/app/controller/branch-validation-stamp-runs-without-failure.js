@@ -47,6 +47,7 @@ define(['flot'], function (flot) {
                     [ serie ],
                     {
                         series: {
+                            color: 'green',
                             bars: {
                                 show: true,
                                 barWidth: 0.8,

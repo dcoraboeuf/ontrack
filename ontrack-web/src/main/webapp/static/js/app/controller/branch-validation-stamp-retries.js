@@ -47,6 +47,7 @@ define(['flot'], function (flot) {
                     [ serie ],
                     {
                         series: {
+                            color: 'red',
                             bars: {
                                 show: true,
                                 barWidth: 0.8,
@@ -56,7 +57,8 @@ define(['flot'], function (flot) {
                             }
                         },
                         xaxis: {
-                            tickDecimals: 0
+                            tickDecimals: 0,
+                            max: 100
                         },
                         yaxis: {
                             ticks: ticks

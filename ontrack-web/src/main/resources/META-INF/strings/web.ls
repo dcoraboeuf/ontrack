@@ -568,12 +568,12 @@ branch-validation-stamp-retries
 
 branch-validation-stamp-retries.description
     en -> ...
-        Number of PASSED validation stamps that were achieved after at least one re-run. The validation stamps
+        Percentage of PASSED validation stamps that were achieved after at least one re-run. The validation stamps
         are ordered using the highest number of retries first. It means that the top-most validation stamps
         are the most unstable.
         ...
     fr -> ...
-        Nombre de validations PASSED qui ont été acquises après une nouvelle tentative. Les validations sont
+        Pourcentage de validations PASSED qui ont été acquises après une nouvelle tentative. Les validations sont
         triées dans l'ordre croissant du nombre de tentatives. Cela signifie que les validations du haut
         sont les plus instables.
         ...

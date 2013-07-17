@@ -33,6 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
+import static com.google.common.base.Predicates.equalTo;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Iterables.any;
+
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
     /**
@@ -1644,7 +1648,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 // # of retries
                 if (runMap.size() > 1) {
                     Status lastStatus = runMap.get(runMap.lastKey());
-                    if (lastStatus == Status.PASSED) {
+                    // If the last status is PASSED and if at least one previous run status was NOT PASSED
+                    if (lastStatus == Status.PASSED &&
+                            any(runMap.values(), not(equalTo(Status.PASSED)))) {
+                        // We count this build as having been retried
                         Integer count = retries.get(stamp.getName());
                         if (count == null) {
                             retries.put(stamp.getName(), 1);
