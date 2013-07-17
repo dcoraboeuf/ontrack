@@ -17,12 +17,14 @@ public class ProjectResourceController extends AbstractResourceController {
 
     private final ManagementService managementService;
     private final ProjectResourceAssembler projectResourceAssembler;
+    private final BranchResourceAssembler branchResourceAssembler;
 
     @Autowired
-    public ProjectResourceController(Strings strings, ManagementService managementService, ProjectResourceAssembler projectResourceAssembler) {
+    public ProjectResourceController(Strings strings, ManagementService managementService, ProjectResourceAssembler projectResourceAssembler, BranchResourceAssembler branchResourceAssembler) {
         super(strings);
         this.managementService = managementService;
         this.projectResourceAssembler = projectResourceAssembler;
+        this.branchResourceAssembler = branchResourceAssembler;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -32,11 +34,18 @@ public class ProjectResourceController extends AbstractResourceController {
         return projectResourceAssembler.toResources(managementService.getProjectList());
     }
 
-    @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     ProjectResource projectGet(@PathVariable int id) {
         return projectResourceAssembler.toResource(managementService.getProject(id));
+    }
+
+    @RequestMapping(value = "/{id}/branch", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BranchResource> projectBranchList(@PathVariable int id) {
+        return branchResourceAssembler.toResources(managementService.getBranchList(id));
     }
 
 }
