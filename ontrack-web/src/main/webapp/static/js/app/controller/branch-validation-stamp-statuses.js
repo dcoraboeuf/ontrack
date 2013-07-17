@@ -100,7 +100,9 @@ define(['flot.stack'], function (flot) {
                             tickDecimals: 0
                         },
                         yaxis: {
-                            ticks: ticks
+                            ticks: ticks,
+                            transform: function (v) { return -v; },
+                            inverseTransform: function (v) { return -v; }
                         }
                     }
                 );
