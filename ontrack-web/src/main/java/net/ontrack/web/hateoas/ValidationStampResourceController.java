@@ -29,6 +29,7 @@ public class ValidationStampResourceController extends AbstractResourceControlle
         @Override
         public ValidationStampResource apply(ValidationStampSummary o) {
             return validationStampStubFn.apply(o);
+            // TODO Account resource link
         }
     };
     private final ManagementService managementService;
