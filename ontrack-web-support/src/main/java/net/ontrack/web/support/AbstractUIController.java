@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 public abstract class AbstractUIController extends AbstractController {
@@ -33,7 +32,7 @@ public abstract class AbstractUIController extends AbstractController {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> onNotFoundException(HttpServletRequest request, Locale locale, InputException ex) {
+    public ResponseEntity<String> onNotFoundException(Locale locale, NotFoundException ex) {
         // Returns a message to display to the user
         String message = ex.getLocalizedMessage(strings, locale);
         // OK
@@ -41,7 +40,7 @@ public abstract class AbstractUIController extends AbstractController {
     }
 
     @ExceptionHandler(InputException.class)
-    public ResponseEntity<String> onInputException(HttpServletRequest request, Locale locale, InputException ex) {
+    public ResponseEntity<String> onInputException(Locale locale, InputException ex) {
         // Returns a message to display to the user
         String message = ex.getLocalizedMessage(strings, locale);
         // OK
@@ -49,13 +48,13 @@ public abstract class AbstractUIController extends AbstractController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> onException(HttpServletRequest request, Locale locale, Exception ex) throws Exception {
+    public ResponseEntity<String> onException(Locale locale, Exception ex) throws Exception {
         // Ignores access errors
         if (ex instanceof AccessDeniedException) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         // Error message
-        ErrorMessage error = errorHandler.handleError(request, locale, ex);
+        ErrorMessage error = errorHandler.handleError(locale, ex);
         // Returns a message to display to the user
         String message = strings.get(locale, "general.error.full", error.getMessage(), error.getUuid());
         // Ok

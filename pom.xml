@@ -204,6 +204,12 @@
 			    <artifactId>nekohtml</artifactId>
 			    <version>1.9.17</version>
 			</dependency>
+            <!-- Spring HATEOAS -->
+            <dependency>
+                <groupId>org.springframework.hateoas</groupId>
+                <artifactId>spring-hateoas</artifactId>
+                <version>0.7.0.RELEASE</version>
+            </dependency>
 			<!-- AOP -->
 			<dependency>
 				<groupId>org.aspectj</groupId>
