@@ -12,7 +12,7 @@ import net.ontrack.core.model.BranchSummary;
 public class BranchResource extends AbstractResource<BranchResource> {
 
     private final int branchId;
-    private final String project;
+    private final String projectName;
     private final String name;
     private final String description;
 

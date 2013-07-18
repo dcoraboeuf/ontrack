@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.constraints.NotNull;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -28,8 +30,10 @@ public class BranchResourceController extends AbstractResourceController {
     public static final Function<BranchSummary, BranchResource> branchFn = new Function<BranchSummary, BranchResource>() {
 
         @Override
-        public BranchResource apply(BranchSummary o) {
-            return branchStubFn.apply(o);
+        public BranchResource apply(@NotNull BranchSummary o) {
+            //noinspection ConstantConditions
+            return branchStubFn.apply(o)
+                    .withLink(linkTo(methodOn(ProjectResourceController.class).projectGet(o.getProject().getId())).withRel("project"));
         }
     };
     private final ManagementService managementService;
