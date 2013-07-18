@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,8 +43,8 @@ public class BranchResourceController extends AbstractResourceController {
     private final ManagementService managementService;
 
     @Autowired
-    public BranchResourceController(Strings strings, ManagementService managementService) {
-        super(strings);
+    public BranchResourceController(ErrorHandler errorHandler, Strings strings, ManagementService managementService) {
+        super(errorHandler, strings);
         this.managementService = managementService;
     }
 

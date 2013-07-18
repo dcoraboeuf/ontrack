@@ -1,5 +1,6 @@
 package net.ontrack.web.hateoas;
 
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
@@ -16,8 +17,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class RootResourceController extends AbstractResourceController {
 
     @Autowired
-    public RootResourceController(Strings strings) {
-        super(strings);
+    public RootResourceController(ErrorHandler errorHandler, Strings strings) {
+        super(errorHandler, strings);
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

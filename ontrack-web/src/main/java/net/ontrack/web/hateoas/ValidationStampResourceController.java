@@ -3,6 +3,7 @@ package net.ontrack.web.hateoas;
 import com.google.common.base.Function;
 import net.ontrack.core.model.ValidationStampSummary;
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,8 @@ public class ValidationStampResourceController extends AbstractResourceControlle
     private final ManagementService managementService;
 
     @Autowired
-    public ValidationStampResourceController(Strings strings, ManagementService managementService) {
-        super(strings);
+    public ValidationStampResourceController(ErrorHandler errorHandler, Strings strings, ManagementService managementService) {
+        super(errorHandler, strings);
         this.managementService = managementService;
     }
 

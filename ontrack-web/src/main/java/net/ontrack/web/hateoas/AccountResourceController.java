@@ -3,6 +3,7 @@ package net.ontrack.web.hateoas;
 import com.google.common.base.Function;
 import net.ontrack.core.model.Account;
 import net.ontrack.service.AccountService;
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,8 @@ public class AccountResourceController extends AbstractResourceController {
     private final AccountService accountService;
 
     @Autowired
-    public AccountResourceController(Strings strings, AccountService accountService) {
-        super(strings);
+    public AccountResourceController(ErrorHandler errorHandler, Strings strings, AccountService accountService) {
+        super(errorHandler, strings);
         this.accountService = accountService;
     }
 

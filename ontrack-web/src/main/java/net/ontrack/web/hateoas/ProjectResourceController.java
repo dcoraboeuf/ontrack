@@ -7,6 +7,7 @@ import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ProjectUpdateForm;
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,8 @@ public class ProjectResourceController extends AbstractResourceController {
     private final ManagementService managementService;
 
     @Autowired
-    public ProjectResourceController(Strings strings, ManagementService managementService) {
-        super(strings);
+    public ProjectResourceController(ErrorHandler errorHandler, Strings strings, ManagementService managementService) {
+        super(errorHandler, strings);
         this.managementService = managementService;
     }
 
