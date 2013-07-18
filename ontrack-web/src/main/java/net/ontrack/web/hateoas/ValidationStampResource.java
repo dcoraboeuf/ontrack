@@ -17,10 +17,10 @@ public class ValidationStampResource extends AbstractResource<ValidationStampRes
     private final String name;
     private final String description;
     private final int orderNb;
-    private final AccountResource owner;
+    private final AccountNameResource owner;
 
     public ValidationStampResource(ValidationStampSummary o) {
         this(o.getId(), o.getBranch().getProject().getName(), o.getBranch().getName(), o.getName(), o.getDescription(), o.getOrderNb(),
-                o.getOwner() != null ? new AccountResource(o.getOwner()) : null);
+                o.getOwner() != null ? new AccountNameResource(o.getOwner()) : null);
     }
 }

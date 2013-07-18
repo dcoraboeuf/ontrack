@@ -28,8 +28,12 @@ public class ValidationStampResourceController extends AbstractResourceControlle
     public static final Function<ValidationStampSummary, ValidationStampResource> validationStampFn = new Function<ValidationStampSummary, ValidationStampResource>() {
         @Override
         public ValidationStampResource apply(ValidationStampSummary o) {
-            return validationStampStubFn.apply(o);
-            // TODO Account resource link
+            ValidationStampResource r = validationStampStubFn.apply(o);
+            AccountNameResource owner = r.getOwner();
+            if (owner != null) {
+                owner.add(linkTo(methodOn(AccountResourceController.class).accountGet(owner.getAccountId())).withSelfRel());
+            }
+            return r;
         }
     };
     private final ManagementService managementService;
