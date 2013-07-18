@@ -48,14 +48,14 @@ public class BranchResourceController extends AbstractResourceController {
         this.managementService = managementService;
     }
 
-    @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     BranchResource branchGet(@PathVariable int id) {
         return branchFn.apply(managementService.getBranch(id));
     }
 
-    @RequestMapping(value = "/{id:[\\d+]+}/validation-stamp", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/validation-stamp", method = RequestMethod.GET)
     public
     @ResponseBody
     List<ValidationStampResource> branchValidationStampList(@PathVariable int id) {

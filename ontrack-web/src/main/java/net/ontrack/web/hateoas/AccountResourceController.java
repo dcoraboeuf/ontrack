@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @Controller
 @RequestMapping("/rest/account")
 public class AccountResourceController extends AbstractResourceController {
@@ -24,7 +27,7 @@ public class AccountResourceController extends AbstractResourceController {
         this.accountService = accountService;
     }
 
-    @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     AccountResource accountGet(@PathVariable int id) {
@@ -32,7 +35,7 @@ public class AccountResourceController extends AbstractResourceController {
 
             @Override
             public AccountResource apply(Account o) {
-                return new AccountResource(o);
+                return new AccountResource(o).withLink(linkTo(methodOn(AccountResourceController.class).accountGet(o.getId())).withSelfRel());
             }
         }.apply(accountService.getAccount(id));
     }

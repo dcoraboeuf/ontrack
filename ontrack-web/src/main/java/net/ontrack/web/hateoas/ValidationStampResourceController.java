@@ -45,7 +45,7 @@ public class ValidationStampResourceController extends AbstractResourceControlle
         this.managementService = managementService;
     }
 
-    @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     ValidationStampResource validationStampGet(@PathVariable int id) {
