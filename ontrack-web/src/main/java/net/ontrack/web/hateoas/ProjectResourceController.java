@@ -1,7 +1,10 @@
 package net.ontrack.web.hateoas;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ProjectCreationForm;
+import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ProjectUpdateForm;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
@@ -11,48 +14,65 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @Controller
 @RequestMapping("/rest/project")
 public class ProjectResourceController extends AbstractResourceController {
 
+    public static final Function<ProjectSummary, ProjectResource> projectStubFn = new Function<ProjectSummary, ProjectResource>() {
+        @Override
+        public ProjectResource apply(ProjectSummary o) {
+            return new ProjectResource(o)
+                    .withLink(linkTo(methodOn(ProjectResourceController.class).projectGet(o.getId())).withSelfRel());
+        }
+    };
+    public static final Function<ProjectSummary, ProjectResource> projectFn = new Function<ProjectSummary, ProjectResource>() {
+
+        @Override
+        public ProjectResource apply(ProjectSummary o) {
+            return projectStubFn.apply(o)
+                    .withLink(linkTo(methodOn(ProjectResourceController.class).projectBranchList(o.getId())).withRel("branches"));
+        }
+    };
     private final ManagementService managementService;
-    private final ProjectResourceAssembler projectResourceAssembler;
-    private final BranchResourceAssembler branchResourceAssembler;
 
     @Autowired
-    public ProjectResourceController(Strings strings, ManagementService managementService, ProjectResourceAssembler projectResourceAssembler, BranchResourceAssembler branchResourceAssembler) {
+    public ProjectResourceController(Strings strings, ManagementService managementService) {
         super(strings);
         this.managementService = managementService;
-        this.projectResourceAssembler = projectResourceAssembler;
-        this.branchResourceAssembler = branchResourceAssembler;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public
     @ResponseBody
     List<ProjectResource> projectList() {
-        return projectResourceAssembler.toResources(managementService.getProjectList());
+        return Lists.transform(
+                managementService.getProjectList(),
+                projectStubFn
+        );
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public
     @ResponseBody
     ProjectResource projectCreate(@RequestBody ProjectCreationForm form) {
-        return projectResourceAssembler.toResource(managementService.createProject(form));
+        return projectFn.apply(managementService.createProject(form));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     ProjectResource projectGet(@PathVariable int id) {
-        return projectResourceAssembler.toResource(managementService.getProject(id));
+        return projectFn.apply(managementService.getProject(id));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public
     @ResponseBody
     ProjectResource projectUpdate(@PathVariable int id, @RequestBody ProjectUpdateForm form) {
-        return projectResourceAssembler.toResource(managementService.updateProject(id, form));
+        return projectFn.apply(managementService.updateProject(id, form));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -66,7 +86,10 @@ public class ProjectResourceController extends AbstractResourceController {
     public
     @ResponseBody
     List<BranchResource> projectBranchList(@PathVariable int id) {
-        return branchResourceAssembler.toResources(managementService.getBranchList(id));
+        return Lists.transform(
+                managementService.getBranchList(id),
+                BranchResourceController.branchStubFn
+        );
     }
 
 }

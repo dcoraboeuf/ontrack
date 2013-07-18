@@ -1,5 +1,7 @@
 package net.ontrack.web.hateoas;
 
+import com.google.common.base.Function;
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,27 +11,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Controller
 @RequestMapping("/rest/branch")
 public class BranchResourceController extends AbstractResourceController {
 
+    public static final Function<BranchSummary, BranchResource> branchStubFn = new Function<BranchSummary, BranchResource>() {
+        @Override
+        public BranchResource apply(BranchSummary o) {
+            return new BranchResource(o)
+                    .withLink(linkTo(methodOn(BranchResourceController.class).branchGet(o.getId())).withSelfRel());
+        }
+    };
+    public static final Function<BranchSummary, BranchResource> branchFn = new Function<BranchSummary, BranchResource>() {
+
+        @Override
+        public BranchResource apply(BranchSummary o) {
+            return branchStubFn.apply(o);
+        }
+    };
     private final ManagementService managementService;
-    private final BranchResourceAssembler branchResourceAssembler;
 
     @Autowired
-    public BranchResourceController(Strings strings, ManagementService managementService, BranchResourceAssembler branchResourceAssembler) {
+    public BranchResourceController(Strings strings, ManagementService managementService) {
         super(strings);
         this.managementService = managementService;
-        this.branchResourceAssembler = branchResourceAssembler;
     }
 
     @RequestMapping(value = "/{id:[\\d+]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     BranchResource branchGet(@PathVariable int id) {
-        return branchResourceAssembler.toResource(managementService.getBranch(id));
+        return branchFn.apply(managementService.getBranch(id));
     }
 
 }
