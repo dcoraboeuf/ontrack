@@ -72,13 +72,15 @@ public class DefaultJenkinsClient implements JenkinsClient {
                 if (build.has("culprits")) {
                     JsonNode jCulprits = build.get("culprits");
                     if (jCulprits.isArray()) {
-                        // Gets the previous build
-                        JsonNode previousBuild = builds.get(1);
                         String claim = "";
-                        if (previousBuild.has("actions")) {
-                            for (JsonNode jAction : previousBuild.get("actions")) {
-                                if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
-                                    claim = jAction.get("claimedBy").getTextValue();
+                        if (builds.size() > 1) {
+                            // Gets the previous build
+                            JsonNode previousBuild = builds.get(1);
+                            if (previousBuild.has("actions")) {
+                                for (JsonNode jAction : previousBuild.get("actions")) {
+                                    if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
+                                        claim = jAction.get("claimedBy").getTextValue();
+                                    }
                                 }
                             }
                         }
