@@ -36,7 +36,8 @@ public class ProjectSearchProvider extends AbstractEntitySearchProvider {
                     new SearchResult(
                             p.getName(),
                             new LocalizableMessage("search.project", p.getName()),
-                            guiPath("project/%s", p.getName())
+                            guiPath("project/%s", p.getName()),
+                            100
                     )
             );
         } else {

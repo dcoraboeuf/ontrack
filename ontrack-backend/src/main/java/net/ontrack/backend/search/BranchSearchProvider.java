@@ -45,7 +45,8 @@ public class BranchSearchProvider extends AbstractEntitySearchProvider {
                         return new SearchResult(
                                 String.format("%s/%s", project.getName(), branch.getName()),
                                 new LocalizableMessage("search.branch", project.getName(), branch.getName()),
-                                guiPath("project/%s/branch/%s", project.getName(), branch.getName())
+                                guiPath("project/%s/branch/%s", project.getName(), branch.getName()),
+                                100
                         );
                     }
                 }

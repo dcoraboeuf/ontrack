@@ -41,7 +41,8 @@ public class IssueSearchProvider implements SearchProvider {
                     new SearchResult(
                             key,
                             new LocalizableMessage("svnexplorer.search.key", key),
-                            guiService.toGUI(String.format("extension/svnexplorer/issue/%s", key))
+                            guiService.toGUI(String.format("extension/svnexplorer/issue/%s", key)),
+                            80
                     )
             );
         } else {
