@@ -64,6 +64,11 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
+    public boolean isController() {
+        return hasRole(SecurityRoles.CONTROLLER);
+    }
+
+    @Override
     public void checkIsAdmin() {
         if (!isAdmin()) {
             throw new AccessDeniedException("Administrator right is required");
