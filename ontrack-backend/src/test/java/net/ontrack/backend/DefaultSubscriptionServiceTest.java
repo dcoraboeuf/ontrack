@@ -15,11 +15,12 @@ import net.ontrack.service.MessageService;
 import net.ontrack.service.TemplateService;
 import net.ontrack.service.model.MessageChannel;
 import net.ontrack.service.model.MessageDestination;
+import net.ontrack.service.model.TemplateModel;
 import org.joda.time.DateTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import static org.mockito.Mockito.*;
@@ -27,13 +28,13 @@ import static org.mockito.Mockito.*;
 public class DefaultSubscriptionServiceTest {
 
     @Test
-    @Ignore
     public void publish_with_status() {
         // Mocks
         SubscriptionDao subscriptionDao = mock(SubscriptionDao.class);
         AccountDao accountDao = mock(AccountDao.class);
         GUIEventService guiEventService = mock(GUIEventService.class);
         MessageService messageService = mock(MessageService.class);
+        TemplateService templateService = mock(TemplateService.class);
         // Service to test
         DefaultSubscriptionService service = new DefaultSubscriptionService(
                 mock(SecurityUtils.class),
@@ -44,7 +45,7 @@ public class DefaultSubscriptionServiceTest {
                 guiEventService,
                 mock(GUIService.class),
                 messageService,
-                mock(TemplateService.class),
+                templateService,
                 new CoreConfig().strings()
         );
         // Event to send
@@ -92,6 +93,12 @@ public class DefaultSubscriptionServiceTest {
                         Status.FAILED.name()
                 )
         );
+        // Template
+        when(templateService.generate(
+                eq("event.html"),
+                eq(Locale.ENGLISH),
+                any(TemplateModel.class)
+        )).thenReturn("The message content with <b>html</b>.");
         // Publishes an event
         service.publish(event);
         // Checks the reception
@@ -100,8 +107,8 @@ public class DefaultSubscriptionServiceTest {
                         "ontrack event",
                         new MessageContent(
                                 MessageContentType.HTML,
-                                "",
-                                MapBuilder.of("", "").get()
+                                "The message content with <b>html</b>.",
+                                Collections.<String, String>emptyMap()
                         )
                 ),
                 new MessageDestination(
