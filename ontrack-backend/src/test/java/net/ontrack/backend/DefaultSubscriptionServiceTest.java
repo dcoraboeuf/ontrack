@@ -17,26 +17,35 @@ import net.ontrack.service.model.MessageChannel;
 import net.ontrack.service.model.MessageDestination;
 import net.ontrack.service.model.TemplateModel;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class DefaultSubscriptionServiceTest {
 
-    @Test
-    public void publish_with_status() {
+    private SubscriptionDao subscriptionDao;
+    private AccountDao accountDao;
+    private GUIEventService guiEventService;
+    private MessageService messageService;
+    private TemplateService templateService;
+    private DefaultSubscriptionService service;
+
+    @Before
+    public void before() {
         // Mocks
-        SubscriptionDao subscriptionDao = mock(SubscriptionDao.class);
-        AccountDao accountDao = mock(AccountDao.class);
-        GUIEventService guiEventService = mock(GUIEventService.class);
-        MessageService messageService = mock(MessageService.class);
-        TemplateService templateService = mock(TemplateService.class);
+        subscriptionDao = mock(SubscriptionDao.class);
+        accountDao = mock(AccountDao.class);
+        guiEventService = mock(GUIEventService.class);
+        messageService = mock(MessageService.class);
+        templateService = mock(TemplateService.class);
         // Service to test
-        DefaultSubscriptionService service = new DefaultSubscriptionService(
+        service = new DefaultSubscriptionService(
                 mock(SecurityUtils.class),
                 mock(ConfigurationService.class),
                 subscriptionDao,
@@ -48,6 +57,17 @@ public class DefaultSubscriptionServiceTest {
                 templateService,
                 new CoreConfig().strings()
         );
+    }
+
+    @Test
+    public void getMessageAbstract() {
+        String html = "The message content with <b>html</b> and a <a href=\"test\">link</a>.";
+        String text = service.getMessageAbstract(html);
+        assertEquals("The message content with html and a link.", text);
+    }
+
+    @Test
+    public void publish_with_status() {
         // Event to send
         ExpandedEvent event = new ExpandedEvent(
                 100,
@@ -88,7 +108,7 @@ public class DefaultSubscriptionServiceTest {
                         EventType.VALIDATION_RUN_CREATED,
                         "The timestamp",
                         "The elapsed time",
-                        "The message content with <b>html</b>.",
+                        "The message content with <b>html</b> and a <a href=\"test\">link</a>.",
                         "icon-class",
                         Status.FAILED.name()
                 )
@@ -98,16 +118,16 @@ public class DefaultSubscriptionServiceTest {
                 eq("event.html"),
                 eq(Locale.ENGLISH),
                 any(TemplateModel.class)
-        )).thenReturn("The message content with <b>html</b>.");
+        )).thenReturn("The message content with <b>html</b> and a <a href=\"test\">link</a>.");
         // Publishes an event
         service.publish(event);
         // Checks the reception
         verify(messageService, times(1)).sendMessage(
                 new Message(
-                        "ontrack event",
+                        "ontrack - Failed - The message content with html and a link.",
                         new MessageContent(
                                 MessageContentType.HTML,
-                                "The message content with <b>html</b>.",
+                                "The message content with <b>html</b> and a <a href=\"test\">link</a>.",
                                 Collections.<String, String>emptyMap()
                         )
                 ),

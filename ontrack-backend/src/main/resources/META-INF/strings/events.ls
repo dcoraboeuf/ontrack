@@ -101,8 +101,7 @@ event.VALIDATION_STAMP_UNLINKED
     fr -> La validation $VALIDATION_STAMP$ de la branche $BRANCH$ de $PROJECT$ a été dissociée de tout niveau de promotion.
 
 event.message
-    en -> ontrack event
-    fr -> Evènement ontrack
+    en,fr -> ontrack {0} - {1}
 
 event.unsubscription.PROJECT
     en -> Unsubscribe from the events on the {0} project.
