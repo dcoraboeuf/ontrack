@@ -6,6 +6,7 @@ import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
 import net.ontrack.extension.jenkins.client.JenkinsClientException;
+import net.ontrack.extension.jenkins.client.JenkinsJob;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -45,9 +46,20 @@ public abstract class AbstractJenkinsJobStateDecorator implements EntityDecorato
         }
         // Gets the state of the job
         try {
-            JenkinsJobState jenkinsJobState = getJenkinsJobState(jenkinsJobUrl);
-            // Returns a decoration according to the job state
-            return jenkinsDecorator.getJobDecoration(jenkinsJobState);
+            // Jenkins job
+            JenkinsJob job = jenkinsClient.getJob(jenkinsJobUrl, false);
+            // State of the job
+            JenkinsJobState jenkinsJobState = job.getState();
+            // Decoration according to the job state
+            Decoration decoration = jenkinsDecorator.getJobDecoration(jenkinsJobState);
+            // If the job is running, links the decoration to the console
+            if (jenkinsJobState == JenkinsJobState.RUNNING) {
+                decoration = decoration.withLink(
+                        job.getLastBuild().getConsoleUrl()
+                );
+            }
+            // OK
+            return decoration;
         } catch (JenkinsClientException ex) {
             // Logs an error
             logger.error(String.format("Could not get the job state at %s", jenkinsJobUrl), ex);
@@ -56,7 +68,4 @@ public abstract class AbstractJenkinsJobStateDecorator implements EntityDecorato
         }
     }
 
-    private JenkinsJobState getJenkinsJobState(String jenkinsJobUrl) {
-        return jenkinsClient.getJob(jenkinsJobUrl, false).getState();
-    }
 }

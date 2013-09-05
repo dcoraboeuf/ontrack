@@ -13,5 +13,6 @@ public class JenkinsJob {
     private final JenkinsJobResult result;
     private final JenkinsJobState state;
     private final List<JenkinsCulprit> culprits;
+    private final JenkinsBuildLink lastBuild;
 
 }

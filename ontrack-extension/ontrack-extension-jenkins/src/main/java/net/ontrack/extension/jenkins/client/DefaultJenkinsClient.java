@@ -103,13 +103,29 @@ public class DefaultJenkinsClient implements JenkinsClient {
             }
         }
 
+        // Last build
+        JenkinsBuildLink lastBuild = toBuildLink(tree, "lastBuild");
+
         // OK
         return new JenkinsJob(
                 name,
                 result,
                 state,
-                culprits
+                culprits,
+                lastBuild
         );
+    }
+
+    private JenkinsBuildLink toBuildLink(JsonNode tree, String fieldName) {
+        if (tree.has(fieldName)) {
+            JsonNode node = tree.get(fieldName);
+            return new JenkinsBuildLink(
+                    node.get("number").asInt(),
+                    node.get("url").asText()
+            );
+        } else {
+            return null;
+        }
     }
 
     private boolean isFailedOrUnstable(JsonNode build) {
