@@ -1,3 +1,7 @@
 <div class="dashboard-section {{css}}">
-    {{title}}
+    {{#if link}}
+        <a href="{{link}}">{{title}}</a>
+    {{else}}
+        {{title}}
+    {{/if}}
 </div>

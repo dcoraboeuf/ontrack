@@ -11,6 +11,7 @@ import net.ontrack.service.DashboardSectionDecorator;
 import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
 import net.ontrack.service.ManagementService;
+import net.ontrack.service.model.DashboardSectionDecoration;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,8 @@ public class DefaultDashboardService implements DashboardService {
     private DashboardSectionData getValidationStampSection(ValidationStampStatus stamp) {
         // CSS classes to apply
         Collection<String> css = new ArrayList<>();
+        // Link to apply
+        String link = null;
         // Status class
         if (stamp.getStatus() != null) {
             if (stamp.getStatus().getStatus() == Status.PASSED) {
@@ -176,15 +179,25 @@ public class DefaultDashboardService implements DashboardService {
         // Additional classes
         if (dashboardSectionDecorators != null) {
             for (DashboardSectionDecorator decorator : dashboardSectionDecorators) {
-                Collection<String> classes = decorator.getClasses(Entity.VALIDATION_STAMP, stamp.getStamp().getId());
-                if (classes != null) {
-                    css.addAll(classes);
+                DashboardSectionDecoration decoration = decorator.getDecoration(Entity.VALIDATION_STAMP, stamp.getStamp().getId());
+                if (decoration != null) {
+                    // CSS
+                    Collection<String> classes = decoration.getCssClasses();
+                    if (classes != null) {
+                        css.addAll(classes);
+                    }
+                    // Link
+                    String decoratorLink = decoration.getLink();
+                    if (StringUtils.isNotBlank(decoratorLink)) {
+                        link = decoratorLink;
+                    }
                 }
             }
         }
         // OK
         return new DashboardSectionData(
                 stamp.getStamp().getName(),
+                link,
                 StringUtils.join(css, " ")
         );
     }

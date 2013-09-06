@@ -14,6 +14,11 @@ table.dashboard td {
     padding: 7.5px;
 }
 
+table.dashboard a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .dashboard-section {
     margin-bottom: 15px;
     border-radius: 10px;

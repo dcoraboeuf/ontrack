@@ -109,6 +109,7 @@ public class DefaultJenkinsClient implements JenkinsClient {
         // OK
         return new JenkinsJob(
                 name,
+                jenkinsJobUrl,
                 result,
                 state,
                 culprits,

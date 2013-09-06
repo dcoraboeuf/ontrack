@@ -6,11 +6,11 @@ import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jenkins.client.JenkinsClient;
 import net.ontrack.extension.jenkins.client.JenkinsJob;
 import net.ontrack.service.DashboardSectionDecorator;
+import net.ontrack.service.model.DashboardSectionDecoration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @Component
@@ -28,7 +28,7 @@ public class JenkinsDashboardSectionDecorator implements DashboardSectionDecorat
     }
 
     @Override
-    public Collection<String> getClasses(Entity entity, int stampId) {
+    public DashboardSectionDecoration getDecoration(Entity entity, int stampId) {
         if (!extensionManager.isExtensionEnabled(JenkinsExtension.EXTENSION)) {
             return null;
         } else if (entity == Entity.VALIDATION_STAMP) {
@@ -38,7 +38,10 @@ public class JenkinsDashboardSectionDecorator implements DashboardSectionDecorat
                 // Gets the corresponding job
                 JenkinsJob job = jenkinsClient.getJob(jobUrl, false);
                 // State
-                return Collections.singleton("jenkins-job-" + StringUtils.lowerCase(job.getState().name()));
+                return new DashboardSectionDecoration(
+                        Collections.singleton("jenkins-job-" + StringUtils.lowerCase(job.getState().name())),
+                        jobUrl
+                );
             } else {
                 return null;
             }
@@ -46,4 +49,5 @@ public class JenkinsDashboardSectionDecorator implements DashboardSectionDecorat
             return null;
         }
     }
+
 }
