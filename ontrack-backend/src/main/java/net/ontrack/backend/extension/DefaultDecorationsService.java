@@ -5,6 +5,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.decorator.DecorationService;
 import net.ontrack.extension.api.decorator.EntityDecorator;
+import net.sf.jstring.LocalizableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,16 @@ public class DefaultDecorationsService implements DecorationService {
         // Gets all decorators
         for (EntityDecorator decorator : decorators) {
             if (decorator.getScope().contains(entity)) {
-                Decoration decoration = decorator.getDecoration(entity, entityId);
+                Decoration decoration;
+                try {
+                    decoration = decorator.getDecoration(entity, entityId);
+                } catch (Exception ex) {
+                    // In case of error:
+                    // 1. assigns an error decoration
+                    // FIXME Create the icon
+                    decoration = new Decoration(new LocalizableMessage("DecorationService.error", decorator.getClass().getSimpleName())).withIconPath("static/images/decoration-error.png");
+                    // FIXME 2. logs the error
+                }
                 if (decoration != null) {
                     decorations.add(decoration);
                 }

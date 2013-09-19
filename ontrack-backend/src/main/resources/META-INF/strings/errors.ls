@@ -1,3 +1,7 @@
+DecorationService.error
+    en -> Cannot get decoration for {0}.
+    fr -> Impossible d'obtenir la décoration pour {0}.
+
 [core]
 
 net.ontrack.backend.EventNotRelatedException
