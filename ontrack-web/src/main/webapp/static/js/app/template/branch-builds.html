@@ -19,8 +19,8 @@
         <tr>
             {{#branchBuilds.validationStamps}}
                 <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
-                    <a href="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}">
-                        <img class="tooltip-source" width="24" height="24" title="{{summary.name}}{{#summary.owner}} - {{fullName}}{{/summary.owner}}" src="gui/project/{{../project}}/branch/{{summary.branch.name}}/validation_stamp/{{summary.name}}/image" />
+                    <a href="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
+                        <img class="tooltip-source" width="24" height="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
                     </a>
                 </th>
             {{/branchBuilds.validationStamps}}
@@ -28,19 +28,7 @@
         <tr>
             {{#branchBuilds.validationStamps}}
                 <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
-                    {{#if decorations.length}}
-                        <ul class="validation-stamp-decoration">
-                            {{#decorations}}
-                                <li>
-                                    {{#if link}}
-                                        <a href="{{link}}"><img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" /></a>
-                                    {{else}}
-                                        <img src="{{iconPath}}" title="{{title}}" class="tooltip-source" width="24" height="24" />
-                                    {{/if}}
-                                </li>
-                            {{/decorations}}
-                        </ul>
-                    {{/if}}
+                    &nbsp;
                 </th>
             {{/branchBuilds.validationStamps}}
         </tr>
@@ -83,7 +71,7 @@
                         {{/if}}
                     </td>
                     {{#../branchBuilds.validationStamps}}
-                        <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{summary.name}}">
+                        <td class="build_validation_stamp" build="{{../name}}" validation_stamp="{{name}}">
                             {{{branchBuildValidationStampFn ../name this}}}
                         </td>
                     {{/../branchBuilds.validationStamps}}

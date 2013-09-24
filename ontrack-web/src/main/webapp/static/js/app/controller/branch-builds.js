@@ -301,7 +301,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                     return aBuild.name == buildName;
                 })[0];
                 // Looks for the validation stamp build
-                var oBuildValidationStamp = oBuild.validationStamps[context.summary.name];
+                var oBuildValidationStamp = oBuild.validationStamps[context.name];
                 // Last run
                 var lastRun;
                 if (oBuildValidationStamp.run) {

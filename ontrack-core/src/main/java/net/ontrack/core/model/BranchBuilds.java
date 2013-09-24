@@ -16,14 +16,14 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class BranchBuilds {
 
-    private final List<DecoratedValidationStamp> validationStamps;
+    private final List<ValidationStampSummary> validationStamps;
     private final List<PromotionLevelSummary> promotionLevels;
     private final List<Status> statusList;
     private final List<BuildCompleteStatus> builds;
     private final boolean validationStampsFiltered;
     private final List<BuildFilter> savedBuildFilters;
 
-    public BranchBuilds(List<DecoratedValidationStamp> validationStamps, List<PromotionLevelSummary> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
+    public BranchBuilds(List<ValidationStampSummary> validationStamps, List<PromotionLevelSummary> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
         this(validationStamps, promotionLevels, statusList, builds, false, Collections.<BuildFilter>emptyList());
     }
 
@@ -87,14 +87,14 @@ public class BranchBuilds {
         );
     }
 
-    private List<DecoratedValidationStamp> filterValidationStamps(List<DecoratedValidationStamp> validationStamps, final Set<Integer> filteredStampIds) {
+    private List<ValidationStampSummary> filterValidationStamps(List<ValidationStampSummary> validationStamps, final Set<Integer> filteredStampIds) {
         return Lists.newArrayList(
                 Collections2.filter(
                         validationStamps,
-                        new Predicate<DecoratedValidationStamp>() {
+                        new Predicate<ValidationStampSummary>() {
                             @Override
-                            public boolean apply(DecoratedValidationStamp decoratedValidationStamp) {
-                                return !filteredStampIds.contains(decoratedValidationStamp.getSummary().getId());
+                            public boolean apply(ValidationStampSummary validationStampSummary) {
+                                return !filteredStampIds.contains(validationStampSummary.getId());
                             }
                         }
                 )
