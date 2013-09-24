@@ -28,7 +28,12 @@
         <tr>
             {{#branchBuilds.validationStamps}}
                 <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
-                    &nbsp;
+                    <div
+                        class="validation-stamp-decorations"
+                        data-project="{{../project}}"
+                        data-branch="{{branch.name}}"
+                        data-validation-stamp="{{name}}"
+                        ></div>
                 </th>
             {{/branchBuilds.validationStamps}}
         </tr>
