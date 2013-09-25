@@ -2,6 +2,8 @@ package net.ontrack.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 
@@ -19,6 +21,10 @@ public final class Helper {
 			}
 		}
 	}
+
+    public static String uid(String prefix) {
+        return prefix + new SimpleDateFormat("mmssSSS").format(new Date());
+    }
 
 	private Helper() {
 	}
