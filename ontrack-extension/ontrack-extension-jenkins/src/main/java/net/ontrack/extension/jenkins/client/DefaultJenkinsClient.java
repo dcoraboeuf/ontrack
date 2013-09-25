@@ -120,10 +120,16 @@ public class DefaultJenkinsClient implements JenkinsClient {
     private JenkinsBuildLink toBuildLink(JsonNode tree, String fieldName) {
         if (tree.has(fieldName)) {
             JsonNode node = tree.get(fieldName);
-            return new JenkinsBuildLink(
-                    node.get("number").asInt(),
-                    node.get("url").asText()
-            );
+            JsonNode nNumber = node.get("number");
+            JsonNode nUrl = node.get("url");
+            if (nNumber != null && nUrl != null) {
+                return new JenkinsBuildLink(
+                        nNumber.asInt(),
+                        nUrl.asText()
+                );
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
