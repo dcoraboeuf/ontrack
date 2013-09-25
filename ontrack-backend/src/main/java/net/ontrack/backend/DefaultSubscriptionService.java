@@ -257,8 +257,6 @@ public class DefaultSubscriptionService implements SubscriptionService {
                 // We actually need one distinct link per entity
                 Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values(), subscriptions);
                 model.add("links", links);
-                // Generates the message HTML content
-                String content = templateService.generate("event.html", locale, model);
                 // Gets the title components
                 // 1 - status component
                 String status = "";
@@ -271,6 +269,8 @@ public class DefaultSubscriptionService implements SubscriptionService {
                 // Gets the title
                 String title = strings.get(locale, "event.message", status, messageAbstract);
                 model.add("title", title);
+                // Generates the message HTML content
+                String content = templateService.generate("event.html", locale, model);
                 // Creates a HTML message
                 Message message = new Message(
                         title,
