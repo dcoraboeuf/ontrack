@@ -1,9 +1,11 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.security.AccountAuthentication;
-import net.ontrack.core.model.Account;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.service.ManagementService;
 import net.ontrack.test.AbstractIntegrationTest;
+import net.ontrack.test.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -13,8 +15,10 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-// @ContextConfiguration({"classpath:META-INF/backend-security-aop.xml"})
 public abstract class AbstractBackendTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private ManagementService managementService;
 
     protected AnonymousCall asAnonymous() {
         return new AnonymousCall();
@@ -30,6 +34,34 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     protected AdminCall asAdmin() {
         return new AdminCall();
+    }
+
+    protected String uid(String prefix) {
+        return Helper.uid(prefix);
+    }
+
+    protected ProjectSummary doCreateProject() throws Exception {
+        final String projectName = uid("PRJ");
+        return asAdmin().call(new Callable<ProjectSummary>() {
+            @Override
+            public ProjectSummary call() throws Exception {
+                return managementService.createProject(new ProjectCreationForm(projectName, "My description"));
+            }
+        });
+    }
+
+    protected BranchSummary doCreateBranch(final int projectId) throws Exception {
+        final String branchName = uid("BCH");
+        return asAdmin().call(new Callable<BranchSummary>() {
+            @Override
+            public BranchSummary call() throws Exception {
+                return managementService.createBranch(projectId, new BranchCreationForm(branchName, "Branch description"));
+            }
+        });
+    }
+
+    protected BranchSummary doCreateBranch() throws Exception {
+        return doCreateBranch(doCreateProject().getId());
     }
 
     protected static interface ContextCall {
