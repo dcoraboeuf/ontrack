@@ -3,4 +3,4 @@ app.version
 	en -> ${project.version}
 
 app.title
-	en -> On track
+	en -> Ontrack

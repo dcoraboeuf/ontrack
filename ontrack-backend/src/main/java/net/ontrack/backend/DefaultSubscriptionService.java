@@ -248,6 +248,9 @@ public class DefaultSubscriptionService implements SubscriptionService {
             // Initial template
             TemplateModel model = new TemplateModel();
             model.add("event", guiEvent);
+            // Localized elements
+            model.add("appTitle", strings.get(locale, "app.title"));
+            model.add("unsubscriptionSection", strings.get(locale, "event.template.unsubscriptionSection"));
             // For each account in this language
             for (TAccount account : accountsPerLocale.get(locale)) {
                 String email = account.getEmail();

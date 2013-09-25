@@ -131,3 +131,7 @@ event.unsubscription.VALIDATION_RUN
 event.PROMOTION_LEVEL_DELETED
     en -> The $promotionLevel$ promotion level of $branch$ of the $project$ project has been deleted.
     fr -> Lle niveau de promotion $promotionLevel$ de la branche $branch$ du projet $project$ a été supprimée.
+
+event.template.unsubscriptionSection
+    en -> If you do not want this information any longer, you may click on one of the following links:
+    fr -> Si vous ne voulez plus recevoir de message pour cette information, vous pouvez cliquer sur l'un des liens suivants :
