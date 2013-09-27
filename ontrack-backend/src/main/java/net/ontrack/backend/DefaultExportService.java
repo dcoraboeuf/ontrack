@@ -5,19 +5,26 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.ontrack.backend.dao.BranchDao;
+import net.ontrack.backend.dao.ProjectDao;
+import net.ontrack.backend.dao.model.TBranch;
+import net.ontrack.backend.dao.model.TProject;
+import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.ProjectData;
-import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,11 +39,17 @@ public class DefaultExportService implements ExportService {
             new ThreadFactoryBuilder().setNameFormat("export-%d").setDaemon(true).build());
     private final Cache<String, ExportTask> cache = CacheBuilder.newBuilder().maximumSize(4).expireAfterWrite(1, TimeUnit.HOURS).build();
     private final ManagementService managementService;
+    private final ProjectDao projectDao;
+    private final BranchDao branchDao;
+    private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
+        this.projectDao = projectDao;
+        this.branchDao = branchDao;
+        this.objectMapper = objectMapper;
         this.version = version;
     }
 
@@ -110,11 +123,23 @@ public class DefaultExportService implements ExportService {
         );
     }
 
-    private ProjectData exportProject(Integer projectId) {
-        // Project summary
-        ProjectSummary projectSummary = managementService.getProject(projectId);
+    private ProjectData exportProject(int projectId) {
+        // Project
+        TProject project = projectDao.getById(projectId);
+        // Branches for this project
+        List<TBranch> branches = branchDao.findByProject(projectId);
+        // Export data for the project
+        TExport export = new TExport(
+                project,
+                branches
+        );
+        // Converts to JSON
+        JsonNode json = objectMapper.valueToTree(export);
         // OK
-        return new ProjectData(projectSummary);
+        return new ProjectData(
+                managementService.getProject(projectId),
+                json
+        );
     }
 
     private class ExportTask implements Runnable {
