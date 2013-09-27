@@ -85,11 +85,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public ProjectData exportProjectDownload(String uuid) {
+    public ExportData exportProjectDownload(String uuid) {
         return get(
                 getDefaultLocale(),
                 format("/ui/manage/export/%s", uuid),
-                ProjectData.class
+                ExportData.class
         );
     }
 

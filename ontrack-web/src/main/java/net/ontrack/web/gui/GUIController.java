@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.ChartDefinition;
-import net.ontrack.core.model.ProjectData;
+import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityUtils;
@@ -98,11 +98,11 @@ public class GUIController extends AbstractGUIController {
     public void exportProjectDownload(@PathVariable String uuid, HttpServletResponse response) throws IOException {
         securityUtils.checkIsAdmin();
         // Gets the file data
-        ProjectData data = manageUI.exportProjectDownload(uuid);
+        ExportData data = manageUI.exportProjectDownload(uuid);
         // Headers
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.addHeader("Content-Disposition", String.format("attachment; filename=%s.json", data.getProjectSummary().getName()));
+        response.addHeader("Content-Disposition", "attachment; filename=ontrack-export.json");
         // Serializes as JSON
         objectMapper.writeValue(
                 new OutputStreamWriter(
@@ -120,7 +120,7 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/charts", method = RequestMethod.GET)
-    public String getBranchCharts(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
+    public String getBranchCharts(Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
         model.addAttribute("branch", manageUI.getBranch(project, name));
         // All charts

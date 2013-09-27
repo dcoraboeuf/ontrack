@@ -31,7 +31,7 @@ public interface ManageUI {
 
     Ack exportProjectCheck(String uuid);
 
-    ProjectData exportProjectDownload(String uuid);
+    ExportData exportProjectDownload(String uuid);
 
     // Branches
 

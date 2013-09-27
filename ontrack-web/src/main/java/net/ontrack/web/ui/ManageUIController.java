@@ -110,7 +110,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     String exportProjectLaunch(@PathVariable String project) {
-        return exportService.exportProjectLaunch(entityConverter.getProjectId(project));
+        return exportService.exportLaunch(Collections.singleton(entityConverter.getProjectId(project)));
     }
 
     @Override
@@ -118,15 +118,15 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     Ack exportProjectCheck(@PathVariable String uuid) {
-        return exportService.exportProjectCheck(uuid);
+        return exportService.exportCheck(uuid);
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/export/{uuid}", method = RequestMethod.GET)
     public
     @ResponseBody
-    ProjectData exportProjectDownload(@PathVariable String uuid) {
-        return exportService.exportProjectDownload(uuid);
+    ExportData exportProjectDownload(@PathVariable String uuid) {
+        return exportService.exportDownload(uuid);
     }
 
 

@@ -1,13 +1,15 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.ProjectData;
+import net.ontrack.core.model.ExportData;
+
+import java.util.Collection;
 
 public interface ExportService {
 
-    String exportProjectLaunch(int projectId);
+    String exportLaunch(Collection<Integer> projectIds);
 
-    Ack exportProjectCheck(String uuid);
+    Ack exportCheck(String uuid);
 
-    ProjectData exportProjectDownload(String uuid);
+    ExportData exportDownload(String uuid);
 }

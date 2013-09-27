@@ -27,13 +27,13 @@ net.ontrack.backend.CannotCreateWorkingDirException
 net.ontrack.backend.dao.jdbc.FilterIOException
     en -> [E-009] Cannot save/read filter.
 
-net.ontrack.backend.ProjectExportTaskNotFoundException
+net.ontrack.backend.ExportTaskNotFoundException
     en -> [E-010] Cannot find export task for the project. ID = {0}
 
-net.ontrack.backend.ProjectExportException
+net.ontrack.backend.ExportException
     en -> [E-011] Error while exporting project. ID = {0}, Error = {1}
 
-net.ontrack.backend.ProjectExportNotFinishedException
+net.ontrack.backend.ExportNotFinishedException
     en -> [E-012] Project export not finished. ID = {0}
 
 [input]
