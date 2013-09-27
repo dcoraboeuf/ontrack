@@ -4,7 +4,7 @@
 
 	<groupId>net.ontrack</groupId>
 	<artifactId>ontrack-parent</artifactId>
-	<version>1.29-SNAPSHOT</version>
+	<version>1.36-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -204,6 +204,12 @@
 			    <artifactId>nekohtml</artifactId>
 			    <version>1.9.17</version>
 			</dependency>
+            <!-- Spring HATEOAS -->
+            <dependency>
+                <groupId>org.springframework.hateoas</groupId>
+                <artifactId>spring-hateoas</artifactId>
+                <version>0.7.0.RELEASE</version>
+            </dependency>
 			<!-- AOP -->
 			<dependency>
 				<groupId>org.aspectj</groupId>
@@ -279,6 +285,11 @@
 				<artifactId>ant</artifactId>
 				<version>1.8.3</version>
 			</dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.7.2</version>
+            </dependency>
 			<!-- J2EE -->
 			<dependency>
 				<groupId>javax.servlet</groupId>

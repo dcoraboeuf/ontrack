@@ -291,6 +291,30 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         });
     }
 
+    function loadValidationStampDecorations (target) {
+        $(target).find('.validation-stamp-decorations').each(function (index, def) {
+            var project = $(def).attr('data-project');
+            var branch = $(def).attr('data-branch');
+            var validationStamp = $(def).attr('data-validation-stamp');
+            ajax.get({
+                url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/decorated'.format(project, branch, validationStamp),
+                loading: {
+                    el: $(def)
+                },
+                successFn: function (decoratedValidationStamp) {
+                    render.renderInto(
+                        $(def),
+                        'validation-stamp-decorations',
+                        decoratedValidationStamp,
+                        function () {
+                            common.tooltips();
+                        }
+                    )
+                }
+            })
+        })
+    }
+
     function generateTableBranchBuilds(target, config, branchBuilds) {
 
         render.withTemplate('branch-build-stamp', function (branchBuildStamp) {
@@ -301,7 +325,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                     return aBuild.name == buildName;
                 })[0];
                 // Looks for the validation stamp build
-                var oBuildValidationStamp = oBuild.validationStamps[context.summary.name];
+                var oBuildValidationStamp = oBuild.validationStamps[context.name];
                 // Last run
                 var lastRun;
                 if (oBuildValidationStamp.run) {
@@ -350,6 +374,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 setupDiffActions();
                 setupFilterButton(config);
                 setupSavedFilters(config, branchBuilds);
+                loadValidationStampDecorations($(target));
             });
 
         });

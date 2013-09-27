@@ -43,7 +43,8 @@ public class RevisionSearchProvider implements SearchProvider {
                         new SearchResult(
                                 String.valueOf(revision),
                                 new LocalizableMessage("svnexplorer.search.revision", revision),
-                                guiService.toGUI(String.format("extension/svnexplorer/revision/%d", revision))
+                                guiService.toGUI(String.format("extension/svnexplorer/revision/%d", revision)),
+                                80
                         )
                 );
             } catch (RevisionNotFoundException ex) {

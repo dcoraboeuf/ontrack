@@ -72,13 +72,15 @@ public class DefaultJenkinsClient implements JenkinsClient {
                 if (build.has("culprits")) {
                     JsonNode jCulprits = build.get("culprits");
                     if (jCulprits.isArray()) {
-                        // Gets the previous build
-                        JsonNode previousBuild = builds.get(1);
                         String claim = "";
-                        if (previousBuild.has("actions")) {
-                            for (JsonNode jAction : previousBuild.get("actions")) {
-                                if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
-                                    claim = jAction.get("claimedBy").getTextValue();
+                        if (builds.size() > 1) {
+                            // Gets the previous build
+                            JsonNode previousBuild = builds.get(1);
+                            if (previousBuild.has("actions")) {
+                                for (JsonNode jAction : previousBuild.get("actions")) {
+                                    if (jAction.has("claimed") && jAction.get("claimed").getBooleanValue()) {
+                                        claim = jAction.get("claimedBy").getTextValue();
+                                    }
                                 }
                             }
                         }
@@ -101,13 +103,36 @@ public class DefaultJenkinsClient implements JenkinsClient {
             }
         }
 
+        // Last build
+        JenkinsBuildLink lastBuild = toBuildLink(tree, "lastBuild");
+
         // OK
         return new JenkinsJob(
                 name,
+                jenkinsJobUrl,
                 result,
                 state,
-                culprits
+                culprits,
+                lastBuild
         );
+    }
+
+    private JenkinsBuildLink toBuildLink(JsonNode tree, String fieldName) {
+        if (tree.has(fieldName)) {
+            JsonNode node = tree.get(fieldName);
+            JsonNode nNumber = node.get("number");
+            JsonNode nUrl = node.get("url");
+            if (nNumber != null && nUrl != null) {
+                return new JenkinsBuildLink(
+                        nNumber.asInt(),
+                        nUrl.asText()
+                );
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     private boolean isFailedOrUnstable(JsonNode build) {

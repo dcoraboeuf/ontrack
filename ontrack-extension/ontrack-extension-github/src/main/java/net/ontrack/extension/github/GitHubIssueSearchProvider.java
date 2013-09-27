@@ -59,7 +59,8 @@ public class GitHubIssueSearchProvider extends AbstractGUIController implements 
                             return new SearchResult(
                                     token,
                                     new LocalizableMessage("github.search.issue", issue, project.getName()),
-                                    guiService.toGUI(String.format("extension/github/project/%s/issue/%s", project.getName(), issue))
+                                    guiService.toGUI(String.format("extension/github/project/%s/issue/%s", project.getName(), issue)),
+                                    75
                             );
                         }
                     }

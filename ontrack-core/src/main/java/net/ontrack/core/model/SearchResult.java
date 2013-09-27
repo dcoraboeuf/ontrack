@@ -12,20 +12,23 @@ public class SearchResult {
     private final Localizable title;
     private final Localizable description;
     private final String url;
+    private final int accuracy;
 
-    public SearchResult(String title, String description, String url) {
+    public SearchResult(String title, String description, String url, int accuracy) {
         this(
                 title,
                 new NonLocalizable(description),
-                url
+                url,
+                accuracy
         );
     }
 
-    public SearchResult(String title, Localizable description, String url) {
+    public SearchResult(String title, Localizable description, String url, int accuracy) {
         this(
                 new NonLocalizable(title),
                 description,
-                url
+                url,
+                accuracy
         );
     }
 }

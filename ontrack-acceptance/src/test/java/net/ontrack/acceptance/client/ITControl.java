@@ -3,6 +3,8 @@ package net.ontrack.acceptance.client;
 import net.ontrack.client.ControlUIClient;
 import net.ontrack.client.support.ControlClientCall;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityRoles;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -95,5 +97,37 @@ public class ITControl extends AbstractIT {
         assertEquals(validationStamp.getName(), validationRun.getValidationStamp().getName());
         assertEquals(1, validationRun.getRunOrder());
         assertEquals(Status.PASSED, validationRun.getValidationRunStatus().getStatus());
+    }
+
+    @Test
+    public void createPromotedRun() {
+        // Prerequisites
+        final PromotionLevelSummary promotionLevel = data.doCreatePromotionLevel();
+        final BuildSummary build = data.doCreateBuild(promotionLevel.getBranch());
+        // Controller user
+        Account controller = data.doCreateUser("it_cpr", "IT Create Promoted Run", "it_cpr@test.com", SecurityRoles.CONTROLLER, "builtin", "pwd");
+        // Creates a promoted run
+        PromotedRunSummary run = data.getClient().asUser("it_cpr", "pwd", new ControlClientCall<PromotedRunSummary>() {
+            @Override
+            public PromotedRunSummary onCall(ControlUIClient ui) {
+                return ui.createPromotedRun(
+                        promotionLevel.getBranch().getProject().getName(),
+                        promotionLevel.getBranch().getName(),
+                        build.getName(),
+                        promotionLevel.getName(),
+                        new PromotedRunCreationForm(
+                                new DateTime(),
+                                "IT Create Promoted Run"
+                        )
+                );
+            }
+        });
+        // Checks
+        assertNotNull(run);
+        assertEquals(build.getBranch().getProject().getName(), run.getBuild().getBranch().getProject().getName());
+        assertEquals(build.getBranch().getName(), run.getBuild().getBranch().getName());
+        assertEquals(build.getName(), run.getBuild().getName());
+        assertEquals(promotionLevel.getName(), run.getPromotionLevel().getName());
+        assertEquals(controller.getFullName(), run.getSignature().getName());
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public interface EventService {
+public interface EventService extends Runnable {
 
     void event(Event event);
 

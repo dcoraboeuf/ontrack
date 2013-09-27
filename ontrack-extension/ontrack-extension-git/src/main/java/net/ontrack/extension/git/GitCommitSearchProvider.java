@@ -51,7 +51,8 @@ public class GitCommitSearchProvider extends AbstractGUIController implements Se
                         new SearchResult(
                                 commit,
                                 new LocalizableMessage("git.search.commit", commit),
-                                guiService.toGUI(String.format("extension/git/commit/%s", commit))
+                                guiService.toGUI(String.format("extension/git/commit/%s", commit)),
+                                100
                         )
                 );
             } else {

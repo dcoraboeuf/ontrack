@@ -109,7 +109,8 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
      * @see ScheduledService
      * @see #getTrigger()
      */
-    protected void sendEvents() {
+    @Override
+    public void run() {
         // Gets the list of events to send
         Collection<ExpandedEvent> events = Collections2.transform(
                 eventDao.findEventsToSend(),
@@ -126,12 +127,7 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
 
     @Override
     public Runnable getTask() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                sendEvents();
-            }
-        };
+        return this;
     }
 
     /**

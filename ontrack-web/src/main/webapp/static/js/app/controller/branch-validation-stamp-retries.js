@@ -22,15 +22,17 @@ define(['flot'], function (flot) {
             });
             // Preparation of the chart area
             var width = $('#{0}-title'.format(id)).width();
-            var height = serie.length * 24;
             // Not enough data
-            if (height == 0) {
+            if (serie.length == 0) {
                 $('<div></div>')
                     .addClass('alert')
                     .addClass('alert-warning')
                     .text('branch.charts.nodata'.loc())
                     .appendTo(container);
             } else {
+                var height = Math.max(
+                    serie.length * 24,
+                    60);
                 var chart = $(
                     '<div id="{0}" style="width:{1}px;height:{2}px;"></div>'
                         .format(
@@ -45,6 +47,7 @@ define(['flot'], function (flot) {
                     [ serie ],
                     {
                         series: {
+                            color: 'red',
                             bars: {
                                 show: true,
                                 barWidth: 0.8,
@@ -54,7 +57,8 @@ define(['flot'], function (flot) {
                             }
                         },
                         xaxis: {
-                            tickDecimals: 0
+                            tickDecimals: 0,
+                            max: 100
                         },
                         yaxis: {
                             ticks: ticks

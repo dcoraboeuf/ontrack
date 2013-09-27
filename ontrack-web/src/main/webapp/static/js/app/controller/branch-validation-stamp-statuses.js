@@ -23,24 +23,28 @@ define(['flot.stack'], function (flot) {
             var stamps = [];
             var seriesPerStatus = {};
             var stampIndex = 0;
-            for (var stamp in data.table) {
-                stamps.push(stamp);
+            $.each(data.table, function (index, pair) {
+                var stamp = pair.key;
+                var statuses = pair.value;
                 // Total for the stamp
                 var total = 0;
-                for (var status in data.table[stamp]) {
-                    var count = data.table[stamp][status];
+                for (var status in statuses) {
+                    var count = statuses[status];
                     total += count;
                 }
-                // Per status
-                for (var status in data.table[stamp]) {
-                    var count = data.table[stamp][status];
-                    if (!seriesPerStatus[status]) {
-                        seriesPerStatus[status] = [];
+                if (total > 0) {
+                    stamps.push(stamp);
+                    // Per status
+                    for (var status in statuses) {
+                        var count = statuses[status];
+                        if (!seriesPerStatus[status]) {
+                            seriesPerStatus[status] = [];
+                        }
+                        seriesPerStatus[status].push([100.0 * count / total, stampIndex]);
                     }
-                    seriesPerStatus[status].push([100.0 * count / total, stampIndex]);
+                    stampIndex++;
                 }
-                stampIndex++;
-            }
+            });
             // Getting the series in flot format
             var series = [];
             for (var status in seriesPerStatus) {
@@ -75,7 +79,7 @@ define(['flot.stack'], function (flot) {
                     .appendTo(container);
                 // Ticks for the validation stamps
                 var ticks = [];
-                for (var i = 0 ; i < stamps.length ; i++) {
+                for (var i = 0; i < stamps.length; i++) {
                     ticks.push([i, stamps[i]])
                 }
                 // Plotting
@@ -96,7 +100,9 @@ define(['flot.stack'], function (flot) {
                             tickDecimals: 0
                         },
                         yaxis: {
-                            ticks: ticks
+                            ticks: ticks,
+                            transform: function (v) { return -v; },
+                            inverseTransform: function (v) { return -v; }
                         }
                     }
                 );

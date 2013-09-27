@@ -64,7 +64,8 @@ public class PackageSearchProvider implements SearchProvider {
         return new SearchResult(
                 String.format("%s/%s/%s", build.getBranch().getProject().getName(), build.getBranch().getName(), build.getName()),
                 new LocalizableMessage("package.search", build.getName(), pkg),
-                guiService.getBuildGUIURL(build)
+                guiService.getBuildGUIURL(build),
+                80
         );
     }
 }

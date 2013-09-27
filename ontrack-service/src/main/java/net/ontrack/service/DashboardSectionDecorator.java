@@ -1,11 +1,9 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.Entity;
-
-import java.util.Collection;
+import net.ontrack.service.model.DashboardSectionDecoration;
 
 public interface DashboardSectionDecorator {
 
-    Collection<String> getClasses(Entity entity, int entityId);
-
+    DashboardSectionDecoration getDecoration(Entity entity, int entityId);
 }

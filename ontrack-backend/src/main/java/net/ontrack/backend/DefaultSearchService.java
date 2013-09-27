@@ -8,9 +8,7 @@ import net.ontrack.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DefaultSearchService implements SearchService {
@@ -44,8 +42,16 @@ public class DefaultSearchService implements SearchService {
                 results.addAll(list);
             }
         }
+        // Sorts the results by decreasing accuracy
+        List<SearchResult> sortedResults = new ArrayList<>(results);
+        Collections.sort(sortedResults, new Comparator<SearchResult>() {
+            @Override
+            public int compare(SearchResult o1, SearchResult o2) {
+                return o2.getAccuracy() - o1.getAccuracy();
+            }
+        });
         // OK
-        return results;
+        return sortedResults;
     }
 
 }

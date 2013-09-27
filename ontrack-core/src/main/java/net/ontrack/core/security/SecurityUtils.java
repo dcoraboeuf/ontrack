@@ -17,6 +17,8 @@ public interface SecurityUtils {
 
     boolean isAdmin();
 
+    boolean isController();
+
     boolean hasRole(String role);
 
     void checkIsAdmin();

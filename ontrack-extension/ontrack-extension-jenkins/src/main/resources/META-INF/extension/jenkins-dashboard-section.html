@@ -1,6 +1,6 @@
 <div class="jenkins-dashboard-section dashboard-section {{css}}">
     <p class="jenkins-dashboard-section-title">
-        {{job.name}}
+        <a href="{{job.url}}">{{job.name}}</a>
         {{#if iconPath}}
             <img height="24" width="24" src="{{iconPath}}" />
         {{/if}}

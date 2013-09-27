@@ -25,7 +25,7 @@ public abstract class AbstractGUIController extends AbstractController {
             throw (AccessDeniedException) ex;
         }
 		// Error message
-		ErrorMessage error = errorHandler.handleError (request, locale, ex);
+		ErrorMessage error = errorHandler.handleError (locale, ex);
 		// Model
 		ModelAndView mav = new ModelAndView("error");
 		mav.addObject("error", error);

@@ -85,7 +85,8 @@ public class ValidationRunCommentSearchProvider extends AbstractEntitySearchProv
                                         build.getName(),
                                         validationStamp.getName(),
                                         validationRun.getRunOrder()
-                                )
+                                ),
+                                25
                         );
                     }
                 }
@@ -124,7 +125,8 @@ public class ValidationRunCommentSearchProvider extends AbstractEntitySearchProv
                                         build.getName(),
                                         validationStamp.getName(),
                                         validationRun.getRunOrder()
-                                )
+                                ),
+                                25
                         );
                     }
                 }

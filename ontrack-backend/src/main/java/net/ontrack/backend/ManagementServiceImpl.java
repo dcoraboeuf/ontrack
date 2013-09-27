@@ -33,6 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
+import static com.google.common.base.Predicates.equalTo;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Iterables.any;
+
 @Service
 public class ManagementServiceImpl extends AbstractServiceImpl implements ManagementService {
     /**
@@ -1002,18 +1006,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private BranchBuilds getBranchBuilds(final Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
-                Lists.transform(
-                        getValidationStampList(branch),
-                        new Function<ValidationStampSummary, DecoratedValidationStamp>() {
-                            @Override
-                            public DecoratedValidationStamp apply(ValidationStampSummary summary) {
-                                return new DecoratedValidationStamp(
-                                        summary,
-                                        getLocalizedDecorations(locale, Entity.VALIDATION_STAMP, summary.getId())
-                                );
-                            }
-                        }
-                ),
+                getValidationStampList(branch),
                 // Promotion levels for the branch
                 getPromotionLevelList(branch),
                 // Status list
@@ -1056,7 +1049,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                         return new LocalizedDecoration(
                                 decoration.getTitle().getLocalizedMessage(strings, locale),
                                 decoration.getCls(),
-                                decoration.getIconPath()
+                                decoration.getIconPath(),
+                                decoration.getLink()
                         );
                     }
                 });
@@ -1644,7 +1638,10 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                 // # of retries
                 if (runMap.size() > 1) {
                     Status lastStatus = runMap.get(runMap.lastKey());
-                    if (lastStatus == Status.PASSED) {
+                    // If the last status is PASSED and if at least one previous run status was NOT PASSED
+                    if (lastStatus == Status.PASSED &&
+                            any(runMap.values(), not(equalTo(Status.PASSED)))) {
+                        // We count this build as having been retried
                         Integer count = retries.get(stamp.getName());
                         if (count == null) {
                             retries.put(stamp.getName(), 1);

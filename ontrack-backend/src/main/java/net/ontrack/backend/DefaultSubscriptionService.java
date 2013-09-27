@@ -18,6 +18,8 @@ import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,9 +248,9 @@ public class DefaultSubscriptionService implements SubscriptionService {
             // Initial template
             TemplateModel model = new TemplateModel();
             model.add("event", guiEvent);
-            // Gets the title
-            String title = strings.get(locale, "event.message");
-            model.add("title", title);
+            // Localized elements
+            model.add("appTitle", strings.get(locale, "app.title"));
+            model.add("unsubscriptionSection", strings.get(locale, "event.template.unsubscriptionSection"));
             // For each account in this language
             for (TAccount account : accountsPerLocale.get(locale)) {
                 String email = account.getEmail();
@@ -258,6 +260,18 @@ public class DefaultSubscriptionService implements SubscriptionService {
                 // We actually need one distinct link per entity
                 Collection<NamedLink> links = getUnsubscriptionLinks(locale, event.getEntities().values(), subscriptions);
                 model.add("links", links);
+                // Gets the title components
+                // 1 - status component
+                String status = "";
+                String statusValue = event.getValues().get("status");
+                if (StringUtils.isNotBlank(statusValue)) {
+                    status = "- " + strings.get(locale, "status." + statusValue);
+                }
+                // 2 - message abstract
+                String messageAbstract = getMessageAbstract(guiEvent.getHtml());
+                // Gets the title
+                String title = strings.get(locale, "event.message", status, messageAbstract);
+                model.add("title", title);
                 // Generates the message HTML content
                 String content = templateService.generate("event.html", locale, model);
                 // Creates a HTML message
@@ -278,6 +292,14 @@ public class DefaultSubscriptionService implements SubscriptionService {
             }
         }
         logger.debug("[publish] [end] event={}", event.getId());
+    }
+
+    /**
+     * Given the HTML of the message to send, extracts the first line as plain text.
+     */
+    protected String getMessageAbstract(String html) {
+        Document dom = Jsoup.parse(html);
+        return dom.text();
     }
 
     private Collection<NamedLink> getUnsubscriptionLinks(final Locale locale, Collection<EntityStub> entities, final Set<EntityID> subscriptions) {

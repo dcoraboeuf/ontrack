@@ -50,7 +50,8 @@ public class BuildSearchProvider extends AbstractEntitySearchProvider {
                         return new SearchResult(
                                 String.format("%s/%s/%s", project.getName(), branch.getName(), build.getName()),
                                 new LocalizableMessage("search.build", project.getName(), branch.getName(), build.getName()),
-                                guiPath("project/%s/branch/%s/build/%s", project.getName(), branch.getName(), build.getName())
+                                guiPath("project/%s/branch/%s/build/%s", project.getName(), branch.getName(), build.getName()),
+                                90
                         );
                     }
                 }

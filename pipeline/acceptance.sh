@@ -11,7 +11,9 @@ function show_help {
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
 	echo "Test settings:"
 	echo "    -u,--url=<url>                URL of the application to test"
+	echo "    -p,--prod                     Tests to run against a production environment"
 	echo "    -v,--version=<version>        Used to check the version of the application being tested"
+	echo "    -w,--password=<password>      'admin' password to use if not default"
 	echo "Ontrack on Ontrack:"
 	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
@@ -43,6 +45,8 @@ ONTRACK_PASSWORD=
 ONTRACK_VALIDATION=
 TEST_URL=
 TEST_VERSION=
+PROD=no
+TEST_PASSWORD=
 
 # Command central
 for i in "$@"
@@ -79,6 +83,12 @@ do
 		-v=*|--version=*)
 			TEST_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
+		-p|--prod)
+			PROD=yes
+			;;
+		-w=*|--password=*)
+			TEST_PASSWORD=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		*)
 			echo "Unknown option: $i"
 			show_help
@@ -107,6 +117,7 @@ then
 fi
 echo URL to test:               ${TEST_URL}
 echo Version to test:           ${TEST_VERSION}
+echo Production tests:          ${PROD}
 
 # Gets the version to test
 VERSION=`curl --silent $TEST_URL/ui/manage/version`
@@ -122,8 +133,19 @@ then
 	exit 1
 fi
 
+# Additional options
+OPTIONS=
+if [ "${PROD}" == "yes" ]
+then
+	OPTIONS="${OPTIONS} -P it-prod"
+fi
+if [ "${TEST_PASSWORD}" != "" ]
+then
+	OPTIONS="${OPTIONS} -DitAdminPassword=${TEST_PASSWORD}"
+fi
+
 # Runs the acceptance tests
-${MVN} clean verify -pl ontrack-acceptance -am -P it -DitUrl=${TEST_URL}
+${MVN} clean verify -pl ontrack-acceptance -am -P it ${OPTIONS} -DitUrl=${TEST_URL}
 if [ "$?" != "0" ]
 then
 	echo Failed acceptance tests.
