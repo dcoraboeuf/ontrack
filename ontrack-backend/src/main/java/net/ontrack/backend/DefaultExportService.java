@@ -7,8 +7,12 @@ import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.ProjectDao;
+import net.ontrack.backend.dao.PromotionLevelDao;
+import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBranch;
 import net.ontrack.backend.dao.model.TProject;
+import net.ontrack.backend.dao.model.TPromotionLevel;
+import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ExportData;
@@ -23,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -41,14 +46,18 @@ public class DefaultExportService implements ExportService {
     private final ManagementService managementService;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
+    private final PromotionLevelDao promotionLevelDao;
+    private final ValidationStampDao validationStampDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
+        this.promotionLevelDao = promotionLevelDao;
+        this.validationStampDao = validationStampDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -128,10 +137,22 @@ public class DefaultExportService implements ExportService {
         TProject project = projectDao.getById(projectId);
         // Branches for this project
         List<TBranch> branches = branchDao.findByProject(projectId);
+        // Promotion levels for all branches
+        List<TPromotionLevel> promotionLevels = new ArrayList<>();
+        for (TBranch branch : branches) {
+            promotionLevels.addAll(promotionLevelDao.findByBranch(branch.getId()));
+        }
+        // Validation stamps for all branches
+        List<TValidationStamp> validationStamps = new ArrayList<>();
+        for (TBranch branch : branches) {
+            validationStamps.addAll(validationStampDao.findByBranch(branch.getId()));
+        }
         // Export data for the project
         TExport export = new TExport(
                 project,
-                branches
+                branches,
+                promotionLevels,
+                validationStamps
         );
         // Converts to JSON
         JsonNode json = objectMapper.valueToTree(export);
