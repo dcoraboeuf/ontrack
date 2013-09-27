@@ -5,14 +5,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.ontrack.backend.dao.BranchDao;
-import net.ontrack.backend.dao.ProjectDao;
-import net.ontrack.backend.dao.PromotionLevelDao;
-import net.ontrack.backend.dao.ValidationStampDao;
-import net.ontrack.backend.dao.model.TBranch;
-import net.ontrack.backend.dao.model.TProject;
-import net.ontrack.backend.dao.model.TPromotionLevel;
-import net.ontrack.backend.dao.model.TValidationStamp;
+import net.ontrack.backend.dao.*;
+import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ExportData;
@@ -48,16 +42,18 @@ public class DefaultExportService implements ExportService {
     private final BranchDao branchDao;
     private final PromotionLevelDao promotionLevelDao;
     private final ValidationStampDao validationStampDao;
+    private final BuildDao buildDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.promotionLevelDao = promotionLevelDao;
         this.validationStampDao = validationStampDao;
+        this.buildDao = buildDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -147,12 +143,18 @@ public class DefaultExportService implements ExportService {
         for (TBranch branch : branches) {
             validationStamps.addAll(validationStampDao.findByBranch(branch.getId()));
         }
+        // All builds of all branches
+        List<TBuild> builds = new ArrayList<>();
+        for (TBranch branch : branches) {
+            builds.addAll(buildDao.findByBranch(branch.getId(), 0, Integer.MAX_VALUE));
+        }
         // Export data for the project
         TExport export = new TExport(
                 project,
                 branches,
                 promotionLevels,
-                validationStamps
+                validationStamps,
+                builds
         );
         // Converts to JSON
         JsonNode json = objectMapper.valueToTree(export);
