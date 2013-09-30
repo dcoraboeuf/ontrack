@@ -1025,23 +1025,54 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
-    private Function<TBuild, BuildCompleteStatus> getBuildCompleteStatusFn(final Locale locale) {
-        return new Function<TBuild, BuildCompleteStatus>() {
+    private Function<TBuild, BranchBuild> getBuildCompleteStatusFn(final Locale locale) {
+        return new Function<TBuild, BranchBuild>() {
             @Override
-            public BuildCompleteStatus apply(TBuild t) {
+            public BranchBuild apply(TBuild t) {
                 int buildId = t.getId();
                 List<LocalizedDecoration> decorations = getLocalizedDecorations(locale, Entity.BUILD, buildId);
-                List<BuildValidationStamp> stamps = getBuildValidationStamps(locale, buildId);
+                List<BranchBuildValidationStampLastStatus> stamps = Lists.transform(
+                        getBuildValidationStamps(locale, buildId),
+                        new Function<BuildValidationStamp, BranchBuildValidationStampLastStatus>() {
+                            @Override
+                            public BranchBuildValidationStampLastStatus apply(BuildValidationStamp buildValidationStamp) {
+                                // Gets the last validation run
+                                BranchBuildLastValidationRun lastValidationRun = null;
+                                List<BuildValidationStampRun> runs = buildValidationStamp.getRuns();
+                                if (runs != null && !runs.isEmpty()) {
+                                    BuildValidationStampRun run = runs.get(runs.size() - 1);
+                                    ValidationRunStatusStub lastValidationRunStatus = getLastValidationRunStatus(run.getRunId());
+                                    lastValidationRun = new BranchBuildLastValidationRun(
+                                            run.getRunId(),
+                                            run.getRunOrder(),
+                                            run.getSignature(),
+                                            new BranchBuildLastValidationRunStatus(
+                                                    lastValidationRunStatus.getId(),
+                                                    lastValidationRunStatus.getStatus(),
+                                                    lastValidationRunStatus.getDescription()
+                                            )
+                                    );
+                                }
+                                // OK
+                                return new BranchBuildValidationStampLastStatus(
+                                        buildValidationStamp.getValidationStampId(),
+                                        buildValidationStamp.getName(),
+                                        lastValidationRun
+                                );
+                            }
+                        }
+                );
                 List<BuildPromotionLevel> promotionLevels = getBuildPromotionLevels(locale, buildId);
                 DatedSignature signature = getDatedSignature(locale, EventType.BUILD_CREATED, Entity.BUILD, buildId);
-                return new BuildCompleteStatus(
+                return new BranchBuild(
                         buildId,
                         t.getName(),
                         t.getDescription(),
                         signature,
                         decorations,
                         stamps,
-                        promotionLevels);
+                        promotionLevels
+                );
             }
         };
     }

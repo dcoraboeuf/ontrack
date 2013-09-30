@@ -19,11 +19,11 @@ public class BranchBuilds {
     private final List<ValidationStamp> validationStamps;
     private final List<PromotionLevel> promotionLevels;
     private final List<Status> statusList;
-    private final List<BuildCompleteStatus> builds;
+    private final List<BranchBuild> builds;
     private final boolean validationStampsFiltered;
     private final List<BuildFilter> savedBuildFilters;
 
-    public BranchBuilds(List<ValidationStamp> validationStamps, List<PromotionLevel> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
+    public BranchBuilds(List<ValidationStamp> validationStamps, List<PromotionLevel> promotionLevels, List<Status> statusList, List<BranchBuild> builds) {
         this(
                 validationStamps,
                 promotionLevels,
@@ -41,10 +41,10 @@ public class BranchBuilds {
                     this.getStatusList(),
                     Lists.transform(
                             this.getBuilds(),
-                            new Function<BuildCompleteStatus, BuildCompleteStatus>() {
+                            new Function<BranchBuild, BranchBuild>() {
                                 @Override
-                                public BuildCompleteStatus apply(BuildCompleteStatus buildCompleteStatus) {
-                                    return filterBuildCompleteStatus(buildCompleteStatus, filteredStampIds);
+                                public BranchBuild apply(BranchBuild branchBuild) {
+                                    return filterBranchBuildValidationStamps(branchBuild, filteredStampIds);
                                 }
                             }
                     ),
@@ -71,25 +71,25 @@ public class BranchBuilds {
         }
     }
 
-    private BuildCompleteStatus filterBuildCompleteStatus(BuildCompleteStatus buildCompleteStatus, final Set<Integer> filteredStampIds) {
-        return new BuildCompleteStatus(
-                buildCompleteStatus.getId(),
-                buildCompleteStatus.getName(),
-                buildCompleteStatus.getDescription(),
-                buildCompleteStatus.getSignature(),
-                buildCompleteStatus.getDecorations(),
+    private BranchBuild filterBranchBuildValidationStamps(BranchBuild branchBuild, final Set<Integer> filteredStampIds) {
+        return new BranchBuild(
+                branchBuild.getId(),
+                branchBuild.getName(),
+                branchBuild.getDescription(),
+                branchBuild.getSignature(),
+                branchBuild.getDecorations(),
                 Lists.newArrayList(
                         Collections2.filter(
-                                buildCompleteStatus.getValidationStamps().values(),
-                                new Predicate<BuildValidationStamp>() {
+                                branchBuild.getValidationStamps().values(),
+                                new Predicate<BranchBuildValidationStampLastStatus>() {
                                     @Override
-                                    public boolean apply(BuildValidationStamp buildValidationStamp) {
+                                    public boolean apply(BranchBuildValidationStampLastStatus buildValidationStamp) {
                                         return !filteredStampIds.contains(buildValidationStamp.getValidationStampId());
                                     }
                                 }
                         )
                 ),
-                buildCompleteStatus.getPromotionLevels()
+                branchBuild.getPromotionLevels()
         );
     }
 

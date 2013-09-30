@@ -325,20 +325,14 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                     return aBuild.name == buildName;
                 })[0];
                 // Looks for the validation stamp build
-                var oBuildValidationStamp = oBuild.validationStamps[context.name];
-                // Last run
-                var lastRun;
-                if (oBuildValidationStamp.run) {
-                    lastRun = oBuildValidationStamp.runs[oBuildValidationStamp.runs.length - 1];
-                }
+                var oBranchBuildValidationStampLastStatus = oBuild.validationStamps[context.id];
                 // Rendering
                 return branchBuildStamp({
                     validationStamp: this,
                     project: config.project,
                     branch: config.branch,
                     build: buildName,
-                    buildValidationStamp: oBuildValidationStamp,
-                    lastRun: lastRun
+                    branchBuildValidationStampLastStatus: oBranchBuildValidationStampLastStatus
                 });
             });
 
