@@ -9,6 +9,7 @@ import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.security.SecurityRoles;
@@ -21,10 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -43,17 +41,19 @@ public class DefaultExportService implements ExportService {
     private final PromotionLevelDao promotionLevelDao;
     private final ValidationStampDao validationStampDao;
     private final BuildDao buildDao;
+    private final EventDao eventDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, EventDao eventDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.promotionLevelDao = promotionLevelDao;
         this.validationStampDao = validationStampDao;
         this.buildDao = buildDao;
+        this.eventDao = eventDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -148,13 +148,16 @@ public class DefaultExportService implements ExportService {
         for (TBranch branch : branches) {
             builds.addAll(buildDao.findByBranch(branch.getId(), 0, Integer.MAX_VALUE));
         }
+        // All events for the project
+        List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
         // Export data for the project
         TExport export = new TExport(
                 project,
                 branches,
                 promotionLevels,
                 validationStamps,
-                builds
+                builds,
+                events
         );
         // Converts to JSON
         JsonNode json = objectMapper.valueToTree(export);
