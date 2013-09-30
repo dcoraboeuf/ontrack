@@ -1006,9 +1006,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private BranchBuilds getBranchBuilds(final Locale locale, int branch, List<TBuild> tlist) {
         return new BranchBuilds(
                 // Validation stamps for the branch
-                getValidationStampList(branch),
+                Lists.transform(
+                        getValidationStampList(branch),
+                        ValidationStampSummary.toValidationStampFn
+                ),
                 // Promotion levels for the branch
-                getPromotionLevelList(branch),
+                Lists.transform(
+                        getPromotionLevelList(branch),
+                        PromotionLevelSummary.toPromotionLevelFn
+                ),
                 // Status list
                 Arrays.asList(Status.values()),
                 // Builds for the branch and their complete status

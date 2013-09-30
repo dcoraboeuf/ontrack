@@ -16,15 +16,21 @@ import java.util.Set;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class BranchBuilds {
 
-    private final List<ValidationStampSummary> validationStamps;
-    private final List<PromotionLevelSummary> promotionLevels;
+    private final List<ValidationStamp> validationStamps;
+    private final List<PromotionLevel> promotionLevels;
     private final List<Status> statusList;
     private final List<BuildCompleteStatus> builds;
     private final boolean validationStampsFiltered;
     private final List<BuildFilter> savedBuildFilters;
 
-    public BranchBuilds(List<ValidationStampSummary> validationStamps, List<PromotionLevelSummary> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
-        this(validationStamps, promotionLevels, statusList, builds, false, Collections.<BuildFilter>emptyList());
+    public BranchBuilds(List<ValidationStamp> validationStamps, List<PromotionLevel> promotionLevels, List<Status> statusList, List<BuildCompleteStatus> builds) {
+        this(
+                validationStamps,
+                promotionLevels,
+                statusList,
+                builds,
+                false,
+                Collections.<BuildFilter>emptyList());
     }
 
     public BranchBuilds filterStamps(final Set<Integer> filteredStampIds) {
@@ -87,14 +93,14 @@ public class BranchBuilds {
         );
     }
 
-    private List<ValidationStampSummary> filterValidationStamps(List<ValidationStampSummary> validationStamps, final Set<Integer> filteredStampIds) {
+    private List<ValidationStamp> filterValidationStamps(List<ValidationStamp> validationStamps, final Set<Integer> filteredStampIds) {
         return Lists.newArrayList(
                 Collections2.filter(
                         validationStamps,
-                        new Predicate<ValidationStampSummary>() {
+                        new Predicate<ValidationStamp>() {
                             @Override
-                            public boolean apply(ValidationStampSummary validationStampSummary) {
-                                return !filteredStampIds.contains(validationStampSummary.getId());
+                            public boolean apply(ValidationStamp validationStamp) {
+                                return !filteredStampIds.contains(validationStamp.getId());
                             }
                         }
                 )
