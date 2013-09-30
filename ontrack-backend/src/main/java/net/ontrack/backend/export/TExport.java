@@ -17,6 +17,7 @@ public class TExport {
     private final Collection<TValidationRun> validationRuns;
     private final Collection<TValidationRunStatus> validationRunStatuses;
     private final Collection<TComment> comments;
+    private final Collection<TProperty> properties;
     private final Collection<TEvent> events;
 
 }

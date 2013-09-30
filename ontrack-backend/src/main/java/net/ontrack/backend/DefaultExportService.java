@@ -46,11 +46,12 @@ public class DefaultExportService implements ExportService {
     private final ValidationRunStatusDao validationRunStatusDao;
     private final EventDao eventDao;
     private final CommentDao commentDao;
+    private final PropertyDao propertyDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
@@ -62,6 +63,7 @@ public class DefaultExportService implements ExportService {
         this.validationRunStatusDao = validationRunStatusDao;
         this.eventDao = eventDao;
         this.commentDao = commentDao;
+        this.propertyDao = propertyDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -139,8 +141,9 @@ public class DefaultExportService implements ExportService {
     private ProjectData exportProject(int projectId) {
         // Project
         TProject project = projectDao.getById(projectId);
-        // All comments
+        // All comments & properties
         List<TComment> comments = new ArrayList<>();
+        List<TProperty> properties = new ArrayList<>();
         // Branches for this project
         List<TBranch> branches = branchDao.findByProject(projectId);
         // Promotion levels for all branches
@@ -179,19 +182,19 @@ public class DefaultExportService implements ExportService {
         List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
         // Comments
         for (TBranch branch : branches) {
-            fetchComments(comments, Entity.BRANCH, branch.getId());
+            fetchCommentsAndProperties(comments, properties, Entity.BRANCH, branch.getId());
         }
         for (TPromotionLevel promotionLevel : promotionLevels) {
-            fetchComments(comments, Entity.PROMOTION_LEVEL, promotionLevel.getId());
+            fetchCommentsAndProperties(comments, properties, Entity.PROMOTION_LEVEL, promotionLevel.getId());
         }
         for (TValidationStamp validationStamp : validationStamps) {
-            fetchComments(comments, Entity.VALIDATION_STAMP, validationStamp.getId());
+            fetchCommentsAndProperties(comments, properties, Entity.VALIDATION_STAMP, validationStamp.getId());
         }
         for (TBuild build : builds) {
-            fetchComments(comments, Entity.BUILD, build.getId());
+            fetchCommentsAndProperties(comments, properties, Entity.BUILD, build.getId());
         }
         for (TValidationRun validationRun : validationRuns) {
-            fetchComments(comments, Entity.VALIDATION_RUN, validationRun.getId());
+            fetchCommentsAndProperties(comments, properties, Entity.VALIDATION_RUN, validationRun.getId());
         }
         // Export data for the project
         TExport export = new TExport(
@@ -204,6 +207,7 @@ public class DefaultExportService implements ExportService {
                 validationRuns,
                 validationRunStatuses,
                 comments,
+                properties,
                 events
         );
         // Converts to JSON
@@ -215,8 +219,9 @@ public class DefaultExportService implements ExportService {
         );
     }
 
-    protected void fetchComments(List<TComment> comments, Entity entity, int entityId) {
+    protected void fetchCommentsAndProperties(List<TComment> comments, List<TProperty> properties, Entity entity, int entityId) {
         comments.addAll(commentDao.findByEntity(entity, entityId, 0, Integer.MAX_VALUE));
+        properties.addAll(propertyDao.findAll(entity, entityId));
     }
 
     private class ExportTask implements Runnable {
