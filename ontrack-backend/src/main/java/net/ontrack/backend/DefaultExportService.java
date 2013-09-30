@@ -41,19 +41,25 @@ public class DefaultExportService implements ExportService {
     private final PromotionLevelDao promotionLevelDao;
     private final ValidationStampDao validationStampDao;
     private final BuildDao buildDao;
+    private final PromotedRunDao promotedRunDao;
+    private final ValidationRunDao validationRunDao;
+    private final ValidationRunStatusDao validationRunStatusDao;
     private final EventDao eventDao;
     private final CommentDao commentDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, EventDao eventDao, CommentDao commentDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.promotionLevelDao = promotionLevelDao;
         this.validationStampDao = validationStampDao;
         this.buildDao = buildDao;
+        this.promotedRunDao = promotedRunDao;
+        this.validationRunDao = validationRunDao;
+        this.validationRunStatusDao = validationRunStatusDao;
         this.eventDao = eventDao;
         this.commentDao = commentDao;
         this.objectMapper = objectMapper;
@@ -152,6 +158,18 @@ public class DefaultExportService implements ExportService {
         for (TBranch branch : branches) {
             builds.addAll(buildDao.findByBranch(branch.getId(), 0, Integer.MAX_VALUE));
         }
+        // Promoted runs
+        List<TPromotedRun> promotedRuns = new ArrayList<>();
+        for (TBuild build : builds) {
+            promotedRuns.addAll(promotedRunDao.findByBuild(build.getId()));
+        }
+        // Validation runs
+        List<TValidationRun> validationRuns = new ArrayList<>();
+        for (TBuild build : builds) {
+            for (TValidationStamp validationStamp : validationStamps) {
+                validationRuns.addAll(validationRunDao.findByBuildAndValidationStamp(build.getId(), validationStamp.getId()));
+            }
+        }
         // All events for the project
         List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
         // Comments
@@ -174,6 +192,8 @@ public class DefaultExportService implements ExportService {
                 promotionLevels,
                 validationStamps,
                 builds,
+                promotedRuns,
+                validationRuns,
                 comments,
                 events
         );
