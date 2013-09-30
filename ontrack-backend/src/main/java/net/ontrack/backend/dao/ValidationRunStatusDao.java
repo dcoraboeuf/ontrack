@@ -13,5 +13,7 @@ public interface ValidationRunStatusDao {
 
     Collection<TValidationRunStatus> findByText(String text);
 
+    Collection<TValidationRunStatus> findByValidationRun(int validationRunId);
+
     void renameAuthor(int id, String name);
 }

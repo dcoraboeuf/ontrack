@@ -170,6 +170,11 @@ public class DefaultExportService implements ExportService {
                 validationRuns.addAll(validationRunDao.findByBuildAndValidationStamp(build.getId(), validationStamp.getId()));
             }
         }
+        // Validation run statuses
+        List<TValidationRunStatus> validationRunStatuses = new ArrayList<>();
+        for (TValidationRun validationRun : validationRuns) {
+            validationRunStatuses.addAll(validationRunStatusDao.findByValidationRun(validationRun.getId()));
+        }
         // All events for the project
         List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
         // Comments
@@ -185,6 +190,9 @@ public class DefaultExportService implements ExportService {
         for (TBuild build : builds) {
             fetchComments(comments, Entity.BUILD, build.getId());
         }
+        for (TValidationRun validationRun : validationRuns) {
+            fetchComments(comments, Entity.VALIDATION_RUN, validationRun.getId());
+        }
         // Export data for the project
         TExport export = new TExport(
                 project,
@@ -194,6 +202,7 @@ public class DefaultExportService implements ExportService {
                 builds,
                 promotedRuns,
                 validationRuns,
+                validationRunStatuses,
                 comments,
                 events
         );

@@ -60,6 +60,16 @@ public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements Valid
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Collection<TValidationRunStatus> findByValidationRun(int validationRunId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.VALIDATION_RUN_STATUS_BY_RUN,
+                params("run", validationRunId),
+                validationRunStatusMapper
+        );
+    }
+
+    @Override
     @Transactional
     public void renameAuthor(int id, String name) {
         getNamedParameterJdbcTemplate().update(
