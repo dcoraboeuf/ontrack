@@ -42,11 +42,12 @@ public class DefaultExportService implements ExportService {
     private final ValidationStampDao validationStampDao;
     private final BuildDao buildDao;
     private final EventDao eventDao;
+    private final CommentDao commentDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, EventDao eventDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, EventDao eventDao, CommentDao commentDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
@@ -54,6 +55,7 @@ public class DefaultExportService implements ExportService {
         this.validationStampDao = validationStampDao;
         this.buildDao = buildDao;
         this.eventDao = eventDao;
+        this.commentDao = commentDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -131,6 +133,8 @@ public class DefaultExportService implements ExportService {
     private ProjectData exportProject(int projectId) {
         // Project
         TProject project = projectDao.getById(projectId);
+        // All comments
+        List<TComment> comments = new ArrayList<>();
         // Branches for this project
         List<TBranch> branches = branchDao.findByProject(projectId);
         // Promotion levels for all branches
@@ -150,6 +154,19 @@ public class DefaultExportService implements ExportService {
         }
         // All events for the project
         List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
+        // Comments
+        for (TBranch branch : branches) {
+            fetchComments(comments, Entity.BRANCH, branch.getId());
+        }
+        for (TPromotionLevel promotionLevel : promotionLevels) {
+            fetchComments(comments, Entity.PROMOTION_LEVEL, promotionLevel.getId());
+        }
+        for (TValidationStamp validationStamp : validationStamps) {
+            fetchComments(comments, Entity.VALIDATION_STAMP, validationStamp.getId());
+        }
+        for (TBuild build : builds) {
+            fetchComments(comments, Entity.BUILD, build.getId());
+        }
         // Export data for the project
         TExport export = new TExport(
                 project,
@@ -157,6 +174,7 @@ public class DefaultExportService implements ExportService {
                 promotionLevels,
                 validationStamps,
                 builds,
+                comments,
                 events
         );
         // Converts to JSON
@@ -166,6 +184,10 @@ public class DefaultExportService implements ExportService {
                 managementService.getProject(projectId),
                 json
         );
+    }
+
+    protected void fetchComments(List<TComment> comments, Entity entity, int entityId) {
+        comments.addAll(commentDao.findByEntity(entity, entityId, 0, Integer.MAX_VALUE));
     }
 
     private class ExportTask implements Runnable {

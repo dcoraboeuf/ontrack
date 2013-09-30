@@ -13,6 +13,7 @@ public class TExport {
     private final Collection<TPromotionLevel> promotionLevels;
     private final Collection<TValidationStamp> validationStamps;
     private final Collection<TBuild> builds;
+    private final Collection<TComment> comments;
     private final Collection<TEvent> events;
 
 }
