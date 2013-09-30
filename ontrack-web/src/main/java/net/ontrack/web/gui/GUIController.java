@@ -300,9 +300,16 @@ public class GUIController extends AbstractGUIController {
     }
 
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
+        // General
         response.setContentType("image/png");
         response.setContentLength(content.length);
         response.setStatus(HttpServletResponse.SC_OK);
+        // See https://developers.google.com/speed/docs/best-practices/caching for cache management
+        // Just sets the last modified time to now
+        final long now = System.currentTimeMillis();
+        response.setDateHeader("Expires", now + 24 * 3600L * 1000L); // Expires in one day
+        response.setDateHeader("Last-Modified", now - 3600 * 1000); // Modified one hour ago
+        // Content
         response.getOutputStream().write(content);
         response.getOutputStream().flush();
     }

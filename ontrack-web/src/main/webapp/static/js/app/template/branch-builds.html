@@ -19,8 +19,8 @@
         <tr>
             {{#branchBuilds.validationStamps}}
                 <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
-                    <a href="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}">
-                        <img class="tooltip-source" width="24" height="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                    <a href="gui/project/{{../project}}/branch/{{../branch}}/validation_stamp/{{name}}">
+                        <img class="tooltip-source" width="24" height="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{../branch}}/validation_stamp/{{name}}/image" />
                     </a>
                 </th>
             {{/branchBuilds.validationStamps}}
@@ -31,7 +31,7 @@
                     <div
                         class="validation-stamp-decorations"
                         data-project="{{../project}}"
-                        data-branch="{{branch.name}}"
+                        data-branch="{{../branch}}"
                         data-validation-stamp="{{name}}"
                         ></div>
                 </th>
