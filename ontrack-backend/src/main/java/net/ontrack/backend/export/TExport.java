@@ -19,5 +19,6 @@ public class TExport {
     private final Collection<TComment> comments;
     private final Collection<TProperty> properties;
     private final Collection<TEvent> events;
+    private final Collection<TBuildCleanup> buildCleanups;
 
 }

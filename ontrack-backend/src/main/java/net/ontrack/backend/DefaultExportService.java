@@ -47,11 +47,12 @@ public class DefaultExportService implements ExportService {
     private final EventDao eventDao;
     private final CommentDao commentDao;
     private final PropertyDao propertyDao;
+    private final BuildCleanupDao buildCleanupDao;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
@@ -64,6 +65,7 @@ public class DefaultExportService implements ExportService {
         this.eventDao = eventDao;
         this.commentDao = commentDao;
         this.propertyDao = propertyDao;
+        this.buildCleanupDao = buildCleanupDao;
         this.objectMapper = objectMapper;
         this.version = version;
     }
@@ -196,6 +198,14 @@ public class DefaultExportService implements ExportService {
         for (TValidationRun validationRun : validationRuns) {
             fetchCommentsAndProperties(comments, properties, Entity.VALIDATION_RUN, validationRun.getId());
         }
+        // Build cleanup policy
+        List<TBuildCleanup> buildCleanups = new ArrayList<>();
+        for (TBranch branch : branches) {
+            TBuildCleanup buildCleanUp = buildCleanupDao.findBuildCleanUp(branch.getId());
+            if (buildCleanUp != null) {
+                buildCleanups.add(buildCleanUp);
+            }
+        }
         // Export data for the project
         TExport export = new TExport(
                 project,
@@ -208,7 +218,8 @@ public class DefaultExportService implements ExportService {
                 validationRunStatuses,
                 comments,
                 properties,
-                events
+                events,
+                buildCleanups
         );
         // Converts to JSON
         JsonNode json = objectMapper.valueToTree(export);
