@@ -14,7 +14,6 @@ import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.ExportService;
-import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ public class DefaultExportService implements ExportService {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("export-%d").setDaemon(true).build());
     private final Cache<String, ExportTask> cache = CacheBuilder.newBuilder().maximumSize(4).expireAfterWrite(1, TimeUnit.HOURS).build();
-    private final ManagementService managementService;
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
     private final PromotionLevelDao promotionLevelDao;
@@ -52,8 +50,7 @@ public class DefaultExportService implements ExportService {
     private final String version;
 
     @Autowired
-    public DefaultExportService(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
-        this.managementService = managementService;
+    public DefaultExportService(ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.promotionLevelDao = promotionLevelDao;
@@ -225,7 +222,7 @@ public class DefaultExportService implements ExportService {
         JsonNode json = objectMapper.valueToTree(export);
         // OK
         return new ProjectData(
-                managementService.getProject(projectId),
+                project.getName(),
                 json
         );
     }

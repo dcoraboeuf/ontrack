@@ -9,6 +9,6 @@ import org.codehaus.jackson.JsonNode;
 @Data
 public class ProjectData {
 
-    private final ProjectSummary projectSummary;
+    private final String name;
     private final JsonNode data;
 }
