@@ -1,12 +1,12 @@
 package net.ontrack.backend;
 
-import net.ontrack.core.model.ExportData;
-import net.ontrack.core.model.ProjectCreationForm;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -15,6 +15,8 @@ import java.util.concurrent.Callable;
 import static org.junit.Assert.assertNotNull;
 
 public class ExportServiceTest extends AbstractBackendTest {
+
+    private final Logger logger = LoggerFactory.getLogger(ExportServiceTest.class);
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -40,12 +42,18 @@ public class ExportServiceTest extends AbstractBackendTest {
     @Test(timeout = 2000L)
     public void create_export_delete_import_export() throws Exception {
         // Creates the project structure
-        ExportData exportData = asAdmin().call(new Callable<ExportData>() {
+        final ProjectSummary project = asAdmin().call(new Callable<ProjectSummary>() {
             @Override
-            public ExportData call() throws Exception {
+            public ProjectSummary call() throws Exception {
                 ProjectSummary project = managementService.createProject(new ProjectCreationForm(uid("PRJ"), "Export"));
-                // TODO Branches
-                // TODO Promotion levels
+                // Branches
+                BranchSummary b1 = managementService.createBranch(project.getId(), new BranchCreationForm("B1", "B1"));
+                BranchSummary b2 = managementService.createBranch(project.getId(), new BranchCreationForm("B2", "B2"));
+                // Promotion levels
+                PromotionLevelSummary b1dev = managementService.createPromotionLevel(b1.getId(), new PromotionLevelCreationForm("DEV", "Development"));
+                PromotionLevelSummary b1prod = managementService.createPromotionLevel(b1.getId(), new PromotionLevelCreationForm("PROD", "Production"));
+                PromotionLevelSummary b2dev = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("DEV", "Development"));
+                PromotionLevelSummary b2prod = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("PROD", "Production"));
                 // TODO Validation stamps
                 // TODO Builds
                 // TODO Promoted runs
@@ -54,26 +62,45 @@ public class ExportServiceTest extends AbstractBackendTest {
                 // TODO Comments
                 // TODO Properties
                 // TODO Build clean-up policy
-                // Export
-                return exportProject(project);
-
+                // OK
+                return project;
             }
         });
+        // Export
+        final ExportData exportData = exportProject(project.getId());
         // Checks
         assertNotNull(exportData);
         // As a nice JSON...
         // TODO Gets rid of ids
         String file1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportData);
+        // Deletes the created file
+        asAdmin().call(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                managementService.deleteProject(project.getId());
+                return null;
+            }
+        });
+        // TODO Imports the project
+        // TODO Exports the imported project
+        // TODO Compares files 1 & 2
     }
 
-    private ExportData exportProject(ProjectSummary project) throws InterruptedException {
-        // Exports the project
-        String uuid = exportService.exportLaunch(Collections.singletonList(project.getId()));
-        // Waits until the export is done
-        while (!exportService.exportCheck(uuid).isSuccess()) {
-            Thread.sleep(100);
-        }
-        // Downloads the file
-        return exportService.exportDownload(uuid);
+    private ExportData exportProject(final int projectId) throws Exception {
+        return asAdmin().call(new Callable<ExportData>() {
+
+            @Override
+            public ExportData call() throws Exception {
+                // Exports the project
+                String uuid = exportService.exportLaunch(Collections.singletonList(projectId));
+                // Waits until the export is done
+                while (!exportService.exportCheck(uuid).isSuccess()) {
+                    logger.debug("Waiting for the generation of the export file");
+                    Thread.sleep(100);
+                }
+                // Downloads the file
+                return exportService.exportDownload(uuid);
+            }
+        });
     }
 }
