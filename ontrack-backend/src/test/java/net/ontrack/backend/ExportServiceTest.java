@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ExportServiceTest extends AbstractBackendTest {
@@ -70,9 +72,6 @@ public class ExportServiceTest extends AbstractBackendTest {
         final ExportData exportData = exportProject(project.getId());
         // Checks
         assertNotNull(exportData);
-        // As a nice JSON...
-        // TODO Gets rid of ids
-        String file1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportData);
         // Deletes the created file
         asAdmin().call(new Callable<Object>() {
             @Override
@@ -81,9 +80,33 @@ public class ExportServiceTest extends AbstractBackendTest {
                 return null;
             }
         });
-        // TODO Imports the project
-        // TODO Exports the imported project
+        // Imports the project
+        List<ProjectSummary> projects = asAdmin().call(new Callable<List<ProjectSummary>>() {
+            @Override
+            public List<ProjectSummary> call() throws Exception {
+                // TODO Imports the file
+                // String uuid = exportService.importLaunch();
+                // TODO Waits until the import is done
+                /**
+                 while (!exportService.importCheck(uuid).isSuccess()) {
+                 logger.debug("Waiting for the import of the file");
+                 Thread.sleep(100);
+                 }
+                 */
+                // TODO Gets the results
+                // return exportService.importResults(uuid);
+                return null;
+            }
+        });
+        assertNotNull(projects);
+        assertEquals(1, projects.size());
+        ProjectSummary importedProject = projects.get(0);
+        assertNotNull(importedProject);
+        assertEquals(project.getName(), importedProject.getName());
+        // Exports the imported project
+        ExportData exportImportedData = exportProject(importedProject.getId());
         // TODO Compares files 1 & 2
+        // TODO Compares the JSON trees without taking into account the IDs and the order of fields
     }
 
     private ExportData exportProject(final int projectId) throws Exception {
