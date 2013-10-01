@@ -120,6 +120,21 @@ public class DefaultExportService implements ExportService {
         }
     }
 
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public String importLaunch(ExportData importData) {
+        // UUID
+        String uuid = UUID.randomUUID().toString();
+        // FIXME Import task
+        // ImportTask task = new ImportTask(importData);
+        // TODO Registers the task
+        // cache.put(uuid, task);
+        // TODO Launches the export on a thread
+        // executorService.submit(task);
+        // OK
+        return uuid;
+    }
+
     protected ExportData doExport(Collection<Integer> projectIds) {
         // All exports
         // TODO JDK8 Processes in parallel

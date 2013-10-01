@@ -12,4 +12,12 @@ public interface ExportService {
     Ack exportCheck(String uuid);
 
     ExportData exportDownload(String uuid);
+
+    /**
+     * Launches the import of
+     *
+     * @param importData Data to import
+     * @return UUID to be used in
+     */
+    String importLaunch(ExportData importData);
 }

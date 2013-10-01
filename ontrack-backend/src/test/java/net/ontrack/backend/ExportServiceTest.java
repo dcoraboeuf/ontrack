@@ -72,6 +72,8 @@ public class ExportServiceTest extends AbstractBackendTest {
         final ExportData exportData = exportProject(project.getId());
         // Checks
         assertNotNull(exportData);
+        // Gets the exported data as JSON
+        final String json1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportData);
         // Deletes the created file
         asAdmin().call(new Callable<Object>() {
             @Override
@@ -84,8 +86,10 @@ public class ExportServiceTest extends AbstractBackendTest {
         List<ProjectSummary> projects = asAdmin().call(new Callable<List<ProjectSummary>>() {
             @Override
             public List<ProjectSummary> call() throws Exception {
-                // TODO Imports the file
-                // String uuid = exportService.importLaunch();
+                // Prepares the import
+                ExportData importData = objectMapper.readValue(json1, ExportData.class);
+                // Imports the file
+                String uuid = exportService.importLaunch(importData);
                 // TODO Waits until the import is done
                 /**
                  while (!exportService.importCheck(uuid).isSuccess()) {
