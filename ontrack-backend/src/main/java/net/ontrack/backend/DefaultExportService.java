@@ -4,13 +4,16 @@ import com.google.common.base.Function;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
+import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.ExportService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,13 +157,13 @@ public class DefaultExportService implements ExportService {
 
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
-    public List<ProjectSummary> importResults(String uuid) {
+    public Collection<ProjectSummary> importResults(String uuid) {
         ImportTask task = importCache.getIfPresent(uuid);
         if (task == null) {
             throw new ImportTaskNotFoundException(uuid);
         } else {
             try {
-                List<ProjectSummary> data = task.data();
+                Collection<ProjectSummary> data = task.data();
                 if (data == null) {
                     throw new ImportNotFinishedException(uuid);
                 }
@@ -285,6 +288,31 @@ public class DefaultExportService implements ExportService {
         properties.addAll(propertyDao.findAll(entity, entityId));
     }
 
+    protected Collection<ProjectSummary> doImport(ExportData importData) {
+        // Gets the version
+        String importVersion = importData.getVersion();
+        // Gets the import service according to the version
+        final ImportService importService = getImportService(importVersion);
+        // Runs the import service for each project
+        return Collections2.transform(
+                importData.getProjects(),
+                new Function<ProjectData, ProjectSummary>() {
+                    @Override
+                    public ProjectSummary apply(ProjectData projectData) {
+                        return importService.doImport(projectData);
+                    }
+                }
+        );
+    }
+
+    protected ImportService getImportService(String inputVersion) {
+        // TODO Parsing of version
+        // Pair<Integer,Integer> sourceVersion = parseVersion(inputVersion);
+        // Pair<Integer,Integer> targetVersion = parseVersion(version);
+        // No suitable imported found
+        throw new ImportVersionException(inputVersion, version);
+    }
+
     private abstract class ImportExportTask<R> implements Runnable {
 
         private final AtomicBoolean finished = new AtomicBoolean(false);
@@ -329,9 +357,23 @@ public class DefaultExportService implements ExportService {
             }
         }
 
+        @Override
+        public final void run() {
+            try {
+                // Performs the export
+                data(doTask());
+            } catch (Exception ex) {
+                exception(ex);
+            } finally {
+                finished();
+            }
+        }
+
+        protected abstract R doTask();
+
     }
 
-    private class ImportTask extends ImportExportTask<List<ProjectSummary>> {
+    private class ImportTask extends ImportExportTask<Collection<ProjectSummary>> {
 
         private final ExportData importData;
 
@@ -340,8 +382,8 @@ public class DefaultExportService implements ExportService {
         }
 
         @Override
-        public void run() {
-            //To change body of implemented methods use File | Settings | File Templates.
+        protected Collection<ProjectSummary> doTask() {
+            return doImport(importData);
         }
     }
 
@@ -354,15 +396,9 @@ public class DefaultExportService implements ExportService {
         }
 
         @Override
-        public void run() {
-            try {
-                // Performs the export
-                data(doExport(projectIds));
-            } catch (Exception ex) {
-                exception(ex);
-            } finally {
-                finished();
-            }
+        protected ExportData doTask() {
+            return doExport(projectIds);
         }
+
     }
 }

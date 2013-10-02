@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -83,9 +84,9 @@ public class ExportServiceTest extends AbstractBackendTest {
             }
         });
         // Imports the project
-        List<ProjectSummary> projects = asAdmin().call(new Callable<List<ProjectSummary>>() {
+        Collection<ProjectSummary> projects = asAdmin().call(new Callable<Collection<ProjectSummary>>() {
             @Override
-            public List<ProjectSummary> call() throws Exception {
+            public Collection<ProjectSummary> call() throws Exception {
                 // Prepares the import
                 ExportData importData = objectMapper.readValue(json1, ExportData.class);
                 // Imports the file
@@ -101,7 +102,7 @@ public class ExportServiceTest extends AbstractBackendTest {
         });
         assertNotNull(projects);
         assertEquals(1, projects.size());
-        ProjectSummary importedProject = projects.get(0);
+        ProjectSummary importedProject = projects.iterator().next();
         assertNotNull(importedProject);
         assertEquals(project.getName(), importedProject.getName());
         // Exports the imported project

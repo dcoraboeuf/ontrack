@@ -45,6 +45,9 @@ net.ontrack.backend.ImportException
 net.ontrack.backend.ImportNotFinishedException
     en -> [E-015] Project import not finished. ID = {0}
 
+net.ontrack.backend.ImportVersionException
+    en -> [E-016] Cannot import version {0} into version {1}.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException
