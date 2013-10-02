@@ -48,6 +48,9 @@ net.ontrack.backend.ImportNotFinishedException
 net.ontrack.backend.ImportVersionException
     en -> [E-016] Cannot import version {0} into version {1}.
 
+net.ontrack.backend.export.ImportIdInconsistencyException
+    en -> [E-017] Cannot find ID = {1} for the entity {0} in the imported file.
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

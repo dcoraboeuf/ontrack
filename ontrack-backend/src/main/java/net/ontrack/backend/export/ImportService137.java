@@ -1,9 +1,10 @@
 package net.ontrack.backend.export;
 
-import net.ontrack.backend.dao.ProjectDao;
+import net.ontrack.backend.dao.*;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.service.ManagementService;
+import org.codehaus.jackson.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -14,30 +15,76 @@ import org.springframework.transaction.annotation.Transactional;
 public class ImportService137 implements ImportService {
 
     private final ManagementService managementService;
-    private final ProjectDao projectDao;
+    protected final ProjectDao projectDao;
+    protected final BranchDao branchDao;
+    protected final PromotionLevelDao promotionLevelDao;
+    protected final ValidationStampDao validationStampDao;
+    protected final BuildDao buildDao;
+    protected final PromotedRunDao promotedRunDao;
+    protected final ValidationRunDao validationRunDao;
+    protected final ValidationRunStatusDao validationRunStatusDao;
+    protected final EventDao eventDao;
+    protected final CommentDao commentDao;
+    protected final PropertyDao propertyDao;
+    protected final BuildCleanupDao buildCleanupDao;
 
     @Autowired
-    public ImportService137(ManagementService managementService, ProjectDao projectDao) {
+    public ImportService137(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao) {
         this.managementService = managementService;
         this.projectDao = projectDao;
+        this.branchDao = branchDao;
+        this.promotionLevelDao = promotionLevelDao;
+        this.validationStampDao = validationStampDao;
+        this.buildDao = buildDao;
+        this.promotedRunDao = promotedRunDao;
+        this.validationRunDao = validationRunDao;
+        this.validationRunStatusDao = validationRunStatusDao;
+        this.eventDao = eventDao;
+        this.commentDao = commentDao;
+        this.propertyDao = propertyDao;
+        this.buildCleanupDao = buildCleanupDao;
     }
 
     @Override
     @Transactional
     public ProjectSummary doImport(ProjectData projectData) {
+        // Context
+        ImportContext context = new ImportContext();
         // Project
-        int projectId = createProject(projectData);
+        int projectId = createProject(projectData, context);
         // OK
         return managementService.getProject(projectId);
     }
 
-    protected int createProject(ProjectData projectData) {
+    protected int createProject(ProjectData projectData, ImportContext context) {
+        // TODO Split for reuseability?
         // Reads & creates the project
+        int id = projectData.getData().path("project").path("id").asInt();
         String name = projectData.getData().path("project").path("name").asText();
         String description = projectData.getData().path("project").path("description").asText();
         int projectId = projectDao.createProject(name, description);
-        // TODO Branches
-        // TODO Promotion levels
+        context.forProject(id, projectId);
+        // Branches
+        JsonNode branchesNode = projectData.getData().path("branches");
+        for (JsonNode branchNode : branchesNode) {
+            int oldBranchId = branchNode.path("id").asInt();
+            String branchName = branchNode.path("name").asText();
+            String branchDescription = branchNode.path("description").asText();
+            int newBranchId = branchDao.createBranch(projectId, branchName, branchDescription);
+            context.forBranch(oldBranchId, newBranchId);
+        }
+        // Promotion levels
+        JsonNode promotionLevelsNode = projectData.getData().path("promotionLevels");
+        for (JsonNode promotionLevelNode : promotionLevelsNode) {
+            // FIXME Level nb: sort the source promotion levels before inserting
+            int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
+            int oldBranchId = promotionLevelNode.path("branch").asInt();
+            String promotionLevelName = promotionLevelNode.path("name").asText();
+            String promotionLevelDescription = promotionLevelNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
+            context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
+        }
         // TODO Validation stamps
         // TODO Builds
         // TODO Promoted runs

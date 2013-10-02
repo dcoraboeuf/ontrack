@@ -146,6 +146,7 @@ public class ExportServiceTest extends AbstractBackendTest {
     }
 
     private JsonNode pruneIds(JsonNode source) {
+        // FIXME Filter also the reference IDs (project, branch,... which as also integers)
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {
             ArrayNode target = factory.arrayNode();
