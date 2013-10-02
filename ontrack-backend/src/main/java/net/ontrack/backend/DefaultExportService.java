@@ -12,6 +12,7 @@ import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.support.Version;
 import net.ontrack.service.ExportService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonNode;
@@ -306,9 +307,9 @@ public class DefaultExportService implements ExportService {
     }
 
     protected ImportService getImportService(String inputVersion) {
-        // TODO Parsing of version
-        // Pair<Integer,Integer> sourceVersion = parseVersion(inputVersion);
-        // Pair<Integer,Integer> targetVersion = parseVersion(version);
+        // Parsing of versions
+        Version sourceVersion = Version.of(inputVersion);
+        Version targetVersion = Version.of(version);
         // No suitable imported found
         throw new ImportVersionException(inputVersion, version);
     }
