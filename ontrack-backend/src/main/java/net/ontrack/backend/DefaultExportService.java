@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
@@ -14,10 +13,11 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.support.Version;
 import net.ontrack.service.ExportService;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 public class DefaultExportService implements ExportService {
 
+    /**
+     * Version when the export/import started to be available
+     */
+    public static final String REFERENCE_VERSION = "1.37";
     private final ExecutorService exportExecutorService = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("export-%d").setDaemon(true).build());
     private final ExecutorService importExecutorService = Executors.newSingleThreadExecutor(
@@ -52,6 +56,13 @@ public class DefaultExportService implements ExportService {
     private final BuildCleanupDao buildCleanupDao;
     private final ObjectMapper objectMapper;
     private final String version;
+
+    /**
+     * Import service for versions 1.37 and greater.
+     */
+    @Autowired
+    @Qualifier("1.37")
+    private ImportService importService137;
 
     @Autowired
     public DefaultExportService(ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
@@ -307,11 +318,21 @@ public class DefaultExportService implements ExportService {
     }
 
     protected ImportService getImportService(String inputVersion) {
+        // Gets rid of any SNAPSHOT extension
         // Parsing of versions
-        Version sourceVersion = Version.of(inputVersion);
-        Version targetVersion = Version.of(version);
-        // No suitable imported found
-        throw new ImportVersionException(inputVersion, version);
+        Version sourceVersion = Version.of(StringUtils.substringBefore(inputVersion, "-SNAPSHOT"));
+        // Before import ever existed...
+        if (sourceVersion.compareTo(Version.of(REFERENCE_VERSION)) < 0) {
+            throw new ImportVersionException(inputVersion, version);
+        }
+        // Major version
+        else if (sourceVersion.getMajor() == 1) {
+            return importService137;
+        }
+        // Future major versions
+        else {
+            throw new ImportVersionException(inputVersion, version);
+        }
     }
 
     private abstract class ImportExportTask<R> implements Runnable {
