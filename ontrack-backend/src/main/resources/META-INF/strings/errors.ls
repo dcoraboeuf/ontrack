@@ -36,6 +36,15 @@ net.ontrack.backend.ExportException
 net.ontrack.backend.ExportNotFinishedException
     en -> [E-012] Project export not finished. ID = {0}
 
+net.ontrack.backend.ImportTaskNotFoundException
+    en -> [E-013] Cannot find import task. ID = {0}
+
+net.ontrack.backend.ImportException
+    en -> [E-014] Error while importing project(s). ID = {0}, Error = {1}
+
+net.ontrack.backend.ImportNotFinishedException
+    en -> [E-015] Project import not finished. ID = {0}
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

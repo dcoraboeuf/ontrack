@@ -90,16 +90,13 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ExportData importData = objectMapper.readValue(json1, ExportData.class);
                 // Imports the file
                 String uuid = exportService.importLaunch(importData);
-                // TODO Waits until the import is done
-                /**
-                 while (!exportService.importCheck(uuid).isSuccess()) {
-                 logger.debug("Waiting for the import of the file");
-                 Thread.sleep(100);
-                 }
-                 */
-                // TODO Gets the results
-                // return exportService.importResults(uuid);
-                return null;
+                // Waits until the import is done
+                while (!exportService.importCheck(uuid).isSuccess()) {
+                    logger.debug("Waiting for the import of the file");
+                    Thread.sleep(100);
+                }
+                // Gets the results
+                return exportService.importResults(uuid);
             }
         });
         assertNotNull(projects);

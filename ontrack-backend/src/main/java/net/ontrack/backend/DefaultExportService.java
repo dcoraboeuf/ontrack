@@ -8,10 +8,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.TExport;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ExportData;
-import net.ontrack.core.model.ProjectData;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.service.ExportService;
 import org.codehaus.jackson.JsonNode;
@@ -31,9 +28,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 public class DefaultExportService implements ExportService {
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor(
+    private final ExecutorService exportExecutorService = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("export-%d").setDaemon(true).build());
-    private final Cache<String, ExportTask> cache = CacheBuilder.newBuilder().maximumSize(4).expireAfterWrite(1, TimeUnit.HOURS).build();
+    private final ExecutorService importExecutorService = Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder().setNameFormat("import-%d").setDaemon(true).build());
+    private final Cache<String, ExportTask> exportCache = CacheBuilder.newBuilder().maximumSize(4).expireAfterWrite(1, TimeUnit.HOURS).build();
+    private final Cache<String, ImportTask> importCache = CacheBuilder.newBuilder().maximumSize(4).expireAfterWrite(1, TimeUnit.HOURS).build();
     private final ProjectDao projectDao;
     private final BranchDao branchDao;
     private final PromotionLevelDao promotionLevelDao;
@@ -75,9 +75,9 @@ public class DefaultExportService implements ExportService {
         // Export task
         ExportTask task = new ExportTask(projectIds);
         // Registers the task
-        cache.put(uuid, task);
+        exportCache.put(uuid, task);
         // Launches the export on a thread
-        executorService.submit(task);
+        exportExecutorService.submit(task);
         // OK
         return uuid;
     }
@@ -85,7 +85,7 @@ public class DefaultExportService implements ExportService {
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack exportCheck(String uuid) {
-        ExportTask task = cache.getIfPresent(uuid);
+        ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
             throw new ExportTaskNotFoundException(uuid);
         } else {
@@ -102,12 +102,12 @@ public class DefaultExportService implements ExportService {
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
     public ExportData exportDownload(String uuid) {
-        ExportTask task = cache.getIfPresent(uuid);
+        ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
             throw new ExportTaskNotFoundException(uuid);
         } else {
             try {
-                ExportData data = task.getData();
+                ExportData data = task.data();
                 if (data == null) {
                     throw new ExportNotFinishedException(uuid);
                 }
@@ -125,14 +125,52 @@ public class DefaultExportService implements ExportService {
     public String importLaunch(ExportData importData) {
         // UUID
         String uuid = UUID.randomUUID().toString();
-        // FIXME Import task
-        // ImportTask task = new ImportTask(importData);
-        // TODO Registers the task
-        // cache.put(uuid, task);
-        // TODO Launches the export on a thread
-        // executorService.submit(task);
+        // Import task
+        ImportTask task = new ImportTask(importData);
+        // Registers the task
+        importCache.put(uuid, task);
+        // Launches the export on a thread
+        importExecutorService.submit(task);
         // OK
         return uuid;
+    }
+
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack importCheck(String uuid) {
+        ImportTask task = importCache.getIfPresent(uuid);
+        if (task == null) {
+            throw new ImportTaskNotFoundException(uuid);
+        } else {
+            try {
+                return Ack.validate(task.checkFinished());
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new ImportException(uuid, ex);
+            }
+        }
+    }
+
+    @Override
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public List<ProjectSummary> importResults(String uuid) {
+        ImportTask task = importCache.getIfPresent(uuid);
+        if (task == null) {
+            throw new ImportTaskNotFoundException(uuid);
+        } else {
+            try {
+                List<ProjectSummary> data = task.data();
+                if (data == null) {
+                    throw new ImportNotFinishedException(uuid);
+                }
+                return data;
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new ImportException(uuid, ex);
+            }
+        }
     }
 
     protected ExportData doExport(Collection<Integer> projectIds) {
@@ -247,29 +285,11 @@ public class DefaultExportService implements ExportService {
         properties.addAll(propertyDao.findAll(entity, entityId));
     }
 
-    private class ExportTask implements Runnable {
+    private abstract class ImportExportTask<R> implements Runnable {
 
-        private final Collection<Integer> projectIds;
         private final AtomicBoolean finished = new AtomicBoolean(false);
         private final AtomicReference<Exception> exception = new AtomicReference<>(null);
-        private final AtomicReference<ExportData> data = new AtomicReference<>(null);
-
-        private ExportTask(Collection<Integer> projectIds) {
-            this.projectIds = projectIds;
-        }
-
-        @Override
-        public void run() {
-            try {
-                // Performs the export
-                data.set(doExport(projectIds));
-                // OK
-                finished.set(true);
-            } catch (Exception ex) {
-                finished.set(true);
-                exception.set(ex);
-            }
-        }
+        private final AtomicReference<R> data = new AtomicReference<>(null);
 
         public boolean checkFinished() throws Exception {
             if (finished.get()) {
@@ -284,7 +304,19 @@ public class DefaultExportService implements ExportService {
             }
         }
 
-        public ExportData getData() throws Exception {
+        protected void finished() {
+            finished.set(true);
+        }
+
+        protected void exception(Exception ex) {
+            exception.set(ex);
+        }
+
+        protected void data(R value) {
+            data.set(value);
+        }
+
+        public R data() throws Exception {
             if (finished.get()) {
                 Exception e = exception.get();
                 if (e != null) {
@@ -294,6 +326,42 @@ public class DefaultExportService implements ExportService {
                 }
             } else {
                 return null;
+            }
+        }
+
+    }
+
+    private class ImportTask extends ImportExportTask<List<ProjectSummary>> {
+
+        private final ExportData importData;
+
+        public ImportTask(ExportData importData) {
+            this.importData = importData;
+        }
+
+        @Override
+        public void run() {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
+
+    private class ExportTask extends ImportExportTask<ExportData> {
+
+        private final Collection<Integer> projectIds;
+
+        private ExportTask(Collection<Integer> projectIds) {
+            this.projectIds = projectIds;
+        }
+
+        @Override
+        public void run() {
+            try {
+                // Performs the export
+                data(doExport(projectIds));
+            } catch (Exception ex) {
+                exception(ex);
+            } finally {
+                finished();
             }
         }
     }
