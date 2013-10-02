@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
@@ -193,14 +194,16 @@ public class DefaultExportService implements ExportService {
         // TODO JDK8 Processes in parallel
         return new ExportData(
                 version,
-                Collections2.transform(
-                        projectIds,
-                        new Function<Integer, ProjectData>() {
-                            @Override
-                            public ProjectData apply(Integer projectId) {
-                                return exportProject(projectId);
-                            }
-                        }
+                ImmutableList.copyOf(
+                        Collections2.transform(
+                                projectIds,
+                                new Function<Integer, ProjectData>() {
+                                    @Override
+                                    public ProjectData apply(Integer projectId) {
+                                        return exportProject(projectId);
+                                    }
+                                }
+                        )
                 )
         );
     }

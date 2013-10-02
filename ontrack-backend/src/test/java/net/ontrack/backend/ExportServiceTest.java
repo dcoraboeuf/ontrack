@@ -1,9 +1,15 @@
 package net.ontrack.backend;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import net.ontrack.core.model.*;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.JsonNodeFactory;
+import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertEquals;
@@ -41,7 +49,7 @@ public class ExportServiceTest extends AbstractBackendTest {
      * <li>File 1 & 2 must be identical but for the ID attribute (which are generated at import time)</li>
      * </ol>
      */
-    @Test(timeout = 2000L)
+    @Test/*(timeout = 2000L)*/
     public void create_export_delete_import_export() throws Exception {
         // Creates the project structure
         final ProjectSummary project = asAdmin().call(new Callable<ProjectSummary>() {
@@ -69,11 +77,11 @@ public class ExportServiceTest extends AbstractBackendTest {
             }
         });
         // Export
-        final ExportData exportData = exportProject(project.getId());
+        final ExportData export1 = exportProject(project.getId());
         // Checks
-        assertNotNull(exportData);
+        assertNotNull(export1);
         // Gets the exported data as JSON
-        final String json1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(exportData);
+        final String json1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(export1);
         // Deletes the created file
         asAdmin().call(new Callable<Object>() {
             @Override
@@ -105,9 +113,65 @@ public class ExportServiceTest extends AbstractBackendTest {
         assertNotNull(importedProject);
         assertEquals(project.getName(), importedProject.getName());
         // Exports the imported project
-        ExportData exportImportedData = exportProject(importedProject.getId());
-        // TODO Compares files 1 & 2
-        // TODO Compares the JSON trees without taking into account the IDs and the order of fields
+        ExportData export2 = exportProject(importedProject.getId());
+        // Compares the trees without taking into account the IDs and the order of fields
+        ExportData pruned1 = pruneIds(export1);
+        ExportData pruned2 = pruneIds(export2);
+        // Compares files 1 & 2
+        String file1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pruned1);
+        String file2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pruned2);
+        assertEquals(file1, file2);
+    }
+
+    public ExportData pruneIds(ExportData exportData) {
+        return new ExportData(
+                exportData.getVersion(),
+                Collections2.transform(
+                        exportData.getProjects(),
+                        new Function<ProjectData, ProjectData>() {
+                            @Override
+                            public ProjectData apply(ProjectData input) {
+                                return pruneIds(input);
+                            }
+                        }
+                )
+        );
+    }
+
+    private ProjectData pruneIds(ProjectData input) {
+        return new ProjectData(
+                input.getName(),
+                pruneIds(input.getData())
+        );
+    }
+
+    private JsonNode pruneIds(JsonNode source) {
+        JsonNodeFactory factory = objectMapper.getNodeFactory();
+        if (source.isArray()) {
+            ArrayNode target = factory.arrayNode();
+            for (JsonNode sourceItem : source) {
+                target.add(pruneIds(sourceItem));
+            }
+            return target;
+        } else if (source.isObject()) {
+            ObjectNode target = factory.objectNode();
+            Iterator<Map.Entry<String, JsonNode>> fields = source.getFields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> field = fields.next();
+                String name = field.getKey();
+                JsonNode value = field.getValue();
+                if (!"id".equals(name)) {
+                    target.put(name, pruneIds(value));
+                }
+            }
+            return target;
+        } else if (source.isBoolean()) {
+            return factory.booleanNode(source.asBoolean());
+        } else if (source.isInt()) {
+            return factory.numberNode(source.asInt());
+        } else {
+            return factory.textNode(source.asText());
+        }
     }
 
     private ExportData exportProject(final int projectId) throws Exception {
