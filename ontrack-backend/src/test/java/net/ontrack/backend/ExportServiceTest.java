@@ -12,6 +12,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +78,11 @@ public class ExportServiceTest extends AbstractBackendTest {
                 BuildSummary b1build2 = controlService.createBuild(b1.getId(), new BuildCreationForm("b102", "Build 2", PropertiesCreationForm.create()));
                 BuildSummary b2build1 = controlService.createBuild(b2.getId(), new BuildCreationForm("b201", "Build 1", PropertiesCreationForm.create()));
                 BuildSummary b2build2 = controlService.createBuild(b2.getId(), new BuildCreationForm("b202", "Build 2", PropertiesCreationForm.create()));
-                // TODO Promoted runs
+                // Promoted runs
+                PromotedRunSummary b1b1prdev = controlService.createPromotedRun(b1build1.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 21, 1, DateTimeZone.UTC), "Build 1 to DEV"));
+                PromotedRunSummary b1b2prdev = controlService.createPromotedRun(b1build2.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 22, 1, DateTimeZone.UTC), "Build 2 to DEV"));
+                PromotedRunSummary b1b2prprod = controlService.createPromotedRun(b1build2.getId(), b1prod.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 23, 1, DateTimeZone.UTC), "Build 2 to PROD"));
+                PromotedRunSummary b2b1prdev = controlService.createPromotedRun(b2build1.getId(), b2dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 4, 0, 1, DateTimeZone.UTC), "Build 1 to DEV"));
                 // TODO Validation runs
                 // TODO Validation run statuses
                 // TODO Comments
@@ -156,7 +162,7 @@ public class ExportServiceTest extends AbstractBackendTest {
     }
 
     private JsonNode pruneIds(JsonNode source) {
-        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch");
+        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch", "build", "promotionLevel", "authorId");
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {
             ArrayNode target = factory.arrayNode();

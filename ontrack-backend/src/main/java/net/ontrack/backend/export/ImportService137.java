@@ -6,6 +6,8 @@ import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -138,7 +140,18 @@ public class ImportService137 implements ImportService {
             int newBuildId = buildDao.createBuild(newBranchId, buildName, buildDescription);
             context.forBuild(oldBuildId, newBuildId);
         }
-        // TODO Promoted runs
+        // Promoted runs
+        JsonNode promotedRunNodes = projectData.getData().path("promotedRuns");
+        for (JsonNode promotedRunNode : promotedRunNodes) {
+            int oldBuildId = promotedRunNode.path("build").asInt();
+            int oldPromotionLevelId = promotedRunNode.path("promotionLevel").asInt();
+            String promotedRunDescription = promotedRunNode.path("description").asText();
+            String promotedRunAuthor = promotedRunNode.path("author").asText();
+            DateTime promotedRunCreation = new DateTime(promotedRunNode.path("creation").asLong(), DateTimeZone.UTC);
+            int newBuildId = context.forBuild(oldBuildId);
+            int newPromotionLevelId = context.forPromotionLevel(oldPromotionLevelId);
+            promotedRunDao.createPromotedRun(newBuildId, newPromotionLevelId, promotedRunAuthor, null, promotedRunCreation, promotedRunDescription);
+        }
         // TODO Validation runs
         // TODO Validation run statuses
         // TODO Comments

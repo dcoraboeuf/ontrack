@@ -29,12 +29,7 @@ public class ImportContext {
     }
 
     public int forBranch(int oldBranchId) {
-        Integer newBranchId = table.get(Entity.BRANCH, oldBranchId);
-        if (newBranchId != null) {
-            return newBranchId;
-        } else {
-            throw new ImportIdInconsistencyException(Entity.BRANCH, oldBranchId);
-        }
+        return get(Entity.BRANCH, oldBranchId);
     }
 
     public void forPromotionLevel(int oldPromotionLevelId, int newPromotionLevelId) {
@@ -47,5 +42,22 @@ public class ImportContext {
 
     public void forBuild(int oldBuildId, int newBuildId) {
         table.put(Entity.BUILD, oldBuildId, newBuildId);
+    }
+
+    public int forBuild(int oldBuildId) {
+        return get(Entity.BUILD, oldBuildId);
+    }
+
+    public int forPromotionLevel(int oldPromotionLevelId) {
+        return get(Entity.PROMOTION_LEVEL, oldPromotionLevelId);
+    }
+
+    private int get(Entity entity, int oldEntityId) {
+        Integer newEntityId = table.get(entity, oldEntityId);
+        if (newEntityId != null) {
+            return newEntityId;
+        } else {
+            throw new ImportIdInconsistencyException(entity, oldEntityId);
+        }
     }
 }
