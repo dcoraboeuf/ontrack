@@ -62,7 +62,11 @@ public class ExportServiceTest extends AbstractBackendTest {
                 PromotionLevelSummary b1prod = managementService.createPromotionLevel(b1.getId(), new PromotionLevelCreationForm("PROD", "Production"));
                 PromotionLevelSummary b2dev = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("DEV", "Development"));
                 PromotionLevelSummary b2prod = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("PROD", "Production"));
-                // TODO Validation stamps
+                // Validation stamps
+                ValidationStampSummary b1smoke = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
+                ValidationStampSummary b1acc = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
+                ValidationStampSummary b2smoke = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
+                ValidationStampSummary b2acc = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
                 // TODO Builds
                 // TODO Promoted runs
                 // TODO Validation runs

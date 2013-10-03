@@ -40,4 +40,8 @@ public class ImportContext {
     public void forPromotionLevel(int oldPromotionLevelId, int newPromotionLevelId) {
         table.put(Entity.PROMOTION_LEVEL, oldPromotionLevelId, newPromotionLevelId);
     }
+
+    public void forValidationStamp(int oldValidationStampId, int newValidationStampId) {
+        table.put(Entity.VALIDATION_STAMP, oldValidationStampId, newValidationStampId);
+    }
 }

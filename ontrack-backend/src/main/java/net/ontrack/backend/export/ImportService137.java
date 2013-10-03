@@ -80,7 +80,6 @@ public class ImportService137 implements ImportService {
         }
         // Promotion levels
         JsonNode promotionLevelsNode = projectData.getData().path("promotionLevels");
-        // Level nb: sort the source promotion levels before inserting
         List<JsonNode> promotionLevelsNodeList = Lists.newArrayList(promotionLevelsNode);
         Collections.sort(promotionLevelsNodeList, new Comparator<JsonNode>() {
             @Override
@@ -99,7 +98,26 @@ public class ImportService137 implements ImportService {
             int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
             context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
         }
-        // TODO Validation stamps
+        // Validation stamps
+        JsonNode validationStampNodes = projectData.getData().path("validationStamps");
+        List<JsonNode> validationStampNodeList = Lists.newArrayList(validationStampNodes);
+        Collections.sort(validationStampNodeList, new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int level1 = o1.path("orderNb").asInt();
+                int level2 = o2.path("orderNb").asInt();
+                return level1 - level2;
+            }
+        });
+        for (JsonNode validationStampNode : validationStampNodeList) {
+            int oldValidationStampId = validationStampNode.path("id").asInt();
+            int oldBranchId = validationStampNode.path("branch").asInt();
+            String validationStampName = validationStampNode.path("name").asText();
+            String validationStampDescription = validationStampNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newValidationStampId = validationStampDao.createValidationStamp(newBranchId, validationStampName, validationStampDescription);
+            context.forValidationStamp(oldValidationStampId, newValidationStampId);
+        }
         // TODO Builds
         // TODO Promoted runs
         // TODO Validation runs
