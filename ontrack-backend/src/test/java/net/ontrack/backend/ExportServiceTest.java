@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
 import net.ontrack.core.model.*;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
@@ -15,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertEquals;
@@ -146,7 +144,7 @@ public class ExportServiceTest extends AbstractBackendTest {
     }
 
     private JsonNode pruneIds(JsonNode source) {
-        // FIXME Filter also the reference IDs (project, branch,... which as also integers)
+        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch");
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {
             ArrayNode target = factory.arrayNode();
@@ -161,7 +159,7 @@ public class ExportServiceTest extends AbstractBackendTest {
                 Map.Entry<String, JsonNode> field = fields.next();
                 String name = field.getKey();
                 JsonNode value = field.getValue();
-                if (!"id".equals(name)) {
+                if (!value.isInt() || !excludedIntFields.contains(name)) {
                     target.put(name, pruneIds(value));
                 }
             }
