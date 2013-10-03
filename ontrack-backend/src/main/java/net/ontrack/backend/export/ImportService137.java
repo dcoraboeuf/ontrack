@@ -1,5 +1,6 @@
 package net.ontrack.backend.export;
 
+import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.model.ProjectSummary;
@@ -9,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @Qualifier("1.37")
@@ -75,8 +80,17 @@ public class ImportService137 implements ImportService {
         }
         // Promotion levels
         JsonNode promotionLevelsNode = projectData.getData().path("promotionLevels");
-        for (JsonNode promotionLevelNode : promotionLevelsNode) {
-            // FIXME Level nb: sort the source promotion levels before inserting
+        // Level nb: sort the source promotion levels before inserting
+        List<JsonNode> promotionLevelsNodeList = Lists.newArrayList(promotionLevelsNode);
+        Collections.sort(promotionLevelsNodeList, new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int level1 = o1.path("levelNb").asInt();
+                int level2 = o2.path("levelNb").asInt();
+                return level1 - level2;
+            }
+        });
+        for (JsonNode promotionLevelNode : promotionLevelsNodeList) {
             int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
             int oldBranchId = promotionLevelNode.path("branch").asInt();
             String promotionLevelName = promotionLevelNode.path("name").asText();
