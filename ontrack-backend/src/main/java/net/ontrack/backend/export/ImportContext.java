@@ -44,4 +44,8 @@ public class ImportContext {
     public void forValidationStamp(int oldValidationStampId, int newValidationStampId) {
         table.put(Entity.VALIDATION_STAMP, oldValidationStampId, newValidationStampId);
     }
+
+    public void forBuild(int oldBuildId, int newBuildId) {
+        table.put(Entity.BUILD, oldBuildId, newBuildId);
+    }
 }

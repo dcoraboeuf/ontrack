@@ -118,7 +118,26 @@ public class ImportService137 implements ImportService {
             int newValidationStampId = validationStampDao.createValidationStamp(newBranchId, validationStampName, validationStampDescription);
             context.forValidationStamp(oldValidationStampId, newValidationStampId);
         }
-        // TODO Builds
+        // Builds
+        JsonNode buildNodes = projectData.getData().path("builds");
+        List<JsonNode> buildNodeList = Lists.newArrayList(buildNodes);
+        Collections.sort(buildNodeList, new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int id1 = o1.path("id").asInt();
+                int id2 = o2.path("id").asInt();
+                return id1 - id2;
+            }
+        });
+        for (JsonNode buildNode : buildNodeList) {
+            int oldBuildId = buildNode.path("id").asInt();
+            int oldBranchId = buildNode.path("branch").asInt();
+            String buildName = buildNode.path("name").asText();
+            String buildDescription = buildNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newBuildId = buildDao.createBuild(newBranchId, buildName, buildDescription);
+            context.forBuild(oldBuildId, newBuildId);
+        }
         // TODO Promoted runs
         // TODO Validation runs
         // TODO Validation run statuses

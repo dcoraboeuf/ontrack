@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import net.ontrack.core.model.*;
+import net.ontrack.service.ControlService;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
@@ -31,6 +32,9 @@ public class ExportServiceTest extends AbstractBackendTest {
 
     @Autowired
     private ManagementService managementService;
+
+    @Autowired
+    private ControlService controlService;
 
     @Autowired
     private ExportService exportService;
@@ -67,7 +71,11 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ValidationStampSummary b1acc = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
                 ValidationStampSummary b2smoke = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
                 ValidationStampSummary b2acc = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
-                // TODO Builds
+                // Builds
+                BuildSummary b1build1 = controlService.createBuild(b1.getId(), new BuildCreationForm("b101", "Build 1", PropertiesCreationForm.create()));
+                BuildSummary b1build2 = controlService.createBuild(b1.getId(), new BuildCreationForm("b102", "Build 2", PropertiesCreationForm.create()));
+                BuildSummary b2build1 = controlService.createBuild(b2.getId(), new BuildCreationForm("b201", "Build 1", PropertiesCreationForm.create()));
+                BuildSummary b2build2 = controlService.createBuild(b2.getId(), new BuildCreationForm("b202", "Build 2", PropertiesCreationForm.create()));
                 // TODO Promoted runs
                 // TODO Validation runs
                 // TODO Validation run statuses
