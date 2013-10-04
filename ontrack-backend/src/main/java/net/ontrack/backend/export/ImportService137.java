@@ -88,8 +88,9 @@ public class ImportService137 implements ImportService {
             Status validationRunStatusStatus = Status.valueOf(validationRunStatusNode.path("status").asText());
             String validationRunStatusDescription = validationRunStatusNode.path("description").asText();
             String validationRunStatusAuthor = validationRunStatusNode.path("author").asText();
+            DateTime validationRunStatusTimestamp = new DateTime(validationRunStatusNode.path("timestamp").asLong(), DateTimeZone.UTC);
             int newValidationRunId = context.forValidationRun(oldValidationRunId);
-            validationRunStatusDao.createValidationRunStatus(newValidationRunId, validationRunStatusStatus, validationRunStatusDescription, validationRunStatusAuthor, null);
+            validationRunStatusDao.createValidationRunStatusForImport(newValidationRunId, validationRunStatusStatus, validationRunStatusDescription, validationRunStatusAuthor, validationRunStatusTimestamp);
         }
     }
 
