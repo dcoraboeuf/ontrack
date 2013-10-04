@@ -74,15 +74,15 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ValidationStampSummary b2smoke = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
                 ValidationStampSummary b2acc = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
                 // Builds
-                BuildSummary b1build1 = controlService.createBuild(b1.getId(), new BuildCreationForm("b101", "Build 1", PropertiesCreationForm.create()));
-                BuildSummary b1build2 = controlService.createBuild(b1.getId(), new BuildCreationForm("b102", "Build 2", PropertiesCreationForm.create()));
-                BuildSummary b2build1 = controlService.createBuild(b2.getId(), new BuildCreationForm("b201", "Build 1", PropertiesCreationForm.create()));
-                BuildSummary b2build2 = controlService.createBuild(b2.getId(), new BuildCreationForm("b202", "Build 2", PropertiesCreationForm.create()));
+                BuildSummary b1_build1 = controlService.createBuild(b1.getId(), new BuildCreationForm("b101", "Build 1", PropertiesCreationForm.create()));
+                BuildSummary b1_build2 = controlService.createBuild(b1.getId(), new BuildCreationForm("b102", "Build 2", PropertiesCreationForm.create()));
+                BuildSummary b2_build1 = controlService.createBuild(b2.getId(), new BuildCreationForm("b201", "Build 1", PropertiesCreationForm.create()));
+                BuildSummary b2_build2 = controlService.createBuild(b2.getId(), new BuildCreationForm("b202", "Build 2", PropertiesCreationForm.create()));
                 // Promoted runs
-                PromotedRunSummary b1b1prdev = controlService.createPromotedRun(b1build1.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 21, 1, DateTimeZone.UTC), "Build 1 to DEV"));
-                PromotedRunSummary b1b2prdev = controlService.createPromotedRun(b1build2.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 22, 1, DateTimeZone.UTC), "Build 2 to DEV"));
-                PromotedRunSummary b1b2prprod = controlService.createPromotedRun(b1build2.getId(), b1prod.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 23, 1, DateTimeZone.UTC), "Build 2 to PROD"));
-                PromotedRunSummary b2b1prdev = controlService.createPromotedRun(b2build1.getId(), b2dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 4, 0, 1, DateTimeZone.UTC), "Build 1 to DEV"));
+                PromotedRunSummary b1_build1_prdev = controlService.createPromotedRun(b1_build1.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 21, 1, DateTimeZone.UTC), "Build 1 to DEV"));
+                PromotedRunSummary b1_build2_prdev = controlService.createPromotedRun(b1_build2.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 22, 1, DateTimeZone.UTC), "Build 2 to DEV"));
+                PromotedRunSummary b1_build2_prprod = controlService.createPromotedRun(b1_build2.getId(), b1prod.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 23, 1, DateTimeZone.UTC), "Build 2 to PROD"));
+                PromotedRunSummary b2_build1_prdev = controlService.createPromotedRun(b2_build1.getId(), b2dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 4, 0, 1, DateTimeZone.UTC), "Build 1 to DEV"));
                 // TODO Validation runs
                 // TODO Validation run statuses
                 // TODO Comments
@@ -163,6 +163,7 @@ public class ExportServiceTest extends AbstractBackendTest {
 
     private JsonNode pruneIds(JsonNode source) {
         Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch", "build", "promotionLevel", "authorId");
+        Set<String> excludedFields = ImmutableSet.of("authorId");
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {
             ArrayNode target = factory.arrayNode();
@@ -177,7 +178,7 @@ public class ExportServiceTest extends AbstractBackendTest {
                 Map.Entry<String, JsonNode> field = fields.next();
                 String name = field.getKey();
                 JsonNode value = field.getValue();
-                if (!value.isInt() || !excludedIntFields.contains(name)) {
+                if (!excludedFields.contains(name) && (!value.isInt() || !excludedIntFields.contains(name))) {
                     target.put(name, pruneIds(value));
                 }
             }
