@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.Status;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTime;
@@ -173,9 +174,28 @@ public class ImportService137 implements ImportService {
             int newValidationRunId = validationRunDao.createValidationRun(newBuildId, newValidationStampId, validationRunDescription);
             context.forValidationRun(oldValidationRunId, newValidationRunId);
         }
-        // TODO Validation run statuses
+        // Validation run statuses
+        JsonNode validationRunStatusNodes = projectData.getData().path("validationRunStatuses");
+        List<JsonNode> validationRunStatusNodeList = Lists.newArrayList(validationRunStatusNodes);
+        Collections.sort(validationRunNodeList, new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int id1 = o1.path("id").asInt();
+                int id2 = o2.path("id").asInt();
+                return id1 - id2;
+            }
+        });
+        for (JsonNode validationRunStatusNode : validationRunStatusNodeList) {
+            int oldValidationRunId = validationRunStatusNode.path("validationRun").asInt();
+            Status validationRunStatusStatus = Status.valueOf(validationRunStatusNode.path("status").asText());
+            String validationRunStatusDescription = validationRunStatusNode.path("description").asText();
+            String validationRunStatusAuthor = validationRunStatusNode.path("author").asText();
+            int newValidationRunId = context.forValidationRun(oldValidationRunId);
+            validationRunStatusDao.createValidationRunStatus(newValidationRunId, validationRunStatusStatus, validationRunStatusDescription, validationRunStatusAuthor, null);
+        }
         // TODO Comments
         // TODO Properties
+        // TODO Events
         // TODO Build clean-up policy
         // Project ID
         return projectId;

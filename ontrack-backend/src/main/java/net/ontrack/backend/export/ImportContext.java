@@ -60,6 +60,10 @@ public class ImportContext {
         return get(Entity.VALIDATION_STAMP, oldValidationStampId);
     }
 
+    public int forValidationRun(int oldValidationRunId) {
+        return get(Entity.VALIDATION_RUN, oldValidationRunId);
+    }
+
     private int get(Entity entity, int oldEntityId) {
         Integer newEntityId = table.get(entity, oldEntityId);
         if (newEntityId != null) {
