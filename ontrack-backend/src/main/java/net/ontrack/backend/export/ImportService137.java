@@ -152,7 +152,27 @@ public class ImportService137 implements ImportService {
             int newPromotionLevelId = context.forPromotionLevel(oldPromotionLevelId);
             promotedRunDao.createPromotedRun(newBuildId, newPromotionLevelId, promotedRunAuthor, null, promotedRunCreation, promotedRunDescription);
         }
-        // TODO Validation runs
+        // Validation runs
+        JsonNode validationRunNodes = projectData.getData().path("validationRuns");
+        List<JsonNode> validationRunNodeList = Lists.newArrayList(validationRunNodes);
+        Collections.sort(validationRunNodeList, new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int runOrder1 = o1.path("runOrder").asInt();
+                int runOrder2 = o2.path("runOrder").asInt();
+                return runOrder1 - runOrder2;
+            }
+        });
+        for (JsonNode validationRunNode : validationRunNodeList) {
+            int oldValidationRunId = validationRunNode.path("id").asInt();
+            int oldBuildId = validationRunNode.path("build").asInt();
+            int oldValidationStampId = validationRunNode.path("validationStamp").asInt();
+            String validationRunDescription = validationRunNode.path("description").asText();
+            int newBuildId = context.forBuild(oldBuildId);
+            int newValidationStampId = context.forValidationStamp(oldValidationStampId);
+            int newValidationRunId = validationRunDao.createValidationRun(newBuildId, newValidationStampId, validationRunDescription);
+            context.forValidationRun(oldValidationRunId, newValidationRunId);
+        }
         // TODO Validation run statuses
         // TODO Comments
         // TODO Properties

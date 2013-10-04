@@ -83,7 +83,11 @@ public class ExportServiceTest extends AbstractBackendTest {
                 PromotedRunSummary b1_build2_prdev = controlService.createPromotedRun(b1_build2.getId(), b1dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 22, 1, DateTimeZone.UTC), "Build 2 to DEV"));
                 PromotedRunSummary b1_build2_prprod = controlService.createPromotedRun(b1_build2.getId(), b1prod.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 3, 23, 1, DateTimeZone.UTC), "Build 2 to PROD"));
                 PromotedRunSummary b2_build1_prdev = controlService.createPromotedRun(b2_build1.getId(), b2dev.getId(), new PromotedRunCreationForm(new DateTime(2013, 10, 4, 0, 1, DateTimeZone.UTC), "Build 1 to DEV"));
-                // TODO Validation runs
+                // Validation runs
+                ValidationRunSummary b1_build1_smoke_1 = controlService.createValidationRun(b1_build1.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.FAILED, "Failed smoke tests", PropertiesCreationForm.create()));
+                ValidationRunSummary b1_build1_smoke_2 = controlService.createValidationRun(b1_build1.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.FAILED, "Failed smoke tests", PropertiesCreationForm.create()));
+                ValidationRunSummary b1_build2_smoke = controlService.createValidationRun(b1_build2.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.PASSED, "Smoke tests OK", PropertiesCreationForm.create()));
+                ValidationRunSummary b1_build2_acc = controlService.createValidationRun(b1_build2.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.FAILED, "Failed ACC tests", PropertiesCreationForm.create()));
                 // TODO Validation run statuses
                 // TODO Comments
                 // TODO Properties
@@ -162,7 +166,7 @@ public class ExportServiceTest extends AbstractBackendTest {
     }
 
     private JsonNode pruneIds(JsonNode source) {
-        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch", "build", "promotionLevel", "authorId");
+        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch", "build", "promotionLevel", "validationStamp", "authorId");
         Set<String> excludedFields = ImmutableSet.of("authorId");
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {

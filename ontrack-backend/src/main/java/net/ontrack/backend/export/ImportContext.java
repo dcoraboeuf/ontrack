@@ -44,12 +44,20 @@ public class ImportContext {
         table.put(Entity.BUILD, oldBuildId, newBuildId);
     }
 
+    public void forValidationRun(int oldValidationRunId, int newValidationRunId) {
+        table.put(Entity.VALIDATION_RUN, oldValidationRunId, newValidationRunId);
+    }
+
     public int forBuild(int oldBuildId) {
         return get(Entity.BUILD, oldBuildId);
     }
 
     public int forPromotionLevel(int oldPromotionLevelId) {
         return get(Entity.PROMOTION_LEVEL, oldPromotionLevelId);
+    }
+
+    public int forValidationStamp(int oldValidationStampId) {
+        return get(Entity.VALIDATION_STAMP, oldValidationStampId);
     }
 
     private int get(Entity entity, int oldEntityId) {
