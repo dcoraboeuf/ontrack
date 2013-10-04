@@ -1363,7 +1363,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             }
         }
         // Checks the status
-        if (StringUtils.isBlank(form.getStatus())) {
+        if (form.getStatus() == null) {
             // Does not do anything if empty description
             if (StringUtils.isBlank(form.getDescription())) {
                 return Ack.NOK;
@@ -1377,10 +1377,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // OK
             return Ack.OK;
         } else {
-            // Tries to get a valid status
-            Status s = Status.valueOf(form.getStatus());
             // Creates the new status
-            createValidationRunStatus(runId, new ValidationRunStatusCreationForm(s, form.getDescription()), false);
+            createValidationRunStatus(runId, new ValidationRunStatusCreationForm(form.getStatus(), form.getDescription()), false);
             // OK
             return Ack.OK;
         }
