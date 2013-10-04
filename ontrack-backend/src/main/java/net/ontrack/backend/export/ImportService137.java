@@ -82,16 +82,7 @@ public class ImportService137 implements ImportService {
             context.forBranch(oldBranchId, newBranchId);
         }
         // Promotion levels
-        JsonNode promotionLevelsNode = projectData.getData().path("promotionLevels");
-        List<JsonNode> promotionLevelsNodeList = Lists.newArrayList(promotionLevelsNode);
-        Collections.sort(promotionLevelsNodeList, new Comparator<JsonNode>() {
-            @Override
-            public int compare(JsonNode o1, JsonNode o2) {
-                int level1 = o1.path("levelNb").asInt();
-                int level2 = o2.path("levelNb").asInt();
-                return level1 - level2;
-            }
-        });
+        List<JsonNode> promotionLevelsNodeList = sortJsonNodes(projectData.getData().path("promotionLevels"), "levelNb");
         for (JsonNode promotionLevelNode : promotionLevelsNodeList) {
             int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
             int oldBranchId = promotionLevelNode.path("branch").asInt();
@@ -102,16 +93,7 @@ public class ImportService137 implements ImportService {
             context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
         }
         // Validation stamps
-        JsonNode validationStampNodes = projectData.getData().path("validationStamps");
-        List<JsonNode> validationStampNodeList = Lists.newArrayList(validationStampNodes);
-        Collections.sort(validationStampNodeList, new Comparator<JsonNode>() {
-            @Override
-            public int compare(JsonNode o1, JsonNode o2) {
-                int level1 = o1.path("orderNb").asInt();
-                int level2 = o2.path("orderNb").asInt();
-                return level1 - level2;
-            }
-        });
+        List<JsonNode> validationStampNodeList = sortJsonNodes(projectData.getData().path("validationStamps"), "orderNb");
         for (JsonNode validationStampNode : validationStampNodeList) {
             int oldValidationStampId = validationStampNode.path("id").asInt();
             int oldBranchId = validationStampNode.path("branch").asInt();
@@ -122,16 +104,7 @@ public class ImportService137 implements ImportService {
             context.forValidationStamp(oldValidationStampId, newValidationStampId);
         }
         // Builds
-        JsonNode buildNodes = projectData.getData().path("builds");
-        List<JsonNode> buildNodeList = Lists.newArrayList(buildNodes);
-        Collections.sort(buildNodeList, new Comparator<JsonNode>() {
-            @Override
-            public int compare(JsonNode o1, JsonNode o2) {
-                int id1 = o1.path("id").asInt();
-                int id2 = o2.path("id").asInt();
-                return id1 - id2;
-            }
-        });
+        List<JsonNode> buildNodeList = sortJsonNodes(projectData.getData().path("builds"), "id");
         for (JsonNode buildNode : buildNodeList) {
             int oldBuildId = buildNode.path("id").asInt();
             int oldBranchId = buildNode.path("branch").asInt();
@@ -154,16 +127,7 @@ public class ImportService137 implements ImportService {
             promotedRunDao.createPromotedRun(newBuildId, newPromotionLevelId, promotedRunAuthor, null, promotedRunCreation, promotedRunDescription);
         }
         // Validation runs
-        JsonNode validationRunNodes = projectData.getData().path("validationRuns");
-        List<JsonNode> validationRunNodeList = Lists.newArrayList(validationRunNodes);
-        Collections.sort(validationRunNodeList, new Comparator<JsonNode>() {
-            @Override
-            public int compare(JsonNode o1, JsonNode o2) {
-                int runOrder1 = o1.path("runOrder").asInt();
-                int runOrder2 = o2.path("runOrder").asInt();
-                return runOrder1 - runOrder2;
-            }
-        });
+        List<JsonNode> validationRunNodeList = sortJsonNodes(projectData.getData().path("validationRuns"), "runOrder");
         for (JsonNode validationRunNode : validationRunNodeList) {
             int oldValidationRunId = validationRunNode.path("id").asInt();
             int oldBuildId = validationRunNode.path("build").asInt();
@@ -175,16 +139,7 @@ public class ImportService137 implements ImportService {
             context.forValidationRun(oldValidationRunId, newValidationRunId);
         }
         // Validation run statuses
-        JsonNode validationRunStatusNodes = projectData.getData().path("validationRunStatuses");
-        List<JsonNode> validationRunStatusNodeList = Lists.newArrayList(validationRunStatusNodes);
-        Collections.sort(validationRunNodeList, new Comparator<JsonNode>() {
-            @Override
-            public int compare(JsonNode o1, JsonNode o2) {
-                int id1 = o1.path("id").asInt();
-                int id2 = o2.path("id").asInt();
-                return id1 - id2;
-            }
-        });
+        List<JsonNode> validationRunStatusNodeList = sortJsonNodes(projectData.getData().path("validationRunStatuses"), "id");
         for (JsonNode validationRunStatusNode : validationRunStatusNodeList) {
             int oldValidationRunId = validationRunStatusNode.path("validationRun").asInt();
             Status validationRunStatusStatus = Status.valueOf(validationRunStatusNode.path("status").asText());
@@ -199,6 +154,23 @@ public class ImportService137 implements ImportService {
         // TODO Build clean-up policy
         // Project ID
         return projectId;
+    }
+
+    private List<JsonNode> sortJsonNodes(JsonNode nodes, String fieldName) {
+        List<JsonNode> validationRunNodeList = Lists.newArrayList(nodes);
+        Collections.sort(validationRunNodeList, getJsonFieldComparator(fieldName));
+        return validationRunNodeList;
+    }
+
+    private Comparator<JsonNode> getJsonFieldComparator(final String fieldName) {
+        return new Comparator<JsonNode>() {
+            @Override
+            public int compare(JsonNode o1, JsonNode o2) {
+                int runOrder1 = o1.path(fieldName).asInt();
+                int runOrder2 = o2.path(fieldName).asInt();
+                return runOrder1 - runOrder2;
+            }
+        };
     }
 
 }
