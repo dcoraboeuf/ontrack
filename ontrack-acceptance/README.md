@@ -55,6 +55,12 @@ One can change the version to be deployed by specifying the `ontrackVersion` sys
 mvn clean install -P it P it-jetty -DontrackVersion=1.8
 ```
 
+## Testing against production
+
+```
+bash pipeline/acceptance.sh --prod --password=${ONTRACK_ONTRACK_PASSWORD} --ontrack --ontrack-user=dcoraboeuf --ontrack-password=${ONTRACK_ONTRACK_PASSWORD} --ontrack-validation=CB.PROD.SMOKE --url=${ONTRACK_ONTRACK_URL} --version=${VERSION}
+```
+
 ## Headless considerations
 
 When running in a headless environment, one display must be made available for the run of the integration tests.
