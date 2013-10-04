@@ -65,68 +65,35 @@ public class ImportService137 implements ImportService {
     }
 
     protected int createProject(ProjectData projectData, ImportContext context) {
-        // TODO Split for reuseability?
-        // Reads & creates the project
-        int id = projectData.getData().path("project").path("id").asInt();
-        String name = projectData.getData().path("project").path("name").asText();
-        String description = projectData.getData().path("project").path("description").asText();
-        int projectId = projectDao.createProject(name, description);
-        context.forProject(id, projectId);
-        // Branches
-        JsonNode branchesNode = projectData.getData().path("branches");
-        for (JsonNode branchNode : branchesNode) {
-            int oldBranchId = branchNode.path("id").asInt();
-            String branchName = branchNode.path("name").asText();
-            String branchDescription = branchNode.path("description").asText();
-            int newBranchId = branchDao.createBranch(projectId, branchName, branchDescription);
-            context.forBranch(oldBranchId, newBranchId);
+        int projectId = importProject(projectData, context);
+        importBranches(projectData, context, projectId);
+        importPromotionLevels(projectData, context);
+        importValidationStamps(projectData, context);
+        importBuilds(projectData, context);
+        importPromotedRuns(projectData, context);
+        importValidationRuns(projectData, context);
+        importValidationRunStatuses(projectData, context);
+        // TODO Comments
+        // TODO Properties
+        // TODO Events
+        // TODO Build clean-up policy
+        // Project ID
+        return projectId;
+    }
+
+    protected void importValidationRunStatuses(ProjectData projectData, ImportContext context) {
+        List<JsonNode> validationRunStatusNodeList = sortJsonNodes(projectData.getData().path("validationRunStatuses"), "id");
+        for (JsonNode validationRunStatusNode : validationRunStatusNodeList) {
+            int oldValidationRunId = validationRunStatusNode.path("validationRun").asInt();
+            Status validationRunStatusStatus = Status.valueOf(validationRunStatusNode.path("status").asText());
+            String validationRunStatusDescription = validationRunStatusNode.path("description").asText();
+            String validationRunStatusAuthor = validationRunStatusNode.path("author").asText();
+            int newValidationRunId = context.forValidationRun(oldValidationRunId);
+            validationRunStatusDao.createValidationRunStatus(newValidationRunId, validationRunStatusStatus, validationRunStatusDescription, validationRunStatusAuthor, null);
         }
-        // Promotion levels
-        List<JsonNode> promotionLevelsNodeList = sortJsonNodes(projectData.getData().path("promotionLevels"), "levelNb");
-        for (JsonNode promotionLevelNode : promotionLevelsNodeList) {
-            int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
-            int oldBranchId = promotionLevelNode.path("branch").asInt();
-            String promotionLevelName = promotionLevelNode.path("name").asText();
-            String promotionLevelDescription = promotionLevelNode.path("description").asText();
-            int newBranchId = context.forBranch(oldBranchId);
-            int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
-            context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
-        }
-        // Validation stamps
-        List<JsonNode> validationStampNodeList = sortJsonNodes(projectData.getData().path("validationStamps"), "orderNb");
-        for (JsonNode validationStampNode : validationStampNodeList) {
-            int oldValidationStampId = validationStampNode.path("id").asInt();
-            int oldBranchId = validationStampNode.path("branch").asInt();
-            String validationStampName = validationStampNode.path("name").asText();
-            String validationStampDescription = validationStampNode.path("description").asText();
-            int newBranchId = context.forBranch(oldBranchId);
-            int newValidationStampId = validationStampDao.createValidationStamp(newBranchId, validationStampName, validationStampDescription);
-            context.forValidationStamp(oldValidationStampId, newValidationStampId);
-        }
-        // Builds
-        List<JsonNode> buildNodeList = sortJsonNodes(projectData.getData().path("builds"), "id");
-        for (JsonNode buildNode : buildNodeList) {
-            int oldBuildId = buildNode.path("id").asInt();
-            int oldBranchId = buildNode.path("branch").asInt();
-            String buildName = buildNode.path("name").asText();
-            String buildDescription = buildNode.path("description").asText();
-            int newBranchId = context.forBranch(oldBranchId);
-            int newBuildId = buildDao.createBuild(newBranchId, buildName, buildDescription);
-            context.forBuild(oldBuildId, newBuildId);
-        }
-        // Promoted runs
-        JsonNode promotedRunNodes = projectData.getData().path("promotedRuns");
-        for (JsonNode promotedRunNode : promotedRunNodes) {
-            int oldBuildId = promotedRunNode.path("build").asInt();
-            int oldPromotionLevelId = promotedRunNode.path("promotionLevel").asInt();
-            String promotedRunDescription = promotedRunNode.path("description").asText();
-            String promotedRunAuthor = promotedRunNode.path("author").asText();
-            DateTime promotedRunCreation = new DateTime(promotedRunNode.path("creation").asLong(), DateTimeZone.UTC);
-            int newBuildId = context.forBuild(oldBuildId);
-            int newPromotionLevelId = context.forPromotionLevel(oldPromotionLevelId);
-            promotedRunDao.createPromotedRun(newBuildId, newPromotionLevelId, promotedRunAuthor, null, promotedRunCreation, promotedRunDescription);
-        }
-        // Validation runs
+    }
+
+    protected void importValidationRuns(ProjectData projectData, ImportContext context) {
         List<JsonNode> validationRunNodeList = sortJsonNodes(projectData.getData().path("validationRuns"), "runOrder");
         for (JsonNode validationRunNode : validationRunNodeList) {
             int oldValidationRunId = validationRunNode.path("id").asInt();
@@ -138,31 +105,88 @@ public class ImportService137 implements ImportService {
             int newValidationRunId = validationRunDao.createValidationRun(newBuildId, newValidationStampId, validationRunDescription);
             context.forValidationRun(oldValidationRunId, newValidationRunId);
         }
-        // Validation run statuses
-        List<JsonNode> validationRunStatusNodeList = sortJsonNodes(projectData.getData().path("validationRunStatuses"), "id");
-        for (JsonNode validationRunStatusNode : validationRunStatusNodeList) {
-            int oldValidationRunId = validationRunStatusNode.path("validationRun").asInt();
-            Status validationRunStatusStatus = Status.valueOf(validationRunStatusNode.path("status").asText());
-            String validationRunStatusDescription = validationRunStatusNode.path("description").asText();
-            String validationRunStatusAuthor = validationRunStatusNode.path("author").asText();
-            int newValidationRunId = context.forValidationRun(oldValidationRunId);
-            validationRunStatusDao.createValidationRunStatus(newValidationRunId, validationRunStatusStatus, validationRunStatusDescription, validationRunStatusAuthor, null);
+    }
+
+    protected void importPromotedRuns(ProjectData projectData, ImportContext context) {
+        JsonNode promotedRunNodes = projectData.getData().path("promotedRuns");
+        for (JsonNode promotedRunNode : promotedRunNodes) {
+            int oldBuildId = promotedRunNode.path("build").asInt();
+            int oldPromotionLevelId = promotedRunNode.path("promotionLevel").asInt();
+            String promotedRunDescription = promotedRunNode.path("description").asText();
+            String promotedRunAuthor = promotedRunNode.path("author").asText();
+            DateTime promotedRunCreation = new DateTime(promotedRunNode.path("creation").asLong(), DateTimeZone.UTC);
+            int newBuildId = context.forBuild(oldBuildId);
+            int newPromotionLevelId = context.forPromotionLevel(oldPromotionLevelId);
+            promotedRunDao.createPromotedRun(newBuildId, newPromotionLevelId, promotedRunAuthor, null, promotedRunCreation, promotedRunDescription);
         }
-        // TODO Comments
-        // TODO Properties
-        // TODO Events
-        // TODO Build clean-up policy
-        // Project ID
+    }
+
+    protected void importBuilds(ProjectData projectData, ImportContext context) {
+        List<JsonNode> buildNodeList = sortJsonNodes(projectData.getData().path("builds"), "id");
+        for (JsonNode buildNode : buildNodeList) {
+            int oldBuildId = buildNode.path("id").asInt();
+            int oldBranchId = buildNode.path("branch").asInt();
+            String buildName = buildNode.path("name").asText();
+            String buildDescription = buildNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newBuildId = buildDao.createBuild(newBranchId, buildName, buildDescription);
+            context.forBuild(oldBuildId, newBuildId);
+        }
+    }
+
+    protected void importValidationStamps(ProjectData projectData, ImportContext context) {
+        List<JsonNode> validationStampNodeList = sortJsonNodes(projectData.getData().path("validationStamps"), "orderNb");
+        for (JsonNode validationStampNode : validationStampNodeList) {
+            int oldValidationStampId = validationStampNode.path("id").asInt();
+            int oldBranchId = validationStampNode.path("branch").asInt();
+            String validationStampName = validationStampNode.path("name").asText();
+            String validationStampDescription = validationStampNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newValidationStampId = validationStampDao.createValidationStamp(newBranchId, validationStampName, validationStampDescription);
+            context.forValidationStamp(oldValidationStampId, newValidationStampId);
+        }
+    }
+
+    protected void importPromotionLevels(ProjectData projectData, ImportContext context) {
+        List<JsonNode> promotionLevelsNodeList = sortJsonNodes(projectData.getData().path("promotionLevels"), "levelNb");
+        for (JsonNode promotionLevelNode : promotionLevelsNodeList) {
+            int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
+            int oldBranchId = promotionLevelNode.path("branch").asInt();
+            String promotionLevelName = promotionLevelNode.path("name").asText();
+            String promotionLevelDescription = promotionLevelNode.path("description").asText();
+            int newBranchId = context.forBranch(oldBranchId);
+            int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
+            context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
+        }
+    }
+
+    protected void importBranches(ProjectData projectData, ImportContext context, int projectId) {
+        JsonNode branchesNode = projectData.getData().path("branches");
+        for (JsonNode branchNode : branchesNode) {
+            int oldBranchId = branchNode.path("id").asInt();
+            String branchName = branchNode.path("name").asText();
+            String branchDescription = branchNode.path("description").asText();
+            int newBranchId = branchDao.createBranch(projectId, branchName, branchDescription);
+            context.forBranch(oldBranchId, newBranchId);
+        }
+    }
+
+    protected int importProject(ProjectData projectData, ImportContext context) {
+        int id = projectData.getData().path("project").path("id").asInt();
+        String name = projectData.getData().path("project").path("name").asText();
+        String description = projectData.getData().path("project").path("description").asText();
+        int projectId = projectDao.createProject(name, description);
+        context.forProject(id, projectId);
         return projectId;
     }
 
-    private List<JsonNode> sortJsonNodes(JsonNode nodes, String fieldName) {
+    protected List<JsonNode> sortJsonNodes(JsonNode nodes, String fieldName) {
         List<JsonNode> validationRunNodeList = Lists.newArrayList(nodes);
         Collections.sort(validationRunNodeList, getJsonFieldComparator(fieldName));
         return validationRunNodeList;
     }
 
-    private Comparator<JsonNode> getJsonFieldComparator(final String fieldName) {
+    protected Comparator<JsonNode> getJsonFieldComparator(final String fieldName) {
         return new Comparator<JsonNode>() {
             @Override
             public int compare(JsonNode o1, JsonNode o2) {
