@@ -9,7 +9,6 @@ function show_help {
 	echo "    -h, --help                    Displays this help"
 	echo "Settings:"                        
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
-	echo "    -g,--groovy=<path>            Path to the Groovy executable ('groovy' by default)"
 	echo "    --push                        Pushes to the remote Git"
 	echo "    --deploy                      Uploads the artifacts to the repository"
 	echo "    --github-user=<user>          User for GitHub (default to 'dcoraboeuf')"
@@ -39,7 +38,6 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=tru
 
 # Defaults
 MVN=mvn
-GROOVY=groovy
 VERSION=
 NEXT_VERSION=
 GIT_PUSH=no
@@ -62,9 +60,6 @@ do
 			;;
 		-m=*|--mvn=*)
 			MVN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-			;;
-		-g=*|--groovy=*)
-			GROOVY=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		-v=*|--version=*)
 			VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -116,7 +111,6 @@ then
 fi
 if [ "$DEPLOY" == "yes" ]
 then
-	check "$GROOVY" "Groovy executable (--groovy) is required."
 	check "$GITHUB_USER" "GitHub user (--github-user) is required."
 	check "$GITHUB_TOKEN" "GitHub API token (--github-token) is required."
 	# Forces push to yes
@@ -212,7 +206,17 @@ then
 	if [ "$DEPLOY" == "yes" ]
 	then
 		# Creating the release on GitHub
-		${GROOVY} deploy.groovy --user ${GITHUB_USER} --token ${GITHUB_TOKEN} --tag ${TAG}
+		RELEASE_ID=`curl --silent --header "Accept: application/vnd.github.manifold-preview" --user "${GITHUB_USER}:${GITHUB_TOKEN}"  https://api.github.com/repos/${GITHUB_USER}/ontrack/releases --data "{\"tag_name\":\"${TAG}\"}" | sed "s/[^0-9]//g"`
+		if [ "$RELEASE_ID" == "" ]
+		then
+			echo "Release could not be created"
+			exit 1
+		fi
+		echo "Release ID = $RELEASE_ID"
+		# Uploading the WAR
+		curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview" https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.war -H "Content-Type: application/zip" --data-binary @ontrack-web/target/ontrack.war
+		# Uploading the HPI
+		curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview" https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.hpi -H "Content-Type: application/zip" --data-binary @ontrack-jenkins/target/ontrack.hpi
 	fi
 	
 fi
