@@ -29,7 +29,6 @@ def delete = options.delete
 // Summary
 
 println "* GitHub user:  ${gitHubUser}"
-println "* GitHub token: ${gitHubToken}"
 println "* GitHub tag:   ${gitHubTag}"
 
 // Globals
