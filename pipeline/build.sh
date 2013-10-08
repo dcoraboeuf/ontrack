@@ -9,12 +9,10 @@ function show_help {
 	echo "    -h, --help                    Displays this help"
 	echo "Settings:"                        
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
-	echo "    -ms,--mvn-settings=<path>     Path to some additional Maven settings file"
-	echo "    -ri,--repo-id=<id>            ID of the Maven repository to use for the deployment of artifacts ('dcoraboeuf-release' by default)"
-	echo "    -ru,--repo-url=<url>          URL of the Maven repository to use for the deployment of artifacts"
-	echo "                                  ('dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/' by default)"
 	echo "    --push                        Pushes to the remote Git"
 	echo "    --deploy                      Uploads the artifacts to the repository"
+	echo "    --github-user=<user>          User for GitHub (default to 'dcoraboeuf')"
+	echo "    --github-token=<token>        API token for GitHub"
 	echo "Release numbering:"                         
 	echo "    -v,--version=<release>        Version to prepare (by default extracted from the POM, by deleting the -SNAPSHOT prefix)"
 	echo "    -nv,--next-version=<release>  Next version to prepare (by default, the prepared version where the last digit is incremented by 1)"
@@ -40,9 +38,6 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=tru
 
 # Defaults
 MVN=mvn
-MVN_SETTINGS=
-NEXUS_ID=dcoraboeuf-release
-NEXUS_URL=dav:https://repository-dcoraboeuf.forge.cloudbees.com/release/
 VERSION=
 NEXT_VERSION=
 GIT_PUSH=no
@@ -52,6 +47,8 @@ ONTRACK_BRANCH=1.x
 ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
 ONTRACK_USER=
 ONTRACK_PASSWORD=
+GITHUB_USER=dcoraboeuf
+GITHUB_TOKEN=
 
 # Command central
 for i in "$@"
@@ -64,15 +61,6 @@ do
 		-m=*|--mvn=*)
 			MVN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
-		-ms=*|--mvn-settings=*)
-			MVN_SETTINGS=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-			;;
-		-ri=*|--repo-id=*)
-			NEXUS_ID=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-			;;
-		-ru=*|--repo-url=*)
-			NEXUS_URL=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-			;;
 		-v=*|--version=*)
 			VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
@@ -84,6 +72,12 @@ do
 			;;
 		--deploy)
 			DEPLOY=yes
+			;;
+		--github-user=*)
+			GITHUB_USER=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
+		--github-token=*)
+			GITHUB_TOKEN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		--ontrack)
 			ONTRACK=yes
@@ -115,6 +109,13 @@ then
 	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
 	check "$ONTRACK_PASSWORD" "ontrack user (--ontrack-password) is required."
 fi
+if [ "$DEPLOY" == "yes" ]
+then
+	check "$GITHUB_USER" "GitHub user (--github-user) is required."
+	check "$GITHUB_TOKEN" "GitHub API token (--github-token) is required."
+	# Forces push to yes
+	GIT_PUSH = "yes"
+fi
 
 # Preparation of the version
 
@@ -136,7 +137,6 @@ then
 fi
 
 # All variables
-echo Maven settings:            ${MVN_SETTINGS}
 echo Current version:           ${CURRENT_VERSION}
 echo Version to build:          ${VERSION}
 echo Next version to promote:   ${NEXT_VERSION}
@@ -150,8 +150,7 @@ fi
 echo Deploying the artifacts:   ${DEPLOY}
 if [ "$DEPLOY" == "yes" ]
 then
-	echo Repository ID:             ${NEXUS_ID}
-	echo Repository URL:            ${NEXUS_URL}
+	echo GitHub user:               ${GITHUB_USER}
 fi
 	
 # Cleaning the environment
@@ -176,25 +175,8 @@ then
 	echo Build failed.
 	exit 1
 fi
-
-# Deployment of artifacts
-if [ "$DEPLOY" == "yes" ]
-then
-	# Settings file
-	SETTINGS=
-	if [ "$MVN_SETTINGS" != "" ]
-	then
-		SETTINGS="--settings ${MVN_SETTINGS}"
-	fi
-	# Actual deployment
-	echo Deployment of artifacts...
-	${MVN} ${SETTINGS} deploy:deploy-file -Dfile=ontrack-web/target/ontrack.war -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=war -DgroupId=net.ontrack -DartifactId=ontrack-web -Dversion=${VERSION}
-	${MVN} ${SETTINGS} deploy:deploy-file -Dfile=ontrack-jenkins/target/ontrack.hpi -DrepositoryId=${NEXUS_ID} -Durl=${NEXUS_URL} -Dpackaging=hpi -DgroupId=org.jenkins-ci.plugins -DartifactId=ontrack -Dversion=${VERSION}
-fi
 	
 # After the build is complete, create the tag
-
-# Tag
 TAG=ontrack-${VERSION}
 echo Tagging to $TAG
 git tag ${TAG}
@@ -219,6 +201,15 @@ then
 	git push --verbose
 	echo Pushing the tags to the remote repository
 	git push --tags --verbose
+
+	# Deployment of artifacts
+	if [ "$DEPLOY" == "yes" ]
+	then
+		# Creating the release on GitHub
+		echo Creating the release on GitHub
+		curl -i --header "Accept: application/vnd.github.manifold-preview" --user "${GITHUB_USER}:${GITHUB_TOKEN}"  https://api.github.com/repos/${GITHUB_USER}/ontrack/releases --data "{\"tag_name\":\"${TAG}\"}"
+	fi
+	
 fi
 
 # ontrack
