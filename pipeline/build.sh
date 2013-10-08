@@ -114,7 +114,7 @@ then
 	check "$GITHUB_USER" "GitHub user (--github-user) is required."
 	check "$GITHUB_TOKEN" "GitHub API token (--github-token) is required."
 	# Forces push to yes
-	GIT_PUSH = "yes"
+	GIT_PUSH="yes"
 fi
 
 # Preparation of the version
