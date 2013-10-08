@@ -33,6 +33,7 @@ println "* GitHub tag:   ${gitHubTag}"
 
 // Globals
 url = "https://api.github.com/repos/dcoraboeuf/ontrack/releases"
+uploadRootUrl = "https://uploads.github.com/repos/dcoraboeuf/ontrack/releases"
 
 // Logging
 System.setProperty('org.apache.commons.logging.Log', 'org.apache.commons.logging.impl.SimpleLog')
@@ -59,7 +60,19 @@ else {
                 tag_name: gitHubTag
         ]
         response.success = { resp, json ->
-            println json
+            def id = json.id
+            def artifactPath = 'ontrack-web/target/ontrack.war'
+            def artifactName = 'ontrack.war'
+            def file = new File(artifactPath)
+            def uploadUrl = "${uploadRootUrl}/${id}/assets?name=${artifactName}"
+            def upload = new HTTPBuilder(uploadUrl)
+            upload.request(POST, BINARY) {
+                headers["Content-Type"] = 'application/zip'
+                body = file.getBytes()
+                response.success = { uploadJson ->
+                    println uploadJson
+                }
+            }
         }
     }
 }
