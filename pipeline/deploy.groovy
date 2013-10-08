@@ -38,7 +38,7 @@ else if (debug) System.setProperty('org.apache.commons.logging.simplelog.log.org
 // Creating the release on top of a tag
 
 def http = new HTTPBuilder('https://api.github.com/repos/dcoraboeuf/ontrack/releases')
-http.auth.basic gitHubUser, gitHubToken
+http.headers['Authorization'] = 'Basic '+"${gitHubUser}:${gitHubToken}".getBytes('iso-8859-1').encodeBase64()
 http.request(POST, JSON) { req ->
     headers.Accept = 'application/vnd.github.manifold-preview'
     body = [
