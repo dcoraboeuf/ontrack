@@ -38,7 +38,6 @@ function check {
 # General environment
 ONTRACK_WD=target/deploy
 ONTRACK_OWNER=dcoraboeuf
-ONTRACK_REPO=https://repository-$ONTRACK_OWNER.forge.cloudbees.com/release/net/ontrack/ontrack-web
 
 # Input data
 ONTRACK_DB=ontrack-test
@@ -154,7 +153,7 @@ mkdir -p $ONTRACK_WD
 if [ "$ONTRACK_WAR" == "" ]
 then
 	rm -f $ONTRACK_WD/ontrack.war
-	ONTRACK_DOWNLOAD_URL=$ONTRACK_REPO/$ONTRACK_VERSION/ontrack-web-$ONTRACK_VERSION.war
+	ONTRACK_DOWNLOAD_URL=https://github.com/${ONTRACK_OWNER}/ontrack/releases/download/ontrack-${ONTRACK_VERSION}/ontrack.war
 	echo Downloading ontrack from $ONTRACK_DOWNLOAD_URL
 	curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_DOWNLOAD_URL
 	if [ "$?" != "0" ]
