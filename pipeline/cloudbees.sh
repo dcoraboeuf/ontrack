@@ -7,6 +7,7 @@ function show_help {
 	echo "Available options are:"
 	echo "General:"
 	echo "  -h, --help                 Displays this help"
+	echo "  -z, --zone=<zone>          'eu' or 'us' for the Cloudbees zone (defaults to 'eu')"
 	echo "Application:"
 	echo "  -a, --appid=appid          ID of the application to create on Cloudbees (ontrack-test by default)"
 	echo "  -ca, --create-application  Creates the application from scratch (not done by default)"
@@ -40,6 +41,7 @@ ONTRACK_WD=target/deploy
 ONTRACK_OWNER=dcoraboeuf
 
 # Input data
+CB_ZONE=eu
 ONTRACK_DB=ontrack-test
 ONTRACK_APP=ontrack-test
 ONTRACK_VERSION=
@@ -60,6 +62,9 @@ do
 		-h|--help)
 			show_help
 			exit 0
+			;;
+		-z=*|--zone=*)
+			CB_ZONE=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		-v=*|--version=*)
 			ONTRACK_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -167,11 +172,11 @@ fi
 # Creating the database, deleting it if necessary
 if [ "$ONTRACK_DB_CREATE" == "yes" ]
 then
-	bees db:list | grep -e "$ONTRACK_DB$"
+	bees db:list -ep ${CB_ZONE} | grep -e "$ONTRACK_DB$"
 	if [ "$?" == "0" ]
 	then
 		echo Deleting database $ONTRACK_DB...
-		bees db:delete --force $ONTRACK_DB
+		bees db:delete -ep ${CB_ZONE} --force $ONTRACK_DB
 		if [ "$?" != "0" ]
 		then
 			echo Could not delete the database.
@@ -179,7 +184,7 @@ then
 		fi
 	fi
 	echo Creating database $ONTRACK_DB...
-	bees db:create --username $ONTRACK_DB --password $ONTRACK_DB $ONTRACK_DB
+	bees db:create -ep ${CB_ZONE} --username $ONTRACK_DB --password $ONTRACK_DB $ONTRACK_DB
 	if [ "$?" != "0" ]
 	then
 		echo Could not create the database.
@@ -191,11 +196,11 @@ fi
 # Creating the application, deleting it if necessary
 if [ "$ONTRACK_APP_CREATE" == "yes" ]
 then
-	bees app:list | grep -e "$ONTRACK_APP$"
+	bees app:list -ep ${CB_ZONE} | grep -e "$ONTRACK_APP$"
 	if [ "$?" == "0" ]
 	then
 		echo Deleting application $ONTRACK_APP...
-		bees app:delete --force $ONTRACK_APP
+		bees app:delete -ep ${CB_ZONE} --force $ONTRACK_APP
 		if [ "$?" != "0" ]
 		then
 			echo Could not delete the application.
@@ -203,7 +208,7 @@ then
 		fi
 	fi
 	echo Creating application $ONTRACK_APP...
-	bees app:create --type tomcat $ONTRACK_APP
+	bees app:create -ep ${CB_ZONE} --type tomcat $ONTRACK_APP
 	if [ "$?" != "0" ]
 	then
 		echo Could not create the application.
@@ -214,19 +219,19 @@ then
 	echo Setting the production profile...
 	echo Setting the home directory...
 	echo Setting the DB profile to mysql...
-	bees config:set --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=$ONTRACK_APP_PROFILE -P ontrack.home=%{java.io.tmpdir}/ontrack/$ONTRACK_APP -P dbinit.profile=mysql
+	bees config:set -ep ${CB_ZONE} --appid $ONTRACK_APP -R java_version=1.7 -P spring.profiles.active=$ONTRACK_APP_PROFILE -P ontrack.home=%{java.io.tmpdir}/ontrack/$ONTRACK_APP -P dbinit.profile=mysql
 	echo Parameters have been set.
 
 	echo Application $ONTRACK_APP has been created.
 
 	# Binding the database
 
-	bees app:bind --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack maxActive=5 maxIdle=2 maxWait=30000 removeAbandoned=true removeAbandonedTimeout=60 logAbandoned=true validationQuery="SELECT 1" testOnBorrow=true defaultAutoCommit=false
+	bees app:bind -ep ${CB_ZONE} --appid $ONTRACK_APP --database $ONTRACK_DB --alias ontrack maxActive=5 maxIdle=2 maxWait=30000 removeAbandoned=true removeAbandonedTimeout=60 logAbandoned=true validationQuery="SELECT 1" testOnBorrow=true defaultAutoCommit=false
 fi
 
 # Deploying the application
 echo Starting deployment of $ONTRACK_WAR on $ONTRACK_APP...
-bees app:deploy --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WAR
+bees app:deploy -ep ${CB_ZONE} --appid $ONTRACK_APP --message "Deployment of version $ONTRACK_VERSION" $ONTRACK_WAR
 echo Deployment finished.
 
 # ontrack promoted run
