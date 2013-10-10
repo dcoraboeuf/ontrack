@@ -155,7 +155,7 @@ then
 	rm -f $ONTRACK_WD/ontrack.war
 	ONTRACK_DOWNLOAD_URL=https://github.com/${ONTRACK_OWNER}/ontrack/releases/download/ontrack-${ONTRACK_VERSION}/ontrack.war
 	echo Downloading ontrack from $ONTRACK_DOWNLOAD_URL
-	curl --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_DOWNLOAD_URL
+	curl --location --silent --show-error --fail --output $ONTRACK_WD/ontrack.war $ONTRACK_DOWNLOAD_URL
 	if [ "$?" != "0" ]
 	then
 		echo Error while downloading ontrack $ONTRACK_VERSION from $ONTRACK_REPO
