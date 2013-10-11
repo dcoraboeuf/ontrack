@@ -1,7 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.AccountAlreadyExistException;
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.AccountDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.backend.db.SQL;

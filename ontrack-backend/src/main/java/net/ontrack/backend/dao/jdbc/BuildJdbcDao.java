@@ -3,7 +3,7 @@ package net.ontrack.backend.dao.jdbc;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.BuildAlreadyExistsException;
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.ValidationStampDao;
