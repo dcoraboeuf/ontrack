@@ -38,7 +38,7 @@
 		<springVersion>3.2.0.RELEASE</springVersion>
 		<springSecurityVersion>3.1.1.RELEASE</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
-		<lombokVersion>0.11.4</lombokVersion>
+		<lombokVersion>1.12.2</lombokVersion>
         <httpClientVersion>4.2.1</httpClientVersion>
 		<!-- General -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -110,6 +110,7 @@
 			    <groupId>org.projectlombok</groupId>
 			    <artifactId>lombok</artifactId>
 			    <version>${lombokVersion}</version>
+                <scope>provided</scope>
 			</dependency>
 			<!-- JString -->
 			<dependency>
