@@ -1,8 +1,7 @@
 package net.ontrack.extension.jira.service;
 
-import com.atlassian.jira.rest.client.NullProgressMonitor;
-import com.atlassian.jira.rest.client.RestClientException;
-import com.atlassian.jira.rest.client.domain.*;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.*;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -43,7 +42,6 @@ public class DefaultJIRAService implements JIRAService {
             );
         }
     };
-    private final NullProgressMonitor progressMonitor = new NullProgressMonitor();
 
     @Autowired
     public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, TransactionService transactionService) {
@@ -98,15 +96,15 @@ public class DefaultJIRAService implements JIRAService {
             JIRASession session = tx.getResource(JIRASession.class);
             try {
                 // Gets the JIRA issue
-                Issue issue = session.getClient().getIssueClient().getIssue(key, progressMonitor);
+                Issue issue = session.getClient().getIssueClient().getIssue(key).claim();
 
                 // Translation of fields
                 List<JIRAField> fields = Lists.newArrayList(
                         Iterables.transform(
                                 issue.getFields(),
-                                new Function<Field, JIRAField>() {
+                                new Function<IssueField, JIRAField>() {
                                     @Override
-                                    public JIRAField apply(Field f) {
+                                    public JIRAField apply(IssueField f) {
                                         return toField(f);
                                     }
                                 }
@@ -162,7 +160,7 @@ public class DefaultJIRAService implements JIRAService {
 
     private String getStatusIconURL(BasicStatus status) {
         try (Transaction tx = transactionService.start()) {
-            Status s = tx.getResource(JIRASession.class).getClient().getMetadataClient().getStatus(status.getSelf(), progressMonitor);
+            Status s = tx.getResource(JIRASession.class).getClient().getMetadataClient().getStatus(status.getSelf()).claim();
             return s.getIconUrl().toString();
         }
     }
@@ -180,7 +178,7 @@ public class DefaultJIRAService implements JIRAService {
         }
     }
 
-    private JIRAField toField(Field field) {
+    private JIRAField toField(IssueField field) {
         return new JIRAField(
                 field.getName(),
                 field.getType(),
