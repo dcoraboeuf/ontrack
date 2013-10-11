@@ -1,6 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.ConfigurationDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.dao.AbstractJdbcDao;

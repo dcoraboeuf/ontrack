@@ -1,7 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.BranchAlreadyExistException;
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.model.TBranch;
 import net.ontrack.backend.db.SQL;

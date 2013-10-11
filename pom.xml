@@ -222,12 +222,6 @@
 			    <artifactId>mail</artifactId>
 			    <version>1.4.5</version>
 			</dependency>
-            <!-- Caching -->
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>2.7.0</version>
-            </dependency>
 			<!-- Validation -->
 			<dependency>
 				<groupId>javax.validation</groupId>

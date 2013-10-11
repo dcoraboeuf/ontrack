@@ -1,6 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.ValidationStampAlreadyExistException;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TValidationStamp;

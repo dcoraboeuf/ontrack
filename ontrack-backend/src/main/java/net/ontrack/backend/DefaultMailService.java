@@ -1,5 +1,6 @@
 package net.ontrack.backend;
 
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.core.RunProfile;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.MailConfiguration;
