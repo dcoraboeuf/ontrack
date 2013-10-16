@@ -1,0 +1,32 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{loc 'model.name'}}</th>
+            <th>{{loc 'branch.lastBuild'}}</th>
+            <th>{{loc 'promotion_level.promotions'}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#.}}
+            <tr>
+                <td width="10%">
+                    <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}" class="btn"><b>{{branch.name}}</b></a>
+                    {{#branch.description}}
+                        <br/>
+                        <span class="description">{{branch.description}}</span>
+                    {{/branch.description}}
+                </td>
+                <td width="10%">
+                    {{#if latestBuild}}
+                        <a href="gui/project/{{latestBuild.branch.project.name}}/branch/{{latestBuild.branch.name}}/build/{{latestBuild.name}}" class="btn btn-link">{{latestBuild.name}}</a>
+                    {{else}}
+                        <i class="icon-ban-circle"></i>
+                    {{/if}}
+                </td>
+                <td>
+
+                </td>
+            </tr>
+        {{/.}}
+    </tbody>
+</table>

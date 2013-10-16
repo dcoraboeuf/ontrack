@@ -595,6 +595,10 @@ branch-validation-stamp-runs-without-failure.description
         sans échec. Cela signifie que les validations du haut sont les plus stables. Les nombres > 30 sont tronqués.
         ...
 
+branch.lastBuild
+    en -> Last build
+    fr -> Dernier build
+
 [validation_stamps]
 
 validation_stamp.empty
