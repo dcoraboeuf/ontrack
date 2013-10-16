@@ -1,0 +1,19 @@
+{{#.}}
+    <button class="btn home-project-branch">
+        <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}">
+            <b>{{branch.name}}</b>
+        </a>
+        <br/>
+        {{#if lastPromotion}}
+            <a href="gui/project/{{lastPromotion.promotionLevel.branch.project.name}}/branch/{{lastPromotion.promotionLevel.branch.name}}/build/{{lastPromotion.buildSummary.name}}" class="btn btn-link">{{lastPromotion.buildSummary.name}}</a>
+            <i class="icon-arrow-right"></i>
+            <a href="gui/project/{{lastPromotion.promotionLevel.branch.project.name}}/branch/{{lastPromotion.promotionLevel.branch.name}}/promotion_level/{{lastPromotion.promotionLevel.name}}">
+                <img width="24" height="24" src="gui/project/{{lastPromotion.promotionLevel.branch.project.name}}/branch/{{lastPromotion.promotionLevel.branch.name}}/promotion_level/{{lastPromotion.promotionLevel.name}}/image" />
+                {{lastPromotion.promotionLevel.name}}
+            </a>
+        {{else}}
+            <i class="icon-ban-circle"></i>
+        {{/if}}
+        <br />
+    </button>
+{{/.}}
