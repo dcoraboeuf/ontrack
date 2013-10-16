@@ -236,5 +236,9 @@ ul.promotions li:first-child .separator {
 }
 
 .branch-name {
-    font-size: 200%;
+    width: 4em;
+}
+
+.project-name {
+    width: 4em;
 }
