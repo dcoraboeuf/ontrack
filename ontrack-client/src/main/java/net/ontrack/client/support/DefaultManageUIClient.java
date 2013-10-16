@@ -72,6 +72,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<BranchLastStatus> getBranchLastStatusList(Locale locale, String project) {
+        return list(locale, format("/ui/manage/project/%s/branch/status", project), BranchLastStatus.class);
+    }
+
+    @Override
     public BranchSummary getBranch(String project, String name) {
         return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class);
     }

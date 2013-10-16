@@ -1,5 +1,6 @@
 package net.ontrack.web.ui;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -109,6 +110,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     List<BranchSummary> getBranchList(@PathVariable String project) {
         int projectId = entityConverter.getProjectId(project);
         return managementService.getBranchList(projectId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/status", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BranchLastStatus> getBranchLastStatusList(final Locale locale, @PathVariable String project) {
+        return Lists.transform(
+                managementService.getBranchList(entityConverter.getProjectId(project)),
+                new Function<BranchSummary, BranchLastStatus>() {
+                    @Override
+                    public BranchLastStatus apply(BranchSummary o) {
+                        return managementService.getBranchLastStatus(locale, o.getId());
+                    }
+                }
+        );
     }
 
     @Override
