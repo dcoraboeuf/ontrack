@@ -523,28 +523,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             throw new IllegalStateException("At most one branch should be eligible - configuration problem at branch level?");
         } else if (branchIds.size() == 1) {
             final int branchId = branchIds.iterator().next();
-            BranchSummary branch = managementService.getBranch(branchId);
-            line = line.withBranch(branch);
-            // Latest build?
-            BuildSummary latestBuild = managementService.getLastBuild(branchId);
-            if (latestBuild != null) {
-                line = line.withLatestBuild(latestBuild);
-            }
-            // Gets the list of promotions
-            List<PromotionLevelSummary> promotionLevelList = managementService.getPromotionLevelList(branchId);
-            promotionLevelList = new ArrayList<>(promotionLevelList);
-            Collections.reverse(promotionLevelList);
-            line = line.withPromotions(
-                    Lists.transform(
-                            promotionLevelList,
-                            new Function<PromotionLevelSummary, Promotion>() {
-                                @Override
-                                public Promotion apply(PromotionLevelSummary promotionLevel) {
-                                    return managementService.findLastPromotion(locale, promotionLevel.getId());
-                                }
-                            }
-                    )
-            );
+            line = line.withBranchLastStatus(managementService.getBranchLastStatus(locale, branchId));
         }
         // OK
         return line;

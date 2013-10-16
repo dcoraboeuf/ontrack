@@ -26,6 +26,8 @@ public interface ManagementService {
 
     BranchSummary getBranch(int id);
 
+    BranchLastStatus getBranchLastStatus(Locale locale, int id);
+
     DecoratedBranch getDecoratedBranch(Locale locale, int branchId);
 
     BranchSummary createBranch(int project, BranchCreationForm form);

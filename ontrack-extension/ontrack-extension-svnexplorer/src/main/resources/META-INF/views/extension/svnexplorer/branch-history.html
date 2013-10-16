@@ -19,51 +19,53 @@
            <a href="${line.current.url?html}">${line.current.path?html}</a>
         </td>
         <td>
-            <#if line.branch??>
-                <a href="gui/project/${line.branch.project.name?html}/branch/${line.branch.name?html}">${line.branch.name?html}</a>
+            <#if line.lastStatus?? && line.lastStatus.branch??>
+                <a href="gui/project/${line.lastStatus.branch.project.name?html}/branch/${line.lastStatus.branch.name?html}">${line.lastStatus.branch.name?html}</a>
             </#if>
         </td>
         <td>
-            <#if line.latestBuild??>
-                <a href="gui/project/${line.latestBuild.branch.project.name?html}/branch/${line.latestBuild.branch.name?html}/build/${line.latestBuild.name?html}">${line.latestBuild.name?html}</a>
+            <#if line.lastStatus?? && line.lastStatus.latestBuild??>
+                <a href="gui/project/${line.lastStatus.latestBuild.branch.project.name?html}/branch/${line.lastStatus.latestBuild.branch.name?html}/build/${line.lastStatus.latestBuild.name?html}">${line.lastStatus.latestBuild.name?html}</a>
             </#if>
         </td>
         <td>
             <table>
                 <tbody>
                     <tr>
-                        <#list line.promotions as promotion>
-                            <#if promotion.buildSummary??>
-                                <td>
-                                    <div class="promotion">
-                                        <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
-                                            <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
-                                            ${promotion.promotionLevel.name?html}
-                                        </a>
-                                        <br />
-                                        <i class="icon-star-empty"></i>
-                                        <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
-                                        <#if promotion.buildSummary.name != line.latestBuild.name>
-                                            <a
-                                                href="gui/extension/svnexplorer/changelog?project=${line.branch.project.name?html}&branch=${line.branch.name?html}&from=${promotion.buildSummary.name?html}&to=${line.latestBuild.name?html}"
-                                                title="<@lh key='svnexplorer.changelog' />"><i class="icon-adjust"></i></a>
-                                        </#if>
-                                    </div>
-                                </td>
-                            <#else>
-                                <td>
-                                    <div class="promotion none">
-                                        <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
-                                            <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
-                                            ${promotion.promotionLevel.name?html}
-                                        </a>
-                                        <br />
-                                        <i class="icon-star-empty"></i>
-                                        <@lh key="svnexplorer.branch-history.latestBuild.none" />
-                                    </div>
-                                </td>
-                            </#if>
-                        </#list>
+                        <#if line.lastStatus??>
+                            <#list line.lastStatus.promotions as promotion>
+                                <#if promotion.buildSummary??>
+                                    <td>
+                                        <div class="promotion">
+                                            <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
+                                                <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
+                                                ${promotion.promotionLevel.name?html}
+                                            </a>
+                                            <br />
+                                            <i class="icon-star-empty"></i>
+                                            <a href="gui/project/${promotion.buildSummary.branch.project.name?html}/branch/${promotion.buildSummary.branch.name?html}/build/${promotion.buildSummary.name?html}">${promotion.buildSummary.name?html}</a>
+                                            <#if promotion.buildSummary.name != line.lastStatus.latestBuild.name>
+                                                <a
+                                                    href="gui/extension/svnexplorer/changelog?project=${line.lastStatus.branch.project.name?html}&branch=${line.lastStatus.branch.name?html}&from=${promotion.buildSummary.name?html}&to=${line.lastStatus.latestBuild.name?html}"
+                                                    title="<@lh key='svnexplorer.changelog' />"><i class="icon-adjust"></i></a>
+                                            </#if>
+                                        </div>
+                                    </td>
+                                <#else>
+                                    <td>
+                                        <div class="promotion none">
+                                            <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
+                                                <img width="24" height="24" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
+                                                ${promotion.promotionLevel.name?html}
+                                            </a>
+                                            <br />
+                                            <i class="icon-star-empty"></i>
+                                            <@lh key="svnexplorer.branch-history.latestBuild.none" />
+                                        </div>
+                                    </td>
+                                </#if>
+                            </#list>
+                        </#if>
                     </tr>
                 </tbody>
             </table>

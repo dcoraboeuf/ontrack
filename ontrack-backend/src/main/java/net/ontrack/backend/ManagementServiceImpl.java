@@ -263,6 +263,30 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
+    public BranchLastStatus getBranchLastStatus(final Locale locale, int id) {
+        // Gets the list of promotions
+        List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(id);
+        promotionLevelList = new ArrayList<>(promotionLevelList);
+        Collections.reverse(promotionLevelList);
+        List<Promotion> lastPromotions = Lists.transform(
+                promotionLevelList,
+                new Function<PromotionLevelSummary, Promotion>() {
+                    @Override
+                    public Promotion apply(PromotionLevelSummary promotionLevel) {
+                        return findLastPromotion(locale, promotionLevel.getId());
+                    }
+                }
+        );
+        // OK
+        return new BranchLastStatus(
+                getBranch(id),
+                getLastBuild(id),
+                lastPromotions
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public DecoratedBranch getDecoratedBranch(Locale locale, int branchId) {
         BranchSummary branch = getBranch(branchId);
         return new DecoratedBranch(
