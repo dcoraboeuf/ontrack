@@ -132,6 +132,7 @@ then
 fi
 
 # Echo
+echo CB region                        : $CB_ZONE
 echo Ontrack CB application name      : $ONTRACK_APP
 echo Ontrack CB database name         : $ONTRACK_DB
 echo Ontrack CB database creation     : $ONTRACK_DB_CREATE
