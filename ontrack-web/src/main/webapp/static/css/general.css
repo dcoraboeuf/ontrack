@@ -234,3 +234,7 @@ ul.promotions li:first-child .separator {
     opacity: 0.30;
     background-color: transparent;
 }
+
+.branch-name {
+    font-size: 200%;
+}

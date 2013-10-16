@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             <th>{{loc 'model.name'}}</th>
@@ -10,7 +10,7 @@
         {{#.}}
             <tr>
                 <td width="10%">
-                    <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}" class="btn"><b>{{branch.name}}</b></a>
+                    <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}" class="btn branch-name btn-primary"><b>{{branch.name}}</b></a>
                     {{#branch.description}}
                         <br/>
                         <span class="description">{{branch.description}}</span>
