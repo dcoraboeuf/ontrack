@@ -19,7 +19,7 @@ function show_help {
 	echo "Ontrack on Ontrack:"
 	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
-	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
+	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.eu.cloudbees.net/' by default)"
 	echo "    --ontrack-user                ontrack user"
 	echo "    --ontrack-password            ontrack password"
 }
@@ -44,7 +44,7 @@ GIT_PUSH=no
 DEPLOY=no
 ONTRACK=no
 ONTRACK_BRANCH=1.x
-ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
+ONTRACK_URL=http://ontrack.dcoraboeuf.eu.cloudbees.net
 ONTRACK_USER=
 ONTRACK_PASSWORD=
 GITHUB_USER=dcoraboeuf

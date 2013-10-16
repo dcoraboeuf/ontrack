@@ -21,7 +21,7 @@ function show_help {
 	echo "Ontrack on Ontrack:"
 	echo "    --ontrack                Notification of the deployment to an ontrack instance"
 	echo "    --ontrack-branch         ontrack branch associated ('1.x' by default)"
-	echo "    --ontrack-url            ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
+	echo "    --ontrack-url            ontrack URL ('http://ontrack.dcoraboeuf.eu.cloudbees.net/' by default)"
 	echo "    --ontrack-user           ontrack user"
 	echo "    --ontrack-password       ontrack password"
 	echo "    --ontrack-promotion      ontrack promotion level to assign"
@@ -51,7 +51,7 @@ ONTRACK_APP_CREATE=no
 ONTRACK_APP_PROFILE=prod
 ONTRACK=no
 ONTRACK_BRANCH=1.x
-ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
+ONTRACK_URL=http://ontrack.dcoraboeuf.eu.cloudbees.net
 ONTRACK_USER=
 ONTRACK_PASSWORD=
 ONTRACK_PROMOTION=

@@ -98,7 +98,7 @@ To run only the smoke tests:
 Running acceptance tests against the production environment requires some heavy filtering. Just use:
 
 ```
-mvn clean verify -pl ontrack-acceptance -am -P it -P it-prod -DitUrl=http://ontrack.dcoraboeuf.cloudbees.net -DitAdminPassword=***
+mvn clean verify -pl ontrack-acceptance -am -P it -P it-prod -DitUrl=http://ontrack.dcoraboeuf.eu.cloudbees.net -DitAdminPassword=***
 ```
 
 where `***` is the password on the `admin` account on the production environment.
