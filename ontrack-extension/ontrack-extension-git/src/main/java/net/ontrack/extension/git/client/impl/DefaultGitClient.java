@@ -38,7 +38,7 @@ public class DefaultGitClient implements GitClient {
         @Override
         public GitTag apply(Ref ref) {
             Ref peeledRef = repository.git().getRepository().peel(ref);
-            RevCommit commit = repository.getCommitForTag(peeledRef.getObjectId());
+            RevCommit commit = repository.getCommitForTag(peeledRef.getPeeledObjectId());
             String tagName = getTagNameFromRef(peeledRef);
             return new GitTag(
                     tagName,
@@ -55,7 +55,7 @@ public class DefaultGitClient implements GitClient {
     private String getTagNameFromRef(Ref ref) {
         return StringUtils.substringAfter(
                 ref.getName(),
-                "refs/tags/"
+                Constants.R_TAGS
         );
     }
 
