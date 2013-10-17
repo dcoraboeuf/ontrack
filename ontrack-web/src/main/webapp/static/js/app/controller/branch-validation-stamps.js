@@ -1,4 +1,4 @@
-define(['render','ajax','dynamic','app/component/validationStamp'], function (render, ajax, dynamic, validationStamp) {
+define(['render','ajax','dynamic','app/component/validationStamp', 'jquery-ui'], function (render, ajax, dynamic, validationStamp) {
 
     function upValidationStamp (project, branch, stamp) {
         ajax.put({
@@ -44,7 +44,7 @@ define(['render','ajax','dynamic','app/component/validationStamp'], function (re
             });
             return stamps;
         },
-        render: render.asTableTemplate('branch-validation-stamp', function (config) {
+        render: render.asSimpleTemplate('branch-validation-stamp', render.sameDataFn, function (config) {
             // Ordering of the validation stamps
             $('.validation-stamp-order').each(function (index, link) {
                 var stamp = $(link).attr('order-stamp');
