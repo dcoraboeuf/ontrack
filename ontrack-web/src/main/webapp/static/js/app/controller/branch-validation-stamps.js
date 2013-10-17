@@ -46,7 +46,17 @@ define(['render','ajax','dynamic','app/component/validationStamp', 'jquery-ui'],
         },
         render: render.asSimpleTemplate('branch-validation-stamp', render.sameDataFn, function (config) {
             // Enabling the list as being sortable
-            $('#validation-stamp-list').sortable();
+            $('#validation-stamp-list').sortable({
+                start: function (event, ui) {
+                    ui.item.data('data-old-index', ui.item.index());
+                },
+                stop: function (event, ui) {
+                    var validationStamp = ui.item.attr('data-validation-stamp');
+                    var oldIndex = ui.item.data('data-old-index');
+                    var newIndex = ui.item.index();
+                    console.log(validationStamp, oldIndex, newIndex);
+                }
+            });
             $('#validation-stamp-list').disableSelection({
                 placeholder: 'list-sortable-highlight'
             });
