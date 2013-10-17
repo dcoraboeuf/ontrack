@@ -241,6 +241,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack moveValidationStamp(String project, String branch, String validationStamp, Reordering reordering) {
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/move", project, branch, validationStamp), Ack.class, reordering);
+    }
+
+    @Override
     public Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId) {
         return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/owner/%d", project, branch, validationStamp, ownerId), Ack.class, null);
     }

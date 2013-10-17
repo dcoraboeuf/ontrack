@@ -79,6 +79,8 @@ public interface ManageUI {
 
     Ack downValidationStamp(String project, String branch, String validationStamp);
 
+    Ack moveValidationStamp(String project, String branch, String validationStamp, Reordering reordering);
+
     Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId);
 
     Ack unsetValidationStampOwner(String project, String branch, String validationStamp);

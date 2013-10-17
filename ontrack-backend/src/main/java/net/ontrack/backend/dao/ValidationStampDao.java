@@ -35,5 +35,7 @@ public interface ValidationStampDao {
 
     Ack downValidationStamp(int id);
 
+    Ack moveValidationStamp(int id, int newIndex);
+
     Ack setValidationStampOwner(int id, Integer ownerId);
 }

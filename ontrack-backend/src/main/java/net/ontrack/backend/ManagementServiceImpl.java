@@ -683,6 +683,13 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @Override
     @Transactional
     @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack moveValidationStamp(int validationStampId, int newIndex) {
+        return validationStampDao.moveValidationStamp(validationStampId, newIndex);
+    }
+
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack setValidationStampOwner(int validationStampId, int ownerId) {
         return validationStampDao.setValidationStampOwner(validationStampId, ownerId);
     }

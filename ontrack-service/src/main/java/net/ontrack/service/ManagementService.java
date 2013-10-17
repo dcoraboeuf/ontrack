@@ -68,6 +68,8 @@ public interface ManagementService {
 
     Ack downValidationStamp(int validationStampId);
 
+    Ack moveValidationStamp(int validationStampId, int newIndex);
+
     Ack setValidationStampOwner(int validationStampId, int ownerId);
 
     Ack unsetValidationStampOwner(int validationStampId);

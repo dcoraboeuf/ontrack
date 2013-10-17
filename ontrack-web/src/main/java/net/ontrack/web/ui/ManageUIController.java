@@ -501,6 +501,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/move", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack moveValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody Reordering reordering) {
+        return managementService.moveValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp), reordering.getNewIndex());
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/owner/{ownerId:\\d+}", method = RequestMethod.PUT)
     public
     @ResponseBody

@@ -1,7 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.ValidationStampAlreadyExistException;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
@@ -88,6 +88,50 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
         if (lowerId != null) {
             return swapValidationStampOrderNb(id, lowerId);
         } else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(Caches.VALIDATION_STAMP)
+    public Ack moveValidationStamp(int id, int newIndex) {
+        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
+        // Indexes start at 0, order nb at 1
+        int newOrderNb = newIndex + 1;
+        // Gets the current position
+        TValidationStamp validationStamp = getById(id);
+        int oldOrderNb = validationStamp.getOrderNb();
+        // 1) moving back
+        if (newOrderNb < oldOrderNb) {
+            // Re-indexation between the boundaries
+            t.update(
+                    SQL.VALIDATION_STAMP_INC_ORDERNB,
+                    params("branch", validationStamp.getBranch())
+                            .addValue("low", newOrderNb)
+                            .addValue("high", oldOrderNb)
+            );
+            // Re-indexation of the validation stamp
+            t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", id).addValue("orderNb", newOrderNb));
+            // OK
+            return Ack.OK;
+        }
+        // 2) moving forward
+        else if (newOrderNb > oldOrderNb) {
+            // Re-indexation between the boundaries
+            t.update(
+                    SQL.VALIDATION_STAMP_DEC_ORDERNB,
+                    params("branch", validationStamp.getBranch())
+                            .addValue("low", oldOrderNb)
+                            .addValue("high", newOrderNb)
+            );
+            // Re-indexation of the validation stamp
+            t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", id).addValue("orderNb", newOrderNb));
+            // OK
+            return Ack.OK;
+        }
+        // 3) no move
+        else {
             return Ack.NOK;
         }
     }
