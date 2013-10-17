@@ -1131,7 +1131,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         if (t != null) {
             return buildSummaryFunction.apply(t);
         } else {
-            throw new BranchNoBuildFoundException();
+            return null;
         }
     }
 
