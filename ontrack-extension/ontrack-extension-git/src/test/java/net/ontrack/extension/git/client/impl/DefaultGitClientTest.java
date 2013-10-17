@@ -2,9 +2,11 @@ package net.ontrack.extension.git.client.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import net.ontrack.extension.git.GitCommitNotFoundException;
 import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.client.GitLog;
+import net.ontrack.extension.git.client.GitTag;
 import net.ontrack.extension.git.model.GitConfiguration;
 import net.ontrack.service.EnvironmentService;
 import net.ontrack.service.support.DirEnvironmentService;
@@ -14,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,6 +41,26 @@ public class DefaultGitClientTest {
         );
         // Sync
         client.sync();
+    }
+
+    @Test
+    public void getTags() {
+        Collection<GitTag> tags = client.getTags();
+        assertNotNull(tags);
+        GitTag tag137 = Iterables.find(
+                tags,
+                new Predicate<GitTag>() {
+                    @Override
+                    public boolean apply(GitTag gitTag) {
+                        return "ontrack-1.37".equals(gitTag.getName());
+                    }
+                }
+        );
+        assertNotNull(tag137);
+        assertEquals(
+                new DateTime(2013, 10, 8, 21, 57, 16, DateTimeZone.UTC),
+                tag137.getTime()
+        );
     }
 
     @Test
