@@ -15,7 +15,7 @@
     <name>ontrack Extension Git</name>
 
     <properties>
-        <jgitVersion>2.3.1.201302201838-r</jgitVersion>
+        <jgitVersion>3.1.0.201310021548-r</jgitVersion>
     </properties>
 
     <dependencies>

@@ -5,8 +5,8 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class DefaultGitRepository implements GitRepository {
     public synchronized Git git() {
         if (git == null) {
             // Gets the repository
-            FileRepository repository;
+            Repository repository;
             try {
                 repository = new FileRepositoryBuilder()
                         .setWorkTree(wd)
