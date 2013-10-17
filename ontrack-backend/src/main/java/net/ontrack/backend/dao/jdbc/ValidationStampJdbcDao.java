@@ -231,12 +231,23 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Transactional
     @CacheEvict(Caches.VALIDATION_STAMP)
     public Ack deleteValidationStamp(int id) {
-        return Ack.one(
-                getNamedParameterJdbcTemplate().update(
-                        SQL.VALIDATION_STAMP_DELETE,
-                        params("id", id)
-                )
+        // Previous row number
+        TValidationStamp t = getById(id);
+        int orderNb = t.getOrderNb();
+        // Actual deletion
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_DELETE,
+                params("id", id)
         );
+        // Re-ordering of the next items
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_DEC_ORDERNB,
+                params("branch", t.getBranch())
+                        .addValue("low", orderNb)
+                        .addValue("high", Integer.MAX_VALUE)
+        );
+        // OK
+        return Ack.OK;
     }
 
     @Override
