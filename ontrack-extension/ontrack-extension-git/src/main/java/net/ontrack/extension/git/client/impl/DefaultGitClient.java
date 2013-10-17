@@ -31,15 +31,13 @@ import java.util.*;
 public class DefaultGitClient implements GitClient {
 
     private final Logger logger = LoggerFactory.getLogger(GitClient.class);
-
     private final GitRepository repository;
     private final GitConfiguration configuration;
     private final Function<Ref, GitTag> gitTagFunction = new Function<Ref, GitTag>() {
         @Override
         public GitTag apply(Ref ref) {
-            Ref peeledRef = repository.git().getRepository().peel(ref);
-            RevCommit commit = repository.getCommitForTag(peeledRef.getPeeledObjectId());
-            String tagName = getTagNameFromRef(peeledRef);
+            RevCommit commit = repository.getCommitForTag(ref);
+            String tagName = getTagNameFromRef(ref);
             return new GitTag(
                     tagName,
                     new DateTime(1000L * commit.getCommitTime(), DateTimeZone.UTC)
@@ -91,8 +89,8 @@ public class DefaultGitClient implements GitClient {
             Git git = repository.git();
             Repository gitRepository = git.getRepository();
             // Gets boundaries
-            ObjectId oFrom = gitRepository.resolve(from);
-            ObjectId oTo = gitRepository.resolve(to);
+            Ref oFrom = gitRepository.getTags().get(from);
+            Ref oTo = gitRepository.getTags().get(to);
 
             // Corresponding commits
             RevCommit commitFrom = repository.getCommitForTag(oFrom);
@@ -146,8 +144,8 @@ public class DefaultGitClient implements GitClient {
             Git git = repository.git();
             Repository gitRepository = git.getRepository();
             // Gets boundaries
-            ObjectId oFrom = gitRepository.resolve(from);
-            ObjectId oTo = gitRepository.resolve(to);
+            Ref oFrom = gitRepository.getTags().get(from);
+            Ref oTo = gitRepository.getTags().get(to);
 
             // Corresponding commits
             RevCommit commitFrom = repository.getCommitForTag(oFrom);
@@ -249,7 +247,7 @@ public class DefaultGitClient implements GitClient {
                 if (tagNamePredicate.apply(tagName)) {
                     // Gets the corresponding commit
                     logger.debug("[gitclient] Looking commit for tag {}", tagName);
-                    RevCommit revCommit = repository.getCommitForTag(tagRef.getObjectId());
+                    RevCommit revCommit = repository.getCommitForTag(tagRef);
                     commitTagIndex.put(revCommit.getId().getName(), tagName);
                     // Equality?
                     if (revCommit.getId().getName().equals(gitCommitId)) {

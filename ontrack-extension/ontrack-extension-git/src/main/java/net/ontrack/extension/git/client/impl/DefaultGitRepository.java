@@ -4,7 +4,7 @@ import net.ontrack.extension.git.GitCommitNotFoundException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -83,9 +83,10 @@ public class DefaultGitRepository implements GitRepository {
     }
 
     @Override
-    public RevCommit getCommitForTag(ObjectId tag) {
+    public RevCommit getCommitForTag(Ref tag) {
         try {
-            Iterator<RevCommit> commits = git.log().add(tag).setMaxCount(1).call().iterator();
+            Ref peeledRef = git().getRepository().peel(tag);
+            Iterator<RevCommit> commits = git.log().add(peeledRef.getPeeledObjectId()).setMaxCount(1).call().iterator();
             if (commits.hasNext()) {
                 return commits.next();
             } else {
