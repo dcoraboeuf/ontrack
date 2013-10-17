@@ -38,4 +38,6 @@ public interface ValidationStampDao {
     Ack moveValidationStamp(int id, int newIndex);
 
     Ack setValidationStampOwner(int id, Integer ownerId);
+
+    void reorderAll();
 }

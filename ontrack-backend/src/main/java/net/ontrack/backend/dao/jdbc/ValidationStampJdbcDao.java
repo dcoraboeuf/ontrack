@@ -62,7 +62,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
-    @CacheEvict(Caches.VALIDATION_STAMP)
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
     public Ack upValidationStamp(int id) {
         TValidationStamp validationStamp = getById(id);
         Integer higherId = getFirstItem(
@@ -78,7 +78,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
-    @CacheEvict(Caches.VALIDATION_STAMP)
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
     public Ack downValidationStamp(int id) {
         TValidationStamp validationStamp = getById(id);
         Integer lowerId = getFirstItem(
@@ -94,7 +94,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
-    @CacheEvict(Caches.VALIDATION_STAMP)
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
     public Ack moveValidationStamp(int id, int newIndex) {
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
         // Indexes start at 0, order nb at 1
@@ -146,6 +146,30 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                         params("id", id).addValue("owner", ownerId)
                 )
         );
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
+    public void reorderAll() {
+        // Gets all the branches
+        List<Integer> branchIds = getJdbcTemplate().queryForList(
+                SQL.VALIDATION_REORDERING_BRANCHES,
+                Integer.class
+        );
+        // For all branches
+        for (int branchId : branchIds) {
+            // Gets all the validation stamps for this branch, ordered
+            List<TValidationStamp> stamps = findByBranch(branchId);
+            // Updates the order nb in sequence
+            int orderNb = 1;
+            for (TValidationStamp stamp : stamps) {
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATION_STAMP_SET_LEVELNB,
+                        params("id", stamp.getId()).addValue("orderNb", orderNb++)
+                );
+            }
+        }
     }
 
     protected Ack swapValidationStampOrderNb(int aId, int bId) {
