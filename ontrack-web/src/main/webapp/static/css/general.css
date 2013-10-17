@@ -267,6 +267,7 @@ ul.list-sortable > li {
 
 ul.list-sortable > li:hover {
     background-color: #e4e4e4;
+    cursor: move;
 }
 
 .list-sortable-highlight {
