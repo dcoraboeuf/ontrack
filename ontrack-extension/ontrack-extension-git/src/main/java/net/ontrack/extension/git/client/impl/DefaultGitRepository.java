@@ -72,8 +72,6 @@ public class DefaultGitRepository implements GitRepository {
             try {
                 repository = new FileRepositoryBuilder()
                         .setWorkTree(wd)
-                        .readEnvironment()
-                        .findGitDir()
                         .build();
             } catch (IOException e) {
                 throw new GitIOException(e);
