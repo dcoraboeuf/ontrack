@@ -37,8 +37,9 @@ public class DefaultGitClient implements GitClient {
     private final Function<Ref, GitTag> gitTagFunction = new Function<Ref, GitTag>() {
         @Override
         public GitTag apply(Ref ref) {
-            RevCommit commit = repository.getCommitForTag(ref.getObjectId());
-            String tagName = getTagNameFromRef(ref);
+            Ref peeledRef = repository.git().getRepository().peel(ref);
+            RevCommit commit = repository.getCommitForTag(peeledRef.getObjectId());
+            String tagName = getTagNameFromRef(peeledRef);
             return new GitTag(
                     tagName,
                     new DateTime(1000L * commit.getCommitTime(), DateTimeZone.UTC)
