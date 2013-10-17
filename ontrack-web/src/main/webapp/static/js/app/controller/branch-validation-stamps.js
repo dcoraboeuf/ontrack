@@ -45,6 +45,11 @@ define(['render','ajax','dynamic','app/component/validationStamp', 'jquery-ui'],
             return stamps;
         },
         render: render.asSimpleTemplate('branch-validation-stamp', render.sameDataFn, function (config) {
+            // Enabling the list as being sortable
+            $('#validation-stamp-list').sortable();
+            $('#validation-stamp-list').disableSelection({
+                placeholder: 'list-sortable-highlight'
+            });
             // Ordering of the validation stamps
             $('.validation-stamp-order').each(function (index, link) {
                 var stamp = $(link).attr('order-stamp');

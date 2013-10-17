@@ -262,8 +262,15 @@ ul.list-sortable > li {
     border-top: solid 1px #d3d3d3;
     padding: 10px;
     height: 1.5em;
+    line-height: 1.2em;
 }
 
 ul.list-sortable > li:hover {
     background-color: #e4e4e4;
+}
+
+.list-sortable-highlight {
+    height: 1.5em;
+    line-height: 1.2em;
+    background-color: lightyellow;
 }
