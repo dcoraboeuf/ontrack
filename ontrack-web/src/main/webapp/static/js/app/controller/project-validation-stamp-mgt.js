@@ -12,12 +12,14 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         var project = config.project;
         var branch1 = config.branch1;
         var branch2 = config.branch2;
+
         // Indexation of validation stamps by names
         var stampNameFn = function (stamp) {
             return stamp.name;
         }
         var indexedStamps1 = common.uniqueIndex(stamps1, stampNameFn);
         var indexedStamps2 = common.uniqueIndex(stamps2, stampNameFn);
+
         // Gets all names in a sorted list
         var names = [];
         for (var name in indexedStamps1) {
@@ -31,6 +33,29 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
             }
         }
         names.sort();
+
+        // Creating the model
+        var model = {
+            project: project,
+            branch1: branch1,
+            branch2: branch2,
+            stamps: []
+        };
+        $.each(names, function (index, name) {
+            var line = {
+                name: name
+            };
+            var stamp1 = indexedStamps1[name];
+            if (stamp1) {
+                line.stamp1 = stamp1;
+            }
+            var stamp2 = indexedStamps2[name];
+            if (stamp2) {
+                line.stamp2 = stamp2;
+            }
+            model.stamps.push(line);
+        });
+        console.log(model);
     }
 
     function loadBranches(config, target) {
