@@ -22,14 +22,9 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
         },
         render: render.asSimpleTemplate(
             'project-validation-stamp-mgt',
-            function (branches, config) {
-                return {
-                    branchId: config.branchId,
-                    branchTitle: 'validation_stamp.mgt.{0}'.format(config.branchId).loc(),
-                    branches: branches
-                }
-            },
+            render.sameDataFn,
             function (config) {
+                /*
                 var container = $('#' + config.branchId);
                 // On selection of the branch
                 container.find('select.project-validation-stamp-mgt-branch').change(function (e) {
@@ -49,6 +44,7 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
                         })
                     }
                 })
+                */
             }
         )
     }

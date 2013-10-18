@@ -1,16 +1,7 @@
-ul.project-validation-stamp-mgt {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-ul.project-validation-stamp-mgt > li {
-    border-top: solid 1px #d3d3d3;
-    padding: 10px;
-    height: 1.5em;
-    line-height: 1.2em;
-}
-
-ul.project-validation-stamp-mgt > li:hover {
-    background-color: #e4e4e4;
+td.project-validation-stamp-mgt-branch-separator {
+    vertical-align: middle;
+    text-align: center;
+    font-size: 200%;
+    color: gray;
+    padding: 1em;
 }

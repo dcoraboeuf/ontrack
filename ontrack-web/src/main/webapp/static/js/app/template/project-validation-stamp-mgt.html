@@ -1,12 +1,27 @@
-<div>
-    <h1><small>{{branchTitle}}</small></h1>
-    <select class="project-validation-stamp-mgt-branch">
-        <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
-        {{#branches}}
-            <option value="{{name}}">{{name}}</option>
-        {{/branches}}
-    </select>
-</div>
-<div class="loading hidden"></div>
-<div class="project-validation-stamp-mgt-branch-error alert alert-error hidden"></div>
-<div class="project-validation-stamp-mgt-list"></div>
+<table>
+    <tbody>
+        <tr>
+            <td class="project-validation-stamp-mgt-branch-label">{{loc 'validation_stamp.mgt.branch-1'}}</td>
+            <td rowspan="2" class="project-validation-stamp-mgt-branch-separator"><i class="icon-arrow-right"></i></td>
+            <td class="project-validation-stamp-mgt-branch-label">{{loc 'validation_stamp.mgt.branch-2'}}</td>
+        </tr>
+        <tr>
+            <td class="project-validation-stamp-mgt-branch-label">
+                <select class="project-validation-stamp-mgt-branch" data-target="1">
+                    <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
+                    {{#.}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/.}}
+                </select>
+            </td>
+            <td class="project-validation-stamp-mgt-branch-label">
+                <select class="project-validation-stamp-mgt-branch" data-target="1">
+                    <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
+                    {{#.}}
+                        <option value="{{name}}">{{name}}</option>
+                    {{/.}}
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
