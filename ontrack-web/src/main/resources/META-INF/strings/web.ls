@@ -673,6 +673,12 @@ validation_stamp.filter.enabled
     en -> Enabled
     fr -> Actif
 
+[validation_stamp_mgt]
+
+validation_stamp.mgt
+    en -> Manage validation stamps
+    fr -> Gérer les validations
+
 [promotion_level]
 
 promotion_level.manage
