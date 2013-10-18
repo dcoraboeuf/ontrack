@@ -679,11 +679,11 @@ validation_stamp.mgt
     en -> Manage validation stamps
     fr -> Gérer les validations
 
-validation_stamp.mgt.branch.1
+validation_stamp.mgt.branch-1
     en -> Reference branch
     fr -> Branche de référence
 
-validation_stamp.mgt.branch.2
+validation_stamp.mgt.branch-2
     en -> Destination branch
     fr -> Branche de destination
 
