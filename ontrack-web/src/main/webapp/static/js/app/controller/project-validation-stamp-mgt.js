@@ -18,6 +18,19 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         }
         var indexedStamps1 = common.uniqueIndex(stamps1, stampNameFn);
         var indexedStamps2 = common.uniqueIndex(stamps2, stampNameFn);
+        // Gets all names in a sorted list
+        var names = [];
+        for (var name in indexedStamps1) {
+            if (names.indexOf(name) < 0) {
+                names.push(name);
+            }
+        }
+        for (var name in indexedStamps2) {
+            if (names.indexOf(name) < 0) {
+                names.push(name);
+            }
+        }
+        names.sort();
     }
 
     function loadBranches(config, target) {
