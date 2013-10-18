@@ -1,0 +1,9 @@
+<div>
+    <h1><small>{{loc branchType}}</small></h1>
+    <select class="project-validation-stamp-mgt-branch">
+        <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
+        {{#branches}}
+            <option value="{{name}}">{{name}}</option>
+        {{/branches}}
+    </select>
+</div>

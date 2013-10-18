@@ -679,6 +679,18 @@ validation_stamp.mgt
     en -> Manage validation stamps
     fr -> Gérer les validations
 
+validation_stamp.mgt.branch.1
+    en -> Reference branch
+    fr -> Branche de référence
+
+validation_stamp.mgt.branch.2
+    en -> Destination branch
+    fr -> Branche de destination
+
+validation_stamp.mgt.branch.select
+    en -> Select a branch
+    fr -> Sélectionnez une branche
+
 [promotion_level]
 
 promotion_level.manage
