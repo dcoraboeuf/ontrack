@@ -8,6 +8,10 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         return $.get('ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch))
     }
 
+    function prepareCommands(model, indexedStamps1, indexedStamps2, target) {
+        target.find('.commands').show();
+    }
+
     function displayBranches(config, stamps1, stamps2, target) {
         var project = config.project;
         var branch1 = config.branch1;
@@ -60,7 +64,10 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         render.renderInto(
             target.find('.content'),
             'project-validation-stamp-mgt-list',
-            model
+            model,
+            function () {
+                prepareCommands(model, indexedStamps1, indexedStamps2, target)
+            }
         )
     }
 
