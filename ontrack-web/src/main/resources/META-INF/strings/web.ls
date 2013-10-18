@@ -691,6 +691,18 @@ validation_stamp.mgt.branch.select
     en -> Select a branch
     fr -> Sélectionnez une branche
 
+validation_stamp.mgt.selectMissing
+    en -> Select missing validation stamps
+    fr -> Sélectionner les validations manquantes
+
+validation_stamp.mgt.selectNone
+    en -> Unselect all
+    fr -> Tout désélectionner
+
+validation_stamp.mgt.selectAll
+    en -> Select all
+    fr -> Tout sélectionner
+
 [promotion_level]
 
 promotion_level.manage

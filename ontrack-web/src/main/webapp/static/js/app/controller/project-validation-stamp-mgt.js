@@ -9,6 +9,23 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
     }
 
     function prepareCommands(model, indexedStamps1, indexedStamps2, target) {
+        // Select missing only
+        $('#project-validation-stamp-mgt-select-missing').click(function () {
+            $('.project-validation-stamp-mgt-chk').each(function (index, chk) {
+                var name = $(chk).attr('data-name');
+                var checked = indexedStamps2[name] ? false : true;
+                $(chk).prop('checked', checked)
+            })
+        });
+        // Select none
+        $('#project-validation-stamp-mgt-select-none').click(function () {
+            $('.project-validation-stamp-mgt-chk').prop('checked', false)
+        });
+        // Select all
+        $('#project-validation-stamp-mgt-select-all').click(function () {
+            $('.project-validation-stamp-mgt-chk').prop('checked', true)
+        });
+        // Shows the commands
         target.find('.commands').show();
     }
 
