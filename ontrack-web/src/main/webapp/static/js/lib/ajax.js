@@ -124,6 +124,9 @@ define(['common'], function (common) {
                 $(config.el).empty();
                 if (show) {
                     $(config.el).append('<div class="loading">{0}</div>'.format('general.loading'.loc()));
+                    $(config.el).show();
+                } else {
+                    $(config.el).hide();
                 }
             } else if (c.mode == 'toggle') {
                 if (show) {

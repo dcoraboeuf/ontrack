@@ -15,12 +15,25 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
             // Two parallel AJAX calls
             var ajax1 = loadValidationStamps(config, branch1);
             var ajax2 = loadValidationStamps(config, branch2);
+            // Loading...
+            ajax.showLoading({
+                mode: 'container',
+                el: $('#project-validation-stamp-mgt-loading')
+            }, true);
+            // Completion
             $.when(ajax1, ajax2).then(
                 function (result1, result2) {
                     console.log(result1[0], result2[0]);
                 },
                 loadingError
-            );
+            ).done(
+                function () {
+                    ajax.showLoading({
+                        mode: 'container',
+                        el: $('#project-validation-stamp-mgt-loading')
+                    }, false);
+                }
+            )
         }
     }
 
