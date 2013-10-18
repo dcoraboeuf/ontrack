@@ -22,9 +22,10 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
                     ajax.get({
                         url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch),
                         loading: {
-                            mode: 'toggle',
+                            mode: 'container',
                             el: container.find('div.loading')
                         },
+                        errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn(container.find('.project-validation-stamp-mgt-branch-error'))),
                         successFn: function (validationStamps) {
 
                         }
