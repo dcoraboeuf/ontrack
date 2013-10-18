@@ -55,7 +55,13 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
             }
             model.stamps.push(line);
         });
-        console.log(model);
+
+        // Rendering
+        render.renderInto(
+            target.find('tbody.content'),
+            'project-validation-stamp-mgt-list',
+            model
+        )
     }
 
     function loadBranches(config, target) {
