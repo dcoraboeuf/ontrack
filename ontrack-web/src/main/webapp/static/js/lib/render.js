@@ -61,7 +61,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
             }
             renderInto(target, templateId, data, function () {
                 if (callbackFn) {
-                    callbackFn(config, data);
+                    callbackFn(config, data, target);
                 }
             });
         }
@@ -116,7 +116,7 @@ define(['common', 'handlebars'], function (common, handlebars) {
                     return compiledTemplate(item);
                 });
                 if (callbackFn) {
-                    callbackFn(config, items);
+                    callbackFn(config, items, target);
                 }
             });
         }

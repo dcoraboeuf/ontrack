@@ -1,19 +1,27 @@
 define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
 
-    function displayValidationStamps(config, branch, validationStamps) {
-        var container = $('#' + config.branchId).find('.project-validation-stamp-mgt-list');
-        var project = config.project;
-        render.renderInto(
-            container,
-            'project-validation-stamp-mgt-list',
-            {
-                project: project,
-                branch: branch,
-                validationStamps: validationStamps
-            },
-            function () {
-            }
-        )
+    function loadingError(error) {
+        ajax.elementErrorMessageFn($('#project-validation-stamp-mgt-error'))(error.responseText)
+    }
+
+    function loadValidationStamps(config, branch) {
+        return $.get('ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch))
+    }
+
+    function loadBranches(config, target) {
+        var branch1 = config.branch1;
+        var branch2 = config.branch2;
+        if (branch1 != '' && branch2 != '' && branch1 != branch2) {
+            // Two parallel AJAX calls
+            var ajax1 = loadValidationStamps(config, branch1);
+            var ajax2 = loadValidationStamps(config, branch2);
+            $.when(ajax1, ajax2).then(
+                function (result1, result2) {
+                    console.log(result1[0], result2[0]);
+                },
+                loadingError
+            );
+        }
     }
 
     return {
@@ -23,28 +31,20 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
         render: render.asSimpleTemplate(
             'project-validation-stamp-mgt',
             render.sameDataFn,
-            function (config) {
-                /*
-                var container = $('#' + config.branchId);
-                // On selection of the branch
-                container.find('select.project-validation-stamp-mgt-branch').change(function (e) {
+            function (config, branches, target) {
+                config.branch1 = '';
+                config.branch2 = '';
+                // On selection of a branch
+                target.find('select.project-validation-stamp-mgt-branch').change(function (e) {
+                    var branchTarget = $(this).attr('data-target');
                     var branch = $(this).val();
-                    if (branch != '') {
-                        // Gets the list of validation stamps
-                        ajax.get({
-                            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch),
-                            loading: {
-                                mode: 'container',
-                                el: container.find('div.loading')
-                            },
-                            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn(container.find('.project-validation-stamp-mgt-branch-error'))),
-                            successFn: function (validationStamps) {
-                                displayValidationStamps(config, branch, validationStamps)
-                            }
-                        })
+                    if (branchTarget == '1') {
+                        config.branch1 = branch;
+                    } else {
+                        config.branch2 = branch;
                     }
+                    loadBranches(config, target);
                 })
-                */
             }
         )
     }
