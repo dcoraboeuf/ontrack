@@ -1,5 +1,21 @@
 define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
 
+    function displayValidationStamps(config, branch, validationStamps) {
+        var container = $('#' + config.branchId).find('.project-validation-stamp-mgt-list');
+        var project = config.project;
+        render.renderInto(
+            container,
+            'project-validation-stamp-mgt-list',
+            {
+                project: project,
+                branch: branch,
+                validationStamps: validationStamps
+            },
+            function () {
+            }
+        )
+    }
+
     return {
         url: function (config) {
             return 'ui/manage/project/{0}/branch'.format(config.project)
@@ -18,18 +34,20 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
                 // On selection of the branch
                 container.find('select.project-validation-stamp-mgt-branch').change(function (e) {
                     var branch = $(this).val();
-                    // Gets the list of validation stamps
-                    ajax.get({
-                        url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch),
-                        loading: {
-                            mode: 'container',
-                            el: container.find('div.loading')
-                        },
-                        errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn(container.find('.project-validation-stamp-mgt-branch-error'))),
-                        successFn: function (validationStamps) {
-
-                        }
-                    })
+                    if (branch != '') {
+                        // Gets the list of validation stamps
+                        ajax.get({
+                            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch),
+                            loading: {
+                                mode: 'container',
+                                el: container.find('div.loading')
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn(container.find('.project-validation-stamp-mgt-branch-error'))),
+                            successFn: function (validationStamps) {
+                                displayValidationStamps(config, branch, validationStamps)
+                            }
+                        })
+                    }
                 })
             }
         )
