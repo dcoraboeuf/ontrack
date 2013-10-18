@@ -75,6 +75,14 @@ public class GUIController extends AbstractGUIController {
         return "project";
     }
 
+    @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.GET)
+    public String manageProjectValidationStamps(Model model, @PathVariable String name) {
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // OK
+        return "project-validation-stamp-mgt";
+    }
+
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String getBranch(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
