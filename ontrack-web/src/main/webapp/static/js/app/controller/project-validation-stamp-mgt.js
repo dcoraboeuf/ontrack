@@ -1,4 +1,4 @@
-define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
+define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common) {
 
     function loadingError(error) {
         ajax.elementErrorMessageFn($('#project-validation-stamp-mgt-error'))(error.responseText)
@@ -6,6 +6,18 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
 
     function loadValidationStamps(config, branch) {
         return $.get('ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch))
+    }
+
+    function displayBranches(config, stamps1, stamps2, target) {
+        var project = config.project;
+        var branch1 = config.branch1;
+        var branch2 = config.branch2;
+        // Indexation of validation stamps by names
+        var stampNameFn = function (stamp) {
+            return stamp.name;
+        }
+        var indexedStamps1 = common.uniqueIndex(stamps1, stampNameFn);
+        var indexedStamps2 = common.uniqueIndex(stamps2, stampNameFn);
     }
 
     function loadBranches(config, target) {
@@ -23,7 +35,7 @@ define(['render', 'jquery', 'ajax'], function (render, $, ajax) {
             // Completion
             $.when(ajax1, ajax2).then(
                 function (result1, result2) {
-                    console.log(result1[0], result2[0]);
+                    displayBranches(config, result1[0], result2[0], target);
                 },
                 loadingError
             ).done(
