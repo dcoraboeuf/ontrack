@@ -1,26 +1,26 @@
-td.project-validation-stamp-mgt-branch-separator {
+.project-validation-stamp-mgt-branch-separator {
     vertical-align: middle;
     text-align: center;
     color: #d3d3d3;
     padding: 1em;
 }
 
-tr.project-validation-stamp-mgt {
+.project-validation-stamp-mgt {
     border-top: solid 1px lightgray;
 }
 
-tr.project-validation-stamp-mgt:hover {
+.project-validation-stamp-mgt:hover {
     background-color: #e4e4e4;
 }
 
-tr.project-validation-stamp-mgt > td {
+.project-validation-stamp-mgt > div {
     padding: 4px;
 }
 
-td.project-validation-stamp-mgt-present {
+.project-validation-stamp-mgt-present {
     font-weight: bold;
 }
 
-td.project-validation-stamp-mgt-absent {
+.project-validation-stamp-mgt-absent {
     color: #d3d3d3;
 }

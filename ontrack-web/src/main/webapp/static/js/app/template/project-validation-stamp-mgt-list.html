@@ -1,27 +1,27 @@
 {{#stamps}}
-    <tr class="project-validation-stamp-mgt">
+    <div class="row-fluid project-validation-stamp-mgt">
         {{#if stamp1}}
-            <td class="project-validation-stamp-mgt-present">
+            <div class="span5 project-validation-stamp-mgt-present">
                 <img height="24" width="24" src="gui/project/{{../../project}}/branch/{{../../branch1}}/validation_stamp/{{name}}/image" />
                 {{name}}
-            </td>
+            </div>
         {{else}}
-            <td class="project-validation-stamp-mgt-absent">
+            <div class="span5 project-validation-stamp-mgt-absent">
                 {{name}}
-            </td>
+            </div>
         {{/if}}
-        <td>
+        <div class="span2 project-validation-stamp-mgt-separator">
             <input type="checkbox" class="project-validation-stamp-mgt-chk" data-name="{{name}}" />
-        </td>
+        </div>
         {{#if stamp2}}
-            <td class="project-validation-stamp-mgt-present">
+            <div class="span5 project-validation-stamp-mgt-present">
                 <img height="24" width="24" src="gui/project/{{../../project}}/branch/{{../../branch2}}/validation_stamp/{{name}}/image" />
                 {{name}}
-            </td>
+            </div>
         {{else}}
-            <td class="project-validation-stamp-mgt-absent">
+            <div class="span5 project-validation-stamp-mgt-absent">
                 {{name}}
-            </td>
+            </div>
         {{/if}}
-    </tr>
+    </div>
 {{/stamps}}

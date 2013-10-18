@@ -58,7 +58,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
 
         // Rendering
         render.renderInto(
-            target.find('tbody.content'),
+            target.find('.content'),
             'project-validation-stamp-mgt-list',
             model
         )

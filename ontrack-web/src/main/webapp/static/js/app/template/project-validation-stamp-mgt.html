@@ -1,31 +1,41 @@
 <div id="project-validation-stamp-mgt-error" class="alert alert-error hidden"></div>
 <div id="project-validation-stamp-mgt-loading"></div>
-<table>
-    <tbody>
-        <tr>
-            <td class="project-validation-stamp-mgt-branch-label">{{loc 'validation_stamp.mgt.branch-1'}}</td>
-            <td rowspan="2" class="project-validation-stamp-mgt-branch-separator"><i class="icon-arrow-right icon-2x"></i></td>
-            <td class="project-validation-stamp-mgt-branch-label">{{loc 'validation_stamp.mgt.branch-2'}}</td>
-        </tr>
-        <tr>
-            <td class="project-validation-stamp-mgt-branch-label">
+<div class="row-fluid">
+    <div class="span9">
+        <div class="row-fluid">
+            <div class="span5">
+                {{loc 'validation_stamp.mgt.branch-1'}}
+                <br/>
                 <select class="project-validation-stamp-mgt-branch" data-target="1">
                     <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
                     {{#.}}
-                        <option value="{{name}}">{{name}}</option>
+                    <option value="{{name}}">{{name}}</option>
                     {{/.}}
                 </select>
-            </td>
-            <td class="project-validation-stamp-mgt-branch-label">
+            </div>
+            <div class="span2 project-validation-stamp-mgt-branch-separator">
+                <i class="icon-arrow-right icon-2x"></i>
+            </div>
+            <div class="span5">
+                {{loc 'validation_stamp.mgt.branch-2'}}
+                <br/>
                 <select class="project-validation-stamp-mgt-branch" data-target="2">
                     <option value="">{{loc 'validation_stamp.mgt.branch.select'}}</option>
                     {{#.}}
                         <option value="{{name}}">{{name}}</option>
                     {{/.}}
                 </select>
-            </td>
-        </tr>
-    </tbody>
-    <tbody class="content">
-    </tbody>
-</table>
+            </div>
+        </div>
+    </div>
+    <div class="span3">
+        &nbsp;
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span9 content">
+    </div>
+    <div class="span3">
+        TODO Commands
+    </div>
+</div>
