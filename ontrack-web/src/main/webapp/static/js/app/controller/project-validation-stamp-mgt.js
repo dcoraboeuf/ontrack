@@ -60,6 +60,11 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
     }
 
     function prepareCommands(config, indexedStamps2, clone1, clone2, target) {
+        // Clears previous state
+        $('#project-validation-stamp-mgt-select-missing').unbind('click');
+        $('#project-validation-stamp-mgt-select-none').unbind('click');
+        $('#project-validation-stamp-mgt-select-all').unbind('click');
+        $('#project-validation-stamp-mgt-submit').unbind('click');
         // Select missing only
         $('#project-validation-stamp-mgt-select-missing').click(function () {
             $('.project-validation-stamp-mgt-chk').each(function (index, chk) {
