@@ -67,6 +67,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack updateProjectValidationStamps(String project, ProjectValidationStampMgt form) {
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/validation-stamp-mgt", project), Ack.class, form);
+    }
+
+    @Override
     public String exportProjectLaunch(String project) {
         return get(
                 getDefaultLocale(),
@@ -99,8 +104,18 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<BranchLastStatus> getBranchLastStatusList(Locale locale, String project) {
+        return list(locale, format("/ui/manage/project/%s/branch/status", project), BranchLastStatus.class);
+    }
+
+    @Override
     public BranchSummary getBranch(String project, String name) {
         return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s", project, name), BranchSummary.class);
+    }
+
+    @Override
+    public BranchLastStatus getBranchLastStatus(Locale locale, String project, String name) {
+        return get(locale, format("/ui/manage/project/%s/branch/%s/status", project, name), BranchLastStatus.class);
     }
 
     @Override
@@ -255,6 +270,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     @Override
     public Ack downValidationStamp(String project, String branch, String validationStamp) {
         return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/down", project, branch, validationStamp), Ack.class, null);
+    }
+
+    @Override
+    public Ack moveValidationStamp(String project, String branch, String validationStamp, Reordering reordering) {
+        return put(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/validation_stamp/%s/move", project, branch, validationStamp), Ack.class, reordering);
     }
 
     @Override

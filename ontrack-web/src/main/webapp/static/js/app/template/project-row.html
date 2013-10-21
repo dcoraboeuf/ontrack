@@ -1,9 +1,11 @@
 <tr>
-    <td>
-        <a href="gui/project/{{name}}">{{name}}</a>
+    <td width="10%">
+        <a href="gui/project/{{name}}" class="btn home-project-name btn-primary">{{name}}</a>
         {{#description}}
             <br/>
             <span class="description">{{description}}</span>
         {{/description}}
+    </td>
+    <td class="project-branches" data-project="{{name}}">
     </td>
 </tr>

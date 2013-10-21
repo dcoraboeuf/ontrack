@@ -29,3 +29,10 @@ ul.validation-stamp-decoration {
 ul.validation-stamp-decoration li {
     display: inline;
 }
+
+th.branch-builds-name {
+    font-weight: bold;
+    font-size: 200%;
+    color: #AAAAAA;
+    vertical-align: middle !important;
+}

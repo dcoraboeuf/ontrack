@@ -1,12 +1,12 @@
 package net.ontrack.extension.git.client.impl;
 
-import net.ontrack.extension.git.GitCommitNotFoundException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Iterator;
 
 public class DefaultGitRepository implements GitRepository {
 
@@ -68,12 +67,10 @@ public class DefaultGitRepository implements GitRepository {
     public synchronized Git git() {
         if (git == null) {
             // Gets the repository
-            FileRepository repository;
+            Repository repository;
             try {
                 repository = new FileRepositoryBuilder()
                         .setWorkTree(wd)
-                        .readEnvironment()
-                        .findGitDir()
                         .build();
             } catch (IOException e) {
                 throw new GitIOException(e);
@@ -85,16 +82,15 @@ public class DefaultGitRepository implements GitRepository {
     }
 
     @Override
-    public RevCommit getCommitForTag(ObjectId tag) {
+    public RevCommit getCommitForTag(Ref tag) {
         try {
-            Iterator<RevCommit> commits = git.log().add(tag).setMaxCount(1).call().iterator();
-            if (commits.hasNext()) {
-                return commits.next();
-            } else {
-                throw new GitCommitNotFoundException(tag.getName());
+            Repository repo = git().getRepository();
+            RevWalk walk = new RevWalk(repo);
+            try {
+                return walk.parseCommit(tag.getObjectId());
+            } finally {
+                walk.release();
             }
-        } catch (GitAPIException e) {
-            throw new GitException(e);
         } catch (IOException e) {
             throw new GitIOException(e);
         }

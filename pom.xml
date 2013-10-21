@@ -4,7 +4,7 @@
 
 	<groupId>net.ontrack</groupId>
 	<artifactId>ontrack-parent</artifactId>
-	<version>1.37-SNAPSHOT</version>
+	<version>1.38-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -38,7 +38,7 @@
 		<springVersion>3.2.0.RELEASE</springVersion>
 		<springSecurityVersion>3.1.1.RELEASE</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
-		<lombokVersion>0.11.4</lombokVersion>
+		<lombokVersion>1.12.2</lombokVersion>
         <httpClientVersion>4.2.1</httpClientVersion>
 		<!-- General -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -103,13 +103,14 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>13.0</version>
+				<version>15.0</version>
 			</dependency>
 			<!-- Lombok -->
 			<dependency>
 			    <groupId>org.projectlombok</groupId>
 			    <artifactId>lombok</artifactId>
 			    <version>${lombokVersion}</version>
+                <scope>provided</scope>
 			</dependency>
 			<!-- JString -->
 			<dependency>
@@ -222,12 +223,6 @@
 			    <artifactId>mail</artifactId>
 			    <version>1.4.5</version>
 			</dependency>
-            <!-- Caching -->
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>2.7.0</version>
-            </dependency>
 			<!-- Validation -->
 			<dependency>
 				<groupId>javax.validation</groupId>

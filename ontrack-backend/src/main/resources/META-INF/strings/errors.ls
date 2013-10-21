@@ -68,9 +68,6 @@ net.ontrack.backend.ImageCannotReadException
 net.ontrack.backend.PropertyScopeException
     en -> Property {0}.{1} cannot be applied to {2}.
     fr -> La propriété {0}.{1} n'est pas applicable à {2}.
-net.ontrack.backend.BranchNoBuildFoundException
-    en -> No build found on branch.
-    fr -> Aucun build pour la branche.
 net.ontrack.backend.ProjectAlreadyExistException
     en -> Project with name "{0}" already exists.
     fr -> Le projet de nom "{0}" existe déjà.

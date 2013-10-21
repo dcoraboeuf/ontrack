@@ -31,9 +31,15 @@ public interface ValidationStampDao {
 
     TValidationStamp getByBranchAndName(int branch, String validationStamp);
 
+    TValidationStamp findByBranchAndName(int branch, String validationStamp);
+
     Ack upValidationStamp(int id);
 
     Ack downValidationStamp(int id);
 
+    Ack moveValidationStamp(int id, int newIndex);
+
     Ack setValidationStampOwner(int id, Integer ownerId);
+
+    void reorderAll();
 }

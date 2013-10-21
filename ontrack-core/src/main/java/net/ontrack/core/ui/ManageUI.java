@@ -25,6 +25,8 @@ public interface ManageUI {
 
     ProjectSummary updateProject(String name, ProjectUpdateForm form);
 
+    Ack updateProjectValidationStamps(String project, ProjectValidationStampMgt form);
+
     // Project I/O
 
     String exportProjectLaunch(String project);
@@ -37,7 +39,11 @@ public interface ManageUI {
 
     List<BranchSummary> getBranchList(String project);
 
+    List<BranchLastStatus> getBranchLastStatusList(Locale locale, String project);
+
     BranchSummary getBranch(String project, String name);
+
+    BranchLastStatus getBranchLastStatus(Locale locale, String project, String name);
 
     BranchCloneInfo getBranchCloneInfo(Locale locale, String project, String name);
 
@@ -82,6 +88,8 @@ public interface ManageUI {
     Ack upValidationStamp(String project, String branch, String validationStamp);
 
     Ack downValidationStamp(String project, String branch, String validationStamp);
+
+    Ack moveValidationStamp(String project, String branch, String validationStamp, Reordering reordering);
 
     Ack setValidationStampOwner(String project, String branch, String validationStamp, int ownerId);
 

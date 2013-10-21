@@ -1,0 +1,34 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="project-validation-stamp-mgt"
+    title=loc('validation_stamp.mgt')
+    noscript=true
+    style=true
+    breadcrumbs = {
+        loc("home"): "",
+        project.name?html: "gui/project/${project.name?html}"
+    }>
+    <input id="project" type="hidden" value="${project.name?html}" />
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${project.name?html}">${project.name?html}</a>
+                    / <@lh key="validation_stamp.mgt" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div
+                    id="branch-selection"
+                    class="span12 dynamic"
+                    dynamic-controller="project-validation-stamp-mgt"
+                    dynamic-project="${project.name?html}">
+            </div>
+        </div>
+	</div>
+</@layout_std>

@@ -1,0 +1,63 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>{{loc 'model.name'}}</th>
+            <th>{{loc 'branch.lastBuild'}}</th>
+            <th>{{loc 'promotion_level.promotions'}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#.}}
+            <tr>
+                <td width="10%">
+                    <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}" class="btn branch-name btn-primary"><b>{{branch.name}}</b></a>
+                    {{#branch.description}}
+                        <br/>
+                        <span class="description">{{branch.description}}</span>
+                    {{/branch.description}}
+                </td>
+                <td width="10%">
+                    {{#if latestBuild}}
+                        <a href="gui/project/{{latestBuild.branch.project.name}}/branch/{{latestBuild.branch.name}}/build/{{latestBuild.name}}" class="btn btn-link">{{latestBuild.name}}</a>
+                    {{else}}
+                        <i class="icon-ban-circle"></i>
+                    {{/if}}
+                </td>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+                                {{#promotions}}
+                                    {{#if buildSummary}}
+                                        <td>
+                                            <div class="promotion">
+                                                <a href="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}">
+                                                    <img width="24" height="24" src="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}/image" />
+                                                    {{promotionLevel.name}}
+                                                </a>
+                                                <br />
+                                                <i class="icon-star-empty"></i>
+                                                <a href="gui/project/{{buildSummary.branch.project.name}}/branch/{{buildSummary.branch.name}}/build/{{buildSummary.name}}">{{buildSummary.name}}</a>
+                                            </div>
+                                        </td>
+                                    {{else}}
+                                            <td>
+                                                <div class="promotion none">
+                                                    <a href="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}">
+                                                        <img width="24" height="24" src="gui/project/{{promotionLevel.branch.project.name}}/branch/{{promotionLevel.branch.name}}/promotion_level/{{promotionLevel.name}}/image" />
+                                                        {{promotionLevel.name}}
+                                                    </a>
+                                                    <br />
+                                                    <i class="icon-ban-circle"></i>
+                                                </div>
+                                            </td>
+                                    {{/if}}
+                                {{/promotions}}
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        {{/.}}
+    </tbody>
+</table>

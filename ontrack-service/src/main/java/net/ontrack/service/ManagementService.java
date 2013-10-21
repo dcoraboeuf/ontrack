@@ -20,11 +20,15 @@ public interface ManagementService {
 
     ProjectSummary updateProject(int id, ProjectUpdateForm form);
 
+    Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form);
+
     // Branches
 
     List<BranchSummary> getBranchList(int project);
 
     BranchSummary getBranch(int id);
+
+    BranchLastStatus getBranchLastStatus(Locale locale, int id);
 
     DecoratedBranch getDecoratedBranch(Locale locale, int branchId);
 
@@ -65,6 +69,8 @@ public interface ManagementService {
     Ack upValidationStamp(int validationStampId);
 
     Ack downValidationStamp(int validationStampId);
+
+    Ack moveValidationStamp(int validationStampId, int newIndex);
 
     Ack setValidationStampOwner(int validationStampId, int ownerId);
 

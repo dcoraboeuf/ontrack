@@ -1,6 +1,6 @@
 package net.ontrack.extension.jira.tx;
 
-import com.atlassian.jira.rest.client.JiraRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
 
 public class DefaultJIRASession implements JIRASession {
 

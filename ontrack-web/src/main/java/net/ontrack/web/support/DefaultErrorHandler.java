@@ -1,5 +1,6 @@
 package net.ontrack.web.support;
 
+import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 import net.sf.jstring.support.CoreException;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class DefaultErrorHandler implements ErrorHandler {
         boolean stackTrace;
         if (ex instanceof CoreException) {
             loggedMessage = ((CoreException) ex).getLocalizedMessage(strings, Locale.ENGLISH);
-            stackTrace = false;
+            stackTrace = !(ex instanceof InputException);
             displayMessage = ((CoreException) ex).getLocalizedMessage(strings, locale);
         } else {
             loggedMessage = ex.getMessage();

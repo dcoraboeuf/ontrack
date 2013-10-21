@@ -1,7 +1,8 @@
 package net.ontrack.extension.jira.tx;
 
-import com.atlassian.jira.rest.client.JiraRestClient;
-import com.atlassian.jira.rest.client.internal.jersey.JerseyJiraRestClientFactory;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
 import net.ontrack.tx.TransactionResource;
 import net.ontrack.tx.TransactionResourceProvider;
@@ -26,7 +27,7 @@ public class JIRATransactionProvider implements TransactionResourceProvider<JIRA
         String url = configurationExtension.getUrl();
         String user = configurationExtension.getUser();
         String password = configurationExtension.getPassword();
-        JerseyJiraRestClientFactory factory = new JerseyJiraRestClientFactory();
+        JiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
         try {
             URI jiraServerUri = new URI(url);
             JiraRestClient client = factory.createWithBasicHttpAuthentication(jiraServerUri, user, password);

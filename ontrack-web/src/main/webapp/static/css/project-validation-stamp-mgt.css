@@ -1,0 +1,30 @@
+.project-validation-stamp-mgt-branch-separator {
+    vertical-align: middle;
+    text-align: center;
+    color: #d3d3d3;
+    padding: 1em;
+}
+
+.project-validation-stamp-mgt {
+    border-top: solid 1px lightgray;
+}
+
+.project-validation-stamp-mgt:hover {
+    background-color: #e4e4e4;
+}
+
+.project-validation-stamp-mgt > div {
+    padding: 4px;
+}
+
+.project-validation-stamp-mgt-present {
+    font-weight: bold;
+}
+
+.project-validation-stamp-mgt-absent {
+    color: #d3d3d3;
+}
+
+.project-validation-stamp-mgt-property {
+    margin-top: 1em;
+}

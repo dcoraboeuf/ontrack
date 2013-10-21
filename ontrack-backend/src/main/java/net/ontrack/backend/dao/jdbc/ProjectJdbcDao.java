@@ -1,6 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.ProjectAlreadyExistException;
 import net.ontrack.backend.dao.ProjectDao;
 import net.ontrack.backend.dao.model.TProject;

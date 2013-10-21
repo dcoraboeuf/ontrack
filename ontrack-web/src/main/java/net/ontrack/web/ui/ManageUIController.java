@@ -1,5 +1,6 @@
 package net.ontrack.web.ui;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -130,6 +131,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Ack updateProjectValidationStamps(@PathVariable String project, @RequestBody ProjectValidationStampMgt form) {
+        return managementService.updateProjectValidationStamps(
+                entityConverter.getProjectId(project),
+                form
+        );
+    }
+
     // Branches
 
     @Override
@@ -142,12 +154,36 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/status", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BranchLastStatus> getBranchLastStatusList(final Locale locale, @PathVariable String project) {
+        return Lists.transform(
+                managementService.getBranchList(entityConverter.getProjectId(project)),
+                new Function<BranchSummary, BranchLastStatus>() {
+                    @Override
+                    public BranchLastStatus apply(BranchSummary o) {
+                        return managementService.getBranchLastStatus(locale, o.getId());
+                    }
+                }
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody
     BranchSummary getBranch(@PathVariable String project, @PathVariable String name) {
         int branchId = entityConverter.getBranchId(project, name);
         return managementService.getBranch(branchId);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/status", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    BranchLastStatus getBranchLastStatus(Locale locale, @PathVariable String project, @PathVariable String name) {
+        return managementService.getBranchLastStatus(locale, entityConverter.getBranchId(project, name));
     }
 
     @Override
@@ -503,6 +539,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     Ack downValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
         return managementService.downValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/validation_stamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}/move", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack moveValidationStamp(@PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp, @RequestBody Reordering reordering) {
+        return managementService.moveValidationStamp(entityConverter.getValidationStampId(project, branch, validationStamp), reordering.getNewIndex());
     }
 
     @Override

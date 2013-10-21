@@ -195,8 +195,7 @@ svnexplorer.branch-history.branch
     fr -> Branche
 
 svnexplorer.branch-history.latestBuild
-    en -> Last build
-    fr -> Dernier build
+    en,fr -> @[branch.lastBuild]
 
 svnexplorer.branch-history.latestBuild.none
     en -> No build

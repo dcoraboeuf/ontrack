@@ -1,11 +1,13 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.EntityNameNotFoundException;
 import net.ontrack.backend.ValidationStampAlreadyExistException;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.Entity;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -54,7 +56,18 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional(readOnly = true)
     public TValidationStamp getByBranchAndName(int branch, String name) {
-        return getNamedParameterJdbcTemplate().queryForObject(
+        TValidationStamp stamp = findByBranchAndName(branch, name);
+        if (stamp != null) {
+            return stamp;
+        } else {
+            throw new EntityNameNotFoundException(Entity.VALIDATION_STAMP, name);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TValidationStamp findByBranchAndName(int branch, String name) {
+        return getFirstItem(
                 SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
                 params("branch", branch).addValue("name", name),
                 validationStampMapper);
@@ -62,7 +75,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
-    @CacheEvict(Caches.VALIDATION_STAMP)
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
     public Ack upValidationStamp(int id) {
         TValidationStamp validationStamp = getById(id);
         Integer higherId = getFirstItem(
@@ -78,7 +91,7 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
-    @CacheEvict(Caches.VALIDATION_STAMP)
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
     public Ack downValidationStamp(int id) {
         TValidationStamp validationStamp = getById(id);
         Integer lowerId = getFirstItem(
@@ -94,6 +107,50 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
 
     @Override
     @Transactional
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
+    public Ack moveValidationStamp(int id, int newIndex) {
+        NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
+        // Indexes start at 0, order nb at 1
+        int newOrderNb = newIndex + 1;
+        // Gets the current position
+        TValidationStamp validationStamp = getById(id);
+        int oldOrderNb = validationStamp.getOrderNb();
+        // 1) moving back
+        if (newOrderNb < oldOrderNb) {
+            // Re-indexation between the boundaries
+            t.update(
+                    SQL.VALIDATION_STAMP_INC_ORDERNB,
+                    params("branch", validationStamp.getBranch())
+                            .addValue("low", newOrderNb)
+                            .addValue("high", oldOrderNb)
+            );
+            // Re-indexation of the validation stamp
+            t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", id).addValue("orderNb", newOrderNb));
+            // OK
+            return Ack.OK;
+        }
+        // 2) moving forward
+        else if (newOrderNb > oldOrderNb) {
+            // Re-indexation between the boundaries
+            t.update(
+                    SQL.VALIDATION_STAMP_DEC_ORDERNB,
+                    params("branch", validationStamp.getBranch())
+                            .addValue("low", oldOrderNb)
+                            .addValue("high", newOrderNb)
+            );
+            // Re-indexation of the validation stamp
+            t.update(SQL.VALIDATION_STAMP_SET_LEVELNB, params("id", id).addValue("orderNb", newOrderNb));
+            // OK
+            return Ack.OK;
+        }
+        // 3) no move
+        else {
+            return Ack.NOK;
+        }
+    }
+
+    @Override
+    @Transactional
     @CacheEvict(value = Caches.VALIDATION_STAMP, key = "#id")
     public Ack setValidationStampOwner(int id, Integer ownerId) {
         return Ack.one(
@@ -102,6 +159,30 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
                         params("id", id).addValue("owner", ownerId)
                 )
         );
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = Caches.VALIDATION_STAMP, allEntries = true)
+    public void reorderAll() {
+        // Gets all the branches
+        List<Integer> branchIds = getJdbcTemplate().queryForList(
+                SQL.VALIDATION_REORDERING_BRANCHES,
+                Integer.class
+        );
+        // For all branches
+        for (int branchId : branchIds) {
+            // Gets all the validation stamps for this branch, ordered
+            List<TValidationStamp> stamps = findByBranch(branchId);
+            // Updates the order nb in sequence
+            int orderNb = 1;
+            for (TValidationStamp stamp : stamps) {
+                getNamedParameterJdbcTemplate().update(
+                        SQL.VALIDATION_STAMP_SET_LEVELNB,
+                        params("id", stamp.getId()).addValue("orderNb", orderNb++)
+                );
+            }
+        }
     }
 
     protected Ack swapValidationStampOrderNb(int aId, int bId) {
@@ -187,12 +268,23 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Transactional
     @CacheEvict(Caches.VALIDATION_STAMP)
     public Ack deleteValidationStamp(int id) {
-        return Ack.one(
-                getNamedParameterJdbcTemplate().update(
-                        SQL.VALIDATION_STAMP_DELETE,
-                        params("id", id)
-                )
+        // Previous row number
+        TValidationStamp t = getById(id);
+        int orderNb = t.getOrderNb();
+        // Actual deletion
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_DELETE,
+                params("id", id)
         );
+        // Re-ordering of the next items
+        getNamedParameterJdbcTemplate().update(
+                SQL.VALIDATION_STAMP_DEC_ORDERNB,
+                params("branch", t.getBranch())
+                        .addValue("low", orderNb)
+                        .addValue("high", Integer.MAX_VALUE)
+        );
+        // OK
+        return Ack.OK;
     }
 
     @Override

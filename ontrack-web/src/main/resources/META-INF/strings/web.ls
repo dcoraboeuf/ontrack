@@ -603,6 +603,10 @@ branch-validation-stamp-runs-without-failure.description
         sans échec. Cela signifie que les validations du haut sont les plus stables. Les nombres > 30 sont tronqués.
         ...
 
+branch.lastBuild
+    en -> Last build
+    fr -> Dernier build
+
 [validation_stamps]
 
 validation_stamp.empty
@@ -676,6 +680,70 @@ validation_stamp.filter.none
 validation_stamp.filter.enabled
     en -> Enabled
     fr -> Actif
+
+[validation_stamp_mgt]
+
+validation_stamp.mgt
+    en -> Manage validation stamps
+    fr -> Gérer les validations
+
+validation_stamp.mgt.branch-1
+    en -> Reference branch
+    fr -> Branche de référence
+
+validation_stamp.mgt.branch-2
+    en -> Destination branch
+    fr -> Branche de destination
+
+validation_stamp.mgt.branch.select
+    en -> Select a branch
+    fr -> Sélectionnez une branche
+
+validation_stamp.mgt.selectMissing
+    en -> Select missing validation stamps
+    fr -> Sélectionner les validations manquantes
+
+validation_stamp.mgt.selectNone
+    en -> Unselect all
+    fr -> Tout désélectionner
+
+validation_stamp.mgt.selectAll
+    en -> Select all
+    fr -> Tout sélectionner
+
+validation_stamp.mgt.properties
+    en -> Properties
+    fr -> Propriétés
+
+validation_stamp.mgt.property.old
+    en -> Regular expression to be replaced
+    fr -> Expression régulière à remplacer
+
+validation_stamp.mgt.property.new
+    en -> Replacement expression
+    fr -> Expression de remplacement
+
+validation_stamp.mgt.submit.title
+    en -> Validation
+    fr -> Validation
+
+validation_stamp.mgt.submit.message
+    en -> ...
+        The selected validation stamps will be created/updated in the destination branch
+        and their properties created/updated according to the settings above.
+        ...
+    fr -> ...
+        Les validations séléctionnées seront créées/mises à jour dans la branche de destination
+        et leurs propriétés créées/modifiées selon les informations entrées ci-dessus.
+        ...
+
+validation_stamp.mgt.submit
+    en -> Validate
+    fr -> Valider
+
+validation_stamp.mgt.ack
+    en -> Following validation stamps have been updated: {0}
+    fr -> Les validations suivantes ont été mises à jour : {0}
 
 [promotion_level]
 

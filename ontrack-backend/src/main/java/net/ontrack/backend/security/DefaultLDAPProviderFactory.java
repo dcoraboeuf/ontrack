@@ -1,6 +1,6 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.Caches;
+import net.ontrack.backend.cache.Caches;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.LDAPConfiguration;
 import org.apache.commons.lang.StringUtils;

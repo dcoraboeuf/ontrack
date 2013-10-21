@@ -29,7 +29,7 @@
                     </thead>
                     <tbody>
                         {{#commits}}
-                            <tr>
+                            <tr class="extension-git-commit">
                                 <td>
                                     {{#if link}}
                                         <a href="{{link}}"><code>{{commit.id}}</code></a>
@@ -38,7 +38,7 @@
                                     {{/if}}
                                 </td>
                                 <td>{{commit.author.name}}</td>
-                                <td>{{{annotatedMessage}}}</td>
+                                <td class="extension-git-commit-message">{{{annotatedMessage}}}</td>
                                 <td class="tooltip-source" title="{{formattedTime}}">{{elapsedTime}}</td>
                             </tr>
                         {{/commits}}

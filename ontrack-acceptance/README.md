@@ -55,6 +55,12 @@ One can change the version to be deployed by specifying the `ontrackVersion` sys
 mvn clean install -P it P it-jetty -DontrackVersion=1.8
 ```
 
+## Testing against production
+
+```
+bash pipeline/acceptance.sh --prod --password=${ONTRACK_ONTRACK_PASSWORD} --ontrack --ontrack-user=dcoraboeuf --ontrack-password=${ONTRACK_ONTRACK_PASSWORD} --ontrack-validation=CB.PROD.SMOKE --url=${ONTRACK_ONTRACK_URL} --version=${VERSION}
+```
+
 ## Headless considerations
 
 When running in a headless environment, one display must be made available for the run of the integration tests.
@@ -92,7 +98,7 @@ To run only the smoke tests:
 Running acceptance tests against the production environment requires some heavy filtering. Just use:
 
 ```
-mvn clean verify -pl ontrack-acceptance -am -P it -P it-prod -DitUrl=http://ontrack.dcoraboeuf.cloudbees.net -DitAdminPassword=***
+mvn clean verify -pl ontrack-acceptance -am -P it -P it-prod -DitUrl=http://ontrack.dcoraboeuf.eu.cloudbees.net -DitAdminPassword=***
 ```
 
 where `***` is the password on the `admin` account on the production environment.

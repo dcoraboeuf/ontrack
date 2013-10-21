@@ -218,6 +218,20 @@ define(function () {
         return obj;
     };
 
+    /**
+     * Transforms an array into a map where keys are returned by
+     * the <code>indexFn</code> function.
+     */
+    function uniqueIndex(list, indexFn) {
+        var map = {};
+        for (var i = 0; i < list.length; i++) {
+            var item = list[i];
+            var key = indexFn(item);
+            map[key] = item;
+        }
+        return map;
+    }
+
 
     return {
         log: log,
@@ -226,7 +240,8 @@ define(function () {
         getCookie: getCookie,
         tooltips: tooltips,
         values: values,
-        deparam: deparam
+        deparam: deparam,
+        uniqueIndex: uniqueIndex
     }
 
 });

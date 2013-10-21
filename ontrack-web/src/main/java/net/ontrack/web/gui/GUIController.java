@@ -8,6 +8,7 @@ import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.DashboardService;
@@ -54,11 +55,12 @@ public class GUIController extends AbstractGUIController {
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings, SecurityUtils securityUtils, ObjectMapper objectMapper) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
         this.entityConverter = entityConverter;
+        this.securityUtils = securityUtils;
         this.searchService = searchService;
         this.dashboardService = dashboardService;
         this.strings = strings;
@@ -81,6 +83,15 @@ public class GUIController extends AbstractGUIController {
         model.addAttribute("project", manageUI.getProject(name));
         // OK
         return "project";
+    }
+
+    @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.GET)
+    public String manageProjectValidationStamps(Model model, @PathVariable String name) {
+        securityUtils.checkIsAdmin();
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // OK
+        return "project-validation-stamp-mgt";
     }
 
     @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/export", method = RequestMethod.GET)

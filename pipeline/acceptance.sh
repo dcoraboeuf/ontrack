@@ -12,12 +12,14 @@ function show_help {
 	echo "Test settings:"
 	echo "    -u,--url=<url>                URL of the application to test"
 	echo "    -p,--prod                     Tests to run against a production environment"
+	echo "    -pw,--prod-password=<pwd>     Password for the 'admin' user in production"
+	echo "                                  (defaults to the --ontrack-password if set, required if --prod is set)"
 	echo "    -v,--version=<version>        Used to check the version of the application being tested"
 	echo "    -w,--password=<password>      'admin' password to use if not default"
 	echo "Ontrack on Ontrack:"
 	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
-	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.cloudbees.net/' by default)"
+	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.eu.cloudbees.net/' by default)"
 	echo "    --ontrack-user                ontrack user"
 	echo "    --ontrack-password            ontrack password"
 	echo "    --ontrack-validation          ontrack associated validation stamp"
@@ -39,9 +41,10 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=128m -Djava.net.preferIPv4Stack=tru
 MVN=mvn
 ONTRACK=no
 ONTRACK_BRANCH=1.x
-ONTRACK_URL=http://ontrack.dcoraboeuf.cloudbees.net
+ONTRACK_URL=http://ontrack.dcoraboeuf.eu.cloudbees.net
 ONTRACK_USER=
 ONTRACK_PASSWORD=
+ONTRACK_ADMIN_PASSWORD=
 ONTRACK_VALIDATION=
 TEST_URL=
 TEST_VERSION=
@@ -86,6 +89,9 @@ do
 		-p|--prod)
 			PROD=yes
 			;;
+		-pw=*|--prod-password=*)
+			ONTRACK_ADMIN_PASSWORD=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
+			;;
 		-w=*|--password=*)
 			TEST_PASSWORD=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
@@ -105,6 +111,14 @@ then
 	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
 	check "$ONTRACK_PASSWORD" "ontrack user (--ontrack-password) is required."
 	check "$ONTRACK_VALIDATION" "ontrack validation stamp (--ontrack-validation) is required."
+fi
+if [ "$PROD" == "yes" ]
+then
+    if [ "ONTRACK_ADMIN_PASSWORD" == "" ]
+    then
+        ONTRACK_ADMIN_PASSWORD = "$ONTRACK_PASSWORD"
+    fi
+    check "$ONTRACK_ADMIN_PASSWORD" "Production 'admin' password (--prod-password) is required for production tests."
 fi
 
 # Values
@@ -137,7 +151,7 @@ fi
 OPTIONS=
 if [ "${PROD}" == "yes" ]
 then
-	OPTIONS="${OPTIONS} -P it-prod"
+	OPTIONS="${OPTIONS} -P it-prod -DitAdminPassword=${ONTRACK_ADMIN_PASSWORD}"
 fi
 if [ "${TEST_PASSWORD}" != "" ]
 then

@@ -5,7 +5,7 @@ define(['common'], function (common) {
      * @param config.*          See #call
      */
     function put (config) {
-        call($.extend(config, { method: 'PUT' }));
+        return call($.extend(config, { method: 'PUT' }));
     }
 
     /**
@@ -13,7 +13,7 @@ define(['common'], function (common) {
      * @param config.*          See #call
      */
     function post (config) {
-        call($.extend(config, { method: 'POST' }));
+        return call($.extend(config, { method: 'POST' }));
     }
 
     /**
@@ -21,7 +21,7 @@ define(['common'], function (common) {
      * @param config.*          See #call
      */
     function get (config) {
-        call($.extend(config, { method: 'GET' }));
+        return call($.extend(config, { method: 'GET' }));
     }
 
     /**
@@ -29,7 +29,7 @@ define(['common'], function (common) {
      * @param config.*          See #call
      */
     function del (config) {
-        call($.extend(config, { method: 'DELETE' }));
+        return call($.extend(config, { method: 'DELETE' }));
     }
 
     /**
@@ -67,7 +67,7 @@ define(['common'], function (common) {
         // Starting to load
         showLoading(c.loading, true);
         // Performing the call
-		$.ajax({
+		return $.ajax({
 			type: c.method,
 			url: c.url,
 			dataType: c.responseType,
@@ -124,6 +124,9 @@ define(['common'], function (common) {
                 $(config.el).empty();
                 if (show) {
                     $(config.el).append('<div class="loading">{0}</div>'.format('general.loading'.loc()));
+                    $(config.el).show();
+                } else {
+                    $(config.el).hide();
                 }
             } else if (c.mode == 'toggle') {
                 if (show) {

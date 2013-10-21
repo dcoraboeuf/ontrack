@@ -1,6 +1,6 @@
-define(['render','ajax','dynamic','app/component/validationStamp'], function (render, ajax, dynamic, validationStamp) {
+define(['render', 'ajax', 'dynamic', 'app/component/validationStamp', 'common', 'jquery-ui'], function (render, ajax, dynamic, validationStamp, common) {
 
-    function upValidationStamp (project, branch, stamp) {
+    function upValidationStamp(project, branch, stamp) {
         ajax.put({
             url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/up'.format(project, branch, stamp),
             loading: {
@@ -13,7 +13,7 @@ define(['render','ajax','dynamic','app/component/validationStamp'], function (re
         })
     }
 
-    function downValidationStamp (project, branch, stamp) {
+    function downValidationStamp(project, branch, stamp) {
         ajax.put({
             url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/down'.format(project, branch, stamp),
             loading: {
@@ -44,7 +44,44 @@ define(['render','ajax','dynamic','app/component/validationStamp'], function (re
             });
             return stamps;
         },
-        render: render.asTableTemplate('branch-validation-stamp', function (config) {
+        render: render.asSimpleTemplate('branch-validation-stamp', render.sameDataFn, function (config) {
+            // Enabling the list as being sortable
+            if (config.admin == 'true') {
+                $('#validation-stamp-list').sortable({
+                    start: function (event, ui) {
+                        ui.item.data('data-old-index', ui.item.index());
+                    },
+                    stop: function (event, ui) {
+                        var validationStamp = ui.item.attr('data-validation-stamp');
+                        var oldIndex = ui.item.data('data-old-index');
+                        var newIndex = ui.item.index();
+                        ajax.put({
+                            url: 'ui/manage/project/{0}/branch/{1}/validation_stamp/{2}/move'.format(
+                                config.project,
+                                config.branch,
+                                validationStamp
+                            ),
+                            data: {
+                                oldIndex: oldIndex,
+                                newIndex: newIndex
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(function (message) {
+                                $('#validation-stamp-list').sortable('cancel');
+                                common.showError(message);
+                            }),
+                            successFn: function () {
+                                dynamic.reloadSection('branch-validation-stamps');
+                            }
+                        })
+                    }
+                });
+                $('#validation-stamp-list').disableSelection({
+                    placeholder: 'list-sortable-highlight'
+                });
+            } else {
+                // Disable sorting
+                $('#validation-stamp-list').removeClass('list-sortable-enabled');
+            }
             // Ordering of the validation stamps
             $('.validation-stamp-order').each(function (index, link) {
                 var stamp = $(link).attr('order-stamp');
