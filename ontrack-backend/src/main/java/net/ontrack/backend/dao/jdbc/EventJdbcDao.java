@@ -121,14 +121,19 @@ public class EventJdbcDao extends AbstractJdbcDao implements EventDao {
     }
 
     @Override
-    @Transactional
     public int createEvent(String author, Integer authorId, EventType eventType, Map<Entity, Integer> entities, Map<String, String> values) {
+        return importEvent(author, authorId, SQLUtils.now(), eventType, entities, values);
+    }
+
+    @Override
+    @Transactional
+    public int importEvent(String author, Integer authorId, DateTime timestamp, EventType eventType, Map<Entity, Integer> entities, Map<String, String> values) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         // Author
         params.addValue("author", author);
         params.addValue("author_id", authorId);
         // Timestamping
-        params.addValue("event_timestamp", SQLUtils.toTimestamp(SQLUtils.now()));
+        params.addValue("event_timestamp", SQLUtils.toTimestamp(timestamp));
         // Event type
         params.addValue("event_type", eventType.name());
         // SQL query

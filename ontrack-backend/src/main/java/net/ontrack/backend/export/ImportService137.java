@@ -2,10 +2,7 @@ package net.ontrack.backend.export;
 
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ProjectData;
-import net.ontrack.core.model.ProjectSummary;
-import net.ontrack.core.model.Status;
+import net.ontrack.core.model.*;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
 import org.joda.time.DateTime;
@@ -15,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Qualifier("1.37")
@@ -77,10 +71,47 @@ public class ImportService137 implements ImportService {
         importValidationRunStatuses(projectData, context);
         importComments(projectData, context);
         importProperties(projectData, context);
-        // TODO Events
+        importEvents(projectData, context);
         // TODO Build clean-up policy
         // Project ID
         return projectId;
+    }
+
+    protected void importEvents(ProjectData projectData, ImportContext context) {
+        List<JsonNode> eventNodeList = sortJsonNodes(projectData.getData().path("events"), "id");
+        for (JsonNode eventNode : eventNodeList) {
+            // int id = eventNode.path("id").asInt();
+            String author = eventNode.path("author").asText();
+            EventType eventType = EventType.valueOf(eventNode.path("eventType").asText());
+            DateTime timestamp = new DateTime(eventNode.path("timestamp").asLong(), DateTimeZone.UTC);
+            // Collects all entities
+            Map<Entity, Integer> entityMap = new HashMap<>();
+            Iterator<String> entities = eventNode.path("entities").getFieldNames();
+            while (entities.hasNext()) {
+                String entityName = entities.next();
+                Entity entity = Entity.valueOf(entityName);
+                int oldEntityId = eventNode.path("entities").path(entityName).asInt();
+                int newEntityId = context.forEntity(entity, oldEntityId);
+                entityMap.put(entity, newEntityId);
+            }
+            // Collects all values
+            Map<String, String> valueMap = new HashMap<>();
+            Iterator<String> values = eventNode.path("values").getFieldNames();
+            while (values.hasNext()) {
+                String key = values.next();
+                String value = eventNode.path("values").path(key).asText();
+                valueMap.put(key, value);
+            }
+            // Creation
+            eventDao.importEvent(
+                    author,
+                    null,
+                    timestamp,
+                    eventType,
+                    entityMap,
+                    valueMap
+            );
+        }
     }
 
     protected void importProperties(ProjectData projectData, ImportContext context) {
