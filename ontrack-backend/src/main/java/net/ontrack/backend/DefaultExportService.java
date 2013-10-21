@@ -250,7 +250,8 @@ public class DefaultExportService implements ExportService {
         }
         // All events for the project
         List<TEvent> events = eventDao.list(0, Integer.MAX_VALUE, Collections.singletonMap(Entity.PROJECT, projectId));
-        // Comments
+        // Comments & properties
+        fetchCommentsAndProperties(comments, properties, Entity.PROJECT, projectId);
         for (TBranch branch : branches) {
             fetchCommentsAndProperties(comments, properties, Entity.BRANCH, branch.getId());
         }

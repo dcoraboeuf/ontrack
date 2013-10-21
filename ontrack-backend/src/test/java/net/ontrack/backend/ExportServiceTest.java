@@ -5,6 +5,11 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.jenkins.JenkinsExtension;
+import net.ontrack.extension.jenkins.JenkinsUrlPropertyDescriptor;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
@@ -34,9 +39,15 @@ public class ExportServiceTest extends AbstractBackendTest {
     @Autowired
     private ManagementService managementService;
     @Autowired
+    private PropertiesService propertiesService;
+    @Autowired
     private ControlService controlService;
     @Autowired
     private ExportService exportService;
+    @Autowired
+    private ExtensionManager extensionManager;
+    @Autowired
+    private SecurityUtils securityUtils;
 
     /**
      * This test aims to check the consistency of the export-import-export chain.
@@ -52,6 +63,14 @@ public class ExportServiceTest extends AbstractBackendTest {
      */
     @Test/*(timeout = 2000L)*/
     public void create_export_delete_import_export() throws Exception {
+        // Makes sure the Jenkins extension is enabled
+        securityUtils.asAdmin(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                extensionManager.enableExtension("jenkins");
+                return null;
+            }
+        });
         // Creates the project structure
         final ProjectSummary project = asAdmin().call(new Callable<ProjectSummary>() {
             @Override
@@ -93,7 +112,9 @@ public class ExportServiceTest extends AbstractBackendTest {
                 // Comments
                 managementService.addValidationStampComment(b1smoke.getId(), new ValidationStampCommentForm("Comment for b1smoke"));
                 managementService.addValidationStampComment(b2acc.getId(), new ValidationStampCommentForm("Comment for b2acc"));
-                // TODO Properties
+                // Properties
+                propertiesService.createProperties(Entity.PROJECT, project.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://project")));
+                propertiesService.createProperties(Entity.BRANCH, b1.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://branch")));
                 // TODO Build clean-up policy
                 // OK
                 return project;

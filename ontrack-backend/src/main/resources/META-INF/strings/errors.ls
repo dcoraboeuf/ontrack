@@ -51,8 +51,8 @@ net.ontrack.backend.ImportVersionException
 net.ontrack.backend.export.ImportIdInconsistencyException
     en -> [E-017] Cannot find ID = {1} for the entity {0} in the imported file.
 
-net.ontrack.backend.export.ImportCommentEntityMissingException
-    en -> [E-018] Comment with ID = {0} has no attached entity.
+net.ontrack.backend.export.ImportLinkedEntityMissingException
+    en -> [E-018] Node "{0}" with ID = {1} has no attached entity.
 
 [input]
 

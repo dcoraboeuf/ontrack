@@ -76,11 +76,38 @@ public class ImportService137 implements ImportService {
         importValidationRuns(projectData, context);
         importValidationRunStatuses(projectData, context);
         importComments(projectData, context);
-        // TODO Properties
+        importProperties(projectData, context);
         // TODO Events
         // TODO Build clean-up policy
         // Project ID
         return projectId;
+    }
+
+    protected void importProperties(ProjectData projectData, ImportContext context) {
+        List<JsonNode> propertyNodeList = sortJsonNodes(projectData.getData().path("properties"), "id");
+        for (JsonNode propertyNode : propertyNodeList) {
+            int id = propertyNode.path("id").asInt();
+            String extension = propertyNode.path("extension").asText();
+            String name = propertyNode.path("name").asText();
+            String value = propertyNode.path("value").asText();
+            // Entity (only one is expected)
+            Iterator<String> entities = propertyNode.path("entities").getFieldNames();
+            if (entities.hasNext()) {
+                String entityName = entities.next();
+                Entity entity = Entity.valueOf(entityName);
+                int oldEntityId = propertyNode.path("entities").path(entityName).asInt();
+                int newEntityId = context.forEntity(entity, oldEntityId);
+                propertyDao.saveProperty(
+                        entity,
+                        newEntityId,
+                        extension,
+                        name,
+                        value
+                );
+            } else {
+                throw new ImportLinkedtEntityMissingException("property", id);
+            }
+        }
     }
 
     protected void importComments(ProjectData projectData, ImportContext context) {
@@ -106,7 +133,7 @@ public class ImportService137 implements ImportService {
                         timestamp
                 );
             } else {
-                throw new ImportCommentEntityMissingException(id);
+                throw new ImportLinkedtEntityMissingException("comment", id);
             }
         }
     }
