@@ -5,10 +5,10 @@
         <div class="row-fluid">
             <div class="span12">
                 <span class="action action-optional">
-                    <a href="dashboard">
-                        <i class="icon-eye-open"></i>
-                        <@lh key="dashboard"/>
-                    </a>
+                    <a href="dashboard"><i class="icon-eye-open"></i> <@lh key="dashboard"/></a>
+                    <#if secAdmin()>
+                        <a href="gui/export"><i class="icon-download"></i> <@lh key="project.export"/></a>
+                    </#if>
                 </span>
             </div>
         </div>

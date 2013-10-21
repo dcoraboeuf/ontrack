@@ -441,6 +441,27 @@ home.projects
 	en -> Projects
 	fr -> Projets
 
+[export]
+
+export
+    en,fr -> @[project.export]
+
+export.project
+    en -> Select the projects to export
+    fr -> Sélectionnez les projets à exporter
+
+export.next
+    en -> Export
+    fr -> Exporter
+
+export.ongoing
+    en -> Exporting...
+    fr -> Export en cours...
+
+export.finished
+    en -> Your file is ready.
+    fr -> Votre fichier est prêt.
+
 [project]
 
 project.empty

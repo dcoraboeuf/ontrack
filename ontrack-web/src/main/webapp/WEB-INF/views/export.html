@@ -1,0 +1,28 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="export" title=loc('export') style=true breadcrumbs = {loc("home"): ""}>
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="export"/>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <h1><small><@lh key="export.project"/></small></h1>
+                <div class="row-fluid">
+                    <div id="projects" class="span12 dynamic" dynamic-controller="export-project-selection">
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <button id="export-next"
+                </div>
+            </div>
+        </div>
+	</div>
+</@layout_std>

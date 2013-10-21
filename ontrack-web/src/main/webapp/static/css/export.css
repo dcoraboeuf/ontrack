@@ -1,0 +1,11 @@
+#projects tr {
+
+}
+
+#projects td {
+    vertical-align: middle;
+}
+
+#projects td.export-project-chk {
+    width: 1em;
+}

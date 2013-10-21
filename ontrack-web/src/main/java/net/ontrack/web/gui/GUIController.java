@@ -92,6 +92,12 @@ public class GUIController extends AbstractGUIController {
         return "project-validation-stamp-mgt";
     }
 
+    @RequestMapping(value = "/gui/export", method = RequestMethod.GET)
+    public String exportPage() {
+        securityUtils.checkIsAdmin();
+        return "export";
+    }
+
     @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/export", method = RequestMethod.GET)
     public String exportProject(Model model, @PathVariable String name) {
         securityUtils.checkIsAdmin();
