@@ -8,7 +8,6 @@ import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityUtils;
-import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.DashboardService;
@@ -55,12 +54,11 @@ public class GUIController extends AbstractGUIController {
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings, SecurityUtils securityUtils, ObjectMapper objectMapper) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
         this.entityConverter = entityConverter;
-        this.securityUtils = securityUtils;
         this.searchService = searchService;
         this.dashboardService = dashboardService;
         this.strings = strings;

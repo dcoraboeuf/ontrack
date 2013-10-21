@@ -90,9 +90,9 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ValidationRunSummary b1_build2_acc = controlService.createValidationRun(b1_build2.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.FAILED, "Failed ACC tests", PropertiesCreationForm.create()));
                 // Validation run statuses & comment
                 managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(null, "Comment about smoke tests", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(Status.EXPLAINED.name(), "Explained", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build1_smoke_2.getId(), new ValidationRunCommentCreationForm(Status.FIXED.name(), "Fixed", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build2_acc.getId(), new ValidationRunCommentCreationForm(Status.INVESTIGATED.name(), "Investigated", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(Status.EXPLAINED, "Explained", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build1_smoke_2.getId(), new ValidationRunCommentCreationForm(Status.FIXED, "Fixed", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build2_acc.getId(), new ValidationRunCommentCreationForm(Status.INVESTIGATED, "Investigated", Collections.<PropertyCreationForm>emptyList()));
                 // TODO Comments
                 // TODO Properties
                 // TODO Build clean-up policy
