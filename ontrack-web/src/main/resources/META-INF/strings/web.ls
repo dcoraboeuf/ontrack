@@ -715,6 +715,24 @@ validation_stamp.mgt.property.new
     en -> Replacement expression
     fr -> Expression de remplacement
 
+validation_stamp.mgt.submit.title
+    en -> Validation
+    fr -> Validation
+
+validation_stamp.mgt.submit.message
+    en -> ...
+        The selected validation stamps will be created/updated in the destination branch
+        and their properties created/updated according to the settings above.
+        ...
+    fr -> ...
+        Les validations séléctionnées seront créées/mises à jour dans la branche de destination
+        et leurs propriétés créées/modifiées selon les informations entrées ci-dessus.
+        ...
+
+validation_stamp.mgt.submit
+    en -> Validate
+    fr -> Valider
+
 [promotion_level]
 
 promotion_level.manage
