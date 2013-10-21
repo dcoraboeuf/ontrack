@@ -1,32 +1,10 @@
-define(['jquery', 'ajax'], function ($, ajax) {
+define(['jquery', 'ajax', 'app/component/export'], function ($, ajax, exp) {
 
-    var project = $('#project').val();
     var projectExportUID = $('#projectExportUID').val();
 
-    function check() {
-        ajax.get({
-            url: 'ui/manage/export/{0}/check'.format(projectExportUID),
-            successFn: function (ack) {
-                if (ack.success) {
-                    $('#project-export-loading').hide();
-                    // Download ready
-                    $('#project-export-ready').show();
-                    $('#project-export-link').attr(
-                        'href',
-                        'gui/project/export/{0}'.format(projectExportUID)
-                    )
-                } else {
-                    // Going on...
-                    window.setTimeout(check, 5000);
-                }
-            },
-            errorFn: ajax.simpleAjaxErrorFn(function (message) {
-                $('#project-export-loading').hide();
-                ajax.elementErrorMessageFn($('#project-export-error'))(message);
-            })
-        })
-    }
-
-    window.setTimeout(check, 5000)
+    exp.check({
+        container: $('#project-export-progress'),
+        uid: projectExportUID
+    })
 
 })
