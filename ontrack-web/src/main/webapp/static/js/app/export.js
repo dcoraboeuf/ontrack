@@ -1,28 +1,4 @@
-define(['jquery', 'ajax'], function ($, ajax) {
-
-    function check(uid) {
-        ajax.get({
-            url: 'ui/manage/export/{0}/check'.format(uid),
-            successFn: function (ack) {
-                if (ack.success) {
-                    $('#project-export-loading').hide();
-                    // Download ready
-                    $('#project-export-ready').show();
-                    $('#project-export-link').attr(
-                        'href',
-                        'gui/project/export/{0}'.format(uid)
-                    )
-                } else {
-                    // Going on...
-                    window.setTimeout(check, 5000);
-                }
-            },
-            errorFn: ajax.simpleAjaxErrorFn(function (message) {
-                $('#project-export-loading').hide();
-                ajax.elementErrorMessageFn($('#project-export-error'))(message);
-            })
-        })
-    }
+define(['jquery', 'ajax', 'app/component/export'], function ($, ajax, exp) {
 
     $('#export-next').click(function () {
         var projects = $('.export-project-chk').find('input').filter(':checked').map(function (i, chk) {
@@ -38,12 +14,11 @@ define(['jquery', 'ajax'], function ($, ajax) {
             },
             errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#export-error'))),
             successFn: function (response) {
-                window.setTimeout(
-                    function () {
-                        check(response.uid)
-                    },
-                    5000
-                )
+                $('#export-projects').hide();
+                exp.check({
+                    container: $('#export-progress'),
+                    uid: response.uid
+                })
             }
         })
     })
