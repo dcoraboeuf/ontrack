@@ -4,6 +4,35 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         ajax.elementErrorMessageFn($('#project-validation-stamp-mgt-error'))(error.responseText)
     }
 
+    function sendUpdates(config) {
+        var project = config.project;
+        var branch1 = config.branch1;
+        var branch2 = config.branch2;
+        // 1 - collect the selected validation stamp names
+        var names = $('.project-validation-stamp-mgt-chk').filter(':checked').map(function (i, e) {
+            return $(e).attr('data-name')
+        });
+        // 2 - collect the replacement expression
+        var replacements = [];
+        $('div.project-validation-stamp-mgt-property').each(function (i, div) {
+            var extension = $(div).attr('data-extension');
+            var name = $(div).attr('data-name');
+            var oldRegex = $(div).find('.project-validation-stamp-mgt-property-old').val();
+            var newRegex = $(div).find('.project-validation-stamp-mgt-property-new').val();
+            if (oldRegex != '') {
+                replacements.push({
+                    extension: extension,
+                    name: name,
+                    regex: oldRegex,
+                    replacement: newRegex
+                })
+            }
+        });
+        // TODO Model
+        // TODO Sends the update
+        // TODO Feedback & exit
+    }
+
     function loadValidationStamps(config, branch) {
         return $.get('ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch))
     }
@@ -12,7 +41,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         return $.get('ui/manage/project/{0}/branch/{1}/clone'.format(config.project, branch))
     }
 
-    function prepareCommands(indexedStamps2, clone1, clone2, target) {
+    function prepareCommands(config, indexedStamps2, clone1, clone2, target) {
         // Select missing only
         $('#project-validation-stamp-mgt-select-missing').click(function () {
             $('.project-validation-stamp-mgt-chk').each(function (index, chk) {
@@ -58,7 +87,12 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
             {
                 properties: properties
             }
-        )
+        );
+
+        // Submit button
+        $('#project-validation-stamp-mgt-submit').click(function () {
+            sendUpdates(config)
+        });
     }
 
     function displayBranches(config, stamps1, stamps2, clone1, clone2, target) {
@@ -115,7 +149,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
             'project-validation-stamp-mgt-list',
             model,
             function () {
-                prepareCommands(indexedStamps2, clone1, clone2, target)
+                prepareCommands(config, indexedStamps2, clone1, clone2, target)
             }
         )
     }
