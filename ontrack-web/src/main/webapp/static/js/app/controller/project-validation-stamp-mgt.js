@@ -11,7 +11,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         // 1 - collect the selected validation stamp names
         var names = $('.project-validation-stamp-mgt-chk').filter(':checked').map(function (i, e) {
             return $(e).attr('data-name')
-        });
+        }).toArray();
         // 2 - collect the replacement expression
         var replacements = [];
         $('div.project-validation-stamp-mgt-property').each(function (i, div) {
@@ -28,9 +28,22 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
                 })
             }
         });
-        // TODO Model
-        // TODO Sends the update
-        // TODO Feedback & exit
+        // Sends the update
+        ajax.post({
+            url: 'ui/manage/project/{0}/validation-stamp-mgt'.format(project),
+            data: {
+                branch1: branch1,
+                branch2: branch2,
+                stamps: names,
+                replacements: replacements
+            },
+            loading: {
+                el: $('#project-validation-stamp-mgt-submit')
+            },
+            successFn: function () {
+                // TODO Feedback & exit
+            }
+        })
     }
 
     function loadValidationStamps(config, branch) {
