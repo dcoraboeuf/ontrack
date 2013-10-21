@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import net.ontrack.core.model.ChartDefinition;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.service.DashboardService;
@@ -41,6 +42,7 @@ public class GUIController extends AbstractGUIController {
     private final ManageUI manageUI;
     private final ErrorHandlingMultipartResolver errorHandlingMultipartResolver;
     private final EntityConverter entityConverter;
+    private final SecurityUtils securityUtils;
     private final SearchService searchService;
     private final DashboardService dashboardService;
     private final Strings strings;
@@ -48,11 +50,12 @@ public class GUIController extends AbstractGUIController {
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SecurityUtils securityUtils, SearchService searchService, DashboardService dashboardService, Strings strings) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
         this.entityConverter = entityConverter;
+        this.securityUtils = securityUtils;
         this.searchService = searchService;
         this.dashboardService = dashboardService;
         this.strings = strings;
@@ -77,6 +80,7 @@ public class GUIController extends AbstractGUIController {
 
     @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.GET)
     public String manageProjectValidationStamps(Model model, @PathVariable String name) {
+        securityUtils.checkIsAdmin();
         // Loads the project details
         model.addAttribute("project", manageUI.getProject(name));
         // OK
