@@ -4,7 +4,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         ajax.elementErrorMessageFn($('#project-validation-stamp-mgt-error'))(error.responseText)
     }
 
-    function sendUpdates(config) {
+    function sendUpdates(config, target) {
         var project = config.project;
         var branch1 = config.branch1;
         var branch2 = config.branch2;
@@ -41,7 +41,12 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
                 el: $('#project-validation-stamp-mgt-submit')
             },
             successFn: function () {
-                // TODO Feedback & exit
+                // Confirmation
+                var message = 'validation_stamp.mgt.ack'.loc(names);
+                $('#project-validation-stamp-mgt-ack').find('span').text(message);
+                $('#project-validation-stamp-mgt-ack').show();
+                // Reload
+                loadBranches(config, target);
             }
         })
     }
@@ -104,7 +109,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
 
         // Submit button
         $('#project-validation-stamp-mgt-submit').click(function () {
-            sendUpdates(config)
+            sendUpdates(config, target)
         });
     }
 

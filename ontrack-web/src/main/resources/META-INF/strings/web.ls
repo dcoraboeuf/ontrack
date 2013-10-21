@@ -733,6 +733,10 @@ validation_stamp.mgt.submit
     en -> Validate
     fr -> Valider
 
+validation_stamp.mgt.ack
+    en -> Following validation stamps have been updated: {0}
+    fr -> Les validations suivantes ont été mises à jour : {0}
+
 [promotion_level]
 
 promotion_level.manage
