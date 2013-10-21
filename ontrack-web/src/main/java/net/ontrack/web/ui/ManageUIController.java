@@ -107,11 +107,33 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     // Project IO
 
     @Override
+    @RequestMapping(value = "/ui/manage/export/project", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ExportResponse exportLaunch(@RequestBody ExportForm form) {
+        return new ExportResponse(
+                exportService.exportLaunch(
+                        Collections2.transform(
+                                form.getNames(),
+                                new Function<String, Integer>() {
+                                    @Override
+                                    public Integer apply(String name) {
+                                        return entityConverter.getProjectId(name);
+                                    }
+                                }
+                        )
+                )
+        );
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/export/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody
-    String exportProjectLaunch(@PathVariable String project) {
-        return exportService.exportLaunch(Collections.singleton(entityConverter.getProjectId(project)));
+    ExportResponse exportProjectLaunch(@PathVariable String project) {
+        return new ExportResponse(
+                exportService.exportLaunch(Collections.singleton(entityConverter.getProjectId(project)))
+        );
     }
 
     @Override

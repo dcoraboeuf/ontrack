@@ -12,7 +12,10 @@ define(['jquery', 'ajax'], function ($, ajax) {
             loading: {
                 el: $('#export-next')
             },
-            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#export-error')))
+            errorFn: ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn($('#export-error'))),
+            successFn: function (response) {
+                console.log(response)
+            }
         })
     })
 

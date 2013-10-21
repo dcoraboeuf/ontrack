@@ -104,7 +104,7 @@ public class GUIController extends AbstractGUIController {
         // Loads the project details
         model.addAttribute("project", manageUI.getProject(name));
         // Launching the export asynchronously
-        model.addAttribute("projectExportUID", manageUI.exportProjectLaunch(name));
+        model.addAttribute("projectExportUID", manageUI.exportProjectLaunch(name).getUid());
         // OK
         return "project-export";
     }

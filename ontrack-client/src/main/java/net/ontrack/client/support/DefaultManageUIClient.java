@@ -72,11 +72,21 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public String exportProjectLaunch(String project) {
+    public ExportResponse exportLaunch(ExportForm form) {
+        return post(
+                getDefaultLocale(),
+                format("/ui/manage/export/project"),
+                ExportResponse.class,
+                form
+        );
+    }
+
+    @Override
+    public ExportResponse exportProjectLaunch(String project) {
         return get(
                 getDefaultLocale(),
                 format("/ui/manage/export/project/%s", project),
-                String.class
+                ExportResponse.class
         );
     }
 

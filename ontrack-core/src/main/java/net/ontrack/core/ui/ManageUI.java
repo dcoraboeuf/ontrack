@@ -29,7 +29,9 @@ public interface ManageUI {
 
     // Project I/O
 
-    String exportProjectLaunch(String project);
+    ExportResponse exportLaunch(ExportForm form);
+
+    ExportResponse exportProjectLaunch(String project);
 
     Ack exportProjectCheck(String uuid);
 
