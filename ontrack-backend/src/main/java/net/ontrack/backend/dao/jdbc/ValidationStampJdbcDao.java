@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -57,14 +56,21 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional(readOnly = true)
     public TValidationStamp getByBranchAndName(int branch, String name) {
-        try {
-            return getNamedParameterJdbcTemplate().queryForObject(
-                    SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
-                    params("branch", branch).addValue("name", name),
-                    validationStampMapper);
-        } catch (EmptyResultDataAccessException ex) {
+        TValidationStamp stamp = findByBranchAndName(branch, name);
+        if (stamp != null) {
+            return stamp;
+        } else {
             throw new EntityNameNotFoundException(Entity.VALIDATION_STAMP, name);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TValidationStamp findByBranchAndName(int branch, String name) {
+        return getFirstItem(
+                SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
+                params("branch", branch).addValue("name", name),
+                validationStampMapper);
     }
 
     @Override

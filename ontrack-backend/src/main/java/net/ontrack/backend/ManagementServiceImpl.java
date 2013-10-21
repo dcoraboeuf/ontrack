@@ -245,12 +245,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             // Gets the validation stamp for the branch 1
             TValidationStamp stamp1 = validationStampDao.getByBranchAndName(branch1id, stampName);
             // Gets the validation stamp for the branch 2
-            TValidationStamp stamp2;
-            try {
-                stamp2 = validationStampDao.getByBranchAndName(branch2id, stampName);
-            } catch (EntityNameNotFoundException ex) {
-                stamp2 = null;
-            }
+            TValidationStamp stamp2 = validationStampDao.findByBranchAndName(branch2id, stampName);
             // If the stamp does not exist, create it
             if (stamp2 == null) {
                 cloneValidationStampSummary(branch2id, stamp1, form.getReplacements());
