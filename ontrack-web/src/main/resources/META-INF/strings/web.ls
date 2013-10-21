@@ -703,6 +703,18 @@ validation_stamp.mgt.selectAll
     en -> Select all
     fr -> Tout sélectionner
 
+validation_stamp.mgt.properties
+    en -> Properties
+    fr -> Propriétés
+
+validation_stamp.mgt.property.old
+    en -> Regular expression to be replaced
+    fr -> Expression régulière à remplacer
+
+validation_stamp.mgt.property.new
+    en -> Replacement expression
+    fr -> Expression de remplacement
+
 [promotion_level]
 
 promotion_level.manage

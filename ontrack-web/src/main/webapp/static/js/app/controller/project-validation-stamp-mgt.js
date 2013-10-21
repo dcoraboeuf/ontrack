@@ -8,7 +8,11 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         return $.get('ui/manage/project/{0}/branch/{1}/validation_stamp'.format(config.project, branch))
     }
 
-    function prepareCommands(model, indexedStamps1, indexedStamps2, target) {
+    function loadEditableProperties(config, branch) {
+        return $.get('ui/manage/project/{0}/branch/{1}/clone'.format(config.project, branch))
+    }
+
+    function prepareCommands(indexedStamps2, clone1, clone2, target) {
         // Select missing only
         $('#project-validation-stamp-mgt-select-missing').click(function () {
             $('.project-validation-stamp-mgt-chk').each(function (index, chk) {
@@ -27,9 +31,37 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         });
         // Shows the commands
         target.find('.commands').show();
+
+        // Assemble the properties
+        var propertiesIndex = {};
+        for (var i = 0; i < clone1.validationStampProperties.length; i++) {
+            var property = clone1.validationStampProperties[i];
+            var key = property.extension + '-' + property.name;
+            propertiesIndex[key] = property;
+        }
+        for (var i = 0; i < clone2.validationStampProperties.length; i++) {
+            var property = clone2.validationStampProperties[i];
+            var key = property.extension + '-' + property.name;
+            propertiesIndex[key] = property;
+        }
+
+        // Gets the values only
+        var properties = [];
+        for (var key in propertiesIndex) {
+            properties.push(propertiesIndex[key])
+        }
+
+        // Renders the properties
+        render.renderInto(
+            target.find('.project-validation-stamp-mgt-properties'),
+            'project-validation-stamp-mgt-properties',
+            {
+                properties: properties
+            }
+        )
     }
 
-    function displayBranches(config, stamps1, stamps2, target) {
+    function displayBranches(config, stamps1, stamps2, clone1, clone2, target) {
         var project = config.project;
         var branch1 = config.branch1;
         var branch2 = config.branch2;
@@ -83,7 +115,7 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
             'project-validation-stamp-mgt-list',
             model,
             function () {
-                prepareCommands(model, indexedStamps1, indexedStamps2, target)
+                prepareCommands(indexedStamps2, clone1, clone2, target)
             }
         )
     }
@@ -92,18 +124,20 @@ define(['render', 'jquery', 'ajax', 'common'], function (render, $, ajax, common
         var branch1 = config.branch1;
         var branch2 = config.branch2;
         if (branch1 != '' && branch2 != '' && branch1 != branch2) {
-            // Two parallel AJAX calls
-            var ajax1 = loadValidationStamps(config, branch1);
-            var ajax2 = loadValidationStamps(config, branch2);
+            // Parallel AJAX calls
+            var ajaxStamps1 = loadValidationStamps(config, branch1);
+            var ajaxStamps2 = loadValidationStamps(config, branch2);
+            var ajaxProperties1 = loadEditableProperties(config, branch1);
+            var ajaxProperties2 = loadEditableProperties(config, branch2);
             // Loading...
             ajax.showLoading({
                 mode: 'container',
                 el: $('#project-validation-stamp-mgt-loading')
             }, true);
             // Completion
-            $.when(ajax1, ajax2).then(
-                function (result1, result2) {
-                    displayBranches(config, result1[0], result2[0], target);
+            $.when(ajaxStamps1, ajaxStamps2, ajaxProperties1, ajaxProperties2).then(
+                function (resultStamps1, resultStamps2, resultProperties1, resultProperties2) {
+                    displayBranches(config, resultStamps1[0], resultStamps2[0], resultProperties1[0], resultProperties2[0], target);
                 },
                 loadingError
             ).done(

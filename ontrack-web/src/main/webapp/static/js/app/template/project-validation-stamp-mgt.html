@@ -1,7 +1,7 @@
 <div id="project-validation-stamp-mgt-error" class="alert alert-error hidden"></div>
 <div id="project-validation-stamp-mgt-loading"></div>
 <div class="row-fluid">
-    <div class="span9">
+    <div class="span7">
         <div class="row-fluid">
             <div class="span5">
                 {{loc 'validation_stamp.mgt.branch-1'}}
@@ -28,19 +28,25 @@
             </div>
         </div>
     </div>
-    <div class="span3">
+    <div class="span5">
         &nbsp;
     </div>
 </div>
 <div class="row-fluid">
-    <div class="span9 content">
+    <div class="span7 content">
     </div>
-    <div class="span3 commands" style="display:none">
-        <!-- Select all missing stamps -->
-        <button id="project-validation-stamp-mgt-select-missing" class="btn btn-block">{{loc 'validation_stamp.mgt.selectMissing'}}</button>
-        <!-- Select none -->
-        <button id="project-validation-stamp-mgt-select-none" class="btn btn-block">{{loc 'validation_stamp.mgt.selectNone'}}</button>
-        <!-- Select all -->
-        <button id="project-validation-stamp-mgt-select-all" class="btn btn-block">{{loc 'validation_stamp.mgt.selectAll'}}</button>
+    <div class="span5 commands" style="display:none">
+        <div class="row-fluid">
+            <!-- Select all missing stamps -->
+            <button id="project-validation-stamp-mgt-select-missing" class="btn btn-block">{{loc 'validation_stamp.mgt.selectMissing'}}</button>
+            <!-- Select none -->
+            <button id="project-validation-stamp-mgt-select-none" class="btn btn-block">{{loc 'validation_stamp.mgt.selectNone'}}</button>
+            <!-- Select all -->
+            <button id="project-validation-stamp-mgt-select-all" class="btn btn-block">{{loc 'validation_stamp.mgt.selectAll'}}</button>
+        </div>
+        <div class="row-fluid">
+            <h1><small>{{loc 'validation_stamp.mgt.properties'}}</small></h1>
+            <div class="span12 project-validation-stamp-mgt-properties"></div>
+        </div>
     </div>
 </div>
