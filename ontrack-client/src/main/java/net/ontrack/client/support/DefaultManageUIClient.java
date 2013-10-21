@@ -67,6 +67,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack updateProjectValidationStamps(String project, ProjectValidationStampMgt form) {
+        return post(getDefaultLocale(), format("/ui/manage/project/%s/validation-stamp-mgt", project), Ack.class, form);
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }

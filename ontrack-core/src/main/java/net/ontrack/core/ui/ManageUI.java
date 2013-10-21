@@ -25,6 +25,8 @@ public interface ManageUI {
 
     ProjectSummary updateProject(String name, ProjectUpdateForm form);
 
+    Ack updateProjectValidationStamps(String project, ProjectValidationStampMgt form);
+
     // Branches
 
     List<BranchSummary> getBranchList(String project);

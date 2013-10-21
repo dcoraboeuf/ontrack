@@ -101,6 +101,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         );
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Ack updateProjectValidationStamps(@PathVariable String project, @RequestBody ProjectValidationStampMgt form) {
+        return managementService.updateProjectValidationStamps(
+                entityConverter.getProjectId(project),
+                form
+        );
+    }
+
     // Branches
 
     @Override

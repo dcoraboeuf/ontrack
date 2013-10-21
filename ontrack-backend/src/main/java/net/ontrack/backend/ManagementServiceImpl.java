@@ -232,6 +232,38 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return getProject(id);
     }
 
+    @Override
+    @Transactional
+    @Secured(SecurityRoles.ADMINISTRATOR)
+    public Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form) {
+        // Gets the branch by name
+        Map<Entity, Integer> projectIdMap = Collections.singletonMap(Entity.PROJECT, projectId);
+        int branch1id = entityDao.getEntityId(Entity.BRANCH, form.getBranch1(), projectIdMap);
+        int branch2id = entityDao.getEntityId(Entity.BRANCH, form.getBranch2(), projectIdMap);
+        // For all the validation stamp names
+        for (String stampName : form.getStamps()) {
+            // Gets the validation stamp for the branch 1
+            TValidationStamp stamp1 = validationStampDao.getByBranchAndName(branch1id, stampName);
+            // Gets the validation stamp for the branch 2
+            TValidationStamp stamp2;
+            try {
+                stamp2 = validationStampDao.getByBranchAndName(branch2id, stampName);
+            } catch (EntityNameNotFoundException ex) {
+                stamp2 = null;
+            }
+            // If the stamp does not exist, create it
+            if (stamp2 == null) {
+                cloneValidationStampSummary(branch2id, stamp1, form.getReplacements());
+            }
+            // If it exists, sync. the properties
+            else {
+                replaceProperties(form.getReplacements(), Entity.VALIDATION_STAMP, stamp1.getId(), stamp2.getId());
+            }
+        }
+        // OK
+        return Ack.OK;
+    }
+
     // Validation stamps
 
     @Override
@@ -534,20 +566,20 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         );
     }
 
-    private ValidationStampSummary cloneValidationStampSummary(int newBranchId, TValidationStamp linkedStamp, Collection<PropertyReplacement> replacements) {
+    private ValidationStampSummary cloneValidationStampSummary(int newBranchId, TValidationStamp oldStamp, Collection<PropertyReplacement> replacements) {
         ValidationStampSummary newValidationStamp = createValidationStamp(
                 newBranchId,
                 new ValidationStampCreationForm(
-                        linkedStamp.getName(),
-                        linkedStamp.getDescription()
+                        oldStamp.getName(),
+                        oldStamp.getDescription()
                 )
         );
 
         // Validation stamp properties
-        replaceProperties(replacements, Entity.VALIDATION_STAMP, linkedStamp.getId(), newValidationStamp.getId());
+        replaceProperties(replacements, Entity.VALIDATION_STAMP, oldStamp.getId(), newValidationStamp.getId());
 
         // Copies any image
-        byte[] image = imageValidationStamp(linkedStamp.getId());
+        byte[] image = imageValidationStamp(oldStamp.getId());
         if (image != null) {
             validationStampDao.updateImage(
                     newValidationStamp.getId(),

@@ -1,16 +1,19 @@
 package net.ontrack.backend.dao.jdbc;
 
+import net.ontrack.backend.EntityNameNotFoundException;
 import net.ontrack.backend.ValidationStampAlreadyExistException;
 import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
+import net.ontrack.core.model.Entity;
 import net.ontrack.dao.AbstractJdbcDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -54,10 +57,14 @@ public class ValidationStampJdbcDao extends AbstractJdbcDao implements Validatio
     @Override
     @Transactional(readOnly = true)
     public TValidationStamp getByBranchAndName(int branch, String name) {
-        return getNamedParameterJdbcTemplate().queryForObject(
-                SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
-                params("branch", branch).addValue("name", name),
-                validationStampMapper);
+        try {
+            return getNamedParameterJdbcTemplate().queryForObject(
+                    SQL.VALIDATION_STAMP_BY_BRANCH_AND_NAME,
+                    params("branch", branch).addValue("name", name),
+                    validationStampMapper);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityNameNotFoundException(Entity.VALIDATION_STAMP, name);
+        }
     }
 
     @Override

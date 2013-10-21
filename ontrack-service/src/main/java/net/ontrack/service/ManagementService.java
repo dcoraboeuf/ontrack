@@ -20,6 +20,8 @@ public interface ManagementService {
 
     ProjectSummary updateProject(int id, ProjectUpdateForm form);
 
+    Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form);
+
     // Branches
 
     List<BranchSummary> getBranchList(int project);
