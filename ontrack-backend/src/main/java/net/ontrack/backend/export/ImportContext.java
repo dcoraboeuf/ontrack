@@ -29,7 +29,7 @@ public class ImportContext {
     }
 
     public int forBranch(int oldBranchId) {
-        return get(Entity.BRANCH, oldBranchId);
+        return forEntity(Entity.BRANCH, oldBranchId);
     }
 
     public void forPromotionLevel(int oldPromotionLevelId, int newPromotionLevelId) {
@@ -49,22 +49,22 @@ public class ImportContext {
     }
 
     public int forBuild(int oldBuildId) {
-        return get(Entity.BUILD, oldBuildId);
+        return forEntity(Entity.BUILD, oldBuildId);
     }
 
     public int forPromotionLevel(int oldPromotionLevelId) {
-        return get(Entity.PROMOTION_LEVEL, oldPromotionLevelId);
+        return forEntity(Entity.PROMOTION_LEVEL, oldPromotionLevelId);
     }
 
     public int forValidationStamp(int oldValidationStampId) {
-        return get(Entity.VALIDATION_STAMP, oldValidationStampId);
+        return forEntity(Entity.VALIDATION_STAMP, oldValidationStampId);
     }
 
     public int forValidationRun(int oldValidationRunId) {
-        return get(Entity.VALIDATION_RUN, oldValidationRunId);
+        return forEntity(Entity.VALIDATION_RUN, oldValidationRunId);
     }
 
-    private int get(Entity entity, int oldEntityId) {
+    public int forEntity(Entity entity, int oldEntityId) {
         Integer newEntityId = table.get(entity, oldEntityId);
         if (newEntityId != null) {
             return newEntityId;

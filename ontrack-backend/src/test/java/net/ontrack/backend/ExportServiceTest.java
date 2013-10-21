@@ -3,6 +3,7 @@ package net.ontrack.backend;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.ontrack.core.model.*;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ExportService;
@@ -28,16 +29,12 @@ import static org.junit.Assert.assertNotNull;
 public class ExportServiceTest extends AbstractBackendTest {
 
     private final Logger logger = LoggerFactory.getLogger(ExportServiceTest.class);
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private ManagementService managementService;
-
     @Autowired
     private ControlService controlService;
-
     @Autowired
     private ExportService exportService;
 
@@ -93,7 +90,9 @@ public class ExportServiceTest extends AbstractBackendTest {
                 managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(Status.EXPLAINED, "Explained", Collections.<PropertyCreationForm>emptyList()));
                 managementService.addValidationRunComment(b1_build1_smoke_2.getId(), new ValidationRunCommentCreationForm(Status.FIXED, "Fixed", Collections.<PropertyCreationForm>emptyList()));
                 managementService.addValidationRunComment(b1_build2_acc.getId(), new ValidationRunCommentCreationForm(Status.INVESTIGATED, "Investigated", Collections.<PropertyCreationForm>emptyList()));
-                // TODO Comments
+                // Comments
+                managementService.addValidationStampComment(b1smoke.getId(), new ValidationStampCommentForm("Comment for b1smoke"));
+                managementService.addValidationStampComment(b2acc.getId(), new ValidationStampCommentForm("Comment for b2acc"));
                 // TODO Properties
                 // TODO Build clean-up policy
                 // OK
@@ -170,7 +169,23 @@ public class ExportServiceTest extends AbstractBackendTest {
     }
 
     private JsonNode pruneIds(JsonNode source) {
-        Set<String> excludedIntFields = ImmutableSet.of("id", "project", "branch", "build", "promotionLevel", "validationStamp", "validationRun", "authorId");
+        Set<String> excludedIntFields =
+                Sets.<String>union(
+                        ImmutableSet.<String>of("id", "project", "branch", "build", "promotionLevel", "validationStamp", "validationRun", "authorId"),
+                        ImmutableSet.<String>copyOf(
+                                Collections2.transform(
+                                        Arrays.asList(
+                                                Entity.values()
+                                        ),
+                                        new Function<Entity, String>() {
+                                            @Override
+                                            public String apply(Entity e) {
+                                                return e.name();
+                                            }
+                                        }
+                                )
+                        )
+                ).immutableCopy();
         Set<String> excludedFields = ImmutableSet.of("authorId");
         JsonNodeFactory factory = objectMapper.getNodeFactory();
         if (source.isArray()) {

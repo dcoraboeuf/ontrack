@@ -2,6 +2,7 @@ package net.ontrack.backend.export;
 
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectData;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.Status;
@@ -16,13 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
 @Qualifier("1.37")
 public class ImportService137 implements ImportService {
 
-    private final ManagementService managementService;
     protected final ProjectDao projectDao;
     protected final BranchDao branchDao;
     protected final PromotionLevelDao promotionLevelDao;
@@ -35,6 +36,7 @@ public class ImportService137 implements ImportService {
     protected final CommentDao commentDao;
     protected final PropertyDao propertyDao;
     protected final BuildCleanupDao buildCleanupDao;
+    private final ManagementService managementService;
 
     @Autowired
     public ImportService137(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao) {
@@ -73,12 +75,40 @@ public class ImportService137 implements ImportService {
         importPromotedRuns(projectData, context);
         importValidationRuns(projectData, context);
         importValidationRunStatuses(projectData, context);
-        // TODO Comments
+        importComments(projectData, context);
         // TODO Properties
         // TODO Events
         // TODO Build clean-up policy
         // Project ID
         return projectId;
+    }
+
+    protected void importComments(ProjectData projectData, ImportContext context) {
+        List<JsonNode> commentNodeList = sortJsonNodes(projectData.getData().path("comments"), "id");
+        for (JsonNode commentNode : commentNodeList) {
+            int id = commentNode.path("id").asInt();
+            String content = commentNode.path("content").asText();
+            String author = commentNode.path("author").asText();
+            DateTime timestamp = new DateTime(commentNode.path("timestamp").asLong(), DateTimeZone.UTC);
+            // Entity (only one is expected)
+            Iterator<String> entities = commentNode.path("entities").getFieldNames();
+            if (entities.hasNext()) {
+                String entityName = entities.next();
+                Entity entity = Entity.valueOf(entityName);
+                int oldEntityId = commentNode.path("entities").path(entityName).asInt();
+                int newEntityId = context.forEntity(entity, oldEntityId);
+                commentDao.importComment(
+                        entity,
+                        newEntityId,
+                        content,
+                        author,
+                        null,
+                        timestamp
+                );
+            } else {
+                throw new ImportCommentEntityMissingException(id);
+            }
+        }
     }
 
     protected void importValidationRunStatuses(ProjectData projectData, ImportContext context) {

@@ -7,6 +7,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -53,12 +54,18 @@ public class CommentJdbcDao extends AbstractJdbcDao implements CommentDao {
     @Override
     @Transactional
     public int createComment(Entity entity, int entityId, String content, String author, Integer authorId) {
+        return importComment(entity, entityId, content, author, authorId, SQLUtils.now());
+    }
+
+    @Override
+    @Transactional
+    public int importComment(Entity entity, int entityId, String content, String author, Integer authorId, DateTime timestamp) {
         return dbCreate(format(SQL.COMMENT_CREATE, entity.name()),
                 params("content", content)
                         .addValue("id", entityId)
                         .addValue("author", author)
                         .addValue("author_id", authorId)
-                        .addValue("comment_timestamp", SQLUtils.toTimestamp(SQLUtils.now())));
+                        .addValue("comment_timestamp", SQLUtils.toTimestamp(timestamp)));
     }
 
     @Override
