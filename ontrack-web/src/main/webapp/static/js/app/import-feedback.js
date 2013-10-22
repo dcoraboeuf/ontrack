@@ -1,18 +1,22 @@
-define(['ajax'], function (ajax) {
+define(['jquery', 'ajax', 'render'], function ($, ajax, render) {
 
     var uid = $('#uid').val();
 
     function check() {
         ajax.get({
             url: 'ui/manage/import/{0}/check'.format(uid),
-            successFn: function (ack) {
-                if (ack.success) {
+            successFn: function (result) {
+                if (result.finished.success) {
                     $('#import-progress').hide();
                     // Import done
-                    // FIXME Renders the results
+                    render.renderInto(
+                        $('#import-result'),
+                        'import-result',
+                        result
+                    )
                 } else {
                     // Going on...
-                    window.setTimeout(check, 5000);
+                    window.setTimeout(check, 2000);
                 }
             },
             errorFn: ajax.simpleAjaxErrorFn(function (message) {
@@ -22,6 +26,6 @@ define(['ajax'], function (ajax) {
         })
     }
 
-    window.setTimeout(check, 5000);
+    window.setTimeout(check, 2000);
 
 });

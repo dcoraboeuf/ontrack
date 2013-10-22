@@ -1,0 +1,24 @@
+{{#if importedProjects.length}}
+    <div class="alert alert-success">
+        <p>{{loc 'project.import.project.ok'}}</p>
+        <ul>
+            {{#importedProjects}}
+                <li>
+                    <a href="gui/project/{{name}}">{{name}}</a>
+                </li>
+            {{/importedProjects}}
+        </ul>
+    </div>
+{{/if}}
+{{#if rejectedProjects.length}}
+    <div class="alert alert-error">
+        <p>{{loc 'project.import.project.nok'}}</p>
+        <ul>
+            {{#rejectedProjects}}
+                <li>
+                    {{.}}
+                </li>
+            {{/rejectedProjects}}
+        </ul>
+    </div>
+{{/if}}

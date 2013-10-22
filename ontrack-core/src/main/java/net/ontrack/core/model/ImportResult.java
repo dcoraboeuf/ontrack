@@ -3,7 +3,6 @@ package net.ontrack.core.model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,10 +23,5 @@ public class ImportResult {
 
     public ImportResult(Collection<ProjectSummary> importedProjects, Collection<String> rejectedProjects) {
         this(Ack.OK, importedProjects, rejectedProjects);
-    }
-
-    @JsonIgnore
-    public boolean isFinished() {
-        return finished.isSuccess();
     }
 }

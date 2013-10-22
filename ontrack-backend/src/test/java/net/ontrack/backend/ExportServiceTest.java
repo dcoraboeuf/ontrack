@@ -146,7 +146,7 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ImportResult result;
                 while (true) {
                     result = exportService.importCheck(uuid);
-                    if (result.isFinished()) {
+                    if (result.getFinished().isSuccess()) {
                         break;
                     } else {
                         logger.debug("Waiting for the import of the file");
