@@ -498,6 +498,32 @@ project.export.message
     en -> Please wait while the export of the project is created...
     fr -> Veuillez patienter tandis que l'export du projet est préparé...
 
+project.import
+    en -> Import
+    fr -> Importer
+
+project.import.file
+    en -> ...
+        Select a JSON file that contains projects to import. This file has been typically
+        exported from ontrack as well.
+        ...
+    fr -> ...
+        Sélectionnez un fichier JSON qui contient des projets à importer. Ce fichier aura
+        été typiquement exporté depuis ontrack.
+        ...
+
+project.import.submit
+    en -> Import
+    fr -> Importer
+
+project.import.project.ok
+    en -> The following projects have been successfully imported:
+    fr -> Les projets suivants ont été importés avec succès :
+
+project.import.project.nok
+    en -> The following projects were already existing and have not been imported:
+    fr -> Les projets suivants existaient déjà et n'ont pas été importés :
+
 [branches]
 
 branch.empty
