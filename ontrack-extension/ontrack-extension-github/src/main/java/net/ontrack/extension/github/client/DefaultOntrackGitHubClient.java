@@ -119,12 +119,16 @@ public class DefaultOntrackGitHubClient implements OntrackGitHubClient {
     }
 
     private GitHubMilestone toMilestone(String project, Milestone milestone) {
-        return new GitHubMilestone(
-                milestone.getTitle(),
-                toState(milestone.getState()),
-                milestone.getNumber(),
-                String.format("https://github.com/%s/issues?milestone=%d&state=open", project, milestone.getNumber())
-        );
+        if (milestone != null) {
+            return new GitHubMilestone(
+                    milestone.getTitle(),
+                    toState(milestone.getState()),
+                    milestone.getNumber(),
+                    String.format("https://github.com/%s/issues?milestone=%d&state=open", project, milestone.getNumber())
+            );
+        } else {
+            return null;
+        }
     }
 
     private GitHubState toState(String state) {
