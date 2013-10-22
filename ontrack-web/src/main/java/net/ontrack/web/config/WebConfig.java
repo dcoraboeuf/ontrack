@@ -40,7 +40,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     /**
      * Maximum size for an upload (in K)
      */
-    public static final int UPLOAD_MAX_SIZE_K = 100;
+    public static final int UPLOAD_MAX_SIZE_K = 20 * 1024;
 
     @Autowired
     private Environment env;
