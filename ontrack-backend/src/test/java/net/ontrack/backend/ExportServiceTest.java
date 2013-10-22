@@ -135,24 +135,32 @@ public class ExportServiceTest extends AbstractBackendTest {
             }
         });
         // Imports the project
-        Collection<ProjectSummary> projects = asAdmin().call(new Callable<Collection<ProjectSummary>>() {
+        ImportResult result = asAdmin().call(new Callable<ImportResult>() {
             @Override
-            public Collection<ProjectSummary> call() throws Exception {
+            public ImportResult call() throws Exception {
                 // Prepares the import
                 ExportData importData = objectMapper.readValue(json1, ExportData.class);
                 // Imports the file
                 String uuid = exportService.importLaunch(importData);
                 // Waits until the import is done
-                while (!exportService.importCheck(uuid).isSuccess()) {
-                    logger.debug("Waiting for the import of the file");
-                    Thread.sleep(100);
+                ImportResult result;
+                while (true) {
+                    result = exportService.importCheck(uuid);
+                    if (result.isFinished()) {
+                        break;
+                    } else {
+                        logger.debug("Waiting for the import of the file");
+                        Thread.sleep(100);
+                    }
                 }
                 // Gets the results
-                return exportService.importResults(uuid);
+                return result;
             }
         });
-        assertNotNull(projects);
+        assertNotNull(result);
+        Collection<ProjectSummary> projects = result.getImportedProjects();
         assertEquals(1, projects.size());
+        assertEquals(0, result.getRejectedProjects().size());
         ProjectSummary importedProject = projects.iterator().next();
         assertNotNull(importedProject);
         assertEquals(project.getName(), importedProject.getName());

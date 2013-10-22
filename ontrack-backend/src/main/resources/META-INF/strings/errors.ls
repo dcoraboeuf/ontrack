@@ -42,8 +42,7 @@ net.ontrack.backend.ImportTaskNotFoundException
 net.ontrack.backend.ImportException
     en -> [E-014] Error while importing project(s). ID = {0}, Error = {1}
 
-net.ontrack.backend.ImportNotFinishedException
-    en -> [E-015] Project import not finished. ID = {0}
+# [E-015]
 
 net.ontrack.backend.ImportVersionException
     en -> [E-016] Cannot import version {0} into version {1}.

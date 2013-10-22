@@ -119,11 +119,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public Ack importCheck(String uuid) {
+    public ImportResult importCheck(String uuid) {
         return get(
                 getDefaultLocale(),
                 format("/ui/manage/import/%s/check", uuid),
-                Ack.class
+                ImportResult.class
         );
     }
 

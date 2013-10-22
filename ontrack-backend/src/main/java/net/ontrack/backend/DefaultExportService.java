@@ -166,34 +166,18 @@ public class DefaultExportService implements ExportService {
 
     @Override
     @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack importCheck(String uuid) {
+    public ImportResult importCheck(String uuid) {
         ImportTask task = importCache.getIfPresent(uuid);
         if (task == null) {
             throw new ImportTaskNotFoundException(uuid);
         } else {
             try {
-                return Ack.validate(task.checkFinished());
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new ImportException(uuid, ex);
-            }
-        }
-    }
-
-    @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public Collection<ProjectSummary> importResults(String uuid) {
-        ImportTask task = importCache.getIfPresent(uuid);
-        if (task == null) {
-            throw new ImportTaskNotFoundException(uuid);
-        } else {
-            try {
-                Collection<ProjectSummary> data = task.data();
-                if (data == null) {
-                    throw new ImportNotFinishedException(uuid);
+                boolean finished = task.checkFinished();
+                if (finished) {
+                    return task.data();
+                } else {
+                    return ImportResult.NOT_FINISHED;
                 }
-                return data;
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Exception ex) {
@@ -317,20 +301,29 @@ public class DefaultExportService implements ExportService {
         properties.addAll(propertyDao.findAll(entity, entityId));
     }
 
-    protected Collection<ProjectSummary> doImport(ExportData importData) {
+    protected ImportResult doImport(ExportData importData) {
         // Gets the version
         String importVersion = importData.getVersion();
         // Gets the import service according to the version
-        final ImportService importService = getImportService(importVersion);
-        // Runs the import service for each project
-        return Collections2.transform(
-                importData.getProjects(),
-                new Function<ProjectData, ProjectSummary>() {
-                    @Override
-                    public ProjectSummary apply(ProjectData projectData) {
-                        return importService.doImport(projectData);
-                    }
-                }
+        ImportService importService = getImportService(importVersion);
+        // For each project
+        Collection<ProjectSummary> importedProjects = new ArrayList<>();
+        Collection<String> rejectedProjects = new ArrayList<>();
+        for (ProjectData projectData : importData.getProjects()) {
+            String projectName = projectData.getName();
+            TProject existingProject = projectDao.findByName(projectName);
+            if (existingProject != null) {
+                rejectedProjects.add(projectName);
+            } else {
+                importedProjects.add(
+                        importService.doImport(projectData)
+                );
+            }
+        }
+        // OK
+        return new ImportResult(
+                importedProjects,
+                rejectedProjects
         );
     }
 
@@ -412,7 +405,7 @@ public class DefaultExportService implements ExportService {
 
     }
 
-    private class ImportTask extends ImportExportTask<Collection<ProjectSummary>> {
+    private class ImportTask extends ImportExportTask<ImportResult> {
 
         private final ExportData importData;
 
@@ -421,7 +414,7 @@ public class DefaultExportService implements ExportService {
         }
 
         @Override
-        protected Collection<ProjectSummary> doTask() {
+        protected ImportResult doTask() {
             return doImport(importData);
         }
     }

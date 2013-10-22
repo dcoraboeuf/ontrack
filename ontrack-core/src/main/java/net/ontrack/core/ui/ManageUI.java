@@ -43,7 +43,7 @@ public interface ManageUI {
 
     ImportResponse importLaunch(MultipartFile file);
 
-    Ack importCheck(String uuid);
+    ImportResult importCheck(String uuid);
 
     // Branches
 

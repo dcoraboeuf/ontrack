@@ -165,7 +165,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/import/{uuid}/check", method = RequestMethod.GET)
     public
     @ResponseBody
-    Ack importCheck(@PathVariable String uuid) {
+    ImportResult importCheck(@PathVariable String uuid) {
         return exportService.importCheck(uuid);
     }
 
