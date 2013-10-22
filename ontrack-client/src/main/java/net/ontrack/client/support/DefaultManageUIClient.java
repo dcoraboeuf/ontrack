@@ -119,6 +119,15 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public Ack importCheck(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/import/%s/check", uuid),
+                Ack.class
+        );
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }

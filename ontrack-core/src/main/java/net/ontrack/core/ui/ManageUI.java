@@ -1,6 +1,10 @@
 package net.ontrack.core.ui;
 
 import net.ontrack.core.model.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -38,6 +42,8 @@ public interface ManageUI {
     ExportData exportProjectDownload(String uuid);
 
     ImportResponse importLaunch(MultipartFile file);
+
+    Ack importCheck(String uuid);
 
     // Branches
 
@@ -168,5 +174,4 @@ public interface ManageUI {
     List<Promotion> getPromotions(Locale locale, String project, String branch, String promotionLevel, int offset, int count);
 
     Ack removePromotedRun(String project, String branch, String build, String promotionLevel);
-
 }

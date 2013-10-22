@@ -516,6 +516,10 @@ project.import.submit
     en -> Import
     fr -> Importer
 
+project.import.message
+    en -> Please wait while the projects are imported...
+    fr -> Veuillez patienter tandis que les projets sont importés...
+
 project.import.project.ok
     en -> The following projects have been successfully imported:
     fr -> Les projets suivants ont été importés avec succès :

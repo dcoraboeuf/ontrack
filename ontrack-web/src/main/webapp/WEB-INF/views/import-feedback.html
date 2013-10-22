@@ -1,0 +1,26 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="import-feedback" title=loc('project.import') breadcrumbs = {loc("home"): ""}>
+    <input id="uid" type="hidden" value="${uid?html}"/>
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="project.import"/>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div id="import-progress" class="alert">
+                    <@lh key="project.import.message" />
+                </div>
+                <div id="import-error" class="alert alert-error hidden">
+                </div>
+            </div>
+        </div>
+	</div>
+</@layout_std>

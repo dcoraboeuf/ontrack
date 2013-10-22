@@ -161,6 +161,13 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
         return new ImportResponse(exportService.importLaunch(file));
     }
 
+    @Override
+    @RequestMapping(value = "/ui/manage/import/{uuid}/check", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack importCheck(@PathVariable String uuid) {
+        return exportService.importCheck(uuid);
+    }
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.POST)
