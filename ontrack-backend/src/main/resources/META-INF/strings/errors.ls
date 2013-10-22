@@ -54,6 +54,9 @@ net.ontrack.backend.export.ImportIdInconsistencyException
 net.ontrack.backend.export.ImportLinkedEntityMissingException
     en -> [E-018] Node "{0}" with ID = {1} has no attached entity.
 
+net.ontrack.backend.ImportFormatException
+    en -> [E-019] Cannot read project file "{0}": {1}
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

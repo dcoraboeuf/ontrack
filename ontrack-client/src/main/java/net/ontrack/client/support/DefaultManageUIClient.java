@@ -109,6 +109,16 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public ImportResponse importLaunch(MultipartFile file) {
+        return upload(
+                getDefaultLocale(),
+                format("/ui/manage/import"),
+                "file",
+                file,
+                ImportResponse.class);
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }

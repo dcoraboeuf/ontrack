@@ -98,6 +98,23 @@ public class GUIController extends AbstractGUIController {
         return "import";
     }
 
+    @RequestMapping(value = "/gui/import", method = RequestMethod.POST)
+    public String importFile(HttpServletRequest request, Model model) {
+        securityUtils.checkIsAdmin();
+        // Error handling
+        errorHandlingMultipartResolver.checkForUploadError(request);
+        // Gets the file
+        MultipartFile file = ((MultipartHttpServletRequest) request).getFile("file");
+        if (file == null) {
+            throw new IllegalStateException("Missing 'file' file parameter");
+        }
+        // Launches the import asynchronously
+        String uid = manageUI.importLaunch(file).getUid();
+        model.addAttribute("uid", uid);
+        // OK
+        return "import-feedback";
+    }
+
     @RequestMapping(value = "/gui/export", method = RequestMethod.GET)
     public String exportPage() {
         securityUtils.checkIsAdmin();

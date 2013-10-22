@@ -26,6 +26,7 @@ import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Controller
@@ -150,6 +151,14 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     ExportData exportProjectDownload(@PathVariable String uuid) {
         return exportService.exportDownload(uuid);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/import", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ImportResponse importLaunch(@RequestParam MultipartFile file) {
+        return new ImportResponse(exportService.importLaunch(file));
     }
 
 

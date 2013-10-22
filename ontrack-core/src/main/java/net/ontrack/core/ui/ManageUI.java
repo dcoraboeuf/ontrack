@@ -37,6 +37,8 @@ public interface ManageUI {
 
     ExportData exportProjectDownload(String uuid);
 
+    ImportResponse importLaunch(MultipartFile file);
+
     // Branches
 
     List<BranchSummary> getBranchList(String project);

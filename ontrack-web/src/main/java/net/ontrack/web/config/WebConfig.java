@@ -37,6 +37,11 @@ import java.util.Map;
 @PropertySource("/META-INF/strings/core.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    /**
+     * Maximum size for an upload (in K)
+     */
+    public static final int UPLOAD_MAX_SIZE_K = 100;
+
     @Autowired
     private Environment env;
 
@@ -147,7 +152,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public ErrorHandlingMultipartResolver multipartResolver() {
-        return new DefaultErrorHandlingMultipartResolver(4);
+        return new DefaultErrorHandlingMultipartResolver(UPLOAD_MAX_SIZE_K);
     }
 
 }

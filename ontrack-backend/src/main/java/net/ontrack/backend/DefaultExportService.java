@@ -22,7 +22,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -133,6 +136,16 @@ public class DefaultExportService implements ExportService {
             } catch (Exception ex) {
                 throw new ExportException(uuid, ex);
             }
+        }
+    }
+
+    @Override
+    public String importLaunch(MultipartFile file) {
+        try (InputStream in = file.getInputStream()) {
+            ExportData importData = objectMapper.readValue(in, ExportData.class);
+            return importLaunch(importData);
+        } catch (IOException ex) {
+            throw new ImportFormatException(file.getName(), ex);
         }
     }
 

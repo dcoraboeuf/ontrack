@@ -3,6 +3,7 @@ package net.ontrack.service;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.ProjectSummary;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +17,16 @@ public interface ExportService {
     ExportData exportDownload(String uuid);
 
     /**
-     * Launches the import of
+     * Launches the import of projects from a file that contains
+     * some exported projects.
+     *
+     * @param file File to import
+     * @return UUID to be used in {@link #importCheck(String)}
+     */
+    String importLaunch(MultipartFile file);
+
+    /**
+     * Launches the import of projects
      *
      * @param importData Data to import
      * @return UUID to be used in {@link #importCheck(String)}
