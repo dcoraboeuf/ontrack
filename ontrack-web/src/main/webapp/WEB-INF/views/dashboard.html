@@ -15,7 +15,7 @@
                 <#list dashboard.branches as branch>
                     <td valign="top" width="${width}%">
                         <h1>${branch.project.name?html}</h1>
-                        <h2 style="text">${branch.name?html}</h2>
+                        <h2>${branch.name?html}</h2>
                         <div
                             id="branch-${branch.id?c}"
                             class="dynamic"
