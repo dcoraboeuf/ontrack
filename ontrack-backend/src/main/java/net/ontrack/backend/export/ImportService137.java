@@ -5,6 +5,7 @@ import net.ontrack.backend.dao.*;
 import net.ontrack.core.model.*;
 import net.ontrack.service.ManagementService;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,11 @@ public class ImportService137 implements ImportService {
     protected final CommentDao commentDao;
     protected final PropertyDao propertyDao;
     protected final BuildCleanupDao buildCleanupDao;
-    private final ManagementService managementService;
+    protected final ManagementService managementService;
+    protected final ObjectMapper objectMapper;
 
     @Autowired
-    public ImportService137(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao) {
+    public ImportService137(ManagementService managementService, ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper) {
         this.managementService = managementService;
         this.projectDao = projectDao;
         this.branchDao = branchDao;
@@ -48,6 +50,7 @@ public class ImportService137 implements ImportService {
         this.commentDao = commentDao;
         this.propertyDao = propertyDao;
         this.buildCleanupDao = buildCleanupDao;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -239,6 +242,8 @@ public class ImportService137 implements ImportService {
 
     protected void importPromotionLevels(ProjectData projectData, ImportContext context) {
         List<JsonNode> promotionLevelsNodeList = sortJsonNodes(projectData.getData().path("promotionLevels"), "levelNb");
+        // Index of images
+        Map<Integer, TExportedImage> images = getExportImages(projectData.getData(), "promotionLevelImages");
         for (JsonNode promotionLevelNode : promotionLevelsNodeList) {
             int oldPromotionLevelId = promotionLevelNode.path("id").asInt();
             int oldBranchId = promotionLevelNode.path("branch").asInt();
@@ -248,16 +253,24 @@ public class ImportService137 implements ImportService {
             int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
             context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
             // Image
-            JsonNode promotionLevelImageNode = projectData.getData().path("promotionLevelImages").path(String.valueOf(oldPromotionLevelId));
-            if (!promotionLevelImageNode.isMissingNode()) {
-                try {
-                    byte[] bytes = promotionLevelImageNode.getBinaryValue();
-                    promotionLevelDao.updateImage(newPromotionLevelId, bytes);
-                } catch (IOException ex) {
-                    throw new ImportCannotReadBytesException("promotionLevelImages/" + oldPromotionLevelId, ex);
-                }
+            TExportedImage image = images.get(oldPromotionLevelId);
+            if (image != null) {
+                promotionLevelDao.updateImage(newPromotionLevelId, image.getBytes());
             }
         }
+    }
+
+    protected Map<Integer, TExportedImage> getExportImages(JsonNode data, String imagesFieldName) {
+        Map<Integer, TExportedImage> map = new HashMap<>();
+        for (JsonNode exportedImage : data.path(imagesFieldName)) {
+            try {
+                TExportedImage image = objectMapper.readValue(exportedImage, TExportedImage.class);
+                map.put(image.getId(), image);
+            } catch (IOException ex) {
+                throw new ImportCannotReadExportedImageException(imagesFieldName, ex);
+            }
+        }
+        return map;
     }
 
     protected void importBranches(ProjectData projectData, ImportContext context, int projectId) {

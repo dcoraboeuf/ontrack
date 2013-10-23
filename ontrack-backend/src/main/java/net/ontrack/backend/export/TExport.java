@@ -12,7 +12,7 @@ public class TExport {
     private final TProject project;
     private final Collection<TBranch> branches;
     private final Collection<TPromotionLevel> promotionLevels;
-    private final Map<Integer, byte[]> promotionLevelImages;
+    private final Collection<TExportedImage> promotionLevelImages;
     private final Collection<TValidationStamp> validationStamps;
     private final Collection<TBuild> builds;
     private final Collection<TPromotedRun> promotedRuns;

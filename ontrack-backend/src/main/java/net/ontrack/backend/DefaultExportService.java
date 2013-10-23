@@ -10,6 +10,7 @@ import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
+import net.ontrack.backend.export.TExportedImage;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.support.Version;
@@ -218,11 +219,11 @@ public class DefaultExportService implements ExportService {
             promotionLevels.addAll(promotionLevelDao.findByBranch(branch.getId()));
         }
         // Promotion level images
-        Map<Integer, byte[]> promotionLevelImages = new HashMap<>();
+        List<TExportedImage> promotionLevelImages = new ArrayList<>();
         for (TPromotionLevel promotionLevel : promotionLevels) {
             byte[] image = promotionLevelDao.getImage(promotionLevel.getId());
             if (image != null) {
-                promotionLevelImages.put(promotionLevel.getId(), image);
+                promotionLevelImages.add(new TExportedImage(promotionLevel.getId(), image));
             }
         }
         // Validation stamps for all branches
