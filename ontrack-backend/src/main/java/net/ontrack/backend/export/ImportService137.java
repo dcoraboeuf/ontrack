@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -246,6 +247,16 @@ public class ImportService137 implements ImportService {
             int newBranchId = context.forBranch(oldBranchId);
             int newPromotionLevelId = promotionLevelDao.createPromotionLevel(newBranchId, promotionLevelName, promotionLevelDescription);
             context.forPromotionLevel(oldPromotionLevelId, newPromotionLevelId);
+            // Image
+            JsonNode promotionLevelImageNode = projectData.getData().path("promotionLevelImages").path(String.valueOf(oldPromotionLevelId));
+            if (!promotionLevelImageNode.isMissingNode()) {
+                try {
+                    byte[] bytes = promotionLevelImageNode.getBinaryValue();
+                    promotionLevelDao.updateImage(newPromotionLevelId, bytes);
+                } catch (IOException ex) {
+                    throw new ImportCannotReadBytesException("promotionLevelImages/" + oldPromotionLevelId, ex);
+                }
+            }
         }
     }
 

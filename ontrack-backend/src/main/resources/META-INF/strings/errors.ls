@@ -42,7 +42,8 @@ net.ontrack.backend.ImportTaskNotFoundException
 net.ontrack.backend.ImportException
     en -> [E-014] Error while importing project(s). ID = {0}, Error = {1}
 
-# [E-015]
+net.ontrack.backend.export.ImportCannotReadBytesException
+    en -> [E-015] Cannot read bytes at "{0}": {1}
 
 net.ontrack.backend.ImportVersionException
     en -> [E-016] Cannot import version {0} into version {1}.
