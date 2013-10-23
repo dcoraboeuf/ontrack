@@ -231,6 +231,14 @@ public class DefaultExportService implements ExportService {
         for (TBranch branch : branches) {
             validationStamps.addAll(validationStampDao.findByBranch(branch.getId()));
         }
+        // Validation stamp images
+        List<TExportedImage> validationStampImages = new ArrayList<>();
+        for (TValidationStamp validationStamp : validationStamps) {
+            byte[] image = validationStampDao.getImage(validationStamp.getId());
+            if (image != null) {
+                validationStampImages.add(new TExportedImage(validationStamp.getId(), image));
+            }
+        }
         // All builds of all branches
         List<TBuild> builds = new ArrayList<>();
         for (TBranch branch : branches) {
@@ -287,6 +295,7 @@ public class DefaultExportService implements ExportService {
                 promotionLevels,
                 promotionLevelImages,
                 validationStamps,
+                validationStampImages,
                 builds,
                 promotedRuns,
                 validationRuns,

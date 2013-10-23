@@ -229,6 +229,8 @@ public class ImportService137 implements ImportService {
 
     protected void importValidationStamps(ProjectData projectData, ImportContext context) {
         List<JsonNode> validationStampNodeList = sortJsonNodes(projectData.getData().path("validationStamps"), "orderNb");
+        // Index of images
+        Map<Integer, TExportedImage> images = getExportImages(projectData.getData(), "validationStampImages");
         for (JsonNode validationStampNode : validationStampNodeList) {
             int oldValidationStampId = validationStampNode.path("id").asInt();
             int oldBranchId = validationStampNode.path("branch").asInt();
@@ -237,6 +239,11 @@ public class ImportService137 implements ImportService {
             int newBranchId = context.forBranch(oldBranchId);
             int newValidationStampId = validationStampDao.createValidationStamp(newBranchId, validationStampName, validationStampDescription);
             context.forValidationStamp(oldValidationStampId, newValidationStampId);
+            // Image
+            TExportedImage image = images.get(oldValidationStampId);
+            if (image != null) {
+                validationStampDao.updateImage(newValidationStampId, image.getBytes());
+            }
         }
     }
 

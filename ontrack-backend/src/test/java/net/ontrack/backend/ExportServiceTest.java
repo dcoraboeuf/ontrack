@@ -93,6 +93,9 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ValidationStampSummary b1acc = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
                 ValidationStampSummary b2smoke = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
                 ValidationStampSummary b2acc = managementService.createValidationStamp(b2.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));
+                // Validation stamp images
+                managementService.imageValidationStamp(b1smoke.getId(), Helper.getResourceAsMultipartFile(this, "validationStampImage1.png", "image/png"));
+                managementService.imageValidationStamp(b1acc.getId(), Helper.getResourceAsMultipartFile(this, "validationStampImage2.png", "image/png"));
                 // Builds
                 BuildSummary b1_build1 = controlService.createBuild(b1.getId(), new BuildCreationForm("b101", "Build 1", PropertiesCreationForm.create()));
                 BuildSummary b1_build2 = controlService.createBuild(b1.getId(), new BuildCreationForm("b102", "Build 2", PropertiesCreationForm.create()));
