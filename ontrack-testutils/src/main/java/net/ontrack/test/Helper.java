@@ -14,17 +14,14 @@ public final class Helper {
     private Helper() {
     }
 
+    public static String getResourceAsString(Object ref, String path) throws IOException {
+        InputStream in = ref.getClass().getResourceAsStream(path);
+        return readString(path, in);
+    }
+
     public static String getResourceAsString(String path) throws IOException {
         InputStream in = Helper.class.getResourceAsStream(path);
-        if (in == null) {
-            throw new IOException("Cannot find resource at " + path);
-        } else {
-            try {
-                return IOUtils.toString(in, "UTF-8");
-            } finally {
-                in.close();
-            }
-        }
+        return readString(path, in);
     }
 
     public static String uid(String prefix) {
@@ -38,5 +35,17 @@ public final class Helper {
                 type,
                 ref.getClass().getResourceAsStream(path)
         );
+    }
+
+    private static String readString(String path, InputStream in) throws IOException {
+        if (in == null) {
+            throw new IOException("Cannot find resource at " + path);
+        } else {
+            try {
+                return IOUtils.toString(in, "UTF-8");
+            } finally {
+                in.close();
+            }
+        }
     }
 }

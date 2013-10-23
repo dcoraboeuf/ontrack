@@ -40,7 +40,7 @@ public class DefaultExportService implements ExportService {
     /**
      * Version when the export/import started to be available
      */
-    public static final String REFERENCE_VERSION = "1.37";
+    public static final String REFERENCE_VERSION = "1.39";
     private final ExecutorService exportExecutorService = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("export-%d").setDaemon(true).build());
     private final ExecutorService importExecutorService = Executors.newSingleThreadExecutor(

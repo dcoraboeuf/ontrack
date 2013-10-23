@@ -182,9 +182,55 @@ public class ExportServiceTest extends AbstractBackendTest {
         assertEquals(file1, file2);
     }
 
+    @Test
+    public void import_1_39() throws Exception {
+        // File as string
+        String json = Helper.getResourceAsString(this, "export-1.39.json");
+        // Prepares the import
+        final ExportData importData = objectMapper.readValue(json, ExportData.class);
+        // Imports the project
+        ImportResult result = asAdmin().call(new Callable<ImportResult>() {
+            @Override
+            public ImportResult call() throws Exception {
+                // Imports the file
+                String uuid = exportService.importLaunch(importData);
+                // Waits until the import is done
+                ImportResult result;
+                while (true) {
+                    result = exportService.importCheck(uuid);
+                    if (result.getFinished().isSuccess()) {
+                        break;
+                    } else {
+                        logger.debug("Waiting for the import of the file");
+                        Thread.sleep(100);
+                    }
+                }
+                // Gets the results
+                return result;
+            }
+        });
+        assertNotNull(result);
+        Collection<ProjectSummary> projects = result.getImportedProjects();
+        assertEquals(1, projects.size());
+        assertEquals(0, result.getRejectedProjects().size());
+        ProjectSummary importedProject = projects.iterator().next();
+        assertNotNull(importedProject);
+        assertEquals("PRJ139", importedProject.getName());
+        // Exports the imported project
+        ExportData exportData = exportProject(importedProject.getId());
+        // Compares the trees without taking into account the IDs and the order of fields
+        ExportData pruned1 = pruneIds(importData);
+        ExportData pruned2 = pruneIds(exportData);
+        // Compares files 1 & 2
+        String file1 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pruned1);
+        String file2 = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pruned2);
+        assertEquals(file1, file2);
+    }
+
     public ExportData pruneIds(ExportData exportData) {
+        //
         return new ExportData(
-                exportData.getVersion(),
+                "xxx",
                 Collections2.transform(
                         exportData.getProjects(),
                         new Function<ProjectData, ProjectData>() {
