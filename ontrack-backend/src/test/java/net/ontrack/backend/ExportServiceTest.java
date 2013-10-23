@@ -13,6 +13,7 @@ import net.ontrack.extension.jenkins.JenkinsUrlPropertyDescriptor;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
+import net.ontrack.test.Helper;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -84,6 +85,9 @@ public class ExportServiceTest extends AbstractBackendTest {
                 PromotionLevelSummary b1prod = managementService.createPromotionLevel(b1.getId(), new PromotionLevelCreationForm("PROD", "Production"));
                 PromotionLevelSummary b2dev = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("DEV", "Development"));
                 PromotionLevelSummary b2prod = managementService.createPromotionLevel(b2.getId(), new PromotionLevelCreationForm("PROD", "Production"));
+                // Promotion level images
+                managementService.imagePromotionLevel(b1dev.getId(), Helper.getResourceAsMultipartFile(this, "promotionLevelImage1.png", "image/png"));
+                managementService.imagePromotionLevel(b1prod.getId(), Helper.getResourceAsMultipartFile(this, "promotionLevelImage2.png", "image/png"));
                 // Validation stamps
                 ValidationStampSummary b1smoke = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("SMOKE", "Smoke tests"));
                 ValidationStampSummary b1acc = managementService.createValidationStamp(b1.getId(), new ValidationStampCreationForm("ACC", "Acceptance tests"));

@@ -60,7 +60,6 @@ public class DefaultExportService implements ExportService {
     private final BuildCleanupDao buildCleanupDao;
     private final ObjectMapper objectMapper;
     private final String version;
-
     /**
      * Import service for versions 1.37 and greater.
      */
@@ -218,6 +217,14 @@ public class DefaultExportService implements ExportService {
         for (TBranch branch : branches) {
             promotionLevels.addAll(promotionLevelDao.findByBranch(branch.getId()));
         }
+        // Promotion level images
+        Map<Integer, byte[]> promotionLevelImages = new HashMap<>();
+        for (TPromotionLevel promotionLevel : promotionLevels) {
+            byte[] image = promotionLevelDao.getImage(promotionLevel.getId());
+            if (image != null) {
+                promotionLevelImages.put(promotionLevel.getId(), image);
+            }
+        }
         // Validation stamps for all branches
         List<TValidationStamp> validationStamps = new ArrayList<>();
         for (TBranch branch : branches) {
@@ -277,6 +284,7 @@ public class DefaultExportService implements ExportService {
                 project,
                 branches,
                 promotionLevels,
+                promotionLevelImages,
                 validationStamps,
                 builds,
                 promotedRuns,
