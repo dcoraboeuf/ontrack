@@ -1,8 +1,10 @@
 package net.ontrack.extension.jira.service;
 
+import com.atlassian.httpclient.api.HttpStatus;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
@@ -132,7 +134,8 @@ public class DefaultJIRAService implements JIRAService {
                 );
 
             } catch (RestClientException ex) {
-                if ("Issue Does Not Exist".equals(ex.getMessage())) {
+                Optional<Integer> code = ex.getStatusCode();
+                if (code.isPresent() && code.get() == HttpStatus.NOT_FOUND.code) {
                     return null;
                 } else {
                     throw ex;
