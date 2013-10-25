@@ -206,7 +206,7 @@ then
 	if [ "$DEPLOY" == "yes" ]
 	then
 		# Creating the release on GitHub
-		RELEASE_ID=`curl --silent --header "Accept: application/vnd.github.manifold-preview" --user "${GITHUB_USER}:${GITHUB_TOKEN}"  https://api.github.com/repos/${GITHUB_USER}/ontrack/releases --data "{\"tag_name\":\"${TAG}\"}" | grep "\"id\":" | sed "s/[^0-9]//g"`
+		RELEASE_ID=`curl --silent --header "Accept: application/vnd.github.manifold-preview" --user "${GITHUB_USER}:${GITHUB_TOKEN}"  https://api.github.com/repos/${GITHUB_USER}/ontrack/releases --data "{\"tag_name\":\"${TAG}\",\"name\":\"v${VERSION}\"}" | grep "\"id\":" | sed "s/[^0-9]//g"`
 		if [ "$RELEASE_ID" == "" ]
 		then
 			echo "Release could not be created"
