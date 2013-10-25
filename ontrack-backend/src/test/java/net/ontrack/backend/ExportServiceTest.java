@@ -112,10 +112,10 @@ public class ExportServiceTest extends AbstractBackendTest {
                 ValidationRunSummary b1_build2_smoke = controlService.createValidationRun(b1_build2.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.PASSED, "Smoke tests OK", PropertiesCreationForm.create()));
                 ValidationRunSummary b1_build2_acc = controlService.createValidationRun(b1_build2.getId(), b1smoke.getId(), new ValidationRunCreationForm(Status.FAILED, "Failed ACC tests", PropertiesCreationForm.create()));
                 // Validation run statuses & comment
-                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(null, "Comment about smoke tests", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), new ValidationRunCommentCreationForm(Status.EXPLAINED, "Explained", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build1_smoke_2.getId(), new ValidationRunCommentCreationForm(Status.FIXED, "Fixed", Collections.<PropertyCreationForm>emptyList()));
-                managementService.addValidationRunComment(b1_build2_acc.getId(), new ValidationRunCommentCreationForm(Status.INVESTIGATED, "Investigated", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), ValidationRunCommentCreationForm.of(null, "Comment about smoke tests", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build1_smoke_1.getId(), ValidationRunCommentCreationForm.of(Status.EXPLAINED, "Explained", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build1_smoke_2.getId(), ValidationRunCommentCreationForm.of(Status.FIXED, "Fixed", Collections.<PropertyCreationForm>emptyList()));
+                managementService.addValidationRunComment(b1_build2_acc.getId(), ValidationRunCommentCreationForm.of(Status.INVESTIGATED, "Investigated", Collections.<PropertyCreationForm>emptyList()));
                 // Comments
                 managementService.addValidationStampComment(b1smoke.getId(), new ValidationStampCommentForm("Comment for b1smoke"));
                 managementService.addValidationStampComment(b2acc.getId(), new ValidationStampCommentForm("Comment for b2acc"));

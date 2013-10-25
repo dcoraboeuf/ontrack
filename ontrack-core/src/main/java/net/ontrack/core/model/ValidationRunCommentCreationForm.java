@@ -12,6 +12,12 @@ public class ValidationRunCommentCreationForm {
     private final String description;
     private final List<PropertyCreationForm> properties;
 
+    private ValidationRunCommentCreationForm(Status status, String description, List<PropertyCreationForm> properties) {
+        this.status = status;
+        this.description = description;
+        this.properties = properties;
+    }
+
     @JsonCreator
     public ValidationRunCommentCreationForm(
             @JsonProperty("status")
@@ -20,9 +26,15 @@ public class ValidationRunCommentCreationForm {
             String description,
             @JsonProperty("properties")
             List<PropertyCreationForm> properties) {
-        this.status = EnumUtils.getEnum(Status.class, status);
-        this.description = description;
-        this.properties = properties;
+        this(EnumUtils.getEnum(Status.class, status), description, properties);
+    }
+
+    public static ValidationRunCommentCreationForm of(Status status, String description, List<PropertyCreationForm> properties) {
+        return new ValidationRunCommentCreationForm(
+                status,
+                description,
+                properties
+        );
     }
 
     public Status getStatus() {
