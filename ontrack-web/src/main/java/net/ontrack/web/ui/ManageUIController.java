@@ -117,6 +117,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     Callable<ExportData> doBackupSave() {
+        securityUtils.checkIsAdmin();
         // Launches the export
         return new Callable<ExportData>() {
             @Override
@@ -154,6 +155,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     Callable<ImportResult> doBackupRestore(@RequestParam final MultipartFile file) {
+        securityUtils.checkIsAdmin();
         return new Callable<ImportResult>() {
             @Override
             public ImportResult call() throws Exception {
