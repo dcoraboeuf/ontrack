@@ -17,7 +17,7 @@
     <h1><small><@lh key="build.validation_stamps" /></small></h1>
     <#list build.buildValidationStamps as buildValidationStamp>
         <span class="label validation_stamp <#if !buildValidationStamp.run>notrun</#if>">
-            <img class="tooltip-source" width="24" title="${buildValidationStamp.name}<#if buildValidationStamp.owner??> - ${buildValidationStamp.owner.fullName?html}</#if>" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+            <img class="tooltip-source" title="${buildValidationStamp.name}<#if buildValidationStamp.owner??> - ${buildValidationStamp.owner.fullName?html}</#if>" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
             <a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}">${buildValidationStamp.name?html}</a>
             <#list buildValidationStamp.runs as run>
                 <a href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/build/${build.buildSummary.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}"><img src="static/images/status-${run.status?html}.png" title="&#x23;${run.runOrder?c} - ${run.status?html}" class="tooltip-source" /></a>
@@ -33,7 +33,7 @@
             <#list build.buildPromotionLevels as buildPromotionLevel>
                 <li>
                     <i class="icon-arrow-right"></i>
-                    <img width="24" src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}/image" />
+                    <img src="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}/image" />
                     <a class="tooltip-source" href="gui/project/${build.buildSummary.branch.project.name?html}/branch/${build.buildSummary.branch.name?html}/promotion_level/${buildPromotionLevel.name}" title="${buildPromotionLevel.signature.elapsedTime?html} - ${buildPromotionLevel.signature.formattedTime?html}">${buildPromotionLevel.name?html}</a>
                 </li>
             </#list>

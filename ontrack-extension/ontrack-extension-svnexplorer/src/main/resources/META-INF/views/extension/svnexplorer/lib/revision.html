@@ -62,7 +62,7 @@
                                         <#list build.buildPromotionLevels as buildPromotionLevel>
                                             <li>
                                                 <i class="icon-arrow-right"></i>
-                                                <img width="24" title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
+                                                <img title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
                                                 <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
                                             </li>
                                         </#list>
@@ -73,9 +73,9 @@
                                         <#if buildValidationStamp.run>
                                             <#assign run = buildValidationStamp.runs?first />
                                             <span class="label validationStamp">
-                                                <img width="24" title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                                <img title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
                                                 <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
-                                                <img width="24" src="static/images/status-${run.status}.png" />
+                                                <img src="static/images/status-${run.status}.png" />
                                             </span>
                                         </#if>
                                     </#list>
@@ -120,7 +120,7 @@
                                 <tr>
                                     <td>
                                         <a href="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}">
-                                            <img width="24" title="${promotion.promotionLevel.name?html}" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
+                                            <img title="${promotion.promotionLevel.name?html}" src="gui/project/${promotion.promotionLevel.branch.project.name?html}/branch/${promotion.promotionLevel.branch.name?html}/promotion_level/${promotion.promotionLevel.name?html}/image" />
                                             ${promotion.promotionLevel.name?html}
                                         </a>
                                     </td>

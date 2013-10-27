@@ -66,7 +66,7 @@
                                 <#list branch.properties as property>
                                     <tr>
                                         <td>
-                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            <img src="${property.iconPath?html}" />
                                             ${property.displayName?html}
                                         </td>
                                         <td>
@@ -88,7 +88,7 @@
                                 <#list branch.validationStampProperties as property>
                                     <tr>
                                         <td>
-                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            <img src="${property.iconPath?html}" />
                                             ${property.displayName?html}
                                         </td>
                                         <td class="validation-stamp-property" extension="${property.extension?html}" property="${property.name?html}">
@@ -111,7 +111,7 @@
                                 <#list branch.promotionLevelProperties as property>
                                     <tr>
                                         <td>
-                                            <img src="${property.iconPath?html}" width="24" height="24" />
+                                            <img src="${property.iconPath?html}" />
                                             ${property.displayName?html}
                                         </td>
                                         <td class="promotion-level-property" extension="${property.extension?html}" property="${property.name?html}">

@@ -33,7 +33,7 @@
                         <tr>
                             <td id="validation-stamp-${stamp.summary.id?c}" class="<#if stamp.flag>checked</#if>">
                                 <input type="checkbox" class="validation-stamp" data-validation-stamp="${stamp.summary.name?html}" data-validation-stamp-id="${stamp.summary.id?c}"  <#if stamp.flag>checked="checked"</#if> />
-                                <img width="24" height="24" src="gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}/validation_stamp/${stamp.summary.name?html}/image" />
+                                <img src="gui/project/${dashboard.branch.project.name?html}/branch/${dashboard.branch.name?html}/validation_stamp/${stamp.summary.name?html}/image" />
                                 ${stamp.summary.name?html}
                             </td>
                         </tr>

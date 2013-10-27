@@ -12,9 +12,9 @@
                 <span class="title">
                     <a href="gui/project/${validationStamp.branch.project.name?html}">${validationStamp.branch.project.name?html}</a>
                     / <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}">${validationStamp.branch.name?html}</a>
-                    / <img height="24" width="24" src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image"> ${validationStamp.name?html}
+                    / <img src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image"> ${validationStamp.name?html}
                     <#list decoratedValidationStamp.decorations as decoration>
-                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" width="24" height="24" />
+                        <img src="${decoration.iconPath}" title="${decoration.title?html}" class="tooltip-source" />
                     </#list>
                 </span>
                 <span class="action action-optional">
@@ -32,7 +32,7 @@
             <#if validationStamp.owner??>
                 <ul class="span12 properties">
                     <li>
-                        <img src="${base}/images/owner.png" width="24" height="24" />
+                        <img src="${base}/images/owner.png" />
                         <span class="description"><@lh key="validation_stamp.owner" />:</span>
                         ${validationStamp.owner.fullName?html} - <code>${validationStamp.owner.name?html}</code>
                     </li>

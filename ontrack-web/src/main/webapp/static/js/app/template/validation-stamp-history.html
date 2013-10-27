@@ -2,9 +2,9 @@
     <td width="26">
         <a href="gui/project/{{validationRun.build.branch.project.name}}/branch/{{validationRun.build.branch.name}}/build/{{validationRun.build.name}}/validation_stamp/{{validationRun.validationStamp.name}}/validation_run/{{validationRun.runOrder}}">
             {{#if status}}
-                <img src="static/images/status-{{status}}.png" height="24" width="24" title="{{status}}" class="tooltip-source" />
+                <img src="static/images/status-{{status}}.png" title="{{status}}" class="tooltip-source" />
             {{else}}
-                <img src="static/images/comment.png" height="24" width="24" />
+                <img src="static/images/comment.png" />
             {{/if}}
         </a>
     </td>

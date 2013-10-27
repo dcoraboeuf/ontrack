@@ -25,11 +25,11 @@
             {{/thisRun}}
             <!-- Image and content -->
             {{#if status}}
-                <img width="24" height="24" src="static/images/status-{{status}}.png" />
+                <img src="static/images/status-{{status}}.png" />
                 <b>{{#statusLabel}}{{status}}{{/statusLabel}}</b>
                 - {{content}}
             {{else}}
-                <img width="24" height="24" src="static/images/comment.png" />
+                <img src="static/images/comment.png" />
                 {{content}}
             {{/if}}
             <span class="elapsed" title="{{signature.formattedTime}}">{{signature.elapsedTime}}</span>

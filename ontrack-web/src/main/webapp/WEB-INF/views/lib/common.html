@@ -80,9 +80,9 @@
 <#macro decoration_icon value>
     <#if value.link?? && value.link != "">
         <a href="${value.link?html}">
-            <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" width="24" height="24" />
+            <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" />
         </a>
     <#else>
-        <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" width="24" height="24" />
+        <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" />
     </#if>
 </#macro>

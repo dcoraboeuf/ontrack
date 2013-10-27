@@ -7,7 +7,7 @@
                 {{#if passed}}
                     <span class="build-validation-run label">
                         <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">
-                            <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                            <img class="tooltip-source" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
                             {{name}}
                         </a>
                         {{#runs}}
@@ -26,7 +26,7 @@
                 {{^passed}}
                     <span class="build-validation-run label">
                         <a href="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{name}}">
-                            <img class="tooltip-source" width="24" title="{{../name}}{{#../owner}} - {{fullName}}{{/../owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
+                            <img class="tooltip-source" title="{{../name}}{{#../owner}} - {{fullName}}{{/../owner}}" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/validation_stamp/{{../name}}/image" />
                             {{name}}
                         </a>
                         {{#runs}}
@@ -44,7 +44,7 @@
             {{^if run}}
                 <span class="build-validation-run label">
                     <a href="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}">
-                        <img class="tooltip-source" width="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
+                        <img class="tooltip-source" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../../project}}/branch/{{../../branch}}/validation_stamp/{{name}}/image" />
                         {{name}}
                     </a>
                     {{#runs}}

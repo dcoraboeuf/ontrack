@@ -3,7 +3,7 @@
 <#macro stamp mode validationStamp promotionLevel="">
     <span class="label action validationStamp ${mode}" data-validationStamp="${validationStamp.name?html}" data-promotionLevel="${promotionLevel?html}">
         <a href="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}">
-            <img height="24" width="24" src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image" />
+            <img src="gui/project/${validationStamp.branch.project.name?html}/branch/${validationStamp.branch.name?html}/validation_stamp/${validationStamp.name?html}/image" />
             ${validationStamp.name?html}
         </a>
     </span>
@@ -54,7 +54,7 @@
                                 </td>
                                 <td>
                                     <a href="gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}/promotion_level/${promotionLevelAndStamps.promotionLevel.name?html}">
-                                        <img height="24" width="24" src="gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}/promotion_level/${promotionLevelAndStamps.promotionLevel.name?html}/image" />
+                                        <img src="gui/project/${management.branch.project.name?html}/branch/${management.branch.name?html}/promotion_level/${promotionLevelAndStamps.promotionLevel.name?html}/image" />
                                         ${promotionLevelAndStamps.promotionLevel.name?html}
                                     </a>
                                     <#if promotionLevelAndStamps.promotionLevel.autoPromote>

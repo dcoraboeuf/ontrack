@@ -20,7 +20,7 @@
             {{#branchBuilds.validationStamps}}
                 <th align="center" class="validation_stamp_header" validation_stamp="{{name}}">
                     <a href="gui/project/{{../project}}/branch/{{../branch}}/validation_stamp/{{name}}">
-                        <img class="tooltip-source" width="24" height="24" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{../branch}}/validation_stamp/{{name}}/image" />
+                        <img class="tooltip-source" title="{{name}}{{#owner}} - {{fullName}}{{/owner}}" src="gui/project/{{../project}}/branch/{{../branch}}/validation_stamp/{{name}}/image" />
                     </a>
                 </th>
             {{/branchBuilds.validationStamps}}
@@ -65,7 +65,7 @@
                                     <li>
                                         <a class="tooltip-source" href="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}" title="{{signature.elapsedTime}} - {{signature.formattedTime}}">
                                             <i class="icon-arrow-right"></i>
-                                            <img width="24" src="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}/image" />
+                                            <img src="gui/project/{{../../../project}}/branch/{{../../../branch}}/promotion_level/{{name}}/image" />
                                             {{name}}
                                         </a>
                                     </li>

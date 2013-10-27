@@ -5,9 +5,9 @@
                 href="gui/project/{{../../project}}/branch/{{../../branch}}/build/{{../../build}}/validation_stamp/{{../../branchBuildValidationStampLastStatus/validationStampName}}/validation_run/{{validationRunOrder}}"
                 title="{{lastValidationRunStatus.status}} - {{datedSignature.elapsedTime}} - {{datedSignature.formattedTime}}</div>"
                 data-html="true">
-            <img width="24" height="24" src="static/images/status-{{lastValidationRunStatus.status}}.png" />
+            <img src="static/images/status-{{lastValidationRunStatus.status}}.png" />
         </a>
     {{/branchBuildValidationStampLastStatus.lastValidationRun}}
 {{else}}
-    <img class="tooltip-source" width="24" height="24" src="static/images/status-NONE.png" title="{{loc 'validationRun.notRun' }}" />
+    <img class="tooltip-source" src="static/images/status-NONE.png" title="{{loc 'validationRun.notRun' }}" />
 {{/if}}

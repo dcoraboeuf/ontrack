@@ -3,6 +3,19 @@
     width: 85%;
 }
 
+/* Images are icons */
+img {
+    width: 24px;
+    height: 24px;
+}
+
+img.no-icon {
+    width: auto;
+    height: auto;
+}
+
+/* ..unless mentioned otherwise */
+
 /* Pointer */
 .action {
 	cursor: pointer;
