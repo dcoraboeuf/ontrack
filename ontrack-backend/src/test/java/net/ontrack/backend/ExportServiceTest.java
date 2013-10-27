@@ -122,7 +122,8 @@ public class ExportServiceTest extends AbstractBackendTest {
                 // Properties
                 propertiesService.createProperties(Entity.PROJECT, project.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://project")));
                 propertiesService.createProperties(Entity.BRANCH, b1.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://branch")));
-                // TODO Build clean-up policy
+                // Build clean-up policy
+                managementService.setBuildCleanup(b2.getId(), new BuildCleanupForm(60, Collections.singleton(b2prod.getId())));
                 // OK
                 return project;
             }
@@ -283,9 +284,17 @@ public class ExportServiceTest extends AbstractBackendTest {
                 Map.Entry<String, JsonNode> field = fields.next();
                 String name = field.getKey();
                 JsonNode value = field.getValue();
-                if (!excludedFields.contains(name) && (!value.isInt() || !excludedIntFields.contains(name))) {
+                if ("excludedPromotionLevels".equals(name)) {
+                    // Sets all IDs to 0, keeping only the number of elements as a trace
+                    ArrayNode newArray = factory.arrayNode();
+                    for (JsonNode ignored : value) {
+                        newArray.add(factory.numberNode(0));
+                    }
+                    target.put(name, newArray);
+                } else if (!excludedFields.contains(name) && (!value.isInt() || !excludedIntFields.contains(name))) {
                     target.put(name, pruneIds(value));
                 }
+                // Ignored
             }
             return target;
         } else if (source.isBoolean()) {

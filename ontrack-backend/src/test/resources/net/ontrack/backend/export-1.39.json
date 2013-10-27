@@ -644,7 +644,12 @@
                 "values" : {}
             }
             ],
-            "buildCleanups" : []
+            "buildCleanups" : [ {
+                "id" : 1,
+                "branch" : 2,
+                "retention" : 60,
+                "excludedPromotionLevels" : [ 4 ]
+            } ]
         }
     }
     ]

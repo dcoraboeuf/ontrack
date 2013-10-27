@@ -76,9 +76,32 @@ public class ImportService137 implements ImportService {
         importComments(projectData, context);
         importProperties(projectData, context);
         importEvents(projectData, context);
-        // TODO Build clean-up policy
+        importBuildCleanPolicies(projectData, context);
         // Project ID
         return projectId;
+    }
+
+    protected void importBuildCleanPolicies(ProjectData projectData, ImportContext context) {
+        List<JsonNode> buildCleanupsNodeList = sortJsonNodes(projectData.getData().path("buildCleanups"), "id");
+        for (JsonNode buildCleanupNode : buildCleanupsNodeList) {
+            // Info
+            int oldBranchId = buildCleanupNode.path("branch").asInt();
+            int retention = buildCleanupNode.path("retention").asInt();
+            // Excluded promotion levels & mapping
+            Set<Integer> newExcludedPromotionLevels = new HashSet<>();
+            JsonNode array = buildCleanupNode.path("excludedPromotionLevels");
+            for (JsonNode arrayItem : array) {
+                newExcludedPromotionLevels.add(
+                        context.forPromotionLevel(
+                                arrayItem.asInt()
+                        )
+                );
+            }
+            // Branch mapping
+            int newBranchId = context.forBranch(oldBranchId);
+            // Creates the build cleanup
+            buildCleanupDao.saveBuildCleanUp(newBranchId, retention, newExcludedPromotionLevels);
+        }
     }
 
     protected void importEvents(ProjectData projectData, ImportContext context) {
