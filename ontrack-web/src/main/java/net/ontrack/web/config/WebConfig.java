@@ -64,6 +64,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     ObjectMapper jacksonObjectMapper;
 
     @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(60 * 1000);
+    }
+
+    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.clear();
         // Plain text
