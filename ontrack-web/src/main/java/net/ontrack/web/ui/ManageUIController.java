@@ -118,32 +118,34 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     Callable<ExportData> doBackupSave() {
         securityUtils.checkIsAdmin();
-        // Launches the export
-        return new Callable<ExportData>() {
-            @Override
-            public ExportData call() throws Exception {
-                // Gets the list of projects
-                List<ProjectSummary> projectList = managementService.getProjectList();
-                // Project IDs
-                List<Integer> ids = Lists.transform(
-                        projectList,
-                        new Function<ProjectSummary, Integer>() {
-                            @Override
-                            public Integer apply(ProjectSummary o) {
-                                return o.getId();
-                            }
+        // Launches the export with same credentials
+        return securityUtils.withCurrentCredentials(
+                new Callable<ExportData>() {
+                    @Override
+                    public ExportData call() throws Exception {
+                        // Gets the list of projects
+                        List<ProjectSummary> projectList = managementService.getProjectList();
+                        // Project IDs
+                        List<Integer> ids = Lists.transform(
+                                projectList,
+                                new Function<ProjectSummary, Integer>() {
+                                    @Override
+                                    public Integer apply(ProjectSummary o) {
+                                        return o.getId();
+                                    }
+                                }
+                        );
+                        // Launches the export
+                        String uuid = exportService.exportLaunch(ids);
+                        // Waits until the export is done
+                        while (!exportService.exportCheck(uuid).isSuccess()) {
+                            Thread.sleep(100);
                         }
-                );
-                // Launches the export
-                String uuid = exportService.exportLaunch(ids);
-                // Waits until the export is done
-                while (!exportService.exportCheck(uuid).isSuccess()) {
-                    Thread.sleep(100);
+                        // Downloads the file
+                        return exportService.exportDownload(uuid);
+                    }
                 }
-                // Downloads the file
-                return exportService.exportDownload(uuid);
-            }
-        };
+        );
     }
 
     @Override
@@ -156,25 +158,27 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     Callable<ImportResult> doBackupRestore(@RequestParam final MultipartFile file) {
         securityUtils.checkIsAdmin();
-        return new Callable<ImportResult>() {
-            @Override
-            public ImportResult call() throws Exception {
-                // Imports the file
-                String uuid = exportService.importLaunch(file);
-                // Waits until the import is done
-                ImportResult result;
-                while (true) {
-                    result = exportService.importCheck(uuid);
-                    if (result.getFinished().isSuccess()) {
-                        break;
-                    } else {
-                        Thread.sleep(100);
+        return securityUtils.withCurrentCredentials(
+                new Callable<ImportResult>() {
+                    @Override
+                    public ImportResult call() throws Exception {
+                        // Imports the file
+                        String uuid = exportService.importLaunch(file);
+                        // Waits until the import is done
+                        ImportResult result;
+                        while (true) {
+                            result = exportService.importCheck(uuid);
+                            if (result.getFinished().isSuccess()) {
+                                break;
+                            } else {
+                                Thread.sleep(100);
+                            }
+                        }
+                        // Gets the results
+                        return result;
                     }
                 }
-                // Gets the results
-                return result;
-            }
-        };
+        );
     }
 
     @Override
