@@ -579,8 +579,8 @@ branch.clone.promotion_level.properties
     fr -> Propriétés des niveaux de promotions
 
 branch.delete.prompt
-	en -> Are you sure to delete the "{0}" branch and all its associated information?
-	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" et toutes ses informations associées?
+	en -> Are you sure to delete the "{0}" branch of the "{1}" project and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" du projet "{1}" et toutes ses informations associées?
 
 branch.create.title
 	en,fr -> @[branch.create]

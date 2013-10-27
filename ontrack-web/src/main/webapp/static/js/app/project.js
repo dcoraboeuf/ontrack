@@ -6,29 +6,11 @@ define(['application', 'dialog', 'ajax', 'jquery'], function (application, dialo
      * Deletion the project
      */
     function deleteProject() {
-        dialog.show({
-            title: 'general.delete'.loc(),
-            templateId: 'project-delete',
-            data: {
-                message: 'project.delete.prompt'.loc(project)
-            },
-            buttons:[{
-                text: 'general.delete'.loc(),
-                action: 'submit'
-            }, {
-                text: 'general.cancel'.loc(),
-                action: 'cancel'
-            }],
-            submitFn: function (dialog) {
-                ajax.del({
-                    url: 'ui/manage/project/{0}'.format(project),
-                    loading: {
-                        el: dialog.controls['submit']
-                    },
-                    successFn: function () {
-                        ''.goto();
-                    }
-                })
+        application.deleteDialog({
+            message: 'project.delete.prompt'.loc(project),
+            url: 'ui/manage/project/{0}'.format(project),
+            successFn: function () {
+                ''.goto();
             }
         })
     }

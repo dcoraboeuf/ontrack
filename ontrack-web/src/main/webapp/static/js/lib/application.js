@@ -1,4 +1,34 @@
-define(['ajax','common'], function (ajax, common) {
+define(['ajax','common','dialog'], function (ajax, common, dialog) {
+
+    function deleteDialog(config) {
+        config = $.extend({
+            title: 'general.delete'.loc(),
+            templateId: 'dialog-delete'
+        }, config);
+        dialog.show({
+            title: config.title,
+            templateId: config.templateId,
+            data: {
+                message: config.message
+            },
+            buttons:[{
+                text: 'general.delete'.loc(),
+                action: 'submit'
+            }, {
+                text: 'general.cancel'.loc(),
+                action: 'cancel'
+            }],
+            submitFn: function (dialog) {
+                ajax.del({
+                    url: config.url,
+                    loading: {
+                        el: dialog.controls['submit']
+                    },
+                    successFn: config.successFn
+                })
+            }
+        })
+    }
 
     function deleteEntity (entityPath, id, callbackFn, nameFn) {
         var url = 'ui/manage/{0}/{1}'.format(entityPath, id);
@@ -35,7 +65,8 @@ define(['ajax','common'], function (ajax, common) {
     }
 
     return {
-        deleteEntity: deleteEntity
+        deleteEntity: deleteEntity,
+        deleteDialog: deleteDialog
     }
 
 });

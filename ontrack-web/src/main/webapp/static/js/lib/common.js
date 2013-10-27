@@ -24,11 +24,11 @@ define(function () {
         return text.replace(/\n/g, '<br/>');
     };
 
-    String.prototype.loc = function (args) {
+    String.prototype.loc = function (a0, a1, a2, a3, a4) {
         var code = this;
         var text = l[code];
         if (text != null) {
-            return text.format(args);
+            return text.format(a0, a1, a2, a3, a4);
         } else {
             return "##" + code + "##";
         }
