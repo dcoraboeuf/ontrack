@@ -1,0 +1,656 @@
+{
+    "version" : "1.39",
+    "projects" : [{
+        "name" : "PRJ139",
+        "data" : {
+            "project" : {
+                "id" : 1,
+                "name" : "PRJ139",
+                "description" : "Export"
+            },
+            "branches" : [{
+                "id" : 1,
+                "project" : 1,
+                "name" : "B1",
+                "description" : "B1"
+            }, {
+                "id" : 2,
+                "project" : 1,
+                "name" : "B2",
+                "description" : "B2"
+            }
+            ],
+            "promotionLevels" : [{
+                "id" : 2,
+                "branch" : 1,
+                "levelNb" : 2,
+                "name" : "PROD",
+                "description" : "Production",
+                "autoPromote" : false
+            }, {
+                "id" : 1,
+                "branch" : 1,
+                "levelNb" : 1,
+                "name" : "DEV",
+                "description" : "Development",
+                "autoPromote" : false
+            }, {
+                "id" : 4,
+                "branch" : 2,
+                "levelNb" : 2,
+                "name" : "PROD",
+                "description" : "Production",
+                "autoPromote" : false
+            }, {
+                "id" : 3,
+                "branch" : 2,
+                "levelNb" : 1,
+                "name" : "DEV",
+                "description" : "Development",
+                "autoPromote" : false
+            }
+            ],
+            "promotionLevelImages" : [{
+                "id" : 2,
+                "bytes" : "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAFAUlEQVRIx41VW2gbRxS9s5JW1iMr23KC48iqLNcNOCmUUEjs0q9C/kKglOA2+SpNf/qT5COF0r+WQD5K6FeaEuoSaKE4IdRg4jztxHnQ1paaBFobu7GtSPJDfsir1Wt3Zqd39LDlWI59YdjZ3dl79py59wyBUpw+fcbe3X0loHjqAw0Nu4KBQGtLINgW9Pn8Lc3+QMviQmLxyeMHA3/9MXQvEvlvSNPUOADnsEWQ8qT/5sPvdje3nlE8tVyW7UAwOC8mKM/F1TAMHpmeNp+GQ6NDD+7cHxl+MhCPTT/MZFKzrwUYGAxdaPK/c0qWOdQ4CJgmKfwfWbeq4sPSM13XYWpySg+P/DmKDO8hw8G9e1sf9Pf3La9ncOvJ+SbfgbOMUc6YCS6XRJwuO6dUEkD478CLZPBKih8KRoDcxFySCLHZBEsKd2/d7Puk68gRkddaBqAG1fP5PDDGCiOTZmByFRTFDk6nE1CZ1V8vJQdZlsDhtCBjwDkAoyaEQy9gYjwSK+ddBeCmCUUAkzDKykAkrWWQwRJ4PE7idjswmY3sUGRwuixgtUigG4zMzSZRphkY/XeKJJMpUJNz0Q0AJuqQz+kiKS8nRzBeAiNaKs3dO2rIy2iM22Ub7hGDdCZHVFXjuPFCARKNTvC52QjsbnRsZGCuMViVqZh87V5Isri4BMnlROFdSlNheWkeGWYh4PfC4Q/2Q8/VKOSyWjWJkEFeL0q0mpwV5wUQSmS7BLHoFLGSaejo6ACvtw1aWlqI3+8Hm02GcPg5SnQduMKqMOAm0HxJIlohUVkuyrjdbiHZbJYffLcdurq6kDUnuk5RIhNyuRyZm5vDKpJwfX7jHhi6ntNZHkxalITiMMV1bcNBz1sxUR40TcN7LgCwPK0g+lGM8fEXWF3WdF9f78oGAGaaVC9ucsUw1wPoNiyEHCxjC1HKC+/UVAZ/zoBszoCX0WmwWCyxyoZcA6DUXC3TqnvA0Caw2LHNEokFWFlJgYFrbFaZqJhcN2wwO5tAybLRqgBjY6GfEwvy521tB1pL1SOSc1FdwoaEFwnNRT0YlOJ7YScWoqZ0vrCo4lOGwPNc13l1BufOfZOoq9t19MSJr4a8Xl+9SFxpJSXDK0yRLMwnkggsmAGprVWAcRtKaGIRaOsApMqb5eX5f65d+/5YMpnIFUq3FKtzsakWwlFzXuOo4fYaD0g2BRlk+PTUhEjHU+pidFMAEfH45N2+vh+/yOXS5qvvRLcLy6Moz8yMimtnIJ1agqY99VDv3YGN6EAW2dhrAUSMj4d/Ghj49bxoroJjliUqyUapTjy1btLkC0Ljnlby99MRcvnSBTREk2jaSvVNfjWGh+987fE0BA8dOnpMQi8uqYVWSrjLXY/laUBPz0XS89tlbMwsNDQ0k0CwE+39dnxbAELxwcGrnyqKt3nfvvc7S8+wsSR49PA23B/oFfaBLluPlrEX2t56D2o9Di2bTSe3BVA4I6iRuXGj+0O3u+5xIPB2UHSux7OTdHR+DCnUXpIssLN9F3G4asDLGtH4Jp8xZmQrc1i2OrQRJB2JjN4NBNq7FKXOkVxJcmEPLpcHh0LcksLb32jHxlTjly5++xEyWKh6Jm8VPt+bh48f/7LX4XLLFjxoXG4X7GzwEtPUWf+Nnuu9v185lU6rsU0P/e3E/v0HT3528uwPeNho8XhkLBR6dC8cevQL9s/zzb75H7y8ZIIVch4zAAAAAElFTkSuQmCC"
+            }, {
+                "id" : 1,
+                "bytes" : "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QcBEhkPfPXdswAABHdJREFUSMeVVU1vE2cQfmZ3vXa8i7GI5VhEhmLKCbXckMgP4NZWqqr8gKo99dCqQkJF/Qeo6oFLFaESCZpjb5W4lNRpEi4gSo0CJjFRJAclLP6Id70f3vd9pwe8kQlJSEd6pdHuzj4zz8z7DGFot2/fTi8sLHxgWdYHx44dqxSLxTPFYrEyPj5+plAonHFdt1Wv1+dXV1fvvX79+u8gCF7Ozc0x3mOUOE+ePPmpUCh8n81m2TAMEBExMwPY9YmIpJTsOI7a2Nh4trKyUm00GvPtdnvx1q1bW4cCPH/+/OdSqfSdpmnQdR3Dfx+cGb0JFULAcZzB+vr6s3q9fm91dfWvUqm0cPXq1Q4AGEmAEGIghIBSipVSMAyDTNNkABgmz8OEeASEiIgnJiZSExMTH09NTX3EzN/WarU/AHzyFoCUMgGAUgqDwQD9fh+maSKdTkMp9U4Fuq6/dZRSaDabcBxnM/luF4CZEccxlFKUgDAzRVGEXq+HTCZD6XQ6qQypVAqapkEIQa7rotVqYXt7m4IggOu6zX0BRilSShEz7/pRFLFpmtRut9kwjKRKCsOQpZSQUpLjONzpdGBZ1sEVMPMuTXuPpmnwPA+e50EphSAI4HkepJTI5/M4e/YsHj16hCiKNg+rgIb0vEWXUop0XUer1aIgCHDu3DnYto1isUjj4+MwDAMbGxu0tLQEwzA2/zdFSinWdZ0GgwFPTk7i0qVLYGaSUrJSClEUUa/XY03ToJR6twdCiJCIDqXIMAzEcYwwDMHMYGZomgYiglIKW1tbIKL+lStXdvarQCRjehCIEAJCCPi+v/ssDENIKRHHMVqtFjRN2xwd59F7oJLRHOV91JdSAgC5rosgCKCUwpA2AECv16M4jpujAFriNJvN2RcvXqzFcczDgziOWQjBUkok/QDAUkpObnQURdzv99n3fezs7LAQYnNfgOnpaadarX7mOE5HCEHJRDEz7dEtUkqR67rkeR6CIKBsNkuWZSX3ZX8AAJiZmVmpVqvTnueFSWtGtCcRV5ZSciqV4nQ6DdM02fd9fvXqFQBwv99vHggAADdu3PhzeXn5m8FgoPa+SxSWmeF5HrrdLnzfRy6Xg2VZME0TcRzv3+RRu379+q+2bX948eLFHzRtNwdK1oOUEmNjY0i0aW1tDQ8ePICUksIwbL4XAADq9fqPtm1Xzp8/P01vxD/ZOTw2NoYoinD//n1aXFxkIQTy+TydOnWKpZQvjwQwNzendF3/MpvNliuVytSoTD99+hS1Wg1SSliWhUKhgNOnTyOTyXhRFHWPBDDc076u659ns9nlUqlUYWbYtk0XLlyA7/sgIhw/fpxSqRRyuRy63e6/d+7cCQ5t8l6bnZ3dXlpa+rTT6bSTXpumyfl8nvP5PDKZDJfLZdY0bXN+fv6rvfE6jmAPHz50Tp48+U+5XJ62bVu3bRsnTpzA5OQk5XI59fjx49/v3r37xc2bN9cPXPpHsWvXrn19+fLlX5RSXrvdrjcajXuNRuO3mZmZ2kEx/wHzKUwQW+KQcQAAAABJRU5ErkJggg=="
+            }
+            ],
+            "validationStamps" : [{
+                "id" : 1,
+                "branch" : 1,
+                "name" : "SMOKE",
+                "description" : "Smoke tests",
+                "promotionLevel" : null,
+                "orderNb" : 1,
+                "ownerId" : null
+            }, {
+                "id" : 2,
+                "branch" : 1,
+                "name" : "ACC",
+                "description" : "Acceptance tests",
+                "promotionLevel" : null,
+                "orderNb" : 2,
+                "ownerId" : null
+            }, {
+                "id" : 3,
+                "branch" : 2,
+                "name" : "SMOKE",
+                "description" : "Smoke tests",
+                "promotionLevel" : null,
+                "orderNb" : 1,
+                "ownerId" : null
+            }, {
+                "id" : 4,
+                "branch" : 2,
+                "name" : "ACC",
+                "description" : "Acceptance tests",
+                "promotionLevel" : null,
+                "orderNb" : 2,
+                "ownerId" : null
+            }
+            ],
+            "validationStampImages" : [{
+                "id" : 1,
+                "bytes" : "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAACUElEQVQ4T4WT3YsSURjGB/oDuup/6iboarOuBAUlMW01Umwt1FZEyo8+LBN3EURCGHU1I5fQVi0dx8/RcXcdnV3ZhfBmCSJaung6M6xSkHbxcG7e3/O87znvoQBQq9RsNrfq9fqvSqVCKkkpUT6fRzqdRjKZTCyFO53OZZZlk4IgLMC5wfyMx+P/Tm+321cbjcaJKIqYzWZLDaLRKCie5885jgNJBElErVZDuVxGsVhEoVBYCs+7oCT47OwbRHEqayIeYzw5hjA+wkgQ/2/QarVkcM2WJsrgxoMMFBs7UNizuPkwh1uP3i018Xq9oBiGkVMlUPu0gtv+z9AFa9A/Z2B4ycL4qrXUwOVygapWqxBIy4qNLHSBL9A/q+POiwaMoSbuvm7D9KaLa+sJ9AcHC6O1t9fR5Yaw2+2gSqUSBDKr1K4EGi7AdQKaIz3ci/ZlA64/hJQ4v7xOl4fFYgEl3fRoNJFnldoN0PsIpA4udIj727xsME/M5naRye6i3enDZDKByuVyGJMbl4pWqT84lBMzOwWkMh/Qaveh1+tB0TSN6fQEg8EQPW6AZquLcoXBXrmGWr0JhmFRJ+L5fZJoBk1gOvWe1HHQarWgEonEk1gsxkYiETYUCrGBQGAibVg4HIbD4fgpzb3pduPxphtb2zEZlHR6+hVqtfrvVfb7/Qbyth8/7VXkFm022w/SdsRqtfbMZjOMRiN0Oh00Gg1UKhWUSuVw8Zl8Pt+VYDAIjowhHk3lLRTJfhDo+6rfujDweDyXnE4nK70tScQficwqg99Qc8H4oeZS+wAAAABJRU5ErkJggg=="
+            }, {
+                "id" : 2,
+                "bytes" : "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAAAlwSFlzAAAOwQAADsEBuJFr7QAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAACXElEQVQ4T32SbWtSYRjHD/QBetUH6Nv0JujVWr0aTJgkpk2jDZuFW5Mh5UMP1hI3hCEh+DBtkSO0qeU5ngfd0eM2j55NNoi9GUHEohf/7vvMxI3DXvw4h5vzu//XdZ2LAXApgiCssCz7t1wuk4PrOhsbG0in00gkEnFDiVKv16/yPJ9QVZUcnIkXWVtbI08DWZKkG7Va7VDTNBwfH5ND4wui0SgYRVH+yLIMkgiSiGq1ilKphEKhgHw+byieg8onJz+haX2dnnaAbu8AancfHVUzlkYRRVEXx1xpQga3H2cwPreOcXcWd57kcPfpR2OR4PP5wHAcp6dS0fyijHuBb7CEqrC+4mB7w8P+VjSUKQsLC2AqlQpUUvL4XBaW4HdYX7K4/7oGe1jAg3cSHO8buDkdR7O1OxTHPtxCQ27D7XaDKRaLUEmvtFwq2gbiNBGdkW08jDb1C+Rm+yxxcEm9oWBmZgYMnXSn09N7peUGkzsIpnYH7OHRqqJf8D8xm9tEJrsJqd6Ew+EAk8vl0CUTpx9dRrO1pydm1vNIZT5DlJqwWq1gkskk+v1DtFptbMstCGIDpTKHrVIVVVYAx/FgCYqyQxKdSBI5mfpEvpNhNpvBxOPx57FYjI9EInw4HOaDwWCPbtjy8jI8Hs8p7XvR68WzRS9WVmO6SDk6+gGTyUTmMbLCgUDARv7tl69bZb1El8v1m5QdmZ2d3XY6nbDb7bBYLJiamsLk5CQmJibaQ9nv918LhUKQSRvafl/fQo3sB5F+jYZcZPiytLR0ZX5+nqeTJokYSeRGhfOA+QeGgMfmqUtW2AAAAABJRU5ErkJggg=="
+            }
+            ],
+            "builds" : [{
+                "id" : 2,
+                "branch" : 1,
+                "name" : "b102",
+                "description" : "Build 2"
+            }, {
+                "id" : 1,
+                "branch" : 1,
+                "name" : "b101",
+                "description" : "Build 1"
+            }, {
+                "id" : 4,
+                "branch" : 2,
+                "name" : "b202",
+                "description" : "Build 2"
+            }, {
+                "id" : 3,
+                "branch" : 2,
+                "name" : "b201",
+                "description" : "Build 1"
+            }
+            ],
+            "promotedRuns" : [{
+                "id" : 2,
+                "build" : 2,
+                "promotionLevel" : 1,
+                "authorId" : 1,
+                "author" : "Administrator",
+                "creation" : 1380837660000,
+                "description" : "Build 2 to DEV"
+            }, {
+                "id" : 3,
+                "build" : 2,
+                "promotionLevel" : 2,
+                "authorId" : 1,
+                "author" : "Administrator",
+                "creation" : 1380841260000,
+                "description" : "Build 2 to PROD"
+            }, {
+                "id" : 1,
+                "build" : 1,
+                "promotionLevel" : 1,
+                "authorId" : 1,
+                "author" : "Administrator",
+                "creation" : 1380834060000,
+                "description" : "Build 1 to DEV"
+            }, {
+                "id" : 4,
+                "build" : 3,
+                "promotionLevel" : 3,
+                "authorId" : 1,
+                "author" : "Administrator",
+                "creation" : 1380844860000,
+                "description" : "Build 1 to DEV"
+            }
+            ],
+            "validationRuns" : [{
+                "id" : 3,
+                "build" : 2,
+                "validationStamp" : 1,
+                "description" : "Smoke tests OK",
+                "runOrder" : 1
+            }, {
+                "id" : 4,
+                "build" : 2,
+                "validationStamp" : 1,
+                "description" : "Failed ACC tests",
+                "runOrder" : 2
+            }, {
+                "id" : 1,
+                "build" : 1,
+                "validationStamp" : 1,
+                "description" : "Failed smoke tests",
+                "runOrder" : 1
+            }, {
+                "id" : 2,
+                "build" : 1,
+                "validationStamp" : 1,
+                "description" : "Failed smoke tests",
+                "runOrder" : 2
+            }
+            ],
+            "validationRunStatuses" : [{
+                "id" : 3,
+                "validationRun" : 3,
+                "status" : "PASSED",
+                "description" : "Smoke tests OK",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861230
+            }, {
+                "id" : 7,
+                "validationRun" : 4,
+                "status" : "INVESTIGATED",
+                "description" : "Investigated",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861243
+            }, {
+                "id" : 4,
+                "validationRun" : 4,
+                "status" : "FAILED",
+                "description" : "Failed ACC tests",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861232
+            }, {
+                "id" : 5,
+                "validationRun" : 1,
+                "status" : "EXPLAINED",
+                "description" : "Explained",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861240
+            }, {
+                "id" : 1,
+                "validationRun" : 1,
+                "status" : "FAILED",
+                "description" : "Failed smoke tests",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861211
+            }, {
+                "id" : 6,
+                "validationRun" : 2,
+                "status" : "FIXED",
+                "description" : "Fixed",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861242
+            }, {
+                "id" : 2,
+                "validationRun" : 2,
+                "status" : "FAILED",
+                "description" : "Failed smoke tests",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861214
+            }
+            ],
+            "comments" : [{
+                "id" : 2,
+                "content" : "Comment for b1smoke",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861245,
+                "entities" : {
+                    "VALIDATION_STAMP" : 1
+                }
+            }, {
+                "id" : 3,
+                "content" : "Comment for b2acc",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861246,
+                "entities" : {
+                    "VALIDATION_STAMP" : 4
+                }
+            }, {
+                "id" : 1,
+                "content" : "Comment about smoke tests",
+                "author" : "Administrator",
+                "authorId" : 1,
+                "timestamp" : 1382535861234,
+                "entities" : {
+                    "VALIDATION_RUN" : 1
+                }
+            }
+            ],
+            "properties" : [{
+                "id" : 1,
+                "extension" : "jenkins",
+                "name" : "url",
+                "value" : "uri://project",
+                "entities" : {
+                    "PROJECT" : 1
+                }
+            }, {
+                "id" : 2,
+                "extension" : "jenkins",
+                "name" : "url",
+                "value" : "uri://branch",
+                "entities" : {
+                    "BRANCH" : 1
+                }
+            }
+            ],
+            "events" : [{
+                "id" : 29,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_COMMENT",
+                "timestamp" : 1382535861247,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "VALIDATION_STAMP" : 4,
+                    "PROJECT" : 1
+                },
+                "values" : {
+                    "comment" : "Comment for b2acc"
+                }
+            }, {
+                "id" : 28,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_COMMENT",
+                "timestamp" : 1382535861245,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1
+                },
+                "values" : {
+                    "comment" : "Comment for b1smoke"
+                }
+            }, {
+                "id" : 27,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_STATUS",
+                "timestamp" : 1382535861244,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 4,
+                    "BUILD" : 2
+                },
+                "values" : {
+                    "status" : "INVESTIGATED"
+                }
+            }, {
+                "id" : 26,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_STATUS",
+                "timestamp" : 1382535861243,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 2,
+                    "BUILD" : 1
+                },
+                "values" : {
+                    "status" : "FIXED"
+                }
+            }, {
+                "id" : 25,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_STATUS",
+                "timestamp" : 1382535861241,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 1,
+                    "BUILD" : 1
+                },
+                "values" : {
+                    "status" : "EXPLAINED"
+                }
+            }, {
+                "id" : 24,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_COMMENT",
+                "timestamp" : 1382535861239,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 1,
+                    "BUILD" : 1
+                },
+                "values" : {
+                    "comment" : "Comment about smoke tests"
+                }
+            }, {
+                "id" : 23,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_CREATED",
+                "timestamp" : 1382535861233,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 4,
+                    "BUILD" : 2
+                },
+                "values" : {
+                    "status" : "FAILED"
+                }
+            }, {
+                "id" : 22,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_CREATED",
+                "timestamp" : 1382535861231,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 3,
+                    "BUILD" : 2
+                },
+                "values" : {
+                    "status" : "PASSED"
+                }
+            }, {
+                "id" : 21,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_CREATED",
+                "timestamp" : 1382535861215,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 2,
+                    "BUILD" : 1
+                },
+                "values" : {
+                    "status" : "FAILED"
+                }
+            }, {
+                "id" : 20,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_RUN_CREATED",
+                "timestamp" : 1382535861213,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1,
+                    "VALIDATION_RUN" : 1,
+                    "BUILD" : 1
+                },
+                "values" : {
+                    "status" : "FAILED"
+                }
+            }, {
+                "id" : 19,
+                "author" : "Administrator",
+                "eventType" : "PROMOTED_RUN_CREATED",
+                "timestamp" : 1382535861209,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 3,
+                    "BRANCH" : 2,
+                    "PROJECT" : 1,
+                    "BUILD" : 3
+                },
+                "values" : {}
+            }, {
+                "id" : 18,
+                "author" : "Administrator",
+                "eventType" : "PROMOTED_RUN_CREATED",
+                "timestamp" : 1382535861208,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 2,
+                    "BRANCH" : 1,
+                    "PROJECT" : 1,
+                    "BUILD" : 2
+                },
+                "values" : {}
+            }, {
+                "id" : 17,
+                "author" : "Administrator",
+                "eventType" : "PROMOTED_RUN_CREATED",
+                "timestamp" : 1382535861206,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 1,
+                    "BRANCH" : 1,
+                    "PROJECT" : 1,
+                    "BUILD" : 2
+                },
+                "values" : {}
+            }, {
+                "id" : 16,
+                "author" : "Administrator",
+                "eventType" : "PROMOTED_RUN_CREATED",
+                "timestamp" : 1382535861204,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 1,
+                    "BRANCH" : 1,
+                    "PROJECT" : 1,
+                    "BUILD" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 15,
+                "author" : "Administrator",
+                "eventType" : "BUILD_CREATED",
+                "timestamp" : 1382535861200,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "PROJECT" : 1,
+                    "BUILD" : 4
+                },
+                "values" : {}
+            }, {
+                "id" : 14,
+                "author" : "Administrator",
+                "eventType" : "BUILD_CREATED",
+                "timestamp" : 1382535861199,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "PROJECT" : 1,
+                    "BUILD" : 3
+                },
+                "values" : {}
+            }, {
+                "id" : 13,
+                "author" : "Administrator",
+                "eventType" : "BUILD_CREATED",
+                "timestamp" : 1382535861197,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "PROJECT" : 1,
+                    "BUILD" : 2
+                },
+                "values" : {}
+            }, {
+                "id" : 12,
+                "author" : "Administrator",
+                "eventType" : "BUILD_CREATED",
+                "timestamp" : 1382535861195,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "PROJECT" : 1,
+                    "BUILD" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 11,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_CREATED",
+                "timestamp" : 1382535861188,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "VALIDATION_STAMP" : 4,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 10,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_CREATED",
+                "timestamp" : 1382535861187,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "VALIDATION_STAMP" : 3,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 9,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_CREATED",
+                "timestamp" : 1382535861185,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 2,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 8,
+                "author" : "Administrator",
+                "eventType" : "VALIDATION_STAMP_CREATED",
+                "timestamp" : 1382535861182,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "VALIDATION_STAMP" : 1,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 7,
+                "author" : "Administrator",
+                "eventType" : "PROMOTION_LEVEL_CREATED",
+                "timestamp" : 1382535861172,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 4,
+                    "BRANCH" : 2,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 6,
+                "author" : "Administrator",
+                "eventType" : "PROMOTION_LEVEL_CREATED",
+                "timestamp" : 1382535861171,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 3,
+                    "BRANCH" : 2,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 5,
+                "author" : "Administrator",
+                "eventType" : "PROMOTION_LEVEL_CREATED",
+                "timestamp" : 1382535861169,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 2,
+                    "BRANCH" : 1,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 4,
+                "author" : "Administrator",
+                "eventType" : "PROMOTION_LEVEL_CREATED",
+                "timestamp" : 1382535861166,
+                "entities" : {
+                    "PROMOTION_LEVEL" : 1,
+                    "BRANCH" : 1,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 3,
+                "author" : "Administrator",
+                "eventType" : "BRANCH_CREATED",
+                "timestamp" : 1382535861160,
+                "entities" : {
+                    "BRANCH" : 2,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 2,
+                "author" : "Administrator",
+                "eventType" : "BRANCH_CREATED",
+                "timestamp" : 1382535861157,
+                "entities" : {
+                    "BRANCH" : 1,
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }, {
+                "id" : 1,
+                "author" : "Administrator",
+                "eventType" : "PROJECT_CREATED",
+                "timestamp" : 1382535861135,
+                "entities" : {
+                    "PROJECT" : 1
+                },
+                "values" : {}
+            }
+            ],
+            "buildCleanups" : [ {
+                "id" : 1,
+                "branch" : 2,
+                "retention" : 60,
+                "excludedPromotionLevels" : [ 4 ]
+            } ]
+        }
+    }
+    ]
+}

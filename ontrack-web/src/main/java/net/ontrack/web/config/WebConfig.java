@@ -37,6 +37,11 @@ import java.util.Map;
 @PropertySource("/META-INF/strings/core.properties")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    /**
+     * Maximum size for an upload (in K)
+     */
+    public static final int UPLOAD_MAX_SIZE_K = 20 * 1024;
+
     @Autowired
     private Environment env;
 
@@ -57,6 +62,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     ObjectMapper jacksonObjectMapper;
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(60 * 1000);
+    }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -147,7 +157,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public ErrorHandlingMultipartResolver multipartResolver() {
-        return new DefaultErrorHandlingMultipartResolver(4);
+        return new DefaultErrorHandlingMultipartResolver(UPLOAD_MAX_SIZE_K);
     }
 
 }

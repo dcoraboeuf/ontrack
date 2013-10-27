@@ -72,6 +72,81 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public ExportData backupSave() {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/backup"),
+                ExportData.class
+        );
+    }
+
+    @Override
+    public ImportResult backupRestore(MultipartFile file) {
+        return upload(
+                getDefaultLocale(),
+                format("/ui/manage/backup"),
+                "file",
+                file,
+                ImportResult.class);
+    }
+
+    @Override
+    public ExportResponse exportLaunch(ExportForm form) {
+        return post(
+                getDefaultLocale(),
+                format("/ui/manage/export/project"),
+                ExportResponse.class,
+                form
+        );
+    }
+
+    @Override
+    public ExportResponse exportProjectLaunch(String project) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/project/%s", project),
+                ExportResponse.class
+        );
+    }
+
+    @Override
+    public Ack exportProjectCheck(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/%s/check", uuid),
+                Ack.class
+        );
+    }
+
+    @Override
+    public ExportData exportProjectDownload(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/export/%s", uuid),
+                ExportData.class
+        );
+    }
+
+    @Override
+    public ImportResponse importLaunch(MultipartFile file) {
+        return upload(
+                getDefaultLocale(),
+                format("/ui/manage/import"),
+                "file",
+                file,
+                ImportResponse.class);
+    }
+
+    @Override
+    public ImportResult importCheck(String uuid) {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/import/%s/check", uuid),
+                ImportResult.class
+        );
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }

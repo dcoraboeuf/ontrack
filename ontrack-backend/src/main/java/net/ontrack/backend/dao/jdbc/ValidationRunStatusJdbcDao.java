@@ -7,6 +7,7 @@ import net.ontrack.core.model.Status;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.dao.SQLUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -60,6 +61,16 @@ public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements Valid
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Collection<TValidationRunStatus> findByValidationRun(int validationRunId) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.VALIDATION_RUN_STATUS_BY_RUN,
+                params("run", validationRunId),
+                validationRunStatusMapper
+        );
+    }
+
+    @Override
     @Transactional
     public void renameAuthor(int id, String name) {
         getNamedParameterJdbcTemplate().update(
@@ -79,5 +90,18 @@ public class ValidationRunStatusJdbcDao extends AbstractJdbcDao implements Valid
                         .addValue("author", author)
                         .addValue("authorId", authorId)
                         .addValue("statusTimestamp", SQLUtils.toTimestamp(SQLUtils.now())));
+    }
+
+    @Override
+    @Transactional
+    public int createValidationRunStatusForImport(int validationRun, Status status, String description, String author, DateTime dateTime) {
+        return dbCreate(
+                SQL.VALIDATION_RUN_STATUS_CREATE,
+                params("validationRun", validationRun)
+                        .addValue("status", status.name())
+                        .addValue("description", description)
+                        .addValue("author", author)
+                        .addValue("authorId", null)
+                        .addValue("statusTimestamp", SQLUtils.toTimestamp(dateTime)));
     }
 }

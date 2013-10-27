@@ -17,7 +17,9 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -27,11 +29,20 @@ public class PropertyJdbcDao extends AbstractJdbcDao implements PropertyDao {
     private final RowMapper<TProperty> propertyRowMapper = new RowMapper<TProperty>() {
         @Override
         public TProperty mapRow(ResultSet rs, int rowNum) throws SQLException {
+            // Collects the entities
+            Map<Entity, Integer> entityIds = new HashMap<>();
+            for (Entity entity : Entity.values()) {
+                int entityId = rs.getInt(entity.name());
+                if (!rs.wasNull()) {
+                    entityIds.put(entity, entityId);
+                }
+            }
             return new TProperty(
                     rs.getInt("id"),
                     rs.getString("extension"),
                     rs.getString("name"),
-                    rs.getString("value")
+                    rs.getString("value"),
+                    entityIds
             );
         }
     };

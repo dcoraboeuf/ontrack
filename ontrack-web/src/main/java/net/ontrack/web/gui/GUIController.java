@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.ChartDefinition;
+import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityUtils;
@@ -16,6 +17,7 @@ import net.ontrack.web.support.*;
 import net.sf.jstring.NonLocalizable;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,23 +45,25 @@ public class GUIController extends AbstractGUIController {
     private final ManageUI manageUI;
     private final ErrorHandlingMultipartResolver errorHandlingMultipartResolver;
     private final EntityConverter entityConverter;
-    private final SecurityUtils securityUtils;
     private final SearchService searchService;
     private final DashboardService dashboardService;
     private final Strings strings;
+    private final SecurityUtils securityUtils;
+    private final ObjectMapper objectMapper;
     private final byte[] defaultValidationStampImage;
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SecurityUtils securityUtils, SearchService searchService, DashboardService dashboardService, Strings strings) {
+    public GUIController(ErrorHandler errorHandler, ManageUI manageUI, ErrorHandlingMultipartResolver errorHandlingMultipartResolver, EntityConverter entityConverter, SearchService searchService, DashboardService dashboardService, Strings strings, SecurityUtils securityUtils, ObjectMapper objectMapper) {
         super(errorHandler);
         this.manageUI = manageUI;
         this.errorHandlingMultipartResolver = errorHandlingMultipartResolver;
         this.entityConverter = entityConverter;
-        this.securityUtils = securityUtils;
         this.searchService = searchService;
         this.dashboardService = dashboardService;
         this.strings = strings;
+        this.securityUtils = securityUtils;
+        this.objectMapper = objectMapper;
         // Reads the default images
         defaultValidationStampImage = WebUtils.readBytes("/default_validation_stamp.png");
         defaultPromotionLevelImage = WebUtils.readBytes("/default_promotion_level.png");
@@ -87,6 +92,63 @@ public class GUIController extends AbstractGUIController {
         return "project-validation-stamp-mgt";
     }
 
+    @RequestMapping(value = "/gui/import", method = RequestMethod.GET)
+    public String importPage() {
+        securityUtils.checkIsAdmin();
+        return "import";
+    }
+
+    @RequestMapping(value = "/gui/import", method = RequestMethod.POST)
+    public String importFile(HttpServletRequest request, Model model) {
+        securityUtils.checkIsAdmin();
+        // Error handling
+        errorHandlingMultipartResolver.checkForUploadError(request);
+        // Gets the file
+        MultipartFile file = ((MultipartHttpServletRequest) request).getFile("file");
+        if (file == null) {
+            throw new IllegalStateException("Missing 'file' file parameter");
+        }
+        // Launches the import asynchronously
+        String uid = manageUI.importLaunch(file).getUid();
+        model.addAttribute("uid", uid);
+        // OK
+        return "import-feedback";
+    }
+
+    @RequestMapping(value = "/gui/export", method = RequestMethod.GET)
+    public String exportPage() {
+        securityUtils.checkIsAdmin();
+        return "export";
+    }
+
+    @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/export", method = RequestMethod.GET)
+    public String exportProject(Model model, @PathVariable String name) {
+        securityUtils.checkIsAdmin();
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // Launching the export asynchronously
+        model.addAttribute("projectExportUID", manageUI.exportProjectLaunch(name).getUid());
+        // OK
+        return "project-export";
+    }
+
+    @RequestMapping(value = "/gui/project/export/{uuid}", method = RequestMethod.GET)
+    public void exportProjectDownload(@PathVariable String uuid, HttpServletResponse response) throws IOException {
+        securityUtils.checkIsAdmin();
+        // Gets the file data
+        ExportData data = manageUI.exportProjectDownload(uuid);
+        // Headers
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.addHeader("Content-Disposition", "attachment; filename=ontrack-export.json");
+        // Serializes as JSON
+        objectMapper.writeValue(
+                new OutputStreamWriter(
+                        response.getOutputStream(),
+                        "UTF-8"),
+                data);
+    }
+
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String getBranch(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
@@ -96,7 +158,7 @@ public class GUIController extends AbstractGUIController {
     }
 
     @RequestMapping(value = "/gui/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/charts", method = RequestMethod.GET)
-    public String getBranchCharts(Locale locale, Model model, @PathVariable String project, @PathVariable String name) {
+    public String getBranchCharts(Model model, @PathVariable String project, @PathVariable String name) {
         // Loads the details
         model.addAttribute("branch", manageUI.getBranch(project, name));
         // All charts

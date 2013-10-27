@@ -1,0 +1,32 @@
+<#include "/lib/layout.html">
+
+<@layout_std page="import" title=loc('project.import') noscript=true breadcrumbs = {loc("home"): ""}>
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="project.import"/>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <form action="gui/import" method="post" enctype="multipart/form-data">
+                    <div class="alert alert-warning">
+                        <@lh key="project.import.file" />
+                    </div>
+                    <div>
+                        <input name="file" type="file" accept=".json,application/json" required="required" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary"><@lh key="project.import.submit" /></button>
+                        <a href="" class="btn btn-link"><@lh key="general.cancel" /></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+	</div>
+</@layout_std>

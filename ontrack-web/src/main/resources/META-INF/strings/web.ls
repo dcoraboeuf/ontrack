@@ -441,6 +441,27 @@ home.projects
 	en -> Projects
 	fr -> Projets
 
+[export]
+
+export
+    en,fr -> @[project.export]
+
+export.project
+    en -> Select the projects to export
+    fr -> Sélectionnez les projets à exporter
+
+export.next
+    en -> Export
+    fr -> Exporter
+
+export.ongoing
+    en -> Exporting...
+    fr -> Export en cours...
+
+export.finished
+    en -> Your file is ready.
+    fr -> Votre fichier est prêt.
+
 [project]
 
 project.empty
@@ -468,6 +489,44 @@ project.description
 	en,fr -> @[model.description]
 project.branches
 	en,fr -> Branches
+
+project.export
+    en -> Export
+    fr -> Exporter
+
+project.export.message
+    en -> Please wait while the export of the project is created...
+    fr -> Veuillez patienter tandis que l'export du projet est préparé...
+
+project.import
+    en -> Import
+    fr -> Importer
+
+project.import.file
+    en -> ...
+        Select a JSON file that contains projects to import. This file has been typically
+        exported from ontrack as well.
+        ...
+    fr -> ...
+        Sélectionnez un fichier JSON qui contient des projets à importer. Ce fichier aura
+        été typiquement exporté depuis ontrack.
+        ...
+
+project.import.submit
+    en -> Import
+    fr -> Importer
+
+project.import.message
+    en -> Please wait while the projects are imported...
+    fr -> Veuillez patienter tandis que les projets sont importés...
+
+project.import.project.ok
+    en -> The following projects have been successfully imported:
+    fr -> Les projets suivants ont été importés avec succès :
+
+project.import.project.nok
+    en -> The following projects were already existing and have not been imported:
+    fr -> Les projets suivants existaient déjà et n'ont pas été importés :
 
 [branches]
 

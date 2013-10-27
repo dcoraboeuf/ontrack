@@ -8,6 +8,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.core.ui.PropertyUI;
+import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.ProfileService;
 import net.ontrack.web.support.EntityConverter;
@@ -25,7 +26,9 @@ import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
@@ -33,22 +36,22 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     private final SecurityUtils securityUtils;
     private final ManagementService managementService;
     private final ProfileService profileService;
+    private final ExportService exportService;
     private final PropertyUI propertyUI;
     private final ObjectMapper objectMapper;
     private final String version;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, ExportService exportService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
         this.securityUtils = securityUtils;
         this.profileService = profileService;
+        this.exportService = exportService;
         this.propertyUI = propertyUI;
         this.objectMapper = objectMapper;
         this.version = version;
     }
-
-    // Projects
 
     @Override
     @RequestMapping(value = "/ui/manage/version", method = RequestMethod.GET)
@@ -57,6 +60,8 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     String getVersion() {
         return version;
     }
+
+    // Projects
 
     @Override
     @RequestMapping(value = "/ui/manage/project", method = RequestMethod.GET)
@@ -99,6 +104,143 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
                 entityConverter.getProjectId(name),
                 form
         );
+    }
+
+    // Project IO
+
+    @Override
+    public ExportData backupSave() throws Exception {
+        return doBackupSave().call();
+    }
+
+    @RequestMapping(value = "/ui/manage/backup", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Callable<ExportData> doBackupSave() {
+        securityUtils.checkIsAdmin();
+        // Launches the export with same credentials
+        return securityUtils.withCurrentCredentials(
+                new Callable<ExportData>() {
+                    @Override
+                    public ExportData call() throws Exception {
+                        // Gets the list of projects
+                        List<ProjectSummary> projectList = managementService.getProjectList();
+                        // Project IDs
+                        List<Integer> ids = Lists.transform(
+                                projectList,
+                                new Function<ProjectSummary, Integer>() {
+                                    @Override
+                                    public Integer apply(ProjectSummary o) {
+                                        return o.getId();
+                                    }
+                                }
+                        );
+                        // Launches the export
+                        String uuid = exportService.exportLaunch(ids);
+                        // Waits until the export is done
+                        while (!exportService.exportCheck(uuid).isSuccess()) {
+                            Thread.sleep(100);
+                        }
+                        // Downloads the file
+                        return exportService.exportDownload(uuid);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public ImportResult backupRestore(MultipartFile file) throws Exception {
+        return doBackupRestore(file).call();
+    }
+
+    @RequestMapping(value = "/ui/manage/backup", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Callable<ImportResult> doBackupRestore(@RequestParam final MultipartFile file) {
+        securityUtils.checkIsAdmin();
+        return securityUtils.withCurrentCredentials(
+                new Callable<ImportResult>() {
+                    @Override
+                    public ImportResult call() throws Exception {
+                        // Imports the file
+                        String uuid = exportService.importLaunch(file);
+                        // Waits until the import is done
+                        ImportResult result;
+                        while (true) {
+                            result = exportService.importCheck(uuid);
+                            if (result.getFinished().isSuccess()) {
+                                break;
+                            } else {
+                                Thread.sleep(100);
+                            }
+                        }
+                        // Gets the results
+                        return result;
+                    }
+                }
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/project", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ExportResponse exportLaunch(@RequestBody ExportForm form) {
+        return new ExportResponse(
+                exportService.exportLaunch(
+                        Collections2.transform(
+                                form.getNames(),
+                                new Function<String, Integer>() {
+                                    @Override
+                                    public Integer apply(String name) {
+                                        return entityConverter.getProjectId(name);
+                                    }
+                                }
+                        )
+                )
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ExportResponse exportProjectLaunch(@PathVariable String project) {
+        return new ExportResponse(
+                exportService.exportLaunch(Collections.singleton(entityConverter.getProjectId(project)))
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/{uuid}/check", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Ack exportProjectCheck(@PathVariable String uuid) {
+        return exportService.exportCheck(uuid);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/export/{uuid}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ExportData exportProjectDownload(@PathVariable String uuid) {
+        return exportService.exportDownload(uuid);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/import", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    ImportResponse importLaunch(@RequestParam MultipartFile file) {
+        return new ImportResponse(exportService.importLaunch(file));
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/import/{uuid}/check", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ImportResult importCheck(@PathVariable String uuid) {
+        return exportService.importCheck(uuid);
     }
 
     @Override

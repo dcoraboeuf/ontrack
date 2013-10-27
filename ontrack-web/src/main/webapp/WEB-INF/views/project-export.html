@@ -1,0 +1,30 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="project-export"
+    title=loc('project.export')
+    breadcrumbs = {
+        loc("home"): "",
+        project.name?html: "gui/project/${project.name?html}"
+    }>
+    <input id="project" type="hidden" value="${project.name?html}" />
+    <input id="projectExportUID" type="hidden" value="${projectExportUID?html}" />
+	<div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <a href="gui/project/${project.name?html}">${project.name?html}</a>
+                    / <@lh key="project.export" />
+                </span>
+                <span class="action action-optional">
+                    <a href="gui/project/${project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div id="project-export-progress" class="span12">
+            </div>
+        </div>
+	</div>
+
+</@layout_std>

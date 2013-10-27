@@ -27,6 +27,36 @@ net.ontrack.backend.CannotCreateWorkingDirException
 net.ontrack.backend.dao.jdbc.FilterIOException
     en -> [E-009] Cannot save/read filter.
 
+net.ontrack.backend.ExportTaskNotFoundException
+    en -> [E-010] Cannot find export task for the project. ID = {0}
+
+net.ontrack.backend.ExportException
+    en -> [E-011] Error while exporting project. ID = {0}, Error = {1}
+
+net.ontrack.backend.ExportNotFinishedException
+    en -> [E-012] Project export not finished. ID = {0}
+
+net.ontrack.backend.ImportTaskNotFoundException
+    en -> [E-013] Cannot find import task. ID = {0}
+
+net.ontrack.backend.ImportException
+    en -> [E-014] Error while importing project(s). ID = {0}, Error = {1}
+
+net.ontrack.backend.export.ImportCannotReadExportedImageException
+    en -> [E-015] Error while reading the exported image at "{0}": {1}
+
+net.ontrack.backend.ImportVersionException
+    en -> [E-016] Cannot import version {0} into version {1}.
+
+net.ontrack.backend.export.ImportIdInconsistencyException
+    en -> [E-017] Cannot find ID = {1} for the entity {0} in the imported file.
+
+net.ontrack.backend.export.ImportLinkedEntityMissingException
+    en -> [E-018] Node "{0}" with ID = {1} has no attached entity.
+
+net.ontrack.backend.ImportFormatException
+    en -> [E-019] Cannot read project file "{0}": {1}
+
 [input]
 
 net.ontrack.backend.EntityNameNotFoundException

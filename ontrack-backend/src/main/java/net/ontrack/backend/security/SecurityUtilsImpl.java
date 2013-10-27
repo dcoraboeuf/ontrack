@@ -123,4 +123,23 @@ public class SecurityUtilsImpl implements SecurityUtils {
             SecurityContextHolder.setContext(context);
         }
     }
+
+    @Override
+    public <T> Callable<T> withCurrentCredentials(final Callable<T> callable) {
+        // Current context
+        final SecurityContext context = SecurityContextHolder.getContext();
+        // Returns a callable that sets the context before running the target callable
+        return new Callable<T>() {
+            @Override
+            public T call() throws Exception {
+                SecurityContextHolder.setContext(context);
+                try {
+                    // Result
+                    return callable.call();
+                } finally {
+                    SecurityContextHolder.clearContext();
+                }
+            }
+        };
+    }
 }
