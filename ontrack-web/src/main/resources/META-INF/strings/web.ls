@@ -480,6 +480,10 @@ project.delete.prompt
 	en -> Are you sure to delete the project "{0}" and all its associated information?
 	fr -> Etes-vous sûr(e) de supprimer le projet "{0}" et toutes ses informations associées?
 
+project.delete.message
+    en -> Please wait while the project "{0}" is deleted...
+    fr -> Veuillez patienter pendant la suppression du projet "{0}"...
+
 project.create.title
 	en,fr -> @[project.create]
 
