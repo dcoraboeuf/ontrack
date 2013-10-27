@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
@@ -106,6 +107,73 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     // Project IO
+
+    @Override
+    public ExportData backupSave() throws Exception {
+        return doBackupSave().call();
+    }
+
+    @RequestMapping(value = "/ui/manage/backup", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Callable<ExportData> doBackupSave() {
+        // Launches the export
+        return new Callable<ExportData>() {
+            @Override
+            public ExportData call() throws Exception {
+                // Gets the list of projects
+                List<ProjectSummary> projectList = managementService.getProjectList();
+                // Project IDs
+                List<Integer> ids = Lists.transform(
+                        projectList,
+                        new Function<ProjectSummary, Integer>() {
+                            @Override
+                            public Integer apply(ProjectSummary o) {
+                                return o.getId();
+                            }
+                        }
+                );
+                // Launches the export
+                String uuid = exportService.exportLaunch(ids);
+                // Waits until the export is done
+                while (!exportService.exportCheck(uuid).isSuccess()) {
+                    Thread.sleep(100);
+                }
+                // Downloads the file
+                return exportService.exportDownload(uuid);
+            }
+        };
+    }
+
+    @Override
+    public ImportResult backupRestore(MultipartFile file) throws Exception {
+        return doBackupRestore(file).call();
+    }
+
+    @RequestMapping(value = "/ui/manage/backup", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Callable<ImportResult> doBackupRestore(@RequestParam final MultipartFile file) {
+        return new Callable<ImportResult>() {
+            @Override
+            public ImportResult call() throws Exception {
+                // Imports the file
+                String uuid = exportService.importLaunch(file);
+                // Waits until the import is done
+                ImportResult result;
+                while (true) {
+                    result = exportService.importCheck(uuid);
+                    if (result.getFinished().isSuccess()) {
+                        break;
+                    } else {
+                        Thread.sleep(100);
+                    }
+                }
+                // Gets the results
+                return result;
+            }
+        };
+    }
 
     @Override
     @RequestMapping(value = "/ui/manage/export/project", method = RequestMethod.POST)

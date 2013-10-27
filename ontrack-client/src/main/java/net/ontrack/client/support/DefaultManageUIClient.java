@@ -72,6 +72,25 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public ExportData backupSave() {
+        return get(
+                getDefaultLocale(),
+                format("/ui/manage/backup"),
+                ExportData.class
+        );
+    }
+
+    @Override
+    public ImportResult backupRestore(MultipartFile file) {
+        return upload(
+                getDefaultLocale(),
+                format("/ui/manage/backup"),
+                "file",
+                file,
+                ImportResult.class);
+    }
+
+    @Override
     public ExportResponse exportLaunch(ExportForm form) {
         return post(
                 getDefaultLocale(),

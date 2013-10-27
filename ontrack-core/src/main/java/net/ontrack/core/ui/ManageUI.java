@@ -33,6 +33,10 @@ public interface ManageUI {
 
     // Project I/O
 
+    ExportData backupSave() throws Exception;
+
+    ImportResult backupRestore(MultipartFile file) throws Exception;
+
     ExportResponse exportLaunch(ExportForm form);
 
     ExportResponse exportProjectLaunch(String project);
