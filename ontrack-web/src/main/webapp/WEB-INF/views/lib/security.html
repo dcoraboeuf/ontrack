@@ -13,10 +13,16 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <#if secAdmin() >
+                <#if secGlobal('ACCOUNT_MANAGEMENT') >
                     <li><a id="header-accounts" href="gui/admin/accounts"><@lh key="accounts" /></a></li>
+                </#if>
+                <#if secGlobal('SETTINGS') >
                     <li><a id="header-settings" href="gui/admin/settings"><@lh key="settings" /></a></li>
+                </#if>
+                <#if secGlobal('EXTENSIONS') >
                     <li><a id="header-extensions" href="gui/admin/extensions"><@lh key="extensions" /></a></li>
+                </#if>
+                <#if secGlobal('SUBSCRIPTIONS_MANAGEMENT') >
                     <li><a id="header-all-subscriptions" href="gui/admin/allSubscriptions"><@lh key="admin.subscriptions" /></a></li>
                 </#if>
                 <!-- Profile page -->

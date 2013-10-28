@@ -15,7 +15,6 @@ import net.ontrack.service.EventService;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,7 +99,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Account getAccount(int id) {
         return accountFunction.apply(
                 accountDao.getByID(id)
@@ -109,7 +108,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public List<Account> getAccounts() {
         return Lists.transform(
                 accountDao.findAll(),
@@ -119,7 +118,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public ID createAccount(final AccountCreationForm form) {
         // Validation
         validate(form, AccountValidation.class);
@@ -156,14 +155,14 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public void deleteAccount(int id) {
         accountDao.deleteAccount(id);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public void updateAccount(int id, AccountUpdateForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -194,7 +193,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changePassword(int id, PasswordChangeForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -210,7 +209,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changeEmail(int id, EmailChangeForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -226,7 +225,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack resetPassword(int id, String password) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -242,7 +241,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changeLanguage(int id, String lang) {
         return accountDao.changeLanguage(id, strings.getSupportedLocales().filterForLookup(new Locale(lang)));
     }

@@ -146,6 +146,20 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
+    public void checkGrant(GlobalFunction fn) {
+        if (!isGranted(fn)) {
+            throw new AccessDeniedException("Grant to " + fn + " is required");
+        }
+    }
+
+    @Override
+    public void checkGrant(ProjectFunction fn, int project) {
+        if (!isGranted(fn, project)) {
+            throw new AccessDeniedException("Grant to " + fn + " is required for project " + project);
+        }
+    }
+
+    @Override
     public boolean isGranted(GlobalFunction fn) {
         Account account = getCurrentAccount();
         return account != null && account.isGranted(fn);
