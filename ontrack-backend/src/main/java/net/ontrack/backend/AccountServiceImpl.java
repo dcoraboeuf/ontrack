@@ -52,6 +52,12 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             }
         }
     };
+    private final Function<TAccount, Account> accountACLFunction = new Function<TAccount, Account>() {
+        @Override
+        public Account apply(TAccount t) {
+            return getACL(accountFunction.apply(t));
+        }
+    };
 
     @Autowired
     public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao) {
@@ -66,7 +72,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Override
     @Transactional(readOnly = true)
     public Account authenticate(String user, String password) {
-        return accountFunction.apply(accountDao.findByNameAndPassword(user, password));
+        return accountACLFunction.apply(accountDao.findByNameAndPassword(user, password));
     }
 
     @Override
@@ -78,7 +84,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(String mode, String user) {
-        return accountFunction.apply(
+        return accountACLFunction.apply(
                 accountDao.findByModeAndName(mode, user)
         );
     }
