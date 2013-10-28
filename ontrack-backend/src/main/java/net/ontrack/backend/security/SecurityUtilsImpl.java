@@ -2,6 +2,8 @@ package net.ontrack.backend.security;
 
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.Signature;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -141,5 +143,17 @@ public class SecurityUtilsImpl implements SecurityUtils {
                 }
             }
         };
+    }
+
+    @Override
+    public boolean isGranted(GlobalFunction fn) {
+        Account account = getCurrentAccount();
+        return account != null && account.isGranted(fn);
+    }
+
+    @Override
+    public boolean isGranted(ProjectFunction fn, int project) {
+        Account account = getCurrentAccount();
+        return account != null && account.isGranted(fn, project);
     }
 }

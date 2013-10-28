@@ -8,4 +8,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface GlobalGrant {
 
+    public GlobalFunction value();
+
 }

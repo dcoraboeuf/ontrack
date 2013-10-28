@@ -7,6 +7,10 @@ http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/security
 http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <global-method-security secured-annotations="enabled" />
+    <beans:beans profile="it,dev,prod">
+
+        <beans:import resource="classpath:META-INF/backend-security-aop.xml" />
+
+    </beans:beans>
 
 </beans:beans>

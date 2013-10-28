@@ -29,4 +29,8 @@ public interface SecurityUtils {
     <T> T asAdmin(Callable<T> call);
 
     <T> Callable<T> withCurrentCredentials(Callable<T> callable);
+
+    boolean isGranted(GlobalFunction fn);
+
+    boolean isGranted(ProjectFunction fn, int project);
 }
