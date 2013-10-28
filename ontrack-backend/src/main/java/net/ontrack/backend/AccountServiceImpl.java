@@ -9,6 +9,7 @@ import net.ontrack.backend.dao.EventDao;
 import net.ontrack.backend.dao.ValidationRunStatusDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
@@ -229,5 +230,45 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack changeLanguage(int id, String lang) {
         return accountDao.changeLanguage(id, strings.getSupportedLocales().filterForLookup(new Locale(lang)));
+    }
+
+    protected Account getACL(Account account) {
+        if (account != null) {
+            // Global functions (all functions for the admin, none for the other roles)
+            if (SecurityRoles.ADMINISTRATOR.equals(account.getRoleName())) {
+                for (GlobalFunction fn : GlobalFunction.values()) {
+                    account = account.withGlobalACL(fn);
+                }
+            }
+            // TODO Functions for all projects
+            /**
+            List<TProjectAuthorization> authList = projectAuthorizationDao.findByAccount(account.getId());
+            for (TProjectAuthorization auth : authList) {
+                switch (auth.getRole()) {
+                    case OWNER:
+                        account = account.withACL(ProjectFunction.UPDATE, auth.getProject());
+                        account = account.withACL(ProjectFunction.REQUEST_CREATE, auth.getProject());
+                        account = account.withACL(ProjectFunction.REQUEST_MERGE, auth.getProject());
+                        account = account.withACL(ProjectFunction.REQUEST_DELETE, auth.getProject());
+                        account = account.withACL(ProjectFunction.ACL, auth.getProject());
+                        // ... applies everything below
+                    case TRANSLATOR:
+                        account = account.withACL(ProjectFunction.REQUEST_UPLOAD, auth.getProject());
+                        // ... applies everything below
+                    case REVIEWER:
+                        account = account.withACL(ProjectFunction.REQUEST_EDIT, auth.getProject());
+                        account = account.withACL(ProjectFunction.CONTRIBUTION_DIRECT, auth.getProject());
+                        account = account.withACL(ProjectFunction.CONTRIBUTION_REVIEW, auth.getProject());
+                        // ... applies everything below
+                    case CONTRIBUTOR:
+                        account = account.withACL(ProjectFunction.CONTRIBUTION, auth.getProject());
+                        // ... applies everything below
+                    default:
+                }
+            }
+             */
+        }
+        // OK
+        return account;
     }
 }
