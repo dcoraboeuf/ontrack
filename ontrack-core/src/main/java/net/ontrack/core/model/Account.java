@@ -51,7 +51,7 @@ public class Account {
         return this;
     }
 
-    protected Account withProjectACL(ProjectFunction fn, int id) {
+    public Account withProjectACL(ProjectFunction fn, int id) {
         if (projectACL == null) {
             projectACL = new HashSet<>();
         }

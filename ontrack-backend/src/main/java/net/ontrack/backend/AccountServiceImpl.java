@@ -313,33 +313,15 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                     account = account.withGlobalACL(fn);
                 }
             }
-            // TODO Functions for all projects
-            /**
+            // Functions for all projects
             List<TProjectAuthorization> authList = projectAuthorizationDao.findByAccount(account.getId());
             for (TProjectAuthorization auth : authList) {
-                switch (auth.getRole()) {
-                    case OWNER:
-                        account = account.withACL(ProjectFunction.UPDATE, auth.getProject());
-                        account = account.withACL(ProjectFunction.REQUEST_CREATE, auth.getProject());
-                        account = account.withACL(ProjectFunction.REQUEST_MERGE, auth.getProject());
-                        account = account.withACL(ProjectFunction.REQUEST_DELETE, auth.getProject());
-                        account = account.withACL(ProjectFunction.ACL, auth.getProject());
-                        // ... applies everything below
-                    case TRANSLATOR:
-                        account = account.withACL(ProjectFunction.REQUEST_UPLOAD, auth.getProject());
-                        // ... applies everything below
-                    case REVIEWER:
-                        account = account.withACL(ProjectFunction.REQUEST_EDIT, auth.getProject());
-                        account = account.withACL(ProjectFunction.CONTRIBUTION_DIRECT, auth.getProject());
-                        account = account.withACL(ProjectFunction.CONTRIBUTION_REVIEW, auth.getProject());
-                        // ... applies everything below
-                    case CONTRIBUTOR:
-                        account = account.withACL(ProjectFunction.CONTRIBUTION, auth.getProject());
-                        // ... applies everything below
-                    default:
+                for (ProjectFunction fn : ProjectFunction.values()) {
+                    if (fn.isAllowedForRole(auth.getRole())) {
+                        account = account.withProjectACL(fn, auth.getProject());
+                    }
                 }
             }
-             */
         }
         // OK
         return account;
