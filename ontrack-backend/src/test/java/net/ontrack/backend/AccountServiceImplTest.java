@@ -1,9 +1,6 @@
 package net.ontrack.backend;
 
-import net.ontrack.backend.dao.AccountDao;
-import net.ontrack.backend.dao.CommentDao;
-import net.ontrack.backend.dao.EventDao;
-import net.ontrack.backend.dao.ValidationRunStatusDao;
+import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.config.CoreConfig;
 import net.ontrack.core.model.Account;
@@ -36,6 +33,7 @@ public class AccountServiceImplTest {
         CommentDao commentDao = mock(CommentDao.class);
         ValidationRunStatusDao validationRunStatusDao = mock(ValidationRunStatusDao.class);
         EventDao eventDao = mock(EventDao.class);
+        ProjectAuthorizationDao projectAuthorizationDao = mock(ProjectAuthorizationDao.class);
         // Service
         accountService = new AccountServiceImpl(
                 validatorService,
@@ -44,8 +42,8 @@ public class AccountServiceImplTest {
                 accountDao,
                 commentDao,
                 validationRunStatusDao,
-                eventDao
-        );
+                eventDao,
+                projectAuthorizationDao);
     }
 
     @Test

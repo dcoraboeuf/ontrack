@@ -2,6 +2,8 @@ package net.ontrack.core.security;
 
 public enum ProjectFunction {
 
+    // ACL
+    ACL,
     // Modify project
     PROJECT_MODIFY,
     // Delete project
