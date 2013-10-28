@@ -18,7 +18,7 @@
                 <section>
                     <h4><@lh key="home.projects"/></h4>
                     <div id="projects" class="dynamic" dynamic-controller="project-list" dynamic-createProject="${secAdmin()?string}"></div>
-                    <#if secAdmin()>
+                    <#if secGlobal('PROJECT_CREATE')>
                         <button id="project-create-button" type="button" class="btn"><@lh key="project.create" /></button>
                     </#if>
                 </section>
