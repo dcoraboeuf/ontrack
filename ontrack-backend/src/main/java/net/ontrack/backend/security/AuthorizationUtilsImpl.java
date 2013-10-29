@@ -2,6 +2,7 @@ package net.ontrack.backend.security;
 
 import net.ontrack.backend.dao.BranchDao;
 import net.ontrack.backend.dao.BuildDao;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
         this.securityUtils = securityUtils;
         this.branchDao = branchDao;
         this.buildDao = buildDao;
+    }
+
+    @Override
+    public void checkGlobal(GlobalFunction fn) {
+        securityUtils.checkGrant(fn);
     }
 
     @Override

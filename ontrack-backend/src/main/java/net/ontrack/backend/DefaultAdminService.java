@@ -1,7 +1,8 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.cache.Caches;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +22,14 @@ public class DefaultAdminService implements AdminService {
 
     private final ValidatorService validatorService;
     private final ConfigurationService configurationService;
+    private final AuthorizationUtils authorizationUtils;
     private final AtomicInteger ldapConfigurationSequence = new AtomicInteger(0);
 
     @Autowired
-    public DefaultAdminService(ValidatorService validatorService, ConfigurationService configurationService) {
+    public DefaultAdminService(ValidatorService validatorService, ConfigurationService configurationService, AuthorizationUtils authorizationUtils) {
         this.validatorService = validatorService;
         this.configurationService = configurationService;
+        this.authorizationUtils = authorizationUtils;
     }
 
     @Override
@@ -80,9 +82,9 @@ public class DefaultAdminService implements AdminService {
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @CacheEvict(value = Caches.CONFIGURATION, key = "'general'")
     public void saveGeneralConfiguration(GeneralConfiguration configuration) {
+        authorizationUtils.checkGlobal(GlobalFunction.SETTINGS);
         String baseUrl = configuration.getBaseUrl();
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/";
@@ -92,12 +94,12 @@ public class DefaultAdminService implements AdminService {
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "'ldap'"),
             @CacheEvict(value = Caches.LDAP, key = "'0'")
     })
     public void saveLDAPConfiguration(LDAPConfiguration configuration) {
+        authorizationUtils.checkGlobal(GlobalFunction.SETTINGS);
         // Validation
         validatorService.validate(configuration, LDAPConfigurationValidation.class);
         // Saving...
@@ -116,12 +118,12 @@ public class DefaultAdminService implements AdminService {
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "'mail'"),
             @CacheEvict(value = Caches.MAIL, key = "'0'")
     })
     public void saveMailConfiguration(MailConfiguration configuration) {
+        authorizationUtils.checkGlobal(GlobalFunction.SETTINGS);
         configurationService.set(ConfigurationKey.MAIL_HOST, configuration.getHost());
         configurationService.set(ConfigurationKey.MAIL_REPLY_TO_ADDRESS, configuration.getReplyToAddress());
         configurationService.set(ConfigurationKey.MAIL_USER, configuration.getUser());
