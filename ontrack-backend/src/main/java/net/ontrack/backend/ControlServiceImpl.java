@@ -118,7 +118,7 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     @Transactional
     public PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun) {
         // Check
-        authorizationUtils.checkBuild(buildId, ProjectFunction.PROMOTION_LEVEL_CREATE);
+        authorizationUtils.checkBuild(buildId, ProjectFunction.PROMOTED_RUN_CREATE);
         // Gets the current signature
         Signature signature = securityUtils.getCurrentSignature();
         // If none, creates one
