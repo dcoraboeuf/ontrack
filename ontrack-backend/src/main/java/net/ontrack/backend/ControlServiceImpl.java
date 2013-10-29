@@ -3,7 +3,7 @@ package net.ontrack.backend;
 import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.PromotedRunDao;
 import net.ontrack.backend.dao.ValidationRunDao;
-import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;

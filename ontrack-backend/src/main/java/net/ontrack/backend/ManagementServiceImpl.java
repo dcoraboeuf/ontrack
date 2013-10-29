@@ -9,7 +9,7 @@ import com.google.common.collect.Ordering;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;

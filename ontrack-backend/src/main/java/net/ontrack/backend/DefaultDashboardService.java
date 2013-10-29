@@ -5,7 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.DashboardDao;
-import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.service.DashboardSectionDecorator;

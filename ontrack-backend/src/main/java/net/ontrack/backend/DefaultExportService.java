@@ -11,7 +11,7 @@ import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.backend.export.TExportedImage;
-import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.support.Version;

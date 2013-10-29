@@ -1,7 +1,7 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.cache.Caches;
-import net.ontrack.backend.security.AuthorizationUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.GeneralConfiguration;

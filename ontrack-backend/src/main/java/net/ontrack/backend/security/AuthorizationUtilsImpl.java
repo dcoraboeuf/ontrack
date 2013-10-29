@@ -1,6 +1,7 @@
 package net.ontrack.backend.security;
 
 import net.ontrack.backend.dao.*;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
