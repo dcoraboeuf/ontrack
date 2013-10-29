@@ -9,8 +9,8 @@ import com.google.common.collect.Ordering;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.core.security.*;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.*;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
@@ -218,9 +218,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.PROJECT_MODIFY)
     @Transactional
-    public ProjectSummary updateProject(int id, ProjectUpdateForm form) {
-        authorizationUtils.checkProject(id, ProjectFunction.PROJECT_MODIFY);
+    public ProjectSummary updateProject(@ProjectGrantId int id, ProjectUpdateForm form) {
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -234,9 +234,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.PROMOTION_LEVEL_MGT)
     @Transactional
-    public Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form) {
-        authorizationUtils.checkProject(projectId, ProjectFunction.PROMOTION_LEVEL_MGT);
+    public Ack updateProjectValidationStamps(@ProjectGrantId int projectId, ProjectValidationStampMgt form) {
         // Gets the branch by name
         Map<Entity, Integer> projectIdMap = Collections.singletonMap(Entity.PROJECT, projectId);
         int branch1id = entityDao.getEntityId(Entity.BRANCH, form.getBranch1(), projectIdMap);
@@ -263,9 +263,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     // Validation stamps
 
     @Override
+    @ProjectGrant(ProjectFunction.PROJECT_DELETE)
     @Transactional
-    public Ack deleteProject(int id) {
-        authorizationUtils.checkProject(id, ProjectFunction.PROJECT_DELETE);
+    public Ack deleteProject(@ProjectGrantId int id) {
         String name = getEntityName(Entity.PROJECT, id);
         Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
@@ -324,9 +324,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.BRANCH_CREATE)
     @Transactional
-    public BranchSummary createBranch(int project, BranchCreationForm form) {
-        authorizationUtils.checkProject(project, ProjectFunction.BRANCH_CREATE);
+    public BranchSummary createBranch(@ProjectGrantId int project, BranchCreationForm form) {
         // Validation
         validate(form, NameDescription.class);
         // Query
