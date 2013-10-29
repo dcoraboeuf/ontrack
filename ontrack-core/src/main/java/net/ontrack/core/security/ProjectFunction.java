@@ -1,6 +1,9 @@
 package net.ontrack.core.security;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.util.EnumSet;
+import java.util.Set;
 
 public enum ProjectFunction {
 
@@ -13,7 +16,7 @@ public enum ProjectFunction {
     // Create branch
     BRANCH_CREATE,
     // Create build
-    BUILD_CREATE,
+    BUILD_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Modify branch
     BRANCH_MODIFY,
     // Delete branch
@@ -43,27 +46,44 @@ public enum ProjectFunction {
     // Delete build
     BUILD_DELETE,
     // Create promoted run
-    PROMOTED_RUN_CREATE,
+    PROMOTED_RUN_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete promoted run
     PROMOTED_RUN_DELETE,
     // Create validation run
-    VALIDATION_RUN_CREATE,
+    VALIDATION_RUN_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete validation run
     VALIDATION_RUN_DELETE;
     /**
-     * List of authorized roles
+     * List of authorized project roles
      */
-    private final EnumSet<ProjectRole> allowedRoles;
+    private final EnumSet<ProjectRole> allowedProjectRoles;
+    /**
+     * List of authorized global roles
+     */
+    private final Set<String> allowedGlobalRoles;
+
+    private ProjectFunction(EnumSet<ProjectRole> allowedProjectRoles, Set<String> allowedGlobalRoles) {
+        this.allowedProjectRoles = allowedProjectRoles;
+        this.allowedGlobalRoles = allowedGlobalRoles;
+    }
 
     private ProjectFunction() {
         this(EnumSet.of(ProjectRole.OWNER));
     }
 
-    private ProjectFunction(EnumSet<ProjectRole> allowedRoles) {
-        this.allowedRoles = allowedRoles;
+    private ProjectFunction(EnumSet<ProjectRole> allowedProjectRoles) {
+        this(allowedProjectRoles, ImmutableSet.<String>of());
     }
 
-    public boolean isAllowedForRole(ProjectRole role) {
-        return allowedRoles.contains(role);
+    private ProjectFunction(Set<String> allowedGlobalRoles) {
+        this(EnumSet.noneOf(ProjectRole.class), allowedGlobalRoles);
+    }
+
+    public boolean isAllowedForProjectRole(ProjectRole role) {
+        return allowedProjectRoles.contains(role);
+    }
+
+    public boolean isAllowedForGlobalRole(String role) {
+        return allowedGlobalRoles.contains(role);
     }
 }

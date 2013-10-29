@@ -316,7 +316,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             List<TProjectAuthorization> authList = projectAuthorizationDao.findByAccount(account.getId());
             for (TProjectAuthorization auth : authList) {
                 for (ProjectFunction fn : ProjectFunction.values()) {
-                    if (fn.isAllowedForRole(auth.getRole())) {
+                    if (fn.isAllowedForProjectRole(auth.getRole())) {
                         account = account.withProjectACL(fn, auth.getProject());
                     }
                 }

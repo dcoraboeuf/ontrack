@@ -6,6 +6,7 @@ import lombok.Data;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectACL;
 import net.ontrack.core.security.ProjectFunction;
+import net.ontrack.core.security.SecurityRoles;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -36,11 +37,14 @@ public class Account {
     }
 
     public boolean isGranted(GlobalFunction fn) {
-        return globalACL != null && globalACL.contains(fn);
+        return SecurityRoles.ADMINISTRATOR.equals(roleName)
+                || (globalACL != null && globalACL.contains(fn));
     }
 
     public boolean isGranted(ProjectFunction fn, int id) {
-        return projectACL != null && projectACL.contains(new ProjectACL(fn, id));
+        return SecurityRoles.ADMINISTRATOR.equals(roleName)
+                || fn.isAllowedForGlobalRole(roleName)
+                || projectACL != null && projectACL.contains(new ProjectACL(fn, id));
     }
 
     public Account withGlobalACL(GlobalFunction fn) {
