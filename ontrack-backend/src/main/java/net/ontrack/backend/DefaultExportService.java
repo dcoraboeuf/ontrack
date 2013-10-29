@@ -11,8 +11,9 @@ import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.backend.export.TExportedImage;
+import net.ontrack.backend.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.support.Version;
 import net.ontrack.service.ExportService;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +60,7 @@ public class DefaultExportService implements ExportService {
     private final PropertyDao propertyDao;
     private final BuildCleanupDao buildCleanupDao;
     private final ObjectMapper objectMapper;
+    private final AuthorizationUtils authorizationUtils;
     private final String version;
     /**
      * Import service for versions 1.37 and greater.
@@ -69,7 +70,7 @@ public class DefaultExportService implements ExportService {
     private ImportService importService137;
 
     @Autowired
-    public DefaultExportService(ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public DefaultExportService(ProjectDao projectDao, BranchDao branchDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, BuildDao buildDao, PromotedRunDao promotedRunDao, ValidationRunDao validationRunDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, CommentDao commentDao, PropertyDao propertyDao, BuildCleanupDao buildCleanupDao, ObjectMapper objectMapper, AuthorizationUtils authorizationUtils, @Value("${app.version}") String version) {
         this.projectDao = projectDao;
         this.branchDao = branchDao;
         this.promotionLevelDao = promotionLevelDao;
@@ -83,12 +84,13 @@ public class DefaultExportService implements ExportService {
         this.propertyDao = propertyDao;
         this.buildCleanupDao = buildCleanupDao;
         this.objectMapper = objectMapper;
+        this.authorizationUtils = authorizationUtils;
         this.version = version;
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public String exportLaunch(Collection<Integer> projectIds) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_EXPORT);
         // UUID
         String uuid = UUID.randomUUID().toString();
         // Export task
@@ -102,8 +104,8 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack exportCheck(String uuid) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_EXPORT);
         ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
             throw new ExportTaskNotFoundException(uuid);
@@ -119,8 +121,8 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ExportData exportDownload(String uuid) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_EXPORT);
         ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
             throw new ExportTaskNotFoundException(uuid);
@@ -141,6 +143,7 @@ public class DefaultExportService implements ExportService {
 
     @Override
     public String importLaunch(MultipartFile file) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_CREATE);
         try (InputStream in = file.getInputStream()) {
             ExportData importData = objectMapper.readValue(in, ExportData.class);
             return importLaunch(importData);
@@ -150,8 +153,8 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public String importLaunch(ExportData importData) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_CREATE);
         // UUID
         String uuid = UUID.randomUUID().toString();
         // Import task
@@ -165,8 +168,8 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ImportResult importCheck(String uuid) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_CREATE);
         ImportTask task = importCache.getIfPresent(uuid);
         if (task == null) {
             throw new ImportTaskNotFoundException(uuid);
