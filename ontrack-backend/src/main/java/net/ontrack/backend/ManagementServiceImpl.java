@@ -686,8 +686,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_DELETE);
         ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
         Ack ack = validationStampDao.deleteValidationStamp(validationStampId);
         if (ack.isSuccess()) {
@@ -858,8 +858,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deletePromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_DELETE);
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         Ack ack = promotionLevelDao.deletePromotionLevel(promotionLevelId);
         if (ack.isSuccess()) {
@@ -1366,8 +1366,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationRun(int validationRunId) {
+        authorizationUtils.checkValidationRun(validationRunId, ProjectFunction.VALIDATION_RUN_DELETE);
         ValidationRunSummary run = getValidationRun(validationRunId);
         Ack ack = validationRunDao.deleteById(validationRunId);
         if (ack.isSuccess()) {

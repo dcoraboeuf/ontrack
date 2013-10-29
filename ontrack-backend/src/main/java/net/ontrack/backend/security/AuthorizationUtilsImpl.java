@@ -1,7 +1,6 @@
 package net.ontrack.backend.security;
 
-import net.ontrack.backend.dao.BranchDao;
-import net.ontrack.backend.dao.BuildDao;
+import net.ontrack.backend.dao.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
@@ -14,12 +13,18 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
     private final SecurityUtils securityUtils;
     private final BranchDao branchDao;
     private final BuildDao buildDao;
+    private final PromotionLevelDao promotionLevelDao;
+    private final ValidationStampDao validationStampDao;
+    private final ValidationRunDao validationRunDao;
 
     @Autowired
-    public AuthorizationUtilsImpl(SecurityUtils securityUtils, BranchDao branchDao, BuildDao buildDao) {
+    public AuthorizationUtilsImpl(SecurityUtils securityUtils, BranchDao branchDao, BuildDao buildDao, PromotionLevelDao promotionLevelDao, ValidationStampDao validationStampDao, ValidationRunDao validationRunDao) {
         this.securityUtils = securityUtils;
         this.branchDao = branchDao;
         this.buildDao = buildDao;
+        this.promotionLevelDao = promotionLevelDao;
+        this.validationStampDao = validationStampDao;
+        this.validationRunDao = validationRunDao;
     }
 
     @Override
@@ -40,5 +45,20 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
     @Override
     public void checkBuild(int build, ProjectFunction fn) {
         checkBranch(buildDao.getById(build).getBranch(), fn);
+    }
+
+    @Override
+    public void checkPromotionLevel(int promotionLevel, ProjectFunction fn) {
+        checkBranch(promotionLevelDao.getById(promotionLevel).getBranch(), fn);
+    }
+
+    @Override
+    public void checkValidationRun(int validationRun, ProjectFunction fn) {
+        checkBuild(validationRunDao.getById(validationRun).getBuild(), fn);
+    }
+
+    @Override
+    public void checkValidationStamp(int validationStamp, ProjectFunction fn) {
+        checkBranch(validationStampDao.getById(validationStamp).getBranch(), fn);
     }
 }
