@@ -29,11 +29,6 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
     }
 
     @Override
-    public void checkGlobal(GlobalFunction fn) {
-        securityUtils.checkGrant(fn);
-    }
-
-    @Override
     public void checkProject(int project, ProjectFunction fn) {
         securityUtils.checkGrant(fn, project);
     }

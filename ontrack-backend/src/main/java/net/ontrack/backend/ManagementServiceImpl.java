@@ -9,11 +9,8 @@ import com.google.common.collect.Ordering;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
-import net.ontrack.core.security.AuthorizationUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.GlobalFunction;
-import net.ontrack.core.security.ProjectFunction;
-import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
@@ -207,9 +204,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.PROJECT_CREATE)
     @Transactional
     public ProjectSummary createProject(ProjectCreationForm form) {
-        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
