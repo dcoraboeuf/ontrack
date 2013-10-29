@@ -13,7 +13,6 @@ import net.ontrack.backend.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
-import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
@@ -28,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -224,8 +222,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ProjectSummary updateProject(int id, ProjectUpdateForm form) {
+        authorizationUtils.checkProject(id, ProjectFunction.PROJECT_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -240,8 +238,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form) {
+        authorizationUtils.checkProject(projectId, ProjectFunction.PROMOTION_LEVEL_MGT);
         // Gets the branch by name
         Map<Entity, Integer> projectIdMap = Collections.singletonMap(Entity.PROJECT, projectId);
         int branch1id = entityDao.getEntityId(Entity.BRANCH, form.getBranch1(), projectIdMap);
@@ -362,8 +360,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary updateBranch(int branch, BranchUpdateForm form) {
+        authorizationUtils.checkBranch(branch, ProjectFunction.BRANCH_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Loads existing branch
@@ -532,8 +530,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack setBuildCleanup(int branchId, BuildCleanupForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CLEANUP_CONFIG);
         if (form.getRetention() <= 0) {
             return buildCleanupDao.removeBuildCleanUp(branchId);
         } else {
@@ -839,8 +837,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelSummary updatePromotionLevel(int promotionLevelId, PromotionLevelUpdateForm form) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Existing value
@@ -904,8 +902,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack upPromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         return promotionLevelDao.upPromotionLevel(promotionLevelId);
     }
 
@@ -975,8 +973,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Flag unsetPromotionLevelAutoPromote(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         promotionLevelDao.setAutoPromote(promotionLevelId, false);
         return Flag.UNSET;
     }
@@ -1194,8 +1192,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BuildSummary updateBuild(int buildId, BranchUpdateForm form) {
+        authorizationUtils.checkBuild(buildId, ProjectFunction.BUILD_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Loads existing build
@@ -1536,8 +1534,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack removePromotedRun(int buildId, int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_DELETE);
         Ack ack = promotedRunDao.remove(buildId, promotionLevelId);
         if (ack.isSuccess()) {
             event(
