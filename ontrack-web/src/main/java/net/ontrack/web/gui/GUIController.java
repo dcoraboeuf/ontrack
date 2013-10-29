@@ -7,6 +7,7 @@ import net.ontrack.core.model.ChartDefinition;
 import net.ontrack.core.model.ExportData;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.core.model.UserMessage;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.ui.ManageUI;
@@ -85,7 +86,7 @@ public class GUIController extends AbstractGUIController {
 
     @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.GET)
     public String manageProjectValidationStamps(Model model, @PathVariable String name) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_CREATE);
         // Loads the project details
         model.addAttribute("project", manageUI.getProject(name));
         // OK
@@ -94,13 +95,13 @@ public class GUIController extends AbstractGUIController {
 
     @RequestMapping(value = "/gui/import", method = RequestMethod.GET)
     public String importPage() {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_CREATE);
         return "import";
     }
 
     @RequestMapping(value = "/gui/import", method = RequestMethod.POST)
     public String importFile(HttpServletRequest request, Model model) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_CREATE);
         // Error handling
         errorHandlingMultipartResolver.checkForUploadError(request);
         // Gets the file
@@ -117,13 +118,13 @@ public class GUIController extends AbstractGUIController {
 
     @RequestMapping(value = "/gui/export", method = RequestMethod.GET)
     public String exportPage() {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_EXPORT);
         return "export";
     }
 
     @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/export", method = RequestMethod.GET)
     public String exportProject(Model model, @PathVariable String name) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_EXPORT);
         // Loads the project details
         model.addAttribute("project", manageUI.getProject(name));
         // Launching the export asynchronously
@@ -134,7 +135,7 @@ public class GUIController extends AbstractGUIController {
 
     @RequestMapping(value = "/gui/project/export/{uuid}", method = RequestMethod.GET)
     public void exportProjectDownload(@PathVariable String uuid, HttpServletResponse response) throws IOException {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_EXPORT);
         // Gets the file data
         ExportData data = manageUI.exportProjectDownload(uuid);
         // Headers
