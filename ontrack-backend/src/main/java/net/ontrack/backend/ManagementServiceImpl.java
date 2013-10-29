@@ -9,7 +9,10 @@ import com.google.common.collect.Ordering;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
+import net.ontrack.backend.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MapBuilder;
@@ -47,6 +50,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     public static final int MAX_EVENTS_IN_BUILD_VALIDATION_STAMP_RUN = 10;
     // TODO Split the service in different parts
     private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
     private final Strings strings;
     private final AccountDao accountDao;
     private final ProjectDao projectDao;
@@ -135,6 +139,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             ValidatorService validatorService,
             EventService auditService,
             SecurityUtils securityUtils,
+            AuthorizationUtils authorizationUtils,
             Strings strings,
             AccountDao accountDao,
             ProjectDao projectDao,
@@ -155,6 +160,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     ) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
         this.strings = strings;
         this.accountDao = accountDao;
         this.projectDao = projectDao;
@@ -204,8 +210,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ProjectSummary createProject(ProjectCreationForm form) {
+        authorizationUtils.checkGlobal(GlobalFunction.PROJECT_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -263,8 +269,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteProject(int id) {
+        authorizationUtils.checkProject(id, ProjectFunction.PROJECT_DELETE);
         String name = getEntityName(Entity.PROJECT, id);
         Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
@@ -324,8 +330,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary createBranch(int project, BranchCreationForm form) {
+        authorizationUtils.checkProject(project, ProjectFunction.BRANCH_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -342,8 +348,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBranch(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BRANCH_DELETE);
         BranchSummary branch = getBranch(branchId);
         Ack ack = branchDao.deleteBranch(branchId);
         if (ack.isSuccess()) {
@@ -376,8 +382,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary cloneBranch(int branchId, BranchCloneForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BRANCH_CLONE);
         // Validation
         validate(form, NameDescription.class);
         // Gets the original branch
@@ -642,8 +648,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form) {
+        authorizationUtils.checkBranch(branch, ProjectFunction.VALIDATION_STAMP_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -730,8 +736,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form) {
+        securityUtils.checkIsLogged();
         // Comment
         CommentStub comment = createComment(Entity.VALIDATION_STAMP, validationStampId, form.getComment());
         // Registers an event for this comment
@@ -810,8 +816,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.PROMOTION_LEVEL_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -1170,8 +1176,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBuild(int buildId) {
+        authorizationUtils.checkBuild(buildId, ProjectFunction.BUILD_DELETE);
         BuildSummary build = getBuild(buildId);
         Ack ack = buildDao.delete(buildId);
         if (ack.isSuccess()) {
@@ -1402,8 +1408,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
+        securityUtils.checkIsLogged();
         // Properties
         List<PropertyCreationForm> properties = form.getProperties();
         if (properties != null) {
@@ -1444,8 +1450,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus) {
+        securityUtils.checkIsLogged();
         // Author
         Signature signature = securityUtils.getCurrentSignature();
         // Creation
@@ -1635,8 +1641,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public CommentStub createComment(Entity entity, int id, String content) {
+        securityUtils.checkIsLogged();
         // Does not do anything if empty content
         if (StringUtils.isBlank(content)) {
             return null;
