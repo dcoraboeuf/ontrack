@@ -5,7 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationUtils;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.MessageAnnotationUtils;
 import net.ontrack.core.support.MessageAnnotator;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -42,6 +42,7 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
 
     private final Logger logger = LoggerFactory.getLogger(GitService.class);
     private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
     private final Strings strings;
     private final PropertiesService propertiesService;
     private final ManagementService managementService;
@@ -61,10 +62,11 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Autowired
     public DefaultGitService(
             SecurityUtils securityUtils,
-            Strings strings, PropertiesService propertiesService,
+            AuthorizationUtils authorizationUtils, Strings strings, PropertiesService propertiesService,
             ManagementService managementService,
             ControlService controlService, GitClientFactory gitClientFactory, ExtensionManager extensionManager) {
         this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
         this.strings = strings;
         this.propertiesService = propertiesService;
         this.managementService = managementService;
@@ -204,8 +206,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CREATE);
         executorImportBuilds.submit(new Runnable() {
             @Override
             public void run() {
