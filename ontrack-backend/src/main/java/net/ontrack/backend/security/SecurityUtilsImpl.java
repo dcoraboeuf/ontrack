@@ -71,13 +71,6 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
-    public void checkIsAdmin() {
-        if (!isAdmin()) {
-            throw new AccessDeniedException("Administrator right is required");
-        }
-    }
-
-    @Override
     public void checkIsLogged() {
         if (!isLogged()) {
             throw new AccessDeniedException("Authentication is required");

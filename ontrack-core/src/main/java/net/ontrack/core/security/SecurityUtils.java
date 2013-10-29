@@ -34,12 +34,6 @@ public interface SecurityUtils {
     @Deprecated
     boolean hasRole(String role);
 
-    /**
-     * @deprecated Use {@link #checkGrant(GlobalFunction)} instead
-     */
-    @Deprecated
-    void checkIsAdmin();
-
     void checkIsLogged();
 
     <T> T asAdmin(Callable<T> call);
