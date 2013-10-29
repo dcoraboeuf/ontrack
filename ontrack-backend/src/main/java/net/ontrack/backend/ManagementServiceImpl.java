@@ -495,8 +495,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BuildCleanup getBuildCleanup(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CLEANUP_CONFIG);
         // List of promotion levels
         List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
         // No exclusion by default
@@ -667,8 +667,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Existing value
@@ -701,36 +701,36 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack upValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.upValidationStamp(validationStampId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack downValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.downValidationStamp(validationStampId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack moveValidationStamp(int validationStampId, int newIndex) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.moveValidationStamp(validationStampId, newIndex);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack setValidationStampOwner(int validationStampId, int ownerId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.setValidationStampOwner(validationStampId, ownerId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unsetValidationStampOwner(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.setValidationStampOwner(validationStampId, null);
     }
 
@@ -778,8 +778,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imageValidationStamp(final int validationStampId, MultipartFile image) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return setImage(
                 image,
                 SQL.VALIDATION_STAMP_IMAGE_MAXSIZE,
@@ -873,8 +873,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.PROMOTION_LEVEL_MGT);
         Ack ack = validationStampDao.linkValidationStampToPromotionLevel(validationStampId, promotionLevelId);
         if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_LINKED);
@@ -889,8 +889,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.PROMOTION_LEVEL_MGT);
         Ack ack = validationStampDao.unlinkValidationStampToPromotionLevel(validationStampId);
         if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_UNLINKED);
@@ -911,15 +911,15 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack downPromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         return promotionLevelDao.downPromotionLevel(promotionLevelId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imagePromotionLevel(final int promotionLevelId, MultipartFile image) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MODIFY);
         return setImage(
                 image,
                 SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE,
@@ -939,8 +939,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelManagementData getPromotionLevelManagementData(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.PROMOTION_LEVEL_MGT);
         // Gets the branch
         BranchSummary branch = getBranch(branchId);
         // List of validation stamps for this branch, without any promotion level
@@ -961,8 +961,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Flag setPromotionLevelAutoPromote(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         // Auto promotion can be enabled only if the promotion level is associated to at least one validation stamp
         List<TValidationStamp> stamps = validationStampDao.findByPromotionLevel(promotionLevelId);
         if (stamps.isEmpty()) {
