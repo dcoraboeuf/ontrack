@@ -31,6 +31,45 @@ public class DefaultSubscriptionServiceIntegrationTest extends AbstractBackendTe
     private InMemoryPost inMemoryPost;
 
     @Test
+    public void subscribeAndUnsubscribe() throws Exception {
+        // Creates a project
+        final ProjectSummary project = doCreateProject();
+        // Creates the account
+        final Account account = asAdmin().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                ID id = accountService.createAccount(new AccountCreationForm(
+                        Helper.uid("ACC"),
+                        "Test account",
+                        "test@test.com",
+                        SecurityRoles.USER,
+                        "builtin",
+                        "pwd",
+                        "pwd"
+                ));
+                accountService.changeLanguage(id.getValue(), "fr");
+                return accountService.getAccount(id.getValue());
+            }
+        });
+        // Subscribes this account to the project events
+        asAccount(account).call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                subscriptionService.subscribe(Collections.singletonMap(Entity.PROJECT, project.getId()));
+                return null;
+            }
+        });
+        // Unsubscribes using the same account
+        asAccount(account).call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                subscriptionService.unsubscribe(Collections.singletonMap(Entity.PROJECT, project.getId()));
+                return null;
+            }
+        });
+    }
+
+    @Test
     public void publish() throws Exception {
         // Unique names
         final String accountName = Helper.uid("ACC");
