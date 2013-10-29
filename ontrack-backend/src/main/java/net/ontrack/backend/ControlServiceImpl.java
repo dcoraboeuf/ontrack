@@ -3,8 +3,9 @@ package net.ontrack.backend;
 import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.PromotedRunDao;
 import net.ontrack.backend.dao.ValidationRunDao;
+import net.ontrack.backend.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
@@ -14,7 +15,6 @@ import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,10 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
     private final ValidationRunDao validationRunDao;
     private final PromotedRunDao promotedRunDao;
     private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
 
     @Autowired
-    public ControlServiceImpl(ValidatorService validatorService, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao, SecurityUtils securityUtils) {
+    public ControlServiceImpl(ValidatorService validatorService, EventService auditService, ManagementService managementService, PropertiesService propertiesService, BuildDao buildDao, ValidationRunDao validationRunDao, PromotedRunDao promotedRunDao, SecurityUtils securityUtils, AuthorizationUtils authorizationUtils) {
         super(validatorService, auditService);
         this.managementService = managementService;
         this.propertiesService = propertiesService;
@@ -37,12 +38,14 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
         this.validationRunDao = validationRunDao;
         this.promotedRunDao = promotedRunDao;
         this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
     }
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public BuildSummary createBuild(int branch, BuildCreationForm form) {
+        // Check
+        authorizationUtils.checkBranch(branch, ProjectFunction.BUILD_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -59,8 +62,9 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public ValidationRunSummary createValidationRun(int build, int validationStamp, ValidationRunCreationForm validationRun) {
+        // Check
+        authorizationUtils.checkBuild(build, ProjectFunction.VALIDATION_RUN_CREATE);
         // Run itself
         int validationRunId = validationRunDao.createValidationRun(
                 build,
@@ -112,8 +116,9 @@ public class ControlServiceImpl extends AbstractServiceImpl implements ControlSe
      */
     @Override
     @Transactional
-    @Secured({SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public PromotedRunSummary createPromotedRun(int buildId, int promotionLevel, PromotedRunCreationForm promotedRun) {
+        // Check
+        authorizationUtils.checkBuild(buildId, ProjectFunction.PROMOTION_LEVEL_CREATE);
         // Gets the current signature
         Signature signature = securityUtils.getCurrentSignature();
         // If none, creates one
