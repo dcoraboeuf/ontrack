@@ -9,7 +9,11 @@ public interface AdminUI {
 
     List<GlobalFunction> getGlobalFunctions();
 
+    List<GlobalACLSummary> getGlobalACL();
+
     Ack setGlobalACL(int account, GlobalFunction fn);
+
+    Ack unsetGlobalACL(int account, GlobalFunction fn);
 
     List<Account> accounts();
 

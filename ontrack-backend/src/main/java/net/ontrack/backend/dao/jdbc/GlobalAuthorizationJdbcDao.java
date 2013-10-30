@@ -1,14 +1,20 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.dao.GlobalAuthorizationDao;
+import net.ontrack.backend.dao.model.TGlobalAuthorization;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.dao.SQLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 @Component
 public class GlobalAuthorizationJdbcDao extends AbstractJdbcDao implements GlobalAuthorizationDao {
@@ -38,6 +44,22 @@ public class GlobalAuthorizationJdbcDao extends AbstractJdbcDao implements Globa
                         SQL.GLOBAL_AUTHORIZATION_UNSET,
                         params("account", account).addValue("fn", fn.name())
                 )
+        );
+    }
+
+    @Override
+    public List<TGlobalAuthorization> all() {
+        return getJdbcTemplate().query(
+                SQL.GLOBAL_AUTHORIZATION_LIST,
+                new RowMapper<TGlobalAuthorization>() {
+                    @Override
+                    public TGlobalAuthorization mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new TGlobalAuthorization(
+                                rs.getInt("account"),
+                                SQLUtils.getEnum(GlobalFunction.class, rs, "fn")
+                        );
+                    }
+                }
         );
     }
 }

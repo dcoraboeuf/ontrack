@@ -18,8 +18,17 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
     public List<GlobalFunction> getGlobalFunctions() {
         return list(
                 getDefaultLocale(),
-                format("/ui/admin/acl/global"),
+                format("/ui/admin/acl/global/fn"),
                 GlobalFunction.class
+        );
+    }
+
+    @Override
+    public List<GlobalACLSummary> getGlobalACL() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global"),
+                GlobalACLSummary.class
         );
     }
 
@@ -30,6 +39,15 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
                 format("/ui/admin/acl/global/%d/%s", account, fn),
                 Ack.class,
                 null
+        );
+    }
+
+    @Override
+    public Ack unsetGlobalACL(int account, GlobalFunction fn) {
+        return delete(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global/%d/%s", account, fn),
+                Ack.class
         );
     }
 

@@ -45,11 +45,19 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     }
 
     @Override
-    @RequestMapping(value = "/acl/global", method = RequestMethod.GET)
+    @RequestMapping(value = "/acl/global/fn", method = RequestMethod.GET)
     public
     @ResponseBody
     List<GlobalFunction> getGlobalFunctions() {
         return Arrays.asList(GlobalFunction.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GlobalACLSummary> getGlobalACL() {
+        return accountService.getGlobalACL();
     }
 
     @Override
@@ -58,6 +66,14 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     @ResponseBody
     Ack setGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
         return accountService.setGlobalACL(account, fn);
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global/{account:\\d+}/{fn:[A-Z_]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack unsetGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
+        return accountService.unsetGlobalACL(account, fn);
     }
 
     /**

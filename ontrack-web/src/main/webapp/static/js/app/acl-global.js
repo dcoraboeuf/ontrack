@@ -11,7 +11,7 @@ define(['jquery', 'ajax', 'app/component/account-role-selection'], function ($, 
 
     // Gets the list of global functions
     ajax.get({
-        url: 'ui/admin/acl/global',
+        url: 'ui/admin/acl/global/fn',
         successFn: function (fns) {
             // Account selection & global functions
             accountRoleSelection.init(

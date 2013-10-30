@@ -2,9 +2,11 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.TAccount;
+import net.ontrack.backend.dao.model.TGlobalAuthorization;
 import net.ontrack.backend.dao.model.TProjectAuthorization;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.*;
@@ -18,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.transform;
@@ -320,6 +319,56 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack setGlobalACL(int account, GlobalFunction fn) {
         return globalAuthorizationDao.set(account, fn);
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public Ack unsetGlobalACL(int account, GlobalFunction fn) {
+        return globalAuthorizationDao.unset(account, fn);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public List<GlobalACLSummary> getGlobalACL() {
+        List<TGlobalAuthorization> tlist = globalAuthorizationDao.all();
+        Map<Integer, List<GlobalFunction>> index = new HashMap<>();
+        for (TGlobalAuthorization t : tlist) {
+            int id = t.getAccount();
+            List<GlobalFunction> list = index.get(id);
+            if (list == null) {
+                list = new ArrayList<>();
+                index.put(id, list);
+            }
+            list.add(t.getFn());
+        }
+        List<GlobalACLSummary> result = new ArrayList<>(
+                Collections2.transform(
+                        index.entrySet(),
+                        new Function<Map.Entry<Integer, List<GlobalFunction>>, GlobalACLSummary>() {
+                            @Override
+                            public GlobalACLSummary apply(Map.Entry<Integer, List<GlobalFunction>> entry) {
+                                return new GlobalACLSummary(
+                                        accountSummaryFn.apply(accountDao.getByID(entry.getKey())),
+                                        entry.getValue()
+                                );
+                            }
+                        }
+                )
+        );
+        // Sort by account name
+        Collections.sort(
+                result,
+                new Comparator<GlobalACLSummary>() {
+                    @Override
+                    public int compare(GlobalACLSummary o1, GlobalACLSummary o2) {
+                        return o1.getAccount().getName().compareTo(o2.getAccount().getName());
+                    }
+                }
+        );
+        // OK
+        return result;
     }
 
     protected Account getACL(Account account) {

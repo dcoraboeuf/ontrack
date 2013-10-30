@@ -46,4 +46,8 @@ public interface AccountService {
     List<AccountSummary> accountLookup(String query);
 
     Ack setGlobalACL(int account, GlobalFunction fn);
+
+    Ack unsetGlobalACL(int account, GlobalFunction fn);
+
+    List<GlobalACLSummary> getGlobalACL();
 }
