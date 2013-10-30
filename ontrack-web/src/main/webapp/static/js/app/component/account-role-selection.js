@@ -1,4 +1,4 @@
-define(['render'], function (render) {
+define(['render', 'app/component/account-selection'], function (render, accountSelection) {
 
     Handlebars.registerHelper('aclRole', function (role) {
         return $('<i></i>')
@@ -21,6 +21,9 @@ define(['render'], function (render) {
             'account-role-selection',
             {
                 config: config
+            },
+            function () {
+                accountSelection.init(container.find('.acl-account-selection'))
             }
         )
     }
