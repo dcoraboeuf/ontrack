@@ -1,5 +1,15 @@
 define(['ajax','common','dialog'], function (ajax, common, dialog) {
 
+    function staticPathTo(relativePath) {
+        // 'staticPath' variable is declared in 'layout.html'
+        if (staticPath) {
+            return '{0}/{1}'.format(staticPath, relativePath);
+        } else {
+            common.log('application')('Cannot find "staticPath" variable.');
+            return 'static/{0}'.format(relativePath);
+        }
+    }
+
     function deleteDialog(config) {
         config = $.extend({
             title: 'general.delete'.loc(),
@@ -65,6 +75,7 @@ define(['ajax','common','dialog'], function (ajax, common, dialog) {
     }
 
     return {
+        staticPathTo: staticPathTo,
         deleteEntity: deleteEntity,
         deleteDialog: deleteDialog
     }
