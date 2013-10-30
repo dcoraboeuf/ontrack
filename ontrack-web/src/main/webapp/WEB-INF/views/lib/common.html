@@ -86,3 +86,57 @@
         <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" width="24" height="24" />
     </#if>
 </#macro>
+
+<#macro title value description="" close="">
+    <#assign commands = [] />
+    <#assign uplinks = [] />
+    <#assign content><#nested/></#assign>
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <span class="title">
+                <#list uplinks as uplink>
+                    <a href="${uplink.href}">${uplink.name?html}</a>
+                    /
+                </#list>
+                ${value?html}
+            </span>
+            <span class="action action-optional">
+                <#list commands as command>
+                    <#if command.link != "">
+                        <a id="${command.id?html}" href="${command.link?html}">
+                            <i class="${command.class?html}"></i>
+                            ${command.title?html}
+                        </a>
+                        <#else>
+                        <span id="${command.id?html}">
+                            <i class="${command.class?html}"></i>
+                            ${command.title?html}
+                        </span>
+                    </#if>
+                </#list>
+                <a href="${close?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+            </span>
+            <#if description != "">
+                <p class="description">
+                    ${description?html}
+                </p>
+            </#if>
+        </div>
+    </div>
+</#macro>
+
+<#macro title_command id title class link="">
+    <#assign commands = commands + [{
+            'id': id,
+            'title': title,
+            'class': class,
+            'link': link
+            }] />
+</#macro>
+
+<#macro title_uplink name href>
+    <#assign uplinks = uplinks + [{
+            'name': name,
+            'href': href
+            }] />
+</#macro>

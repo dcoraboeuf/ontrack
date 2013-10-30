@@ -335,6 +335,15 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * ACL management
+     */
+    @RequestMapping(value = "/acl", method = RequestMethod.GET)
+    public String acl() {
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
+        return "acl-global";
+    }
+
+    /**
      * Request for the update of an account
      */
     @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.GET)
