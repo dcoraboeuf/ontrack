@@ -1174,6 +1174,10 @@ acl
     en -> Authorizations
     fr -> Autorisations
 
+acl.project
+    en -> Authorizations for {0}
+    fr -> Autorisations pour {0}
+
 acl.account
     en -> Account
     fr -> Compte utilisateur

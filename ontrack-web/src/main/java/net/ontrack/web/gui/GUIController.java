@@ -93,6 +93,14 @@ public class GUIController extends AbstractGUIController {
         return "project-validation-stamp-mgt";
     }
 
+    @RequestMapping(value = "/gui/project/{name:[A-Za-z0-9_\\.\\-]+}/acl", method = RequestMethod.GET)
+    public String manageProjectACL(Model model, @PathVariable String name) {
+        // Loads the project details
+        model.addAttribute("project", manageUI.getProject(name));
+        // OK
+        return "acl-project";
+    }
+
     @RequestMapping(value = "/gui/import", method = RequestMethod.GET)
     public String importPage() {
         securityUtils.checkGrant(GlobalFunction.PROJECT_CREATE);

@@ -1,0 +1,14 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="acl-project"
+    title=loc("acl")
+    breadcrumbs = {
+        loc("home"): "",
+        project.name?html: "gui/project/${project.name?html}"
+    }>
+
+    <@title value=loc("acl.project", project.name) close="gui/project/${project.name?html}">
+    </@title>
+
+</@layout_std>
