@@ -1167,3 +1167,25 @@ dashboard.admin
 dashboard.admin.help
     en -> Select the validation stamps that must appear in the dashboard
     fr -> Sélectionnez les validations qui doivent apparaître dans le tableau de bord
+
+[acl]
+
+acl
+    en -> Authorizations
+    fr -> Autorisations
+
+acl.account
+    en -> Account
+    fr -> Compte utilisateur
+
+acl.global.fn
+    en -> Global function
+    fr -> Fonction générale
+
+acl.project.role
+    en -> Project role
+    fr -> Rôle pour le projet
+
+acl.project.add
+    en -> Add
+    fr -> Ajouter
