@@ -1,8 +1,4 @@
-define(['common', 'handlebars'], function (common, handlebars) {
-
-    Handlebars.registerHelper('loc', function (key, options) {
-        return key.loc();
-    });
+define(['common', 'handlebars', 'helpers'], function (common) {
 
     function withTemplate(templateId, templateFn) {
         require(['text!template/' + templateId + '.html'], function (rawTemplate) {

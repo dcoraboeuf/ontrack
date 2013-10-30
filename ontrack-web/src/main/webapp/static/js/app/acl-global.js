@@ -1,10 +1,16 @@
-define(['jquery', 'ajax', 'app/component/account-role-selection'], function ($, ajax, accountRoleSelection) {
+define(['jquery', 'ajax', 'app/component/account-role-selection', 'dynamic'], function ($, ajax, accountRoleSelection, dynamic) {
+
+    Handlebars.registerHelper('aclRole', function (role) {
+        return $('<i></i>')
+            .append(' ' + 'globalFunction.{0}'.format(role).loc())
+            .html();
+    });
 
     function addACL(config, id, fn) {
         ajax.put({
             url: 'ui/admin/acl/global/{0}/{1}'.format(id, fn),
             successFn: function () {
-                // TODO Refreshes the list of ACLs
+                dynamic.reloadSection('acl-global-list')
             }
         })
     }

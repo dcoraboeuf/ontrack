@@ -350,7 +350,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                             @Override
                             public GlobalACLSummary apply(Map.Entry<Integer, List<GlobalFunction>> entry) {
                                 return new GlobalACLSummary(
-                                        accountSummaryFn.apply(accountDao.getByID(entry.getKey())),
+                                        accountFunction.apply(accountDao.getByID(entry.getKey())),
                                         entry.getValue()
                                 );
                             }

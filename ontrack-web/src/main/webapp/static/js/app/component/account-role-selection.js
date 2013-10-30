@@ -1,11 +1,5 @@
 define(['render', 'app/component/account-selection', 'common'], function (render, accountSelection, common) {
 
-    Handlebars.registerHelper('aclRole', function (role) {
-        return $('<i></i>')
-            .append(' ' + 'globalFunction.{0}'.format(role).loc())
-            .html();
-    });
-
     function onSubmit(config) {
         var role = config.container.find('.acl-role-selection').val();
         var account = accountSelection.val(config.accountSelector);

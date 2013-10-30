@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class GlobalACLSummary {
 
-    private final AccountSummary account;
+    private final Account account;
     private final List<GlobalFunction> fns;
 
 }
