@@ -1,6 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.AdminUI;
 import net.ontrack.extension.api.ExtensionManager;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +42,14 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
         this.extensionManager = extensionManager;
         this.entityConverter = entityConverter;
         this.securityUtils = securityUtils;
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GlobalFunction> getGlobalFunctions() {
+        return Arrays.asList(GlobalFunction.values());
     }
 
     /**

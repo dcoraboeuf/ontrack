@@ -5,6 +5,7 @@ import net.ontrack.core.model.Account;
 import net.ontrack.core.model.AccountCreationForm;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.ID;
+import net.ontrack.core.security.GlobalFunction;
 
 import java.util.List;
 
@@ -14,6 +15,15 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
 
     public DefaultAdminUIClient(String url) {
         super(url);
+    }
+
+    @Override
+    public List<GlobalFunction> getGlobalFunctions() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global"),
+                GlobalFunction.class
+        );
     }
 
     @Override

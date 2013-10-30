@@ -1186,6 +1186,6 @@ acl.project.role
     en -> Project role
     fr -> Rôle pour le projet
 
-acl.project.add
+acl.add
     en -> Add
     fr -> Ajouter
