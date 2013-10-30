@@ -24,6 +24,16 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
     }
 
     @Override
+    public Ack setGlobalACL(int account, GlobalFunction fn) {
+        return put(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global/%d/%s", account, fn),
+                Ack.class,
+                null
+        );
+    }
+
+    @Override
     public List<Account> accounts() {
         return list(
                 getDefaultLocale(),

@@ -204,4 +204,8 @@ public interface SQL {
      * See {@link net.ontrack.backend.dao.jdbc.DBFixReorderingValidationStamps}
      */
     String VALIDATION_REORDERING_BRANCHES = "SELECT ID FROM BRANCH";
+
+    // Global authorizations
+    String GLOBAL_AUTHORIZATION_UNSET = "DELETE FROM GLOBAL_AUTHORIZATION WHERE ACCOUNT = :account AND FN = :fn";
+    String GLOBAL_AUTHORIZATION_SET = "INSERT INTO GLOBAL_AUTHORIZATION (ACCOUNT, FN) VALUES (:account, :fn)";
 }

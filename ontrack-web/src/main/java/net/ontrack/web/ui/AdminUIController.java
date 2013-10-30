@@ -52,6 +52,14 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
         return Arrays.asList(GlobalFunction.values());
     }
 
+    @Override
+    @RequestMapping(value = "/acl/global/{account:\\d+}/{fn:[A-Z_]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
+        return accountService.setGlobalACL(account, fn);
+    }
+
     /**
      * Changes the language for the current account
      */

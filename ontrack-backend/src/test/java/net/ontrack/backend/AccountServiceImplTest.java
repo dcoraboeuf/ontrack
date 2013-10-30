@@ -34,6 +34,7 @@ public class AccountServiceImplTest {
         ValidationRunStatusDao validationRunStatusDao = mock(ValidationRunStatusDao.class);
         EventDao eventDao = mock(EventDao.class);
         ProjectAuthorizationDao projectAuthorizationDao = mock(ProjectAuthorizationDao.class);
+        GlobalAuthorizationDao globalAuthorizationDao = mock(GlobalAuthorizationDao.class);
         // Service
         accountService = new AccountServiceImpl(
                 validatorService,
@@ -43,7 +44,8 @@ public class AccountServiceImplTest {
                 commentDao,
                 validationRunStatusDao,
                 eventDao,
-                projectAuthorizationDao);
+                projectAuthorizationDao,
+                globalAuthorizationDao);
     }
 
     @Test

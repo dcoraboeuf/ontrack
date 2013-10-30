@@ -1,6 +1,7 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectAuthorization;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.ProjectRole;
@@ -43,4 +44,6 @@ public interface AccountService {
     Collection<Account> findAccountsForProjectACL(int project, ProjectFunction fn);
 
     List<AccountSummary> accountLookup(String query);
+
+    Ack setGlobalACL(int account, GlobalFunction fn);
 }

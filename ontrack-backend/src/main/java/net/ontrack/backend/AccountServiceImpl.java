@@ -35,6 +35,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     private final ValidationRunStatusDao validationRunStatusDao;
     private final EventDao eventDao;
     private final ProjectAuthorizationDao projectAuthorizationDao;
+    private final GlobalAuthorizationDao globalAuthorizationDao;
     private final Function<TAccount, Account> accountFunction = new Function<TAccount, Account>() {
         @Override
         public Account apply(TAccount t) {
@@ -67,7 +68,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     };
 
     @Autowired
-    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, ProjectAuthorizationDao projectAuthorizationDao) {
+    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, ProjectAuthorizationDao projectAuthorizationDao, GlobalAuthorizationDao globalAuthorizationDao) {
         super(validatorService, eventService);
         this.strings = strings;
         this.accountDao = accountDao;
@@ -75,6 +76,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
         this.validationRunStatusDao = validationRunStatusDao;
         this.eventDao = eventDao;
         this.projectAuthorizationDao = projectAuthorizationDao;
+        this.globalAuthorizationDao = globalAuthorizationDao;
     }
 
     @Override
@@ -311,6 +313,13 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
                 accountDao.findByQuery(query),
                 accountSummaryFn
         );
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public Ack setGlobalACL(int account, GlobalFunction fn) {
+        return globalAuthorizationDao.set(account, fn);
     }
 
     protected Account getACL(Account account) {
