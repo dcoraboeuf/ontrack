@@ -66,6 +66,18 @@ define(function () {
         }
     }
 
+    function error(context) {
+        return function (message, args) {
+            if (console) {
+                if (args) {
+                    console.log('[{1}] {0}'.format(message, context), args);
+                } else {
+                    console.log('[{1}] {0}'.format(message, context));
+                }
+            }
+        }
+    }
+
     function confirmAndCall(text, callback) {
         $('<div>{0}</div>'.format(text)).dialog({
             title: 'general.confirm.title'.loc(),
@@ -235,6 +247,7 @@ define(function () {
 
     return {
         log: log,
+        error: error,
         confirmAndCall: confirmAndCall,
         showError: showError,
         getCookie: getCookie,

@@ -1,9 +1,9 @@
-<form id="{{config.id}}-form" class="form-horizontal">
+<form id="{{config.id}}-form" class="acl-form form-horizontal">
     <div class="control-group">
         <label class="control-label" for="{{config.id}}-account">{{loc 'acl.account'}}</label>
         <div class="controls">
             <input type="text" class="acl-account-selection" id="{{config.id}}-account" size="40" maxlength="80" autocomplete="off" required="required" />
-            <select id="{{config.id}}-role" required="required">
+            <select id="{{config.id}}-role" class="acl-role-selection" required="required">
                 <option></option>
                 {{#config.roles}}
                     <option value="{{.}}">{{aclRole .}}</option>

@@ -1,10 +1,19 @@
-define(['render', 'app/component/account-selection'], function (render, accountSelection) {
+define(['render', 'app/component/account-selection', 'common'], function (render, accountSelection, common) {
 
     Handlebars.registerHelper('aclRole', function (role) {
         return $('<i></i>')
             .append(' ' + 'globalFunction.{0}'.format(role).loc())
             .html();
     });
+
+    function onSubmit(config) {
+        var role = config.container.find('.acl-role-selection').val();
+        var account = accountSelection.val(config.accountSelector);
+        if (account) {
+            var accountId = account.id;
+            config.submitFn(config, accountId, role);
+        }
+    }
 
     function init(container, config) {
         // ID
@@ -23,7 +32,17 @@ define(['render', 'app/component/account-selection'], function (render, accountS
                 config: config
             },
             function () {
-                accountSelection.init(container.find('.acl-account-selection'))
+                // Account selection
+                config.accountSelector = accountSelection.init(container.find('.acl-account-selection'));
+                // Add button
+                container.find('.acl-form').submit(function () {
+                    try {
+                        onSubmit(config);
+                    } catch (e) {
+                        common.error('account-role-selection')(e)
+                    }
+                    return false;
+                })
             }
         )
     }

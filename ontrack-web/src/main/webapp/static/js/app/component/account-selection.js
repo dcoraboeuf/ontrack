@@ -39,10 +39,16 @@ define(['jquery', 'ajax', 'jquery-ui'], function ($, ajax) {
                 return accountLabel;
             }
         });
+        return field;
+    }
+
+    function val (field) {
+        return $.data(field, 'selectedAccount')
     }
 
     return {
-        init: init
+        init: init,
+        val: val
     }
 
 });
