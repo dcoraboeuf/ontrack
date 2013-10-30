@@ -11,6 +11,9 @@
             <#if secProject(project.id, 'PROJECT_DELETE')>
                 <@title_command id="command-project-delete" title=loc('general.delete') class="icon-trash" />
             </#if>
+            <#if secProject(project.id, 'ACL')>
+                <@title_command id="command-project-acl" title=loc('acl') class="icon-key" link="gui/project/${project.name?html}/acl" />
+            </#if>
             <#if secProject(project.id, 'PROMOTION_LEVEL_MGT')>
                 <@title_command id="command-project-validation-stamp-mgt" title=loc('validation_stamp.mgt') class="icon-wrench" link="gui/project/${project.name?html}/validation-stamp-mgt" />
             </#if>
