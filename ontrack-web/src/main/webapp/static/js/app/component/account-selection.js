@@ -1,9 +1,5 @@
 define(['jquery', 'ajax', 'jquery-ui'], function ($, ajax) {
 
-    var accountLabels;
-    var accountsByNames;
-    var selectedAccount;
-
     function userLookup(field) {
         return function (query, processFn) {
             ajax.get({
@@ -38,6 +34,7 @@ define(['jquery', 'ajax', 'jquery-ui'], function ($, ajax) {
                 return item.replace(regex, "<strong>$1</strong>");
             },
             updater: function (accountLabel) {
+                var accountsByNames = $.data(field, 'accountsByNames');
                 $.data(field, 'selectedAccount', accountsByNames[accountLabel]);
                 return accountLabel;
             }
