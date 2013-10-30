@@ -1,8 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.GlobalFunction;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.core.ui.AdminUI;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.AccountService;
@@ -74,6 +73,53 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     @ResponseBody
     Ack unsetGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
         return accountService.unsetGlobalACL(account, fn);
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/role", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectRole> getProjectRoles() {
+        return Arrays.asList(ProjectRole.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/fn", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectFunction> getProjectFunctions() {
+        return Arrays.asList(ProjectFunction.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}/{account:\\d+}/{role:[A-Z_]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setProjectACL(@PathVariable String project, @PathVariable int account, @PathVariable ProjectRole role) {
+        return accountService.setProjectACL(
+                entityConverter.getProjectId(project),
+                account,
+                role
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}/{account:\\d+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack unsetProjectACL(@PathVariable String project, @PathVariable int account) {
+        return accountService.unsetProjectACL(
+                entityConverter.getProjectId(project),
+                account
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectAuthorization> getProjectACLList(@PathVariable String project) {
+        return accountService.getProjectACLList(entityConverter.getProjectId(project));
     }
 
     /**
