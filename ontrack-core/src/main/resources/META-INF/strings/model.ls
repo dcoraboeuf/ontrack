@@ -55,3 +55,29 @@ status.INTERRUPTED
 status.FAILED
     en -> Failed
     fr -> Manqué
+
+[globalFunction]
+
+globalFunction.ACCOUNT_MANAGEMENT
+    en -> Account management
+    fr -> Gestion des utilisateurs
+
+globalFunction.SETTINGS
+    en -> Settings
+    fr -> Configuration
+
+globalFunction.EXTENSIONS
+    en -> Extensions
+    fr -> Extensions
+
+globalFunction.SUBSCRIPTIONS_MANAGEMENT
+    en -> Subscriptions management
+    fr -> Gestion des abonnements
+
+globalFunction.PROJECT_CREATE
+    en -> Project creation
+    fr -> Création de projet
+
+globalFunction.PROJECT_EXPORT
+    en -> Project export
+    fr -> Exportation des projets

@@ -10,8 +10,6 @@ public enum GlobalFunction {
 
     SUBSCRIPTIONS_MANAGEMENT,
 
-    PROFILE,
-
     PROJECT_CREATE,
 
     PROJECT_EXPORT

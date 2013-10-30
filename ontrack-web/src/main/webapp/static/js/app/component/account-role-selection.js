@@ -1,5 +1,11 @@
 define(['render'], function (render) {
 
+    Handlebars.registerHelper('aclRole', function (role) {
+        return $('<i></i>')
+            .append(' ' + 'globalFunction.{0}'.format(role).loc())
+            .html();
+    });
+
     function init(container, config) {
         // ID
         config.id = container.attr('id');

@@ -6,7 +6,7 @@
             <select id="{{config.id}}-role" required="required">
                 <option></option>
                 {{#config.roles}}
-                    <option value="{{.}}">{{.}}</option>
+                    <option value="{{.}}">{{aclRole .}}</option>
                 {{/config.roles}}
             </select>
             <button id="{{config.id}}-submit" type="submit" class="btn-primary btn">{{loc 'acl.add'}}</button>
