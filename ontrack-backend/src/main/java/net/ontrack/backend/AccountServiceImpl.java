@@ -304,6 +304,15 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<AccountSummary> accountLookup(String query) {
+        return transform(
+                accountDao.findByQuery(query),
+                accountSummaryFn
+        );
+    }
+
     protected Account getACL(Account account) {
         if (account != null) {
             // Global functions (all functions for the admin, none for the other roles)

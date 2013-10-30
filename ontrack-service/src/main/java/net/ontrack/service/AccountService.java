@@ -41,4 +41,6 @@ public interface AccountService {
     List<ProjectAuthorization> getProjectACLList(int project);
 
     Collection<Account> findAccountsForProjectACL(int project, ProjectFunction fn);
+
+    List<AccountSummary> accountLookup(String query);
 }

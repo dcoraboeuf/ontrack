@@ -1,9 +1,6 @@
 package net.ontrack.core.ui;
 
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.ID;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 
 import java.util.List;
@@ -23,5 +20,7 @@ public interface AdminUI {
     Ack enableExtension(String name);
 
     Ack disableExtension(String name);
+
+    List<AccountSummary> accountLookup(String query);
 
 }

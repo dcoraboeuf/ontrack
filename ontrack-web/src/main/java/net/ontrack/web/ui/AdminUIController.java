@@ -240,5 +240,13 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
         return extensionManager.disableExtension(name);
     }
 
+    @Override
+    @RequestMapping(value = "/account/lookup/{query:[a-zA-Z0-9\\-_]*}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<AccountSummary> accountLookup(@PathVariable String query) {
+        return accountService.accountLookup(query);
+    }
+
 
 }

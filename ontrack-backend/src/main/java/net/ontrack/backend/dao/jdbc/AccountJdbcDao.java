@@ -197,6 +197,16 @@ public class AccountJdbcDao extends AbstractJdbcDao implements AccountDao {
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<TAccount> findByQuery(String query) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.ACCOUNT_QUERY,
+                params("query", StringUtils.upperCase(query) + '%'),
+                accountRowMapper
+        );
+    }
+
     private String encodePassword(String password) {
         return StringUtils.upperCase(Sha512DigestUtils.shaHex(password));
     }

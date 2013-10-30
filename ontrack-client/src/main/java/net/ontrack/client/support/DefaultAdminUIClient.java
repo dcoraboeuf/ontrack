@@ -1,10 +1,7 @@
 package net.ontrack.client.support;
 
 import net.ontrack.client.AdminUIClient;
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.ID;
+import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 
 import java.util.List;
@@ -79,6 +76,15 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
                 getDefaultLocale(),
                 format("/ui/admin/extensions/%s", name),
                 Ack.class
+        );
+    }
+
+    @Override
+    public List<AccountSummary> accountLookup(String query) {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/account/lookup/%s", query),
+                AccountSummary.class
         );
     }
 }
