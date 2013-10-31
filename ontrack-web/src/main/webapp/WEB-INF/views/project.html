@@ -5,13 +5,13 @@
     <@title value=project.name>
         <#list extensionProjectActions(project.name) as projectAction>
             <@title_command id=projectAction.title title=projectAction.title class=projectAction.icon link=projectAction.url />
-            <@title_command id="command-project-update" title=loc('general.modify') class="icon-pencil" enabled=secProject(project.id, 'PROJECT_MODIFY') />
-            <@title_command id="command-project-delete" title=loc('general.delete') class="icon-trash" enabled=secProject(project.id, 'PROJECT_DELETE') />
-            <@title_command id="command-project-acl" title=loc('acl') class="icon-key" link="gui/project/${project.name?html}/acl" enabled=secProject(project.id, 'ACL') />
-            <@title_command id="command-project-validation-stamp-mgt" title=loc('validation_stamp.mgt') class="icon-wrench" link="gui/project/${project.name?html}/validation-stamp-mgt" enabled=secProject(project.id, 'PROMOTION_LEVEL_MGT') />
-            <@title_command id="command-project-export" title=loc('project.export') class="icon-download" link="gui/project/${project.name?html}/export" enabled=secGlobal('PROJECT_EXPORT') />
-            <@title_command id="command-dashboard" title=loc('dashboard') class="icon-eye-open" link="dashboard/project/${project.name?html}" />
         </#list>
+        <@title_command id="command-project-update" title=loc('general.modify') class="icon-pencil" enabled=secProject(project.id, 'PROJECT_MODIFY') />
+        <@title_command id="command-project-delete" title=loc('general.delete') class="icon-trash" enabled=secProject(project.id, 'PROJECT_DELETE') />
+        <@title_command id="command-project-acl" title=loc('acl') class="icon-key" link="gui/project/${project.name?html}/acl" enabled=secProject(project.id, 'ACL') />
+        <@title_command id="command-project-validation-stamp-mgt" title=loc('validation_stamp.mgt') class="icon-wrench" link="gui/project/${project.name?html}/validation-stamp-mgt" enabled=secProject(project.id, 'PROMOTION_LEVEL_MGT') />
+        <@title_command id="command-project-export" title=loc('project.export') class="icon-download" link="gui/project/${project.name?html}/export" enabled=secGlobal('PROJECT_EXPORT') />
+        <@title_command id="command-dashboard" title=loc('dashboard') class="icon-eye-open" link="dashboard/project/${project.name?html}" />
     </@title>
     <div class="row-fluid">
         <div class="span12">
