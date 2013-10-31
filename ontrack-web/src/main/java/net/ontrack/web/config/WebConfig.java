@@ -54,7 +54,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ExtensionManager extensionManager;
-    
+
     @Autowired
     private SubscriptionService subscriptionService;
 
@@ -134,8 +134,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         // Extensions
         variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, authorizationUtils));
         variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, authorizationUtils));
-        variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, securityUtils, manageUI));
-        variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, securityUtils, manageUI));
+        variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, authorizationUtils, manageUI));
+        variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, authorizationUtils, manageUI));
         variables.put("extensionStyles", new FnExtensionStyles(extensionManager));
         // OK
         c.setFreemarkerVariables(variables);

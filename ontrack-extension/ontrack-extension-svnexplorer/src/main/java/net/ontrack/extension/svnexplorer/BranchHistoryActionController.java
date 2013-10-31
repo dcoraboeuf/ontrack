@@ -2,6 +2,7 @@ package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.action.EntityActionExtension;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.svnexplorer.ui.SVNExplorerUI;
@@ -56,8 +57,8 @@ public class BranchHistoryActionController extends AbstractGUIController impleme
     }
 
     @Override
-    public String getRole(ProjectSummary summary) {
-        return null;
+    public AuthorizationPolicy getAuthorizationPolicy(ProjectSummary summary) {
+        return AuthorizationPolicy.ALLOW_ALL;
     }
 
     @Override

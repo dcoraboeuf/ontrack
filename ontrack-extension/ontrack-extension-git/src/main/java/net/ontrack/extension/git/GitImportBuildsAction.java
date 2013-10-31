@@ -2,8 +2,8 @@ package net.ontrack.extension.git;
 
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.ProjectFunction;
-import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.action.EntityActionExtension;
@@ -82,8 +82,8 @@ public class GitImportBuildsAction extends AbstractGUIController implements Enti
     }
 
     @Override
-    public String getRole(BranchSummary summary) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getAuthorizationPolicy(BranchSummary summary) {
+        return AuthorizationPolicy.forProject(ProjectFunction.BUILD_CREATE);
     }
 
     @Override
