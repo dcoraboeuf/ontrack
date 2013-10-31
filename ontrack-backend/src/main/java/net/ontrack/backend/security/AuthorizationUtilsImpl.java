@@ -1,5 +1,7 @@
 package net.ontrack.backend.security;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import net.ontrack.backend.dao.*;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.AuthorizationPolicy;
@@ -61,17 +63,25 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
     }
 
     @Override
-    public boolean applyPolicy(AuthorizationPolicy policy, Entity entity, int entityId) {
+    public boolean applyPolicy(final AuthorizationPolicy policy, Entity entity, int entityId) {
         if (policy.isAllowAll()) {
             return true;
         } else if (policy.isLogged()) {
             if (policy.getGlobalFn() != null) {
                 return securityUtils.isGranted(policy.getGlobalFn());
-            } else if (entity != null && policy.getProjectFn() != null) {
+            } else if (entity != null && policy.getProjectFns() != null) {
                 // Gets the project from the entity
-                int projectId = getProjectId(entity, entityId);
+                final int projectId = getProjectId(entity, entityId);
                 // Asserts the project function
-                return securityUtils.isGranted(policy.getProjectFn(), projectId);
+                return Iterables.any(
+                        policy.getProjectFns(),
+                        new Predicate<ProjectFunction>() {
+                            @Override
+                            public boolean apply(ProjectFunction fn) {
+                                return securityUtils.isGranted(fn, projectId);
+                            }
+                        }
+                );
             } else {
                 return securityUtils.isLogged();
             }
