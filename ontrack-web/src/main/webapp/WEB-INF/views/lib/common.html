@@ -89,6 +89,8 @@
 
 <#macro title value description="" close="">
     <#assign commands = [] />
+    <#assign decorations = "" />
+    <#assign tools = "" />
     <#assign uplinks = [] />
     <#assign content><#nested/></#assign>
     <div class="row-fluid">
@@ -99,6 +101,7 @@
                     /
                 </#list>
                 ${value?html}
+                ${decorations}
             </span>
             <span class="action action-optional">
                 <#list commands as command>
@@ -114,6 +117,7 @@
                         </span>
                     </#if>
                 </#list>
+                ${tools}
                 <a href="${close?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
             </span>
             <#if description != "">
@@ -123,6 +127,14 @@
             </#if>
         </div>
     </div>
+</#macro>
+
+<#macro title_decorations>
+    <#assign decorations><#nested/></#assign>
+</#macro>
+
+<#macro title_tools>
+    <#assign tools><#nested/></#assign>
 </#macro>
 
 <#macro title_command id title class link="">
