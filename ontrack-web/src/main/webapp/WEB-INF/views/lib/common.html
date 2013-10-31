@@ -87,7 +87,7 @@
     </#if>
 </#macro>
 
-<#macro title value description="" close="">
+<#macro title value description="" close="" image="">
     <#assign commands = [] />
     <#assign decorations = "" />
     <#assign tools = "" />
@@ -100,6 +100,9 @@
                     <a href="${uplink.href}">${uplink.name?html}</a>
                     /
                 </#list>
+                <#if image != "">
+                    <img class="icon" src="${image}" />
+                </#if>
                 ${value?html}
                 ${decorations}
             </span>
@@ -137,13 +140,15 @@
     <#assign tools><#nested/></#assign>
 </#macro>
 
-<#macro title_command id title class link="">
-    <#assign commands = commands + [{
-            'id': id,
-            'title': title,
-            'class': class,
-            'link': link
-            }] />
+<#macro title_command id title class link="" enabled=true>
+    <#if enabled>
+        <#assign commands = commands + [{
+                'id': id,
+                'title': title,
+                'class': class,
+                'link': link
+                }] />
+    </#if>
 </#macro>
 
 <#macro title_uplink name href>

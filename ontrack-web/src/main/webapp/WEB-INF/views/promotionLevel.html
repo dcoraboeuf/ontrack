@@ -4,69 +4,59 @@
     <input id="project" type="hidden" value="${promotionLevel.branch.project.name?html}" />
     <input id="branch" type="hidden" value="${promotionLevel.branch.name?html}" />
     <input id="promotion_level" type="hidden" value="${promotionLevel.name?html}" />
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12 page-title">
-                <span class="title">
-                    <a href="gui/project/${promotionLevel.branch.project.name?html}">${promotionLevel.branch.project.name?html}</a>
-                    / <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}">${promotionLevel.branch.name?html}</a>
-                    / <img height="24" width="24" src="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image"> ${promotionLevel.name?html}
-                </span>
-                <span class="action action-optional">
-                    <#if secAdmin()>
-                        <span id="promotion-level-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <span id="promotion-level-image"><i class="icon-edit"></i> <@lh key="promotion_level.image.edit" /></span>
-                        <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
-                        <span id="promotion-level-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
-                    </#if>
-                    <a href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
-                </span>
-            </div>
-            <div class="muted span12 properties">${promotionLevel.description?html}</div>
-            <div class="span12 properties">
-                <@properties entity="PROMOTION_LEVEL" entityId=promotionLevel.id />
-            </div>
+    <@title value=promotionLevel.name close="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}" image="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image">
+        <@title_uplink name=promotionLevel.branch.project.name href="gui/project/${promotionLevel.branch.project.name?html}" />
+        <@title_uplink name=promotionLevel.branch.name href="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}" />
+        <@title_command id="promotion-level-update" title=loc('general.modify') class="icon-pencil" enabled=secProject(promotionLevel.branch.project.id, 'PROMOTION_LEVEL_MODIFY') />
+        <@title_command id="promotion-level-image" title=loc('promotion_level.image.edit') class="icon-edit" enabled=secProject(promotionLevel.branch.project.id, 'PROMOTION_LEVEL_MODIFY') />
+        <@title_command id="promotion-level-manage" title=loc('promotion_level.manage') class="icon-th" link="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level_manage" enabled=secProject(promotionLevel.branch.project.id, 'PROMOTION_LEVEL_MGT') />
+        <@title_command id="promotion-level-delete" title=loc('general.delete') class="icon-trash" enabled=secProject(promotionLevel.branch.project.id, 'PROMOTION_LEVEL_DELETE') />
+    </@title>
+    <div class="row-fluid">
+        <div class="muted span12 properties">${promotionLevel.description?html}</div>
+        <div class="span12 properties">
+            <@properties entity="PROMOTION_LEVEL" entityId=promotionLevel.id />
         </div>
-        <div id="promotion_level-image-form" class="row-fluid x-dialog">
-            <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image">
-                <input id="promotion_level.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='promotion_level.image.placeholder'/>" />
-                <p class="help-block"><@lh key="promotion_level.image.help" /></p>
-                <button id="promotion-level-image-submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
-                <button id="promotion-level-image-cancel" type="button" class="btn btn-link"><@lh key="general.cancel"/></button>
-            </form>
-            <div class="span12 muted">${promotionLevel.description?html}</div>
+    </div>
+    <div id="promotion_level-image-form" class="row-fluid x-dialog">
+        <form class="span4 alert alert-info" method="POST" enctype="multipart/form-data" action="gui/project/${promotionLevel.branch.project.name?html}/branch/${promotionLevel.branch.name?html}/promotion_level/${promotionLevel.name?html}/image">
+            <input id="promotion_level.image.file" name="image" type="file" accept=".png,image/png" required="required" placeholder="<@lh key='promotion_level.image.placeholder'/>" />
+            <p class="help-block"><@lh key="promotion_level.image.help" /></p>
+            <button id="promotion-level-image-submit" type="submit" class="btn btn-primary"><@lh key="general.submit"/></button>
+            <button id="promotion-level-image-cancel" type="button" class="btn btn-link"><@lh key="general.cancel"/></button>
+        </form>
+        <div class="span12 muted">${promotionLevel.description?html}</div>
+    </div>
+    <div class="row-fluid">
+        <div class="span4">
+            <section>
+                <h4><@lh key="promotion_level.promotions" /></h4>
+                <div
+                    id="promotions"
+                    class="dynamic"
+                    dynamic-controller="promotion-level-promotions"
+                    dynamic-project="${promotionLevel.branch.project.name?html}"
+                    dynamic-branch="${promotionLevel.branch.name?html}"
+                    dynamic-promotion-level="${promotionLevel.name?html}"
+                    dynamic-more="true"
+                    ></div>
+            </section>
         </div>
-		<div class="row-fluid">
-            <div class="span4">
-                <section>
-                    <h4><@lh key="promotion_level.promotions" /></h4>
-                    <div
-                        id="promotions"
-                        class="dynamic"
-                        dynamic-controller="promotion-level-promotions"
-                        dynamic-project="${promotionLevel.branch.project.name?html}"
-                        dynamic-branch="${promotionLevel.branch.name?html}"
-                        dynamic-promotion-level="${promotionLevel.name?html}"
-                        dynamic-more="true"
-                        ></div>
-                </section>
-            </div>
-            <div class="span4">
-                <section>
-                    <h4><@lh key="promotion_level.validation_stamps" /></h4>
-                    <div
-                        id="promotion-validation-stamps"
-                        class="dynamic"
-                        dynamic-controller="promotion-level-validation-stamps"
-                        dynamic-project="${promotionLevel.branch.project.name?html}"
-                        dynamic-branch="${promotionLevel.branch.name?html}"
-                        dynamic-promotion-level="${promotionLevel.name?html}"
-                        ></div>
-                </section>
-            </div>
-			<div class="span4">
-				<@audit filter="&promotionLevel=${promotionLevel.id?c}" />
-			</div>
-		</div>
-	</div>
+        <div class="span4">
+            <section>
+                <h4><@lh key="promotion_level.validation_stamps" /></h4>
+                <div
+                    id="promotion-validation-stamps"
+                    class="dynamic"
+                    dynamic-controller="promotion-level-validation-stamps"
+                    dynamic-project="${promotionLevel.branch.project.name?html}"
+                    dynamic-branch="${promotionLevel.branch.name?html}"
+                    dynamic-promotion-level="${promotionLevel.name?html}"
+                    ></div>
+            </section>
+        </div>
+        <div class="span4">
+            <@audit filter="&promotionLevel=${promotionLevel.id?c}" />
+        </div>
+    </div>
 </@layout_std>

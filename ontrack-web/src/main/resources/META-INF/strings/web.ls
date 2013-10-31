@@ -818,6 +818,10 @@ promotion_level.update
 	en -> Update promotion level
 	fr -> Modifier niveau de promotion
 
+promotion_level.delete.prompt
+    en -> Do you want to delete the "{0}" promotion level?
+    fr -> Voulez-vous vraiment supprimer le niveau de promotion "{0}" ?
+
 promotion_level.name
 	en,fr -> @[model.name]
 promotion_level.description
