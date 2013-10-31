@@ -373,11 +373,10 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     protected Account getACL(Account account) {
         if (account != null) {
-            // Global functions (all functions for the admin, none for the other roles)
-            if (SecurityRoles.ADMINISTRATOR.equals(account.getRoleName())) {
-                for (GlobalFunction fn : GlobalFunction.values()) {
-                    account = account.withGlobalACL(fn);
-                }
+            // Global functions
+            List<TGlobalAuthorization> globalList = globalAuthorizationDao.findByAccount(account.getId());
+            for (TGlobalAuthorization t : globalList) {
+                account = account.withGlobalACL(t.getFn());
             }
             // Functions for all projects
             List<TProjectAuthorization> authList = projectAuthorizationDao.findByAccount(account.getId());

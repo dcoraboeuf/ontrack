@@ -19,6 +19,16 @@ import java.util.List;
 @Component
 public class GlobalAuthorizationJdbcDao extends AbstractJdbcDao implements GlobalAuthorizationDao {
 
+    private final RowMapper<TGlobalAuthorization> globalAuthorizationRowMapper = new RowMapper<TGlobalAuthorization>() {
+        @Override
+        public TGlobalAuthorization mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new TGlobalAuthorization(
+                    rs.getInt("account"),
+                    SQLUtils.getEnum(GlobalFunction.class, rs, "fn")
+            );
+        }
+    };
+
     @Autowired
     public GlobalAuthorizationJdbcDao(DataSource dataSource) {
         super(dataSource);
@@ -51,15 +61,16 @@ public class GlobalAuthorizationJdbcDao extends AbstractJdbcDao implements Globa
     public List<TGlobalAuthorization> all() {
         return getJdbcTemplate().query(
                 SQL.GLOBAL_AUTHORIZATION_LIST,
-                new RowMapper<TGlobalAuthorization>() {
-                    @Override
-                    public TGlobalAuthorization mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new TGlobalAuthorization(
-                                rs.getInt("account"),
-                                SQLUtils.getEnum(GlobalFunction.class, rs, "fn")
-                        );
-                    }
-                }
+                globalAuthorizationRowMapper
+        );
+    }
+
+    @Override
+    public List<TGlobalAuthorization> findByAccount(int account) {
+        return getNamedParameterJdbcTemplate().query(
+                SQL.GLOBAL_AUTHORIZATION_BY_ACCOUNT,
+                params("account", account),
+                globalAuthorizationRowMapper
         );
     }
 }

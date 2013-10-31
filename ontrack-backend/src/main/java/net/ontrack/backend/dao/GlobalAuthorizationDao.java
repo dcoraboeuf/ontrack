@@ -13,4 +13,6 @@ public interface GlobalAuthorizationDao {
     Ack unset(int account, GlobalFunction fn);
 
     List<TGlobalAuthorization> all();
+
+    List<TGlobalAuthorization> findByAccount(int account);
 }

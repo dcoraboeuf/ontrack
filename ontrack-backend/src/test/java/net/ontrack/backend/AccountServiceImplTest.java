@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.TAccount;
+import net.ontrack.backend.dao.model.TGlobalAuthorization;
 import net.ontrack.core.config.CoreConfig;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.security.GlobalFunction;
@@ -11,6 +12,7 @@ import net.sf.jstring.Strings;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static org.junit.Assert.assertFalse;
@@ -22,6 +24,7 @@ public class AccountServiceImplTest {
 
     private AccountServiceImpl accountService;
     private AccountDao accountDao;
+    private GlobalAuthorizationDao globalAuthorizationDao;
 
     @Before
     public void before() {
@@ -34,7 +37,7 @@ public class AccountServiceImplTest {
         ValidationRunStatusDao validationRunStatusDao = mock(ValidationRunStatusDao.class);
         EventDao eventDao = mock(EventDao.class);
         ProjectAuthorizationDao projectAuthorizationDao = mock(ProjectAuthorizationDao.class);
-        GlobalAuthorizationDao globalAuthorizationDao = mock(GlobalAuthorizationDao.class);
+        globalAuthorizationDao = mock(GlobalAuthorizationDao.class);
         // Service
         accountService = new AccountServiceImpl(
                 validatorService,
@@ -72,6 +75,22 @@ public class AccountServiceImplTest {
         account = accountService.getACL(account);
         for (GlobalFunction fn : GlobalFunction.values()) {
             assertFalse(account.isGranted(fn));
+        }
+    }
+
+    @Test
+    public void getACL_user_with_acl() {
+        when(globalAuthorizationDao.findByAccount(2)).thenReturn(Arrays.asList(
+                new TGlobalAuthorization(2, GlobalFunction.PROJECT_EXPORT)
+        ));
+        Account account = new Account(2, "user", "User", "", SecurityRoles.USER, "builtin", Locale.ENGLISH);
+        account = accountService.getACL(account);
+        for (GlobalFunction fn : GlobalFunction.values()) {
+            if (fn == GlobalFunction.PROJECT_EXPORT) {
+                assertTrue(account.isGranted(fn));
+            } else {
+                assertFalse(account.isGranted(fn));
+            }
         }
     }
 
