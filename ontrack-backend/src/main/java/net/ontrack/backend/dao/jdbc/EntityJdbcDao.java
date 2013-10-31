@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -37,6 +38,26 @@ public class EntityJdbcDao extends AbstractJdbcDao implements EntityDao {
                     String.class);
         } catch (EmptyResultDataAccessException ex) {
             throw new EntityIdNotFoundException(entity, entityId);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer parentLookup(Entity target, Entity entity, int entityId) {
+        if (target == entity) {
+            return entityId;
+        } else {
+            List<Entity> parents = entity.getParents();
+            for (Entity parent : parents) {
+                Integer parentId = getParentEntityId(parent, entity, entityId);
+                if (parentId != null) {
+                    Integer id = parentLookup(target, parent, parentId);
+                    if (id != null) {
+                        return id;
+                    }
+                }
+            }
+            return null;
         }
     }
 

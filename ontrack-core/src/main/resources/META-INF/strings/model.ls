@@ -176,6 +176,10 @@ projectFunction.VALIDATION_RUN_DELETE
 	en -> Delete validation run
 	fr -> Supprimer une exécution de validation
 
+projectFunction.PROJECT_CONFIG
+    en -> Project configuration
+    fr -> Configuration d'un projet
+
 [projectRole]
 
 projectRole.OWNER

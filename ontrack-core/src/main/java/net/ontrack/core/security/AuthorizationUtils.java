@@ -1,5 +1,7 @@
 package net.ontrack.core.security;
 
+import net.ontrack.core.model.Entity;
+
 public interface AuthorizationUtils {
 
     void checkBranch(int branch, ProjectFunction fn);
@@ -11,4 +13,6 @@ public interface AuthorizationUtils {
     void checkValidationRun(int validationRun, ProjectFunction fn);
 
     void checkValidationStamp(int validationStamp, ProjectFunction fn);
+
+    boolean applyPolicy(AuthorizationPolicy policy, Entity entity, int entityId);
 }

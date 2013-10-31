@@ -5,6 +5,9 @@ import com.google.common.collect.ImmutableSet;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * See <code>model.ls</code> for the associated labels.
+ */
 public enum ProjectFunction {
 
     // ACL
@@ -52,7 +55,9 @@ public enum ProjectFunction {
     // Create validation run
     VALIDATION_RUN_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete validation run
-    VALIDATION_RUN_DELETE;
+    VALIDATION_RUN_DELETE,
+    // Configuration of a project
+    PROJECT_CONFIG;
     /**
      * List of authorized project roles
      */

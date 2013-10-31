@@ -1,6 +1,8 @@
 package net.ontrack.extension.git;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityRoles;
 import org.springframework.stereotype.Component;
 
@@ -29,5 +31,10 @@ public class GitCommitLinkProperty extends AbstractGitProperty {
     @Override
     public String getRoleForView(Entity entity) {
         return SecurityRoles.ADMINISTRATOR;
+    }
+
+    @Override
+    public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.forProject(ProjectFunction.PROJECT_CONFIG);
     }
 }

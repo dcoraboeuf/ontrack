@@ -1,6 +1,7 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 
@@ -71,8 +72,15 @@ public interface PropertyExtensionDescriptor {
 
     /**
      * Can this property be viewed by anybody?
+     * @deprecated Use
      */
+    @Deprecated
     String getRoleForView(Entity entity);
+
+    /**
+     * Defines the authorization policy for viewing this property.
+     */
+    AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity);
 
     /**
      * Gets the HTML fragment that allows for the edition of this value.
