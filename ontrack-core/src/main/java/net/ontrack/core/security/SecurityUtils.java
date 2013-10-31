@@ -17,7 +17,8 @@ public interface SecurityUtils {
 
     /**
      * @deprecated Use {@link #isGranted(GlobalFunction)} instead. This method is mostly used
-     *             by extensions, and another way of dealing with extension authorisations must be found.
+     *             by extensions & properties, and another way of dealing with extension authorisations
+     *             must be found. See also issue <a href="https://github.com/dcoraboeuf/ontrack/issues/262">#262</a>.
      */
     @Deprecated
     boolean hasRole(String role);
