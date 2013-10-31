@@ -13,6 +13,7 @@ public class AuthorizationPolicy {
 
     public static final AuthorizationPolicy ALLOW_ALL = new AuthorizationPolicy(true, null, null);
     public static final AuthorizationPolicy DENY_ALL = new AuthorizationPolicy(false, null, null);
+    public static final AuthorizationPolicy PROJECT_CONFIG = new AuthorizationPolicy(false, null, ProjectFunction.PROJECT_CONFIG);
 
     private final boolean allowAll;
     private final GlobalFunction globalFn;

@@ -1,6 +1,7 @@
 package net.ontrack.extension.svn;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
@@ -40,11 +41,8 @@ public class SubversionBuildPathPropertyExtension extends AbstractPropertyExtens
         return SecurityRoles.ADMINISTRATOR;
     }
 
-    /**
-     * Visible only by administrators
-     */
     @Override
-    public String getRoleForView(Entity entity) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
 }

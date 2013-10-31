@@ -71,13 +71,6 @@ public interface PropertyExtensionDescriptor {
     String getRoleForEdition(Entity entity);
 
     /**
-     * Can this property be viewed by anybody?
-     * @deprecated Use
-     */
-    @Deprecated
-    String getRoleForView(Entity entity);
-
-    /**
      * Defines the authorization policy for viewing this property.
      */
     AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity);

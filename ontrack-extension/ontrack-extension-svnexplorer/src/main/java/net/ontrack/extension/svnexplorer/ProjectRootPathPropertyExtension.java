@@ -1,6 +1,7 @@
 package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class ProjectRootPathPropertyExtension extends AbstractPropertyExtensionD
     }
 
     @Override
-    public String getRoleForView(Entity entity) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
 }

@@ -60,14 +60,6 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
      * Visible by everybody by default
      */
     @Override
-    public String getRoleForView(Entity entity) {
-        return null;
-    }
-
-    /**
-     * Visible by everybody by default
-     */
-    @Override
     public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
         return AuthorizationPolicy.ALLOW_ALL;
     }
