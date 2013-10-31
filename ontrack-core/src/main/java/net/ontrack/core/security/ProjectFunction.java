@@ -19,7 +19,7 @@ public enum ProjectFunction {
     // Create branch
     BRANCH_CREATE,
     // Create build
-    BUILD_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
+    BUILD_CREATE(EnumSet.of(ProjectRole.OWNER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Modify branch
     BRANCH_MODIFY,
     // Delete branch
@@ -49,11 +49,11 @@ public enum ProjectFunction {
     // Delete build
     BUILD_DELETE,
     // Create promoted run
-    PROMOTED_RUN_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
+    PROMOTED_RUN_CREATE(EnumSet.of(ProjectRole.OWNER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete promoted run
     PROMOTED_RUN_DELETE,
     // Create validation run
-    VALIDATION_RUN_CREATE(ImmutableSet.of(SecurityRoles.CONTROLLER)),
+    VALIDATION_RUN_CREATE(EnumSet.of(ProjectRole.OWNER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete validation run
     VALIDATION_RUN_DELETE,
     // Configuration of a project
@@ -78,10 +78,6 @@ public enum ProjectFunction {
 
     private ProjectFunction(EnumSet<ProjectRole> allowedProjectRoles) {
         this(allowedProjectRoles, ImmutableSet.<String>of());
-    }
-
-    private ProjectFunction(Set<String> allowedGlobalRoles) {
-        this(EnumSet.noneOf(ProjectRole.class), allowedGlobalRoles);
     }
 
     public boolean isAllowedForProjectRole(ProjectRole role) {
