@@ -4,7 +4,6 @@ import net.ontrack.core.model.Account;
 import net.ontrack.core.model.Signature;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
-import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -63,25 +62,6 @@ public class SecurityUtilsImpl implements SecurityUtils {
     public void checkIsLogged() {
         if (!isLogged()) {
             throw new AccessDeniedException("Authentication is required");
-        }
-    }
-
-    @Override
-    public boolean hasRole(String role) {
-        Account account = getCurrentAccount();
-        if (account != null) {
-            switch (account.getRoleName()) {
-                case SecurityRoles.ADMINISTRATOR:
-                    return true;
-                case SecurityRoles.CONTROLLER:
-                    return SecurityRoles.CONTROLLER.equals(role) || SecurityRoles.USER.equals(role);
-                case SecurityRoles.USER:
-                    return SecurityRoles.USER.equals(role);
-                default:
-                    return false;
-            }
-        } else {
-            return false;
         }
     }
 

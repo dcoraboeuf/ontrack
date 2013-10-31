@@ -15,14 +15,6 @@ public interface SecurityUtils {
 
     Signature getCurrentSignature();
 
-    /**
-     * @deprecated Use {@link #isGranted(GlobalFunction)} instead. This method is mostly used
-     *             by extensions & properties, and another way of dealing with extension authorisations
-     *             must be found. See also issue <a href="https://github.com/dcoraboeuf/ontrack/issues/262">#262</a>.
-     */
-    @Deprecated
-    boolean hasRole(String role);
-
     void checkIsLogged();
 
     <T> T asAdmin(Callable<T> call);
