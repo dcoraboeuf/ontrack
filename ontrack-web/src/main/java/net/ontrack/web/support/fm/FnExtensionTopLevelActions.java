@@ -1,6 +1,6 @@
 package net.ontrack.web.support.fm;
 
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.action.TopActionExtension;
 import net.sf.jstring.Strings;
@@ -10,8 +10,8 @@ import java.util.List;
 
 public class FnExtensionTopLevelActions extends AbstractFnExtensionActions {
 
-    public FnExtensionTopLevelActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils) {
-        super(strings, extensionManager, securityUtils);
+    public FnExtensionTopLevelActions(Strings strings, ExtensionManager extensionManager, AuthorizationUtils authorizationUtils) {
+        super(strings, extensionManager, authorizationUtils);
     }
 
     @Override

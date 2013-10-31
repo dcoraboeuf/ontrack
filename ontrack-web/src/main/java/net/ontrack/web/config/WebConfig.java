@@ -1,6 +1,7 @@
 package net.ontrack.web.config;
 
 import freemarker.cache.TemplateLoader;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.ExtensionManager;
@@ -47,6 +48,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private SecurityUtils securityUtils;
+
+    @Autowired
+    private AuthorizationUtils authorizationUtils;
 
     @Autowired
     private ExtensionManager extensionManager;
@@ -128,8 +132,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
         variables.put("subscribed", new FnSubscribed(securityUtils, subscriptionService));
         // Extensions
-        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
-        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));
+        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, authorizationUtils));
+        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, authorizationUtils));
         variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, securityUtils, manageUI));
         variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, securityUtils, manageUI));
         variables.put("extensionStyles", new FnExtensionStyles(extensionManager));

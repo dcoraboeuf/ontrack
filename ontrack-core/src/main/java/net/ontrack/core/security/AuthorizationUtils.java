@@ -15,4 +15,6 @@ public interface AuthorizationUtils {
     void checkValidationStamp(int validationStamp, ProjectFunction fn);
 
     boolean applyPolicy(AuthorizationPolicy policy, Entity entity, int entityId);
+
+    boolean applyPolicy(AuthorizationPolicy policy);
 }

@@ -5,7 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.web.gui.model.GUIAction;
@@ -18,14 +19,14 @@ import java.util.Locale;
 
 public abstract class AbstractFnExtensionActions implements TemplateMethodModel {
 
-    protected final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
     private final Strings strings;
     private final ExtensionManager extensionManager;
 
-    protected AbstractFnExtensionActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils) {
+    protected AbstractFnExtensionActions(Strings strings, ExtensionManager extensionManager, AuthorizationUtils authorizationUtils) {
         this.strings = strings;
         this.extensionManager = extensionManager;
-        this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
     }
 
     @Override
@@ -38,8 +39,8 @@ public abstract class AbstractFnExtensionActions implements TemplateMethodModel 
                 new Predicate<TopActionExtension>() {
                     @Override
                     public boolean apply(TopActionExtension action) {
-                        String role = action.getRole();
-                        return role == null || securityUtils.hasRole(role);
+                        AuthorizationPolicy policy = action.getAuthorizationPolicy();
+                        return authorizationUtils.applyPolicy(policy);
                     }
                 }
         );

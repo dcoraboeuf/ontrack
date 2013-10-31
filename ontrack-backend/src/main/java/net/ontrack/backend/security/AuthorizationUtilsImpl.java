@@ -67,7 +67,7 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
         } else if (policy.isLogged()) {
             if (policy.getGlobalFn() != null) {
                 return securityUtils.isGranted(policy.getGlobalFn());
-            } else if (policy.getProjectFn() != null) {
+            } else if (entity != null && policy.getProjectFn() != null) {
                 // Gets the project from the entity
                 int projectId = getProjectId(entity, entityId);
                 // Asserts the project function
@@ -78,6 +78,11 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean applyPolicy(AuthorizationPolicy policy) {
+        return applyPolicy(policy, null, -1);
     }
 
     private int getProjectId(Entity entity, int entityId) {

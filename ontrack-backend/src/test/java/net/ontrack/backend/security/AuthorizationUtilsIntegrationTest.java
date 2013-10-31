@@ -49,6 +49,20 @@ public class AuthorizationUtilsIntegrationTest extends AbstractBackendTest {
     }
 
     @Test
+    public void applyPolicy_global_granted_no_entity() throws Exception {
+        final AuthorizationPolicy policy = AuthorizationPolicy.forGlobal(GlobalFunction.EXTENSIONS);
+        asUser().withGlobalFn(GlobalFunction.EXTENSIONS).call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                for (Entity entity : Entity.values()) {
+                    assertTrue("Access to " + entity + " must be granted for global function policy", utils.applyPolicy(policy));
+                }
+                return null;
+            }
+        });
+    }
+
+    @Test
     public void applyPolicy_global_granted() throws Exception {
         final AuthorizationPolicy policy = AuthorizationPolicy.forGlobal(GlobalFunction.EXTENSIONS);
         asUser().withGlobalFn(GlobalFunction.EXTENSIONS).call(new Callable<Void>() {
@@ -56,6 +70,20 @@ public class AuthorizationUtilsIntegrationTest extends AbstractBackendTest {
             public Void call() throws Exception {
                 for (Entity entity : Entity.values()) {
                     assertTrue("Access to " + entity + " must be granted for global function policy", utils.applyPolicy(policy, entity, 1));
+                }
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void applyPolicy_global_not_granted_no_entity() throws Exception {
+        final AuthorizationPolicy policy = AuthorizationPolicy.forGlobal(GlobalFunction.EXTENSIONS);
+        asUser().withGlobalFn(GlobalFunction.PROJECT_CREATE).call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                for (Entity entity : Entity.values()) {
+                    assertFalse("Access to " + entity + " must not be granted for global function policy not granted", utils.applyPolicy(policy));
                 }
                 return null;
             }

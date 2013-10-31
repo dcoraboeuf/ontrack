@@ -1,6 +1,7 @@
 package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.svnexplorer.model.ChangeLogRequest;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
@@ -57,8 +58,8 @@ public class ChangeLogActionController extends AbstractGUIController implements 
      * Allowed to everybody.
      */
     @Override
-    public String getRole() {
-        return null;
+    public AuthorizationPolicy getAuthorizationPolicy() {
+        return AuthorizationPolicy.ALLOW_ALL;
     }
 
     @Override

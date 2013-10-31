@@ -1,6 +1,7 @@
 package net.ontrack.extension.git;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.ontrack.extension.git.model.ChangeLogRequest;
 import net.ontrack.extension.git.model.ChangeLogSummary;
@@ -79,8 +80,8 @@ public class GitChangeLogAction extends AbstractGUIController implements ActionE
      * Allowed to everybody.
      */
     @Override
-    public String getRole() {
-        return null;
+    public AuthorizationPolicy getAuthorizationPolicy() {
+        return AuthorizationPolicy.ALLOW_ALL;
     }
 
     @Override

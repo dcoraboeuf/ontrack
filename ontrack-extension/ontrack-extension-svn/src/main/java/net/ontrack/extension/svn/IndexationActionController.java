@@ -1,7 +1,8 @@
 package net.ontrack.extension.svn;
 
 import net.ontrack.core.model.UserMessage;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.svn.service.IndexationService;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
@@ -28,8 +29,8 @@ public class IndexationActionController extends AbstractGUIController implements
     }
 
     @Override
-    public String getRole() {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getAuthorizationPolicy() {
+        return AuthorizationPolicy.forGlobal(GlobalFunction.SETTINGS);
     }
 
     @Override
