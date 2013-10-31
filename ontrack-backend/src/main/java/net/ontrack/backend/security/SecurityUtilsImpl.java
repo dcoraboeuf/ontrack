@@ -60,17 +60,6 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
-    public boolean isAdmin() {
-        Account account = getCurrentAccount();
-        return account != null && SecurityRoles.ADMINISTRATOR.equals(account.getRoleName());
-    }
-
-    @Override
-    public boolean isController() {
-        return hasRole(SecurityRoles.CONTROLLER);
-    }
-
-    @Override
     public void checkIsLogged() {
         if (!isLogged()) {
             throw new AccessDeniedException("Authentication is required");

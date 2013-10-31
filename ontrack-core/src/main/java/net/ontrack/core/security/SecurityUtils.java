@@ -16,18 +16,6 @@ public interface SecurityUtils {
     Signature getCurrentSignature();
 
     /**
-     * @deprecated Use {@link #isGranted(GlobalFunction)} instead
-     */
-    @Deprecated
-    boolean isAdmin();
-
-    /**
-     * @deprecated Use {@link #isGranted(GlobalFunction)} instead
-     */
-    @Deprecated
-    boolean isController();
-
-    /**
      * @deprecated Use {@link #isGranted(GlobalFunction)} instead. This method is mostly used
      *             by extensions, and another way of dealing with extension authorisations must be found.
      */
