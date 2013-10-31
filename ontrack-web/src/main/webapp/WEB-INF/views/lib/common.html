@@ -97,6 +97,9 @@
         <div class="span12 page-title">
             <span class="title">
                 <#list uplinks as uplink>
+                    <#if uplink.image != "">
+                        <img class="icon" src="${uplink.image?html}" />
+                    </#if>
                     <a href="${uplink.href}">${uplink.name?html}</a>
                     /
                 </#list>
@@ -151,9 +154,10 @@
     </#if>
 </#macro>
 
-<#macro title_uplink name href>
+<#macro title_uplink name href image="">
     <#assign uplinks = uplinks + [{
             'name': name,
-            'href': href
+            'href': href,
+            'image': image
             }] />
 </#macro>
