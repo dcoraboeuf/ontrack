@@ -1,4 +1,4 @@
-define(['application', 'common', 'handlebars'], function (application) {
+define(['common', 'handlebars'], function (common) {
 
     Handlebars.registerHelper('loc', function (key, options) {
         return key.loc();
@@ -11,7 +11,7 @@ define(['application', 'common', 'handlebars'], function (application) {
     Handlebars.registerHelper('projectRole', function (role) {
         return $('<i></i>')
             .append(
-                $('<img/>').attr('src', application.staticPathTo('images/projectRole-{0}.png'.format(role)))
+                $('<img/>').attr('src', common.staticPathTo('images/projectRole-{0}.png'.format(role)))
             )
             .append(' ' + 'projectRole.{0}'.format(role).loc())
             .html();

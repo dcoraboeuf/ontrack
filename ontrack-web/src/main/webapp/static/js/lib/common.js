@@ -244,10 +244,20 @@ define(function () {
         return map;
     }
 
+    function staticPathTo(relativePath) {
+        // 'staticPath' variable is declared in 'layout.html'
+        if (staticPath) {
+            return '{0}/{1}'.format(staticPath, relativePath);
+        } else {
+            common.log('application')('Cannot find "staticPath" variable.');
+            return 'static/{0}'.format(relativePath);
+        }
+    }
 
     return {
         log: log,
         error: error,
+        staticPathTo: staticPathTo,
         confirmAndCall: confirmAndCall,
         showError: showError,
         getCookie: getCookie,
