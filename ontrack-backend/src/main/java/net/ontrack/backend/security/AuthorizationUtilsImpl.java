@@ -64,13 +64,17 @@ public class AuthorizationUtilsImpl implements AuthorizationUtils {
     public boolean applyPolicy(AuthorizationPolicy policy, Entity entity, int entityId) {
         if (policy.isAllowAll()) {
             return true;
-        } else if (policy.getGlobalFn() != null) {
-            return securityUtils.isGranted(policy.getGlobalFn());
-        } else if (policy.getProjectFn() != null) {
-            // Gets the project from the entity
-            int projectId = getProjectId(entity, entityId);
-            // Asserts the project function
-            return securityUtils.isGranted(policy.getProjectFn(), projectId);
+        } else if (policy.isLogged()) {
+            if (policy.getGlobalFn() != null) {
+                return securityUtils.isGranted(policy.getGlobalFn());
+            } else if (policy.getProjectFn() != null) {
+                // Gets the project from the entity
+                int projectId = getProjectId(entity, entityId);
+                // Asserts the project function
+                return securityUtils.isGranted(policy.getProjectFn(), projectId);
+            } else {
+                return securityUtils.isLogged();
+            }
         } else {
             return false;
         }

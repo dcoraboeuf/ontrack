@@ -1,6 +1,7 @@
 package net.ontrack.extension.git;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,8 @@ public abstract class AbstractGitProperty extends AbstractPropertyExtensionDescr
     }
 
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
+
 }

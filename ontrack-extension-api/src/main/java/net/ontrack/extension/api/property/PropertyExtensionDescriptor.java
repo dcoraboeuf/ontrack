@@ -64,11 +64,9 @@ public interface PropertyExtensionDescriptor {
      * associated entity.
      *
      * @param entity Entity where to edit the property
-     * @return Role needed to edit this property; <code>null</code> when
-     *         not editable at all.
-     * @see net.ontrack.core.security.SecurityRoles
+     * @return Authorization policy for this entity
      */
-    String getRoleForEdition(Entity entity);
+    AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity);
 
     /**
      * Defines the authorization policy for viewing this property.

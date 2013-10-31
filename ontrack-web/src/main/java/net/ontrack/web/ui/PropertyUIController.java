@@ -107,7 +107,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                                 strings.get(locale, property.getDescriptor().getDisplayNameKey()),
                                 property.getDescriptor().getIconPath(),
                                 property.getValue(),
-                                isPropertyEditable(property.getDescriptor(), entity)
+                                isPropertyEditable(property.getDescriptor(), entity, entityId)
                         );
                     }
                 }
@@ -157,7 +157,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                         new Predicate<PropertyExtensionDescriptor>() {
                             @Override
                             public boolean apply(PropertyExtensionDescriptor property) {
-                                return isPropertyEditable(property, entity);
+                                return isPropertyEditable(property, entity, entityId);
                             }
                         }
                 )
@@ -209,9 +209,11 @@ public class PropertyUIController extends AbstractUIController implements Proper
         return authorizationUtils.applyPolicy(policy, entity, entityId);
     }
 
-    private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity) {
-        String role = descriptor.getRoleForEdition(entity);
-        return role != null && securityUtils.hasRole(role);
+    private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity, int entityId) {
+        // Gets the security policy
+        AuthorizationPolicy policy = descriptor.getEditingAuthorizationPolicy(entity);
+        // Applies the security policy
+        return authorizationUtils.applyPolicy(policy, entity, entityId);
     }
 
 }

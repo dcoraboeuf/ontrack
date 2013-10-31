@@ -49,11 +49,14 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     }
 
     /**
-     * Not editable by default; returns <code>null</code>.
+     * Not editable by default.
+     *
+     * @see AuthorizationPolicy#DENY_ALL
      */
+
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return null;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.DENY_ALL;
     }
 
     /**

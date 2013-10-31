@@ -11,19 +11,21 @@ import lombok.Data;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorizationPolicy {
 
-    public static final AuthorizationPolicy ALLOW_ALL = new AuthorizationPolicy(true, null, null);
-    public static final AuthorizationPolicy DENY_ALL = new AuthorizationPolicy(false, null, null);
-    public static final AuthorizationPolicy PROJECT_CONFIG = new AuthorizationPolicy(false, null, ProjectFunction.PROJECT_CONFIG);
+    public static final AuthorizationPolicy LOGGED = new AuthorizationPolicy(false, true, null, null);
+    public static final AuthorizationPolicy ALLOW_ALL = new AuthorizationPolicy(true, false, null, null);
+    public static final AuthorizationPolicy DENY_ALL = new AuthorizationPolicy(false, true, null, null);
+    public static final AuthorizationPolicy PROJECT_CONFIG = new AuthorizationPolicy(false, true, null, ProjectFunction.PROJECT_CONFIG);
 
     private final boolean allowAll;
+    private final boolean logged;
     private final GlobalFunction globalFn;
     private final ProjectFunction projectFn;
 
     public static AuthorizationPolicy forGlobal(GlobalFunction fn) {
-        return new AuthorizationPolicy(false, fn, null);
+        return new AuthorizationPolicy(false, true, fn, null);
     }
 
     public static AuthorizationPolicy forProject(ProjectFunction fn) {
-        return new AuthorizationPolicy(false, null, fn);
+        return new AuthorizationPolicy(false, true, null, fn);
     }
 }

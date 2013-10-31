@@ -1,7 +1,7 @@
 package net.ontrack.extension.github;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class GitHubProjectProperty extends AbstractPropertyExtensionDescriptor {
     }
 
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
 }

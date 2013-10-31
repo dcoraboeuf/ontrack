@@ -1,6 +1,7 @@
 package net.ontrack.extension.pkg;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
@@ -38,10 +39,10 @@ public class PackagePropertyDescriptor extends AbstractPropertyExtensionDescript
     }
 
     /**
-     * Editable by controllers on all entities
+     * FIXME Editable by controllers on all entities
      */
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.CONTROLLER;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
 }

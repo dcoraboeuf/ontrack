@@ -8,6 +8,7 @@ import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.concurrent.Callable;
 
@@ -24,6 +25,27 @@ public class AuthorizationUtilsIntegrationTest extends AbstractBackendTest {
         for (Entity entity : Entity.values()) {
             assertTrue("Access to " + entity + " must be granted for 'allow_all' policy", utils.applyPolicy(AuthorizationPolicy.ALLOW_ALL, entity, 1));
         }
+    }
+
+    @Test
+    public void applyPolicy_logged_for_not_logged() {
+        SecurityContextHolder.clearContext();
+        for (Entity entity : Entity.values()) {
+            assertFalse("Access to " + entity + " must not be granted for 'logged' policy", utils.applyPolicy(AuthorizationPolicy.LOGGED, entity, 1));
+        }
+    }
+
+    @Test
+    public void applyPolicy_logged_for_logged() throws Exception {
+        asUser().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                for (Entity entity : Entity.values()) {
+                    assertTrue("Access to " + entity + " must be granted for 'logged' policy", utils.applyPolicy(AuthorizationPolicy.LOGGED, entity, 1));
+                }
+                return null;
+            }
+        });
     }
 
     @Test

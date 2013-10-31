@@ -3,7 +3,7 @@ package net.ontrack.extension.jira;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
@@ -97,7 +97,7 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     }
 
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.USER;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.LOGGED;
     }
 }
