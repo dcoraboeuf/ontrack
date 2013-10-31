@@ -8,6 +8,10 @@ define(['common', 'handlebars'], function (common) {
         return 'account.role.{0}'.format(role).loc();
     });
 
+    Handlebars.registerHelper('static', function (path) {
+        return common.staticPathTo(path);
+    });
+
     Handlebars.registerHelper('projectRole', function (role) {
         return $('<i></i>')
             .append(
