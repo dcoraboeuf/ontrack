@@ -382,11 +382,23 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Gets the last revision (which is the first in the list)
         ChangeLogRevision firstRevision = revisions.get(0);
         RevisionInfo revisionInfo = getRevisionInfo(locale, firstRevision.getRevision());
+        // Merged revisions
+        List<Long> merges = subversionService.getMergesForRevision(revisionInfo.getChangeLogRevision().getRevision());
+        List<RevisionInfo> mergedRevisionInfos = new ArrayList<>();
+        for (long merge : merges) {
+            // Gets the revision info
+            RevisionInfo mergeRevisionInfo = getRevisionInfo(locale, merge);
+            // If the information contains as least one build, adds it
+            if (!mergeRevisionInfo.getBuilds().isEmpty()) {
+                mergedRevisionInfos.add(mergeRevisionInfo);
+            }
+        }
         // OK
         return new IssueInfo(
                 issue,
                 subversionService.formatRevisionTime(issue.getUpdateTime()),
                 revisionInfo,
+                mergedRevisionInfos,
                 revisions
         );
     }

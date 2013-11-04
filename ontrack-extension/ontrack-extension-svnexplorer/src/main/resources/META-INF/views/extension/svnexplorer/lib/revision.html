@@ -27,7 +27,44 @@
 
 </#macro>
 
-<#macro revision_info_builds info>
+<#macro revision_info_build build merged=false>
+    <tr>
+        <td>
+            <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
+        </td>
+        <td>
+            <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}">${build.build.branch.name?html}</a>
+        </td>
+        <td>
+            <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
+        </td>
+        <td>
+            <ul class="promotions">
+                <#list build.buildPromotionLevels as buildPromotionLevel>
+                    <li>
+                        <i class="icon-arrow-right"></i>
+                        <img title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
+                        <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
+                    </li>
+                </#list>
+            </ul>
+        </td>
+        <td>
+            <#list build.buildValidationStamps as buildValidationStamp>
+                <#if buildValidationStamp.run>
+                    <#assign run = buildValidationStamp.runs?first />
+                                            <span class="label validationStamp">
+                                                <img title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
+                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
+                                                <img src="static/images/status-${run.status}.png" />
+                                            </span>
+                </#if>
+            </#list>
+        </td>
+    </tr>
+</#macro>
+
+<#macro revision_info_builds info mergedInfos = []>
 
     <div class="row-fluid">
         <div class="span12">
@@ -47,40 +84,12 @@
                     </thead>
                     <tbody>
                         <#list info.builds as build>
-                            <tr>
-                                <td>
-                                    <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
-                                </td>
-                                <td>
-                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}">${build.build.branch.name?html}</a>
-                                </td>
-                                <td>
-                                    <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
-                                </td>
-                                <td>
-                                    <ul class="promotions">
-                                        <#list build.buildPromotionLevels as buildPromotionLevel>
-                                            <li>
-                                                <i class="icon-arrow-right"></i>
-                                                <img title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
-                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
-                                            </li>
-                                        </#list>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <#list build.buildValidationStamps as buildValidationStamp>
-                                        <#if buildValidationStamp.run>
-                                            <#assign run = buildValidationStamp.runs?first />
-                                            <span class="label validationStamp">
-                                                <img title="${buildValidationStamp.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/validation_stamp/${buildValidationStamp.name?html}/image" />
-                                                <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}/validation_stamp/${buildValidationStamp.name?html}/validation_run/${run.runOrder?c}">${buildValidationStamp.name?html}</a>
-                                                <img src="static/images/status-${run.status}.png" />
-                                            </span>
-                                        </#if>
-                                    </#list>
-                                </td>
-                            </tr>
+                            <@revision_info_build build = build />
+                        </#list>
+                        <#list mergedInfos as mergedInfo>
+                            <#list mergedInfo.builds as build>
+                                <@revision_info_build build=build merged=true />
+                            </#list>
                         </#list>
                     </tbody>
                 </table>

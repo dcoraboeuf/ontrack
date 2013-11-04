@@ -294,6 +294,12 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Long> getMergesForRevision(long revision) {
+        return revisionDao.getMergesForRevision(revision);
+    }
+
+    @Override
     public SVNHistory getHistory(String path) {
         // Gets the reference for this first path
         SVNReference reference = getReference(path);

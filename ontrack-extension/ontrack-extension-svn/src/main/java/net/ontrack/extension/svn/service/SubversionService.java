@@ -36,6 +36,8 @@ public interface SubversionService {
 
     List<Long> getMergedRevisions(SVNURL svnurl, long revision);
 
+    List<Long> getMergesForRevision(long revision);
+
     boolean exists(SVNURL url, SVNRevision revision);
 
     boolean isTagOrBranch(String path);

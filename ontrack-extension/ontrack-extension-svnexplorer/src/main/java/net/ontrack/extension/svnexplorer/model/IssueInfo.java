@@ -11,6 +11,7 @@ public class IssueInfo {
     private final JIRAIssue issue;
     private final String formattedUpdateTime;
     private final RevisionInfo revisionInfo;
+    private final List<RevisionInfo> mergedRevisionInfos;
     private final List<ChangeLogRevision> revisions;
 
 }
