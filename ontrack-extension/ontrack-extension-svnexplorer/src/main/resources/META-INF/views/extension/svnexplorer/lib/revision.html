@@ -30,6 +30,11 @@
 <#macro revision_info_build build merged=false>
     <tr>
         <td>
+            <#if merged>
+                <span class="label label-warning"><@lh key="svnexplorer.issue.merged" /></span>
+            </#if>
+        </td>
+        <td>
             <a href="gui/project/${build.build.branch.project.name?html}">${build.build.branch.project.name?html}</a>
         </td>
         <td>
@@ -75,6 +80,7 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th>&nbsp;</th>
                             <th><@lh key="model.project" /></th>
                             <th><@lh key="model.branch" /></th>
                             <th><@lh key="model.build" /></th>

@@ -176,6 +176,10 @@ svnexplorer.issue.revisions
     en -> Associated revisions
     fr -> Révisions associées
 
+svnexplorer.issue.merged
+    en -> Merged
+    fr -> Réintégré
+
 [branch-history]
 
 svnexplorer.branch-history
