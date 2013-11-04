@@ -26,3 +26,8 @@ ul.version li {
 ul.version li:first-child span.separator {
     display: none;
 }
+
+span.merged > a {
+    text-decoration: none;
+    color: inherit;
+}
