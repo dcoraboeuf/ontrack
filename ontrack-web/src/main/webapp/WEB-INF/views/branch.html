@@ -5,124 +5,121 @@
 <@layout_std page="branch" title=branch.name modules=["audit","properties"] breadcrumbs = {loc("home"): "", branch.project.name?html: "gui/project/${branch.project.name?html}"}>
     <input id="project" type="hidden" value="${branch.project.name?html}" />
     <input id="branch" type="hidden" value="${branch.name?html}" />
-	<div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12 page-title">
-                <span class="title">
-                    <a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a>
-                    / ${branch.name?html}
-                    <#list decoratedBranch.decorations as decoration>
-                        <@decoration_icon value=decoration />
-                    </#list>
-                </span>
-                <span class="action action-optional">
-                    <#list extensionBranchActions(branch.project.name, branch.name) as branchAction>
-                        <a href="${branchAction.url?html}" class="<#if branchAction.css??>${branchAction.css?html}</#if>">
-                            <#if branchAction.icon??>
-                                <i class="${branchAction.icon?html}"></i>
-                            </#if>
-                            ${branchAction.title?html}
-                        </a>
-                    </#list>
-                    <#if secAdmin()>
-                        <span id="command-branch-build-create"><i class="icon-play-circle"></i> <@lh key="build.create" /></span>
-                        <span id="command-branch-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone"><i class="icon-forward"></i> <@lh key="branch.clone" /></a>
-                        <span id="command-branch-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
-                        <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/promotion_level_manage"><i class="icon-th"></i> <@lh key="promotion_level.manage" /></a>
-                        <span id="command-branch-build-cleanup"><i class="icon-time"></i> <@lh key="build.cleanup" /></span>
-                        <a href="gui/admin/dashboard/project/${branch.project.name?html}/branch/${branch.name?html}">
-                            <i class="icon-pencil"></i>
-                            <@lh key="dashboard.admin"/>
-                        </a>
-                    </#if>
-                    <a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}/charts">
-                        <i class="icon-signal"></i>
-                        <@lh key="branch.charts" />
-                    </a>
-                    <a href="dashboard/project/${branch.project.name?html}/branch/${branch.name?html}">
-                        <i class="icon-eye-open"></i>
-                        <@lh key="dashboard"/>
-                    </a>
-                    <!-- Close button -->
-                    <a href="gui/project/${branch.project.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
-                    <!-- Switch to another branch -->
-                    <div
-                        id="branch-switch"
+    <@title value=branch.name close="gui/project/${branch.project.name?html}">
+        <@title_uplink name=branch.project.name href="gui/project/${branch.project.name?html}" />
+        <!-- Decorations -->
+        <@title_decorations>
+            <#list decoratedBranch.decorations as decoration>
+                <@decoration_icon value=decoration />
+            </#list>
+        </@title_decorations>
+        <!-- Branch commands -->
+        <#list extensionBranchActions(branch.project.name, branch.name) as branchAction>
+            <@title_command id=branchAction.title title=branchAction.title class=branchAction.icon link=branchAction.url />
+        </#list>
+        <#if secProject(branch.project.id, 'BUILD_CREATE')>
+            <@title_command id="command-branch-build-create" title=loc('build.create') class="icon-play-circle" />
+        </#if>
+        <#if secProject(branch.project.id, 'BRANCH_MODIFY')>
+            <@title_command id="command-branch-update" title=loc('general.modify') class="icon-pencil" />
+        </#if>
+        <#if secProject(branch.project.id, 'BRANCH_CLONE')>
+            <@title_command id="command-branch-clone" title=loc('branch.clone') class="icon-forward" link="gui/project/${branch.project.name?html}/branch/${branch.name?html}/clone" />
+        </#if>
+        <#if secProject(branch.project.id, 'BRANCH_DELETE')>
+            <@title_command id="command-branch-delete" title=loc('general.delete') class="icon-trash" />
+        </#if>
+        <#if secProject(branch.project.id, 'PROMOTION_LEVEL_MGT')>
+            <@title_command id="command-branch-promotion-level-mgt" title=loc('promotion_level.manage') class="icon-th" link="gui/project/${branch.project.name?html}/branch/${branch.name?html}/promotion_level_manage" />
+        </#if>
+        <#if secProject(branch.project.id, 'BUILD_CLEANUP_CONFIG')>
+            <@title_command id="command-branch-build-cleanup" title=loc('build.cleanup') class="icon-time" />
+        </#if>
+        <#if secProject(branch.project.id, 'DASHBOARD_SETUP')>
+            <@title_command id="command-branch-dashboard-admin" title=loc('dashboard.admin') class="icon-pencil" link="gui/admin/dashboard/project/${branch.project.name?html}/branch/${branch.name?html}" />
+        </#if>
+        <@title_command id="command-branch-charts" title=loc('branch.charts') class="icon-signal" link="gui/project/${branch.project.name?html}/branch/${branch.name?html}/charts" />
+        <@title_command id="command-branch-dashboard" title=loc('dashboard') class="icon-eye-open" link="dashboard/project/${branch.project.name?html}/branch/${branch.name?html}" />
+        <!-- Switch between branches -->
+        <@title_tools>
+            <div
+                id="branch-switch"
+                class="dynamic"
+                style="display: inline-block;"
+                dynamic-controller="branch-switch"
+                dynamic-project="${branch.project.name?html}"
+                ></div>
+        </@title_tools>
+    </@title>
+    <div class="row-fluid">
+        <div class="span12 muted properties">${branch.description?html}</div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12 properties">
+            <@properties entity="BRANCH" entityId=branch.id />
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <link rel="stylesheet" type="text/css" href="${base}/css/builds.css" />
+            <div id="branch-builds"
+                 class="dynamic"
+                 dynamic-controller="branch-builds"
+                 dynamic-refresh="true"
+                 dynamic-project="${branch.project.name?html}"
+                 dynamic-branch="${branch.name?html}"
+                 dynamic-logged="${ secLogged()?string }"
+                 ></div>
+            <!-- Diff actions -->
+            <#list extensionDiffActions(branch.id) as action>
+                <div
+                    id="diff-action-${action.extension}-${action.name}-def"
+                    class="hidden extension-diff-action"
+                    extension="${action.extension}"
+                    name="${action.name}"
+                    path="${action.path?html}"
+                    project="${branch.project.name?html}"
+                    branch="${branch.name?html}"
+                    title="${action.title?html}"
+                    ></div>
+            </#list>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span3">
+            <section>
+                <h4><@lh key="branch.promotion_levels" /></h4>
+                <div
+                        id="branch-promotion-levels"
                         class="dynamic"
-                        style="display: inline-block;"
-                        dynamic-controller="branch-switch"
+                        dynamic-controller="branch-promotion-levels"
                         dynamic-project="${branch.project.name?html}"
+                        dynamic-branch="${branch.name?html}"
                         ></div>
-                </span>
-            </div>
-            <div class="muted span12 properties">${branch.description?html}</div>
-            <div class="span12 properties">
-                <@properties entity="BRANCH" entityId=branch.id />
-            </div>
+                <#if secProject(branch.project.id, 'PROMOTION_LEVEL_CREATE')>
+                    <button id="promotion-level-create-button" type="button" class="btn"><@lh key="promotion_level.create" /></button>
+                </#if>
+            </section>
         </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <link rel="stylesheet" type="text/css" href="${base}/css/builds.css" />
-                <div id="branch-builds"
-                     class="dynamic"
-                     dynamic-controller="branch-builds"
-                     dynamic-refresh="true"
-                     dynamic-project="${branch.project.name?html}"
-                     dynamic-branch="${branch.name?html}"
-                     dynamic-logged="${ secLogged()?string }"
-                     ></div>
-                <!-- Diff actions -->
-                <#list extensionDiffActions(branch.id) as action>
-                    <div
-                        id="diff-action-${action.extension}-${action.name}-def"
-                        class="hidden extension-diff-action"
-                        extension="${action.extension}"
-                        name="${action.name}"
-                        path="${action.path?html}"
-                        project="${branch.project.name?html}"
-                        branch="${branch.name?html}"
-                        title="${action.title?html}"
+        <div class="span3">
+            <section>
+                <h4><@lh key="branch.validation_stamps" /></h4>
+                <div
+                        id="branch-validation-stamps"
+                        class="dynamic"
+                        dynamic-controller="branch-validation-stamps"
+                        dynamic-project="${branch.project.name?html}"
+                        dynamic-branch="${branch.name?html}"
+                        dynamic-admin="${secProject(branch.project.id, 'VALIDATION_STAMP_MODIFY')?string}"
                         ></div>
-                </#list>
-            </div>
+                <#if secProject(branch.project.id, 'VALIDATION_STAMP_CREATE')>
+                    <button id="validation-stamp-create-button" type="button" class="btn"><@lh key="validation_stamp.create" /></button>
+                </#if>
+            </section>
         </div>
-        <div class="row-fluid">
-			<div class="span3">
-                <section>
-                    <h4><@lh key="branch.promotion_levels" /></h4>
-                    <div
-                            id="branch-promotion-levels"
-                            class="dynamic"
-                            dynamic-controller="branch-promotion-levels"
-                            dynamic-project="${branch.project.name?html}"
-                            dynamic-branch="${branch.name?html}"
-                            ></div>
-                    <#if secAdmin()>
-                        <button id="promotion-level-create-button" type="button" class="btn"><@lh key="promotion_level.create" /></button>
-                    </#if>
-                </section>
-            </div>
-            <div class="span3">
-                <section>
-                    <h4><@lh key="branch.validation_stamps" /></h4>
-                    <div
-                            id="branch-validation-stamps"
-                            class="dynamic"
-                            dynamic-controller="branch-validation-stamps"
-                            dynamic-project="${branch.project.name?html}"
-                            dynamic-branch="${branch.name?html}"
-                            dynamic-admin="${secAdmin()?string}"
-                            ></div>
-                    <#if secAdmin()>
-                        <button id="validation-stamp-create-button" type="button" class="btn"><@lh key="validation_stamp.create" /></button>
-                    </#if>
-                </section>
-			</div>
-			<div class="span6">
-				<@audit filter="&branch=${branch.id?c}" />
-			</div>
-		</div>
-	</div>
+        <div class="span6">
+            <@audit filter="&branch=${branch.id?c}" />
+        </div>
+    </div>
 
 </@layout_std>

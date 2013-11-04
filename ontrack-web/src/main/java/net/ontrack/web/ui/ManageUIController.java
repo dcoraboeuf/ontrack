@@ -5,6 +5,8 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.core.ui.PropertyUI;
@@ -26,7 +28,6 @@ import org.springframework.web.util.CookieGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -117,7 +118,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     Callable<ExportData> doBackupSave() {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_EXPORT);
         // Launches the export with same credentials
         return securityUtils.withCurrentCredentials(
                 new Callable<ExportData>() {
@@ -157,7 +158,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     Callable<ImportResult> doBackupRestore(@RequestParam final MultipartFile file) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.PROJECT_CREATE);
         return securityUtils.withCurrentCredentials(
                 new Callable<ImportResult>() {
                     @Override
@@ -303,10 +304,11 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public
     @ResponseBody
     BranchCloneInfo getBranchCloneInfo(Locale locale, @PathVariable String project, @PathVariable String name) {
-        // Admin only
-        securityUtils.checkIsAdmin();
-        // Branch
+        // Branch & project
+        int projectId = entityConverter.getProjectId(project);
         int branchId = entityConverter.getBranchId(project, name);
+        // Admin only
+        securityUtils.checkGrant(ProjectFunction.BRANCH_CLONE, projectId);
         // Gets all the properties for the validation stamps
         Map<String, DisplayableProperty> validationStampIndex = new TreeMap<>();
         List<ValidationStampSummary> validationStampList = managementService.getValidationStampList(branchId);
@@ -365,7 +367,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{name:[A-Za-z0-9_\\.\\-]+}/decorated", method = RequestMethod.GET)
     public
     @ResponseBody
-    DecoratedBranch getDecoratedBranch(Locale locale, String project, String name) {
+    DecoratedBranch getDecoratedBranch(Locale locale, @PathVariable String project, @PathVariable String name) {
         return managementService.getDecoratedBranch(locale, entityConverter.getBranchId(project, name));
     }
 

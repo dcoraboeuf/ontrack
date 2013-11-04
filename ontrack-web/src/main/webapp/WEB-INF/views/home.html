@@ -1,33 +1,33 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="home" modules=["audit"]>
-	<div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
-                <span class="action action-optional">
-                    <a href="dashboard"><i class="icon-eye-open"></i> <@lh key="dashboard"/></a>
-                    <#if secAdmin()>
-                        <a href="gui/export"><i class="icon-download"></i> <@lh key="project.export"/></a>
-                        <a href="gui/import"><i class="icon-upload"></i> <@lh key="project.import"/></a>
-                    </#if>
-                </span>
-            </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <span class="action action-optional">
+                <a href="dashboard"><i class="icon-eye-open"></i> <@lh key="dashboard"/></a>
+                <#if secGlobal('PROJECT_EXPORT')>
+                    <a href="gui/export"><i class="icon-download"></i> <@lh key="project.export"/></a>
+                </#if>
+                <#if secGlobal('PROJECT_CREATE')>
+                    <a href="gui/import"><i class="icon-upload"></i> <@lh key="project.import"/></a>
+                </#if>
+            </span>
         </div>
-		<div class="row-fluid">
-            <div class="span12">
-                <section>
-                    <h4><@lh key="home.projects"/></h4>
-                    <div id="projects" class="dynamic" dynamic-controller="project-list" dynamic-createProject="${secAdmin()?string}"></div>
-                    <#if secAdmin()>
-                        <button id="project-create-button" type="button" class="btn"><@lh key="project.create" /></button>
-                    </#if>
-                </section>
-            </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <section>
+                <h4><@lh key="home.projects"/></h4>
+                <div id="projects" class="dynamic" dynamic-controller="project-list"></div>
+                <#if secGlobal('PROJECT_CREATE')>
+                    <button id="project-create-button" type="button" class="btn"><@lh key="project.create" /></button>
+                </#if>
+            </section>
         </div>
-        <div class="row-fluid">
-			<div class="span12">
-                <@audit filter="" />
-			</div>
-		</div>
-	</div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <@audit filter="" />
+        </div>
+    </div>
 </@layout_std>

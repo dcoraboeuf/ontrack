@@ -480,6 +480,10 @@ project.delete.prompt
 	en -> Are you sure to delete the project "{0}" and all its associated information?
 	fr -> Etes-vous sûr(e) de supprimer le projet "{0}" et toutes ses informations associées?
 
+project.delete.message
+    en -> Please wait while the project "{0}" is deleted...
+    fr -> Veuillez patienter pendant la suppression du projet "{0}"...
+
 project.create.title
 	en,fr -> @[project.create]
 
@@ -575,8 +579,8 @@ branch.clone.promotion_level.properties
     fr -> Propriétés des niveaux de promotions
 
 branch.delete.prompt
-	en -> Are you sure to delete the "{0}" branch and all its associated information?
-	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" et toutes ses informations associées?
+	en -> Are you sure to delete the "{0}" branch of the "{1}" project and all its associated information?
+	fr -> Etes-vous sûr(e) de supprimer la branche "{0}" du projet "{1}" et toutes ses informations associées?
 
 branch.create.title
 	en,fr -> @[branch.create]
@@ -813,6 +817,10 @@ promotion_level.create
 promotion_level.update
 	en -> Update promotion level
 	fr -> Modifier niveau de promotion
+
+promotion_level.delete.prompt
+    en -> Do you want to delete the "{0}" promotion level?
+    fr -> Voulez-vous vraiment supprimer le niveau de promotion "{0}" ?
 
 promotion_level.name
 	en,fr -> @[model.name]
@@ -1163,3 +1171,29 @@ dashboard.admin
 dashboard.admin.help
     en -> Select the validation stamps that must appear in the dashboard
     fr -> Sélectionnez les validations qui doivent apparaître dans le tableau de bord
+
+[acl]
+
+acl
+    en -> Authorizations
+    fr -> Autorisations
+
+acl.project
+    en -> Authorizations for {0}
+    fr -> Autorisations pour {0}
+
+acl.account
+    en -> Account
+    fr -> Compte utilisateur
+
+acl.global.fn
+    en -> Global function
+    fr -> Fonction générale
+
+acl.project.role
+    en -> Project role
+    fr -> Rôle pour le projet
+
+acl.add
+    en -> Add
+    fr -> Ajouter

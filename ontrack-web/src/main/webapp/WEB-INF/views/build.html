@@ -12,65 +12,59 @@
     <input id="project" type="hidden" value="${build.branch.project.name?html}" />
     <input id="branch" type="hidden" value="${build.branch.name?html}" />
     <input id="build" type="hidden" value="${build.name?html}" />
-	<div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12 page-title">
-                <span class="title">
-                    <a href="gui/project/${build.branch.project.name?html}">${build.branch.project.name?html}</a>
-                    / <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}">${build.branch.name?html}</a>
-                    / ${build.name?html}
-                </span>
-                <span class="action action-optional">
-                    <#if secController()>
-                        <span id="build-promote"><i class="icon-star"></i> <@lh key="build.promote" /></span>
-                    </#if>
-                    <#if secAdmin()>
-                        <span id="build-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <span id="build-delete"><i class="icon-trash"></i> <@lh key="build.delete" /></span>
-                    </#if>
-                    <a href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
-                </span>
-            </div>
-            <div class="span12 muted properties">${build.description?html}</div>
-            <div class="span12 properties">
-                <@properties entity="BUILD" entityId=build.id />
-            </div>
+    <@title value=build.name close="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}">
+        <@title_uplink name=build.branch.project.name href="gui/project/${build.branch.project.name?html}" />
+        <@title_uplink name=build.branch.name href="gui/project/${build.branch.project.name?html}/branch/${build.branch.name?html}" />
+        <#if secProject(build.branch.project.id, 'PROMOTED_RUN_CREATE')>
+            <@title_command id="build-promote" title=loc('build.promote') class="icon-star" />
+        </#if>
+        <#if secProject(build.branch.project.id, 'BUILD_MODIFY')>
+            <@title_command id="build-update" title=loc('general.modify') class="icon-pencil" />
+        </#if>
+        <#if secProject(build.branch.project.id, 'BUILD_DELETE')>
+            <@title_command id="build-delete" title=loc('build.delete') class="icon-trash" />
+        </#if>
+    </@title>
+    <div class="row-fluid">
+        <div class="span12 muted properties">${build.description?html}</div>
+        <div class="span12 properties">
+            <@properties entity="BUILD" entityId=build.id />
         </div>
-		<div class="row-fluid">
-            <div class="span9">
-                <section>
-                    <h4><@lh key="build.validation_stamps" /></h4>
-                    <div
-                        id="build-validation-stamps"
+    </div>
+    <div class="row-fluid">
+        <div class="span9">
+            <section>
+                <h4><@lh key="build.validation_stamps" /></h4>
+                <div
+                    id="build-validation-stamps"
+                    class="dynamic"
+                    dynamic-controller="build-validation-stamps"
+                    dynamic-refresh="true"
+                    dynamic-project="${build.branch.project.name?html}"
+                    dynamic-branch="${build.branch.name?html}"
+                    dynamic-build="${build.name?html}"
+                    />
+            </section>
+        </div>
+        <div class="span3">
+            <section>
+                <h4><@lh key="build.promotion_levels" /></h4>
+                <div
+                        id="build-promotion-levels"
                         class="dynamic"
-                        dynamic-controller="build-validation-stamps"
+                        dynamic-controller="build-promotion-levels"
                         dynamic-refresh="true"
                         dynamic-project="${build.branch.project.name?html}"
                         dynamic-branch="${build.branch.name?html}"
                         dynamic-build="${build.name?html}"
+                        dynamic-admin="${secProject(build.branch.project.id, 'PROMOTED_RUN_DELETE')?string}"
                         />
-                </section>
-            </div>
-            <div class="span3">
-                <section>
-                    <h4><@lh key="build.promotion_levels" /></h4>
-                    <div
-                            id="build-promotion-levels"
-                            class="dynamic"
-                            dynamic-controller="build-promotion-levels"
-                            dynamic-refresh="true"
-                            dynamic-project="${build.branch.project.name?html}"
-                            dynamic-branch="${build.branch.name?html}"
-                            dynamic-build="${build.name?html}"
-                            dynamic-admin="${secAdmin()?string}"
-                            />
-                </section>
-            </div>
+            </section>
         </div>
-        <div class="row-fluid">
-			<div class="span12">
-				<@audit filter="&build=${build.id?c}" />
-			</div>
-		</div>
-	</div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <@audit filter="&build=${build.id?c}" />
+        </div>
+    </div>
 </@layout_std>

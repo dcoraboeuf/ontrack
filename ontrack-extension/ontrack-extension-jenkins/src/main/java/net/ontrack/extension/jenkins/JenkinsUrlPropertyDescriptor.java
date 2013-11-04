@@ -1,7 +1,7 @@
 package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractLinkPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -35,13 +35,13 @@ public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionD
      * Editable only by administrators on branches & validation stamps
      */
     @Override
-    public String getRoleForEdition(Entity entity) {
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
         switch (entity) {
             case BRANCH:
             case VALIDATION_STAMP:
-                return SecurityRoles.ADMINISTRATOR;
+                return AuthorizationPolicy.PROJECT_CONFIG;
             default:
-                return super.getRoleForEdition(entity);
+                return super.getEditingAuthorizationPolicy(entity);
         }
     }
 }

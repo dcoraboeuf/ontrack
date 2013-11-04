@@ -1,6 +1,7 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -48,18 +49,21 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     }
 
     /**
-     * Not editable by default; returns <code>null</code>.
+     * Not editable by default.
+     *
+     * @see AuthorizationPolicy#DENY_ALL
      */
+
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return null;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.DENY_ALL;
     }
 
     /**
      * Visible by everybody by default
      */
     @Override
-    public String getRoleForView(Entity entity) {
-        return null;
+    public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.ALLOW_ALL;
     }
 }

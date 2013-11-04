@@ -5,9 +5,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.NamedLink;
 import net.ontrack.core.model.ProjectSummary;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.action.EntityActionExtension;
@@ -25,13 +27,13 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
 
     private final Strings strings;
     private final ExtensionManager extensionManager;
-    private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
     private final ManageUI manageUI;
 
-    public FnExtensionProjectActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils, ManageUI manageUI) {
+    public FnExtensionProjectActions(Strings strings, ExtensionManager extensionManager, AuthorizationUtils authorizationUtils, ManageUI manageUI) {
         this.strings = strings;
         this.extensionManager = extensionManager;
-        this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
         this.manageUI = manageUI;
     }
 
@@ -55,8 +57,8 @@ public class FnExtensionProjectActions implements TemplateMethodModel {
                         @Override
                         public boolean apply(EntityActionExtension<ProjectSummary> action) {
                             if (action.isEnabled(projectSummary)) {
-                                String actionRole = action.getRole(projectSummary);
-                                return actionRole == null || securityUtils.hasRole(actionRole);
+                                AuthorizationPolicy policy = action.getAuthorizationPolicy(projectSummary);
+                                return authorizationUtils.applyPolicy(policy, Entity.PROJECT, projectSummary.getId());
                             } else {
                                 return false;
                             }

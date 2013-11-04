@@ -2,14 +2,14 @@ package net.ontrack.backend;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import net.ontrack.backend.dao.AccountDao;
-import net.ontrack.backend.dao.CommentDao;
-import net.ontrack.backend.dao.EventDao;
-import net.ontrack.backend.dao.ValidationRunStatusDao;
+import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.TAccount;
+import net.ontrack.backend.dao.model.TGlobalAuthorization;
+import net.ontrack.backend.dao.model.TProjectAuthorization;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.*;
 import net.ontrack.core.validation.AccountValidation;
 import net.ontrack.core.validation.Validations;
 import net.ontrack.service.AccountService;
@@ -17,13 +17,13 @@ import net.ontrack.service.EventService;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.transform;
 
 @Service
 public class AccountServiceImpl extends AbstractServiceImpl implements AccountService {
@@ -33,6 +33,8 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     private final CommentDao commentDao;
     private final ValidationRunStatusDao validationRunStatusDao;
     private final EventDao eventDao;
+    private final ProjectAuthorizationDao projectAuthorizationDao;
+    private final GlobalAuthorizationDao globalAuthorizationDao;
     private final Function<TAccount, Account> accountFunction = new Function<TAccount, Account>() {
         @Override
         public Account apply(TAccount t) {
@@ -51,21 +53,35 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
             }
         }
     };
+    private final Function<TAccount, Account> accountACLFunction = new Function<TAccount, Account>() {
+        @Override
+        public Account apply(TAccount t) {
+            return getACL(accountFunction.apply(t));
+        }
+    };
+    private final Function<TAccount, AccountSummary> accountSummaryFn = new Function<TAccount, AccountSummary>() {
+        @Override
+        public AccountSummary apply(TAccount t) {
+            return new AccountSummary(t.getId(), t.getName(), t.getFullName());
+        }
+    };
 
     @Autowired
-    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao) {
+    public AccountServiceImpl(ValidatorService validatorService, EventService eventService, Strings strings, AccountDao accountDao, CommentDao commentDao, ValidationRunStatusDao validationRunStatusDao, EventDao eventDao, ProjectAuthorizationDao projectAuthorizationDao, GlobalAuthorizationDao globalAuthorizationDao) {
         super(validatorService, eventService);
         this.strings = strings;
         this.accountDao = accountDao;
         this.commentDao = commentDao;
         this.validationRunStatusDao = validationRunStatusDao;
         this.eventDao = eventDao;
+        this.projectAuthorizationDao = projectAuthorizationDao;
+        this.globalAuthorizationDao = globalAuthorizationDao;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Account authenticate(String user, String password) {
-        return accountFunction.apply(accountDao.findByNameAndPassword(user, password));
+        return accountACLFunction.apply(accountDao.findByNameAndPassword(user, password));
     }
 
     @Override
@@ -77,14 +93,14 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(String mode, String user) {
-        return accountFunction.apply(
+        return accountACLFunction.apply(
                 accountDao.findByModeAndName(mode, user)
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Account getAccount(int id) {
         return accountFunction.apply(
                 accountDao.getByID(id)
@@ -93,7 +109,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public List<Account> getAccounts() {
         return Lists.transform(
                 accountDao.findAll(),
@@ -103,7 +119,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public ID createAccount(final AccountCreationForm form) {
         // Validation
         validate(form, AccountValidation.class);
@@ -140,14 +156,14 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public void deleteAccount(int id) {
         accountDao.deleteAccount(id);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public void updateAccount(int id, AccountUpdateForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -178,7 +194,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changePassword(int id, PasswordChangeForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -194,7 +210,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changeEmail(int id, EmailChangeForm form) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -210,7 +226,7 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack resetPassword(int id, String password) {
         // Gets the existing account
         Account account = getAccount(id);
@@ -226,8 +242,153 @@ public class AccountServiceImpl extends AbstractServiceImpl implements AccountSe
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
     public Ack changeLanguage(int id, String lang) {
         return accountDao.changeLanguage(id, strings.getSupportedLocales().filterForLookup(new Locale(lang)));
+    }
+
+    @Override
+    @Transactional
+    @ProjectGrant(ProjectFunction.ACL)
+    public Ack setProjectACL(@ProjectGrantId int project, int account, ProjectRole role) {
+        return projectAuthorizationDao.set(project, account, role);
+    }
+
+    @Override
+    @Transactional
+    @ProjectGrant(ProjectFunction.ACL)
+    public Ack unsetProjectACL(@ProjectGrantId int project, int account) {
+        return projectAuthorizationDao.unset(project, account);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProjectAuthorization> getProjectACLList(int project) {
+        return transform(
+                projectAuthorizationDao.findByProject(project),
+                new Function<TProjectAuthorization, ProjectAuthorization>() {
+                    @Override
+                    public ProjectAuthorization apply(TProjectAuthorization t) {
+                        return new ProjectAuthorization(
+                                t.getProject(),
+                                accountSummaryFn.apply(accountDao.getByID(t.getAccount())),
+                                t.getRole()
+                        );
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Account> findAccountsForProjectACL(final int project, final ProjectFunction fn) {
+        // Filtering
+        return filter(
+                transform(
+                        transform(
+                                accountDao.findAll(),
+                                accountFunction
+                        ),
+                        new Function<Account, Account>() {
+                            @Override
+                            public Account apply(Account o) {
+                                return getACL(o);
+                            }
+                        }
+                ),
+                new Predicate<Account>() {
+                    @Override
+                    public boolean apply(Account account) {
+                        return account.isGranted(fn, project);
+                    }
+                }
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AccountSummary> accountLookup(String query) {
+        return transform(
+                accountDao.findByQuery(query),
+                accountSummaryFn
+        );
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public Ack setGlobalACL(int account, GlobalFunction fn) {
+        return globalAuthorizationDao.set(account, fn);
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public Ack unsetGlobalACL(int account, GlobalFunction fn) {
+        return globalAuthorizationDao.unset(account, fn);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @GlobalGrant(GlobalFunction.ACCOUNT_MANAGEMENT)
+    public List<GlobalACLSummary> getGlobalACL() {
+        List<TGlobalAuthorization> tlist = globalAuthorizationDao.all();
+        Map<Integer, List<GlobalFunction>> index = new HashMap<>();
+        for (TGlobalAuthorization t : tlist) {
+            int id = t.getAccount();
+            List<GlobalFunction> list = index.get(id);
+            if (list == null) {
+                list = new ArrayList<>();
+                index.put(id, list);
+            }
+            list.add(t.getFn());
+        }
+        List<GlobalACLSummary> result = new ArrayList<>(
+                Collections2.transform(
+                        index.entrySet(),
+                        new Function<Map.Entry<Integer, List<GlobalFunction>>, GlobalACLSummary>() {
+                            @Override
+                            public GlobalACLSummary apply(Map.Entry<Integer, List<GlobalFunction>> entry) {
+                                return new GlobalACLSummary(
+                                        accountFunction.apply(accountDao.getByID(entry.getKey())),
+                                        entry.getValue()
+                                );
+                            }
+                        }
+                )
+        );
+        // Sort by account name
+        Collections.sort(
+                result,
+                new Comparator<GlobalACLSummary>() {
+                    @Override
+                    public int compare(GlobalACLSummary o1, GlobalACLSummary o2) {
+                        return o1.getAccount().getName().compareTo(o2.getAccount().getName());
+                    }
+                }
+        );
+        // OK
+        return result;
+    }
+
+    protected Account getACL(Account account) {
+        if (account != null) {
+            // Global functions
+            List<TGlobalAuthorization> globalList = globalAuthorizationDao.findByAccount(account.getId());
+            for (TGlobalAuthorization t : globalList) {
+                account = account.withGlobalACL(t.getFn());
+            }
+            // Functions for all projects
+            List<TProjectAuthorization> authList = projectAuthorizationDao.findByAccount(account.getId());
+            for (TProjectAuthorization auth : authList) {
+                for (ProjectFunction fn : ProjectFunction.values()) {
+                    if (fn.isAllowedForProjectRole(auth.getRole())) {
+                        account = account.withProjectACL(fn, auth.getProject());
+                    }
+                }
+            }
+        }
+        // OK
+        return account;
     }
 }

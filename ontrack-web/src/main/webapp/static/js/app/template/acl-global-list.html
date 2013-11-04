@@ -1,0 +1,17 @@
+<tr>
+    <td>
+        <code>{{account.name}}</code>
+        ({{account.fullName}})
+    </td>
+    <td>
+        {{securityRole account.roleName}}
+    </td>
+    <td>
+        {{#fns}}
+            <span class="acl-global-fn" title="{{.}}">
+                {{aclRole .}}
+                <i class="icon-trash action action-optional action-inline acl-global-delete" data-account="{{../account.id}}" data-fn={{.}}></i>
+            </span>
+        {{/fns}}
+    </td>
+</tr>

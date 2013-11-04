@@ -1,6 +1,7 @@
 package net.ontrack.web.config;
 
 import freemarker.cache.TemplateLoader;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.ExtensionManager;
@@ -49,8 +50,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private SecurityUtils securityUtils;
 
     @Autowired
+    private AuthorizationUtils authorizationUtils;
+
+    @Autowired
     private ExtensionManager extensionManager;
-    
+
     @Autowired
     private SubscriptionService subscriptionService;
 
@@ -122,16 +126,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         variables.put("locFormatTime", new FnLocFormatTime(strings));
         variables.put("secLogged", new FnSecLogged(securityUtils));
         variables.put("secAccountId", new FnSecAccountId(securityUtils));
-        variables.put("secAdmin", new FnSecAdmin(securityUtils));
-        variables.put("secController", new FnSecController(securityUtils));
+        variables.put("secGlobal", new FnSecGlobal(securityUtils));
+        variables.put("secProject", new FnSecProject(securityUtils));
         variables.put("secDisplayName", new FnSecDisplayName(securityUtils));
         variables.put("secSubscriber", new FnSecSubscriber(securityUtils, subscriptionService));
         variables.put("subscribed", new FnSubscribed(securityUtils, subscriptionService));
         // Extensions
-        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, securityUtils));
-        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, securityUtils));
-        variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, securityUtils, manageUI));
-        variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, securityUtils, manageUI));
+        variables.put("extensionTopLevelActions", new FnExtensionTopLevelActions(strings, extensionManager, authorizationUtils));
+        variables.put("extensionDiffActions", new FnExtensionDiffActions(strings, extensionManager, authorizationUtils));
+        variables.put("extensionProjectActions", new FnExtensionProjectActions(strings, extensionManager, authorizationUtils, manageUI));
+        variables.put("extensionBranchActions", new FnExtensionBranchActions(strings, extensionManager, authorizationUtils, manageUI));
         variables.put("extensionStyles", new FnExtensionStyles(extensionManager));
         // OK
         c.setFreemarkerVariables(variables);

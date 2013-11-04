@@ -2,7 +2,10 @@ package net.ontrack.backend;
 
 import net.ontrack.backend.security.AccountAuthentication;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.test.AbstractIntegrationTest;
 import net.ontrack.test.Helper;
@@ -19,6 +22,9 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     @Autowired
     private ManagementService managementService;
+
+    @Autowired
+    private ControlService controlService;
 
     protected AnonymousCall asAnonymous() {
         return new AnonymousCall();
@@ -62,6 +68,63 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     protected BranchSummary doCreateBranch() throws Exception {
         return doCreateBranch(doCreateProject().getId());
+    }
+
+    protected PromotionLevelSummary doCreatePromotionLevel() throws Exception {
+        return doCreatePromotionLevel(doCreateBranch().getId());
+    }
+
+    protected ValidationRunSummary doCreateValidationRun(Status status) throws Exception {
+        BranchSummary branch = doCreateBranch();
+        return doCreateValidationRun(
+                doCreateValidationStamp(branch.getId()).getId(),
+                doCreateBuild(branch.getId()).getId(),
+                status
+        );
+    }
+
+    protected ValidationRunSummary doCreateValidationRun(final int validationStampId, final int buildId, final Status status) throws Exception {
+        return asAdmin().call(new Callable<ValidationRunSummary>() {
+            @Override
+            public ValidationRunSummary call() throws Exception {
+                return controlService.createValidationRun(
+                        buildId,
+                        validationStampId,
+                        new ValidationRunCreationForm(status, "Validation run", PropertiesCreationForm.create())
+                );
+            }
+        });
+    }
+
+
+    protected BuildSummary doCreateBuild(final int branchId) throws Exception {
+        final String buildName = uid("B");
+        return asAdmin().call(new Callable<BuildSummary>() {
+            @Override
+            public BuildSummary call() throws Exception {
+                return controlService.createBuild(branchId, new BuildCreationForm(buildName, "Build", PropertiesCreationForm.create()));
+            }
+        });
+    }
+
+    protected ValidationStampSummary doCreateValidationStamp(final int branchId) throws Exception {
+        final String validationStampName = uid("VS");
+        return asAdmin().call(new Callable<ValidationStampSummary>() {
+            @Override
+            public ValidationStampSummary call() throws Exception {
+                return managementService.createValidationStamp(branchId, new ValidationStampCreationForm(validationStampName, "Validation stamp"));
+            }
+        });
+    }
+
+    protected PromotionLevelSummary doCreatePromotionLevel(final int branchId) throws Exception {
+        final String promotionLevelName = uid("PRL");
+        return asAdmin().call(new Callable<PromotionLevelSummary>() {
+            @Override
+            public PromotionLevelSummary call() throws Exception {
+                return managementService.createPromotionLevel(branchId, new PromotionLevelCreationForm(promotionLevelName, "Promotion level"));
+            }
+        });
     }
 
     protected static interface ContextCall {
@@ -121,6 +184,16 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
         public UserCall() {
             super(new Account(1, "user", "Normal user",
                     "user@test.com", SecurityRoles.USER, "builtin", Locale.ENGLISH));
+        }
+
+        public UserCall withGlobalFn(GlobalFunction fn) {
+            account.withGlobalACL(fn);
+            return this;
+        }
+
+        public UserCall withProjectFn(ProjectFunction fn, int id) {
+            account.withProjectACL(fn, id);
+            return this;
         }
     }
 

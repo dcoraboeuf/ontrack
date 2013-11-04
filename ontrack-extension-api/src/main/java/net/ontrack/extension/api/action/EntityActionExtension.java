@@ -2,6 +2,7 @@ package net.ontrack.extension.api.action;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EntitySummary;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.sf.jstring.Localizable;
 
 public interface EntityActionExtension<T extends EntitySummary> {
@@ -12,7 +13,7 @@ public interface EntityActionExtension<T extends EntitySummary> {
 
     String getName();
 
-    String getRole(T summary);
+    AuthorizationPolicy getAuthorizationPolicy(T summary);
 
     boolean isEnabled(T summary);
 

@@ -8,7 +8,7 @@ import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.SubscriptionDao;
 import net.ontrack.backend.dao.model.TAccount;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.*;
 import net.ontrack.service.model.MessageChannel;
@@ -23,11 +23,11 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 
 import static java.lang.String.format;
 
@@ -126,8 +126,8 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public AllSubscriptions getAllSubscriptions(Locale locale) {
+        securityUtils.checkGrant(GlobalFunction.SUBSCRIPTIONS_MANAGEMENT);
         // Gets all users
         List<TAccount> accounts = accountDao.findAll();
         List<SubscriptionsForUser> users = new ArrayList<>();
@@ -170,8 +170,8 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unsubscribeUser(int user, Map<Entity, Integer> entities) {
+        securityUtils.checkGrant(GlobalFunction.SUBSCRIPTIONS_MANAGEMENT);
         Ack ack = Ack.OK;
         // Unsubscribes from each entity
         for (Map.Entry<Entity, Integer> entry : entities.entrySet()) {
@@ -187,11 +187,16 @@ public class DefaultSubscriptionService implements SubscriptionService {
 
     @Override
     @Transactional
-    public Ack unsubscribe(Map<Entity, Integer> entities) {
+    public Ack unsubscribe(final Map<Entity, Integer> entities) {
         // Gets the current user
-        int userId = securityUtils.getCurrentAccountId();
+        final int userId = securityUtils.getCurrentAccountId();
         if (userId >= 0) {
-            return unsubscribeUser(userId, entities);
+            return securityUtils.asAdmin(new Callable<Ack>() {
+                @Override
+                public Ack call() throws Exception {
+                    return unsubscribeUser(userId, entities);
+                }
+            });
         } else {
             return Ack.NOK;
         }

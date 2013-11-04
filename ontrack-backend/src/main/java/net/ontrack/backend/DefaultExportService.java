@@ -12,7 +12,8 @@ import net.ontrack.backend.export.ImportService;
 import net.ontrack.backend.export.TExport;
 import net.ontrack.backend.export.TExportedImage;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.GlobalGrant;
 import net.ontrack.core.support.Version;
 import net.ontrack.service.ExportService;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,7 +87,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.PROJECT_EXPORT)
     public String exportLaunch(Collection<Integer> projectIds) {
         // UUID
         String uuid = UUID.randomUUID().toString();
@@ -102,7 +102,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.PROJECT_EXPORT)
     public Ack exportCheck(String uuid) {
         ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
@@ -119,7 +119,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.PROJECT_EXPORT)
     public ExportData exportDownload(String uuid) {
         ExportTask task = exportCache.getIfPresent(uuid);
         if (task == null) {
@@ -140,6 +140,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.PROJECT_CREATE)
     public String importLaunch(MultipartFile file) {
         try (InputStream in = file.getInputStream()) {
             ExportData importData = objectMapper.readValue(in, ExportData.class);
@@ -150,7 +151,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.PROJECT_CREATE)
     public String importLaunch(ExportData importData) {
         // UUID
         String uuid = UUID.randomUUID().toString();
@@ -165,7 +166,7 @@ public class DefaultExportService implements ExportService {
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
+    @GlobalGrant(GlobalFunction.PROJECT_CREATE)
     public ImportResult importCheck(String uuid) {
         ImportTask task = importCache.getIfPresent(uuid);
         if (task == null) {

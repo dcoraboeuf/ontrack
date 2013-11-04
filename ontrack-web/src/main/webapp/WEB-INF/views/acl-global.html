@@ -1,0 +1,23 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="acl-global"
+    title=loc("acl")
+    breadcrumbs = {
+        loc("home"): "",
+        loc("accounts"): "gui/admin/accounts"
+    }>
+
+    <@title value=loc("acl") close="gui/admin/accounts">
+    </@title>
+
+    <div class="row-fluid">
+        <div id="acl-account-form" class="span12 well well-small">
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div id="acl-global-list" class="span12 dynamic" dynamic-controller="acl-global-list">
+        </div>
+    </div>
+
+</@layout_std>

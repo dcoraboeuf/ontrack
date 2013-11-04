@@ -47,6 +47,8 @@
             <script type="text/javascript">
                 var noscript = '${noscript?string}';
                 var extension = '${extension?string}';
+                // Global variable to be used for relative paths
+                var staticPath = '${base?html}';
                 // General configuration
                 require.config({
                     baseUrl: '${base}/js/lib',

@@ -6,6 +6,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -29,12 +31,14 @@ public class PropertyUIController extends AbstractUIController implements Proper
 
     private final PropertiesService propertiesService;
     private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
 
     @Autowired
-    public PropertyUIController(ErrorHandler errorHandler, Strings strings, PropertiesService propertiesService, SecurityUtils securityUtils) {
+    public PropertyUIController(ErrorHandler errorHandler, Strings strings, PropertiesService propertiesService, SecurityUtils securityUtils, AuthorizationUtils authorizationUtils) {
         super(errorHandler, strings);
         this.propertiesService = propertiesService;
         this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
     }
 
     /**
@@ -78,7 +82,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
     List<DisplayablePropertyValue> getProperties(
             final Locale locale,
             @PathVariable final Entity entity,
-            @PathVariable int entityId) {
+            @PathVariable final int entityId) {
         // List of defined properties with their value
         List<PropertyValueWithDescriptor> propertyValuesWithDescriptors = propertiesService.getPropertyValuesWithDescriptor(entity, entityId);
         // Filter on visibility
@@ -87,7 +91,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                 new Predicate<PropertyValueWithDescriptor>() {
                     @Override
                     public boolean apply(PropertyValueWithDescriptor propertyValueWithDescriptor) {
-                        return isPropertyViewable(propertyValueWithDescriptor.getDescriptor(), entity);
+                        return isPropertyViewable(propertyValueWithDescriptor.getDescriptor(), entity, entityId);
                     }
                 }
         );
@@ -103,7 +107,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                                 strings.get(locale, property.getDescriptor().getDisplayNameKey()),
                                 property.getDescriptor().getIconPath(),
                                 property.getValue(),
-                                isPropertyEditable(property.getDescriptor(), entity)
+                                isPropertyEditable(property.getDescriptor(), entity, entityId)
                         );
                     }
                 }
@@ -153,7 +157,7 @@ public class PropertyUIController extends AbstractUIController implements Proper
                         new Predicate<PropertyExtensionDescriptor>() {
                             @Override
                             public boolean apply(PropertyExtensionDescriptor property) {
-                                return isPropertyEditable(property, entity);
+                                return isPropertyEditable(property, entity, entityId);
                             }
                         }
                 )
@@ -198,14 +202,18 @@ public class PropertyUIController extends AbstractUIController implements Proper
         );
     }
 
-    private boolean isPropertyViewable(PropertyExtensionDescriptor descriptor, Entity entity) {
-        String role = descriptor.getRoleForView(entity);
-        return role == null || securityUtils.hasRole(role);
+    private boolean isPropertyViewable(PropertyExtensionDescriptor descriptor, Entity entity, int entityId) {
+        // Gets the security policy
+        AuthorizationPolicy policy = descriptor.getViewingAuthorizationPolicy(entity);
+        // Applies the security policy
+        return authorizationUtils.applyPolicy(policy, entity, entityId);
     }
 
-    private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity) {
-        String role = descriptor.getRoleForEdition(entity);
-        return role != null && securityUtils.hasRole(role);
+    private boolean isPropertyEditable(PropertyExtensionDescriptor descriptor, Entity entity, int entityId) {
+        // Gets the security policy
+        AuthorizationPolicy policy = descriptor.getEditingAuthorizationPolicy(entity);
+        // Applies the security policy
+        return authorizationUtils.applyPolicy(policy, entity, entityId);
     }
 
 }

@@ -5,8 +5,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.DashboardDao;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.service.DashboardSectionDecorator;
 import net.ontrack.service.DashboardSectionProvider;
 import net.ontrack.service.DashboardService;
@@ -15,7 +16,6 @@ import net.ontrack.service.model.DashboardSectionDecoration;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +27,16 @@ public class DefaultDashboardService implements DashboardService {
     private final ManagementService managementService;
     private final Strings strings;
     private final DashboardDao dashboardDao;
+    private final AuthorizationUtils authorizationUtils;
     private List<DashboardSectionProvider> dashboardSectionProviders;
     private List<DashboardSectionDecorator> dashboardSectionDecorators;
 
     @Autowired
-    public DefaultDashboardService(ManagementService managementService, Strings strings, DashboardDao dashboardDao) {
+    public DefaultDashboardService(ManagementService managementService, Strings strings, DashboardDao dashboardDao, AuthorizationUtils authorizationUtils) {
         this.managementService = managementService;
         this.strings = strings;
         this.dashboardDao = dashboardDao;
+        this.authorizationUtils = authorizationUtils;
     }
 
     @Autowired(required = false)
@@ -204,8 +206,8 @@ public class DefaultDashboardService implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public DashboardBranchAdmin getBranchDashboardAdminData(final int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.DASHBOARD_SETUP);
         // Gets the branch
         BranchSummary branch = managementService.getBranch(branchId);
         // Validation stamps
@@ -230,15 +232,15 @@ public class DefaultDashboardService implements DashboardService {
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack associateBranchValidationStamp(int branchId, int validationStampId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.DASHBOARD_SETUP);
         return dashboardDao.associateBranchValidationStamp(branchId, validationStampId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack dissociateBranchValidationStamp(int branchId, int validationStampId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.DASHBOARD_SETUP);
         return dashboardDao.dissociateBranchValidationStamp(branchId, validationStampId);
     }
 }

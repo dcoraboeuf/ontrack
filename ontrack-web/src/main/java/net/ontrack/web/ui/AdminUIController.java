@@ -1,7 +1,7 @@
 package net.ontrack.web.ui;
 
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.core.ui.AdminUI;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.service.AccountService;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,85 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
         this.extensionManager = extensionManager;
         this.entityConverter = entityConverter;
         this.securityUtils = securityUtils;
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global/fn", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GlobalFunction> getGlobalFunctions() {
+        return Arrays.asList(GlobalFunction.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GlobalACLSummary> getGlobalACL() {
+        return accountService.getGlobalACL();
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global/{account:\\d+}/{fn:[A-Z_]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
+        return accountService.setGlobalACL(account, fn);
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/global/{account:\\d+}/{fn:[A-Z_]+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack unsetGlobalACL(@PathVariable int account, @PathVariable GlobalFunction fn) {
+        return accountService.unsetGlobalACL(account, fn);
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/role", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectRole> getProjectRoles() {
+        return Arrays.asList(ProjectRole.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/fn", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectFunction> getProjectFunctions() {
+        return Arrays.asList(ProjectFunction.values());
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}/{account:\\d+}/{role:[A-Z_]+}", method = RequestMethod.PUT)
+    public
+    @ResponseBody
+    Ack setProjectACL(@PathVariable String project, @PathVariable int account, @PathVariable ProjectRole role) {
+        return accountService.setProjectACL(
+                entityConverter.getProjectId(project),
+                account,
+                role
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}/{account:\\d+}", method = RequestMethod.DELETE)
+    public
+    @ResponseBody
+    Ack unsetProjectACL(@PathVariable String project, @PathVariable int account) {
+        return accountService.unsetProjectACL(
+                entityConverter.getProjectId(project),
+                account
+        );
+    }
+
+    @Override
+    @RequestMapping(value = "/acl/project/{project:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<ProjectAuthorization> getProjectACLList(@PathVariable String project) {
+        return accountService.getProjectACLList(entityConverter.getProjectId(project));
     }
 
     /**
@@ -228,6 +308,14 @@ public class AdminUIController extends AbstractUIController implements AdminUI {
     @ResponseBody
     Ack disableExtension(@PathVariable String name) {
         return extensionManager.disableExtension(name);
+    }
+
+    @Override
+    @RequestMapping(value = "/account/lookup/{query:[a-zA-Z0-9\\-_]*}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<AccountSummary> accountLookup(@PathVariable String query) {
+        return accountService.accountLookup(query);
     }
 
 

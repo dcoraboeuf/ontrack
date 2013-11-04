@@ -2,7 +2,8 @@ package net.ontrack.backend.security;
 
 import net.ontrack.core.model.Account;
 import net.ontrack.core.model.Signature;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -58,46 +59,9 @@ public class SecurityUtilsImpl implements SecurityUtils {
     }
 
     @Override
-    public boolean isAdmin() {
-        Account account = getCurrentAccount();
-        return account != null && SecurityRoles.ADMINISTRATOR.equals(account.getRoleName());
-    }
-
-    @Override
-    public boolean isController() {
-        return hasRole(SecurityRoles.CONTROLLER);
-    }
-
-    @Override
-    public void checkIsAdmin() {
-        if (!isAdmin()) {
-            throw new AccessDeniedException("Administrator right is required");
-        }
-    }
-
-    @Override
     public void checkIsLogged() {
         if (!isLogged()) {
             throw new AccessDeniedException("Authentication is required");
-        }
-    }
-
-    @Override
-    public boolean hasRole(String role) {
-        Account account = getCurrentAccount();
-        if (account != null) {
-            switch (account.getRoleName()) {
-                case SecurityRoles.ADMINISTRATOR:
-                    return true;
-                case SecurityRoles.CONTROLLER:
-                    return SecurityRoles.CONTROLLER.equals(role) || SecurityRoles.USER.equals(role);
-                case SecurityRoles.USER:
-                    return SecurityRoles.USER.equals(role);
-                default:
-                    return false;
-            }
-        } else {
-            return false;
         }
     }
 
@@ -141,5 +105,31 @@ public class SecurityUtilsImpl implements SecurityUtils {
                 }
             }
         };
+    }
+
+    @Override
+    public void checkGrant(GlobalFunction fn) {
+        if (!isGranted(fn)) {
+            throw new AccessDeniedException("Grant to " + fn + " is required");
+        }
+    }
+
+    @Override
+    public void checkGrant(ProjectFunction fn, int project) {
+        if (!isGranted(fn, project)) {
+            throw new AccessDeniedException("Grant to " + fn + " is required for project " + project);
+        }
+    }
+
+    @Override
+    public boolean isGranted(GlobalFunction fn) {
+        Account account = getCurrentAccount();
+        return account != null && account.isGranted(fn);
+    }
+
+    @Override
+    public boolean isGranted(ProjectFunction fn, int project) {
+        Account account = getCurrentAccount();
+        return account != null && account.isGranted(fn, project);
     }
 }

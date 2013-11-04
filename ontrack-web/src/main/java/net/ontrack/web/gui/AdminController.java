@@ -6,6 +6,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.configuration.ConfigurationExtension;
@@ -118,7 +119,7 @@ public class AdminController extends AbstractGUIController {
     @RequestMapping(value = "/allSubscriptions", method = RequestMethod.GET)
     public String allSubscriptions(Locale locale, Model model) {
         // Checks the user is an administrator
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.SUBSCRIPTIONS_MANAGEMENT);
         // Gets all the subscriptions
         model.addAttribute("subscriptions", subscriptionService.getAllSubscriptions(locale));
         // OK
@@ -200,7 +201,7 @@ public class AdminController extends AbstractGUIController {
     public String settings(final Locale locale,
                            Model model) {
         // Authorization
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         // Gets the LDAP configuration
         LDAPConfiguration configuration = adminService.getLDAPConfiguration();
         model.addAttribute("ldap", configuration);
@@ -334,11 +335,20 @@ public class AdminController extends AbstractGUIController {
     }
 
     /**
+     * ACL management
+     */
+    @RequestMapping(value = "/acl", method = RequestMethod.GET)
+    public String acl() {
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
+        return "acl-global";
+    }
+
+    /**
      * Request for the update of an account
      */
     @RequestMapping(value = "/accounts/{id:\\d+}/update", method = RequestMethod.GET)
     public String accountUpdate(Model model, @PathVariable int id) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
         model.addAttribute("account", accountService.getAccount(id));
         return "accountUpdate";
     }
@@ -348,7 +358,7 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/accounts/{id:\\d+}/delete", method = RequestMethod.GET)
     public String accountDelete(Model model, @PathVariable int id) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
         model.addAttribute("account", accountService.getAccount(id));
         return "accountDelete";
     }
@@ -358,13 +368,15 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/accounts/{id:\\d+}/delete", method = RequestMethod.POST)
     public String accountDelete(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
         accountService.deleteAccount(id);
         redirectAttributes.addFlashAttribute("message", UserMessage.success("account.deleted"));
         return "redirect:/gui/admin/accounts";
     }
+
     @RequestMapping(value = "/accounts/{id:\\d+}/passwordReset", method = RequestMethod.GET)
     public String passwordReset(Model model, @PathVariable int id) {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.ACCOUNT_MANAGEMENT);
         model.addAttribute("account", accountService.getAccount(id));
         return "accountPasswordReset";
     }
@@ -372,7 +384,6 @@ public class AdminController extends AbstractGUIController {
     /**
      * Request to reset the password of an account
      */
-
 
     /**
      * Unsubscription query
@@ -421,7 +432,7 @@ public class AdminController extends AbstractGUIController {
      */
     @RequestMapping(value = "/extensions", method = RequestMethod.GET)
     public String extensions() {
-        securityUtils.checkIsAdmin();
+        securityUtils.checkGrant(GlobalFunction.EXTENSIONS);
         return "extensions";
     }
 

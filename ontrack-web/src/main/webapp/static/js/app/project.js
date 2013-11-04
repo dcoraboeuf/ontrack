@@ -1,4 +1,4 @@
-define(['application','dialog','ajax','jquery'], function(application, dialog, ajax, $) {
+define(['application', 'dialog', 'ajax', 'jquery'], function (application, dialog, ajax, $) {
 
     var project = $('#project').val();
 
@@ -6,9 +6,13 @@ define(['application','dialog','ajax','jquery'], function(application, dialog, a
      * Deletion the project
      */
     function deleteProject() {
-        application.deleteEntity('project', project, function () {
-            ''.goto();
-        });
+        application.deleteDialog({
+            message: 'project.delete.prompt'.loc(project),
+            url: 'ui/manage/project/{0}'.format(project),
+            successFn: function () {
+                ''.goto();
+            }
+        })
     }
 
     /**

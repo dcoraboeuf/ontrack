@@ -3,7 +3,7 @@ package net.ontrack.web.support.fm;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.action.ActionExtension;
 import net.sf.jstring.Strings;
@@ -14,8 +14,8 @@ import java.util.List;
 
 public class FnExtensionDiffActions extends AbstractFnExtensionActions {
 
-    public FnExtensionDiffActions(Strings strings, ExtensionManager extensionManager, SecurityUtils securityUtils) {
-        super(strings, extensionManager, securityUtils);
+    public FnExtensionDiffActions(Strings strings, ExtensionManager extensionManager, AuthorizationUtils authorizationUtils) {
+        super(strings, extensionManager, authorizationUtils);
     }
 
     @Override

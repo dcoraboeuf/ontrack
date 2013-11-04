@@ -1,10 +1,11 @@
 package net.ontrack.client.support;
 
 import net.ontrack.client.AdminUIClient;
-import net.ontrack.core.model.Account;
-import net.ontrack.core.model.AccountCreationForm;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.ID;
+import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectAuthorization;
+import net.ontrack.core.security.ProjectFunction;
+import net.ontrack.core.security.ProjectRole;
 
 import java.util.List;
 
@@ -14,6 +15,89 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
 
     public DefaultAdminUIClient(String url) {
         super(url);
+    }
+
+    @Override
+    public List<GlobalFunction> getGlobalFunctions() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global/fn"),
+                GlobalFunction.class
+        );
+    }
+
+    @Override
+    public List<GlobalACLSummary> getGlobalACL() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global"),
+                GlobalACLSummary.class
+        );
+    }
+
+    @Override
+    public Ack setGlobalACL(int account, GlobalFunction fn) {
+        return put(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global/%d/%s", account, fn),
+                Ack.class,
+                null
+        );
+    }
+
+    @Override
+    public Ack unsetGlobalACL(int account, GlobalFunction fn) {
+        return delete(
+                getDefaultLocale(),
+                format("/ui/admin/acl/global/%d/%s", account, fn),
+                Ack.class
+        );
+    }
+
+    @Override
+    public List<ProjectRole> getProjectRoles() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/project/role"),
+                ProjectRole.class
+        );
+    }
+
+    @Override
+    public List<ProjectFunction> getProjectFunctions() {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/project/fn"),
+                ProjectFunction.class
+        );
+    }
+
+    @Override
+    public Ack setProjectACL(String project, int account, ProjectRole role) {
+        return put(
+                getDefaultLocale(),
+                format("/ui/admin/acl/project/%s/%d/%s", project, account, role),
+                Ack.class,
+                null
+        );
+    }
+
+    @Override
+    public Ack unsetProjectACL(String project, int account) {
+        return delete(
+                getDefaultLocale(),
+                format("/ui/admin/acl/project/%s/%d", project, account),
+                Ack.class
+        );
+    }
+
+    @Override
+    public List<ProjectAuthorization> getProjectACLList(String project) {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/acl/project/%s", project),
+                ProjectAuthorization.class
+        );
     }
 
     @Override
@@ -69,6 +153,15 @@ public class DefaultAdminUIClient extends AbstractClient implements AdminUIClien
                 getDefaultLocale(),
                 format("/ui/admin/extensions/%s", name),
                 Ack.class
+        );
+    }
+
+    @Override
+    public List<AccountSummary> accountLookup(String query) {
+        return list(
+                getDefaultLocale(),
+                format("/ui/admin/account/lookup/%s", query),
+                AccountSummary.class
         );
     }
 }

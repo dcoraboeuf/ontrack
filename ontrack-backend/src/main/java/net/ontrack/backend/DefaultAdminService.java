@@ -1,7 +1,8 @@
 package net.ontrack.backend;
 
 import net.ontrack.backend.cache.Caches;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.GlobalGrant;
 import net.ontrack.service.AdminService;
 import net.ontrack.service.model.GeneralConfiguration;
 import net.ontrack.service.model.LDAPConfiguration;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,8 +79,8 @@ public class DefaultAdminService implements AdminService {
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.SETTINGS)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @CacheEvict(value = Caches.CONFIGURATION, key = "'general'")
     public void saveGeneralConfiguration(GeneralConfiguration configuration) {
         String baseUrl = configuration.getBaseUrl();
@@ -91,8 +91,8 @@ public class DefaultAdminService implements AdminService {
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.SETTINGS)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "'ldap'"),
             @CacheEvict(value = Caches.LDAP, key = "'0'")
@@ -115,8 +115,8 @@ public class DefaultAdminService implements AdminService {
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.SETTINGS)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     @Caching(evict = {
             @CacheEvict(value = Caches.CONFIGURATION, key = "'mail'"),
             @CacheEvict(value = Caches.MAIL, key = "'0'")

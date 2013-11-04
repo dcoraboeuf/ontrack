@@ -2,7 +2,8 @@ package net.ontrack.extension.git;
 
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.extension.api.action.EntityActionExtension;
@@ -47,7 +48,9 @@ public class GitImportBuildsAction extends AbstractGUIController implements Enti
 
     @RequestMapping(value = "/{projectName:[A-Za-z0-9_\\.\\-]+}/{branchName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public String importBuildsConfig(Locale locale, @PathVariable String projectName, @PathVariable String branchName, Model model) {
-        securityUtils.checkIsAdmin();
+        // Project access
+        securityUtils.checkGrant(ProjectFunction.BRANCH_CREATE, entityConverter.getProjectId(projectName));
+        // Model
         model.addAttribute("branch", manageUI.getBranch(projectName, branchName));
         // OK
         return "extension/git/import-builds";
@@ -55,7 +58,8 @@ public class GitImportBuildsAction extends AbstractGUIController implements Enti
 
     @RequestMapping(value = "/{projectName:[A-Za-z0-9_\\.\\-]+}/{branchName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.POST)
     public String importBuilds(@PathVariable String projectName, @PathVariable String branchName, GitImportBuildsForm form) {
-        securityUtils.checkIsAdmin();
+        // Project access
+        securityUtils.checkGrant(ProjectFunction.BRANCH_CREATE, entityConverter.getProjectId(projectName));
         // Import of the builds
         gitService.importBuilds(entityConverter.getBranchId(projectName, branchName), form);
         // OK
@@ -78,8 +82,8 @@ public class GitImportBuildsAction extends AbstractGUIController implements Enti
     }
 
     @Override
-    public String getRole(BranchSummary summary) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getAuthorizationPolicy(BranchSummary summary) {
+        return AuthorizationPolicy.forProject(ProjectFunction.BUILD_CREATE);
     }
 
     @Override

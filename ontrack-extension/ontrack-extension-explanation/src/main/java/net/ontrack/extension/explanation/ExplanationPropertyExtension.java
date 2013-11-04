@@ -1,7 +1,7 @@
 package net.ontrack.extension.explanation;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -45,8 +45,8 @@ public class ExplanationPropertyExtension extends AbstractPropertyExtensionDescr
     }
 
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.USER;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.LOGGED;
     }
 
     @Override

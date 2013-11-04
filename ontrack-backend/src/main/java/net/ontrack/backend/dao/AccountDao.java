@@ -32,4 +32,6 @@ public interface AccountDao {
     Ack resetPassword(int id, String password);
 
     Ack changeLanguage(int accountId, Locale lang);
+
+    List<TAccount> findByQuery(String query);
 }

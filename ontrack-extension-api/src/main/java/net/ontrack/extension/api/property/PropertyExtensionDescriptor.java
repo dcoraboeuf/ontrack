@@ -1,6 +1,7 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 
@@ -63,16 +64,14 @@ public interface PropertyExtensionDescriptor {
      * associated entity.
      *
      * @param entity Entity where to edit the property
-     * @return Role needed to edit this property; <code>null</code> when
-     *         not editable at all.
-     * @see net.ontrack.core.security.SecurityRoles
+     * @return Authorization policy for this entity
      */
-    String getRoleForEdition(Entity entity);
+    AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity);
 
     /**
-     * Can this property be viewed by anybody?
+     * Defines the authorization policy for viewing this property.
      */
-    String getRoleForView(Entity entity);
+    AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity);
 
     /**
      * Gets the HTML fragment that allows for the edition of this value.

@@ -11,4 +11,6 @@ public interface EntityDao {
     Integer getParentEntityId(Entity parentEntity, Entity entity, int entityId);
 
     String getEntityName(Entity entity, int entityId);
+
+    Integer parentLookup(Entity project, Entity entity, int entityId);
 }

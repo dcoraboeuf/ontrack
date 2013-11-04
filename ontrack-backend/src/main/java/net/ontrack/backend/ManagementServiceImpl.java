@@ -10,8 +10,7 @@ import net.ontrack.backend.dao.*;
 import net.ontrack.backend.dao.model.*;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.core.support.MapBuilder;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
@@ -25,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +45,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     public static final int MAX_EVENTS_IN_BUILD_VALIDATION_STAMP_RUN = 10;
     // TODO Split the service in different parts
     private final SecurityUtils securityUtils;
+    private final AuthorizationUtils authorizationUtils;
     private final Strings strings;
     private final AccountDao accountDao;
     private final ProjectDao projectDao;
@@ -135,6 +134,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             ValidatorService validatorService,
             EventService auditService,
             SecurityUtils securityUtils,
+            AuthorizationUtils authorizationUtils,
             Strings strings,
             AccountDao accountDao,
             ProjectDao projectDao,
@@ -155,6 +155,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     ) {
         super(validatorService, auditService);
         this.securityUtils = securityUtils;
+        this.authorizationUtils = authorizationUtils;
         this.strings = strings;
         this.accountDao = accountDao;
         this.projectDao = projectDao;
@@ -203,8 +204,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @GlobalGrant(GlobalFunction.PROJECT_CREATE)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ProjectSummary createProject(ProjectCreationForm form) {
         // Validation
         validate(form, NameDescription.class);
@@ -217,9 +218,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.PROJECT_MODIFY)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public ProjectSummary updateProject(int id, ProjectUpdateForm form) {
+    public ProjectSummary updateProject(@ProjectGrantId int id, ProjectUpdateForm form) {
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -233,9 +234,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.PROMOTION_LEVEL_MGT)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack updateProjectValidationStamps(int projectId, ProjectValidationStampMgt form) {
+    public Ack updateProjectValidationStamps(@ProjectGrantId int projectId, ProjectValidationStampMgt form) {
         // Gets the branch by name
         Map<Entity, Integer> projectIdMap = Collections.singletonMap(Entity.PROJECT, projectId);
         int branch1id = entityDao.getEntityId(Entity.BRANCH, form.getBranch1(), projectIdMap);
@@ -262,9 +263,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     // Validation stamps
 
     @Override
+    @ProjectGrant(ProjectFunction.PROJECT_DELETE)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public Ack deleteProject(int id) {
+    public Ack deleteProject(@ProjectGrantId int id) {
         String name = getEntityName(Entity.PROJECT, id);
         Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
@@ -323,9 +324,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     }
 
     @Override
+    @ProjectGrant(ProjectFunction.BRANCH_CREATE)
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
-    public BranchSummary createBranch(int project, BranchCreationForm form) {
+    public BranchSummary createBranch(@ProjectGrantId int project, BranchCreationForm form) {
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -342,8 +343,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBranch(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BRANCH_DELETE);
         BranchSummary branch = getBranch(branchId);
         Ack ack = branchDao.deleteBranch(branchId);
         if (ack.isSuccess()) {
@@ -356,8 +357,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary updateBranch(int branch, BranchUpdateForm form) {
+        authorizationUtils.checkBranch(branch, ProjectFunction.BRANCH_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Loads existing branch
@@ -376,8 +377,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BranchSummary cloneBranch(int branchId, BranchCloneForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BRANCH_CLONE);
         // Validation
         validate(form, NameDescription.class);
         // Gets the original branch
@@ -489,8 +490,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BuildCleanup getBuildCleanup(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CLEANUP_CONFIG);
         // List of promotion levels
         List<PromotionLevelSummary> promotionLevelList = getPromotionLevelList(branchId);
         // No exclusion by default
@@ -526,8 +527,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack setBuildCleanup(int branchId, BuildCleanupForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CLEANUP_CONFIG);
         if (form.getRetention() <= 0) {
             return buildCleanupDao.removeBuildCleanUp(branchId);
         } else {
@@ -642,8 +643,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ValidationStampSummary createValidationStamp(int branch, ValidationStampCreationForm form) {
+        authorizationUtils.checkBranch(branch, ProjectFunction.VALIDATION_STAMP_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -661,8 +662,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public ValidationStampSummary updateValidationStamp(int validationStampId, ValidationStampUpdateForm form) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Existing value
@@ -680,8 +681,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_DELETE);
         ValidationStampSummary validationStamp = getValidationStamp(validationStampId);
         Ack ack = validationStampDao.deleteValidationStamp(validationStampId);
         if (ack.isSuccess()) {
@@ -695,43 +696,43 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack upValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.upValidationStamp(validationStampId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack downValidationStamp(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.downValidationStamp(validationStampId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack moveValidationStamp(int validationStampId, int newIndex) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.moveValidationStamp(validationStampId, newIndex);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack setValidationStampOwner(int validationStampId, int ownerId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.setValidationStampOwner(validationStampId, ownerId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unsetValidationStampOwner(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return validationStampDao.setValidationStampOwner(validationStampId, null);
     }
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public Ack addValidationStampComment(int validationStampId, ValidationStampCommentForm form) {
+        securityUtils.checkIsLogged();
         // Comment
         CommentStub comment = createComment(Entity.VALIDATION_STAMP, validationStampId, form.getComment());
         // Registers an event for this comment
@@ -772,8 +773,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imageValidationStamp(final int validationStampId, MultipartFile image) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.VALIDATION_STAMP_MODIFY);
         return setImage(
                 image,
                 SQL.VALIDATION_STAMP_IMAGE_MAXSIZE,
@@ -810,8 +811,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelSummary createPromotionLevel(int branchId, PromotionLevelCreationForm form) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.PROMOTION_LEVEL_CREATE);
         // Validation
         validate(form, NameDescription.class);
         // Query
@@ -833,8 +834,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelSummary updatePromotionLevel(int promotionLevelId, PromotionLevelUpdateForm form) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Existing value
@@ -852,8 +853,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deletePromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_DELETE);
         PromotionLevelSummary promotionLevel = getPromotionLevel(promotionLevelId);
         Ack ack = promotionLevelDao.deletePromotionLevel(promotionLevelId);
         if (ack.isSuccess()) {
@@ -867,8 +868,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack linkValidationStampToPromotionLevel(int validationStampId, int promotionLevelId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.PROMOTION_LEVEL_MGT);
         Ack ack = validationStampDao.linkValidationStampToPromotionLevel(validationStampId, promotionLevelId);
         if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_LINKED);
@@ -883,8 +884,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack unlinkValidationStampToPromotionLevel(int validationStampId) {
+        authorizationUtils.checkValidationStamp(validationStampId, ProjectFunction.PROMOTION_LEVEL_MGT);
         Ack ack = validationStampDao.unlinkValidationStampToPromotionLevel(validationStampId);
         if (ack.isSuccess()) {
             Event event = Event.of(EventType.VALIDATION_STAMP_UNLINKED);
@@ -898,22 +899,22 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack upPromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         return promotionLevelDao.upPromotionLevel(promotionLevelId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack downPromotionLevel(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         return promotionLevelDao.downPromotionLevel(promotionLevelId);
     }
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack imagePromotionLevel(final int promotionLevelId, MultipartFile image) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MODIFY);
         return setImage(
                 image,
                 SQL.PROMOTION_LEVEL_IMAGE_MAXSIZE,
@@ -933,8 +934,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional(readOnly = true)
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public PromotionLevelManagementData getPromotionLevelManagementData(int branchId) {
+        authorizationUtils.checkBranch(branchId, ProjectFunction.PROMOTION_LEVEL_MGT);
         // Gets the branch
         BranchSummary branch = getBranch(branchId);
         // List of validation stamps for this branch, without any promotion level
@@ -955,8 +956,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Flag setPromotionLevelAutoPromote(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         // Auto promotion can be enabled only if the promotion level is associated to at least one validation stamp
         List<TValidationStamp> stamps = validationStampDao.findByPromotionLevel(promotionLevelId);
         if (stamps.isEmpty()) {
@@ -969,8 +970,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Flag unsetPromotionLevelAutoPromote(int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_MGT);
         promotionLevelDao.setAutoPromote(promotionLevelId, false);
         return Flag.UNSET;
     }
@@ -1170,8 +1171,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteBuild(int buildId) {
+        authorizationUtils.checkBuild(buildId, ProjectFunction.BUILD_DELETE);
         BuildSummary build = getBuild(buildId);
         Ack ack = buildDao.delete(buildId);
         if (ack.isSuccess()) {
@@ -1188,8 +1189,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public BuildSummary updateBuild(int buildId, BranchUpdateForm form) {
+        authorizationUtils.checkBuild(buildId, ProjectFunction.BUILD_MODIFY);
         // Validation
         validate(form, NameDescription.class);
         // Loads existing build
@@ -1360,8 +1361,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack deleteValidationRun(int validationRunId) {
+        authorizationUtils.checkValidationRun(validationRunId, ProjectFunction.VALIDATION_RUN_DELETE);
         ValidationRunSummary run = getValidationRun(validationRunId);
         Ack ack = validationRunDao.deleteById(validationRunId);
         if (ack.isSuccess()) {
@@ -1402,8 +1403,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public Ack addValidationRunComment(int runId, ValidationRunCommentCreationForm form) {
+        securityUtils.checkIsLogged();
         // Properties
         List<PropertyCreationForm> properties = form.getProperties();
         if (properties != null) {
@@ -1444,8 +1445,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public ValidationRunStatusSummary createValidationRunStatus(int validationRun, ValidationRunStatusCreationForm validationRunStatus, boolean initialStatus) {
+        securityUtils.checkIsLogged();
         // Author
         Signature signature = securityUtils.getCurrentSignature();
         // Creation
@@ -1530,8 +1531,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack removePromotedRun(int buildId, int promotionLevelId) {
+        authorizationUtils.checkPromotionLevel(promotionLevelId, ProjectFunction.PROMOTION_LEVEL_DELETE);
         Ack ack = promotedRunDao.remove(buildId, promotionLevelId);
         if (ack.isSuccess()) {
             event(
@@ -1635,8 +1636,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
     @Override
     @Transactional
-    @Secured({SecurityRoles.USER, SecurityRoles.CONTROLLER, SecurityRoles.ADMINISTRATOR})
     public CommentStub createComment(Entity entity, int id, String content) {
+        securityUtils.checkIsLogged();
         // Does not do anything if empty content
         if (StringUtils.isBlank(content)) {
             return null;

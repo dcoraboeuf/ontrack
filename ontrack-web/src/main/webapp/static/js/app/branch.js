@@ -5,9 +5,13 @@ define(['application', 'jquery', 'dialog', 'ajax', 'dynamic', 'app/component/pro
 
     // Delete the branch
     function deleteBranch() {
-        application.deleteEntity('project/{0}/branch'.format(project), branch, function () {
-            'gui/project/{0}'.format(project).goto();
-        });
+        application.deleteDialog({
+            message: 'branch.delete.prompt'.loc(branch, project),
+            url: 'ui/manage/project/{0}/branch/{1}'.format(project, branch),
+            successFn: function () {
+                'gui/project/{0}'.format(project).goto();
+            }
+        })
     }
 
     // Updating the branch

@@ -6,7 +6,8 @@ import com.google.common.collect.Maps;
 import net.ontrack.backend.dao.ConfigurationDao;
 import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.Extension;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.ExtensionNotFoundException;
@@ -24,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +39,7 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private final ApplicationContext applicationContext;
     private final Strings strings;
     private final ConfigurationDao configurationDao;
+    private final SecurityUtils securityUtils;
     private Map<String, Extension> extensionIndex;
     private Map<String, Map<String, PropertyExtensionDescriptor>> propertyIndex;
     private Map<String, Map<String, ConfigurationExtension>> configurationIndex;
@@ -47,10 +48,11 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     private Collection<EntityDecorator> decorators;
 
     @Autowired
-    public DefaultExtensionManager(ApplicationContext applicationContext, Strings strings, ConfigurationDao configurationDao) {
+    public DefaultExtensionManager(ApplicationContext applicationContext, Strings strings, ConfigurationDao configurationDao, SecurityUtils securityUtils) {
         this.applicationContext = applicationContext;
         this.strings = strings;
         this.configurationDao = configurationDao;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -191,8 +193,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
      * Enabling an extension must enable all its dependencies
      */
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack enableExtension(String name) {
+        securityUtils.checkGrant(GlobalFunction.EXTENSIONS);
         // Gets the map of extensions
         TreeMap<String, ExtensionNode> extensionTreeMap = getExtensionTreeMap();
         // Set of extensions to enable
@@ -225,8 +227,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
      * Disabling an extension must disable all extensions that depend on it.
      */
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public Ack disableExtension(String name) {
+        securityUtils.checkGrant(GlobalFunction.EXTENSIONS);
         // Gets the tree of dependencies
         TreeMap<String, ExtensionNode> extensionTreeMap = getExtensionTreeMap();
         // Set of extensions to disable
@@ -256,8 +258,8 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
     }
 
     @Override
-    @Secured(SecurityRoles.ADMINISTRATOR)
     public List<ExtensionSummary> getExtensionTree(final Locale locale) {
+        securityUtils.checkGrant(GlobalFunction.EXTENSIONS);
         TreeMap<String, ExtensionNode> extensionIndex = getExtensionTreeMap();
         return Lists.transform(
                 Lists.newArrayList(extensionIndex.values()),

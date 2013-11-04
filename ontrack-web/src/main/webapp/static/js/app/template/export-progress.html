@@ -1,11 +1,12 @@
 <div class="row-fluid">
     <div class="span12">
-        <div id="project-export-loading" class="loading description">
+        <div id="project-export-loading" class="alert">
+            <a class="close" name="project-export-loading-indicator"><img src="{{static 'images/ajax-loader.gif'}}"/></a>
             {{loc 'project.export.message'}}
         </div>
         <div id="project-export-error" class="alert alert-error hidden">
         </div>
-        <div id="project-export-ready" class="hidden">
+        <div id="project-export-ready" class="hidden alert alert-success">
             <a id="project-export-link"><i class="icon-download"></i> {{loc 'export.finished'}}</a>
         </div>
     </div>

@@ -1,7 +1,7 @@
 package net.ontrack.extension.svn;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.sf.jstring.Strings;
@@ -62,7 +62,7 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
     }
 
     @Override
-    public String getRoleForEdition(Entity entity) {
-        return SecurityRoles.ADMINISTRATOR;
+    public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
+        return AuthorizationPolicy.PROJECT_CONFIG;
     }
 }

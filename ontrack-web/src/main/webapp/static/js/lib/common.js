@@ -24,11 +24,11 @@ define(function () {
         return text.replace(/\n/g, '<br/>');
     };
 
-    String.prototype.loc = function (args) {
+    String.prototype.loc = function (a0, a1, a2, a3, a4) {
         var code = this;
         var text = l[code];
         if (text != null) {
-            return text.format(args);
+            return text.format(a0, a1, a2, a3, a4);
         } else {
             return "##" + code + "##";
         }
@@ -57,6 +57,18 @@ define(function () {
     function log(context) {
         return function (message, args) {
             if (logging && console) {
+                if (args) {
+                    console.log('[{1}] {0}'.format(message, context), args);
+                } else {
+                    console.log('[{1}] {0}'.format(message, context));
+                }
+            }
+        }
+    }
+
+    function error(context) {
+        return function (message, args) {
+            if (console) {
                 if (args) {
                     console.log('[{1}] {0}'.format(message, context), args);
                 } else {
@@ -232,9 +244,20 @@ define(function () {
         return map;
     }
 
+    function staticPathTo(relativePath) {
+        // 'staticPath' variable is declared in 'layout.html'
+        if (staticPath) {
+            return '{0}/{1}'.format(staticPath, relativePath);
+        } else {
+            common.log('application')('Cannot find "staticPath" variable.');
+            return 'static/{0}'.format(relativePath);
+        }
+    }
 
     return {
         log: log,
+        error: error,
+        staticPathTo: staticPathTo,
         confirmAndCall: confirmAndCall,
         showError: showError,
         getCookie: getCookie,

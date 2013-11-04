@@ -2,52 +2,39 @@
 
 <@layout_std page="project" title=project.name modules=["audit","properties"] breadcrumbs = {loc("home"): ""}>
     <input id="project" type="hidden" value="${project.name?html}" />
-	<div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12 page-title">
-                <span class="title">${project.name?html}</span>
-                <span class="action action-optional">
-                    <#list extensionProjectActions(project.name) as projectAction>
-                        <a href="${projectAction.url?html}" class="<#if projectAction.css??>${projectAction.css?html}</#if>">
-                            <#if projectAction.icon??>
-                                <i class="${projectAction.icon?html}"></i>
-                            </#if>
-                            ${projectAction.title?html}
-                        </a>
-                    </#list>
-                    <#if secAdmin()>
-                        <span id="command-project-update"><i class="icon-pencil"></i> <@lh key="general.modify" /></span>
-                        <span id="command-project-delete"><i class="icon-trash"></i> <@lh key="general.delete" /></span>
-                        <a id="command-project-validation-stamp-mgt" href="gui/project/${project.name?html}/validation-stamp-mgt"><i class="icon-wrench"></i> <@lh key="validation_stamp.mgt" /></a>
-                        <a id="command-project-export" href="gui/project/${project.name?html}/export"><i class="icon-download"></i> <@lh key="project.export" /></a>
-                    </#if>
-                    <a href="dashboard/project/${project.name?html}">
-                        <i class="icon-eye-open"></i>
-                        <@lh key="dashboard"/>
-                    </a>
-                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
-                </span>
-            </div>
+    <@title value=project.name>
+        <#list extensionProjectActions(project.name) as projectAction>
+            <@title_command id=projectAction.title title=projectAction.title class=projectAction.icon link=projectAction.url />
+        </#list>
+        <@title_command id="command-project-update" title=loc('general.modify') class="icon-pencil" enabled=secProject(project.id, 'PROJECT_MODIFY') />
+        <@title_command id="command-project-delete" title=loc('general.delete') class="icon-trash" enabled=secProject(project.id, 'PROJECT_DELETE') />
+        <@title_command id="command-project-acl" title=loc('acl') class="icon-key" link="gui/project/${project.name?html}/acl" enabled=secProject(project.id, 'ACL') />
+        <@title_command id="command-project-validation-stamp-mgt" title=loc('validation_stamp.mgt') class="icon-wrench" link="gui/project/${project.name?html}/validation-stamp-mgt" enabled=secProject(project.id, 'PROMOTION_LEVEL_MGT') />
+        <@title_command id="command-project-export" title=loc('project.export') class="icon-download" link="gui/project/${project.name?html}/export" enabled=secGlobal('PROJECT_EXPORT') />
+        <@title_command id="command-dashboard" title=loc('dashboard') class="icon-eye-open" link="dashboard/project/${project.name?html}" />
+    </@title>
+    <div class="row-fluid">
+        <div class="span12">
             <div class="muted span12 properties">${project.description?html}</div>
             <div class="span12 properties">
                 <@properties entity="PROJECT" entityId=project.id />
             </div>
         </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <section>
-                    <h4><@lh key="project.branches" /></h4>
-                    <div id="branches" class="dynamic" dynamic-controller="branch-list" dynamic-project="${project.name?html}"></div>
-                    <#if secAdmin()>
-                        <button id="branch-create-button" type="button" class="btn"><@lh key="branch.create" /></button>
-                    </#if>
-                </section>
-            </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <section>
+                <h4><@lh key="project.branches" /></h4>
+                <div id="branches" class="dynamic" dynamic-controller="branch-list" dynamic-project="${project.name?html}"></div>
+                <#if secProject(project.id, 'BRANCH_CREATE')>
+                    <button id="branch-create-button" type="button" class="btn"><@lh key="branch.create" /></button>
+                </#if>
+            </section>
         </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <@audit filter="&project=${project.id?c}" />
-            </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <@audit filter="&project=${project.id?c}" />
         </div>
-	</div>
+    </div>
 </@layout_std>

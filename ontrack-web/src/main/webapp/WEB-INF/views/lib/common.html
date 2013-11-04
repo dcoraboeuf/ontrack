@@ -86,3 +86,78 @@
         <img src="${value.iconPath}" title="${value.title?html}" class="tooltip-source" />
     </#if>
 </#macro>
+
+<#macro title value description="" close="" image="">
+    <#assign commands = [] />
+    <#assign decorations = "" />
+    <#assign tools = "" />
+    <#assign uplinks = [] />
+    <#assign content><#nested/></#assign>
+    <div class="row-fluid">
+        <div class="span12 page-title">
+            <span class="title">
+                <#list uplinks as uplink>
+                    <#if uplink.image != "">
+                        <img class="icon" src="${uplink.image?html}" />
+                    </#if>
+                    <a href="${uplink.href}">${uplink.name?html}</a>
+                    /
+                </#list>
+                <#if image != "">
+                    <img class="icon" src="${image}" />
+                </#if>
+                ${value?html}
+                ${decorations}
+            </span>
+            <span class="action action-optional">
+                <#list commands as command>
+                    <#if command.link != "">
+                        <a id="${command.id?html}" href="${command.link?html}">
+                            <i class="${command.class?html}"></i>
+                            ${command.title?html}
+                        </a>
+                        <#else>
+                        <span id="${command.id?html}">
+                            <i class="${command.class?html}"></i>
+                            ${command.title?html}
+                        </span>
+                    </#if>
+                </#list>
+                ${tools}
+                <a href="${close?html}"><i class="icon-remove"></i> <@lh key="general.close" /></a>
+            </span>
+            <#if description != "">
+                <p class="description">
+                    ${description?html}
+                </p>
+            </#if>
+        </div>
+    </div>
+</#macro>
+
+<#macro title_decorations>
+    <#assign decorations><#nested/></#assign>
+</#macro>
+
+<#macro title_tools>
+    <#assign tools><#nested/></#assign>
+</#macro>
+
+<#macro title_command id title class link="" enabled=true>
+    <#if enabled>
+        <#assign commands = commands + [{
+                'id': id,
+                'title': title,
+                'class': class,
+                'link': link
+                }] />
+    </#if>
+</#macro>
+
+<#macro title_uplink name href image="">
+    <#assign uplinks = uplinks + [{
+            'name': name,
+            'href': href,
+            'image': image
+            }] />
+</#macro>
