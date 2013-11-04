@@ -18,14 +18,28 @@ public class RunAsAdminAuthentication extends AbstractAuthenticationToken {
             "runas",
             Locale.ENGLISH
     );
+    private final Account account;
 
-    public RunAsAdminAuthentication() {
+    public RunAsAdminAuthentication(Account account) {
         super(AuthorityUtils.createAuthorityList(SecurityRoles.ADMINISTRATOR));
+        if (account == null) {
+            this.account = RUNAS_ACCOUNT;
+        } else {
+            this.account = new Account(
+                    account.getId(),
+                    account.getName(),
+                    account.getFullName(),
+                    "",
+                    SecurityRoles.ADMINISTRATOR,
+                    "runas",
+                    Locale.ENGLISH
+            );
+        }
     }
 
     @Override
     public Account getDetails() {
-        return RUNAS_ACCOUNT;
+        return account;
     }
 
     @Override

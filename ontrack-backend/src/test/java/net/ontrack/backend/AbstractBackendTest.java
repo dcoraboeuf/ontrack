@@ -5,6 +5,7 @@ import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.service.AccountService;
 import net.ontrack.service.ControlService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.test.AbstractIntegrationTest;
@@ -22,9 +23,10 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     @Autowired
     private ManagementService managementService;
-
     @Autowired
     private ControlService controlService;
+    @Autowired
+    private AccountService accountService;
 
     protected AnonymousCall asAnonymous() {
         return new AnonymousCall();
@@ -44,6 +46,31 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     protected String uid(String prefix) {
         return Helper.uid(prefix);
+    }
+
+    protected Account doCreateAccount() throws Exception {
+        return doCreateAccount(uid("ACC"));
+    }
+
+    protected Account doCreateAccount(final String name) throws Exception {
+        return asAdmin().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        name + " Test",
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "test",
+                                        "test"
+                                )
+                        ).getValue()
+                );
+            }
+        });
     }
 
     protected ProjectSummary doCreateProject() throws Exception {
@@ -95,7 +122,6 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
             }
         });
     }
-
 
     protected BuildSummary doCreateBuild(final int branchId) throws Exception {
         final String buildName = uid("B");

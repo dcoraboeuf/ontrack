@@ -208,10 +208,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
     @Override
     public void importBuilds(final int branchId, final GitImportBuildsForm form) {
         authorizationUtils.checkBranch(branchId, ProjectFunction.BUILD_CREATE);
-        executorImportBuilds.submit(new Runnable() {
-            @Override
-            public void run() {
-                securityUtils.asAdmin(new Callable<Void>() {
+        executorImportBuilds.submit(securityUtils.asAdminTask(
+                new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
                         try {
@@ -221,9 +219,8 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
                         }
                         return null;
                     }
-                });
-            }
-        });
+                })
+        );
     }
 
     @Override

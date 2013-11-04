@@ -21,6 +21,8 @@ public interface SecurityUtils {
 
     <T> Callable<T> withCurrentCredentials(Callable<T> callable);
 
+    <T> Callable<T> asAdminTask(Callable<T> callable);
+
     void checkGrant(GlobalFunction fn);
 
     void checkGrant(ProjectFunction fn, int project);

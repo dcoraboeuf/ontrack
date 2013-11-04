@@ -67,31 +67,27 @@ public class SecurityUtilsImpl implements SecurityUtils {
 
     @Override
     public <T> T asAdmin(Callable<T> call) {
-        // Current context
-        final SecurityContext context = SecurityContextHolder.getContext();
         try {
-            // Creates a temporary admin context
-            SecurityContextImpl adminContext = new SecurityContextImpl();
-            adminContext.setAuthentication(new RunAsAdminAuthentication());
-            SecurityContextHolder.setContext(adminContext);
-            // Runs the call
-            try {
-                return call.call();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception e) {
-                throw new AsAdminCallException(e);
-            }
-        } finally {
-            // Restores the initial context
-            SecurityContextHolder.setContext(context);
+            return asAdminTask(call).call();
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new AsAdminCallException(e);
         }
     }
 
     @Override
-    public <T> Callable<T> withCurrentCredentials(final Callable<T> callable) {
-        // Current context
-        final SecurityContext context = SecurityContextHolder.getContext();
+    public <T> Callable<T> asAdminTask(Callable<T> callable) {
+        // Gets the current account (if any)
+        Account account = getCurrentAccount();
+        // Creates a temporary admin context
+        SecurityContextImpl adminContext = new SecurityContextImpl();
+        adminContext.setAuthentication(new RunAsAdminAuthentication(account));
+        // Returns a callable that sets the context before running the target callable
+        return withSecurityContext(callable, adminContext);
+    }
+
+    protected <T> Callable<T> withSecurityContext(final Callable<T> callable, final SecurityContext context) {
         // Returns a callable that sets the context before running the target callable
         return new Callable<T>() {
             @Override
@@ -105,6 +101,14 @@ public class SecurityUtilsImpl implements SecurityUtils {
                 }
             }
         };
+    }
+
+    @Override
+    public <T> Callable<T> withCurrentCredentials(Callable<T> callable) {
+        // Current context
+        SecurityContext context = SecurityContextHolder.getContext();
+        // Uses it
+        return withSecurityContext(callable, context);
     }
 
     @Override
