@@ -27,11 +27,11 @@
 
 </#macro>
 
-<#macro revision_info_build build merged=false>
+<#macro revision_info_build build merged=0>
     <tr>
         <td>
-            <#if merged>
-                <span class="label label-warning"><@lh key="svnexplorer.issue.merged" /></span>
+            <#if merged != 0>
+                <span class="label label-warning">${ loc("svnexplorer.issue.merged", merged?c) }</span>
             </#if>
         </td>
         <td>
@@ -94,7 +94,7 @@
                         </#list>
                         <#list mergedInfos as mergedInfo>
                             <#list mergedInfo.builds as build>
-                                <@revision_info_build build=build merged=true />
+                                <@revision_info_build build=build merged=mergedInfo.changeLogRevision.revision />
                             </#list>
                         </#list>
                     </tbody>

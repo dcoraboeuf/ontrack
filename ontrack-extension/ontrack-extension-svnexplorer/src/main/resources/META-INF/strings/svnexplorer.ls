@@ -177,8 +177,8 @@ svnexplorer.issue.revisions
     fr -> Révisions associées
 
 svnexplorer.issue.merged
-    en -> Merged
-    fr -> Réintégré
+    en -> Merged at {0}
+    fr -> Réintégré à {0}
 
 [branch-history]
 
