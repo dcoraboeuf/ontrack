@@ -32,6 +32,8 @@
         <td>
             <#if merged != 0>
                 <span class="merged label label-warning"><a href="gui/extension/svnexplorer/revision/${merged?c}">${ loc("svnexplorer.issue.merged", merged?c) }</a></span>
+            <#else>
+                <span class="label label-success"><@lh key="svnexplorer.issue.main" /></span>
             </#if>
         </td>
         <td>

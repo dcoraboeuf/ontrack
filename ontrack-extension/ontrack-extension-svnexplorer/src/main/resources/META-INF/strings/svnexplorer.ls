@@ -176,6 +176,10 @@ svnexplorer.issue.revisions
     en -> Associated revisions
     fr -> Révisions associées
 
+svnexplorer.issue.main
+    en -> Source
+    fr -> Source
+
 svnexplorer.issue.merged
     en -> Merged at {0}
     fr -> Réintégré à {0}
