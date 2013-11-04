@@ -29,4 +29,14 @@
             </tr>
         {{/issues}}
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4">
+                <a href="ui/extension/github/issues/{{uuid}}/text" class="btn">
+                    <i class="icon-download"></i>
+                    {{loc 'github.changelog.issues.astext'}}
+                </a>
+            </td>
+        </tr>
+    </tfoot>
 </table>

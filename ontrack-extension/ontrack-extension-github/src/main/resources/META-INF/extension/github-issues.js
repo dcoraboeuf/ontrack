@@ -1,10 +1,10 @@
 define(['render', 'common'], function (render, common) {
 
-    function display(target, data) {
+    function display(target, data, uuid) {
         render.renderInto(
             target,
             'extension/github-issues',
-            {issues: data},
+            {issues: data, uuid: uuid},
             function () {
                 // Tooltips
                 common.tooltips();

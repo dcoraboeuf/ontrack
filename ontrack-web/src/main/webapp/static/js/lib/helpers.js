@@ -12,6 +12,10 @@ define(['common', 'handlebars'], function (common) {
         return common.staticPathTo(path);
     });
 
+    Handlebars.registerHelper('json', function (o) {
+        return JSON.stringify(o);
+    });
+
     Handlebars.registerHelper('projectRole', function (role) {
         return $('<i></i>')
             .append(

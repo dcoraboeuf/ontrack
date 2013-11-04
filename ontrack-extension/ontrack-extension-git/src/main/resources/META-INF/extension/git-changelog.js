@@ -40,7 +40,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, a
         );
     }
 
-    function displayExtension(extension, extensionName, data) {
+    function displayExtension(extension, extensionName, data, uuid) {
         var extensionId = extension + '-' + extensionName;
         // Stores the data (local cache for display purpose only)
         extensionDataIndex[extensionId] = data;
@@ -48,7 +48,8 @@ define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, a
         require(['extension/{0}.js'.format(extensionId)], function (m) {
             m.display(
                 $('#' + extensionId),
-                data
+                data,
+                uuid
             );
         });
     }
@@ -109,7 +110,7 @@ define(['jquery', 'ajax', 'render', 'common', 'plot', 'require'], function ($, a
                     mode: 'appendText'
                 },
                 successFn: function (data) {
-                    displayExtension(extension, extensionName, data);
+                    displayExtension(extension, extensionName, data, uuid);
                 },
                 errorFn: changelogErrorFn()
             });

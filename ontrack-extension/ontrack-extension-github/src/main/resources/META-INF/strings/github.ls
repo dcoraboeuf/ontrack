@@ -14,6 +14,10 @@ github.changelog.issues
     en -> GitHub issues
     fr -> Tickets GitHub
 
+github.changelog.issues.astext
+    en -> Export as text
+    fr -> Exporter comme texte
+
 github.changelog.issues.id
     en -> #
 
