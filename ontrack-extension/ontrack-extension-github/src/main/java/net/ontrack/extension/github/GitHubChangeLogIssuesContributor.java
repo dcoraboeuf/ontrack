@@ -6,6 +6,8 @@ import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.git.GitChangeLogContributor;
 import net.ontrack.extension.git.GitChangeLogExtension;
 import net.ontrack.extension.git.model.ChangeLogCommits;
+import net.ontrack.extension.git.model.ChangeLogRequest;
+import net.ontrack.extension.git.model.ChangeLogSummary;
 import net.ontrack.extension.git.model.GitUICommit;
 import net.ontrack.extension.git.ui.GitUI;
 import net.ontrack.extension.github.model.GitHubIssue;
@@ -17,10 +19,7 @@ import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -97,5 +96,13 @@ public class GitHubChangeLogIssuesContributor extends AbstractUIController imple
         response.getOutputStream().write(bytes);
         response.setContentLength(bytes.length);
         response.getOutputStream().flush();
+    }
+
+    @RequestMapping(value = "/ui/extension/github/issues/text", method = RequestMethod.POST)
+    public void getChangeLogSummary(Locale locale, @RequestBody ChangeLogRequest request, HttpServletResponse response) throws IOException {
+        // Gets the change log UUID
+        ChangeLogSummary changeLog = gitUI.getChangeLogSummary(locale, request);
+        // Collects the issues
+        issues(changeLog.getUuid(), locale, response);
     }
 }
