@@ -385,12 +385,18 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Merged revisions
         List<Long> merges = subversionService.getMergesForRevision(revisionInfo.getChangeLogRevision().getRevision());
         List<RevisionInfo> mergedRevisionInfos = new ArrayList<>();
+        Set<String> paths = new HashSet<>();
         for (long merge : merges) {
             // Gets the revision info
             RevisionInfo mergeRevisionInfo = getRevisionInfo(locale, merge);
             // If the information contains as least one build, adds it
             if (!mergeRevisionInfo.getBuilds().isEmpty()) {
-                mergedRevisionInfos.add(mergeRevisionInfo);
+                // Keeps only the first one for a given target path
+                String path = mergeRevisionInfo.getChangeLogRevision().getPath();
+                if (!paths.contains(path)) {
+                    mergedRevisionInfos.add(mergeRevisionInfo);
+                    paths.add(path);
+                }
             }
         }
         // OK
