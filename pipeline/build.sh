@@ -224,8 +224,15 @@ fi
 # ontrack
 if [ "$ONTRACK" == "yes" ]
 then
+	# Getting the old build from ontrack
+	BUILD_PREVIOUS=`curl ${ONTRACK_URL}/ui/manage/project/ontrack/branch/${ONTRACK_BRANCH}/build/withPromotionLevel/CB.PROD | sed -r 's/(.*)"name"\:"(ontrack-[a-zA-Z0-9\.\-_]+)",(.*)/\2/1'`
+	# Creating the build on ontrack @ ontrack
 	echo Notifying the build creation at ${ONTRACK_URL}
 	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
+	# Getting the list of issues as text
+	CHANGELOG=`curl ${ONTRACK_URL}/ui/extension/github/issues/text -H "Content-Type: application/json" --data '{"project":"ontrack","branch":"${ONTRACK_BRANCH}","from":"${BUILD_PREVIOUS}","to":"ontrack-${VERSION}"}'`
+	# Updating the release body on GitHub
+	curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview" https://api.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID} --data "{\"body\":\"${CHANGELOG}\"}"
 fi
 
 # End
