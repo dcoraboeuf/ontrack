@@ -1,0 +1,26 @@
+<Context>
+
+    <!-- JDBC datasource -->
+    <Resource name="jdbc/ontrack"
+              auth="Container"
+              type="javax.sql.DataSource"
+              factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+              maxActive="20"
+              minIdle="5"
+              maxIdle="10"
+              maxWait="1000"
+              maxAge="1200000"
+              removeAbandoned="true"
+              removeAbandonedTimeout="60"
+              testWhileIdle="true"
+              validationQuery="SELECT 1"
+              timeBetweenEvictionRunsMillis="60000"
+              logAbandoned="true"
+              defaultAutoCommit="false"
+              username="ontrack"
+              password="ontrack"
+              driverClassName="org.h2.Driver"
+              url="jdbc:h2:file:/opt/ontrack/db/data;AUTOCOMMIT=OFF;MVCC=true;MODE=MySQL"
+              />
+
+</Context>
