@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,5 +74,28 @@ public class GitHubChangeLogIssuesContributor extends AbstractUIController imple
                         GitUICommit.getCommitFn
                 )
         );
+    }
+
+    @RequestMapping(value = "/ui/extension/github/issues/{uuid}/text", method = RequestMethod.GET)
+    public void issues(@PathVariable String uuid, Locale locale, HttpServletResponse response) throws IOException {
+        // Gets the change log
+        List<GitHubIssue> issues = issues(locale, uuid);
+        // Generates the text
+        StringBuilder s = new StringBuilder();
+        for (GitHubIssue issue : issues) {
+            s.append(
+                    String.format(
+                            "#%d\t%s%n",
+                            issue.getId(),
+                            issue.getTitle()
+                    )
+            );
+        }
+        // Renders them as text
+        response.setContentType("text/plain");
+        byte[] bytes = s.toString().getBytes("UTF-8");
+        response.getOutputStream().write(bytes);
+        response.setContentLength(bytes.length);
+        response.getOutputStream().flush();
     }
 }

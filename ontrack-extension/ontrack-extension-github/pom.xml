@@ -20,6 +20,12 @@
             <artifactId>ontrack-extension-git</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- J2EE, provided -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- GitHub API -->
         <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>
