@@ -10,9 +10,9 @@ import java.util.Locale;
 public class RunAsAdminAuthentication extends AbstractAuthenticationToken {
 
     private static final Account RUNAS_ACCOUNT = new Account(
-            -1,
+            1,
             "runas_admin",
-            "",
+            "Run-as-administrator",
             "",
             SecurityRoles.ADMINISTRATOR,
             "runas",
