@@ -44,17 +44,6 @@
             <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/build/${build.build.name?html}">${build.build.name?html}</a>
         </td>
         <td>
-            <ul class="promotions">
-                <#list build.buildPromotionLevels as buildPromotionLevel>
-                    <li>
-                        <i class="icon-arrow-right"></i>
-                        <img title="${buildPromotionLevel.name?html}" src="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}/image" />
-                        <a href="gui/project/${build.build.branch.project.name?html}/branch/${build.build.branch.name?html}/promotion_level/${buildPromotionLevel.name?html}">${buildPromotionLevel.name?html}</a>
-                    </li>
-                </#list>
-            </ul>
-        </td>
-        <td>
             <#list build.buildValidationStamps as buildValidationStamp>
                 <#if buildValidationStamp.run>
                     <#assign run = buildValidationStamp.runs?first />
@@ -84,7 +73,6 @@
                             <th><@lh key="model.project" /></th>
                             <th><@lh key="model.branch" /></th>
                             <th><@lh key="model.build" /></th>
-                            <th><@lh key="build.promotion_levels" /></th>
                             <th><@lh key="build.validation_stamps" /></th>
                         </tr>
                     </thead>
