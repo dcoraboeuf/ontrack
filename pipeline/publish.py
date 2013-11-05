@@ -75,9 +75,6 @@ def createGithubRelease(options):
 
 
 def uploadGithubArtifact(options, releaseId, name, type, path):
-    # curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview"
-    # https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.war
-    # -H "Content-Type: application/zip" --data-binary @ontrack-web/target/ontrack.war
     print "Uploading artifact %s to release %s on GitHub from %s" % (name, options.version, path)
     # Opens the artifact
     data = open(path, 'rb').read()
@@ -91,7 +88,8 @@ def uploadGithubArtifact(options, releaseId, name, type, path):
 def uploadGithubRelease(options, releaseId):
     # HPI
     uploadGithubArtifact(options, releaseId, 'ontrack.hpi', 'application/zip', 'ontrack-jenkins/target/ontrack.hpi')
-    # TODO WAR
+    # WAR
+    uploadGithubArtifact(options, releaseId, 'ontrack.war', 'application/zip', 'ontrack-war/target/ontrack.war')
 
 def publish(options):
     # Creating the release on GitHub
