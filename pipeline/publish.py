@@ -7,11 +7,14 @@ import base64
 import argparse
 
 # Gets the previous build from ontrack
-def getLastBuild(ontrackURL, ontrackBranch):
-    previousBuildURL = "%s/ui/manage/project/ontrack/branch/%s/build/withPromotionLevel/CB.PROD" % (
-    ontrackURL, ontrackBranch)
-    sys.stdout.write("Getting previous build from %s\n" % previousBuildURL)
-    previousBuildName = json.load(urllib2.urlopen(previousBuildURL))['name']
+def getLastBuild(options):
+    print "Getting previous build from ontrack..."
+    url = "%s/ui/manage/project/ontrack/branch/%s/build/withPromotionLevel/CB.PROD" % (
+        options.ontrack_url,
+        options.ontrack_branch
+    )
+    previousBuildName = json.load(urllib2.urlopen(url))['name']
+    print "Previous build is %s" % previousBuildName
     return previousBuildName
 
 
@@ -64,7 +67,7 @@ def updateGithubRelease(githubUser, githubPassword, releaseId, changeLog):
 
 
 def createGithubRelease(options):
-    print "Creating release %s on GitHub" % (options.version)
+    print "Creating release %s on GitHub..." % (options.version)
     response = callGithub(
         options,
         "https://api.github.com/repos/%s/ontrack/releases" % options.github_user,
@@ -75,15 +78,17 @@ def createGithubRelease(options):
 
 
 def uploadGithubArtifact(options, releaseId, name, type, path):
-    print "Uploading artifact %s to release %s on GitHub from %s" % (name, options.version, path)
+    print "Uploading artifact %s to release %s on GitHub from %s..." % (name, options.version, path)
     # Opens the artifact
     data = open(path, 'rb').read()
     response = callGithub(
         options,
-        "https://uploads.github.com/repos/%s/ontrack/releases/%s/assets?name=%s" % (options.github_user, releaseId, name),
+        "https://uploads.github.com/repos/%s/ontrack/releases/%s/assets?name=%s" % (
+            options.github_user, releaseId, name),
         data,
         type
     )
+
 
 def uploadGithubRelease(options, releaseId):
     # HPI
@@ -91,14 +96,15 @@ def uploadGithubRelease(options, releaseId):
     # WAR
     uploadGithubArtifact(options, releaseId, 'ontrack.war', 'application/zip', 'ontrack-war/target/ontrack.war')
 
+
 def publish(options):
     # Creating the release on GitHub
     releaseId = createGithubRelease(options)
     # Upload of artifacts
     if (options.github_upload):
         uploadGithubRelease(options, releaseId)
-    # # Gets the previous build from ontrack
-    # previousVersion = getLastBuild(ontrackURL, ontrackBranch)
+    # Gets the previous build from ontrack
+    previousVersion = getLastBuild(options)
     # sys.stdout.write("Previous build name is %s\n" % previousVersion)
     # #  Notifying the build creation for ontrack
     # createBuild(ontrackURL, ontrackBranch, version, ontrackUser, ontrackPassword)
@@ -116,10 +122,8 @@ if __name__ == '__main__':
     parser.add_argument('--ontrack-branch', required=False, help='ontrack Branch (optional, defaults to "1.x")',
                         default='1.x')
     parser.add_argument('--version', required=True, help='Version to publish')
-    parser.add_argument('--ontrack-build', action='store_true', required=False,
-                        help='Set to create the build on ontrack')
-    parser.add_argument('--ontrack-user', required=False, help='ontrack user used to create the build')
-    parser.add_argument('--ontrack-password', required=False, help='ontrack password used to create the build')
+    parser.add_argument('--ontrack-user', required=True, help='ontrack user used to create the build')
+    parser.add_argument('--ontrack-password', required=True, help='ontrack password used to create the build')
     parser.add_argument('--github-upload', action='store_true', required=False,
                         help='Set to upload artifacts on GitHub')
     parser.add_argument('--github-user', required=True, help='GitHub user used to publish the release')
@@ -127,13 +131,6 @@ if __name__ == '__main__':
                         help='GitHub password or API token used to publish the release')
     # Parsing of arguments
     options = parser.parse_args()
-    # Checks the arguments
-    if (options.ontrack_build):
-        if (options.ontrack_user is None or options.ontrack_password is None):
-            sys.stderr.write(
-                "Ontrack user and password (--ontrack-user, --ontrack-password) are required to created a build\n\n")
-            parser.print_help()
-            sys.exit(-1)
-        # Calling the publication
+    # Calling the publication
     publish(options)
 
