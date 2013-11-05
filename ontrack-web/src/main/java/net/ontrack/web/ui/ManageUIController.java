@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.async.WebAsyncTask;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.CookieGenerator;
 
@@ -34,6 +35,10 @@ import java.util.concurrent.Callable;
 @Controller
 public class ManageUIController extends AbstractEntityUIController implements ManageUI {
 
+    /**
+     * Timeout for the back-up (5 minutes)
+     */
+    public static final long BACKUP_TIMEOUT = 5 * 60 * 1000L;
     private final SecurityUtils securityUtils;
     private final ManagementService managementService;
     private final ProfileService profileService;
@@ -111,41 +116,44 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
 
     @Override
     public ExportData backupSave() throws Exception {
-        return doBackupSave().call();
+        return (ExportData) doBackupSave().getCallable().call();
     }
 
     @RequestMapping(value = "/ui/manage/backup", method = RequestMethod.GET)
     public
     @ResponseBody
-    Callable<ExportData> doBackupSave() {
+    WebAsyncTask<ExportData> doBackupSave() {
         securityUtils.checkGrant(GlobalFunction.PROJECT_EXPORT);
         // Launches the export with same credentials
-        return securityUtils.withCurrentCredentials(
-                new Callable<ExportData>() {
-                    @Override
-                    public ExportData call() throws Exception {
-                        // Gets the list of projects
-                        List<ProjectSummary> projectList = managementService.getProjectList();
-                        // Project IDs
-                        List<Integer> ids = Lists.transform(
-                                projectList,
-                                new Function<ProjectSummary, Integer>() {
-                                    @Override
-                                    public Integer apply(ProjectSummary o) {
-                                        return o.getId();
-                                    }
+        return new WebAsyncTask<>(
+                BACKUP_TIMEOUT,
+                securityUtils.withCurrentCredentials(
+                        new Callable<ExportData>() {
+                            @Override
+                            public ExportData call() throws Exception {
+                                // Gets the list of projects
+                                List<ProjectSummary> projectList = managementService.getProjectList();
+                                // Project IDs
+                                List<Integer> ids = Lists.transform(
+                                        projectList,
+                                        new Function<ProjectSummary, Integer>() {
+                                            @Override
+                                            public Integer apply(ProjectSummary o) {
+                                                return o.getId();
+                                            }
+                                        }
+                                );
+                                // Launches the export
+                                String uuid = exportService.exportLaunch(ids);
+                                // Waits until the export is done
+                                while (!exportService.exportCheck(uuid).isSuccess()) {
+                                    Thread.sleep(100);
                                 }
-                        );
-                        // Launches the export
-                        String uuid = exportService.exportLaunch(ids);
-                        // Waits until the export is done
-                        while (!exportService.exportCheck(uuid).isSuccess()) {
-                            Thread.sleep(100);
+                                // Downloads the file
+                                return exportService.exportDownload(uuid);
+                            }
                         }
-                        // Downloads the file
-                        return exportService.exportDownload(uuid);
-                    }
-                }
+                )
         );
     }
 
