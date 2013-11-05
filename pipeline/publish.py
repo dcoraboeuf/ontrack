@@ -31,7 +31,7 @@ def getChangeLog(ontrackURL, ontrackBranch, version, previousVersion):
     return urllib2.urlopen(req, json.dumps(form)).read()
 
 def updateGithubRelease(githubUser, githubPassword, releaseId, changeLog):
-    githubURL = "https://api.github.com/repos/%s/ontrack/releases/%d" % (githubUser, releaseId)
+    githubURL = "https://api.github.com/repos/%s/ontrack/releases/%s" % (githubUser, releaseId)
     sys.stdout.write("Editing release at %s\n" % githubURL)
     form = { 'body': changeLog }
     req = urllib2.Request(githubURL)
