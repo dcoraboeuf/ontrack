@@ -9,15 +9,13 @@ function show_help {
 	echo "    -h, --help                    Displays this help"
 	echo "Settings:"                        
 	echo "    -m,--mvn=<path>               Path to the Maven executable ('mvn' by default)"
-	echo "    --push                        Pushes to the remote Git"
-	echo "    --deploy                      Uploads the artifacts to the repository"
-	echo "    --github-user=<user>          User for GitHub (default to 'dcoraboeuf')"
-	echo "    --github-token=<token>        API token for GitHub"
 	echo "Release numbering:"                         
 	echo "    -v,--version=<release>        Version to prepare (by default extracted from the POM, by deleting the -SNAPSHOT prefix)"
 	echo "    -nv,--next-version=<release>  Next version to prepare (by default, the prepared version where the last digit is incremented by 1)"
-	echo "Ontrack on Ontrack:"
-	echo "    --ontrack                     Notification of the build creation to an ontrack instance"
+	echo "Publication:"
+	echo "    --publish                     Pushes to the remote Git, and uploads artifacts to GitHub"
+	echo "    --github-user=<user>          User for GitHub (default to 'dcoraboeuf')"
+	echo "    --github-token=<token>        API token for GitHub"
 	echo "    --ontrack-branch              ontrack branch associated ('1.x' by default)"
 	echo "    --ontrack-url                 ontrack URL ('http://ontrack.dcoraboeuf.eu.cloudbees.net/' by default)"
 	echo "    --ontrack-user                ontrack user"
@@ -40,9 +38,7 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m -Djava.net.preferIPv4Stack=tru
 MVN=mvn
 VERSION=
 NEXT_VERSION=
-GIT_PUSH=no
-DEPLOY=no
-ONTRACK=no
+PUBLISH=no
 ONTRACK_BRANCH=1.x
 ONTRACK_URL=http://ontrack.dcoraboeuf.eu.cloudbees.net
 ONTRACK_USER=
@@ -67,20 +63,14 @@ do
 		-nv=*|--next-version=*)
 			NEXT_VERSION=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
-		--push)
-			GIT_PUSH=yes
-			;;
-		--deploy)
-			DEPLOY=yes
+		--publish)
+			PUBLISH=yes
 			;;
 		--github-user=*)
 			GITHUB_USER=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
 			;;
 		--github-token=*)
 			GITHUB_TOKEN=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
-			;;
-		--ontrack)
-			ONTRACK=yes
 			;;
 		--ontrack-branch=*)
 			ONTRACK_BRANCH=`echo $i | sed 's/[-a-zA-Z0-9]*=//'`
@@ -104,17 +94,12 @@ done
 
 # Checks
 check "$MVN" "Maven executable (--mvn) is required."
-if [ "$ONTRACK" == "yes" ]
+if [ "$PUBLISH" == "yes" ]
 then
 	check "$ONTRACK_USER" "ontrack user (--ontrack-user) is required."
 	check "$ONTRACK_PASSWORD" "ontrack user (--ontrack-password) is required."
-fi
-if [ "$DEPLOY" == "yes" ]
-then
 	check "$GITHUB_USER" "GitHub user (--github-user) is required."
 	check "$GITHUB_TOKEN" "GitHub API token (--github-token) is required."
-	# Forces push to yes
-	GIT_PUSH="yes"
 fi
 
 # Preparation of the version
@@ -140,16 +125,11 @@ fi
 echo Current version:           ${CURRENT_VERSION}
 echo Version to build:          ${VERSION}
 echo Next version to promote:   ${NEXT_VERSION}
-echo Pushing to Git:            ${GIT_PUSH}
-echo Notifying ontrack:         ${ONTRACK}
-if [ "$ONTRACK" == "yes" ]
+echo Publishing:                ${PUBLISH}
+if [ "$PUBLISH" == "yes" ]
 then
 	echo ontrack branch:            ${ONTRACK_BRANCH}
 	echo ontrack URL:               ${ONTRACK_URL}
-fi
-echo Deploying the artifacts:   ${DEPLOY}
-if [ "$DEPLOY" == "yes" ]
-then
 	echo GitHub user:               ${GITHUB_USER}
 fi
 	
@@ -195,37 +175,15 @@ echo Committing the next version changes
 git commit -am "Starting development of ${NEXT_VERSION}"
 
 # Pushing
-if [ "$GIT_PUSH" == "yes" ]
+if [ "${PUBLISH}" == "yes" ]
 then
 	echo Pushing to the remote repository
 	git push --verbose
 	echo Pushing the tags to the remote repository
 	git push --tags --verbose
-
-	# Deployment of artifacts
-	if [ "$DEPLOY" == "yes" ]
-	then
-		# Creating the release on GitHub
-		RELEASE_ID=`curl --silent --header "Accept: application/vnd.github.manifold-preview" --user "${GITHUB_USER}:${GITHUB_TOKEN}"  https://api.github.com/repos/${GITHUB_USER}/ontrack/releases --data "{\"tag_name\":\"${TAG}\",\"name\":\"v${VERSION}\"}" | grep "\"id\":" | sed "s/[^0-9]//g"`
-		if [ "$RELEASE_ID" == "" ]
-		then
-			echo "Release could not be created"
-			exit 1
-		fi
-		echo "Release ID = $RELEASE_ID"
-		# Uploading the WAR
-		curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview" https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.war -H "Content-Type: application/zip" --data-binary @ontrack-web/target/ontrack.war
-		# Uploading the HPI
-		curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview" https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.hpi -H "Content-Type: application/zip" --data-binary @ontrack-jenkins/target/ontrack.hpi
-	fi
-	
-fi
-
-# ontrack
-if [ "$ONTRACK" == "yes" ]
-then
-	echo Notifying the build creation at ${ONTRACK_URL}
-	curl -i "${ONTRACK_URL}/ui/control/project/ontrack/branch/${ONTRACK_BRANCH}/build" --user "${ONTRACK_USER}:${ONTRACK_PASSWORD}" --header "Content-Type: application/json" --data "{\"name\":\"ontrack-${VERSION}\",\"description\":\"Created by build.sh\"}"
+	echo Publication...
+	python publish.py --ontrack-url ${ONTRACK_URL} --ontrack-branch ${ONTRACK_BRANCH} --github-upload
+	echo Publication is finished.
 fi
 
 # End
