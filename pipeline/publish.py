@@ -67,20 +67,19 @@ def callGithub(options, url, form, type='application/json'):
         sys.stderr.write("GitHub error:\n%s\n" % e)
 
 
-def updateGithubRelease(githubUser, githubPassword, releaseId, changeLog):
-    githubURL = "https://api.github.com/repos/%s/ontrack/releases/%s" % (githubUser, releaseId)
-    sys.stdout.write("Editing release at %s\n" % githubURL)
-    form = {'body': changeLog}
-    req = urllib2.Request(githubURL)
-    req.add_header('Content-Type', 'application/json')
-    req.add_header('Accept', 'application/vnd.github.manifold-preview')
-    base64string = base64.encodestring("%s:%s" % (githubUser, githubPassword)).replace('\n', '')
-    req.add_header("Authorization", "Basic %s" % base64string)
-    urllib2.urlopen(req, json.dumps(form))
+def updateGithubRelease(options, releaseId, changeLog):
+    print "Adding the change log to the release %s in GitHub..." % options.version
+    callGithub(
+        options,
+        "https://api.github.com/repos/%s/ontrack/releases/%s" % (options.github_user, releaseId),
+        {
+            'body': changeLog
+        }
+    )
 
 
 def createGithubRelease(options):
-    print "Creating release %s on GitHub..." % (options.version)
+    print "Creating release %s on GitHub..." % options.version
     response = callGithub(
         options,
         "https://api.github.com/repos/%s/ontrack/releases" % options.github_user,
@@ -122,8 +121,8 @@ def publish(options):
     createBuild(options)
     # Getting the list of issues as text
     changelog = getChangeLog(options, previousVersion)
-    # # Updating the release body on GitHub
-    # updateGithubRelease(githubUser, githubPassword, releaseId, changelog)
+    # Updating the release body on GitHub
+    updateGithubRelease(options, releaseId, changelog)
 
 
 if __name__ == '__main__':
