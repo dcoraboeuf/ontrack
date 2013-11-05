@@ -18,13 +18,17 @@ def getLastBuild(options):
     return previousBuildName
 
 
-def createBuild(ontrackURL, ontrackBranch, version, username, password):
-    buildCreationURL = "%s/ui/control/project/ontrack/branch/%s/build" % (ontrackURL, ontrackBranch)
-    sys.stdout.write("Creating build %s at %s\n" % (version, buildCreationURL))
-    form = {'name': version, 'description': 'Created by build'}
-    req = urllib2.Request(buildCreationURL)
+def createBuild(options):
+    buildName = "ontrack-%s" % options.version
+    print "Creating build %s on ontrack..." % buildName
+    url = "%s/ui/control/project/ontrack/branch/%s/build" % (
+        options.ontrack_url,
+        options.ontrack_branch
+    )
+    form = {'name': buildName, 'description': 'Created by build'}
+    req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
-    base64string = base64.encodestring("%s:%s" % (username, password)).replace('\n', '')
+    base64string = base64.encodestring("%s:%s" % (options.ontrack_user, options.ontrack_password)).replace('\n', '')
     req.add_header("Authorization", "Basic %s" % base64string)
     urllib2.urlopen(req, json.dumps(form))
 
@@ -105,9 +109,8 @@ def publish(options):
         uploadGithubRelease(options, releaseId)
     # Gets the previous build from ontrack
     previousVersion = getLastBuild(options)
-    # sys.stdout.write("Previous build name is %s\n" % previousVersion)
-    # #  Notifying the build creation for ontrack
-    # createBuild(ontrackURL, ontrackBranch, version, ontrackUser, ontrackPassword)
+    #  Notifying the build creation for ontrack
+    createBuild(options)
     # # Getting the list of issues as text
     # changelog = getChangeLog(ontrackURL, ontrackBranch, version, previousVersion)
     # sys.stdout.write("Change log is \n%s\n" % changelog)
