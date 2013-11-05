@@ -84,7 +84,7 @@ public class GitHubChangeLogIssuesContributor extends AbstractUIController imple
         for (GitHubIssue issue : issues) {
             s.append(
                     String.format(
-                            "#%d\t%s%n",
+                            "* #%d\t%s%n",
                             issue.getId(),
                             issue.getTitle()
                     )
