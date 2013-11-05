@@ -33,13 +33,19 @@ def createBuild(options):
     urllib2.urlopen(req, json.dumps(form))
 
 
-def getChangeLog(ontrackURL, ontrackBranch, version, previousVersion):
-    changeLogURL = "%s/ui/extension/github/issues/text" % (ontrackURL)
-    sys.stdout.write("Getting change log from %s" % changeLogURL)
-    form = {'project': 'ontrack', 'branch': ontrackBranch, 'from': previousVersion, 'to': version}
-    req = urllib2.Request(changeLogURL)
+def getChangeLog(options, previousVersion):
+    buildName = "ontrack-%s" % options.version
+    print "Getting change log since %s" % previousVersion
+    url = "%s/ui/extension/github/issues/text" % (
+        options.ontrack_url
+    )
+    # FIXME Reference tag
+    form = {'project': 'ontrack', 'branch': options.ontrack_branch, 'from': previousVersion, 'to': 'ontrack-1.42'}
+    req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
-    return urllib2.urlopen(req, json.dumps(form)).read()
+    changelog = urllib2.urlopen(req, json.dumps(form)).read()
+    print "Change log is:\n%s\n" % changelog
+    return changelog
 
 
 def callGithub(options, url, form, type='application/json'):
@@ -111,9 +117,8 @@ def publish(options):
     previousVersion = getLastBuild(options)
     #  Notifying the build creation for ontrack
     createBuild(options)
-    # # Getting the list of issues as text
-    # changelog = getChangeLog(ontrackURL, ontrackBranch, version, previousVersion)
-    # sys.stdout.write("Change log is \n%s\n" % changelog)
+    # Getting the list of issues as text
+    changelog = getChangeLog(options, previousVersion)
     # # Updating the release body on GitHub
     # updateGithubRelease(githubUser, githubPassword, releaseId, changelog)
 
