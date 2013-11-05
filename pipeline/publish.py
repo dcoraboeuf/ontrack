@@ -39,8 +39,11 @@ def getChangeLog(options, previousVersion):
     url = "%s/ui/extension/github/issues/text" % (
         options.ontrack_url
     )
-    # FIXME Reference tag
-    form = {'project': 'ontrack', 'branch': options.ontrack_branch, 'from': previousVersion, 'to': 'ontrack-1.42'}
+    if (options.version_tag is None):
+        tag = "ontrack-%s" % options.version
+    else:
+        tag = options.version_tag
+    form = {'project': 'ontrack', 'branch': options.ontrack_branch, 'from': previousVersion, 'to': tag}
     req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
     changelog = urllib2.urlopen(req, json.dumps(form)).read()
@@ -130,6 +133,7 @@ if __name__ == '__main__':
     parser.add_argument('--ontrack-branch', required=False, help='ontrack Branch (optional, defaults to "1.x")',
                         default='1.x')
     parser.add_argument('--version', required=True, help='Version to publish')
+    parser.add_argument('--version-tag', required=False, help='Tag associated with the version (used for testing only)')
     parser.add_argument('--ontrack-user', required=True, help='ontrack user used to create the build')
     parser.add_argument('--ontrack-password', required=True, help='ontrack password used to create the build')
     parser.add_argument('--github-upload', action='store_true', required=False,
