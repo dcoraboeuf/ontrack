@@ -38,4 +38,7 @@ net.ontrack.extension.jenkins.client.JenkinsClientNotOKException
     en -> [JENKINS-004] {0} returned HTTP code {1}
 
 net.ontrack.extension.jenkins.client.JenkinsClientNullContentException
-    en -> [JENKINS-004] {0} returned a null or blank content
+    en -> [JENKINS-005] {0} returned a null or blank content
+
+net.ontrack.extension.jenkins.client.JenkinsClientNotFoundException
+    en -> [JENKINS-006] Cannot find any Jenkins job at "{0}"

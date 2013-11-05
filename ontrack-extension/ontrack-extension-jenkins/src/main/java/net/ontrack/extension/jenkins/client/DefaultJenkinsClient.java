@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -233,12 +234,16 @@ public class DefaultJenkinsClient implements JenkinsClient {
         HttpResponse response;
         try {
             response = client.execute(get);
+        } catch (UnknownHostException ex) {
+            throw new JenkinsClientNotFoundException(url);
         } catch (IOException e) {
             throw new JenkinsClientCallException(get, e);
         }
         // Checks the status
         int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode != HttpStatus.SC_OK) {
+        if (statusCode == HttpStatus.SC_NOT_FOUND) {
+            throw new JenkinsClientNotFoundException(url);
+        } else if (statusCode != HttpStatus.SC_OK) {
             throw new JenkinsClientNotOKException(get, statusCode);
         }
         // Response entity
