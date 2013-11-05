@@ -35,14 +35,18 @@ def getChangeLog(ontrackURL, ontrackBranch, version, previousVersion):
     return urllib2.urlopen(req, json.dumps(form)).read()
 
 
-def callGithub(options, url, form):
+def callGithub(options, url, form, type='application/json'):
     req = urllib2.Request(url)
-    req.add_header('Content-Type', 'application/json')
+    req.add_header('Content-Type', type)
     req.add_header('Accept', 'application/vnd.github.manifold-preview')
     base64string = base64.encodestring("%s:%s" % (options.github_user, options.github_token)).replace('\n', '')
     req.add_header("Authorization", "Basic %s" % base64string)
     try:
-        return urllib2.urlopen(req, json.dumps(form))
+        if type == 'application/json':
+            data = json.dumps(form)
+        else:
+            data = form
+        return urllib2.urlopen(req, data)
     except urllib2.HTTPError as e:
         sys.stderr.write("GitHub error:\n%s\n" % e)
 
@@ -70,24 +74,23 @@ def createGithubRelease(options):
     return releaseId
 
 
-def uploadGithubArtifact(options, name, type, path):
+def uploadGithubArtifact(options, releaseId, name, type, path):
     # curl -u "${GITHUB_USER}:${GITHUB_TOKEN}" -H "Accept: application/vnd.github.manifold-preview"
     # https://uploads.github.com/repos/${GITHUB_USER}/ontrack/releases/${RELEASE_ID}/assets?name=ontrack.war
     # -H "Content-Type: application/zip" --data-binary @ontrack-web/target/ontrack.war
     print "Uploading artifact %s to release %s on GitHub from %s" % (name, options.version, path)
     # Opens the artifact
-    # data = open(path, 'rb').read()
-    # response = callGithub(
-    #     options,
-    #     "https://api.github.com/repos/%s/ontrack/releases" % options.github_user,
-    #     {'tag_name': ("ontrack-%s" % options.version), 'name': ("v%s" % options.version)})
-    # releaseId = json.load(response)['id']
-    # print "Release ID is %d" % releaseId
-    # return releaseId
+    data = open(path, 'rb').read()
+    response = callGithub(
+        options,
+        "https://uploads.github.com/repos/%s/ontrack/releases/%s/assets?name=%s" % (options.github_user, releaseId, name),
+        data,
+        type
+    )
 
-def uploadGithubRelease(options):
+def uploadGithubRelease(options, releaseId):
     # HPI
-    uploadGithubArtifact(options, 'ontrack.hpi', 'application/zip', 'ontrack-jenkins/target/ontrack.hpi')
+    uploadGithubArtifact(options, releaseId, 'ontrack.hpi', 'application/zip', 'ontrack-jenkins/target/ontrack.hpi')
     # TODO WAR
 
 def publish(options):
@@ -95,7 +98,7 @@ def publish(options):
     releaseId = createGithubRelease(options)
     # Upload of artifacts
     if (options.github_upload):
-        uploadGithubRelease(options)
+        uploadGithubRelease(options, releaseId)
     # # Gets the previous build from ontrack
     # previousVersion = getLastBuild(ontrackURL, ontrackBranch)
     # sys.stdout.write("Previous build name is %s\n" % previousVersion)
