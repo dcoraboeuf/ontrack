@@ -107,7 +107,7 @@ define(['common'], function (common) {
             if (c.mode == 'append') {
                 if (show) {
                     $(config.el).addClass('disabled');
-                    $(config.el).append('&nbsp;<img class="ajax-loader" src="static/images/ajax-loader.gif" />');
+                    $(config.el).append('&nbsp;<img class="ajax-loader x-icon-small" src="static/images/ajax-loader.gif" />');
                 } else {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();
@@ -115,7 +115,7 @@ define(['common'], function (common) {
             } else if (c.mode == 'appendText') {
                 if (show) {
                     $(config.el).addClass('disabled');
-                    $(config.el).append('&nbsp;<span class="ajax-loader"><img src="static/images/ajax-loader.gif" /> {0}</span>'.format('general.loading'.loc()));
+                    $(config.el).append('&nbsp;<span class="ajax-loader"><img class="x-icon-small" src="static/images/ajax-loader.gif" /> {0}</span>'.format('general.loading'.loc()));
                 } else {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();
