@@ -182,7 +182,7 @@ then
 	echo Pushing the tags to the remote repository
 	git push --tags --verbose
 	echo Publication...
-	python pipeline/publish.py --ontrack-url ${ONTRACK_URL} --ontrack-branch ${ONTRACK_BRANCH} --github-upload --version ${VERSION} --ontrack-user ${ONTRACK_USER} --ontrack-password ${ONTRACK_PASSWORD} --github-user ${GITHUB_USER} --github-token ${GITHUB_TOKEN}
+	python -u pipeline/publish.py --ontrack-url ${ONTRACK_URL} --ontrack-branch ${ONTRACK_BRANCH} --github-upload --version ${VERSION} --ontrack-user ${ONTRACK_USER} --ontrack-password ${ONTRACK_PASSWORD} --github-user ${GITHUB_USER} --github-token ${GITHUB_TOKEN}
 	if [ "$?" != "0" ]
 	then
 	    echo Error during the publication.
