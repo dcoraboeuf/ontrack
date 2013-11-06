@@ -4,9 +4,9 @@
             ${title?html}
             <#if filter != "" && secSubscriber()>
                 <#if subscribed(filter)>
-                    <img id="subscription" src="${base}/images/unsubscription.png" class="action" title="<@lh key='subscription.disable' />" audit-subscribed="true" />
+                    <img id="subscription" class="x-icon-small action" src="${base}/images/unsubscription.png" title="<@lh key='subscription.disable' />" audit-subscribed="true" />
                 <#else>
-                    <img id="subscription" src="${base}/images/subscription.png" class="action" title="<@lh key='subscription.enable' />" audit-subscribed="false" />
+                    <img id="subscription" class="x-icon-small action" src="${base}/images/subscription.png" title="<@lh key='subscription.enable' />" audit-subscribed="false" />
                 </#if>
             </#if>
         </h4>
