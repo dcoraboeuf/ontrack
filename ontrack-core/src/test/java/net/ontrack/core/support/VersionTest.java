@@ -13,9 +13,22 @@ public class VersionTest {
         Version v = new Version(4, 15);
         assertEquals(v.getMajor(), 4);
         assertEquals(v.getMinor(), 15);
+        assertEquals(v.getPatch(), 0);
         assertEquals("4.15", v.toString());
         assertEquals(new Version(4, 15), v);
+        assertEquals(new Version(4, 15, 0), v);
         assertEquals(new Version(4, 15).hashCode(), v.hashCode());
+    }
+
+    @Test
+    public void basics_patch() {
+        Version v = new Version(4, 15, 2);
+        assertEquals(v.getMajor(), 4);
+        assertEquals(v.getMinor(), 15);
+        assertEquals(v.getPatch(), 2);
+        assertEquals("4.15.2", v.toString());
+        assertEquals(new Version(4, 15, 2), v);
+        assertEquals(new Version(4, 15, 2).hashCode(), v.hashCode());
     }
 
     @Test
@@ -25,9 +38,21 @@ public class VersionTest {
     }
 
     @Test
+    public void parsing_patch_ok() {
+        Version v = of("4.15.2");
+        assertEquals(new Version(4, 15, 2), v);
+    }
+
+    @Test
     public void parsing_ok_with_zeros() {
         Version v = of("04.015");
         assertEquals(new Version(4, 15), v);
+    }
+
+    @Test
+    public void parsing_patch_ok_with_zeros() {
+        Version v = of("04.015.001");
+        assertEquals(new Version(4, 15, 1), v);
     }
 
     @Test(expected = VersionBlankException.class)
@@ -68,6 +93,19 @@ public class VersionTest {
     @Test
     public void compare_equal() {
         assertEquals(0, of("4.15").compareTo(of("4.15")));
+        assertEquals(0, of("4.15.2").compareTo(of("4.15.2")));
+    }
+
+    @Test
+    public void compare_minor_equal_gt() {
+        assertTrue(of("4.15.2").compareTo(of("4.15")) > 0);
+        assertTrue(of("4.15.2").compareTo(of("4.15.1")) > 0);
+    }
+
+    @Test
+    public void compare_minor_equallgt() {
+        assertTrue(of("4.15.1").compareTo(of("4.15.5")) < 0);
+        assertTrue(of("4.15").compareTo(of("4.15.1")) < 0);
     }
 
     @Test
