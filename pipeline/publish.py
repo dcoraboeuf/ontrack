@@ -106,7 +106,7 @@ def uploadGithubRelease(options, releaseId):
     # HPI
     uploadGithubArtifact(options, releaseId, 'ontrack.hpi', 'application/zip', 'ontrack-jenkins/target/ontrack.hpi')
     # WAR
-    uploadGithubArtifact(options, releaseId, 'ontrack.war', 'application/zip', 'ontrack-war/target/ontrack.war')
+    uploadGithubArtifact(options, releaseId, 'ontrack.war', 'application/zip', 'ontrack-web/target/ontrack.war')
 
 
 def publish(options):
