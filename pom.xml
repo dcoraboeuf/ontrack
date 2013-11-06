@@ -4,7 +4,7 @@
 
 	<groupId>net.ontrack</groupId>
 	<artifactId>ontrack-parent</artifactId>
-	<version>1.44-SNAPSHOT</version>
+	<version>1.43.2-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
