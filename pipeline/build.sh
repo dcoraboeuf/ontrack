@@ -182,7 +182,7 @@ then
 	echo Pushing the tags to the remote repository
 	git push --tags --verbose
 	echo Publication...
-	python publish.py --ontrack-url ${ONTRACK_URL} --ontrack-branch ${ONTRACK_BRANCH} --github-upload
+	python pipeline/publish.py --ontrack-url ${ONTRACK_URL} --ontrack-branch ${ONTRACK_BRANCH} --github-upload
 	echo Publication is finished.
 fi
 
