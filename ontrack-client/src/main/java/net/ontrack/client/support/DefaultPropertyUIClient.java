@@ -63,4 +63,19 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
                 ),
                 EditableProperty.class);
     }
+
+    @Override
+    public String getPropertyValue(Entity entity, int entityId, String extension, String name) {
+        return get(
+                getDefaultLocale(),
+                format(
+                        "/%s/%d/%s/%s",
+                        entity.name(),
+                        entityId,
+                        extension,
+                        name
+                ),
+                String.class
+        );
+    }
 }
