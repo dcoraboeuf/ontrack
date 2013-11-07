@@ -44,19 +44,21 @@
 
 <@layout_std
     page="svnexplorer-changelog"
-    title=loc("svnexplorer.changelog")
+    title=loc("svnexplorer.changelog") + " " + summary.buildFrom.buildSummary.name + " --> " + summary.buildTo.buildSummary.name
     style=true
-    extension=true>
+    extension=true
+    breadcrumbs = {
+        loc('home'): '',
+        summary.branch.project.name: "gui/project/${summary.branch.project.name?html}",
+        summary.branch.name: "gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}"
+    }>
 
     <input id="changelog" type="hidden" value="${summary.uuid?html}" />
 
     <div class="row-fluid">
         <div class="span12 page-title">
                 <span class="title">
-                    <a href="gui/project/${summary.branch.project.name?html}">${summary.branch.project.name?html}</a>
-                    /
-                    <a href="gui/project/${summary.branch.project.name?html}/branch/${summary.branch.name?html}">${summary.branch.name?html}</a>
-                    /
+                    <@lh key="svnexplorer.changelog" />
                     ${summary.buildFrom.buildSummary.name?html}
                     <i class="icon-arrow-right" style="vertical-align: baseline;"></i>
                     ${summary.buildTo.buildSummary.name?html}
