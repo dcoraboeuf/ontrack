@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+<div>
+    <p>When checked, this will fail the build when the result of the property get is empty or null, the build will fail</p>
+    <p>E.g.:</p>
+    <pre>
+        if (result.isNotEmpty() || !failOnBlank) { // continue with the build }
+        else { // fail the build }
+    </pre>
+</div>
