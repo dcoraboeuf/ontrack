@@ -14,8 +14,8 @@
             <tr>
                 <#list dashboard.branches as branch>
                     <td valign="top" width="${width}%">
-                        <h1>${branch.project.name?html}</h1>
-                        <h2>${branch.name?html}</h2>
+                        <h1><a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a></h1>
+                        <h2><a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a></h2>
                         <div
                             id="branch-${branch.id?c}"
                             class="dynamic"
