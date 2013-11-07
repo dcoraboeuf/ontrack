@@ -230,6 +230,14 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         // Gets the build information
         ChangeLogBuild buildFrom = getBuild(locale, from);
         ChangeLogBuild buildTo = getBuild(locale, to);
+
+        // Builds must be ordered from the oldest to the newest
+        if (buildFrom.getBuildSummary().getId() > buildTo.getBuildSummary().getId()) {
+            ChangeLogBuild t = buildFrom;
+            buildFrom = buildTo;
+            buildTo = t;
+        }
+
         // OK
         return new ChangeLogSummary(
                 UUID.randomUUID().toString(),

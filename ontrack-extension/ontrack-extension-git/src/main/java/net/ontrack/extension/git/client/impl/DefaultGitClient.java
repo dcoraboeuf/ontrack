@@ -152,7 +152,7 @@ public class DefaultGitClient implements GitClient {
             RevCommit commitTo = repository.getCommitForTag(oTo);
 
             // Ordering of commits
-            if (commitFrom.getCommitTime() < commitTo.getCommitTime()) {
+            if (commitFrom.getCommitTime() > commitTo.getCommitTime()) {
                 RevCommit t = commitFrom;
                 commitFrom = commitTo;
                 commitTo = t;
