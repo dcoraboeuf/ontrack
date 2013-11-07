@@ -1,5 +1,7 @@
 package net.ontrack.backend;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import net.ontrack.core.model.*;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
@@ -146,6 +148,60 @@ public class ManagementServiceTest extends AbstractValidationTest {
     @Test(expected = EntityNameNotFoundException.class)
     public void getEntityId_not_found() {
         service.getEntityId(Entity.PROJECT, "PROJECTX", Collections.<Entity, Integer>emptyMap());
+    }
+
+    /**
+     * Regression test for #276 - check that autopromotion level is kept when
+     * cloning a branch.
+     */
+    @Test
+    public void clone_autopromotion_level() throws Exception {
+        // Creates a promotion level for a branch
+        final PromotionLevelSummary pl = doCreatePromotionLevel();
+        // Associates at least one validation stamp to this promotion level (for auto promotion to be eligible)
+        final ValidationStampSummary stamp = doCreateValidationStamp(pl.getBranch().getId());
+        asAdmin().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.linkValidationStampToPromotionLevel(stamp.getId(), pl.getId());
+                return null;
+            }
+        });
+        // Sets the auto promotion to true
+        asAdmin().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.setPromotionLevelAutoPromote(pl.getId());
+                return null;
+            }
+        });
+        // Clones the branch
+        BranchSummary clonedBranch = asAdmin().call(new Callable<BranchSummary>() {
+            @Override
+            public BranchSummary call() throws Exception {
+                return service.cloneBranch(
+                        pl.getBranch().getId(),
+                        new BranchCloneForm(
+                                uid("BCH"),
+                                "Cloned branch",
+                                Collections.<PropertyCreationForm>emptySet(),
+                                Collections.<PropertyReplacement>emptySet(),
+                                Collections.<PropertyReplacement>emptySet()
+                        )
+                );
+            }
+        });
+        // Checks that the promotion level has been cloned and is auto promoted
+        PromotionLevelSummary clonedPl = Iterables.find(
+                service.getPromotionLevelList(clonedBranch.getId()),
+                new Predicate<PromotionLevelSummary>() {
+                    @Override
+                    public boolean apply(PromotionLevelSummary o) {
+                        return pl.getName().equals(o.getName());
+                    }
+                }
+        );
+        assertTrue("Cloned promotion level must be auto promoted", clonedPl.isAutoPromote());
     }
 
 }

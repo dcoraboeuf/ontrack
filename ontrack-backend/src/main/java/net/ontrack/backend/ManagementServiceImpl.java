@@ -420,6 +420,8 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
 
         // Links between validation stamps & promotion levels
         Map<String, Integer> links = new HashMap<>();
+        // Mapping between old & new promotion levels
+        Map<Integer, Integer> promotionLevelMapping = new HashMap<>();
 
         // Cloning the promotion levels
         for (PromotionLevelSummary promotionLevel : promotionLevelList) {
@@ -432,6 +434,9 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
                             promotionLevel.getDescription()
                     )
             );
+
+            // Mapping
+            promotionLevelMapping.put(promotionLevel.getId(), newPromotionLevel.getId());
 
             // Clean-up configuration
             if (cleanup != null && cleanup.getExcludedPromotionLevels().contains(promotionLevel.getId())) {
@@ -467,6 +472,14 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             Integer linkedPromotionLevel = links.get(stamp.getName());
             if (linkedPromotionLevel != null) {
                 linkValidationStampToPromotionLevel(newValidationStamp.getId(), linkedPromotionLevel);
+            }
+        }
+
+        // Auto promotion
+        for (PromotionLevelSummary promotionLevel : promotionLevelList) {
+            if (promotionLevel.isAutoPromote()) {
+                int newId = promotionLevelMapping.get(promotionLevel.getId());
+                promotionLevelDao.setAutoPromote(newId, true);
             }
         }
 
