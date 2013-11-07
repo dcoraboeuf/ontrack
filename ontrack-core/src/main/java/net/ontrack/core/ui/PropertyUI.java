@@ -28,4 +28,11 @@ public interface PropertyUI {
             Entity entity,
             int entityId);
 
+    String getPropertyValue(
+            Entity entity,
+            int entityId,
+            String extension,
+            String name
+    );
+
 }

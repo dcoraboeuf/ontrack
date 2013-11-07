@@ -202,6 +202,12 @@ public class PropertyUIController extends AbstractUIController implements Proper
         );
     }
 
+    @Override
+    @RequestMapping(value = "/{entity}/{entityId:\\d+}/{extension}/{name}", method = RequestMethod.GET)
+    public String getPropertyValue(@PathVariable Entity entity, @PathVariable int entityId, @PathVariable String extension, @PathVariable String name) {
+        return propertiesService.getPropertyValue(entity, entityId, extension, name);
+    }
+
     private boolean isPropertyViewable(PropertyExtensionDescriptor descriptor, Entity entity, int entityId) {
         // Gets the security policy
         AuthorizationPolicy policy = descriptor.getViewingAuthorizationPolicy(entity);
