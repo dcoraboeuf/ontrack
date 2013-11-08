@@ -69,7 +69,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
         return get(
                 getDefaultLocale(),
                 format(
-                        "/%s/%d/%s/%s",
+                        "/ui/property/%s/%d/%s/%s",
                         entity.name(),
                         entityId,
                         extension,

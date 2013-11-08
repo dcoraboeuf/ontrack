@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.ontrack;
 
+import hudson.Extension;
 import hudson.model.BuildListener;
+import hudson.tasks.BuildStepDescriptor;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.ManageClientCall;
@@ -15,7 +17,7 @@ import hudson.Launcher;
 import hudson.model.*;
 
 import java.io.IOException;
-public class OntrackPropertyValue extends Builder {
+public class OntrackBuildPropertyValue extends Builder {
     private final String project;
     private final String branch;
     private final String promotionLevel;
@@ -26,8 +28,8 @@ public class OntrackPropertyValue extends Builder {
     private final boolean failOnBlank;
 
     @DataBoundConstructor
-    public OntrackPropertyValue(String project, String branch, String variable, String promotionLevel,
-                                String extension, String name, String buildName, boolean failOnBlank) {
+    public OntrackBuildPropertyValue(String project, String branch, String variable, String promotionLevel,
+                                     String extension, String name, String buildName, boolean failOnBlank) {
         this.project = project;
         this.branch = branch;
         this.promotionLevel = promotionLevel;
@@ -115,5 +117,20 @@ public class OntrackPropertyValue extends Builder {
 
     public boolean isFailOnBlank() {
         return failOnBlank;
+    }
+
+    @Extension
+    public static class OntrackBuildPropertyValueDescription extends BuildStepDescriptor<Builder> {
+
+
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+            return true;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return "Ontrack: Get build property value";
+        }
     }
 }

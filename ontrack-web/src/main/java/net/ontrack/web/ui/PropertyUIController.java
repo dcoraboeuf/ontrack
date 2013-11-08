@@ -204,7 +204,9 @@ public class PropertyUIController extends AbstractUIController implements Proper
 
     @Override
     @RequestMapping(value = "/{entity}/{entityId:\\d+}/{extension}/{name}", method = RequestMethod.GET)
-    public String getPropertyValue(@PathVariable Entity entity, @PathVariable int entityId, @PathVariable String extension, @PathVariable String name) {
+    public
+    @ResponseBody
+    String getPropertyValue(@PathVariable Entity entity, @PathVariable int entityId, @PathVariable String extension, @PathVariable String name) {
         return propertiesService.getPropertyValue(entity, entityId, extension, name);
     }
 
