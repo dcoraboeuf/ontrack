@@ -10,16 +10,25 @@
     <script src="js/controllers.js"></script>
 </head>
 <body>
-
-    <div ng-controller="ProjectListCtrl">
-        <ul class="ot-list ot-project-list">
-            <li ng-repeat="project in projects">
-                <span>{{project.name}}</span>
-                <p>
-                    {{project.description}}
-                </p>
-            </li>
-        </ul>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div ng-controller="ProjectListCtrl">
+                    <p class="ot-search-local">
+                        Search:
+                        <input ng-model="query">
+                    </p>
+                    <ul class="ot-list ot-project-list">
+                        <li ng-repeat="project in projects | filter:query">
+                            <span>{{project.name}}</span>
+                            <p>
+                                {{project.description}}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
