@@ -1,16 +1,26 @@
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="ontrackApp">
 <head>
-   <meta charset="utf-8">
-   <title>My HTML File</title>
-   <link rel="stylesheet" href="css/app.css">
-   <link rel="stylesheet" href="css/bootstrap-3.0.2.css">
-   <script src="lib/angular/angular-1.2.0.min.js"></script>
-   <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
+    <meta charset="utf-8">
+    <title>My HTML File</title>
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/bootstrap-3.0.2.min.css">
+    <script src="lib/angular/angular-1.2.0.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls-0.6.0.min.js"></script>
+    <script src="js/controllers.js"></script>
 </head>
 <body>
 
-   <p>Nothing here {{'yet' + '!'}}</p>
+    <div ng-controller="ProjectListCtrl">
+        <ul class="ot-list ot-project-list">
+            <li ng-repeat="project in projects">
+                <span>{{project.name}}</span>
+                <p>
+                    {{project.description}}
+                </p>
+            </li>
+        </ul>
+    </div>
 
 </body>
 </html>
