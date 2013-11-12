@@ -5,6 +5,7 @@
 angular.module('ontrackApp', [
         'ngRoute',
         'ui.bootstrap',
+        'ontrackApp.config',
         'ontrackApp.filters',
         'ontrackApp.services',
         'ontrackApp.directives',
