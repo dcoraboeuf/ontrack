@@ -1,4 +1,4 @@
-package net.ontrack.web.hateoas;
+package net.ontrack.web.resource;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
