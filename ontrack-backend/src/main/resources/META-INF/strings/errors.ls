@@ -63,9 +63,6 @@ net.ontrack.backend.ImportFormatException
 
 [input]
 
-net.ontrack.backend.EntityNameNotFoundException
-	en -> {0} "{1}" cannot be found.
-	fr -> {0} "{1}" n'a pas été trouvé.
 net.ontrack.backend.ImageIncorrectMIMETypeException
 	en -> Image type "{0}" is incorrect - expected "{1}" instead.
 	fr -> Le type d'image "{0}" n'est pas correct - "{1}" est attendu.

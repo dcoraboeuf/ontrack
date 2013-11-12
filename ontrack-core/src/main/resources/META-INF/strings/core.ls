@@ -12,3 +12,8 @@ net.ontrack.core.support.VersionBlankException
 net.ontrack.core.support.VersionFormatException
     en -> [EC-002] Wrong version format: {0}
     fr -> [EC-002] Format de version incorrect : {0}
+
+
+net.ontrack.core.support.EntityNameNotFoundException
+	en -> {0} "{1}" cannot be found.
+	fr -> {0} "{1}" n'a pas été trouvé.

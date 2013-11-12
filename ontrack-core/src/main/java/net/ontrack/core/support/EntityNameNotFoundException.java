@@ -1,7 +1,6 @@
-package net.ontrack.backend;
+package net.ontrack.core.support;
 
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.support.NotFoundException;
 
 public class EntityNameNotFoundException extends NotFoundException {
 	

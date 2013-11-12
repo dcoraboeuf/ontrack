@@ -1,16 +1,15 @@
 package net.ontrack.web.api.controller;
 
 import com.google.common.collect.Lists;
+import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.api.model.ProjectResource;
 import net.ontrack.web.support.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,6 +34,24 @@ public class ProjectController extends APIController {
                 managementService.getProjectList(),
                 ProjectResource.stubFn
         );
+    }
+
+    @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<ProjectResource> getProject(@PathVariable String name) {
+        try {
+            return new ResponseEntity<>(
+                    ProjectResource.resourceFn
+                            .apply(
+                                    managementService.getProject(
+                                            entityConverter.getProjectId(name)
+                                    )
+                            ),
+                    HttpStatus.OK
+            );
+        } catch (EntityNameNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

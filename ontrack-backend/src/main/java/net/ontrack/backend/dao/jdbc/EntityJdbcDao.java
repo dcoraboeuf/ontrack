@@ -1,7 +1,7 @@
 package net.ontrack.backend.dao.jdbc;
 
 import net.ontrack.backend.EntityIdNotFoundException;
-import net.ontrack.backend.EntityNameNotFoundException;
+import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.Entity;

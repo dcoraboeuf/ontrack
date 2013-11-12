@@ -1,6 +1,6 @@
 package net.ontrack.backend.dao.jdbc;
 
-import net.ontrack.backend.EntityNameNotFoundException;
+import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.backend.ValidationStampAlreadyExistException;
 import net.ontrack.backend.cache.Caches;
 import net.ontrack.backend.dao.ValidationStampDao;

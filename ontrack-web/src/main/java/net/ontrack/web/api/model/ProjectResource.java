@@ -4,6 +4,10 @@ import com.google.common.base.Function;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.web.api.controller.ProjectController;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -19,9 +23,21 @@ public class ProjectResource extends AbstractResource<ProjectResource> {
             return new ProjectResource(
                     o.getId(),
                     o.getName(),
-                    o.getDescription()
-            ).withView("/project/%s", o.getName());
-            // TODO 'self' link
+                    o.getDescription())
+                    .withView("/project/%s", o.getName())
+                    .withLink(linkTo(methodOn(ProjectController.class).getProject(o.getName())).withSelfRel())
+                    ;
+        }
+    };
+
+    public static Function<ProjectSummary, ProjectResource> resourceFn = new Function<ProjectSummary, ProjectResource>() {
+        @Override
+        public ProjectResource apply(ProjectSummary o) {
+            return stubFn
+                    .apply(o)
+                    // TODO Branches
+                    // TODO Actions
+                    ;
         }
     };
 

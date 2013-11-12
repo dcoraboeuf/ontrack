@@ -3,6 +3,7 @@ package net.ontrack.backend;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.*;
+import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import org.junit.Test;
