@@ -2,10 +2,20 @@
 
 /* Controllers */
 
-angular.module('ontrackApp.controllers', []).
-  controller('MyCtrl1', [function() {
-
-  }])
-  .controller('MyCtrl2', [function() {
-
-  }]);
+angular.module('ontrackApp.controllers', [])
+    .controller('ProjectListCtrl', ['$scope', '$http', function ($scope, $http) {
+        $scope.projects = [{
+            name: 'EBANK',
+            description: 'eBanking project',
+            links: {
+                self: '#/project/EBANK'
+            }
+        }, {
+            name: 'ontrack',
+            description: 'ontrack @ ontrack',
+            links: {
+                self: '#/project/ontrack'
+            }
+        }]
+    }])
+;
