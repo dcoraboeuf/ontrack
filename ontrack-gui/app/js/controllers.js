@@ -3,19 +3,11 @@
 /* Controllers */
 
 angular.module('ontrackApp.controllers', [])
-    .controller('ProjectListCtrl', ['$scope', '$http', function ($scope, $http) {
-        $scope.projects = [{
-            name: 'EBANK',
-            description: 'eBanking project',
-            links: {
-                self: '#/project/EBANK'
-            }
-        }, {
-            name: 'ontrack',
-            description: 'ontrack @ ontrack',
-            links: {
-                self: '#/project/ontrack'
-            }
-        }]
+    .controller('ProjectListCtrl', ['$scope', '$http', 'config', function ($scope, $http, config) {
+        $http
+            .get(config.server + '/ui/manage/project')
+            .success(function (data) {
+                $scope.projects = data
+            })
     }])
 ;
