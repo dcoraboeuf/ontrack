@@ -2,13 +2,13 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', [
+angular.module('ontrackApp', [
         'ngRoute',
         'ui.bootstrap',
-        'myApp.filters',
-        'myApp.services',
-        'myApp.directives',
-        'myApp.controllers'
+        'ontrackApp.filters',
+        'ontrackApp.services',
+        'ontrackApp.directives',
+        'ontrackApp.controllers'
     ]).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/view1', {templateUrl: 'partials/partial1.html', controller: 'MyCtrl1'});
