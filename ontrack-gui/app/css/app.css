@@ -6,3 +6,28 @@
     color: gray;
     text-align: center;
 }
+
+/* Page elements */
+
+.ot-page-title > p {
+    font-style: italic;
+    color: gray;
+}
+
+.ot-page-title > h1 {
+    display: inline;
+}
+
+.ot-commands {
+    opacity: 0.5;
+    float: right !important;
+}
+
+.ot-commands a {
+    text-decoration: none;
+    color: black;
+}
+
+*:hover > .ot-commands {
+    opacity: 1.0;
+}
