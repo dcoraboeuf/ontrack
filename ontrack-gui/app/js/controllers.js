@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('ontrackApp.controllers', [])
+angular.module('ontrack.controllers', [])
     .controller('ProjectListCtrl', ['$scope', '$http', 'config', function ($scope, $http, config) {
         $http
             .get(config.server + '/api/project')

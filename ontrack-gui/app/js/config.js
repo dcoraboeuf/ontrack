@@ -2,7 +2,7 @@
 
 /* Configuration */
 
-angular.module('ontrackApp.config', [])
+angular.module('ontrack.config', [])
     .value('config', {
         server: 'http://localhost:8080/ontrack'
     });

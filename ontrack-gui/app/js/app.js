@@ -2,14 +2,14 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('ontrackApp', [
+angular.module('ontrack', [
         'ngRoute',
         'ui.bootstrap',
-        'ontrackApp.config',
-        'ontrackApp.filters',
-        'ontrackApp.services',
-        'ontrackApp.directives',
-        'ontrackApp.controllers'
+        'ontrack.config',
+        'ontrack.filters',
+        'ontrack.services',
+        'ontrack.directives',
+        'ontrack.controllers'
     ]).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/home', {templateUrl: 'partials/home.html'});
