@@ -1,5 +1,9 @@
 /* Bootstrap override */
 
+.nav {
+    cursor: pointer;
+}
+
 /* app css stylesheet */
 
 /* Version information */
