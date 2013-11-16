@@ -28,7 +28,7 @@ public class AuthenticationController {
      *
      * @return
      */
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    @RequestMapping(value = "/authenticate", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<AuthenticationResource> authenticate() {
         // Checks the login status

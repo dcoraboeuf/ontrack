@@ -10,8 +10,24 @@ angular.module('ontrack.controllers', [])
             console.log('Collapsed', $scope.isNavbarCollapsed);
         }
     }])
-    .controller('SignInCtrl', [function () {
-
+    .controller('SignInCtrl', ['$rootScope', '$scope', '$http', '$location', 'config', function ($rootScope, $scope, $http, $location, config) {
+        $scope.name = '';
+        $scope.password = '';
+        $scope.signin = function () {
+            $http
+                .get(config.server + '/api/auth/authenticate',
+                {
+                    headers: {
+                        'Authorization': 'Basic ' + btoa($scope.name + ':' + $scope.password)
+                    }
+                })
+                .success(function (authentication) {
+                    // Stores the authentication object
+                    $rootScope.user = authentication;
+                    // TODO Redirect to the page in the scope
+                    $location.path('/home');
+                })
+        }
     }])
     .controller('ProjectListCtrl', ['$scope', '$http', 'config', function ($scope, $http, config) {
         $http
