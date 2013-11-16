@@ -12,11 +12,21 @@ angular.module('ontrack.services', [])
         $rootScope.anonymous = true;
         $rootScope.accountFullName = '';
 
-        function authenticate(authentication) {
-            $rootScope.user = authentication;
-            $rootScope.logged = true;
-            $rootScope.anonymous = false;
-            $rootScope.accountFullName = authentication.fullName;
+        function authenticate(name, password, callbackFn) {
+            $http
+                .get(config.server + '/api/auth/authenticate',
+                {
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(name + ':' + password)
+                    }
+                })
+                .success(function (authentication) {
+                    $rootScope.user = authentication;
+                    $rootScope.logged = true;
+                    $rootScope.anonymous = false;
+                    $rootScope.accountFullName = authentication.fullName;
+                    callbackFn(authentication);
+                })
         }
 
         function logout(callbackFn) {

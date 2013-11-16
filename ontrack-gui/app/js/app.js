@@ -16,4 +16,8 @@ angular.module('ontrack', [
         $routeProvider.when('/signin', {templateUrl: 'partials/signin.html'});
         $routeProvider.when('/project/:projectName', {templateUrl: 'partials/project.html'});
         $routeProvider.otherwise({redirectTo: '/home'});
-    }]);
+    }])
+    .run(['AuthenticationService', function (authenticationService) {
+        // authenticationService.init()
+    }])
+;
