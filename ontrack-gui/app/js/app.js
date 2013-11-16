@@ -11,7 +11,8 @@ angular.module('ontrack', [
         'ontrack.directives',
         'ontrack.controllers'
     ]).
-    config(['$routeProvider', function ($routeProvider) {
+    config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+        $httpProvider.defaults.withCredentials = true;
         $routeProvider.when('/home', {templateUrl: 'partials/home.html'});
         $routeProvider.when('/signin', {templateUrl: 'partials/signin.html'});
         $routeProvider.when('/project/:projectName', {templateUrl: 'partials/project.html'});

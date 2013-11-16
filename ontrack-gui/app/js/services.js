@@ -20,15 +20,12 @@ angular.module('ontrack.services', [])
         }
 
         function init() {
-            /**
-             $http
-             .get(config.server + '/api/auth/authenticate', {
-                })
-             .success(authenticationOk)
-             .error(function () {
+            $http
+                .get(config.server + '/api/auth/authenticate')
+                .success(authenticationOk)
+                .error(function () {
                     // Does nothing
                 })
-             */
         }
 
         function authenticate(name, password, callbackFn) {

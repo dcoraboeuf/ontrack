@@ -13,9 +13,11 @@ public class CorsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        // TODO For the API only
         // FIXME Configuration of the origin at deployment time
         // TODO Declares this filter for use with the `springSecurityFilterChain`
         response.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
             // CORS "pre-flight" request
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
