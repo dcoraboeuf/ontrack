@@ -20,7 +20,15 @@
     </div>
     <div class="navbar-collapse" ng-hide="isNavbarCollapsed">
         <ul class="nav navbar-nav navbar-right">
-            <li ot-nav-user></li>
+            <li ng-if="anonymous()">
+               <a id="header-signin" href="#/signin">Sign in</a>
+            </li>
+            <li ng-if="logged()" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <span ng-bind="accountFullName()"></span>
+                    <b class="caret"></b>
+                </a>
+            </li>
             <li>
                 <a id="header-version" class="ot-nav-text" app-version></a>
             </li>
