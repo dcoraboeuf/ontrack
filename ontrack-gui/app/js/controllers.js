@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('ontrack.controllers', [])
-    .controller('NavBarCtrl', ['$scope', 'AuthenticationService', function ($scope, authenticationService) {
+    .controller('NavBarCtrl', ['$scope', '$location', 'AuthenticationService', function ($scope, $location, authenticationService) {
         $scope.isNavbarCollapsed = false;
         $scope.collapseNavbar = function () {
             $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
@@ -18,8 +18,13 @@ angular.module('ontrack.controllers', [])
         $scope.accountFullName = function () {
             return authenticationService.accountFullName()
         }
+        $scope.signout = function () {
+            authenticationService.logout().success(function () {
+                $location.path('/home')
+            })
+        }
     }])
-    .controller('SignInCtrl', ['$rootScope', '$scope', '$http', '$location', 'config', function ($rootScope, $scope, $http, $location, config) {
+    .controller('SignInCtrl', ['$rootScope', '$scope', '$http', '$location', 'AuthenticationService', 'config', function ($rootScope, $scope, $http, $location, authenticationService, config) {
         $scope.name = '';
         $scope.password = '';
         $scope.signin = function () {
@@ -32,7 +37,7 @@ angular.module('ontrack.controllers', [])
                 })
                 .success(function (authentication) {
                     // Stores the authentication object
-                    $rootScope.user = authentication;
+                    authenticationService.authenticate(authentication);
                     // TODO Redirect to the page in the scope
                     $location.path('/home');
                 })

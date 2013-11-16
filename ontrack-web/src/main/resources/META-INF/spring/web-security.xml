@@ -7,6 +7,14 @@ http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/security
 http://www.springframework.org/schema/security/spring-security.xsd">
 
+    <http pattern="/api/**">
+        <logout
+                logout-url="/api/auth/logout"
+                logout-success-url="/api/auth/logged-out"
+                />
+        <http-basic/>
+    </http>
+
     <http pattern="/ui/login">
         <intercept-url pattern="/ui/login" access="ROLE_USER,ROLE_CONTROLLER,ROLE_ADMIN"/>
         <http-basic/>

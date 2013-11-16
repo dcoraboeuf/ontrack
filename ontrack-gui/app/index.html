@@ -29,6 +29,9 @@
                     <span ng-bind="accountFullName()"></span>
                     <b class="caret"></b>
                 </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a id="header-signout" ng-click="signout()">Logout</a></li>
+                </ul>
             </li>
             <li>
                 <a id="header-version" class="ot-nav-text" app-version></a>

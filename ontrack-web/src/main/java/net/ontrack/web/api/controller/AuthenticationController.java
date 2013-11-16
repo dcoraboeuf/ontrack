@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -45,6 +46,15 @@ public class AuthenticationController {
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    /**
+     * Actual logout is performed through settings in <code>web-security.xml</code>.
+     */
+    @RequestMapping(value = "/logged-out", method = RequestMethod.GET)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void logout() {
     }
 
 }
