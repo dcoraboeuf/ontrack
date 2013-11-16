@@ -3,6 +3,13 @@
 /* Controllers */
 
 angular.module('ontrack.controllers', [])
+    .controller('NavBarCtrl', ['$scope', function ($scope) {
+        $scope.isNavbarCollapsed = false;
+        $scope.collapseNavbar = function () {
+            $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
+            console.log('Collapsed', $scope.isNavbarCollapsed);
+        }
+    }])
     .controller('ProjectListCtrl', ['$scope', '$http', 'config', function ($scope, $http, config) {
         $http
             .get(config.server + '/api/project')

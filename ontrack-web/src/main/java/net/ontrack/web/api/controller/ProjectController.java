@@ -1,9 +1,14 @@
 package net.ontrack.web.api.controller;
 
-import com.google.common.collect.Lists;
+import net.ontrack.core.model.ProjectCreationForm;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.api.input.ProjectCreation;
 import net.ontrack.web.api.model.ProjectResource;
+import net.ontrack.web.api.model.ResourceLink;
+import net.ontrack.web.api.model.SimpleResourceCollection;
 import net.ontrack.web.support.EntityConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,17 +16,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Controller
 @RequestMapping("/api/project")
 public class ProjectController extends APIController {
 
+    private final SecurityUtils securityUtils;
     private final EntityConverter entityConverter;
     private final ManagementService managementService;
 
     @Autowired
-    public ProjectController(EntityConverter entityConverter, ManagementService managementService) {
+    public ProjectController(SecurityUtils securityUtils, EntityConverter entityConverter, ManagementService managementService) {
+        this.securityUtils = securityUtils;
         this.entityConverter = entityConverter;
         this.managementService = managementService;
     }
@@ -29,10 +37,33 @@ public class ProjectController extends APIController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<ProjectResource> getProjectList() {
-        return Lists.transform(
+    public SimpleResourceCollection<ProjectResource> getProjectList() {
+        return SimpleResourceCollection.of(
                 managementService.getProjectList(),
-                ProjectResource.stubFn
+                ProjectResource.stubFn)
+                .withLink(
+                        ResourceLink.post(
+                                linkTo(methodOn(ProjectController.class).createProject(null)).withRel("projectCreate")
+                        ),
+                        securityUtils.isGranted(GlobalFunction.PROJECT_CREATE)
+                )
+                ;
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<ProjectResource> createProject(@RequestBody ProjectCreation input) {
+        return new ResponseEntity<>(
+                ProjectResource.resourceFn
+                        .apply(
+                                managementService.createProject(
+                                        new ProjectCreationForm(
+                                                input.getName(),
+                                                input.getDescription()
+                                        )
+                                )
+                        ),
+                HttpStatus.CREATED
         );
     }
 
