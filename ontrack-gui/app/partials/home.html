@@ -1,12 +1,10 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12" ng-controller="ProjectListCtrl">
-            <ul class="ot-list ot-project-list">
-                <li ng-repeat="project in projects.items">
-                    <a href="#{{project.links.view}}">{{project.name}}</a>
-                    <p>{{project.description}}</p>
-                </li>
-            </ul>
-        </div>
+<div class="row">
+    <div class="col-md-12" ng-controller="ProjectListCtrl">
+        <ul class="ot-list ot-project-list">
+            <li ng-repeat="project in projects.items">
+                <a href="#{{project.links.view}}">{{project.name}}</a>
+                <p>{{project.description}}</p>
+            </li>
+        </ul>
     </div>
 </div>
