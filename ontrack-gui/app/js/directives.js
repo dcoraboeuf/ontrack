@@ -18,10 +18,15 @@ angular.module('ontrack.directives', [])
             }
         };
     })
-    .directive('otNavUser', function () {
+    .directive('otNavUser', ['AuthenticationService', function (authenticationService) {
         return {
             restrict: 'A',
-            templateUrl: 'directives/nav-user.html'
+            templateUrl: 'directives/nav-user.html',
+            controller: function ($scope) {
+                $scope.anonymous = function () {
+                    return authenticationService.anonymous()
+                }
+            }
         }
-    })
+    }])
 ;
