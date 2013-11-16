@@ -6,11 +6,8 @@
 
 /* app css stylesheet */
 
-/* Version information */
-.ot-version {
-    font-size: 75%;
-    color: gray;
-    text-align: center;
+a.ot-nav-text {
+    cursor: text;
 }
 
 /* Page elements */

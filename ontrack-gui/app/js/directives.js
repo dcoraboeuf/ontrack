@@ -4,9 +4,9 @@
 
 
 angular.module('ontrack.directives', [])
-    .directive('appVersion', ['version', function (version) {
-        return function (scope, elm, attrs) {
-            elm.text(version);
+    .directive('appVersion', ['config', function (config) {
+        return function (scope, elm) {
+            elm.text('v' + config.version);
         };
     }])
     .directive('otPageClose', function () {
@@ -20,7 +20,7 @@ angular.module('ontrack.directives', [])
     })
     .directive('otNavUser', function () {
         return {
-            restrict: 'E',
+            restrict: 'A',
             templateUrl: 'directives/nav-user.html'
         }
     })

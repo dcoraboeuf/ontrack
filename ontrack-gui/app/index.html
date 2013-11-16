@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>ontrack</title>
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
 </head>
 <body>
 
@@ -19,17 +19,16 @@
         <a class="navbar-brand" href="#/home">ontrack</a>
     </div>
     <div class="navbar-collapse" ng-hide="isNavbarCollapsed">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav navbar-right">
+            <li ot-nav-user></li>
             <li>
-                <ot-nav-user />
+                <a id="header-version" class="ot-nav-text" app-version></a>
             </li>
         </ul>
     </div>
 </nav>
 
 <div ng-view></div>
-
-<div class="ot-version">ontrack v<span app-version></span></div>
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
