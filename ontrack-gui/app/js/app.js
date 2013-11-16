@@ -18,6 +18,6 @@ angular.module('ontrack', [
         $routeProvider.otherwise({redirectTo: '/home'});
     }])
     .run(['AuthenticationService', function (authenticationService) {
-        // authenticationService.init()
+        authenticationService.init()
     }])
 ;

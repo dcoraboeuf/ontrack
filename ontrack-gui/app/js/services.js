@@ -12,6 +12,25 @@ angular.module('ontrack.services', [])
         $rootScope.anonymous = true;
         $rootScope.accountFullName = '';
 
+        function authenticationOk(authentication) {
+            $rootScope.user = authentication;
+            $rootScope.logged = true;
+            $rootScope.anonymous = false;
+            $rootScope.accountFullName = authentication.fullName;
+        }
+
+        function init() {
+            /**
+             $http
+             .get(config.server + '/api/auth/authenticate', {
+                })
+             .success(authenticationOk)
+             .error(function () {
+                    // Does nothing
+                })
+             */
+        }
+
         function authenticate(name, password, callbackFn) {
             $http
                 .get(config.server + '/api/auth/authenticate',
@@ -21,10 +40,7 @@ angular.module('ontrack.services', [])
                     }
                 })
                 .success(function (authentication) {
-                    $rootScope.user = authentication;
-                    $rootScope.logged = true;
-                    $rootScope.anonymous = false;
-                    $rootScope.accountFullName = authentication.fullName;
+                    authenticationOk(authentication);
                     callbackFn(authentication);
                 })
         }
@@ -39,6 +55,7 @@ angular.module('ontrack.services', [])
         }
 
         return {
+            init: init,
             authenticate: authenticate,
             logout: logout
         }
