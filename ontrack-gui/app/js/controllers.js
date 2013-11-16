@@ -10,6 +10,9 @@ angular.module('ontrack.controllers', [])
             console.log('Collapsed', $scope.isNavbarCollapsed);
         }
     }])
+    .controller('SignInCtrl', [function () {
+
+    }])
     .controller('ProjectListCtrl', ['$scope', '$http', 'config', function ($scope, $http, config) {
         $http
             .get(config.server + '/api/project')
