@@ -28,7 +28,8 @@ angular.module('ontrack.controllers', [])
         $http
             .get(config.api('project'))
             .success(function (data) {
-                $scope.projects = data
+                $scope.projects = data;
+                $scope.projectCreate = data.links.projectCreate;
             })
     }])
     .controller('ProjectCtrl', ['$scope', '$routeParams', '$http', 'config', function ($scope, $routeParams, $http, config) {
