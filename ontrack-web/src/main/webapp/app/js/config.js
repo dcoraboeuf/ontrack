@@ -2,10 +2,16 @@
 
 /* Configuration */
 
-var _version = '2.0-SNAPSHOT'
+var _version = '2.0-SNAPSHOT';
+// @prod
+// var _server = 'http://localhost:8080/ontrack/';
+// @dev
+var _server = '../';
 
 angular.module('ontrack.config', [])
     .value('config', {
-        version: '2.0-SNAPSHOT',
-        server: 'http://localhost:8080/ontrack/'
+        version: _version,
+        api: function (path) {
+            return _server + 'api/' + path
+        }
     });

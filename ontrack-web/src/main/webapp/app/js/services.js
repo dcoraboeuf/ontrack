@@ -21,7 +21,7 @@ angular.module('ontrack.services', [])
 
         function init() {
             $http
-                .get(config.server + '/api/auth/authenticate')
+                .get(config.api('auth/authenticate'))
                 .success(authenticationOk)
                 .error(function () {
                     // Does nothing
@@ -30,7 +30,8 @@ angular.module('ontrack.services', [])
 
         function authenticate(name, password, callbackFn) {
             $http
-                .get(config.server + '/api/auth/authenticate',
+                .get(
+                config.api('auth/authenticate'),
                 {
                     headers: {
                         'Authorization': 'Basic ' + btoa(name + ':' + password)
@@ -43,7 +44,7 @@ angular.module('ontrack.services', [])
         }
 
         function logout(callbackFn) {
-            return $http.get(config.server + '/api/auth/logout').success(function () {
+            return $http.get(config.api('auth/logout')).success(function () {
                 $rootScope.logged = false;
                 $rootScope.anonymous = true;
                 $rootScope.accountFullName = '';
