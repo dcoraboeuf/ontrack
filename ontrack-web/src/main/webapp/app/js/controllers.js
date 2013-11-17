@@ -32,6 +32,20 @@ angular.module('ontrack.controllers', [])
                 $scope.projectCreate = data.links.projectCreate;
             })
     }])
+    .controller('ProjectCreateCtrl', ['$scope', '$http', '$location', 'config', function ($scope, $http, $location, config) {
+        $scope.name = '';
+        $scope.description = '';
+        $scope.create = function () {
+            $http
+                .post(config.api('project'), {
+                    name: $scope.name,
+                    description: $scope.description
+                })
+                .success(function () {
+                    $location.path('/project/' + $scope.name)
+                })
+        }
+    }])
     .controller('ProjectCtrl', ['$scope', '$routeParams', '$http', 'config', function ($scope, $routeParams, $http, config) {
         $http
             .get(config.api('project/' + $routeParams.projectName))
