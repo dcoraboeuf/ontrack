@@ -6,7 +6,7 @@
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('ontrack.services', [])
-    .factory('AuthenticationService', ['$rootScope', '$http', 'config', function ($rootScope, $http, config) {
+    .factory('AuthenticationService', ['$rootScope', '$http', 'config', 'ErrorService', function ($rootScope, $http, config, errorService) {
 
         $rootScope.logged = false;
         $rootScope.anonymous = true;
@@ -28,7 +28,7 @@ angular.module('ontrack.services', [])
                 })
         }
 
-        function authenticate(name, password, callbackFn) {
+        function authenticate(name, password, callbackFn, errorMessageFn) {
             $http
                 .get(
                 config.api('auth/authenticate'),
@@ -40,6 +40,9 @@ angular.module('ontrack.services', [])
                 .success(function (authentication) {
                     authenticationOk(authentication);
                     callbackFn(authentication);
+                })
+                .error(function (text, status) {
+                    errorMessageFn(errorService.errorMsg(text, status))
                 })
         }
 
@@ -62,7 +65,11 @@ angular.module('ontrack.services', [])
     .factory('ErrorService', function () {
         return {
             errorMsg: function (text, status) {
-                return text;
+                if (status == 401) {
+                    return 'Not authenticated';
+                } else {
+                    return text;
+                }
             }
         }
     })

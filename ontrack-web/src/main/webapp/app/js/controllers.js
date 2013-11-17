@@ -17,10 +17,13 @@ angular.module('ontrack.controllers', [])
     .controller('SignInCtrl', ['$scope', '$location', 'AuthenticationService', function ($scope, $location, authenticationService) {
         $scope.name = '';
         $scope.password = '';
+        $scope.error = '';
         $scope.signin = function () {
             authenticationService.authenticate($scope.name, $scope.password, function () {
                 // TODO Redirect to the page in the scope
                 $location.path('/home');
+            }, function (error) {
+                $scope.error = error
             })
         }
     }])
