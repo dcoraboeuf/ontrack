@@ -58,7 +58,6 @@
         <module>ontrack-tx</module>
         <module>ontrack-web-support</module>
         <module>ontrack-acceptance</module>
-        <module>ontrack-gui</module>
     </modules>
 
 	<dependencyManagement>
