@@ -19,17 +19,6 @@
         <async-supported>true</async-supported>
 	</filter>
 
-    <!-- CORS -->
-    <filter>
-        <filter-name>cors</filter-name>
-        <filter-class>net.ontrack.web.support.CorsFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>cors</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
