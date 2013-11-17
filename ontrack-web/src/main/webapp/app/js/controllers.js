@@ -32,7 +32,7 @@ angular.module('ontrack.controllers', [])
                 $scope.projectCreate = data.links.projectCreate;
             })
     }])
-    .controller('ProjectCreateCtrl', ['$scope', '$http', '$location', 'config', function ($scope, $http, $location, config) {
+    .controller('ProjectCreateCtrl', ['$scope', '$http', '$location', 'config', 'ErrorService', function ($scope, $http, $location, config, errorService) {
         $scope.name = '';
         $scope.description = '';
         $scope.error = '';
@@ -46,11 +46,7 @@ angular.module('ontrack.controllers', [])
                     $location.path('/project/' + $scope.name)
                 })
                 .error(function (text, status) {
-                    if (status == 400) {
-                        $scope.error = text;
-                    } else {
-                        // TODO Global error management
-                    }
+                    $scope.error = errorService.errorMsg(text, status)
                 })
         }
     }])

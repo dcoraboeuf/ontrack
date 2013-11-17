@@ -59,4 +59,11 @@ angular.module('ontrack.services', [])
         }
 
     }])
+    .factory('ErrorService', function () {
+        return {
+            errorMsg: function (text, status) {
+                return text;
+            }
+        }
+    })
 ;
