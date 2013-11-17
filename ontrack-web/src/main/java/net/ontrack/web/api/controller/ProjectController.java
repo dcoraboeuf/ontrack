@@ -10,6 +10,8 @@ import net.ontrack.web.api.model.ProjectResource;
 import net.ontrack.web.api.model.ResourceLink;
 import net.ontrack.web.api.model.SimpleResourceCollection;
 import net.ontrack.web.support.EntityConverter;
+import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,8 @@ public class ProjectController extends APIController {
     private final ManagementService managementService;
 
     @Autowired
-    public ProjectController(SecurityUtils securityUtils, EntityConverter entityConverter, ManagementService managementService) {
+    public ProjectController(ErrorHandler errorHandler, Strings strings, SecurityUtils securityUtils, EntityConverter entityConverter, ManagementService managementService) {
+        super(errorHandler, strings);
         this.securityUtils = securityUtils;
         this.entityConverter = entityConverter;
         this.managementService = managementService;

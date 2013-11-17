@@ -35,6 +35,7 @@ angular.module('ontrack.controllers', [])
     .controller('ProjectCreateCtrl', ['$scope', '$http', '$location', 'config', function ($scope, $http, $location, config) {
         $scope.name = '';
         $scope.description = '';
+        $scope.error = '';
         $scope.create = function () {
             $http
                 .post(config.api('project'), {
@@ -43,6 +44,13 @@ angular.module('ontrack.controllers', [])
                 })
                 .success(function () {
                     $location.path('/project/' + $scope.name)
+                })
+                .error(function (text, status) {
+                    if (status == 400) {
+                        $scope.error = text;
+                    } else {
+                        // TODO Global error management
+                    }
                 })
         }
     }])

@@ -3,6 +3,8 @@ package net.ontrack.web.api.controller;
 import net.ontrack.core.model.Account;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.web.api.model.AuthenticationResource;
+import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,20 +16,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/api/auth")
-public class AuthenticationController {
+public class AuthenticationController extends APIController {
 
     private final SecurityUtils securityUtils;
 
     @Autowired
-    public AuthenticationController(SecurityUtils securityUtils) {
+    protected AuthenticationController(ErrorHandler errorHandler, Strings strings, SecurityUtils securityUtils) {
+        super(errorHandler, strings);
         this.securityUtils = securityUtils;
     }
 
     /**
      * The call to this method is protected. The user must provide authentication
      * in order to access this method.
-     *
-     * @return
      */
     @RequestMapping(value = "/authenticate", method = RequestMethod.GET)
     @ResponseBody
