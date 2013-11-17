@@ -12,7 +12,7 @@ http://www.springframework.org/schema/security/spring-security.xsd">
                 logout-url="/api/auth/logout"
                 logout-success-url="/api/auth/logged-out"
                 />
-        <http-basic/>
+        <http-basic entry-point-ref="APIBasicAuthenticationEntryPoint"/>
     </http>
 
     <http pattern="/ui/login">

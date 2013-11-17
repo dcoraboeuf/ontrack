@@ -42,7 +42,11 @@ angular.module('ontrack.services', [])
                     callbackFn(authentication);
                 })
                 .error(function (text, status) {
-                    errorMessageFn(errorService.errorMsg(text, status))
+                    errorMessageFn(
+                        status == 403
+                        ? 'Username and/or password incorrect'
+                        : errorService.errorMsg(text, status)
+                    )
                 })
         }
 
