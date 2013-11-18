@@ -94,9 +94,9 @@ def uploadGithubArtifact(options, releaseId, name, type, path):
     print "Uploading artifact %s to release %s on GitHub from %s..." % (name, options.version, path)
     # Opens the artifact
     data = open(path, 'rb').read()
-	# Computes the SHA1 for this file
-	h = hashlib.sha1(data).hexdigest()
-	# Uploads the SHA1 file
+    # Computes the SHA1 for this file
+    h = hashlib.sha1(data).hexdigest()
+    # Uploads the SHA1 file
     response = callGithub(
         options,
         "https://uploads.github.com/repos/%s/ontrack/releases/%s/assets?name=%s.sha1" % (
@@ -104,7 +104,7 @@ def uploadGithubArtifact(options, releaseId, name, type, path):
         h,
         "text/plain"
     )
-	# Uploads the artifact
+    # Uploads the artifact
     response = callGithub(
         options,
         "https://uploads.github.com/repos/%s/ontrack/releases/%s/assets?name=%s" % (
