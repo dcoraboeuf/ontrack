@@ -3,6 +3,12 @@
 /* Controllers */
 
 angular.module('ontrack.controllers', [])
+    .controller('AlertCtrl', ['$scope', 'AlertService', function ($scope, alertService) {
+        $scope.alert = alertService;
+        $scope.closeAlert = function () {
+            alertService.clear()
+        }
+    }])
     .controller('NavBarCtrl', ['$scope', '$location', '$route', 'AuthenticationService', 'AlertService', function ($scope, $location, $route, authenticationService, alertService) {
         $scope.isNavbarCollapsed = false;
         $scope.collapseNavbar = function () {

@@ -44,8 +44,8 @@ angular.module('ontrack.services', [])
                 .error(function (text, status) {
                     errorMessageFn(
                         status == 403
-                        ? 'Username and/or password incorrect'
-                        : errorService.errorMsg(text, status)
+                            ? 'Username and/or password incorrect'
+                            : errorService.errorMsg(text, status)
                     )
                 })
         }
@@ -77,13 +77,17 @@ angular.module('ontrack.services', [])
             }
         }
     })
-    .factory('AlertService', ['$rootScope', function ($rootScope) {
-        $rootScope.rootMessage = '';
-        $rootScope.rootMessageType = 'success';
+    .factory('AlertService', [function () {
         return {
+            message: '',
+            messageType: 'success',
+            clear: function () {
+                this.message = '';
+                this.messageType = 'success';
+            },
             success: function (message) {
-                $rootScope.rootMessage = message;
-                $rootScope.rootMessageType = 'success';
+                this.message = message;
+                this.messageType = 'success';
             }
         }
     }])
