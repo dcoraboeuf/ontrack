@@ -189,3 +189,7 @@ projectRole.OWNER
 projectRole.VALIDATION_MANAGER
     en -> Validation manager
     fr -> Gestionnaire des validations
+
+projectRole.PROMOTER
+    en -> Promoter
+    fr -> Promoteur
