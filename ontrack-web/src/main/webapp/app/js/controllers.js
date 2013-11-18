@@ -3,14 +3,16 @@
 /* Controllers */
 
 angular.module('ontrack.controllers', [])
-    .controller('NavBarCtrl', ['$rootScope', '$scope', '$location', 'AuthenticationService', function ($rootScope, $scope, $location, authenticationService) {
+    .controller('NavBarCtrl', ['$scope', '$location', '$route', 'AuthenticationService', 'AlertService', function ($scope, $location, $route, authenticationService, alertService) {
         $scope.isNavbarCollapsed = false;
         $scope.collapseNavbar = function () {
             $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
         }
         $scope.signout = function () {
             authenticationService.logout(function () {
-                $location.path('/home')
+                alertService.success('You have been logged out.');
+                $location.path('/home');
+                $route.reload();
             })
         }
     }])

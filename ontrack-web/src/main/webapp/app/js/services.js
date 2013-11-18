@@ -77,4 +77,14 @@ angular.module('ontrack.services', [])
             }
         }
     })
+    .factory('AlertService', ['$rootScope', function ($rootScope) {
+        $rootScope.rootMessage = '';
+        $rootScope.rootMessageType = 'success';
+        return {
+            success: function (message) {
+                $rootScope.rootMessage = message;
+                $rootScope.rootMessageType = 'success';
+            }
+        }
+    }])
 ;

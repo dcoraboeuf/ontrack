@@ -40,6 +40,11 @@
     </div>
 </nav>
 
+<div class="container alert alert-{{rootMessageType}} alert-dismissable" ng-if="rootMessage != ''">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <span>{{rootMessage}}</span>
+</div>
+
 <div class="container" ng-view></div>
 
 <!-- In production use:
