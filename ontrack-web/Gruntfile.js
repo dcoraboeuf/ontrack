@@ -77,6 +77,16 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
+            build_apptpl: {
+                files: [
+                    {
+                        src: [ '<%= app_files.js %>', '<%= app_files.tpl %>' ],
+                        dest: '<%= build_dir %>/',
+                        cwd: '<%= src_dir %>',
+                        expand: true
+                    }
+                ]
+            },
             build_vendorjs: {
                 files: [
                     {
@@ -164,8 +174,8 @@ module.exports = function ( grunt ) {
     grunt.registerTask( 'build', [
         'clean'/*, 'html2js', 'jshint', 'coffeelint', 'coffee'*/, 'less:build'/*,
         'concat:build_css'*/, 'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_vendorjs', 'index:build'/*, 'karmaconfig',
-        'karma:continuous'*/
+        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build'/*,
+        'karmaconfig', 'karma:continuous'*/
     ]);
 
     /**

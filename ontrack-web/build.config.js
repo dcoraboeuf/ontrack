@@ -27,6 +27,7 @@ module.exports = {
      */
     app_files: {
         js: [ '**/*.js', '!**/*.spec.js', '!assets/**/*.js' ],
+        tpl: [ '**/*.tpl.html' ],
         jsunit: [ '**/*.spec.js' ],
 
         coffee: [ '**/*.coffee', '!**/*.spec.coffee' ],
