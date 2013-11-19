@@ -32,9 +32,6 @@ module.exports = {
         coffee: [ '**/*.coffee', '!**/*.spec.coffee' ],
         coffeeunit: [ '**/*.spec.coffee' ],
 
-        atpl: [ 'app/**/*.tpl.html' ],
-        ctpl: [ 'common/**/*.tpl.html' ],
-
         html: [ 'index.html' ],
         less: 'less/main.less'
     },
