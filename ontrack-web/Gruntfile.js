@@ -39,6 +39,65 @@ module.exports = function ( grunt ) {
         ],
 
         /**
+         * The `copy` task just copies files from A to B. We use it here to copy
+         * our project assets (images, fonts, etc.) and javascripts into
+         * `build_dir`, and then to copy the assets to `compile_dir`.
+         */
+        copy: {
+            build_app_assets: {
+                files: [
+                    {
+                        src: [ '**' ],
+                        dest: '<%= build_dir %>/assets/',
+                        cwd: 'src/assets',
+                        expand: true
+                    }
+                ]
+            },
+            build_vendor_assets: {
+                files: [
+                    {
+                        src: [ '<%= vendor_files.assets %>' ],
+                        dest: '<%= build_dir %>/assets/',
+                        cwd: '.',
+                        expand: true,
+                        flatten: true
+                    }
+                ]
+            },
+            build_appjs: {
+                files: [
+                    {
+                        src: [ '<%= app_files.js %>' ],
+                        dest: '<%= build_dir %>/',
+                        cwd: '.',
+                        expand: true
+                    }
+                ]
+            },
+            build_vendorjs: {
+                files: [
+                    {
+                        src: [ '<%= vendor_files.js %>' ],
+                        dest: '<%= build_dir %>/',
+                        cwd: '.',
+                        expand: true
+                    }
+                ]
+            },
+            compile_assets: {
+                files: [
+                    {
+                        src: [ '**' ],
+                        dest: '<%= compile_dir %>/assets',
+                        cwd: '<%= build_dir %>/assets',
+                        expand: true
+                    }
+                ]
+            }
+        },
+
+        /**
          * The `index` task compiles the `index.html` file as a Grunt template. CSS
          * and JS files co-exist here but they get split apart later.
          */
@@ -92,7 +151,7 @@ module.exports = function ( grunt ) {
     grunt.registerTask( 'build', [
         'clean'/*, 'html2js', 'jshint', 'coffeelint', 'coffee', 'recess:build',
         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_vendorjs'*/, 'index:build'/*, 'karmaconfig',
+        'copy:build_appjs'*/, 'copy:build_vendorjs', 'index:build'/*, 'karmaconfig',
         'karma:continuous'*/
     ]);
 
