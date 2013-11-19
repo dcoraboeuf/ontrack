@@ -1,10 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" ng-app="ontrack">
 <head>
     <meta charset="utf-8">
     <title>ontrack</title>
-    <link rel="stylesheet" href="app/css/app.css"/>
-    <link rel="stylesheet" href="app/bootstrap/css/bootstrap.css"/>
+
+    <!-- font awesome from BootstrapCDN -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
+    <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
+
+    <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
+
 </head>
 <body>
 
