@@ -6,14 +6,15 @@ module.exports = {
     /**
      * Root for the SRC files
      */
+    root: 'src/main/webapp/src',
 
     /**
      * The `build_dir` folder is where our projects are compiled during
      * development and the `compile_dir` folder is where our app resides once it's
      * completely built.
      */
-    build_dir: 'build',
-    compile_dir: 'bin',
+    build_dir: '${target}/gui/build',
+    compile_dir: '${target}/gui/bin',
 
     /**
      * This is a collection of file patterns that refer to our app code (the
@@ -25,17 +26,17 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
-        jsunit: [ 'src/**/*.spec.js' ],
+        js: [ '${root}/**/*.js', '!${root}/**/*.spec.js', '!${root}/assets/**/*.js' ],
+        jsunit: [ '${root}/**/*.spec.js' ],
 
-        coffee: [ 'src/**/*.coffee', '!src/**/*.spec.coffee' ],
-        coffeeunit: [ 'src/**/*.spec.coffee' ],
+        coffee: [ '${root}/**/*.coffee', '!${root}/**/*.spec.coffee' ],
+        coffeeunit: [ '${root}/**/*.spec.coffee' ],
 
-        atpl: [ 'src/app/**/*.tpl.html' ],
-        ctpl: [ 'src/common/**/*.tpl.html' ],
+        atpl: [ '${root}/app/**/*.tpl.html' ],
+        ctpl: [ '${root}/common/**/*.tpl.html' ],
 
-        html: [ 'src/index.html' ],
-        less: 'src/less/main.less'
+        html: [ '${root}/index.html' ],
+        less: '${root}/less/main.less'
     }
 
 }
