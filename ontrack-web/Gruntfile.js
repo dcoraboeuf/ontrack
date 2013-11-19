@@ -129,8 +129,8 @@ module.exports = function ( grunt ) {
                     '<%= build_dir %>/app/**/*.js',
                     // '<%= html2js.common.dest %>',
                     // '<%= html2js.app.dest %>',
-                    '<%= vendor_files.css %>'
-                    // '<%= recess.build.dest %>'
+                    '<%= vendor_files.css %>',
+                    '<%= build_dir %>/app/css/**/*.css'
                 ]
             },
 
