@@ -4,7 +4,8 @@
 angular.module('ontrack', [
         'ui.bootstrap',
         'ui.router',
-        'ontrack.home'
+        'ontrack.home',
+        'ontrack.config'
     ])
     .config(function ($httpProvider, $urlRouterProvider) {
         console.log('App init');

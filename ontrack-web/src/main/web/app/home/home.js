@@ -1,5 +1,6 @@
 angular.module('ontrack.home', [
-        'ui.router'
+        'ui.router',
+        'ontrack.service.project'
     ])
 
     .config(function config($stateProvider) {
@@ -16,8 +17,10 @@ angular.module('ontrack.home', [
         })
     })
 
-    .controller('HomeCtrl', function HomeController($scope) {
-        console.log('Registering /home');
+    .controller('HomeCtrl', function HomeController($scope, projectService) {
+        projectService.projectList(function (projectList) {
+            $scope.projectList = projectList
+        });
     })
 
 ;
