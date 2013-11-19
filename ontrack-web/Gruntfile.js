@@ -121,6 +121,36 @@ module.exports = function ( grunt ) {
         },
 
         /**
+         * `jshint` defines the rules of our linter as well as which files we
+         * should check. This file, all javascript sources, and all our unit tests
+         * are linted based on the policies listed in `options`. But we can also
+         * specify exclusionary patterns by prefixing them with an exclamation
+         * point (!); this is useful when code comes from a third party but is
+         * nonetheless inside `src/`.
+         */
+        jshint: {
+            src: [
+                '<%= src_dir %>/<%= app_files.js %>'
+            ],/*
+            test: [
+                '<%= app_files.jsunit %>'
+            ],*/
+            gruntfile: [
+                'Gruntfile.js'
+            ],
+            options: {
+                curly: true,
+                immed: true,
+                newcap: true,
+                noarg: true,
+                sub: true,
+                boss: true,
+                eqnull: true
+            },
+            globals: {}
+        },
+
+        /**
          * The `index` task compiles the `index.html` file as a Grunt template. CSS
          * and JS files co-exist here but they get split apart later.
          */
@@ -159,7 +189,7 @@ module.exports = function ( grunt ) {
             }
         }
 
-    }
+    };
 
     grunt.initConfig( grunt.util._.extend( taskConfig, userConfig ) );
 
@@ -172,10 +202,14 @@ module.exports = function ( grunt ) {
      * The `build` task gets your app ready to run for development and testing.
      */
     grunt.registerTask( 'build', [
-        'clean'/*, 'html2js', 'jshint', 'coffeelint', 'coffee'*/, 'less:build'/*,
-        'concat:build_css'*/, 'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build'/*,
-        'karmaconfig', 'karma:continuous'*/
+        'clean', 'jshint', 'less:build',
+        'copy:build_app_assets', 'copy:build_vendor_assets',
+        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build'
+        /*
+        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
+         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
+        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build',
+         'karmaconfig', 'karma:continuous'*/
     ]);
 
     /**
@@ -223,4 +257,4 @@ module.exports = function ( grunt ) {
             }
         });
     });
-}
+};
