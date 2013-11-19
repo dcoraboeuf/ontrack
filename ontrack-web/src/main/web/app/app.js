@@ -2,15 +2,16 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('ontrack', [
-        'ngRoute',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'ui.router',
+        'ontrack.home'
     ])
-    .config(function ($routeProvider, $httpProvider) {
+    .config(function ($httpProvider, $urlRouterProvider) {
         console.log('App init');
         // Authentication using cookies and CORS protection
         $httpProvider.defaults.withCredentials = true;
         // Route set-up
-        $routeProvider.otherwise({redirectTo: '/home'});
+        $urlRouterProvider.otherwise('/home');
     })
     // .run(['AuthenticationService', function (authenticationService) {
     //     authenticationService.init()

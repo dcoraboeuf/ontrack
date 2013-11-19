@@ -3,7 +3,6 @@
     "version": "2.0.0",
     "devDependencies": {
         "angular": "~1.2.0",
-        "angular-route": "~1.2.0",
         "angular-mocks": "~1.0.7",
         "bootstrap": "~3.0.2",
         "angular-bootstrap": "~0.6.0",
