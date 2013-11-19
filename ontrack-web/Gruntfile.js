@@ -34,7 +34,9 @@ module.exports = function ( grunt ) {
          * The directories to delete when `grunt clean` is executed.
          */
         clean: [
-            '<%= build_dir %>',
+            '<%= build_dir %>/index.html',
+            '<%= build_dir %>/app',
+            '<%= build_dir %>/vendor',
             '<%= compile_dir %>'
         ],
 
@@ -49,7 +51,7 @@ module.exports = function ( grunt ) {
                     {
                         src: [ '**' ],
                         dest: '<%= build_dir %>/assets/',
-                        cwd: 'src/assets',
+                        cwd: '<%= src_dir %>/assets',
                         expand: true
                     }
                 ]
@@ -70,7 +72,7 @@ module.exports = function ( grunt ) {
                     {
                         src: [ '<%= app_files.js %>' ],
                         dest: '<%= build_dir %>/',
-                        cwd: '.',
+                        cwd: '<%= src_dir %>',
                         expand: true
                     }
                 ]
@@ -188,7 +190,7 @@ module.exports = function ( grunt ) {
             return file.replace( dirRE, '' );
         });
 
-        grunt.file.copy(grunt.config('root')+'/index.html', this.data.dir + '/index.html', {
+        grunt.file.copy(grunt.config('src_dir')+'/index.html', this.data.dir + '/index.html', {
             process: function ( contents, path ) {
                 return grunt.template.process( contents, {
                     data: {

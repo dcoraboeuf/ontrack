@@ -2,5 +2,6 @@ node_modules
 vendor
 *.sw*
 *~
-src/main/webapp/build
-
+src/main/webapp/app
+src/main/webapp/vendor
+src/main/webapp/index.html

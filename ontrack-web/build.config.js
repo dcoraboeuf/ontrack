@@ -6,15 +6,15 @@ module.exports = {
     /**
      * Root for the SRC files
      */
-    root: 'src/main/webapp/src',
+    src_dir: 'src/main/web',
 
     /**
      * The `build_dir` folder is where our projects are compiled during
      * development and the `compile_dir` folder is where our app resides once it's
      * completely built.
      */
-    build_dir: 'src/main/webapp/build',
-    compile_dir: 'target/gui/bin',
+    build_dir: 'src/main/webapp',
+    compile_dir: 'target/web',
 
     /**
      * This is a collection of file patterns that refer to our app code (the
@@ -26,17 +26,17 @@ module.exports = {
      * app's unit tests.
      */
     app_files: {
-        js: [ 'src/main/webapp/src/**/*.js', '!src/main/webapp/src/**/*.spec.js', '!src/main/webapp/src/assets/**/*.js' ],
-        jsunit: [ 'src/main/webapp/src/**/*.spec.js' ],
+        js: [ '**/*.js', '!**/*.spec.js', '!assets/**/*.js' ],
+        jsunit: [ '**/*.spec.js' ],
 
-        coffee: [ 'src/main/webapp/src/**/*.coffee', '!src/main/webapp/src/**/*.spec.coffee' ],
-        coffeeunit: [ 'src/main/webapp/src/**/*.spec.coffee' ],
+        coffee: [ '**/*.coffee', '!**/*.spec.coffee' ],
+        coffeeunit: [ '**/*.spec.coffee' ],
 
-        atpl: [ 'src/main/webapp/src/app/**/*.tpl.html' ],
-        ctpl: [ 'src/main/webapp/src/common/**/*.tpl.html' ],
+        atpl: [ 'app/**/*.tpl.html' ],
+        ctpl: [ 'common/**/*.tpl.html' ],
 
-        html: [ 'src/main/webapp/src/index.html' ],
-        less: 'src/main/webapp/src/less/main.less'
+        html: [ 'index.html' ],
+        less: 'less/main.less'
     },
 
     /**
