@@ -61,9 +61,9 @@ module.exports = {
         js: [
             'vendor/angular/angular.js',
             'vendor/angular-route/angular-route.js',
-            'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-            'vendor/angular-ui-router/release/angular-ui-router.js',
-            'vendor/angular-ui-utils/modules/route/route.js'
+            'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js'
+            // 'vendor/angular-ui-router/release/angular-ui-router.js',
+            // 'vendor/angular-ui-utils/modules/route/route.js'
         ],
         css: [
         ],
