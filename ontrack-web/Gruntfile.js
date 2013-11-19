@@ -11,10 +11,10 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-coffee');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-conventional-changelog');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-coffeelint');
-    grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-html2js');
@@ -99,6 +99,17 @@ module.exports = function ( grunt ) {
             }
         },
 
+        less: {
+            build: {
+                options: {
+                    paths: ['<%= src_dir %>/<%= build_dir %>/app/css']
+                },
+                files: [{
+                    '<%= build_dir %>/app/css/main.css': '<%= src_dir %>/<%= app_files.less %>'
+                }]
+            }
+        },
+
         /**
          * The `index` task compiles the `index.html` file as a Grunt template. CSS
          * and JS files co-exist here but they get split apart later.
@@ -151,7 +162,7 @@ module.exports = function ( grunt ) {
      * The `build` task gets your app ready to run for development and testing.
      */
     grunt.registerTask( 'build', [
-        'clean'/*, 'html2js', 'jshint', 'coffeelint', 'coffee', 'recess:build',
+        'clean'/*, 'html2js', 'jshint', 'coffeelint', 'coffee'*/, 'less:build'/*,
         'concat:build_css'*/, 'copy:build_app_assets', 'copy:build_vendor_assets',
         'copy:build_appjs', 'copy:build_vendorjs', 'index:build'/*, 'karmaconfig',
         'karma:continuous'*/
