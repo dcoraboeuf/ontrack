@@ -6,6 +6,7 @@ angular.module('ontrack', [
         'ui.bootstrap'
     ])
     .config(function ($routeProvider, $httpProvider) {
+        console.log('App init');
         // Authentication using cookies and CORS protection
         $httpProvider.defaults.withCredentials = true;
         // Route set-up

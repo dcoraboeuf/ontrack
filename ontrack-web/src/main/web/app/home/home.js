@@ -1,11 +1,13 @@
 angular.module('ontrack.home', [
     ])
 
-    .config(function config($routeProvider) {
-        $routeProvider.when('/home', {templateUrl: 'home/home.html', controller: 'HomeCtrl'});
+    .config(function config($route) {
+        console.log('Home init');
+        $route.when('/home', {templateUrl: 'app/home/home.html', controller: 'HomeCtrl'});
     })
 
     .controller('HomeCtrl', function HomeController($scope) {
+        console.log('Registering /home');
     })
 
 ;
