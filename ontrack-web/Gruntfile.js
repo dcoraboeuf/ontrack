@@ -280,7 +280,7 @@ module.exports = function ( grunt ) {
              */
             less: {
                 files: [ 'src/**/*.less' ],
-                tasks: [ 'recess:build' ]
+                tasks: [ 'less:build' ]
             },
 
             /**
