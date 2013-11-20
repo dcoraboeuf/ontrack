@@ -59,7 +59,8 @@ module.exports = function ( grunt ) {
             '<%= dev_dir %>/index.html',
             '<%= dev_dir %>/app',
             '<%= dev_dir %>/vendor',
-            '<%= prod_dir %>'
+            '<%= prod_dir %>/index.html',
+            '<%= prod_dir %>/assets'
         ],
 
         /**
@@ -122,9 +123,9 @@ module.exports = function ( grunt ) {
             prod_assets: {
                 files: [
                     {
+                        cwd: '<%= src_dir %>/assets',
                         src: [ '**' ],
                         dest: '<%= prod_dir %>/assets',
-                        cwd: '<%= dev_dir %>/assets',
                         expand: true
                     }
                 ]

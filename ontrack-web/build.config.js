@@ -14,7 +14,7 @@ module.exports = {
      * completely built.
      */
     dev_dir: 'src/main/webapp',
-    prod_dir: 'target/web/dist',
+    prod_dir: 'src/main/webapp',
     temp_dir: 'target/web/temp',
 
     /**
