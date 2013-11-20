@@ -1,11 +1,12 @@
 angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.core'])
-    .service('securityService', function securityService($http, config, errorService) {
+    .service('securityService', function securityService($http, $log, config, errorService) {
 
         var self = {
             user: undefined
         };
 
         self.authenticationOk = function (user) {
+            $log.info('[sec] User logged in: ' + user.name);
             self.user = user;
         };
 

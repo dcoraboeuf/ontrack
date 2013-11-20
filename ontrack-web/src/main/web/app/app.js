@@ -24,6 +24,9 @@ angular.module('ontrack', [
         $scope.logged = function () {
             return angular.isDefined(securityService.user);
         }
+        $scope.user = function () {
+            return securityService.user;
+        }
         // Collapses the navigation bar
         $scope.collapseNavbar = function () {
             $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
