@@ -18,8 +18,21 @@ angular.module('ontrack', [
     .run(function (securityService) {
         securityService.init()
     })
-    .controller('AppCtrl', function AppCtrl($scope, $location, securityService) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, securityService, notificationService) {
         $scope.isNavbarCollapsed = false;
+        // Notifications
+        $scope.hasNotification = function () {
+            return angular.isDefined(notificationService.message);
+        }
+        $scope.notification = function () {
+            return notificationService.message;
+        }
+        $scope.notificationType = function () {
+            return notificationService.messageType;
+        }
+        $scope.closeNotification = function () {
+            notificationService.clear();
+        }
         // Looks for the user
         $scope.logged = function () {
             return angular.isDefined(securityService.user);
@@ -34,10 +47,12 @@ angular.module('ontrack', [
         // Signing out
         $scope.signout = function () {
             securityService.logout(function () {
-                // TODO alertService.success('You have been logged out.');
-                $location.path('/home');
+                // Success
+                notificationService.success('You have been logged out.');
                 // Broadcasts the logout event
                 $scope.$broadcast('$ontrackLoggedOut');
+                // Goes to the home page
+                $location.path('/home');
             })
         }
     })
