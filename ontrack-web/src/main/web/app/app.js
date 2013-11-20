@@ -49,8 +49,11 @@ angular.module('ontrack', [
     .controller('AppCtrl', function AppCtrl($scope, $location, config, securityService, notificationService) {
         $scope.isNavbarCollapsed = false;
         $scope.version = config.version;
-        // Page title
+        // On state change
         $scope.$on('$stateChangeSuccess', function (event, toState) {
+            // Clears any notification
+            notificationService.clear();
+            // Page title
             if (angular.isDefined(toState.data.pageTitle)) {
                 $scope.pageTitle = toState.data.pageTitle + ' | ontrack';
             }
