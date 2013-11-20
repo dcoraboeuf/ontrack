@@ -28,20 +28,19 @@
     </div>
     <div class="navbar-collapse" ng-hide="isNavbarCollapsed">
         <ul class="nav navbar-nav navbar-right">
-            <!-- TODO <li ng-if="anonymous">-->
-            <li>
+            <li ng-hide="logged()">
                 <a id="header-signin" href="#/signin">Sign in</a>
             </li>
-            <!-- TODO <li ng-if="logged" class="dropdown">-->
-                <!--<a class="dropdown-toggle" data-toggle="dropdown">-->
-                    <!--<span class="glyphicon glyphicon-user"></span>-->
-                    <!--{{accountFullName}}-->
-                    <!--<b class="caret"></b>-->
-                <!--</a>-->
-                <!--<ul class="dropdown-menu" role="menu">-->
-                    <!--<li><a id="header-signout" ng-click="signout()">Logout</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
+             <li ng-show="logged()" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-user"></span>
+                    TODO User
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a id="header-signout" ng-click="signout()">Logout</a></li>
+                </ul>
+            </li>
             <!--<li> TODO Version in footer -->
                 <!--<a id="header-version" class="ot-nav-text" app-version></a>-->
             <!--</li>-->
