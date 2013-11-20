@@ -398,14 +398,14 @@ module.exports = function ( grunt ) {
     // grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
 
     /**
-     * The default task is to build and prod.
+     * The default task is to dev and prod.
      */
-    grunt.registerTask( 'default', [ 'build', 'prod' ] );
+    grunt.registerTask( 'default', [ 'dev', 'prod' ] );
 
     /**
-     * The `build` task gets your app ready to run for development and testing.
+     * The `dev` task gets your app ready to run for development and testing.
      */
-    grunt.registerTask( 'build', [
+    grunt.registerTask( 'dev', [
         'clean', 'jshint', 'less:dev',
         'copy:dev_app_assets', 'copy:dev_vendor_assets',
         'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'index:dev'
