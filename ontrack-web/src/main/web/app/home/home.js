@@ -17,10 +17,21 @@ angular.module('ontrack.home', [
     })
 
     .controller('HomeCtrl', function HomeController($scope, projectService) {
-        projectService.projectList(function (projectList) {
-            $scope.projectList = projectList;
-            $scope.projectCreate = projectList.links.projectCreate;
+
+        // Loads the project list
+        function loadProjectList() {
+            projectService.projectList(function (projectList) {
+                $scope.projectList = projectList;
+                $scope.projectCreate = projectList.links.projectCreate;
+            });
+        }
+
+        // On logged out event, reloads the project list
+        $scope.$on("$ontrackLoggedOut", function () {
+            loadProjectList();
         });
+        // Loads the project list
+        loadProjectList();
     })
 
 ;

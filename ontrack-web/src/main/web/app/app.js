@@ -36,7 +36,8 @@ angular.module('ontrack', [
             securityService.logout(function () {
                 // TODO alertService.success('You have been logged out.');
                 $location.path('/home');
-                // TODO Reloads the page?
+                // Broadcasts the logout event
+                $scope.$broadcast('$ontrackLoggedOut');
             })
         }
     })
