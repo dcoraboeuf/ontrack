@@ -146,7 +146,7 @@ module.exports = function ( grunt ) {
                 src: [
                     '<%= vendor_files.js %>',
                     'module.prefix',
-                    '<%= tmp_dir %>/**/*.js',
+                    '<%= temp_dir %>/**/*.js',
                     // TODO '<%= html2js.app.dest %>',
                     // TODO '<%= html2js.common.dest %>',
                     'module.suffix'
