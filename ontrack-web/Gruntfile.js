@@ -228,7 +228,7 @@ module.exports = function ( grunt ) {
                     module: 'ontrack-templates'
                 },
                 src: [ '<%= src_dir %>/<%= app_files.tpl %>' ],
-                dest: '<%= temp_dir %>'
+                dest: '<%= temp_dir %>/ontrack-templates.js'
             }
         },
 
@@ -469,7 +469,7 @@ module.exports = function ( grunt ) {
         'clean',
         'less:prod',
         'copy:prod_assets',
-        // TODO 'html2js:prod',
+        'html2js:prod',
         'ngmin:prod',
         'concat:prod_js',
         'uglify:prod',
