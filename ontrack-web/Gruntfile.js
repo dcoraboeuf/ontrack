@@ -228,7 +228,7 @@ module.exports = function ( grunt ) {
              */
             jssrc: {
                 files: [
-                    '<%= src_dir %>/<%= app_files.js %>'
+                    '<%= src_dir %>/**/*.js '
                 ],
                 tasks: [ 'jshint:src', 'copy:build_appjs' ]
                 // tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
