@@ -56,6 +56,7 @@ module.exports = function ( grunt ) {
          * The directories to delete when `grunt clean` is executed.
          */
         clean: [
+            '<%= temp_dir %>',
             '<%= dev_dir %>/index.html',
             '<%= dev_dir %>/app',
             '<%= dev_dir %>/vendor',
