@@ -223,6 +223,20 @@ module.exports = function ( grunt ) {
         },
 
         /**
+         * Minify the sources!
+         */
+        uglify: {
+            prod: {
+                options: {
+                    banner: '<%= meta.banner %>'
+                },
+                files: {
+                    '<%= concat.prod_js.dest %>': '<%= concat.prod_js.dest %>'
+                }
+            }
+        },
+
+        /**
          * The `index` task compiles the `index.html` file as a Grunt template. CSS
          * and JS files co-exist here but they get split apart later.
          */
@@ -421,7 +435,7 @@ module.exports = function ( grunt ) {
      * minifying your code.
      */
     grunt.registerTask( 'prod', [
-        'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js'/*, 'uglify'*/, 'index:prod'
+        'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js', 'uglify:prod', 'index:prod'
     ]);
 
     /**
