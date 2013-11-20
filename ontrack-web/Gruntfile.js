@@ -447,14 +447,18 @@ module.exports = function ( grunt ) {
      * The `dev` task gets your app ready to run for development and testing.
      */
     grunt.registerTask( 'dev', [
-        'clean', 'jshint', 'less:dev',
-        'copy:dev_app_assets', 'copy:dev_vendor_assets',
-        'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'html2js:dev', 'index:dev'
-        /*
-        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:dev',
-         'concat:dev_css', 'copy:dev_app_assets', 'copy:dev_vendor_assets',
-        'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'index:dev',
-         'karmaconfig', 'karma:continuous'*/
+        'clean',
+        'jshint',
+        'less:dev',
+        'copy:dev_app_assets',
+        'copy:dev_vendor_assets',
+        'copy:dev_appjs',
+        'copy:dev_apptpl',
+        'copy:dev_vendorjs',
+        'html2js:dev',
+        'index:dev'
+        // 'karmaconfig'
+        // 'karma:continuous'
     ]);
 
     /**
