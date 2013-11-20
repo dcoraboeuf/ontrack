@@ -14,7 +14,8 @@ module.exports = {
      * completely built.
      */
     dev_dir: 'src/main/webapp',
-    prod_dir: 'target/web',
+    prod_dir: 'target/web/dist',
+    temp_dir: 'target/web/temp',
 
     /**
      * This is a collection of file patterns that refer to our app code (the

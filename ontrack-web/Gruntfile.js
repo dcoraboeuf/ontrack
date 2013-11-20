@@ -160,6 +160,23 @@ module.exports = function ( grunt ) {
         },
 
         /**
+         * `ng-min` annotates the sources before minifying. That is, it allows us
+         * to code without the array syntax.
+         */
+        ngmin: {
+            prod: {
+                files: [
+                    {
+                        src: [ '<%= app_files.js %>' ],
+                        cwd: '<%= src_dir %>',
+                        dest: '<%= temp_dir %>',
+                        expand: true
+                    }
+                ]
+            }
+        },
+
+        /**
          * The `index` task compiles the `index.html` file as a Grunt template. CSS
          * and JS files co-exist here but they get split apart later.
          */
@@ -358,7 +375,7 @@ module.exports = function ( grunt ) {
      * minifying your code.
      */
     grunt.registerTask( 'prod', [
-        'less:prod', 'copy:prod_assets'/*, 'ngmin', 'concat:compile_js', 'uglify'*/, 'index:prod'
+        'less:prod', 'copy:prod_assets', 'ngmin:prod'/*, 'concat:compile_js', 'uglify'*/, 'index:prod'
     ]);
 
     /**
