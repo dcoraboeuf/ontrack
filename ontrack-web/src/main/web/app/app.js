@@ -18,7 +18,7 @@ angular.module('ontrack', [
     // .run(['AuthenticationService', function (authenticationService) {
     //     authenticationService.init()
     // }])
-    .controller('AppCtrl', function AppCtrl($scope, securityService) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, securityService) {
         $scope.isNavbarCollapsed = false;
         // Looks for the user
         $scope.logged = function () {
@@ -30,6 +30,14 @@ angular.module('ontrack', [
         // Collapses the navigation bar
         $scope.collapseNavbar = function () {
             $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
+        }
+        // Signing out
+        $scope.signout = function () {
+            securityService.logout(function () {
+                // TODO alertService.success('You have been logged out.');
+                $location.path('/home');
+                // TODO Reloads the page?
+            })
         }
     })
 ;

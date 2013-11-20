@@ -6,7 +6,7 @@ angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.c
         };
 
         self.authenticationOk = function (user) {
-            $log.info('[sec] User logged in: ' + user.name);
+            $log.debug('[sec] User logged in: ' + user.name);
             self.user = user;
         };
 
@@ -30,6 +30,14 @@ angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.c
                             : errorService.errorMsg(text, status)
                     )
                 })
+        };
+
+        self.logout = function (callbackFn) {
+            return $http.get(config.api('auth/logout')).success(function () {
+                $log.debug('[sec] User logged out: ' + self.user.name);
+                self.user = undefined;
+                callbackFn();
+            })
         };
 
         return self;
