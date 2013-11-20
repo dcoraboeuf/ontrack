@@ -7,7 +7,6 @@ angular.module('ontrack.service.project', ['ontrack.config'])
                     .success(function (data) {
                         successFn(data)
                     })
-                // TODO Error mgt
             }
         }
     })
