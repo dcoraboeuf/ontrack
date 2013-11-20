@@ -11,6 +11,8 @@ angular.module('ontrack', [
         'ontrack.service.security'
     ])
     .config(function ($httpProvider, $urlRouterProvider) {
+        // Default error management
+        $httpProvider.interceptors.push('httpErrorInterceptor');
         // Authentication using cookies and CORS protection
         $httpProvider.defaults.withCredentials = true;
         // Route set-up
@@ -18,6 +20,31 @@ angular.module('ontrack', [
     })
     .run(function (securityService) {
         securityService.init()
+    })
+    .factory('httpErrorInterceptor', function ($q, $log, $interpolate, notificationService, errorService) {
+        return {
+            'responseError': function (rejection) {
+                var status = rejection.status;
+                var method = rejection.config.method;
+                var url = rejection.config.url;
+                // Logging
+                var log = $interpolate('[app] HTTP error {{status}} for {{method}} {{url}}')({
+                    status: status,
+                    method: method,
+                    url: url
+                });
+                $log.error(log);
+                // Displays a notification
+                notificationService.error(
+                    errorService.errorMsg(
+                        rejection.data,
+                        status
+                    )
+                );
+                // Standard behaviour
+                return $q.reject(rejection);
+            }
+        }
     })
     .controller('AppCtrl', function AppCtrl($scope, $location, config, securityService, notificationService) {
         $scope.isNavbarCollapsed = false;
