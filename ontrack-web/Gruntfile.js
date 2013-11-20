@@ -31,6 +31,28 @@ module.exports = function ( grunt ) {
     var taskConfig = {
 
         /**
+         * We read in our `package.json` file so we can access the package name and
+         * version. It's already there, so we don't repeat ourselves here.
+         */
+        pkg: grunt.file.readJSON("package.json"),
+
+        /**
+         * The banner is the comment that is placed at the top of our compiled
+         * source files. It is first processed as a Grunt template, where the `<%=`
+         * pairs are evaluated based on this very configuration object.
+         */
+        meta: {
+            banner:
+                '/**\n' +
+                    ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                    ' * <%= pkg.homepage %>\n' +
+                    ' *\n' +
+                    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+                    ' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +
+                    ' */\n'
+        },
+
+        /**
          * The directories to delete when `grunt clean` is executed.
          */
         clean: [
@@ -106,6 +128,30 @@ module.exports = function ( grunt ) {
                         expand: true
                     }
                 ]
+            }
+        },
+
+        /**
+         * `grunt concat` concatenates multiple source files into a single file.
+         */
+        concat: {
+            /**
+             * The `prod_js` target is the concatenation of our application source
+             * code and all specified vendor source code into a single file.
+             */
+            prod_js: {
+                options: {
+                    banner: '<%= meta.banner %>'
+                },
+                src: [
+                    '<%= vendor_files.js %>',
+                    'module.prefix',
+                    '<%= tmp_dir %>/**/*.js',
+                    // TODO '<%= html2js.app.dest %>',
+                    // TODO '<%= html2js.common.dest %>',
+                    'module.suffix'
+                ],
+                dest: '<%= prod_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
             }
         },
 
@@ -375,7 +421,7 @@ module.exports = function ( grunt ) {
      * minifying your code.
      */
     grunt.registerTask( 'prod', [
-        'less:prod', 'copy:prod_assets', 'ngmin:prod'/*, 'concat:compile_js', 'uglify'*/, 'index:prod'
+        'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js'/*, 'uglify'*/, 'index:prod'
     ]);
 
     /**

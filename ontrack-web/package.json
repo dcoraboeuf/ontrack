@@ -4,7 +4,8 @@
     "version": "2.0.0",
     "homepage": "https://github.com/dcoraboeuf/ontrack",
     "licenses": {
-        "type": "MIT"
+        "type": "MIT",
+        "url": "https://raw.github.com/dcoraboeuf/ontrack/master/LICENSE"
     },
     "bugs": "https://github.com/dcoraboeuf/ontrack/issues",
     "repository": {
