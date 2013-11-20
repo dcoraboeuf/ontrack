@@ -435,8 +435,8 @@ module.exports = function ( grunt ) {
      * before watching for changes.
      */
     grunt.renameTask( 'watch', 'delta' );
-    grunt.registerTask( 'watch', [ 'build', 'delta' ] );
-    // grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
+    grunt.registerTask( 'watch', [ 'dev', 'delta' ] );
+    // TODO 'karma:unit'
 
     /**
      * The default task is to dev and prod.
