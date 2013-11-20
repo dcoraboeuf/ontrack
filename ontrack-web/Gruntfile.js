@@ -46,7 +46,7 @@ module.exports = function ( grunt ) {
          * `dev_dir`, and then to copy the assets to `prod_dir`.
          */
         copy: {
-            build_app_assets: {
+            dev_app_assets: {
                 files: [
                     {
                         src: [ '**' ],
@@ -56,7 +56,7 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
-            build_vendor_assets: {
+            dev_vendor_assets: {
                 files: [
                     {
                         src: [ '<%= vendor_files.assets %>' ],
@@ -67,7 +67,7 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
-            build_appjs: {
+            dev_appjs: {
                 files: [
                     {
                         src: [ '<%= app_files.js %>' ],
@@ -77,7 +77,7 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
-            build_apptpl: {
+            dev_apptpl: {
                 files: [
                     {
                         src: [ '<%= app_files.tpl %>' ],
@@ -87,7 +87,7 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
-            build_vendorjs: {
+            dev_vendorjs: {
                 files: [
                     {
                         src: [ '<%= vendor_files.js %>' ],
@@ -97,7 +97,7 @@ module.exports = function ( grunt ) {
                     }
                 ]
             },
-            compile_assets: {
+            prod_assets: {
                 files: [
                     {
                         src: [ '**' ],
@@ -110,7 +110,7 @@ module.exports = function ( grunt ) {
         },
 
         less: {
-            build: {
+            dev: {
                 options: {
                     paths: ['<%= src_dir %>/<%= dev_dir %>/app/css']
                 },
@@ -162,7 +162,7 @@ module.exports = function ( grunt ) {
              * add all script files directly to the `<head>` of `index.html`. The
              * `src` property contains the list of included files.
              */
-            build: {
+            dev: {
                 dir: '<%= dev_dir %>',
                 src: [
                     '<%= vendor_files.js %>',
@@ -230,8 +230,8 @@ module.exports = function ( grunt ) {
                 files: [
                     '<%= src_dir %>/**/*.js '
                 ],
-                tasks: [ 'jshint:src', 'copy:build_appjs' ]
-                // tasks: [ 'jshint:src', 'karma:unit:run', 'copy:build_appjs' ]
+                tasks: [ 'jshint:src', 'copy:dev_appjs' ]
+                // tasks: [ 'jshint:src', 'karma:unit:run', 'copy:dev_appjs' ]
             },
 
             /**
@@ -243,7 +243,7 @@ module.exports = function ( grunt ) {
                 files: [
                     '<%= app_files.coffee %>'
                 ],
-                tasks: [ 'coffeelint:src', 'coffee:source', 'karma:unit:run', 'copy:build_appjs' ]
+                tasks: [ 'coffeelint:src', 'coffee:source', 'karma:unit:run', 'copy:dev_appjs' ]
             },*/
 
             /**
@@ -254,7 +254,7 @@ module.exports = function ( grunt ) {
                 files: [
                     'src/assets/**/*'
                 ],
-                tasks: [ 'copy:build_assets' ]
+                tasks: [ 'copy:dev_app_assets' ]
             },
 
             /**
@@ -262,7 +262,7 @@ module.exports = function ( grunt ) {
              */
             html: {
                 files: [ '<%= src_dir %>/<%= app_files.html %>' ],
-                tasks: [ 'index:build' ]
+                tasks: [ 'index:dev' ]
             },
 
             /**
@@ -272,7 +272,7 @@ module.exports = function ( grunt ) {
                 files: [
                     '<%= src_dir %>/<%= app_files.tpl %>'
                 ],
-                tasks: [ 'copy:build_apptpl' ]
+                tasks: [ 'copy:dev_apptpl' ]
             },
 
             /**
@@ -280,7 +280,7 @@ module.exports = function ( grunt ) {
              */
             less: {
                 files: [ 'src/**/*.less' ],
-                tasks: [ 'less:build' ]
+                tasks: [ 'less:dev' ]
             },
 
             /**
@@ -336,13 +336,13 @@ module.exports = function ( grunt ) {
      * The `build` task gets your app ready to run for development and testing.
      */
     grunt.registerTask( 'build', [
-        'clean', 'jshint', 'less:build',
-        'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build'
+        'clean', 'jshint', 'less:dev',
+        'copy:dev_app_assets', 'copy:dev_vendor_assets',
+        'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'index:dev'
         /*
-        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
-         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-        'copy:build_appjs', 'copy:build_apptpl', 'copy:build_vendorjs', 'index:build',
+        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:dev',
+         'concat:dev_css', 'copy:dev_app_assets', 'copy:dev_vendor_assets',
+        'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'index:dev',
          'karmaconfig', 'karma:continuous'*/
     ]);
 
