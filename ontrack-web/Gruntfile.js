@@ -179,12 +179,12 @@ module.exports = function ( grunt ) {
              * alter the above to include only a single JavaScript and a single CSS
              * file. Now we're back!
              */
-            compile: {
+            prod: {
                 dir: '<%= prod_dir %>',
                 src: [
-                    '<%= concat.compile_js.dest %>',
+                    '<%= concat.prod_js.dest %>',
                     '<%= vendor_files.css %>',
-                    '<%= recess.compile.dest %>'
+                    '<%= recess.prod.dest %>'
                 ]
             }
         },
@@ -328,9 +328,9 @@ module.exports = function ( grunt ) {
     // grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
 
     /**
-     * The default task is to build and compile.
+     * The default task is to build and prod.
      */
-    grunt.registerTask( 'default', [ 'build'/*, 'compile'*/ ] );
+    grunt.registerTask( 'default', [ 'build'/*, 'prod'*/ ] );
 
     /**
      * The `build` task gets your app ready to run for development and testing.
