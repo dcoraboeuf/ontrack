@@ -26,6 +26,7 @@ angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.c
                 .get(
                 config.api('auth/authenticate'),
                 {
+                    ontrackIgnoreError: true,
                     headers: {
                         'Authorization': 'Basic ' + btoa(name + ':' + password)
                     }
