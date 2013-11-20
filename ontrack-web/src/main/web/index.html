@@ -24,7 +24,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#/home">ontrack</a>
+        <a class="navbar-brand" href="#/home">
+            <img class="ot-logo" src="assets/logo.png" />
+            ontrack
+        </a>
     </div>
     <div class="navbar-collapse" ng-hide="isNavbarCollapsed">
         <ul class="nav navbar-nav navbar-right">
@@ -57,9 +60,9 @@
 
 <div class="container" ui-view="main"></div>
 
-<footer class="footer">
+<footer class="ot-footer">
     <div class="container">
-        <div class="footer-inner">
+        <div class="ot-footer-inner">
             <p>
                 <a href="https://github.com/dcoraboeuf/ontrack">v{{version}}</a>
             </p>
