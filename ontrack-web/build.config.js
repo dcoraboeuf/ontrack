@@ -9,12 +9,12 @@ module.exports = {
     src_dir: 'src/main/web',
 
     /**
-     * The `build_dir` folder is where our projects are compiled during
-     * development and the `compile_dir` folder is where our app resides once it's
+     * The `dev_dir` folder is where our projects are compiled during
+     * development and the `prod_dir` folder is where our app resides once it's
      * completely built.
      */
-    build_dir: 'src/main/webapp',
-    compile_dir: 'target/web',
+    dev_dir: 'src/main/webapp',
+    prod_dir: 'target/web',
 
     /**
      * This is a collection of file patterns that refer to our app code (the

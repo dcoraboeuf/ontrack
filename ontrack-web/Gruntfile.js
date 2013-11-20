@@ -34,23 +34,23 @@ module.exports = function ( grunt ) {
          * The directories to delete when `grunt clean` is executed.
          */
         clean: [
-            '<%= build_dir %>/index.html',
-            '<%= build_dir %>/app',
-            '<%= build_dir %>/vendor',
-            '<%= compile_dir %>'
+            '<%= dev_dir %>/index.html',
+            '<%= dev_dir %>/app',
+            '<%= dev_dir %>/vendor',
+            '<%= prod_dir %>'
         ],
 
         /**
          * The `copy` task just copies files from A to B. We use it here to copy
          * our project assets (images, fonts, etc.) and javascripts into
-         * `build_dir`, and then to copy the assets to `compile_dir`.
+         * `dev_dir`, and then to copy the assets to `prod_dir`.
          */
         copy: {
             build_app_assets: {
                 files: [
                     {
                         src: [ '**' ],
-                        dest: '<%= build_dir %>/assets/',
+                        dest: '<%= dev_dir %>/assets/',
                         cwd: '<%= src_dir %>/assets',
                         expand: true
                     }
@@ -60,7 +60,7 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ '<%= vendor_files.assets %>' ],
-                        dest: '<%= build_dir %>/assets/',
+                        dest: '<%= dev_dir %>/assets/',
                         cwd: '.',
                         expand: true,
                         flatten: true
@@ -71,7 +71,7 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ '<%= app_files.js %>' ],
-                        dest: '<%= build_dir %>/',
+                        dest: '<%= dev_dir %>/',
                         cwd: '<%= src_dir %>',
                         expand: true
                     }
@@ -81,7 +81,7 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ '<%= app_files.tpl %>' ],
-                        dest: '<%= build_dir %>/',
+                        dest: '<%= dev_dir %>/',
                         cwd: '<%= src_dir %>',
                         expand: true
                     }
@@ -91,7 +91,7 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ '<%= vendor_files.js %>' ],
-                        dest: '<%= build_dir %>/',
+                        dest: '<%= dev_dir %>/',
                         cwd: '.',
                         expand: true
                     }
@@ -101,8 +101,8 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ '**' ],
-                        dest: '<%= compile_dir %>/assets',
-                        cwd: '<%= build_dir %>/assets',
+                        dest: '<%= prod_dir %>/assets',
+                        cwd: '<%= dev_dir %>/assets',
                         expand: true
                     }
                 ]
@@ -112,10 +112,10 @@ module.exports = function ( grunt ) {
         less: {
             build: {
                 options: {
-                    paths: ['<%= src_dir %>/<%= build_dir %>/app/css']
+                    paths: ['<%= src_dir %>/<%= dev_dir %>/app/css']
                 },
                 files: [{
-                    '<%= build_dir %>/app/css/main.css': '<%= src_dir %>/<%= app_files.less %>'
+                    '<%= dev_dir %>/app/css/main.css': '<%= src_dir %>/<%= app_files.less %>'
                 }]
             }
         },
@@ -163,14 +163,14 @@ module.exports = function ( grunt ) {
              * `src` property contains the list of included files.
              */
             build: {
-                dir: '<%= build_dir %>',
+                dir: '<%= dev_dir %>',
                 src: [
                     '<%= vendor_files.js %>',
-                    '<%= build_dir %>/app/**/*.js',
+                    '<%= dev_dir %>/app/**/*.js',
                     // '<%= html2js.common.dest %>',
                     // '<%= html2js.app.dest %>',
                     '<%= vendor_files.css %>',
-                    '<%= build_dir %>/app/css/**/*.css'
+                    '<%= dev_dir %>/app/css/**/*.css'
                 ]
             },
 
@@ -180,7 +180,7 @@ module.exports = function ( grunt ) {
              * file. Now we're back!
              */
             compile: {
-                dir: '<%= compile_dir %>',
+                dir: '<%= prod_dir %>',
                 src: [
                     '<%= concat.compile_js.dest %>',
                     '<%= vendor_files.css %>',
@@ -371,7 +371,7 @@ module.exports = function ( grunt ) {
      * compilation.
      */
     grunt.registerMultiTask( 'index', 'Process index.html template', function () {
-        var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+')\/', 'g' );
+        var dirRE = new RegExp( '^('+grunt.config('dev_dir')+'|'+grunt.config('prod_dir')+')\/', 'g' );
         var jsFiles = filterForJS( this.filesSrc ).map( function ( file ) {
             return file.replace( dirRE, '' );
         });
