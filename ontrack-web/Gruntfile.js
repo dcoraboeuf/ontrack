@@ -117,6 +117,15 @@ module.exports = function ( grunt ) {
                 files: [{
                     '<%= dev_dir %>/app/css/main.css': '<%= src_dir %>/<%= app_files.less %>'
                 }]
+            },
+            prod: {
+                options: {
+                    paths: ['<%= src_dir %>/<%= dev_dir %>/app/css'],
+                    compress: true
+                },
+                files: [{
+                    '<%= prod_dir %>/app/css/main.css': '<%= src_dir %>/<%= app_files.less %>'
+                }]
             }
         },
 
@@ -167,8 +176,6 @@ module.exports = function ( grunt ) {
                 src: [
                     '<%= vendor_files.js %>',
                     '<%= dev_dir %>/app/**/*.js',
-                    // '<%= html2js.common.dest %>',
-                    // '<%= html2js.app.dest %>',
                     '<%= vendor_files.css %>',
                     '<%= dev_dir %>/app/css/**/*.css'
                 ]
@@ -182,9 +189,9 @@ module.exports = function ( grunt ) {
             prod: {
                 dir: '<%= prod_dir %>',
                 src: [
-                    '<%= concat.prod_js.dest %>',
+                    // TODO '<%= concat.prod_js.dest %>',
                     '<%= vendor_files.css %>',
-                    '<%= recess.prod.dest %>'
+                    '<%= prod_dir %>/app/css/**/*.css'
                 ]
             }
         },
@@ -330,7 +337,7 @@ module.exports = function ( grunt ) {
     /**
      * The default task is to build and prod.
      */
-    grunt.registerTask( 'default', [ 'build'/*, 'prod'*/ ] );
+    grunt.registerTask( 'default', [ 'build', 'prod' ] );
 
     /**
      * The `build` task gets your app ready to run for development and testing.
@@ -344,6 +351,14 @@ module.exports = function ( grunt ) {
          'concat:dev_css', 'copy:dev_app_assets', 'copy:dev_vendor_assets',
         'copy:dev_appjs', 'copy:dev_apptpl', 'copy:dev_vendorjs', 'index:dev',
          'karmaconfig', 'karma:continuous'*/
+    ]);
+
+    /**
+     * The `prod` task gets your app ready for deployment by concatenating and
+     * minifying your code.
+     */
+    grunt.registerTask( 'prod', [
+        'less:prod', 'copy:prod_assets'/*, 'ngmin', 'concat:compile_js', 'uglify'*/, 'index:prod'
     ]);
 
     /**
