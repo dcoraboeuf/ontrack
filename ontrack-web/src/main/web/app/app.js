@@ -61,27 +61,27 @@ angular.module('ontrack', [
         // Notifications
         $scope.hasNotification = function () {
             return angular.isDefined(notificationService.message);
-        }
+        };
         $scope.notification = function () {
             return notificationService.message;
-        }
+        };
         $scope.notificationType = function () {
             return notificationService.messageType;
-        }
+        };
         $scope.closeNotification = function () {
             notificationService.clear();
-        }
+        };
         // Looks for the user
         $scope.logged = function () {
             return angular.isDefined(securityService.user);
-        }
+        };
         $scope.user = function () {
             return securityService.user;
-        }
+        };
         // Collapses the navigation bar
         $scope.collapseNavbar = function () {
             $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
-        }
+        };
         // Signing out
         $scope.signout = function () {
             securityService.logout(function () {
