@@ -20,6 +20,12 @@ angular.module('ontrack', [
     })
     .controller('AppCtrl', function AppCtrl($scope, $location, securityService, notificationService) {
         $scope.isNavbarCollapsed = false;
+        // Page title
+        $scope.$on('$stateChangeSuccess', function (event, toState) {
+            if (angular.isDefined(toState.data.pageTitle)) {
+                $scope.pageTitle = toState.data.pageTitle + ' | ontrack';
+            }
+        });
         // Notifications
         $scope.hasNotification = function () {
             return angular.isDefined(notificationService.message);
