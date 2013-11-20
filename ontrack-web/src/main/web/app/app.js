@@ -8,7 +8,6 @@ angular.module('ontrack', [
         'ontrack.config'
     ])
     .config(function ($httpProvider, $urlRouterProvider) {
-        console.log('App init');
         // Authentication using cookies and CORS protection
         $httpProvider.defaults.withCredentials = true;
         // Route set-up
@@ -18,5 +17,9 @@ angular.module('ontrack', [
     //     authenticationService.init()
     // }])
     .controller('AppCtrl', function AppCtrl($scope) {
+        $scope.isNavbarCollapsed = false;
+        $scope.collapseNavbar = function () {
+            $scope.isNavbarCollapsed = !$scope.isNavbarCollapsed;
+        }
     })
 ;
