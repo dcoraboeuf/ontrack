@@ -436,7 +436,7 @@ module.exports = function ( grunt ) {
      * minifying your code.
      */
     grunt.registerTask( 'prod', [
-        'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js', 'uglify:prod', 'index:prod'
+        'clean', 'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js', 'uglify:prod', 'index:prod'
     ]);
 
     /**
