@@ -1,5 +1,6 @@
 angular.module('ontrack.signin', [
-        'ui.router'
+        'ui.router',
+        'ontrack.service.security'
     ])
 
     .config(function config($stateProvider) {
@@ -15,12 +16,17 @@ angular.module('ontrack.signin', [
         })
     })
 
-    .controller('SigninCtrl', function SigninController($scope) {
+    .controller('SigninCtrl', function SigninController($scope, $location, securityService) {
         $scope.name = '';
         $scope.password = '';
         $scope.error = '';
         $scope.signin = function () {
-
+            securityService.authenticate($scope.name, $scope.password, function () {
+                // TODO Redirect to the page in the scope
+                $location.path('/home');
+            }, function (error) {
+                $scope.error = error
+            })
         }
     })
 
