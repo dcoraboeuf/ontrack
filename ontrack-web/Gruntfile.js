@@ -268,7 +268,7 @@ module.exports = function ( grunt ) {
             prod: {
                 dir: '<%= prod_dir %>',
                 src: [
-                    // TODO '<%= concat.prod_js.dest %>',
+                    '<%= concat.prod_js.dest %>',
                     '<%= vendor_files.css %>',
                     '<%= prod_dir %>/app/css/**/*.css'
                 ]
