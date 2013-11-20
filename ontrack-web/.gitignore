@@ -3,5 +3,7 @@ vendor
 *.sw*
 *~
 src/main/webapp/app
+src/main/webapp/assets
+src/main/webapp/old
 src/main/webapp/vendor
 src/main/webapp/index.html
