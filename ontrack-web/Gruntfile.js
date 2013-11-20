@@ -221,6 +221,14 @@ module.exports = function ( grunt ) {
                 },
                 src: [ '<%= src_dir %>/<%= app_files.tpl %>' ],
                 dest: '<%= dev_dir %>/app/ontrack-templates.js'
+            },
+            prod: {
+                options: {
+                    base: '<%= src_dir %>',
+                    module: 'ontrack-templates'
+                },
+                src: [ '<%= src_dir %>/<%= app_files.tpl %>' ],
+                dest: '<%= temp_dir %>'
             }
         },
 
@@ -454,7 +462,14 @@ module.exports = function ( grunt ) {
      * minifying your code.
      */
     grunt.registerTask( 'prod', [
-        'clean', 'less:prod', 'copy:prod_assets', 'ngmin:prod', 'concat:prod_js', 'uglify:prod', 'index:prod'
+        'clean',
+        'less:prod',
+        'copy:prod_assets',
+        // TODO 'html2js:prod',
+        'ngmin:prod',
+        'concat:prod_js',
+        'uglify:prod',
+        'index:prod'
     ]);
 
     /**
