@@ -7,6 +7,15 @@ angular.module('ontrack.service.project', ['ontrack.config'])
                     .success(function (data) {
                         successFn(data)
                     })
+            },
+            createProject: function (name, description, success, error) {
+                $http
+                    .post(config.api('project'), {
+                        name: name,
+                        description: description
+                    })
+                    .success(success || angular.noop)
+                    .error(error || angular.noop);
             }
         }
     })

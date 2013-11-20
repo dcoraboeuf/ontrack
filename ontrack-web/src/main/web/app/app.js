@@ -5,10 +5,11 @@ angular.module('ontrack', [
         'ui.bootstrap',
         'ui.router',
         'ontrack-templates',
-        'ontrack.home',
         'ontrack.config',
+        'ontrack.service.security',
+        'ontrack.home',
         'ontrack.signin',
-        'ontrack.service.security'
+        'ontrack.project.create'
     ])
     .config(function ($httpProvider, $urlRouterProvider) {
         // Default error management
