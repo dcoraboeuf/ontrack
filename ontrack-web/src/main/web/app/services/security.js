@@ -10,6 +10,15 @@ angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.c
             self.user = user;
         };
 
+        self.init = function () {
+            $http
+                .get(config.api('auth/authenticate'))
+                .success(self.authenticationOk)
+                .error(function () {
+                    // Does nothing
+                })
+        };
+
         self.authenticate = function (name, password, callbackFn, errorMessageFn) {
             $http
                 .get(

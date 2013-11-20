@@ -15,9 +15,9 @@ angular.module('ontrack', [
         // Route set-up
         $urlRouterProvider.otherwise('/home');
     })
-    // .run(['AuthenticationService', function (authenticationService) {
-    //     authenticationService.init()
-    // }])
+    .run(function (securityService) {
+        securityService.init()
+    })
     .controller('AppCtrl', function AppCtrl($scope, $location, securityService) {
         $scope.isNavbarCollapsed = false;
         // Looks for the user
