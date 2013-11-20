@@ -18,8 +18,9 @@ angular.module('ontrack', [
     .run(function (securityService) {
         securityService.init()
     })
-    .controller('AppCtrl', function AppCtrl($scope, $location, securityService, notificationService) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, config, securityService, notificationService) {
         $scope.isNavbarCollapsed = false;
+        $scope.version = config.version;
         // Page title
         $scope.$on('$stateChangeSuccess', function (event, toState) {
             if (angular.isDefined(toState.data.pageTitle)) {

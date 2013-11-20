@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="ontrack" ng-controller="AppCtrl">
+<html lang="en" ng-app="ontrack" ng-controller="AppCtrl" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <title ng-bind="pageTitle"></title>
@@ -56,6 +56,17 @@
 </div>
 
 <div class="container" ui-view="main"></div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <p>
+                <a href="https://github.com/dcoraboeuf/ontrack">v{{version}}</a>
+            </p>
+        </div>
+    </div>
+    </div>
+</footer>
 
 </body>
 </html>
