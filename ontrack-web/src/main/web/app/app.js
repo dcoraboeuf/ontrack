@@ -18,29 +18,13 @@ angular.module('ontrack', [
         // Route set-up
         $urlRouterProvider.otherwise('/home');
     })
-    .run(function (securityService) {
-        securityService.init()
+    .run(function (securityService, errorService) {
+        securityService.init();
     })
     .factory('httpErrorInterceptor', function ($q, $log, $interpolate, notificationService, errorService) {
         return {
             'responseError': function (rejection) {
-                var status = rejection.status;
-                var method = rejection.config.method;
-                var url = rejection.config.url;
-                // Logging
-                var log = $interpolate('[app] HTTP error {{status}} for {{method}} {{url}}')({
-                    status: status,
-                    method: method,
-                    url: url
-                });
-                $log.error(log);
-                // Displays a notification
-                notificationService.error(
-                    errorService.errorMsg(
-                        rejection.data,
-                        status
-                    )
-                );
+                errorService.process(rejection);
                 // Standard behaviour
                 return $q.reject(rejection);
             }

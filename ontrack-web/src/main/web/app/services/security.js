@@ -12,7 +12,9 @@ angular.module('ontrack.service.security', ['ontrack.config', 'ontrack.service.c
 
         self.init = function () {
             $http
-                .get(config.api('auth/authenticate'))
+                .get(config.api('auth/authenticate'), {
+                    ontrackIgnoreError: true
+                })
                 .success(self.authenticationOk)
                 .error(function () {
                     // Does nothing
