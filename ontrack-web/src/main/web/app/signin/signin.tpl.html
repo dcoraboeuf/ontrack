@@ -2,13 +2,13 @@
     <div class="form-group">
         <label class="col-sm-2 control-label" for="j_username">User name</label>
         <div class="col-sm-5">
-            <input ng-model="name" class="form-control input-lg" type="text" id="j_username" name="j_username" maxlength="16" autofocus="autofocus"/>
+            <input ng-model="name" class="form-control input-lg" type="text" id="j_username" name="j_username" maxlength="16" autofocus="autofocus" required="required"/>
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label" for="j_password">Password</label>
         <div class="col-sm-5">
-            <input ng-model="password" class="form-control input-lg" type="password" id="j_password" name="j_password" maxlength="16"/>
+            <input ng-model="password" class="form-control input-lg" type="password" id="j_password" name="j_password" maxlength="16" required="required" />
         </div>
     </div>
     <div class="form-group" ng-if="error != ''">

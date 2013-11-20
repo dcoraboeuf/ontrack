@@ -19,6 +19,9 @@ angular.module('ontrack.signin', [
         $scope.name = '';
         $scope.password = '';
         $scope.error = '';
+        $scope.signin = function () {
+
+        }
     })
 
 ;
