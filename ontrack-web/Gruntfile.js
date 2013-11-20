@@ -80,7 +80,7 @@ module.exports = function ( grunt ) {
             build_apptpl: {
                 files: [
                     {
-                        src: [ '<%= app_files.js %>', '<%= app_files.tpl %>' ],
+                        src: [ '<%= app_files.tpl %>' ],
                         dest: '<%= build_dir %>/',
                         cwd: '<%= src_dir %>',
                         expand: true
