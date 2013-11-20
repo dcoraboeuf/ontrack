@@ -18,9 +18,9 @@ angular.module('ontrack.home', [
 
     .controller('HomeCtrl', function HomeController($scope, projectService) {
         projectService.projectList(function (projectList) {
-            $scope.projectList = projectList
+            $scope.projectList = projectList;
+            $scope.projectCreate = projectList.links.projectCreate;
         });
     })
 
 ;
-
