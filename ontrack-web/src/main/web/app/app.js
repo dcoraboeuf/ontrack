@@ -5,7 +5,8 @@ angular.module('ontrack', [
         'ui.bootstrap',
         'ui.router',
         'ontrack.home',
-        'ontrack.config'
+        'ontrack.config',
+        'ontrack.signin'
     ])
     .config(function ($httpProvider, $urlRouterProvider) {
         // Authentication using cookies and CORS protection

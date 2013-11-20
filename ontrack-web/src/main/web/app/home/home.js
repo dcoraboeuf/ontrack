@@ -4,7 +4,6 @@ angular.module('ontrack.home', [
     ])
 
     .config(function config($stateProvider) {
-        console.log('Home init');
         $stateProvider.state('home', {
             url: '/home',
             views: {
