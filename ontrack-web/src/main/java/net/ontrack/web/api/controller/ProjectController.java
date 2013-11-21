@@ -6,6 +6,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.service.ManagementService;
 import net.ontrack.web.api.input.ProjectCreation;
+import net.ontrack.web.api.model.BranchLastStatusResource;
 import net.ontrack.web.api.model.ProjectResource;
 import net.ontrack.web.api.model.ResourceLink;
 import net.ontrack.web.api.model.SimpleResourceCollection;
@@ -83,6 +84,17 @@ public class ProjectController extends APIController {
                             ),
                     HttpStatus.OK
             );
+        } catch (EntityNameNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}/branch/status", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<SimpleResourceCollection<BranchLastStatusResource>> getProjectBranchStatusList(@PathVariable String name) {
+        try {
+            // FIXME Project id
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (EntityNameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
