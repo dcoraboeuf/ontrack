@@ -21,20 +21,26 @@ import java.util.List;
  * Associates a "weather" icon to the status of a validation stamp.
  * <p/>
  * A validation stamp status is computed by looking at the last validation run status
- * for the last 5 builds. A status is considered OK only is {@link net.ontrack.core.model.Status#PASSED PASSED}.
- *
+ * for the last 5 builds. A status is considered OK only is {@link net.ontrack.core.model.Status#PASSED PASSED}
+ * or {@link net.ontrack.core.model.Status#WARNING WARNING}.
+ * <p/>
  * We then count the number of statuses which are not OK:
  * <ul>
- *     <li>0 - sunny</li>
- *     <li>1 - sun and clouds</li>
- *     <li>2 - clouds</li>
- *     <li>3 - rain</li>
- *     <li>4 - storm</li>
+ * <li>0 - sunny</li>
+ * <li>1 - sun and clouds</li>
+ * <li>2 - clouds</li>
+ * <li>3 - rain</li>
+ * <li>4 - storm</li>
  * </ul>
  */
 @Component
 public class ValidationStampWeatherDecorator implements EntityDecorator {
 
+    public static final String EXTENSION_GENERAL_WEATHER_SUNNY = "extension.general.weather.sunny";
+    public static final String EXTENSION_GENERAL_WEATHER_SUN_AND_CLOUDS = "extension.general.weather.sunAndClouds";
+    public static final String EXTENSION_GENERAL_WEATHER_CLOUDS = "extension.general.weather.clouds";
+    public static final String EXTENSION_GENERAL_WEATHER_RAIN = "extension.general.weather.rain";
+    public static final String EXTENSION_GENERAL_WEATHER_STORM = "extension.general.weather.storm";
     private final ManagementService managementService;
 
     @Autowired
@@ -53,13 +59,13 @@ public class ValidationStampWeatherDecorator implements EntityDecorator {
         Validate.isTrue(entity == Entity.VALIDATION_STAMP, "Expecting validation stamp");
         // List of statuses for the last 5 builds
         List<ValidationRunStatusStub> statuses = managementService.getStatusesForLastBuilds(validationStampId, 5);
-        // Keeps only the ones which are NOT PASSED
+        // Keeps only the ones which are NOT PASSED and NOT WARNING
         Collection<ValidationRunStatusStub> invalidStatuses = Collections2.filter(
                 statuses,
                 new Predicate<ValidationRunStatusStub>() {
                     @Override
                     public boolean apply(ValidationRunStatusStub stub) {
-                        return stub.getStatus() != Status.PASSED;
+                        return stub.getStatus() != Status.PASSED && stub.getStatus() != Status.WARNING;
                     }
                 }
         );
@@ -80,23 +86,23 @@ public class ValidationStampWeatherDecorator implements EntityDecorator {
     }
 
     private Decoration sunny() {
-        return weather("extension.general.weather.sunny", "sunny");
+        return weather(EXTENSION_GENERAL_WEATHER_SUNNY, "sunny");
     }
 
     private Decoration sunAndClouds() {
-        return weather("extension.general.weather.sunAndClouds", "sunAndClouds");
+        return weather(EXTENSION_GENERAL_WEATHER_SUN_AND_CLOUDS, "sunAndClouds");
     }
 
     private Decoration clouds() {
-        return weather("extension.general.weather.clouds", "clouds");
+        return weather(EXTENSION_GENERAL_WEATHER_CLOUDS, "clouds");
     }
 
     private Decoration rain() {
-        return weather("extension.general.weather.rain", "rain");
+        return weather(EXTENSION_GENERAL_WEATHER_RAIN, "rain");
     }
 
     private Decoration storm() {
-        return weather("extension.general.weather.storm", "storm");
+        return weather(EXTENSION_GENERAL_WEATHER_STORM, "storm");
     }
 
     private Decoration weather(String key, String icon) {

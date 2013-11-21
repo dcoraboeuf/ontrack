@@ -19,6 +19,11 @@ public enum Status {
      * Run passed
      */
     PASSED(),
+
+    /**
+     * Run with warning
+     */
+    WARNING(),
     /**
      * Run should now be fixed
      */

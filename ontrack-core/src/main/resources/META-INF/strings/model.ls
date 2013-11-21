@@ -37,6 +37,9 @@ model.promotion_level
 status.PASSED
     en -> Passed
     fr -> Réussi
+status.WARNING
+    en -> Warning
+    fr -> Avertissement
 status.FIXED
     en -> Fixed
     fr -> Corrigé
