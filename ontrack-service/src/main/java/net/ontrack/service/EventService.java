@@ -13,6 +13,10 @@ public interface EventService extends Runnable {
 
     List<ExpandedEvent> list(EventFilter filter);
 
+    /**
+     * @deprecated Use {@link EntityService#getEntityName(net.ontrack.core.model.Entity, int)} instead.
+     */
+    @Deprecated
     String getEntityName(Entity entity, int entityId);
 
     DatedSignature getDatedSignature(Locale locale, EventType eventType, Map<Entity, Integer> entities);

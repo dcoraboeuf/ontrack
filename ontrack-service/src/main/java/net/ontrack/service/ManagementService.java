@@ -180,13 +180,17 @@ public interface ManagementService {
 
     // Common
 
+    /**
+     * @deprecated Use {@link EntityService#getEntityId(net.ontrack.core.model.Entity, String, java.util.Map)} instead.
+     */
+    @Deprecated
     int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
 
     // Stats & charts
 
     ChartTable getChartBranchValidationStampStatuses(int branchId);
 
-    List<Pair<String,Double>> getChartBranchValidationStampRetries(int branchId);
+    List<Pair<String, Double>> getChartBranchValidationStampRetries(int branchId);
 
-    List<Pair<String,Integer>> getChartBranchValidationStampRunsWithoutFailure(int branchId);
+    List<Pair<String, Integer>> getChartBranchValidationStampRunsWithoutFailure(int branchId);
 }
