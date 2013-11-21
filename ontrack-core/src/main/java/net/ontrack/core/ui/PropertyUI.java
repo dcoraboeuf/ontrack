@@ -36,7 +36,7 @@ public interface PropertyUI {
             String name
     );
 
-    Collection<Integer> getEntitiesForPropertyValue(
+    Collection<EntityStub> getEntitiesForPropertyValue(
             Entity entity,
             String extension,
             String name,

@@ -8,11 +8,11 @@ import com.google.common.collect.Lists;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.AuthorizationUtils;
-import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.PropertyUI;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyValueWithDescriptor;
+import net.ontrack.service.EntityService;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -30,14 +30,14 @@ import java.util.Locale;
 public class PropertyUIController extends AbstractUIController implements PropertyUI {
 
     private final PropertiesService propertiesService;
-    private final SecurityUtils securityUtils;
+    private final EntityService entityService;
     private final AuthorizationUtils authorizationUtils;
 
     @Autowired
-    public PropertyUIController(ErrorHandler errorHandler, Strings strings, PropertiesService propertiesService, SecurityUtils securityUtils, AuthorizationUtils authorizationUtils) {
+    public PropertyUIController(ErrorHandler errorHandler, Strings strings, PropertiesService propertiesService, EntityService entityService, AuthorizationUtils authorizationUtils) {
         super(errorHandler, strings);
         this.propertiesService = propertiesService;
-        this.securityUtils = securityUtils;
+        this.entityService = entityService;
         this.authorizationUtils = authorizationUtils;
     }
 
@@ -213,8 +213,16 @@ public class PropertyUIController extends AbstractUIController implements Proper
     @Override
     @RequestMapping(value = "/search/{entity}/{extension}/{name}/{value}", method = RequestMethod.GET)
     @ResponseBody
-    public Collection<Integer> getEntitiesForPropertyValue(@PathVariable Entity entity, @PathVariable String extension, @PathVariable String name, @PathVariable String value) {
-        return propertiesService.findEntityByPropertyValue(entity, extension, name, value);
+    public Collection<EntityStub> getEntitiesForPropertyValue(@PathVariable final Entity entity, @PathVariable String extension, @PathVariable String name, @PathVariable String value) {
+        return Collections2.transform(
+                propertiesService.findEntityByPropertyValue(entity, extension, name, value),
+                new Function<Integer, EntityStub>() {
+                    @Override
+                    public EntityStub apply(Integer id) {
+                        return entityService.getEntityStub(entity, id);
+                    }
+                }
+        );
     }
 
     private boolean isPropertyViewable(PropertyExtensionDescriptor descriptor, Entity entity, int entityId) {

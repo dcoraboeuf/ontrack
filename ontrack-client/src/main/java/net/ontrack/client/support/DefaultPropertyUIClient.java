@@ -81,7 +81,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
     }
 
     @Override
-    public Collection<Integer> getEntitiesForPropertyValue(Entity entity, String extension, String name, String value) {
+    public Collection<EntityStub> getEntitiesForPropertyValue(Entity entity, String extension, String name, String value) {
         return list(
                 getDefaultLocale(),
                 format(
@@ -91,7 +91,7 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
                         name,
                         value
                 ),
-                Integer.class
+                EntityStub.class
         );
     }
 }
