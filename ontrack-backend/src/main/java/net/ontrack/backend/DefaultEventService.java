@@ -4,13 +4,13 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.ontrack.backend.dao.EntityDao;
 import net.ontrack.backend.dao.EventDao;
 import net.ontrack.backend.dao.model.TEvent;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.support.TimeUtils;
 import net.ontrack.dao.SQLUtils;
+import net.ontrack.service.EntityService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.SubscriptionService;
 import net.ontrack.service.api.ScheduledService;
@@ -44,7 +44,7 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     private final Strings strings;
     private final SubscriptionService subscriptionService;
     private final EventDao eventDao;
-    private final EntityDao entityDao;
+    private final EntityService entityService;
     private final Function<TEvent, ExpandedEvent> expandedEventFunction = new Function<TEvent, ExpandedEvent>() {
         @Override
         public ExpandedEvent apply(TEvent t) {
@@ -58,7 +58,7 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
                             new Maps.EntryTransformer<Entity, Integer, EntityStub>() {
                                 @Override
                                 public EntityStub transformEntry(Entity entity, Integer entityId) {
-                                    String entityName = getEntityName(entity, entityId);
+                                    String entityName = entityService.getEntityName(entity, entityId);
                                     return new EntityStub(entity, entityId, entityName);
                                 }
                             }
@@ -69,12 +69,12 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
     };
 
     @Autowired
-    public DefaultEventService(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService, EventDao eventDao, EntityDao entityDao) {
+    public DefaultEventService(DataSource dataSource, SecurityUtils securityUtils, Strings strings, SubscriptionService subscriptionService, EventDao eventDao, EntityService entityService) {
         this.securityUtils = securityUtils;
         this.strings = strings;
         this.subscriptionService = subscriptionService;
         this.eventDao = eventDao;
-        this.entityDao = entityDao;
+        this.entityService = entityService;
         setDataSource(dataSource);
     }
 
@@ -149,12 +149,6 @@ public class DefaultEventService extends NamedParameterJdbcDaoSupport implements
                 ),
                 expandedEventFunction
         );
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public String getEntityName(Entity entity, int entityId) {
-        return entityDao.getEntityName(entity, entityId);
     }
 
     @Override
