@@ -8,7 +8,6 @@ import net.ontrack.core.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -118,14 +117,18 @@ public class ITProperty extends AbstractIT {
             }
         });
         // Retrieves the build
-        Collection<Integer> ids = data.anonymous(new PropertyClientCall<Collection<Integer>>() {
+        Collection<EntityStub> stubs = data.anonymous(new PropertyClientCall<Collection<EntityStub>>() {
             @Override
-            public Collection<Integer> onCall(PropertyUIClient ui) {
+            public Collection<EntityStub> onCall(PropertyUIClient ui) {
                 return ui.getEntitiesForPropertyValue(Entity.BUILD, "link", "url", value);
             }
         });
         // Checks
-        assertEquals(Arrays.asList(build.getId()), ids);
+        assertEquals(1, stubs.size());
+        EntityStub stub = stubs.iterator().next();
+        assertEquals(Entity.BUILD, stub.getEntity());
+        assertEquals(build.getId(), stub.getId());
+        assertEquals(build.getName(), stub.getName());
     }
 
 }
