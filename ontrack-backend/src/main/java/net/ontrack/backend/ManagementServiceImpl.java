@@ -16,7 +16,6 @@ import net.ontrack.core.support.TimeUtils;
 import net.ontrack.core.validation.NameDescription;
 import net.ontrack.extension.api.decorator.DecorationService;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.service.EntityService;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.model.Event;
@@ -62,7 +61,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     private final EntityDao entityDao;
     private final BuildCleanupDao buildCleanupDao;
     private final DashboardDao dashboardDao;
-    private final EntityService entityService;
     private final PropertiesService propertiesService;
     private final DecorationService decorationService;
     // Dao -> Summary converters
@@ -152,7 +150,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
             EntityDao entityDao,
             BuildCleanupDao buildCleanupDao,
             DashboardDao dashboardDao,
-            EntityService entityService, PropertiesService propertiesService,
+            PropertiesService propertiesService,
             DecorationService decorationService
     ) {
         super(validatorService, auditService);
@@ -173,7 +171,6 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         this.entityDao = entityDao;
         this.buildCleanupDao = buildCleanupDao;
         this.dashboardDao = dashboardDao;
-        this.entityService = entityService;
         this.propertiesService = propertiesService;
         this.decorationService = decorationService;
     }
@@ -269,7 +266,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @ProjectGrant(ProjectFunction.PROJECT_DELETE)
     @Transactional
     public Ack deleteProject(@ProjectGrantId int id) {
-        String name = entityService.getEntityName(Entity.PROJECT, id);
+        String name = projectDao.getById(id).getName();
         Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
             event(Event.of(EventType.PROJECT_DELETED).withValue("project", name));
