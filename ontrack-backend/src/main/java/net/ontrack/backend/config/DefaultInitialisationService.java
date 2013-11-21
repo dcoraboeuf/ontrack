@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 @Component
-public class DefaultInitialisationService {
+public class DefaultInitialisationService implements EnvInfoService {
 
     private final Logger logger = LoggerFactory.getLogger(DefaultInitialisationService.class);
     private final String profiles;
@@ -28,6 +28,16 @@ public class DefaultInitialisationService {
         this.profiles = StringUtils.join(ctx.getEnvironment().getActiveProfiles(), ",");
         this.version = version;
         this.homeDir = homeDir;
+    }
+
+    @Override
+    public String getProfiles() {
+        return profiles;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
     }
 
     @PostConstruct
