@@ -178,14 +178,6 @@ public interface ManagementService {
 
     CommentStub createComment(Entity entity, int id, String content);
 
-    // Common
-
-    /**
-     * @deprecated Use {@link EntityService#getEntityId(net.ontrack.core.model.Entity, String, java.util.Map)} instead.
-     */
-    @Deprecated
-    int getEntityId(Entity entity, String name, Map<Entity, Integer> parentIds);
-
     // Stats & charts
 
     ChartTable getChartBranchValidationStampStatuses(int branchId);

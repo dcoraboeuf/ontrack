@@ -1669,13 +1669,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new CommentStub(commentId, content);
     }
 
-    // Common
-
-    @Override
-    @Transactional(readOnly = true)
-    public int getEntityId(Entity entity, String name, final Map<Entity, Integer> parentIds) {
-        return entityDao.getEntityId(entity, name, parentIds);
-    }
+    // Charts
 
     @Override
     @Transactional(readOnly = true)
