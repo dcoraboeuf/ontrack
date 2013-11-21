@@ -46,6 +46,16 @@ public class ClientSupport {
         }
     }
 
+    public <T> T anonymous(PropertyClientCall<T> call) {
+        try {
+            return call.onCall(propertyClient);
+        } catch (ClientException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> T asUser(String user, String password, ManageClientCall<T> call) {
         manageClient.login(user, password);
         try {
