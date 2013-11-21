@@ -1,0 +1,23 @@
+#projects table {
+}
+
+#projects td.project-name {
+    width: 1px;
+    white-space: nowrap;
+}
+
+#projects td.project-branches {
+    padding-left: 3em;
+}
+
+a.project-name {
+    width: 100%;
+    white-space: nowrap;
+    padding: 1em;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+button.project-branch {
+    height: 4em;
+}

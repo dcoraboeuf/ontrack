@@ -269,17 +269,6 @@ ul.promotions li:first-child .separator {
     width: 4em;
 }
 
-.home-project-name {
-    width: 4em;
-    padding: 1em;
-    font-weight: bold;
-    font-size: 120%;
-}
-
-.home-project-branch {
-    height: 4em;
-}
-
 /* Sortable list */
 
 ul.list-sortable {
