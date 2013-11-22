@@ -6,7 +6,12 @@
                     <td>
                         <a href="#{{project.links.view.href}}">{{project.name}}</a>
                     </td>
-                    <td class="ot-home-project-branches" data-project="{{project.name}}">
+                    <td class="ot-home-project-branches">
+                        <button ng-repeat="status in project.statuses.items" class="ot-home-project-branch">
+                            <a href="">
+                                <b>{{status.branch.name}}</b>
+                            </a>
+                        </button>
                     </td>
                 </tr>
             </tbody>

@@ -383,7 +383,7 @@ module.exports = function ( grunt ) {
                 files: [
                     '<%= src_dir %>/<%= app_files.tpl %>'
                 ],
-                tasks: [ 'copy:dev_apptpl' ]
+                tasks: [ 'copy:dev_apptpl', 'html2js:dev' ]
             },
 
             /**
