@@ -41,8 +41,4 @@ public abstract class AbstractServiceImpl {
         validatorService.validate(o, group);
     }
 
-    protected String getEntityName(Entity entity, int id) {
-        return eventService.getEntityName(entity, id);
-    }
-
 }

@@ -123,6 +123,10 @@ public abstract class AbstractBackendTest extends AbstractIntegrationTest {
         });
     }
 
+    protected BuildSummary doCreateBuild() throws Exception {
+        return doCreateBuild(doCreateBranch().getId());
+    }
+
     protected BuildSummary doCreateBuild(final int branchId) throws Exception {
         final String buildName = uid("B");
         return asAdmin().call(new Callable<BuildSummary>() {

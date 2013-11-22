@@ -4,12 +4,11 @@ import net.ontrack.client.AdminUIClient;
 import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.AdminClientCall;
 import net.ontrack.client.support.PropertyClientCall;
-import net.ontrack.core.model.EditableProperty;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -102,6 +101,34 @@ public class ITProperty extends AbstractIT {
             assertEquals("SVN root path", editableProperty.getDisplayName());
             System.out.println(editableProperty);
         }
+    }
+
+    @Test
+    public void findEntity() {
+        final String value = data.uid("P");
+        // Prerequisites
+        final BuildSummary build = data.doCreateBuild();
+        // Sets a property
+        data.asAdmin(new PropertyClientCall<Void>() {
+            @Override
+            public Void onCall(PropertyUIClient ui) {
+                ui.saveProperty(Entity.BUILD, build.getId(), "link", "url", new PropertyForm(value));
+                return null;
+            }
+        });
+        // Retrieves the build
+        Collection<EntityStub> stubs = data.anonymous(new PropertyClientCall<Collection<EntityStub>>() {
+            @Override
+            public Collection<EntityStub> onCall(PropertyUIClient ui) {
+                return ui.getEntitiesForPropertyValue(Entity.BUILD, "link", "url", value);
+            }
+        });
+        // Checks
+        assertEquals(1, stubs.size());
+        EntityStub stub = stubs.iterator().next();
+        assertEquals(Entity.BUILD, stub.getEntity());
+        assertEquals(build.getId(), stub.getId());
+        assertEquals(build.getName(), stub.getName());
     }
 
 }

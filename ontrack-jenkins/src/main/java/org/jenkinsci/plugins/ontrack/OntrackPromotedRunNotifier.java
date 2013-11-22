@@ -17,6 +17,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
+import static org.jenkinsci.plugins.ontrack.OntrackPluginSupport.expand;
+
 /**
  * Allows to notify for a promoted run.
  */
