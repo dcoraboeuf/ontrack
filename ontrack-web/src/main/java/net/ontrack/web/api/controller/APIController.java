@@ -2,6 +2,7 @@ package net.ontrack.web.api.controller;
 
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.support.NotFoundException;
+import net.ontrack.web.api.model.Resource;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.support.ErrorMessage;
 import net.sf.jstring.Strings;
@@ -21,6 +22,13 @@ public abstract class APIController {
     protected APIController(ErrorHandler errorHandler, Strings strings) {
         this.errorHandler = errorHandler;
         this.strings = strings;
+    }
+
+    protected <T extends Resource> ResponseEntity<T> ok(T resource) {
+        return new ResponseEntity<>(
+                resource,
+                HttpStatus.OK
+        );
     }
 
     protected ResponseEntity<String> getMessageResponse(String message, HttpStatus status) {
