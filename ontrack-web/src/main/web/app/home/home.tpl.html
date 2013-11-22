@@ -16,11 +16,7 @@
                                     {{status.lastPromotion.build.name}}
                                 </a>
                                 <i class="fa fa-arrow-right text-muted"></i>
-                                <!-- TODO Directive for a promotion icon -->
-                                <a href="#{{status.lastPromotion.promotionLevel.links.view.href}}">
-                                    <img class="ot-icon" ng-src="{{status.lastPromotion.promotionLevel.links.image.href}}" />
-                                    {{status.lastPromotion.promotionLevel.name}}
-                                </a>
+                                <ot-promotion-level-link self="status.lastPromotion.promotionLevel" />
                             </p>
                             <p ng-if="status.notPromoted">
                                 <i class="fa fa-ban text-muted"></i>

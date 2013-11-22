@@ -6,6 +6,7 @@ angular.module('ontrack', [
         'ui.router',
         'ontrack-templates',
         'ontrack.config',
+        'ontrack.directives',
         'ontrack.service.security',
         'ontrack.home',
         'ontrack.signin',
