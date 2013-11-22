@@ -1,12 +1,17 @@
 angular.module('ontrack.service.project', ['ontrack.config'])
     .service('projectService', function ($http, config) {
         return {
-            projectList: function (successFn, errorMsgFn) {
+            projectList: function (successFn) {
                 $http
                     .get(config.api('project'))
                     .success(function (data) {
                         successFn(data)
                     })
+            },
+            loadProjectBranchStatus: function (projectName, successFn) {
+                $http
+                    .get(config.api('project/' + projectName + '/branch/status'))
+                    .success(successFn)
             },
             createProject: function (name, description, success, error) {
                 $http

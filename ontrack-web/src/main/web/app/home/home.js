@@ -23,6 +23,17 @@ angular.module('ontrack.home', [
             projectService.projectList(function (projectList) {
                 $scope.projectList = projectList;
                 $scope.projectCreate = projectList.links.projectCreate;
+                // Loads branch statuses for all projects
+                loadProjectBranchStatus();
+            });
+        }
+
+        // Loads branch statuses for all projects
+        function loadProjectBranchStatus() {
+            angular.forEach($scope.projectList.items, function (project) {
+                projectService.loadProjectBranchStatus(project.name, function (statuses) {
+                    project.statuses = statuses;
+                })
             });
         }
 
