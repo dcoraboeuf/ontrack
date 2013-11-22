@@ -1,12 +1,17 @@
 package org.jenkinsci.plugins.ontrack;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
+import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.client.support.PropertyClientCall;
+import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EntityStub;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -41,13 +46,6 @@ public class OntrackPropertyValueToBuildName extends Builder {
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // Expands the expressions into actual values
-        // FIXME Takes into account the project & the branch
-        /**
-         * The query on property only could return a build that does not belong to
-         * the project & branch. The filtering can be achieved by looping over
-         * the build names & checking if they are actually defined for the given
-         * project & branch.
-         */
         final String projectName = expand(project, theBuild, listener);
         final String branchName = expand(branch, theBuild, listener);
         final String extensionName = expand(extension, theBuild, listener);
@@ -55,7 +53,6 @@ public class OntrackPropertyValueToBuildName extends Builder {
         final String expandedPropertyValue = expand(propertyValue, theBuild, listener);
         // Calls the UI
         Collection<EntityStub> entities = OntrackClient.property(new PropertyClientCall<Collection<EntityStub>>() {
-            @Override
             public Collection<EntityStub> onCall(PropertyUIClient ui) {
                 return ui.getEntitiesForPropertyValue(Entity.BUILD,
                         extensionName,
@@ -63,17 +60,32 @@ public class OntrackPropertyValueToBuildName extends Builder {
                         expandedPropertyValue);
             }
         });
-
-        if (entities.size() == 1) {
+        // Filtering on project & branch
+        Collection<EntityStub> validBuilds = Collections2.filter(
+                entities,
+                new Predicate<EntityStub>() {
+                    public boolean apply(final EntityStub build) {
+                        // Tries to get the build
+                        BuildSummary buildSummary = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+                            public BuildSummary onCall(ManageUIClient ui) {
+                                return ui.getBuild(projectName, branchName, build.getName());
+                            }
+                        });
+                        // Found ?
+                        return buildSummary != null;
+                    }
+                }
+        );
+        // Final check - expecting only one build
+        if (validBuilds.size() == 1) {
             // Success case
-            EntityStub entity = (EntityStub) entities.toArray()[0];
+            EntityStub entity = (EntityStub) validBuilds.toArray()[0];
             theBuild.addAction(new ParametersAction(new StringParameterValue(variable, entity.getName())));
+        } else if (validBuilds.size() == 0) {
+            listener.getLogger().format("No build found with property '%s' '%s' value '%s'", extensionName, propertyName, expandedPropertyValue);
+            theBuild.setResult(Result.FAILURE);
         } else {
-            if (entities.size() == 0) {
-                listener.getLogger().format("No build found with property '%s' '%s' value '%s'", extensionName, propertyName, expandedPropertyValue);
-            } else {
-                listener.getLogger().format("Multiple builds found with property '%s' '%s' value '%s'", extensionName, propertyName, expandedPropertyValue);
-            }
+            listener.getLogger().format("Multiple builds found with property '%s' '%s' value '%s'", extensionName, propertyName, expandedPropertyValue);
             theBuild.setResult(Result.FAILURE);
         }
 
