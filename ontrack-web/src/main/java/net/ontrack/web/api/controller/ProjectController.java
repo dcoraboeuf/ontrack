@@ -1,5 +1,9 @@
 package net.ontrack.web.api.controller;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import net.ontrack.core.model.BranchLastStatus;
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.ProjectCreationForm;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
@@ -18,6 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Locale;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -91,10 +98,27 @@ public class ProjectController extends APIController {
 
     @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}/branch/status", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<SimpleResourceCollection<BranchLastStatusResource>> getProjectBranchStatusList(@PathVariable String name) {
+    public ResponseEntity<SimpleResourceCollection<BranchLastStatusResource>> getProjectBranchStatusList(final Locale locale, @PathVariable String name) {
         try {
-            // FIXME Project id
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            // Project id
+            int id = entityConverter.getProjectId(name);
+            // Gets the branch statuses
+            List<BranchLastStatus> statuses = Lists.transform(
+                    managementService.getBranchList(id),
+                    new Function<BranchSummary, BranchLastStatus>() {
+                        @Override
+                        public BranchLastStatus apply(BranchSummary o) {
+                            return managementService.getBranchLastStatus(locale, o.getId());
+                        }
+                    }
+            );
+            // Getting the resources
+            List<BranchLastStatusResource> statusResources = Lists.transform(
+                    statuses,
+                    BranchLastStatusResource.transform
+            );
+            // OK
+            return new ResponseEntity<>(new SimpleResourceCollection<>(statusResources), HttpStatus.OK);
         } catch (EntityNameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
