@@ -32,7 +32,21 @@ angular.module('ontrack.home', [
         function loadProjectBranchStatus() {
             angular.forEach($scope.projectList.items, function (project) {
                 projectService.loadProjectBranchStatus(project.name, function (statuses) {
-                    project.statuses = statuses;
+                    // Pre-processing
+                    angular.forEach(statuses.items, function (status) {
+                        var promotion = null;
+                        for(var i = status.promotions.length - 1; i >= 0; i--) {
+                            var currentPromotion = status.promotions[i];
+                            if (currentPromotion.build) {
+                                promotion = currentPromotion;
+                                break;
+                            }
+                        }
+                        status.lastPromotion = promotion;
+                        status.notPromoted = !promotion;
+                    });
+                    // OK
+                    project.statuses = statuses.items;
                 })
             });
         }

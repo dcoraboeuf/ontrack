@@ -7,10 +7,24 @@
                         <a href="#{{project.links.view.href}}">{{project.name}}</a>
                     </td>
                     <td class="ot-home-project-branches">
-                        <button ng-repeat="status in project.statuses.items" class="ot-home-project-branch">
-                            <a href="">
+                        <button ng-repeat="status in project.statuses" class="ot-home-project-branch">
+                            <a href="#{{status.branch.links.view.href}}">
                                 <b>{{status.branch.name}}</b>
                             </a>
+                            <p ng-if="status.lastPromotion">
+                                <a href="#{{status.lastPromotion.build.links.view.href}}" class="ot-home-project-branch-last-build">
+                                    {{status.lastPromotion.build.name}}
+                                </a>
+                                <i class="fa fa-arrow-right text-muted"></i>
+                                <!-- TODO Directive for a promotion icon -->
+                                <a href="#{{status.lastPromotion.promotionLevel.links.view.href}}">
+                                    <img class="ot-icon" ng-src="status.lastPromotion.promotionLevel.links.image.href" />
+                                    {{status.lastPromotion.promotionLevel.name}}
+                                </a>
+                            </p>
+                            <p ng-if="status.notPromoted">
+                                <i class="fa fa-ban text-muted"></i>
+                            </p>
                         </button>
                     </td>
                 </tr>
