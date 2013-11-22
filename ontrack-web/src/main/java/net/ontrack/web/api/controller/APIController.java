@@ -2,16 +2,17 @@ package net.ontrack.web.api.controller;
 
 import net.ontrack.core.support.InputException;
 import net.ontrack.core.support.NotFoundException;
-import net.ontrack.web.api.model.Resource;
 import net.ontrack.web.support.ErrorHandler;
 import net.ontrack.web.support.ErrorMessage;
 import net.sf.jstring.Strings;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
 import java.util.Locale;
 
 public abstract class APIController {
@@ -24,11 +25,31 @@ public abstract class APIController {
         this.strings = strings;
     }
 
-    protected <T extends Resource> ResponseEntity<T> ok(T resource) {
-        return new ResponseEntity<>(
-                resource,
-                HttpStatus.OK
-        );
+    protected ResponseEntity<byte[]> image(byte[] content, byte[] defaultImage) {
+        if (content == null) {
+            if (defaultImage != null) {
+                content = defaultImage;
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        }
+        try {
+            return renderImage(content);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected ResponseEntity<byte[]> renderImage(byte[] content) throws IOException {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.IMAGE_PNG);
+        // See https://developers.google.com/speed/docs/best-practices/caching for cache management
+        // Just sets the last modified time to now
+        final long now = System.currentTimeMillis();
+        responseHeaders.setExpires(now + 24 * 3600L * 1000L); // Expires in one day
+        responseHeaders.setLastModified(now - 3600 * 1000); // Modified one hour ago
+        // OK
+        return new ResponseEntity<>(content, responseHeaders, HttpStatus.OK);
     }
 
     protected ResponseEntity<String> getMessageResponse(String message, HttpStatus status) {

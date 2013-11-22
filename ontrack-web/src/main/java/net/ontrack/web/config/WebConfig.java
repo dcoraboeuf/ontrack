@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
@@ -77,6 +78,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         converters.clear();
         // Plain text
         converters.add(new StringHttpMessageConverter());
+        // Binary content
+        converters.add(new ByteArrayHttpMessageConverter());
         // JSON
         MappingJacksonHttpMessageConverter mapper = new MappingJacksonHttpMessageConverter();
         mapper.setObjectMapper(jacksonObjectMapper);
