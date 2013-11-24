@@ -21,6 +21,15 @@ angular.module('ontrack', [
         // Route set-up
         $urlRouterProvider.otherwise('/home');
     })
+    .config(function ($translateProvider) {
+        $translateProvider.translations('en', {
+            'login': 'Log in'
+        });
+        $translateProvider.translations('fr', {
+            'login': 'Se connecter'
+        });
+        $translateProvider.preferredLanguage('en');
+    })
     .run(function (securityService, errorService) {
         securityService.init();
     })
