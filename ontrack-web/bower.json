@@ -8,8 +8,7 @@
         "angular-bootstrap": "~0.6.0",
         "angular-ui-router": "~0.2.0",
         "angular-ui-utils": "~0.0.3",
-	"angular-translate": "~1.1.0",
-	"angular-translate-loader-url": "~0.1.4"
+	    "angular-translate": "~1.1.0"
     },
     "dependencies": {},
     "resolutions": {
