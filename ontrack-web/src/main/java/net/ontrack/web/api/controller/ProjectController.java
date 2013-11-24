@@ -2,6 +2,7 @@ package net.ontrack.web.api.controller;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.wordnik.swagger.annotations.ApiOperation;
 import net.ontrack.core.model.BranchLastStatus;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.ProjectCreationForm;
@@ -45,6 +46,7 @@ public class ProjectController extends APIController {
         this.managementService = managementService;
     }
 
+    @ApiOperation("List of all projects")
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
