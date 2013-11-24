@@ -41,8 +41,9 @@ angular.module('ontrack', [
             return deferred.promise;
         }
     })
-    .run(function (securityService, errorService) {
+    .run(function (securityService, $translate) {
         securityService.init();
+        $translate.refresh('en');
     })
     .factory('httpErrorInterceptor', function ($q, $log, $interpolate, notificationService, errorService) {
         return {
