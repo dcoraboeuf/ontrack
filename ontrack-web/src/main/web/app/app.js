@@ -4,6 +4,7 @@
 angular.module('ontrack', [
         'ui.bootstrap',
         'ui.router',
+        'pascalprecht.translate',
         'ontrack-templates',
         'ontrack.config',
         'ontrack.directives',
