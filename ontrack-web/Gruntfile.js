@@ -363,7 +363,7 @@ module.exports = function ( grunt ) {
              */
             assets: {
                 files: [
-                    'src/assets/**/*'
+                    '<%= src_dir %>/assets/**/*'
                 ],
                 tasks: [ 'copy:dev_app_assets' ]
             },
