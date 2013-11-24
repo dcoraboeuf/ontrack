@@ -223,6 +223,12 @@
 			    <artifactId>mail</artifactId>
 			    <version>1.4.5</version>
 			</dependency>
+            <!-- Swagger -->
+            <dependency>
+                <groupId>com.mangofactory</groupId>
+                <artifactId>swagger-springmvc</artifactId>
+                <version>0.6.5</version>
+            </dependency>
 			<!-- Validation -->
 			<dependency>
 				<groupId>javax.validation</groupId>
