@@ -22,13 +22,24 @@ angular.module('ontrack', [
         $urlRouterProvider.otherwise('/home');
     })
     .config(function ($translateProvider) {
-        $translateProvider.translations('en', {
-            'login': 'Log in'
-        });
-        $translateProvider.translations('fr', {
-            'login': 'Se connecter'
-        });
         $translateProvider.preferredLanguage('en');
+        $translateProvider.useLoader('$translateUrlLoader', {});
+    })
+    .factory('$translateUrlLoader', function ($q, $http, config) {
+        return function (options) {
+            var deferred = $q.defer();
+            $http({
+                url: config.api('localization/' + options.key + '/' + config.version),
+                method: 'GET'
+            })
+                .success(function (data) {
+                    deferred.resolve(data);
+                })
+                .error(function (data) {
+                    deferred.reject(options.key);
+                });
+            return deferred.promise;
+        }
     })
     .run(function (securityService, errorService) {
         securityService.init();
