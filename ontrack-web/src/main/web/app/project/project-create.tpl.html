@@ -1,12 +1,17 @@
 <form class="form-horizontal" role="form" ng-submit="create()">
     <div class="form-group">
-        <label class="col-sm-2 control-label" for="name">Project name</label>
+        <div class="col-sm-offset-2 col-sm-10">
+            <h1><small>{{'project.create' | translate}}</small></h1>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="name">{{'model.name' | translate}}</label>
         <div class="col-sm-5">
             <input ng-model="name" class="form-control input-lg" type="text" id="name" name="name" maxlength="40" autofocus="autofocus" required="required"/>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label" for="description">Description</label>
+        <label class="col-sm-2 control-label" for="description">{{'model.description' | translate}}</label>
         <div class="col-sm-5">
             <textarea ng-model="description" class="form-control input-lg" id="description" name="description" maxlength="1000"></textarea>
         </div>
@@ -18,8 +23,8 @@
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-lg btn-primary">Create</button>
-            <a href="#/home" class="btn btn-lg btn-link">Cancel</a>
+            <button type="submit" class="btn btn-lg btn-primary">{{'general.create' | translate}}</button>
+            <a href="#/home" class="btn btn-lg btn-link">{{'general.cancel' | translate}}</a>
         </div>
     </div>
 </form>
