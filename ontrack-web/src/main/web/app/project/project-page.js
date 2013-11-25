@@ -19,6 +19,10 @@ angular.module('ontrack.project.page', [
 
     .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, projectService) {
         $scope.projectName = $stateParams.projectName;
+        // Page definition
+        $scope.page = {
+            title: $scope.projectName
+        };
     })
 
 ;
