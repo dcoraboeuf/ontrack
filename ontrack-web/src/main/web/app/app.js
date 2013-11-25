@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('ontrack', [
+var ontrack = angular.module('ontrack', [
         'ui.bootstrap',
         'ui.router',
         'pascalprecht.translate',
@@ -41,9 +41,11 @@ angular.module('ontrack', [
             return deferred.promise;
         }
     })
-    .run(function (securityService, $translate) {
+    .run(function (securityService) {
+        // Hides the loading element
+        angular.element(document.getElementById('ontrack-loading')).remove();
+        // Loading the initial security context (if available)
         securityService.init();
-        $translate.refresh('en');
     })
     .factory('httpErrorInterceptor', function ($q, $log, $interpolate, notificationService, errorService) {
         return {
@@ -103,3 +105,9 @@ angular.module('ontrack', [
         }
     })
 ;
+
+// BOOTSTRAPING SECTION
+
+angular.element(document).ready(function() {
+    angular.bootstrap(document, ['ontrack']);
+});
