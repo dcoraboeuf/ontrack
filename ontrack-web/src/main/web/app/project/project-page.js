@@ -24,6 +24,12 @@ angular.module('ontrack.project.page', [
             $scope.page = {
                 title: projectResource.name,
                 description: projectResource.description,
+                commands: [{
+                    id: 'project-delete',
+                    name: 'general.delete',
+                    icon: 'trash-o',
+                    link: projectResource.links['deleteProject']
+                }],
                 close: function () {
                     $state.go('home')
                 }
