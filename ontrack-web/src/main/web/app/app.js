@@ -70,6 +70,9 @@ var ontrack = angular.module('ontrack', [
             languages.list(function (data) {
                 $scope.languageList = data;
             });
+            $scope.changeLanguage = function (lang) {
+                $translate.uses(lang);
+            };
             // On state change
             $scope.$on('$stateChangeSuccess', function (event, toState) {
                 // Clears any notification
