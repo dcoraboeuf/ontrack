@@ -6,8 +6,10 @@ import lombok.EqualsAndHashCode;
 import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.web.api.controller.ProjectController;
 
+import static net.ontrack.web.api.model.ResourceLink.of;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.http.HttpMethod.DELETE;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,6 +28,7 @@ public class ProjectResource extends AbstractResource<ProjectResource> {
                     o.getDescription())
                     .withView("/project/%s", o.getName())
                     .withLink(linkTo(methodOn(ProjectController.class).getProject(o.getName())).withSelfRel())
+                    .withLink(of(DELETE, linkTo(methodOn(ProjectController.class).getProject(o.getName())).withRel("deleteProject")))
                     ;
         }
     };

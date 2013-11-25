@@ -2,6 +2,7 @@ package net.ontrack.web.api.controller;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import net.ontrack.core.model.Ack;
 import net.ontrack.core.model.BranchLastStatus;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.ProjectCreationForm;
@@ -94,6 +95,15 @@ public class ProjectController extends APIController {
         } catch (EntityNameNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.DELETE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Ack deleteProject(@PathVariable String name) {
+        return managementService.deleteProject(
+                entityConverter.getProjectId(name)
+        );
     }
 
     @RequestMapping(value = "/{name:[A-Za-z0-9_\\.\\-]+}/branch/status", method = RequestMethod.GET)
