@@ -59,9 +59,13 @@ var ontrack = angular.module('ontrack', [
                 }
             }
         })
-        .controller('AppCtrl', function AppCtrl($scope, $location, config, securityService, notificationService) {
+        .controller('AppCtrl', function AppCtrl($scope, $location, $translate, config, securityService, notificationService) {
             $scope.isNavbarCollapsed = false;
             $scope.version = config.version;
+            // Language management
+            $scope.language = function () {
+                return $translate.uses();
+            };
             // On state change
             $scope.$on('$stateChangeSuccess', function (event, toState) {
                 // Clears any notification
