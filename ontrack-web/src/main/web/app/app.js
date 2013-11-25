@@ -42,8 +42,6 @@ var ontrack = angular.module('ontrack', [
             }
         })
         .run(function (securityService) {
-            // Hides the loading element
-            angular.element(document.getElementById('ontrack-loading')).remove();
             // Loading the initial security context (if available)
             securityService.init();
         })
