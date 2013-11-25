@@ -47,22 +47,26 @@ public class OntrackLastBuildWithPromotionLevel extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        final String actualProject = OntrackPluginSupport.expand(project, theBuild, listener);
+        final String actualBranch = OntrackPluginSupport.expand(branch, theBuild, listener);
+        final String actualPromotionLevel = OntrackPluginSupport.expand(promotionLevel, theBuild, listener);
+
         // Gets the last build
         BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
             @Override
             public BuildSummary onCall(ManageUIClient ui) {
-				return ui.getLastBuildWithPromotionLevel(null, project, branch, promotionLevel);
+				return ui.getLastBuildWithPromotionLevel(null, actualProject, actualBranch, actualPromotionLevel);
             }
         });
         // Found
         if (lastBuild != null) {
             String name = lastBuild.getName();
-            listener.getLogger().format("Found build '%s' for branch '%s' and project '%s' and promotion level '%s'%n", name, branch, project, promotionLevel);
+            listener.getLogger().format("Found build '%s' for branch '%s' and project '%s' and promotion level '%s'%n", name, actualBranch, actualProject, actualPromotionLevel);
             theBuild.addAction(new ParametersAction(new StringParameterValue(variable, name)));
         }
         // Not found
         else {
-            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and promotion level '%s'%n", branch, project, promotionLevel);
+            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and promotion level '%s'%n", actualBranch, actualProject, actualPromotionLevel);
             theBuild.setResult(Result.FAILURE);
         }
         // OK
