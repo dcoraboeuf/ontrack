@@ -6,4 +6,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class TopResource extends AbstractResource<TopResource> {
+
+    private final String version;
+
 }

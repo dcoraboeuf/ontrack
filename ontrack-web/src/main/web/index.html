@@ -31,6 +31,7 @@
     </div>
     <div class="navbar-collapse" ng-hide="isNavbarCollapsed">
         <ul class="nav navbar-nav navbar-right">
+            <!-- Sign in / Sign out -->
             <li ng-hide="logged()">
                 <a id="header-signin" href="#/signin">{{'login' | translate}}</a>
             </li>
@@ -42,6 +43,16 @@
                 </a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a id="header-signout" ng-click="signout()">{{'logout' | translate}}</a></li>
+                </ul>
+            </li>
+            <!-- Language selection -->
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    Selected language
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a id="language-">Language</a></li>
                 </ul>
             </li>
         </ul>
