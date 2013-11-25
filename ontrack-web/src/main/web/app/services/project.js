@@ -21,6 +21,11 @@ angular.module('ontrack.service.project', ['ontrack.config'])
                     })
                     .success(success || angular.noop)
                     .error(error || angular.noop);
+            },
+            getProject: function (name, success) {
+                $http
+                    .get(config.api('project/' + name))
+                    .success(success);
             }
         }
     })

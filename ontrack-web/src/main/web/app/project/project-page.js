@@ -18,14 +18,17 @@ angular.module('ontrack.project.page', [
     })
 
     .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, projectService) {
-        $scope.projectName = $stateParams.projectName;
-        // Page definition
-        $scope.page = {
-            title: $scope.projectName,
-            close: function () {
-                $state.go('home')
-            }
-        };
+        // Loads the project
+        projectService.getProject($stateParams.projectName, function (projectResource) {
+            // Page definition
+            $scope.page = {
+                title: projectResource.name,
+                description: projectResource.description,
+                close: function () {
+                    $state.go('home')
+                }
+            };
+        });
     })
 
 ;
