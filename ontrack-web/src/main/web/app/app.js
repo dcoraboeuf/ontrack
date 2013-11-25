@@ -12,6 +12,7 @@ var ontrack = angular.module('ontrack', [
             'ontrack.config',
             'ontrack.directives',
             'ontrack.service.security',
+            'ontrack.service.ref',
             'ontrack.home',
             'ontrack.signin',
             'ontrack.project.create'
@@ -59,13 +60,16 @@ var ontrack = angular.module('ontrack', [
                 }
             }
         })
-        .controller('AppCtrl', function AppCtrl($scope, $location, $translate, config, securityService, notificationService) {
+        .controller('AppCtrl', function AppCtrl($scope, $location, $translate, config, securityService, notificationService, languages) {
             $scope.isNavbarCollapsed = false;
             $scope.version = config.version;
             // Language management
             $scope.language = function () {
                 return $translate.uses();
             };
+            languages.list(function (data) {
+                $scope.languageList = data;
+            });
             // On state change
             $scope.$on('$stateChangeSuccess', function (event, toState) {
                 // Clears any notification
