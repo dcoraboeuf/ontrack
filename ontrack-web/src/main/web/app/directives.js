@@ -1,5 +1,16 @@
 angular.module('ontrack.directives', [])
 /**
+ * <ot-todo />
+ */
+    .directive('otTodo', function () {
+        return {
+            restrict: 'E',
+            //replace: true,
+            templateUrl: 'app/directives/otTodo.tpl.html',
+            transclude: true
+        }
+    })
+/**
  * <ot-promotion-level-link self=<> [name='hide'] />
  * @param self PromotionLevelResource
  * @param name If set to 'hide', does not show the promotion level name, if not set, show it (default)
@@ -13,6 +24,16 @@ angular.module('ontrack.directives', [])
                 name: '@name'
             },
             templateUrl: 'app/directives/otPromotionLevelLink.tpl.html'
+        }
+    })
+/**
+ * <ot-page> that creates a standard page layout.
+ */
+    .directive('otPage', function ($compile) {
+        return {
+            restrict: 'E',
+            templateUrl: 'app/directives/otPage.tpl.html',
+            transclude: true
         }
     })
 ;
