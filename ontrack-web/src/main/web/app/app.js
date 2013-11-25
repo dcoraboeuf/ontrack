@@ -155,6 +155,6 @@ angular.element(document).ready(function () {
         });
 
     });
-    // Actual bootstrapin
+    // Actual bootstraping
     angular.bootstrap(bootstrapElement, ['ontrack.bootstrap']);
 });
