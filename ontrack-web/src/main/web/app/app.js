@@ -11,10 +11,13 @@ var ontrack = angular.module('ontrack', [
             'ontrack-templates',
             'ontrack.config',
             'ontrack.directives',
+            // Services needed by the app itself
             'ontrack.service.security',
             'ontrack.service.ref',
+            // Pages
             'ontrack.home',
             'ontrack.signin',
+            'ontrack.project.page',
             'ontrack.project.create'
         ])
         .config(function ($httpProvider, $urlRouterProvider) {
