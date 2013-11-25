@@ -1,5 +1,8 @@
 'use strict';
 
+// Initial configuration
+var _translationMap;
+
 // Declare app level module which depends on filters, and services
 var ontrack = angular.module('ontrack', [
             'ui.bootstrap',
@@ -22,6 +25,8 @@ var ontrack = angular.module('ontrack', [
             $urlRouterProvider.otherwise('/home');
         })
         .config(function ($translateProvider) {
+            if (console) console.log('Loading the translations');
+            $translateProvider.translations('en', _translationMap);
             $translateProvider.preferredLanguage('en');
             $translateProvider.useLoader('$translateUrlLoader', {});
         })
@@ -121,7 +126,7 @@ angular.element(document).ready(function () {
                 $http.get(config.api('localization/en/' + config.version))
                     .success(function (map) {
                         $log.info('Default translation map loaded.');
-                        angular.module('ontrack').value('defaultTranslationMap', map);
+                        _translationMap = map;
                         // Starting the application
                         $log.info('Starting the application...');
                         angular.bootstrap(document, ['ontrack']);
