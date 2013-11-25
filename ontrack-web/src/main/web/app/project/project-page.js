@@ -21,7 +21,10 @@ angular.module('ontrack.project.page', [
         $scope.projectName = $stateParams.projectName;
         // Page definition
         $scope.page = {
-            title: $scope.projectName
+            title: $scope.projectName,
+            close: function () {
+                $state.go('home')
+            }
         };
     })
 
