@@ -1,6 +1,7 @@
 package net.ontrack.web.api.controller;
 
 import net.ontrack.service.ManagementService;
+import net.ontrack.web.api.assembly.PromotionLevelAssembler;
 import net.ontrack.web.api.model.PromotionLevelResource;
 import net.ontrack.web.support.EntityConverter;
 import net.ontrack.web.support.ErrorHandler;
@@ -21,13 +22,15 @@ public class PromotionLevelController extends APIController {
 
     private final EntityConverter entityConverter;
     private final ManagementService managementService;
+    private final PromotionLevelAssembler promotionLevelAssembler;
     private final byte[] defaultPromotionLevelImage;
 
     @Autowired
-    public PromotionLevelController(ErrorHandler errorHandler, Strings strings, EntityConverter entityConverter, ManagementService managementService) {
+    public PromotionLevelController(ErrorHandler errorHandler, Strings strings, EntityConverter entityConverter, ManagementService managementService, PromotionLevelAssembler promotionLevelAssembler) {
         super(errorHandler, strings);
         this.entityConverter = entityConverter;
         this.managementService = managementService;
+        this.promotionLevelAssembler = promotionLevelAssembler;
         // Reads the default images
         defaultPromotionLevelImage = WebUtils.readBytes("/default_promotion_level.png");
     }
@@ -40,7 +43,7 @@ public class PromotionLevelController extends APIController {
             @PathVariable String branch,
             @PathVariable String promotionLevel
     ) {
-        return PromotionLevelResource.summary.apply(
+        return promotionLevelAssembler.summary().apply(
                 managementService.getPromotionLevel(
                         entityConverter.getPromotionLevelId(project, branch, promotionLevel)
                 )

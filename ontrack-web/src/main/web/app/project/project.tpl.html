@@ -10,13 +10,13 @@
         <tbody>
             <tr ng-repeat="item in branchLastStatusResourceListResource.items">
                 <td class="ot-project-branch">
-                    <a href="#" class="ot-project-branch-name"><span>{{item.branch.name}}</span></a>
+                    <a href="#{{item.branch.links.view.href}}" class="ot-project-branch-name"><span>{{item.branch.name}}</span></a>
                     <p class="ot-description" ng-if="item.description != ''">
                         {{item.description}}
                     </p>
                 </td>
                 <td class="ot-project-branch-build">
-                    <a href="" ng-if="item.latestBuild">{{item.latestBuild.name}}</a>
+                    <a href="#{{item.latestBuild.links.view.href}}" ng-if="item.latestBuild">{{item.latestBuild.name}}</a>
                     <i class="fa fa-ban" ng-if="!item.latestBuild"></i>
                 </td>
                 <td>
@@ -28,7 +28,7 @@
                                         <ot-promotion-level-link self="promotion.promotionLevel"></ot-promotion-level-link>
                                         <p>
                                             <i class="fa fa-star-o"></i>
-                                            <a href="">{{promotion.build.name}}</a>
+                                            <a href="#{{promotion.build.links.view.href}}">{{promotion.build.name}}</a>
                                         </p>
                                     </div>
                                     <div class="ot-project-branch-promotion ot-project-branch-promotion-none" ng-if="!promotion.build">

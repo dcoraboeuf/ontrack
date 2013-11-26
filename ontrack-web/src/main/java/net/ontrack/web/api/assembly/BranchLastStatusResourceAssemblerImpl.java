@@ -4,8 +4,6 @@ import com.google.common.base.Function;
 import net.ontrack.core.model.BranchLastStatus;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.web.api.model.BranchLastStatusResource;
-import net.ontrack.web.api.model.BuildResource;
-import net.ontrack.web.api.model.PromotionResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +14,15 @@ import static net.ontrack.core.support.FunctionsUtils.optional;
 public class BranchLastStatusResourceAssemblerImpl extends AbstractAssembler implements BranchLastStatusResourceAssembler {
 
     private final BranchAssembler branchAssembler;
+    private final BuildAssembler buildAssembler;
+    private final PromotionAssembler promotionAssembler;
 
     @Autowired
-    public BranchLastStatusResourceAssemblerImpl(SecurityUtils securityUtils, BranchAssembler branchAssembler) {
+    public BranchLastStatusResourceAssemblerImpl(SecurityUtils securityUtils, BranchAssembler branchAssembler, BuildAssembler buildAssembler, PromotionAssembler promotionAssembler) {
         super(securityUtils);
         this.branchAssembler = branchAssembler;
+        this.buildAssembler = buildAssembler;
+        this.promotionAssembler = promotionAssembler;
     }
 
     @Override
@@ -30,10 +32,10 @@ public class BranchLastStatusResourceAssemblerImpl extends AbstractAssembler imp
             public BranchLastStatusResource apply(BranchLastStatus o) {
                 return new BranchLastStatusResource(
                         branchAssembler.summary().apply(o.getBranch()),
-                        optional(BuildResource.summary).apply(o.getLatestBuild()),
+                        optional(buildAssembler.summary()).apply(o.getLatestBuild()),
                         transform(
                                 o.getPromotions(),
-                                PromotionResource.summary
+                                promotionAssembler.summary()
                         )
                 );
             }

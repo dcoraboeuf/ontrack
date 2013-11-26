@@ -25,9 +25,11 @@ public class BranchAssemblerImpl extends AbstractAssembler implements BranchAsse
                         o.getProject().getName(),
                         o.getName(),
                         o.getDescription()
-                );
-                // TODO Branch view
-                // TODO Branch self
+                )
+                        // Branch view
+                        .withView("/project/%s/branch/%s", o.getProject().getName(), o.getName())
+                        // TODO Branch self
+                        ;
             }
         };
     }
