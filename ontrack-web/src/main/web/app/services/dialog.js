@@ -1,5 +1,6 @@
 angular.module('ontrack.service.dialog', ['ui.bootstrap'])
-    .service('dialog', function ($q, $modal) {
+    .service('dialog', function ($q) {
+        // FIXME Waiting for angular-ui/bootstrap to fix problems with $modal
         var self = {};
         self.confirm = function (config) {
             // Parameters
@@ -15,26 +16,15 @@ angular.module('ontrack.service.dialog', ['ui.bootstrap'])
                 }, config);
             }
             // Creates a task
-            // var deferred = $q.defer();
-            // Displays the modal dialog
-            var dialog = $modal.open({
-                templateUrl: 'app/services/dialog.tpl.html',
-                controller: function ($scope, $modalInstance) {
-                    console.log('In controller');
-                    $scope.ok = function () {
-                        $modalInstance.close('ok');
-                    };
-                    $scope.cancel = function () {
-                        $modalInstance.dismiss('cancel');
-                    };
-                }
-            });
-            // TODO Waits for it to close
-            dialog.result.then(function () {
-                // deferred.resolve();
-            });
-            // Returns the task
-            // return deferred.promise;
+            var deferred = $q.defer();
+            // FIXME Replaces the confirm() call by the use of $modal
+            if (confirm(params.text)) {
+                deferred.resolve({});
+            } else {
+                deferred.reject({});
+            }
+            // OK
+            return deferred.promise;
         };
         return self;
     })
