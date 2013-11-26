@@ -52,7 +52,7 @@ public class ProjectController extends APIController {
     public SimpleResourceCollection<ProjectResource> getProjectList() {
         return SimpleResourceCollection.of(
                 managementService.getProjectList(),
-                ProjectResource.stubFn)
+                ProjectResource.summary)
                 .withLink(
                         ResourceLink.post(
                                 linkTo(methodOn(ProjectController.class).createProject(null)).withRel("projectCreate")
@@ -66,7 +66,7 @@ public class ProjectController extends APIController {
     @ResponseBody
     public ResponseEntity<ProjectResource> createProject(@RequestBody ProjectCreation input) {
         return new ResponseEntity<>(
-                ProjectResource.resourceFn
+                ProjectResource.detail
                         .apply(
                                 managementService.createProject(
                                         new ProjectCreationForm(
@@ -84,7 +84,7 @@ public class ProjectController extends APIController {
     public ResponseEntity<ProjectResource> getProject(@PathVariable String name) {
         try {
             return new ResponseEntity<>(
-                    ProjectResource.resourceFn
+                    ProjectResource.detail
                             .apply(
                                     managementService.getProject(
                                             entityConverter.getProjectId(name)

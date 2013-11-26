@@ -19,7 +19,7 @@ public class ProjectResource extends AbstractResource<ProjectResource> {
     private final String name;
     private final String description;
 
-    public static Function<ProjectSummary, ProjectResource> stubFn = new Function<ProjectSummary, ProjectResource>() {
+    public static Function<ProjectSummary, ProjectResource> summary = new Function<ProjectSummary, ProjectResource>() {
         @Override
         public ProjectResource apply(ProjectSummary o) {
             return new ProjectResource(
@@ -33,10 +33,10 @@ public class ProjectResource extends AbstractResource<ProjectResource> {
         }
     };
 
-    public static Function<ProjectSummary, ProjectResource> resourceFn = new Function<ProjectSummary, ProjectResource>() {
+    public static Function<ProjectSummary, ProjectResource> detail = new Function<ProjectSummary, ProjectResource>() {
         @Override
         public ProjectResource apply(ProjectSummary o) {
-            return stubFn
+            return summary
                     .apply(o)
                     // TODO Branches
                     // TODO Actions
