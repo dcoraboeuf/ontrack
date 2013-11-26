@@ -18,7 +18,8 @@ var ontrack = angular.module('ontrack', [
             'ontrack.home',
             'ontrack.signin',
             'ontrack.project.page',
-            'ontrack.project.create'
+            'ontrack.project.create',
+            'ontrack.branch.page'
         ])
         .config(function ($httpProvider, $urlRouterProvider) {
             // Default error management
