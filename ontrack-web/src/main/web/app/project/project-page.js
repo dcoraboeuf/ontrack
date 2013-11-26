@@ -21,9 +21,16 @@ angular.module('ontrack.project.page', [
     .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, dialog) {
         // Loads the project
         projectService.getProject($stateParams.projectName, function (projectResource) {
+            console.log('Getting project back.');
             // Page definition
             $scope.page = {
                 title: projectResource.name,
+                breadcrumbs: [
+                    {
+                        text: $translate('home'),
+                        link: '/home'
+                    }
+                ],
                 description: projectResource.description,
                 commands: [
                     {
