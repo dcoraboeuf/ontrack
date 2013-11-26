@@ -1,4 +1,17 @@
 angular.module('ontrack.service.core', [])
+    .service('pageService', function () {
+        var self = {};
+        self.setBreadcrumbs = function (list) {
+            self.breadcrumbs = list;
+        };
+        self.clearBreadcrumbs = function () {
+            self.breadcrumbs = undefined;
+        };
+        self.getBreadcrumbs = function () {
+            return self.breadcrumbs;
+        };
+        return self;
+    })
     .service('messageService', function ($translate) {
         var self = {};
         /**

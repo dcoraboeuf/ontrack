@@ -1,5 +1,6 @@
 angular.module('ontrack.branch.page', [
         'ui.router',
+        'ontrack.service.core',
         'ontrack.service.project'
     ])
 
@@ -17,22 +18,23 @@ angular.module('ontrack.branch.page', [
         })
     })
 
-    .controller('BranchCtrl', function BranchCtrl($scope, $state, $stateParams, $translate, projectService) {
+    .controller('BranchCtrl', function BranchCtrl($scope, $state, $stateParams, $translate, pageService, projectService) {
         // TODO Loads the branch
         projectService.getProject($stateParams.projectName, function (projectResource) {
             // Page definition
             $scope.page = {
-                title: projectResource.name,
-                breadcrumbs: [
-                    {
-                        text: $translate('home'),
-                        link: '/home'
-                    },{
-                        text: projectResource.name,
-                        link: '/project/' + projectResource.name
-                    }
-                ]
+                title: projectResource.name
             };
+            // Breadcrumbs
+            pageService.setBreadcrumbs([
+                {
+                    text: $translate('home'),
+                    link: '/home'
+                },{
+                    text: projectResource.name,
+                    link: '/project/' + projectResource.name
+                }
+            ]);
         });
     })
 

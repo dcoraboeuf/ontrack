@@ -12,6 +12,7 @@ var ontrack = angular.module('ontrack', [
             'ontrack.config',
             'ontrack.directives',
             // Services needed by the app itself
+            'ontrack.service.core',
             'ontrack.service.security',
             'ontrack.service.ref',
             // Pages
@@ -64,7 +65,7 @@ var ontrack = angular.module('ontrack', [
                 }
             }
         })
-        .controller('AppCtrl', function AppCtrl($scope, $location, $translate, config, securityService, notificationService, languages) {
+        .controller('AppCtrl', function AppCtrl($scope, $location, $translate, config, securityService, notificationService, pageService, languages) {
             $scope.isNavbarCollapsed = false;
             $scope.version = config.version;
             // Language management
@@ -81,6 +82,8 @@ var ontrack = angular.module('ontrack', [
             $scope.$on('$stateChangeSuccess', function (event, toState) {
                 // Clears any notification
                 notificationService.clear();
+                // Clears any breadcrumb
+                pageService.clearBreadcrumbs();
                 // Page title
                 if (angular.isDefined(toState.data.pageTitle)) {
                     $scope.pageTitle = toState.data.pageTitle + ' | ontrack';
@@ -120,6 +123,10 @@ var ontrack = angular.module('ontrack', [
                     // Goes to the home page
                     $location.path('/home');
                 })
+            }
+            // Page breadcrumbs
+            $scope.breadcrumbs = function () {
+                return pageService.getBreadcrumbs();
             }
         })
     ;
