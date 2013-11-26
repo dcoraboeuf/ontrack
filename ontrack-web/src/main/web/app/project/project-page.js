@@ -1,6 +1,7 @@
 angular.module('ontrack.project.page', [
         'ui.router',
-        'ontrack.service.project'
+        'ontrack.service.project',
+        'ontrack.service.dialog'
     ])
 
     .config(function config($stateProvider) {
@@ -17,7 +18,7 @@ angular.module('ontrack.project.page', [
         })
     })
 
-    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, notificationService) {
+    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, dialog) {
         // Loads the project
         projectService.getProject($stateParams.projectName, function (projectResource) {
             // Page definition
@@ -31,12 +32,13 @@ angular.module('ontrack.project.page', [
                         icon: 'trash-o',
                         link: projectResource.links['deleteProject'],
                         action: function () {
-                            alert(messageService.translate('project.delete.prompt', projectResource.name));
-                            // notificationService.confirm({
-                            //     text: ''
-                            // }).then(function () {
-//
-                            //     })
+                            dialog.confirm({
+                                text: messageService.translate('project.delete.prompt', projectResource.name)
+                            })
+                                .then(function () {
+                                    // TODO Actual deletion
+                                    alert('Actual deletion');
+                                });
                         }
                     }
                 ],
