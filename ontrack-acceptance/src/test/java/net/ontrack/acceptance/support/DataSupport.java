@@ -382,6 +382,10 @@ public class DataSupport {
         return client.anonymous(call);
     }
 
+    public <T> T anonymous(PropertyClientCall<T> call) {
+        return client.anonymous(call);
+    }
+
     public <T> T asAdmin(ControlClientCall<T> call) {
         return client.asUser("admin", getAdminPassword(), call);
     }

@@ -3,6 +3,7 @@ package net.ontrack.client.support;
 import net.ontrack.client.PropertyUIClient;
 import net.ontrack.core.model.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,6 +77,21 @@ public class DefaultPropertyUIClient extends AbstractClient implements PropertyU
                         name
                 ),
                 String.class
+        );
+    }
+
+    @Override
+    public Collection<EntityStub> getEntitiesForPropertyValue(Entity entity, String extension, String name, String value) {
+        return list(
+                getDefaultLocale(),
+                format(
+                        "/ui/property/search/%s/%s/%s/%s",
+                        entity.name(),
+                        extension,
+                        name,
+                        value
+                ),
+                EntityStub.class
         );
     }
 }

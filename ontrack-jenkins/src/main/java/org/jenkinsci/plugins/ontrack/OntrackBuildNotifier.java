@@ -14,10 +14,11 @@ import net.ontrack.core.model.BuildCreationForm;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.PropertiesCreationForm;
 import net.ontrack.core.model.PropertyCreationForm;
-import net.ontrack.core.ui.ControlUI;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+
+import static org.jenkinsci.plugins.ontrack.OntrackPluginSupport.expand;
 
 /**
  * Allows to notify for a build.
@@ -75,7 +76,7 @@ public class OntrackBuildNotifier extends AbstractOntrackNotifier {
                                                     getBuildUrl(theBuild) // URL to this build
                                             )
                                     )
-                                    ));
+                            ));
                 }
             });
         } else {

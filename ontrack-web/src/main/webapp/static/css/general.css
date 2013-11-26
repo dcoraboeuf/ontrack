@@ -157,6 +157,11 @@ img.x-icon-small {
     padding-left: 1em;
 }
 
+.status-WARNING {
+    border-left: dotted 0.5em #11FF11;
+    padding-left: 1em;
+}
+
 .status-INTERRUPTED {
     border-left: solid 0.5em #666666;
     padding-left: 1em;
@@ -262,17 +267,6 @@ ul.promotions li:first-child .separator {
 
 .branch-name {
     width: 4em;
-}
-
-.home-project-name {
-    width: 4em;
-    padding: 1em;
-    font-weight: bold;
-    font-size: 120%;
-}
-
-.home-project-branch {
-    height: 4em;
 }
 
 /* Sortable list */

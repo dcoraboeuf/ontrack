@@ -37,6 +37,9 @@ model.promotion_level
 status.PASSED
     en -> Passed
     fr -> Réussi
+status.WARNING
+    en -> Warning
+    fr -> Avertissement
 status.FIXED
     en -> Fixed
     fr -> Corrigé
@@ -189,3 +192,7 @@ projectRole.OWNER
 projectRole.VALIDATION_MANAGER
     en -> Validation manager
     fr -> Gestionnaire des validations
+
+projectRole.PROMOTER
+    en -> Promoter
+    fr -> Promoteur

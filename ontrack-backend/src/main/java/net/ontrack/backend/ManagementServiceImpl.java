@@ -266,7 +266,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
     @ProjectGrant(ProjectFunction.PROJECT_DELETE)
     @Transactional
     public Ack deleteProject(@ProjectGrantId int id) {
-        String name = getEntityName(Entity.PROJECT, id);
+        String name = projectDao.getById(id).getName();
         Ack ack = projectDao.deleteProject(id);
         if (ack.isSuccess()) {
             event(Event.of(EventType.PROJECT_DELETED).withValue("project", name));
@@ -1669,13 +1669,7 @@ public class ManagementServiceImpl extends AbstractServiceImpl implements Manage
         return new CommentStub(commentId, content);
     }
 
-    // Common
-
-    @Override
-    @Transactional(readOnly = true)
-    public int getEntityId(Entity entity, String name, final Map<Entity, Integer> parentIds) {
-        return entityDao.getEntityId(entity, name, parentIds);
-    }
+    // Charts
 
     @Override
     @Transactional(readOnly = true)

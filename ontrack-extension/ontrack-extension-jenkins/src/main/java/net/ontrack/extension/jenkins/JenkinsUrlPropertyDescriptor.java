@@ -2,6 +2,7 @@ package net.ontrack.extension.jenkins;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.extension.api.property.AbstractLinkPropertyExtensionDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -38,8 +39,9 @@ public class JenkinsUrlPropertyDescriptor extends AbstractLinkPropertyExtensionD
     public AuthorizationPolicy getEditingAuthorizationPolicy(Entity entity) {
         switch (entity) {
             case BRANCH:
-            case VALIDATION_STAMP:
                 return AuthorizationPolicy.PROJECT_CONFIG;
+            case VALIDATION_STAMP:
+                return AuthorizationPolicy.forProject(ProjectFunction.PROJECT_CONFIG, ProjectFunction.VALIDATION_STAMP_MODIFY);
             default:
                 return super.getEditingAuthorizationPolicy(entity);
         }

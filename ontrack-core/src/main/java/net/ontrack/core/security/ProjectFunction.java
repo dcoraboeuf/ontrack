@@ -49,9 +49,9 @@ public enum ProjectFunction {
     // Delete build
     BUILD_DELETE,
     // Create promoted run
-    PROMOTED_RUN_CREATE(EnumSet.of(ProjectRole.OWNER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
+    PROMOTED_RUN_CREATE(EnumSet.of(ProjectRole.OWNER, ProjectRole.PROMOTER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete promoted run
-    PROMOTED_RUN_DELETE,
+    PROMOTED_RUN_DELETE(EnumSet.of(ProjectRole.OWNER, ProjectRole.PROMOTER)),
     // Create validation run
     VALIDATION_RUN_CREATE(EnumSet.of(ProjectRole.OWNER), ImmutableSet.of(SecurityRoles.CONTROLLER)),
     // Delete validation run

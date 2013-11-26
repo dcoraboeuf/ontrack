@@ -140,17 +140,6 @@ public class ManagementServiceTest extends AbstractValidationTest {
         assertEquals(project.getName(), branch.getProject().getName());
     }
 
-    @Test
-    public void getEntityId() throws Exception {
-        ProjectSummary p = doCreateProject();
-        assertEquals(p.getId(), service.getEntityId(Entity.PROJECT, p.getName(), Collections.<Entity, Integer>emptyMap()));
-    }
-
-    @Test(expected = EntityNameNotFoundException.class)
-    public void getEntityId_not_found() {
-        service.getEntityId(Entity.PROJECT, "PROJECTX", Collections.<Entity, Integer>emptyMap());
-    }
-
     /**
      * Regression test for #276 - check that autopromotion level is kept when
      * cloning a branch.

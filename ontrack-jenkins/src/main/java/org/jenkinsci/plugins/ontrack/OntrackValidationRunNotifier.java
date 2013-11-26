@@ -15,6 +15,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 
+import static org.jenkinsci.plugins.ontrack.OntrackPluginSupport.expand;
+
 /**
  * Allows to notify for a build.
  */
@@ -88,6 +90,8 @@ public class OntrackValidationRunNotifier extends AbstractOntrackNotifier {
         Result result = theBuild.getResult();
         if (result.isBetterOrEqualTo(Result.SUCCESS)) {
             return Status.PASSED;
+        } else if (result.isBetterOrEqualTo(Result.UNSTABLE)) {
+            return Status.WARNING;
         } else if (result.equals(Result.ABORTED)) {
             return Status.INTERRUPTED;
         } else {
