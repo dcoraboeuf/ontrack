@@ -5,7 +5,6 @@ angular.module('ontrack.directives', [])
     .directive('otTodo', function () {
         return {
             restrict: 'E',
-            //replace: true,
             templateUrl: 'app/directives/otTodo.tpl.html',
             transclude: true
         }
@@ -29,7 +28,7 @@ angular.module('ontrack.directives', [])
 /**
  * <ot-page> that creates a standard page layout.
  */
-    .directive('otPage', function ($compile) {
+    .directive('otPage', function () {
         return {
             restrict: 'E',
             templateUrl: 'app/directives/otPage.tpl.html',
