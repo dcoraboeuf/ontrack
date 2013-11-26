@@ -32,13 +32,11 @@ angular.module('ontrack.project.page', [
                         icon: 'trash-o',
                         link: projectResource.links['deleteProject'],
                         action: function () {
-                            dialog.confirm({
-                                text: messageService.translate('project.delete.prompt', projectResource.name)
-                            })
-                                .then(function () {
-                                    // TODO Actual deletion
-                                    alert('Actual deletion');
-                                });
+                            dialog.confirm(messageService.translate('project.delete.prompt', projectResource.name)).then(function () {
+                                projectService.deleteProject(projectResource.name).then(function () {
+                                    $state.go('home')
+                                })
+                            });
                         }
                     }
                 ],

@@ -26,6 +26,9 @@ angular.module('ontrack.service.project', ['ontrack.config'])
                 $http
                     .get(config.api('project/' + name))
                     .success(success);
+            },
+            deleteProject: function (name) {
+                return $http.delete(config.api('project/' + name))
             }
         }
     })
