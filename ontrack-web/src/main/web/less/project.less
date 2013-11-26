@@ -1,13 +1,32 @@
 table.ot-project-branch-list {
   width: 100%;
+  tr:hover {
+    background-color: @table-bg-hover;
+  }
   .ot-project-branch-name {
     .btn;
     .btn-primary;
     width: 8em;
-    height: 4em;
+    height: 100%;
     > span {
-      vertical-align: middle;
       font-weight: bold;
     }
+  }
+  td {
+    vertical-align: top;
+  }
+}
+
+.ot-project-branch-promotion {
+  height: 100%;
+  font-size: 80%;
+  border: solid 1px darkgray;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: white;
+  text-align: center;
+  &.ot-project-branch-promotion-none {
+    opacity: 0.30;
+    background-color: transparent;
   }
 }

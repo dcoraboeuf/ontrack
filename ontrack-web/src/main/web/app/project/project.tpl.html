@@ -16,7 +16,31 @@
                     </p>
                 </td>
                 <td class="ot-project-branch-build">
-
+                    <a href="" ng-if="item.latestBuild">{{item.latestBuild.name}}</a>
+                    <i class="fa fa-ban" ng-if="!item.latestBuild"></i>
+                </td>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td ng-repeat="promotion in item.promotions">
+                                    <div class="ot-project-branch-promotion" ng-if="promotion.build">
+                                        <ot-promotion-level-link self="promotion.promotionLevel"></ot-promotion-level-link>
+                                        <p>
+                                            <i class="fa fa-star-o"></i>
+                                            <a href="">{{promotion.build.name}}</a>
+                                        </p>
+                                    </div>
+                                    <div class="ot-project-branch-promotion ot-project-branch-promotion-none" ng-if="!promotion.build">
+                                        <ot-promotion-level-link self="promotion.promotionLevel"></ot-promotion-level-link>
+                                        <p>
+                                            <i class="fa fa-ban"></i>
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </td>
             </tr>
         </tbody>
