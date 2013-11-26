@@ -7,6 +7,13 @@
                 {{'dashboard' | translate}}
             </a>
         </li>
+        <!-- Project creation -->
+        <li>
+            <a id="project-create" ui-sref="project-create" ng-if="projectList.links.projectCreate">
+                <i class="fa fa-plus"></i>
+                {{'project.create' | translate}}
+            </a>
+        </li>
     </ul>
 </div>
 <div class="row">
@@ -36,13 +43,6 @@
                     </td>
                 </tr>
             </tbody>
-            <tfoot ng-if="projectCreate">
-                <tr>
-                    <td colspan="2">
-                        <a href="#/project-create" class="btn btn-default" >{{'project.create' | translate}}</a>
-                    </td>
-                </tr>
-            </tfoot>
         </table>
     </div>
 </div>
