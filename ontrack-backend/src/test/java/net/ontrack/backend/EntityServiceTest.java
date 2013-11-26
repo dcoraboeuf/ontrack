@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.core.support.EntityNameNotFoundException;
 import net.ontrack.service.EntityService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
