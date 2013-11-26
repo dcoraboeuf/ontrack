@@ -35,7 +35,7 @@
 
 <div class="ng-cloak">
 
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-default navbar-inverse" role="navigation">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" ng-click="collapseNavbar()">
             <span class="sr-only">Toggle navigation</span>
@@ -77,6 +77,11 @@
         </ul>
     </div>
 </nav>
+
+<!-- Breadcrumbs -->
+<ul class="breadcrumb" style="margin: 0px; margin-bottom: 5px;">
+    <li><a href="#/home">Home</a></li>
+</ul>
 
 <div class="container" ng-if="hasNotification()">
     <div class="alert alert-{{notificationType()}} alert-dismissable">
