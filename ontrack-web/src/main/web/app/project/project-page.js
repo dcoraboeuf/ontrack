@@ -45,6 +45,10 @@ angular.module('ontrack.project.page', [
                 }
             };
         });
+        // Loads the project branch statuses
+        projectService.loadProjectBranchStatus($stateParams.projectName, function (branchLastStatusResourceListResource) {
+            $scope.branchLastStatusResourceListResource = branchLastStatusResourceListResource;
+        });
     })
 
 ;

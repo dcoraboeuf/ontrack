@@ -1,3 +1,24 @@
 <ot-page>
-    <ot-todo>Project page content for <b>{{projectName}}</b>.</ot-todo>
+    <table class="ot-project-branch-list">
+        <thead>
+            <tr>
+                <th>{{'model.name' | translate}}</th>
+                <th>{{'branch.lastBuild' | translate}}</th>
+                <th>{{'promotion_level.promotions' | translate}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in branchLastStatusResourceListResource.items">
+                <td class="ot-project-branch">
+                    <a href="#" class="ot-project-branch-name"><span>{{item.branch.name}}</span></a>
+                    <p class="ot-description" ng-if="item.description != ''">
+                        {{item.description}}
+                    </p>
+                </td>
+                <td class="ot-project-branch-build">
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </ot-page>
