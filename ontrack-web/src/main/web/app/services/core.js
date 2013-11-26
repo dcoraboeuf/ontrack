@@ -1,4 +1,33 @@
 angular.module('ontrack.service.core', [])
+    .service('messageService', function ($translate) {
+        var self = {};
+        /**
+         * Localized texts are given using the JDK <code>MessageFormat</code> pattern, using {0}, {1}...
+         * as placeholders. One cannot use the <code>$translate</code> service directly in this case.
+         */
+        self.translate = function (key, params) {
+            // Gets the raw message
+            var pattern = $translate(key);
+            // Arguments
+            var args;
+            if (angular.isArray(params)) {
+                args = params;
+            } else {
+                args = [ params ];
+            }
+            // Replacement
+            return pattern.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
+                if (m == "{{") {
+                    return "{";
+                }
+                if (m == "}}") {
+                    return "}";
+                }
+                return args[n];
+            });
+        };
+        return self;
+    })
     .service('notificationService', function () {
         var self = {
             message: undefined,

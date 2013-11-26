@@ -17,19 +17,29 @@ angular.module('ontrack.project.page', [
         })
     })
 
-    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, projectService) {
+    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, notificationService) {
         // Loads the project
         projectService.getProject($stateParams.projectName, function (projectResource) {
             // Page definition
             $scope.page = {
                 title: projectResource.name,
                 description: projectResource.description,
-                commands: [{
-                    id: 'project-delete',
-                    name: 'general.delete',
-                    icon: 'trash-o',
-                    link: projectResource.links['deleteProject']
-                }],
+                commands: [
+                    {
+                        id: 'project-delete',
+                        name: 'general.delete',
+                        icon: 'trash-o',
+                        link: projectResource.links['deleteProject'],
+                        action: function () {
+                            alert(messageService.translate('project.delete.prompt', projectResource.name));
+                            // notificationService.confirm({
+                            //     text: ''
+                            // }).then(function () {
+//
+                            //     })
+                        }
+                    }
+                ],
                 close: function () {
                     $state.go('home')
                 }
