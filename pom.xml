@@ -36,7 +36,7 @@
 	<properties>
 		<!-- Versions -->
 		<springVersion>3.2.4.RELEASE</springVersion>
-		<springSecurityVersion>3.1.4.RELEASE</springSecurityVersion>
+		<springSecurityVersion>3.2.0.RC2</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
 		<lombokVersion>1.12.2</lombokVersion>
         <httpClientVersion>4.2.1</httpClientVersion>
@@ -494,6 +494,15 @@
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
+        </repository>
+        <!-- TODO Removes this repository when Spring Security 3.2.0 is out -->
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>http://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
