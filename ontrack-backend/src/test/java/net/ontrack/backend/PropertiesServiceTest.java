@@ -7,7 +7,6 @@ import net.ontrack.core.model.PropertyValue;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.test.AbstractIntegrationTest;
 import net.sf.jstring.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import java.util.concurrent.Callable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class PropertiesServiceTest extends AbstractIntegrationTest {
+public class PropertiesServiceTest extends AbstractBackendTest {
 
     @Autowired
     private Strings strings;
