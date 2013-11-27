@@ -1,6 +1,5 @@
 package net.ontrack.backend;
 
-import net.ontrack.backend.config.BackendSecurityConfig;
 import net.ontrack.backend.security.AccountAuthentication;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
@@ -16,12 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-@ContextConfiguration(classes = BackendSecurityConfig.class)
 public abstract class AbstractBackendTest extends AbstractIntegrationTest {
 
     @Autowired
