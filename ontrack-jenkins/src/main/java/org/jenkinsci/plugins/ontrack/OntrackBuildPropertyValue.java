@@ -1,8 +1,10 @@
 package org.jenkinsci.plugins.ontrack;
 
 import hudson.Extension;
-import hudson.model.BuildListener;
+import hudson.Launcher;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Builder;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.PropertyUIClient;
 import net.ontrack.client.support.ManageClientCall;
@@ -11,12 +13,9 @@ import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import hudson.tasks.Builder;
-
-import hudson.Launcher;
-import hudson.model.*;
 
 import java.io.IOException;
+
 public class OntrackBuildPropertyValue extends Builder {
     private final String project;
     private final String branch;
@@ -42,13 +41,34 @@ public class OntrackBuildPropertyValue extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        final BuildSummary lastBuild = getBuildSummary();
+        final String actualProject = OntrackPluginSupport.expand(project, theBuild, listener);
+        final String actualBranch = OntrackPluginSupport.expand(branch, theBuild, listener);
+        final String actualPromotionLevel = OntrackPluginSupport.expand(promotionLevel, theBuild, listener);
+        final String actualBuildName = OntrackPluginSupport.expand(buildName, theBuild, listener);
+        final String actualExtension = OntrackPluginSupport.expand(extension, theBuild, listener);
+        final String actualPropertyName = OntrackPluginSupport.expand(name, theBuild, listener);
+
+        final BuildSummary lastBuild;
+        if (StringUtils.isEmpty(buildName)) {
+            // Get build from parameters
+            lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+                public BuildSummary onCall(ManageUIClient ui) {
+                    return ui.getLastBuildWithPromotionLevel(null, actualProject, actualBranch, actualPromotionLevel);
+                }
+            });
+        } else {
+            lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+                public BuildSummary onCall(ManageUIClient ui) {
+                    return ui.getBuild(actualProject, actualBranch, actualBuildName);
+                }
+            });
+        }
 
         if (lastBuild != null) {
             // If not null, get property package from that build
             String propertyValue = OntrackClient.property(new PropertyClientCall<String>() {
                 public String onCall(PropertyUIClient ui) {
-                    return ui.getPropertyValue(Entity.BUILD, lastBuild.getId(), extension, name);
+                    return ui.getPropertyValue(Entity.BUILD, lastBuild.getId(), actualExtension, actualPropertyName);
                 }
             });
 
@@ -57,34 +77,15 @@ public class OntrackBuildPropertyValue extends Builder {
                 theBuild.addAction(new ParametersAction(new StringParameterValue(variable, propertyValue)));
             } else {
                 // Unfortunatelly, the build requires this, so we have to fail the build
-                listener.getLogger().format("Could not find any property for %s:%s in build %s", extension, name, lastBuild.getId());
+                listener.getLogger().format("Could not find any property for %s:%s in build %s", actualExtension, actualPropertyName, lastBuild.getId());
                 theBuild.setResult(Result.FAILURE);
             }
         } else {
-            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and promotion level '%s'%n", branch, project, promotionLevel);
+            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and promotion level '%s'%n", actualProject, actualBranch, actualPromotionLevel);
             theBuild.setResult(Result.FAILURE);
         }
 
         return true;
-    }
-
-    private BuildSummary getBuildSummary() {
-        BuildSummary _lastBuild;
-        if (buildName.isEmpty()) {
-            // Get build from parameters
-            _lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
-                public BuildSummary onCall(ManageUIClient ui) {
-                    return ui.getLastBuildWithPromotionLevel(null, project, branch, promotionLevel);
-                }
-            });
-        } else {
-            _lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
-                public BuildSummary onCall(ManageUIClient ui) {
-                    return ui.getBuild(project, branch, buildName);
-                }
-            });
-        }
-        return _lastBuild;
     }
 
     public String getProject() {

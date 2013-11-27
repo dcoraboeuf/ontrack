@@ -47,22 +47,26 @@ public class OntrackLastBuildWithValidationStamp extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        final String actualProject = OntrackPluginSupport.expand(project, theBuild, listener);
+        final String actualBranch = OntrackPluginSupport.expand(branch, theBuild, listener);
+        final String actualValidationStamp = OntrackPluginSupport.expand(validationStamp, theBuild, listener);
+
         // Gets the last build
         BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
             @Override
             public BuildSummary onCall(ManageUIClient ui) {
-				return ui.getLastBuildWithValidationStamp(null, project, branch, validationStamp);
+				return ui.getLastBuildWithValidationStamp(null, actualProject, actualBranch, actualValidationStamp);
             }
         });
         // Found
         if (lastBuild != null) {
             String name = lastBuild.getName();
-            listener.getLogger().format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, branch, project, validationStamp);
+            listener.getLogger().format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, actualBranch, actualProject, actualValidationStamp);
             theBuild.addAction(new ParametersAction(new StringParameterValue(variable, name)));
         }
         // Not found
         else {
-            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and validation stamp '%s'%n", branch, project, validationStamp);
+            listener.getLogger().format("Could not find any build for branch '%s' and project '%s' and validation stamp '%s'%n", actualBranch, actualProject, actualValidationStamp);
             theBuild.setResult(Result.FAILURE);
         }
         // OK

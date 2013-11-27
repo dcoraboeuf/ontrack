@@ -7,6 +7,7 @@ import hudson.model.*;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
 import org.jenkinsci.lib.xtrigger.XTriggerDescriptor;
 import org.jenkinsci.lib.xtrigger.XTriggerException;
@@ -53,16 +54,20 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	protected boolean checkIfModified(Node node, XTriggerLog xTriggerLog) throws XTriggerException {
 		if (checkConfigs(xTriggerLog)) return false;
 
+        String actualProject = resolveEnvVars(project, (AbstractProject) job, node);
+        String actualBranch = resolveEnvVars(branch, (AbstractProject) job, node);
+        String actualValidationStamp = resolveEnvVars(validationStamp, (AbstractProject) job, node);
+
 		FilePath lastBuildNrFile = new FilePath(node.getRootPath(), String.format("%s-lastBuildNr", job.getName()));
 		String lastBuildNr = loadLastBuildNr(xTriggerLog, lastBuildNrFile);
 
 		// Gets the last build
-		BuildSummary lastBuild = getBuildSummary();
+		BuildSummary lastBuild = getBuildSummary(actualProject, actualBranch, actualValidationStamp);
 
 		// Found
 		if (lastBuild != null) {
 			String name = lastBuild.getName();
-			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, branch, project, validationStamp));
+			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s' and validation stamp '%s'%n", name, actualBranch, actualProject, actualValidationStamp));
 			try {
 				if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
 					saveLastBuildNr(name, xTriggerLog, lastBuildNrFile);
@@ -119,24 +124,24 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 	}
 
 	private boolean checkConfigs(XTriggerLog xTriggerLog) {
-		if (project == null || project.isEmpty()) {
+		if (StringUtils.isEmpty(project)) {
 			xTriggerLog.info("Ontrack: No project configured");
 			return true;
 		}
 
-		if (branch == null || branch.isEmpty()) {
+		if (StringUtils.isEmpty(branch)) {
 			xTriggerLog.info("Ontrack: No branch configured");
 			return true;
 		}
 
-		if (validationStamp == null || validationStamp.isEmpty()) {
+		if (StringUtils.isEmpty(validationStamp)) {
 			xTriggerLog.info("Ontrack: No validation stamp configured");
 			return true;
 		}
 		return false;
 	}
 
-	private BuildSummary getBuildSummary() {
+	private BuildSummary getBuildSummary(final String project, final String branch, final String validationStamp) {
 		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
 			@Override
 			public BuildSummary onCall(ManageUIClient ui) {

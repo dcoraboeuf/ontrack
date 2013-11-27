@@ -3,12 +3,14 @@ package org.jenkinsci.plugins.ontrack;
 import antlr.ANTLRException;
 import hudson.Extension;
 import hudson.FilePath;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Item;
 import hudson.model.Node;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
 import org.jenkinsci.lib.xtrigger.XTriggerDescriptor;
 import org.jenkinsci.lib.xtrigger.XTriggerException;
@@ -27,7 +29,7 @@ public class OntrackLastBuildPollingTrigger extends AbstractTrigger {
 		super(cronTabSpec, triggerLabel);
 		this.project = project;
 		this.branch = branch;
-	}
+    }
 
 	@Override
 	protected File getLogFile() {
@@ -53,16 +55,19 @@ public class OntrackLastBuildPollingTrigger extends AbstractTrigger {
 	protected boolean checkIfModified(Node node, XTriggerLog xTriggerLog) throws XTriggerException {
 		if (checkConfigs(xTriggerLog)) return false;
 
+        String actualProject = resolveEnvVars(project, (AbstractProject) job, node);
+        String actualBranch = resolveEnvVars(branch, (AbstractProject) job, node);
+
 		FilePath lastBuildNrFile = new FilePath(node.getRootPath(), String.format("%s-lastbuild-lastBuildNr", job.getName()));
 		String lastBuildNr = loadLastBuildNr(xTriggerLog, lastBuildNrFile);
 
 		// Gets the last build
-		BuildSummary lastBuild = getBuildSummary();
+		BuildSummary lastBuild = getBuildSummary(actualBranch, actualProject);
 
 		// Found
 		if (lastBuild != null) {
 			String name = lastBuild.getName();
-			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s'%n", name, branch, project));
+			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s'%n", name, actualBranch, actualProject));
 			try {
 				if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
 					saveLastBuildNr(name, xTriggerLog, lastBuildNrFile);
@@ -115,19 +120,19 @@ public class OntrackLastBuildPollingTrigger extends AbstractTrigger {
 	}
 
 	private boolean checkConfigs(XTriggerLog xTriggerLog) {
-		if (project == null || project.isEmpty()) {
+		if (StringUtils.isEmpty(project)) {
 			xTriggerLog.info("Ontrack: No project configured");
 			return true;
 		}
 
-		if (branch == null || branch.isEmpty()) {
+		if (StringUtils.isEmpty(branch)) {
 			xTriggerLog.info("Ontrack: No branch configured");
 			return true;
 		}
 		return false;
 	}
 
-	private BuildSummary getBuildSummary() {
+	private BuildSummary getBuildSummary(final String branch, final String project) {
 		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
 			@Override
 			public BuildSummary onCall(ManageUIClient ui) {

@@ -112,6 +112,10 @@ public class OntrackPropertyValueToBuildName extends Builder {
         return name;
     }
 
+    public String getPropertyValue() {
+        return propertyValue;
+    }
+
     @Extension
     public static class OntrackBuildPropertyValueDescription extends BuildStepDescriptor<Builder> {
 
