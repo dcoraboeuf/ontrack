@@ -9,6 +9,7 @@ import net.ontrack.service.ManagementService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +55,7 @@ public class ManagementServiceTest extends AbstractValidationTest {
                 });
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void createProject_anonymous_rejected() throws Exception {
         asAnonymous().call(new Callable<Void>() {
             @Override

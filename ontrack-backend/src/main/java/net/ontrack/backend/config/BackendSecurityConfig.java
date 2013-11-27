@@ -19,6 +19,8 @@ import java.util.List;
 @EnableGlobalMethodSecurity
 public class BackendSecurityConfig extends GlobalMethodSecurityConfiguration {
 
+    private final MapBasedMethodSecurityMetadataSource mapBasedMethodSecurityMetadataSource = new MapBasedMethodSecurityMetadataSource();
+
     @Autowired
     private AccessDecisionManager accessDecisionManager;
 
@@ -29,12 +31,12 @@ public class BackendSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected MapBasedMethodSecurityMetadataSource customMethodSecurityMetadataSource() {
-        return new MapBasedMethodSecurityMetadataSource();
+        return mapBasedMethodSecurityMetadataSource;
     }
 
     @Bean
     public BeanPostProcessor protectPointcutPostProcessor() {
-        BackendProtectPointcutPostProcessor processor = new BackendProtectPointcutPostProcessor(customMethodSecurityMetadataSource());
+        BackendProtectPointcutPostProcessor processor = new BackendProtectPointcutPostProcessor(mapBasedMethodSecurityMetadataSource);
         processor.setPointcutMap(
                 MapBuilder.<String, List<ConfigAttribute>>create()
                         .with("execution(@net.ontrack.core.security.ProjectGrant * net.ontrack.backend.*.*(..))", Arrays.<ConfigAttribute>asList(new SecurityConfig("project")))
