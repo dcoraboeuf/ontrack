@@ -3,10 +3,12 @@ package net.ontrack.backend;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +52,41 @@ public class ManagementServiceTest extends AbstractValidationTest {
                         });
                     }
                 });
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void createProject_anonymous_rejected() throws Exception {
+        asAnonymous().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.createProject(new ProjectCreationForm(uid("P"), "Cannot create project"));
+                return null;
+            }
+        });
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void createProject_user_rejected() throws Exception {
+        asUser().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.createProject(new ProjectCreationForm(uid("P"), "Cannot create project"));
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void createProject_user_granted() throws Exception {
+        final String projectName = uid("P");
+        ProjectSummary project = asUser().withGlobalFn(GlobalFunction.PROJECT_CREATE).call(new Callable<ProjectSummary>() {
+            @Override
+            public ProjectSummary call() throws Exception {
+                return service.createProject(new ProjectCreationForm(projectName, "Can create project"));
+            }
+        });
+        assertNotNull(project);
+        assertEquals(projectName, project.getName());
     }
 
     @Test
