@@ -27,7 +27,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                // FIXME ui/login protection for UI access
+                // FIXME ui/login protection for UI access in a separate configuration
+                // http.antMatcher("/ui/login")
+                //         .httpBasic().realmName("ontrack").and()
+                //         .authorizeRequests().antMatchers("/ui/login").hasAnyRole(SecurityRoles.ALL);
                 // FIXME Reenable CSRF protection (depends on the client)
                 // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
                 .csrf().disable()
