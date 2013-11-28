@@ -9,6 +9,8 @@ import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 
@@ -23,6 +25,16 @@ public class BackendSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Autowired
     private AccessDecisionManager accessDecisionManager;
+
+    @Autowired
+    private List<AuthenticationProvider> authenticationProviderList;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        for (AuthenticationProvider authenticationProvider : authenticationProviderList) {
+            auth.authenticationProvider(authenticationProvider);
+        }
+    }
 
     @Override
     protected AccessDecisionManager accessDecisionManager() {

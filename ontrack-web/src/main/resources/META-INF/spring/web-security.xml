@@ -12,16 +12,11 @@ http://www.springframework.org/schema/security/spring-security.xsd">
         <http-basic/>
     </http>
 
-	<http auto-config="true" pattern="**">
+	<http pattern="**">
 		<intercept-url pattern="**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <form-login login-page="/login" authentication-success-handler-ref="callbackAuthenticationSuccessHandler" />
         <http-basic/>
         <logout logout-url="/logout" />
 	</http>
-
-    <authentication-manager>
-        <authentication-provider ref="builtinAuthenticationProvider" />
-        <authentication-provider ref="configurableLdapAuthenticationProvider" />
-    </authentication-manager>
 
 </beans:beans>
