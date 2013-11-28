@@ -1,20 +1,20 @@
 <#include "/lib/layout.html">
 
 <@layout_std page="login" showSecurity=false noscript=true>
-    <form action="j_spring_security_check" method="POST" class="form-horizontal">
+    <form action="login" method="POST" class="form-horizontal">
         <#if callbackUrl??>
             <input name="callbackUrl" type="hidden" value="${callbackUrl?html}" />
         </#if>
         <div class="control-group">
-            <label class="control-label" for="j_username"><@lh key="login.user" /></label>
+            <label class="control-label" for="username"><@lh key="login.user" /></label>
             <div class="controls">
-                <input id="j_username" type="text" size="50" name="j_username" required="required" autofocus="autofocus" />
+                <input id="username" type="text" size="50" name="username" required="required" autofocus="autofocus" />
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="j_password"><@lh key="login.password" /></label>
+            <label class="control-label" for="password"><@lh key="login.password" /></label>
             <div class="controls">
-                <input id="j_password" type="password" size="50" name="j_password" required="required" />
+                <input id="password" type="password" size="50" name="password" required="required" />
             </div>
         </div>
         <div class="control-group">
@@ -25,5 +25,6 @@
                 <a href="" class="btn btn-link"><@lh key="general.cancel" /></a>
             </div>
         </div>
+        <!-- TODO Includes CSRF parameters -->
     </form>
 </@layout_std>
