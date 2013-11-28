@@ -21,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebMvc
+@EnableWebSecurity
 @PropertySource("/META-INF/strings/core.properties")
 @ComponentScan("net.ontrack")
 public class WebConfig extends WebMvcConfigurerAdapter {
