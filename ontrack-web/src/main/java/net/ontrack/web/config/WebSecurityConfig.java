@@ -27,7 +27,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                // FIXME Reenable CSRF protection (depends on the client)
+                // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
+                .csrf().disable()
                 .formLogin().loginPage("/login").successHandler(authenticationSuccessHandler).and()
                 .authorizeRequests().anyRequest().permitAll();
+        // FIXME Logout configuration
     }
 }
