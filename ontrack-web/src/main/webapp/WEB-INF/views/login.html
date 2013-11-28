@@ -25,6 +25,6 @@
                 <a href="" class="btn btn-link"><@lh key="general.cancel" /></a>
             </div>
         </div>
-        <!-- TODO Includes CSRF parameters -->
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
 </@layout_std>
