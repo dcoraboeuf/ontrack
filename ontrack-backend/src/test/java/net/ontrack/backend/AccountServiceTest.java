@@ -1,11 +1,13 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.service.AccountService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.concurrent.Callable;
 
@@ -15,7 +17,6 @@ public class AccountServiceTest extends AbstractValidationTest {
 
     @Autowired
     private AccountService accountService;
-
     @Autowired
     private SecurityUtils securityUtils;
 
@@ -40,6 +41,74 @@ public class AccountServiceTest extends AbstractValidationTest {
     public void authenticate_wrong_password() {
         Account account = accountService.authenticate("admin", "xxx");
         assertNull(account);
+    }
+
+    @Test
+    public void createAccount_admin_ok() throws Exception {
+        final String name = uid("A");
+        Account account = asAdmin().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
+        assertEquals(name, account.getName());
+    }
+
+    @Test
+    public void createAccount_user_granted_ok() throws Exception {
+        final String name = uid("A");
+        Account account = asUser().withGlobalFn(GlobalFunction.ACCOUNT_MANAGEMENT).call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
+        assertEquals(name, account.getName());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void createAccount_user_denied() throws Exception {
+        final String name = uid("A");
+        asUser().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
     }
 
     @Test
