@@ -10,12 +10,12 @@ public class LoginPage extends AbstractPage {
 
     @Override
     public void waitForLoad() {
-        waitFor("#j_username");
+        waitFor("#username");
     }
 
     public void login(String user, String password) {
-        $("#j_username").type(user);
-        $("#j_password").type(password);
+        $("#username").type(user);
+        $("#password").type(password);
         $("#login-submit").click();
     }
 }
