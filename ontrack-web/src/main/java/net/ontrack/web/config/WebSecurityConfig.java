@@ -59,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
                     .csrf().disable()
                     .formLogin().loginPage("/login").successHandler(authenticationSuccessHandler).and()
+                    .httpBasic().realmName("ontrack").and()
                     .logout().logoutUrl("/logout").logoutSuccessUrl("/").and()
                     .authorizeRequests().anyRequest().permitAll();
         }
