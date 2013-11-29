@@ -1,5 +1,7 @@
 package net.ontrack.web.config;
 
+import net.ontrack.core.security.SecurityRoles;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -23,6 +25,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Configuration
+    @Order(5)
+    public static class APIHTTPSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/ui/login")
+                    // FIXME Reenable CSRF protection (depends on the client)
+                    // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
+                    .csrf().disable()
+                    .httpBasic().realmName("ontrack").and()
+                    .authorizeRequests().antMatchers("/ui/login").access(
+                        String.format(
+                                "hasAnyRole('%s')",
+                                StringUtils.join(SecurityRoles.ALL, "','")
+                        )
+                    );
+        }
+
+    }
+
+    @Configuration
     @Order(10)
     public static class GUIHTTPSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -32,10 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    // FIXME ui/login protection for UI access in a separate configuration
-                    // http.antMatcher("/ui/login")
-                    //         .httpBasic().realmName("ontrack").and()
-                    //         .authorizeRequests().antMatchers("/ui/login").hasAnyRole(SecurityRoles.ALL);
                     // FIXME Reenable CSRF protection (depends on the client)
                     // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
                     .csrf().disable()
