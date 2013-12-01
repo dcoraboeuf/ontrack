@@ -1,9 +1,7 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.GlobalFunction;
-import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.service.AccountService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,6 +201,53 @@ public class AccountServiceTest extends AbstractValidationTest {
         // New password OK
         account = accountService.authenticate("reset_password", "pwd2");
         assertNotNull(account);
+    }
+
+    @Test
+    public void setProjectACL_admin_ok() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        Ack ack = asAdmin().call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
+        assertTrue("Project ACL set", ack.isSuccess());
+    }
+
+    @Test
+    public void setProjectACL_owner_ok() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        Ack ack = asUser().withProjectFn(ProjectFunction.ACL, project.getId()).call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
+        assertTrue("Project ACL set", ack.isSuccess());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void setProjectACL_user_denied() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        asUser().call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
     }
 
 }
