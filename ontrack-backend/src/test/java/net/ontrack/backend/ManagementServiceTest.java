@@ -4,6 +4,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import org.junit.Test;
@@ -135,6 +136,49 @@ public class ManagementServiceTest extends AbstractValidationTest {
                         "project",
                         project.getName()),
                 event.getValues());
+    }
+
+    @Test(expected = AuthenticationCredentialsNotFoundException.class)
+    public void deleteProject_anonymous_denied() throws Exception {
+        // Creates the project
+        final ProjectSummary project = doCreateProject();
+        // Tries to delete it
+        asAnonymous().call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.deleteProject(project.getId());
+                return null;
+            }
+        });
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void deleteProject_granted_for_another_project_denied() throws Exception {
+        // Creates the project
+        final ProjectSummary project = doCreateProject();
+        // Tries to delete it
+        asUser().withProjectFn(ProjectFunction.PROJECT_DELETE, project.getId() + 1).call(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.deleteProject(project.getId());
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void deleteProject_granted_ok() throws Exception {
+        // Creates the project
+        final ProjectSummary project = doCreateProject();
+        // Tries to delete it
+        Ack ack = asUser().withProjectFn(ProjectFunction.PROJECT_DELETE, project.getId()).call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return service.deleteProject(project.getId());
+            }
+        });
+        // Check
+        assertTrue(ack.isSuccess());
     }
 
     @Test
