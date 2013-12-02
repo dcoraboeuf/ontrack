@@ -267,6 +267,16 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- Support for Servlet 3.0 -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 	
 	<profiles>

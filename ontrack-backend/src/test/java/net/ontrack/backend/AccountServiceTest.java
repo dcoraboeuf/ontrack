@@ -1,11 +1,11 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.model.*;
-import net.ontrack.core.security.SecurityRoles;
-import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.core.security.*;
 import net.ontrack.service.AccountService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.concurrent.Callable;
 
@@ -15,7 +15,6 @@ public class AccountServiceTest extends AbstractValidationTest {
 
     @Autowired
     private AccountService accountService;
-
     @Autowired
     private SecurityUtils securityUtils;
 
@@ -40,6 +39,74 @@ public class AccountServiceTest extends AbstractValidationTest {
     public void authenticate_wrong_password() {
         Account account = accountService.authenticate("admin", "xxx");
         assertNull(account);
+    }
+
+    @Test
+    public void createAccount_admin_ok() throws Exception {
+        final String name = uid("A");
+        Account account = asAdmin().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
+        assertEquals(name, account.getName());
+    }
+
+    @Test
+    public void createAccount_user_granted_ok() throws Exception {
+        final String name = uid("A");
+        Account account = asUser().withGlobalFn(GlobalFunction.ACCOUNT_MANAGEMENT).call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
+        assertEquals(name, account.getName());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void createAccount_user_denied() throws Exception {
+        final String name = uid("A");
+        asUser().call(new Callable<Account>() {
+            @Override
+            public Account call() throws Exception {
+                return accountService.getAccount(
+                        accountService.createAccount(
+                                new AccountCreationForm(
+                                        name,
+                                        "Account " + name,
+                                        name + "@test.com",
+                                        SecurityRoles.USER,
+                                        "builtin",
+                                        "***",
+                                        "***"
+                                )
+                        ).getValue());
+            }
+        });
     }
 
     @Test
@@ -134,6 +201,53 @@ public class AccountServiceTest extends AbstractValidationTest {
         // New password OK
         account = accountService.authenticate("reset_password", "pwd2");
         assertNotNull(account);
+    }
+
+    @Test
+    public void setProjectACL_admin_ok() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        Ack ack = asAdmin().call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
+        assertTrue("Project ACL set", ack.isSuccess());
+    }
+
+    @Test
+    public void setProjectACL_owner_ok() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        Ack ack = asUser().withProjectFn(ProjectFunction.ACL, project.getId()).call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
+        assertTrue("Project ACL set", ack.isSuccess());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void setProjectACL_user_denied() throws Exception {
+        // Project
+        final ProjectSummary project = doCreateProject();
+        // Account
+        final Account account = doCreateAccount();
+        // Sets the ACL
+        asUser().call(new Callable<Ack>() {
+            @Override
+            public Ack call() throws Exception {
+                return accountService.setProjectACL(project.getId(), account.getId(), ProjectRole.OWNER);
+            }
+        });
     }
 
 }

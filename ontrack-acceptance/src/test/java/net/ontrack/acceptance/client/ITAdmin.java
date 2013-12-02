@@ -35,14 +35,16 @@ public class ITAdmin extends AbstractIT {
     public void user_cannot_create_user() {
         // Prerequisistes
         Account account = data.doCreateUser();
+        // Account name
+        final String accountNameToCreate = data.uid("A");
         // Using this account, tries to create a user
         data.getClient().asUser(account.getName(), "test", new AdminClientCall<Void>() {
             @Override
             public Void onCall(AdminUIClient ui) {
                 ui.createAccount(new AccountCreationForm(
-                        "ui_admin_02",
-                        "UI admin 02",
-                        "ui-admin-02@test.com",
+                        accountNameToCreate,
+                        "UI " + accountNameToCreate,
+                        accountNameToCreate + "@test.com",
                         SecurityRoles.USER,
                         "builtin",
                         "pwd",

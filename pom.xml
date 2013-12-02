@@ -36,7 +36,7 @@
 	<properties>
 		<!-- Versions -->
 		<springVersion>3.2.4.RELEASE</springVersion>
-		<springSecurityVersion>3.1.4.RELEASE</springSecurityVersion>
+		<springSecurityVersion>3.2.0.RC2</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
 		<lombokVersion>1.12.2</lombokVersion>
         <httpClientVersion>4.2.1</httpClientVersion>
@@ -159,11 +159,16 @@
 				<artifactId>spring-web</artifactId>
 				<version>${springVersion}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${springVersion}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${springVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${springVersion}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
@@ -366,6 +371,11 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
@@ -494,6 +504,15 @@
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
+        </repository>
+        <!-- TODO Removes this repository when Spring Security 3.2.0 is out -->
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>http://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

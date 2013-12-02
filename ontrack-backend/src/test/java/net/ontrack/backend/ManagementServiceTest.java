@@ -4,10 +4,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.*;
 import net.ontrack.core.support.EntityNameNotFoundException;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.service.EventService;
 import net.ontrack.service.ManagementService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
 import java.util.Collections;
 import java.util.List;

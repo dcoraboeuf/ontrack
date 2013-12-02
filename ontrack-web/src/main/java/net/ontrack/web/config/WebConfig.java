@@ -1,6 +1,5 @@
 package net.ontrack.web.config;
 
-import freemarker.cache.TemplateLoader;
 import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
@@ -15,6 +14,7 @@ import net.sf.jstring.Strings;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -37,6 +37,7 @@ import java.util.Map;
 @Configuration
 @EnableWebMvc
 @PropertySource("/META-INF/strings/core.properties")
+@ComponentScan("net.ontrack")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     /**
@@ -113,13 +114,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public FreeMarkerConfig freemarkerConfig() {
         // Configurer
         FreeMarkerConfigurer c = new FreeMarkerConfigurer();
-        c.setTemplateLoaderPaths(new String[]{
-                "/WEB-INF/views"
-        });
+        c.setTemplateLoaderPaths("/WEB-INF/views");
         // Extension views
-        c.setPostTemplateLoaders(new TemplateLoader[]{
-                new ExtensionTemplateLoader(extensionManager)
-        });
+        c.setPostTemplateLoaders(new ExtensionTemplateLoader(extensionManager));
         // Freemarker variables
         Map<String, Object> variables = new HashMap<>();
         variables.put("loc", new FnLoc(strings));
