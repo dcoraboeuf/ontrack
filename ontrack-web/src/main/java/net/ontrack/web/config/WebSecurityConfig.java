@@ -1,6 +1,7 @@
 package net.ontrack.web.config;
 
 import net.ontrack.core.security.SecurityRoles;
+import net.ontrack.web.support.APIBasicAuthenticationEntryPoint;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +26,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Configuration
-    @Order(5)
+    @Order(4)
     public static class APIHTTPSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Autowired
+        private APIBasicAuthenticationEntryPoint apiBasicAuthenticationEntryPoint;
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/api/**")
+                    // FIXME Reenable CSRF protection (depends on the client)
+                    // See http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/reference/htmlsingle/#csrf-using
+                    .csrf().disable()
+                    .httpBasic().authenticationEntryPoint(apiBasicAuthenticationEntryPoint).realmName("ontrack").and()
+                    .logout().logoutUrl("/api/auth/logout").logoutSuccessUrl("/api/auth/logged-out")
+                    ;
+        }
+
+    }
+
+    @Configuration
+    @Order(5)
+    public static class UIHTTPSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
