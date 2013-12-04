@@ -19,6 +19,11 @@ subprojects {
 	apply plugin: 'java'
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
+
+    // Enforces the encoding
+    tasks.withType(Compile) {
+        options.encoding = 'UTF-8'
+    }
 	
 	configurations {
 		provided {
