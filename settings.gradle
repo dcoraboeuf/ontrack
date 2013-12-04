@@ -1,5 +1,5 @@
 // include "ontrack-acceptance"
-// include "ontrack-backend"
+include "ontrack-backend"
 // include "ontrack-client"
 include "ontrack-core"
 include "ontrack-dao"

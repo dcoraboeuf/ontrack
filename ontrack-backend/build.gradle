@@ -1,0 +1,14 @@
+description = "ontrack Backend"
+
+dependencies {
+	compile  project(':ontrack-extension-api')
+	compile  project(':ontrack-dao')
+	compile  libraries['dbinit']
+	compile  libraries['jsoup']
+	compile  libraries['aspectj']
+	compile  libraries['freemarker']
+	compile  libraries['slf4j']
+	compile  springLibraries['context-support']
+	compile  springSecurityLibraries['ldap']
+	provided libraries['java-mail']
+}
