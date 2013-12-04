@@ -1,0 +1,8 @@
+description = "ontrack Extension Git"
+
+dependencies {
+    compile project(':ontrack-extension-api')
+    compile project(':ontrack-web-support')
+    compile 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r'
+    compile libraries['slf4j']
+}
