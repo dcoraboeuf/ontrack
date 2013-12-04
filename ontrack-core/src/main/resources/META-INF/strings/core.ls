@@ -1,6 +1,6 @@
 app.version
 	# Defined also in core.properties
-	en -> ${project.version}
+	en -> @project.version@
 
 app.title
 	en -> Ontrack

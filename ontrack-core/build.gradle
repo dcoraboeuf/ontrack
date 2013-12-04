@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.*
+
 dependencies {
 	compile libraries['lombok']
 	compile libraries['commons-lang']
@@ -6,4 +8,10 @@ dependencies {
 	compile libraries['joda-time']
 	compile libraries['validation-api']
 	compile springLibraries['web']
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+            "project.version": version
+    ]
 }
