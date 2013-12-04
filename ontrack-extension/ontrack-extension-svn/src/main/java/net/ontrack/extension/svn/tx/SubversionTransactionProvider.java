@@ -3,7 +3,7 @@ package net.ontrack.extension.svn.tx;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.tx.TransactionResource;
 import net.ontrack.tx.TransactionResourceProvider;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;

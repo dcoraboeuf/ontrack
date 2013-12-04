@@ -20,7 +20,7 @@ import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
 import net.sf.jstring.Localizable;
 import net.sf.jstring.LocalizableMessage;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
