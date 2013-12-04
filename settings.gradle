@@ -1,2 +1,3 @@
 include "ontrack-core"
 include "ontrack-dao"
+include "ontrack-service"

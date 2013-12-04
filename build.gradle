@@ -32,8 +32,13 @@ ext.libraries = [
 ]
 
 def springVersion = '3.2.4.RELEASE'
+def springSecurityVersion = '3.2.0.RC2'
 
 ext.springLibraries = [
 	'web': [ group: 'org.springframework', name: 'spring-web', version: springVersion ],
 	'jdbc': [ group: 'org.springframework', name: 'spring-jdbc', version: springVersion ]
+]
+
+ext.springSecurityLibraries = [
+	'core': [ group: 'org.springframework.security', name: 'spring-security-core', version: springSecurityVersion ]
 ]

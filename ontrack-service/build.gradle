@@ -1,0 +1,4 @@
+dependencies {
+	compile project(':ontrack-core')
+	compile springSecurityLibraries['core']
+}
