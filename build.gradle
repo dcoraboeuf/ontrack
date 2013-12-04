@@ -34,5 +34,6 @@ ext.libraries = [
 def springVersion = '3.2.4.RELEASE'
 
 ext.springLibraries = [
-	'web': [ group: 'org.springframework', name: 'spring-web', version: springVersion ]
+	'web': [ group: 'org.springframework', name: 'spring-web', version: springVersion ],
+	'jdbc': [ group: 'org.springframework', name: 'spring-jdbc', version: springVersion ]
 ]
