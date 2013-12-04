@@ -49,6 +49,11 @@ ext.libraries = [
 	'servlet-api': 'javax.servlet:servlet-api:2.5'
 ]
 
+ext.httpLibraries = [
+	'org.apache.httpcomponents:httpclient:4.2.1',
+	'org.apache.httpcomponents:httpmime:4.2.1'
+]
+
 def springVersion = '3.2.4.RELEASE'
 def springSecurityVersion = '3.2.0.RC2'
 

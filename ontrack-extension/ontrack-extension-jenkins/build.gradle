@@ -1,0 +1,6 @@
+description = "ontrack Extension Jenkins"
+
+dependencies {
+	compile project(':ontrack-extension-api')
+	compile httpLibraries
+}
