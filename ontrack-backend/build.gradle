@@ -10,5 +10,15 @@ dependencies {
 	compile  libraries['slf4j']
 	compile  springLibraries['context-support']
 	compile  springSecurityLibraries['ldap']
+	
+	// Provided
 	provided libraries['java-mail']
+	
+	// Runtime
+	runtime  libraries['validation-impl']
+	runtime  springSecurityLibraries['config']
+	
+	// Testing
+	testCompile project(':ontrack-extension:ontrack-extension-jenkins')
+	testCompile project(':ontrack-testutils')
 }
