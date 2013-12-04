@@ -21,4 +21,5 @@ dependencies {
 	// Testing
 	testCompile project(':ontrack-extension:ontrack-extension-jenkins')
 	testCompile project(':ontrack-testutils')
+    testRuntime libraries['h2']
 }
