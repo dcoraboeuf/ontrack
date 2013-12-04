@@ -1,0 +1,5 @@
+description = "ontrack Extension SVNExplorer"
+
+dependencies {
+    compile project(':ontrack-extension:ontrack-extension-svn')
+}
