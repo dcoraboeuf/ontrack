@@ -10,6 +10,10 @@ allprojects  {
 	}
 }
 
+ext.testLibraries = [
+	'junit': 'junit:junit:4.10',
+	'mockito': 'org.mockito:mockito-core:1.8.5'
+]
 
 subprojects {
 	apply plugin: 'java'
@@ -17,8 +21,8 @@ subprojects {
 	targetCompatibility = 1.7
 	
 	dependencies {
-		testCompile 'junit:junit:4.10'
-		testCompile 'org.mockito:mockito-core:1.8.5'		
+		testCompile testLibraries['junit']
+		testCompile testLibraries['mockito']
 	}
 }
 
@@ -28,7 +32,9 @@ ext.libraries = [
 	'jstring': 'net.sf.jstring:jstring:2.4',
 	'jackson': 'org.codehaus.jackson:jackson-mapper-asl:1.9.10',
 	'joda-time': 'joda-time:joda-time:2.1',
-	'validation-api': 'javax.validation:validation-api:1.0.0.GA'
+	'validation-api': 'javax.validation:validation-api:1.0.0.GA',
+	'commons-dbcp': 'commons-dbcp:commons-dbcp:1.4',
+	'dbunit': 'org.dbunit:dbunit:2.4.8'
 ]
 
 def springVersion = '3.2.4.RELEASE'
@@ -36,7 +42,9 @@ def springSecurityVersion = '3.2.0.RC2'
 
 ext.springLibraries = [
 	'web': [ group: 'org.springframework', name: 'spring-web', version: springVersion ],
-	'jdbc': [ group: 'org.springframework', name: 'spring-jdbc', version: springVersion ]
+	'jdbc': [ group: 'org.springframework', name: 'spring-jdbc', version: springVersion ],
+	'test': [ group: 'org.springframework', name: 'spring-test', version: springVersion ],
+	'tx': [ group: 'org.springframework', name: 'spring-tx', version: springVersion ]
 ]
 
 ext.springSecurityLibraries = [

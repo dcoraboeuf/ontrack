@@ -1,0 +1,10 @@
+description = "ontrack test library"
+
+dependencies {
+	compile project(':ontrack-core')
+	compile libraries['commons-dbcp']
+	compile libraries['dbunit']
+	compile testLibraries['junit']
+	compile springLibraries['test']
+	compile springLibraries['tx']
+}
