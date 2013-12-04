@@ -1,0 +1,7 @@
+description = "ontrack Extension JIRA"
+
+dependencies {
+    compile project(':ontrack-extension-api')
+    compile project(':ontrack-tx')
+    compile 'com.atlassian.jira:jira-rest-java-client-core:2.0.0-m25'
+}
