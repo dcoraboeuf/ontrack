@@ -20,6 +20,10 @@ subprojects {
 	sourceCompatibility = 1.7
 	targetCompatibility = 1.7
 	
+	configurations {
+		provided
+	}
+	
 	dependencies {
 		testCompile testLibraries['junit']
 		testCompile testLibraries['mockito']
@@ -36,7 +40,8 @@ ext.libraries = [
 	'commons-dbcp': 'commons-dbcp:commons-dbcp:1.4',
 	'dbunit': 'org.dbunit:dbunit:2.4.8',
 	'guava': 'com.google.guava:guava:15.0',
-	'slf4j': 'org.slf4j:slf4j-api:1.7.5'
+	'slf4j': 'org.slf4j:slf4j-api:1.7.5',
+	'servlet-api': 'javax.servlet:servlet-api:2.5'
 ]
 
 def springVersion = '3.2.4.RELEASE'
