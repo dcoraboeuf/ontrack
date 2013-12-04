@@ -1,0 +1,5 @@
+description = "ontrack Extension General"
+
+dependencies {
+	compile project(':ontrack-extension-api')
+}
