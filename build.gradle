@@ -34,7 +34,9 @@ ext.libraries = [
 	'joda-time': 'joda-time:joda-time:2.1',
 	'validation-api': 'javax.validation:validation-api:1.0.0.GA',
 	'commons-dbcp': 'commons-dbcp:commons-dbcp:1.4',
-	'dbunit': 'org.dbunit:dbunit:2.4.8'
+	'dbunit': 'org.dbunit:dbunit:2.4.8',
+	'guava': 'com.google.guava:guava:15.0',
+	'slf4j': 'org.slf4j:slf4j-api:1.7.5'
 ]
 
 def springVersion = '3.2.4.RELEASE'
@@ -44,7 +46,8 @@ ext.springLibraries = [
 	'web': [ group: 'org.springframework', name: 'spring-web', version: springVersion ],
 	'jdbc': [ group: 'org.springframework', name: 'spring-jdbc', version: springVersion ],
 	'test': [ group: 'org.springframework', name: 'spring-test', version: springVersion ],
-	'tx': [ group: 'org.springframework', name: 'spring-tx', version: springVersion ]
+	'tx': [ group: 'org.springframework', name: 'spring-tx', version: springVersion ],
+	'context': [ group: 'org.springframework', name: 'spring-context', version: springVersion ]
 ]
 
 ext.springSecurityLibraries = [

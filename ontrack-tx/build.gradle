@@ -1,0 +1,7 @@
+description = "Transaction management for external resources"
+
+dependencies {
+	compile libraries['guava']
+	compile libraries['slf4j']
+	compile springLibraries['context']
+}
