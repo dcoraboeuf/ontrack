@@ -1,0 +1,7 @@
+description = "Web support"
+
+dependencies {
+	compile project(':ontrack-core')
+	compile springLibraries['webmvc']
+	compile springSecurityLibraries['core']
+}
