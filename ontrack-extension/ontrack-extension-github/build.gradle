@@ -1,0 +1,6 @@
+description = "ontrack Extension GitHub"
+
+dependencies {
+    compile project(':ontrack-extension:ontrack-extension-git')
+    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+}
