@@ -1,0 +1,6 @@
+description = "ontrack Client"
+
+dependencies {
+    compile project(':ontrack-core')
+    compile httpLibraries
+}
