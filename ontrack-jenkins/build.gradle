@@ -1,0 +1,30 @@
+description = "ontrack Jenkins plug-in"
+
+// See https://wiki.jenkins-ci.org/display/JENKINS/Gradle+JPI+Plugin about building a Jenkins plug-in with Gradle
+buildscript {
+    repositories {
+        maven {
+            name "jenkins"
+            url("http://repo.jenkins-ci.org/releases/")
+        }
+        // The plugin is currently only available via the Jenkins
+        // Maven repository, but has dependencies in Maven Central.
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.5.0'
+    }
+}
+apply plugin: 'jpi'
+
+jenkinsPlugin {
+	coreVersion = '1.534'                                               // Version of Jenkins core this plugin depends on.
+	displayName = 'ontrack'                                             // Human-readable name of plugin.
+	url = 'https://github.com/dcoraboeuf/ontrack'                       // URL for plugin on Jenkins wiki or elsewhere.
+	gitHubUrl = 'https://github.com/dcoraboeuf/ontrack'                 // Plugin URL on GitHub. Optional.
+}
+
+dependencies {
+	compile project(':ontrack-client')
+	compile 'org.jenkins-ci.lib:xtrigger-lib:0.19'
+}

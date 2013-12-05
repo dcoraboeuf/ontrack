@@ -6,7 +6,6 @@ allprojects  {
 		mavenCentral()
 		maven { url "https://m2proxy.atlassian.com/repository/public" }
 		maven { url "http://repo.spring.io/milestone" }
-		maven { url "http://repo.jenkins-ci.org/public/" }
 	}
 }
 
