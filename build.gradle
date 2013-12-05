@@ -58,7 +58,8 @@ ext.libraries = [
 	'aspectj': 'org.aspectj:aspectjweaver:1.6.12',
 	'freemarker': 'org.freemarker:freemarker:2.3.19',
 	'validation-impl': 'org.hibernate:hibernate-validator:4.3.1.Final',
-    'h2': 'com.h2database:h2:1.3.172'
+    'h2': 'com.h2database:h2:1.3.172',
+	'commons-upload': 'commons-fileupload:commons-fileupload:1.2.2'
 ]
 
 ext.httpLibraries = [
@@ -76,11 +77,13 @@ ext.springLibraries = [
 	'test': [ group: 'org.springframework', name: 'spring-test', version: springVersion ],
 	'tx': [ group: 'org.springframework', name: 'spring-tx', version: springVersion ],
 	'context': [ group: 'org.springframework', name: 'spring-context', version: springVersion ],
-	'context-support': [ group: 'org.springframework', name: 'spring-context-support', version: springVersion ]
+	'context-support': [ group: 'org.springframework', name: 'spring-context-support', version: springVersion ],
+	'hateoas': 'org.springframework.hateoas:spring-hateoas:0.7.0.RELEASE'
 ]
 
 ext.springSecurityLibraries = [
 	'core':   [ group: 'org.springframework.security', name: 'spring-security-core', version: springSecurityVersion ],
 	'config': [ group: 'org.springframework.security', name: 'spring-security-config', version: springSecurityVersion ],
+	'web':    [ group: 'org.springframework.security', name: 'spring-security-web', version: springSecurityVersion ],
 	'ldap':   [ group: 'org.springframework.security', name: 'spring-security-ldap', version: springSecurityVersion ]
 ]

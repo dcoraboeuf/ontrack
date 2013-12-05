@@ -1,0 +1,22 @@
+description = "ontrack Web"
+
+apply plugin: "war"
+
+dependencies {
+	compile project(':ontrack-service')
+	compile project(':ontrack-web-support')
+	compile project(':ontrack-extension-api')
+	compile libraries['freemarker']
+	compile libraries['commons-upload']
+	compile springLibraries['context-support']
+	compile springLibraries['hateoas']
+	compile springSecurityLibraries['config']
+	compile springSecurityLibraries['web']
+	
+	// Runtime
+	runtime project(':ontrack-backend')
+	// TODO All extensions
+	
+	// Test
+	testCompile springLibraries['test']
+}
