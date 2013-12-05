@@ -1,0 +1,9 @@
+description = "ontrack Acceptance tests"
+
+dependencies {
+	testCompile project(':ontrack-client')
+	testCompile 'net.thucydides:thucydides-core:0.9.131-NS'
+	testCompile 'net.thucydides:thucydides-junit:0.9.131-NS'
+	testCompile 'net.thucydides:thucydides-jbehave-plugin:0.9.131-NS'
+	testCompile springLibraries['test']
+}
