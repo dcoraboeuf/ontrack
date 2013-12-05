@@ -17,10 +17,9 @@ dependencies {
 	runtime project(':ontrack-backend')
 	// All extensions
 	file('../ontrack-extension').eachDir { File dir ->
-		println "dir = $dir.name"
-		// if (dir.name ==~ /\$ontrack-extension-.*/) {
-		// 	runtime project(":ontrack-extension:$dir.name")
-		// }
+		if (dir.name != "build") {
+			runtime project(":ontrack-extension:$dir.name")
+		}
 	}
 	
 	// Test
