@@ -1,5 +1,15 @@
 How to run acceptance tests?
 
+## From the command line
+
+```
+gradlew ontrack-acceptance:test -Pacceptance -Dwebdriver.base.url=...
+```
+
+The `webdriver.base.url` must contain the URL the application is deployed on (for example: http://localhost:8080/ontrack)
+
+# Old version using Maven
+
 ## Automated tests in the IDE
 
 Make sure the `ontrack-web` module runs with the `it` Maven profile:

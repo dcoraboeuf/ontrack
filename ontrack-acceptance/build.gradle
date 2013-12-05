@@ -1,5 +1,7 @@
 description = "ontrack Acceptance tests"
 
+test.onlyIf { project.hasProperty('acceptance') }
+
 dependencies {
 	testCompile project(':ontrack-client')
 	testCompile 'net.thucydides:thucydides-core:0.9.131-NS'
