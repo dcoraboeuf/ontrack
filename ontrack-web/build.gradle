@@ -38,6 +38,7 @@ dependencies {
 	
 	// Runtime
 	runtime project(':ontrack-backend')
+	runtime loggingLibraries
 	// All extensions
 	file('../ontrack-extension').eachDir { File dir ->
 		if (dir.name != "build") {

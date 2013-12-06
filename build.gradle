@@ -30,6 +30,8 @@ subprojects {
 	}
 }
 
+def slf4jVersion = '1.7.5'
+
 ext.libraries = [
 	'lombok': 'org.projectlombok:lombok:1.12.2@jar',
 	'commons-lang': 'org.apache.commons:commons-lang3:3.1',
@@ -40,7 +42,7 @@ ext.libraries = [
 	'commons-dbcp': 'commons-dbcp:commons-dbcp:1.4',
 	'dbunit': 'org.dbunit:dbunit:2.4.8',
 	'guava': 'com.google.guava:guava:15.0',
-	'slf4j': 'org.slf4j:slf4j-api:1.7.5',
+	'slf4j': [ group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion],
 	'servlet-api': 'javax.servlet:servlet-api:2.5',
 	'jsoup': 'org.jsoup:jsoup:1.7.2',
 	'java-mail': 'javax.mail:mail:1.4.5',
@@ -55,6 +57,11 @@ ext.libraries = [
 ext.httpLibraries = [
 	'org.apache.httpcomponents:httpclient:4.2.1',
 	'org.apache.httpcomponents:httpmime:4.2.1'
+]
+
+ext.loggingLibraries = [
+	[ group: 'org.slf4j', name: 'slf4j-log4j12', version: slf4jVersion],
+	[ group: 'log4j', name: 'log4j', version: '1.2.13']
 ]
 
 def springVersion = '3.2.4.RELEASE'
