@@ -29,12 +29,12 @@ dependencies {
 	
 	// Provided
 	providedCompile libraries['servlet-api']
-	providedRuntime libraries['java-mail']
 	
 	// Tomcat libraries
 	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-		   "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}"
+		   "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}",
+		   libraries['java-mail']
 	
 	// Runtime
 	runtime project(':ontrack-backend')
