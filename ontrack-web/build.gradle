@@ -2,6 +2,20 @@ description = "ontrack Web"
 
 apply plugin: "war"
 
+// See https://github.com/bmuschko/gradle-tomcat-plugin
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.0'
+    }
+}
+apply plugin: 'tomcat'
+
+// Tomcat version
+def tomcatVersion = '7.0.47'
+
 dependencies {
 	compile project(':ontrack-service')
 	compile project(':ontrack-web-support')
@@ -17,6 +31,10 @@ dependencies {
 	providedCompile libraries['servlet-api']
 	providedRuntime libraries['java-mail']
 	
+	// Tomcat libraries
+	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+	
 	// Runtime
 	runtime project(':ontrack-backend')
 	// All extensions
@@ -28,4 +46,8 @@ dependencies {
 	
 	// Test
 	testCompile springLibraries['test']
+}
+
+tomcatRun {
+	contextPath = '/ontrack'
 }
