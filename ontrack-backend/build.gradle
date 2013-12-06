@@ -8,11 +8,9 @@ dependencies {
 	compile  libraries['aspectj']
 	compile  libraries['freemarker']
 	compile  libraries['slf4j']
+	compile  libraries['java-mail']
 	compile  springLibraries['context-support']
 	compile  springSecurityLibraries['ldap']
-	
-	// Provided
-	provided libraries['java-mail']
 	
 	// Runtime
 	runtime  libraries['validation-impl']

@@ -2,7 +2,7 @@ description = "Web support"
 
 dependencies {
 	compile  project(':ontrack-core')
+	compile  libraries['servlet-api']
 	compile  springLibraries['webmvc']
 	compile  springSecurityLibraries['core']
-	provided libraries['servlet-api']
 }

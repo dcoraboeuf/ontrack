@@ -24,15 +24,6 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 	
-	configurations {
-		provided {
-			transitive = false
-		}
-		compile {
-			extendsFrom provided
-		}
-	}
-	
 	dependencies {
 		testCompile testLibraries['junit']
 		testCompile testLibraries['mockito']
