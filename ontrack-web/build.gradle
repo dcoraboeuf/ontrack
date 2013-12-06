@@ -36,6 +36,10 @@ dependencies {
 		   "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}",
 		   libraries['java-mail'],
            libraries['h2']
+    // Tomcat JSP mgt
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
 	
 	// Runtime
 	runtime project(':ontrack-backend')
@@ -57,4 +61,5 @@ tomcatRun {
 	}
 	contextPath = '/ontrack'
 	configFile = file('src/test/resources/tomcat/context-local.xml')
+    stopPort = 8089
 }
