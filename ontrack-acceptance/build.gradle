@@ -1,8 +1,7 @@
 description = "ontrack Acceptance tests"
 
-// test.onlyIf { project.hasProperty('acceptance') }
 // Disables the normal tests by default
-// test.enabled = false
+test.onlyIf { false }
 
 // Loads the Tomcat default configuration
 apply from: '../gradle/tomcat.gradle'
