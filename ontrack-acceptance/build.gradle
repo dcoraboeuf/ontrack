@@ -34,3 +34,14 @@ task acceptanceLocalRun(type: org.gradle.api.plugins.tomcat.TomcatRunWar, depend
     configFile = file('src/test/resources/tomcat/context-local.xml')
     webApp = ontrackWar
 }
+
+task acceptanceTomcatStop(type: org.gradle.api.plugins.tomcat.TomcatStop) {
+    stopPort = tomcatStopPort
+    stopKey = tomcatStopKey
+}
+
+task acceptanceTest(type: Test) {
+    include '**/*TestCase.java,**/IT*.java'
+    dependsOn acceptanceLocalRun
+    finalizedBy acceptanceTomcatStop
+}
