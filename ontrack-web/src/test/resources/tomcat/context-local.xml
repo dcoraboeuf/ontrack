@@ -1,4 +1,4 @@
-<Context sessionCookiePath="/ontrack">
+<Context sessionCookiePath="/">
 
     <!-- JDBC datasource -->
     <Resource name="jdbc/ontrack"
