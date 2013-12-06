@@ -1,7 +1,7 @@
 description = "ontrack Acceptance tests"
 
-// Disables the normal tests by default
-test.onlyIf { false }
+// Runs the tests only if 'acceptance' property is set
+test.onlyIf { project.hasProperty('acceptance') }
 
 // Loads the Tomcat default configuration
 apply from: '../gradle/tomcat.gradle'
@@ -14,33 +14,39 @@ dependencies {
 	testCompile springLibraries['test']
 }
 
-ext {
-    tomcatStopPort = 8089
-    tomcatStopKey = 'stopKey'
-}
+if ( hasProperty('acceptance-local') ) {
 
-task acceptanceLocalRun(type: org.gradle.api.plugins.tomcat.TomcatRunWar, dependsOn: ':ontrack-web:war') {
-    def ontrackWeb = parent.project('ontrack-web');
-    def ontrackWar = file(new File(ontrackWeb.libsDir, "ontrack-web-${version}.war"))
-    stopPort = tomcatStopPort
-    stopKey = tomcatStopKey
-    daemon = true
-    httpPort = 9999
-    doFirst {
-        System.setProperty('spring.profiles.active', 'it')
+    ext {
+        tomcatStopPort = 8089
+        tomcatStopKey = 'stopKey'
+        tomcatPort = 9999
     }
-    contextPath = ontrackContext
-    configFile = file('src/test/resources/tomcat/context-local.xml')
-    webApp = ontrackWar
-}
 
-task acceptanceTomcatStop(type: org.gradle.api.plugins.tomcat.TomcatStop) {
-    stopPort = tomcatStopPort
-    stopKey = tomcatStopKey
-}
 
-task acceptanceTest(type: Test) {
-    include '**/*TestCase.java,**/IT*.java'
-    dependsOn acceptanceLocalRun
-    finalizedBy acceptanceTomcatStop
+   task acceptanceLocalStart(type: org.gradle.api.plugins.tomcat.TomcatRunWar) {
+        def ontrackWeb = parent.project('ontrack-web');
+        def ontrackWar = file(new File(ontrackWeb.libsDir, "ontrack-web-${version}.war"))
+        stopPort = tomcatStopPort
+        stopKey = tomcatStopKey
+        daemon = true
+        httpPort = 9999
+        doFirst {
+            System.setProperty('spring.profiles.active', 'it')
+        }
+        contextPath = ontrackContext
+        configFile = file('src/test/resources/tomcat/context-local.xml')
+        webApp = ontrackWar
+    }
+
+    task acceptanceLocalStop(type: org.gradle.api.plugins.tomcat.TomcatStop) {
+        stopPort = tomcatStopPort
+        stopKey = tomcatStopKey
+    }
+
+    test.doFirst {
+        System.setProperty('webdriver.base.url', 'http://localhost:${tomcatPort}/${ontrackContext}')
+    }
+    test.dependsOn acceptanceLocalStart
+    test.finalizedBy acceptanceLocalStop
+
 }

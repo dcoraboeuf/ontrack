@@ -4,7 +4,7 @@ apply plugin: 'tomcat'
 // Tomcat version
 def tomcatVersion = '7.0.47'
 // Default ontrack context
-ext.ontrackContext = '/ontrack'
+ext.ontrackContext = 'ontrack'
 
 dependencies {
     // Tomcat libraries
