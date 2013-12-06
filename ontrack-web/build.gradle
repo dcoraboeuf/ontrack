@@ -33,7 +33,8 @@ dependencies {
 	
 	// Tomcat libraries
 	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+		   "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}"
 	
 	// Runtime
 	runtime project(':ontrack-backend')
@@ -49,5 +50,9 @@ dependencies {
 }
 
 tomcatRun {
+	doFirst {
+		System.setProperty('spring.profiles.active', 'dev')
+	}
 	contextPath = '/ontrack'
+	configFile = file('src/test/resources/tomcat/context-local.xml')
 }

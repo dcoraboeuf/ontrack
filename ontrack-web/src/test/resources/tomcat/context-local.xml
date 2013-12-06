@@ -1,0 +1,25 @@
+<Context sessionCookiePath="/ontrack">
+
+    <!-- JDBC datasource -->
+    <Resource name="jdbc/ontrack"
+              auth="Container"
+              type="javax.sql.DataSource"
+              maxActive="10"
+              minIdle="1"
+              maxIdle="5"
+              maxWait="1000"
+              maxAge="1200000"
+              removeAbandoned="true"
+              removeAbandonedTimeout="60"
+              testWhileIdle="true"
+              validationQuery="SELECT 1"
+              timeBetweenEvictionRunsMillis="60000"
+              logAbandoned="true"
+              defaultAutoCommit="false"
+              username="sa"
+              password=""
+              driverClassName="org.h2.Driver"
+              url="jdbc:h2:file:work/ontrack-dev/db/data;AUTOCOMMIT=OFF;MVCC=true;MODE=MySQL"
+              />
+
+</Context>
