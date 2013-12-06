@@ -1,0 +1,20 @@
+// See https://github.com/bmuschko/gradle-tomcat-plugin
+apply plugin: 'tomcat'
+
+// Tomcat version
+def tomcatVersion = '7.0.47'
+// Default ontrack context
+ext.ontrackContext = '/ontrack'
+
+dependencies {
+    // Tomcat libraries
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
+            "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}",
+            libraries['java-mail'],
+            libraries['h2']
+    // Tomcat JSP mgt
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+}

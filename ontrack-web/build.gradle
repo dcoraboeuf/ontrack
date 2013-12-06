@@ -1,20 +1,7 @@
 description = "ontrack Web"
 
 apply plugin: "war"
-
-// See https://github.com/bmuschko/gradle-tomcat-plugin
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:1.0'
-    }
-}
-apply plugin: 'tomcat'
-
-// Tomcat version
-def tomcatVersion = '7.0.47'
+apply from: '../gradle/tomcat.gradle'
 
 dependencies {
 	compile project(':ontrack-service')
@@ -29,17 +16,6 @@ dependencies {
 	
 	// Provided
 	providedCompile libraries['servlet-api']
-	
-	// Tomcat libraries
-	tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-           "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",
-		   "org.apache.tomcat:tomcat-dbcp:${tomcatVersion}",
-		   libraries['java-mail'],
-           libraries['h2']
-    // Tomcat JSP mgt
-    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
-        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
-    }
 	
 	// Runtime
 	runtime project(':ontrack-backend')
@@ -59,7 +35,7 @@ tomcatRun {
 	doFirst {
 		System.setProperty('spring.profiles.active', 'dev')
 	}
-	contextPath = '/ontrack'
+	contextPath = ontrackContext
 	configFile = file('src/test/resources/tomcat/context-local.xml')
     stopPort = 8089
 }
