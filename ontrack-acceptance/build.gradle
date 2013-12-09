@@ -43,9 +43,8 @@ if ( hasProperty('acceptance-local') ) {
         stopKey = tomcatStopKey
     }
 
-    test.doFirst {
-        System.setProperty('webdriver.base.url', 'http://localhost:${tomcatPort}/${ontrackContext}')
-    }
+    test.systemProperty 'webdriver.base.url', "http://localhost:${tomcatPort}/${ontrackContext}"
+
     test.dependsOn acceptanceLocalStart
     test.finalizedBy acceptanceLocalStop
 
