@@ -1,12 +1,21 @@
 How to run acceptance tests?
+============================
 
 ## From the command line
 
 ```
-gradlew ontrack-acceptance:test -Pacceptance -Dwebdriver.base.url=...
+gradlew ontrack-acceptance:test -P acceptance -Dwebdriver.base.url=...
 ```
 
 The `webdriver.base.url` must contain the URL the application is deployed on (for example: http://localhost:8080/ontrack)
+
+In order to launch a local Tomcat 7 for running the integration tests:
+
+```
+gradlew ontrack-acceptance:test -P acceptance -P acceptance-local
+```
+
+In this case, one does not need to specify the target URL - the build will point automatically to the local Tomcat instance.
 
 # Old version using Maven
 
