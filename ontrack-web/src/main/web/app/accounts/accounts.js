@@ -27,5 +27,6 @@ angular.module('ontrack.admin.accounts', [])
                 text: $translate('accounts')
             }
         ]);
+        // Loading the list of accounts
     })
 ;
