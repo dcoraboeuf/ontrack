@@ -1,4 +1,6 @@
-angular.module('ontrack.admin.accounts', [])
+angular.module('ontrack.admin.accounts', [
+        'ontrack.service.account'
+    ])
     .config(function config($stateProvider) {
         $stateProvider.state('accounts', {
             url: '/admin/account',
@@ -10,7 +12,7 @@ angular.module('ontrack.admin.accounts', [])
             }
         })
     })
-    .controller('AccountsCtrl', function ($scope, $state, $translate, pageService) {
+    .controller('AccountsCtrl', function ($scope, $state, $translate, pageService, accountService) {
         // Page definition
         $scope.page = {
             title: $translate('accounts'),
@@ -23,10 +25,14 @@ angular.module('ontrack.admin.accounts', [])
             {
                 text: $translate('home'),
                 link: '/home'
-            }, {
+            },
+            {
                 text: $translate('accounts')
             }
         ]);
         // Loading the list of accounts
+        accountService.getAccountList().success(function (accounts) {
+            $scope.accounts = accounts
+        });
     })
 ;

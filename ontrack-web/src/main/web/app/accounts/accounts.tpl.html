@@ -1,3 +1,42 @@
 <ot-page>
-    <ot-todo>Account list page</ot-todo>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="ot-table ot-account-list">
+                <thead>
+                    <tr>
+                        <th>{{'account.name' | translate}}</th>
+                        <th>{{'account.fullName' | translate}}</th>
+                        <th>{{'account.email' | translate}}</th>
+                        <th>{{'account.role' | translate}}</th>
+                        <th>{{'account.mode' | translate}}</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="account in accounts.items">
+                        <td>
+                            {{account.name}}
+                        </td>
+                        <td>
+                            {{account.fullName}}
+                        </td>
+                        <td>
+                            <a href="mailto:{{account.email}}">{{account.email}}</a>
+                        </td>
+                        <td>
+                            {{ 'account.role.' + account.roleName | translate }}
+                        </td>
+                        <td>
+                            {{account.mode}}
+                        </td>
+                        <td>
+                            <ot-todo>Update</ot-todo>
+                            <ot-todo>Password reset</ot-todo>
+                            <ot-todo>Delete</ot-todo>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </ot-page>
