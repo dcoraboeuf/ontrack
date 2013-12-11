@@ -8,4 +8,6 @@ public interface BranchAssembler {
 
     Function<BranchSummary, BranchResource> summary();
 
+    Function<BranchSummary, BranchResource> detail();
+
 }
