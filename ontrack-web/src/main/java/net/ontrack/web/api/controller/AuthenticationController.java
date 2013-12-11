@@ -1,8 +1,14 @@
 package net.ontrack.web.api.controller;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import net.ontrack.core.model.Account;
+import net.ontrack.core.security.AuthorizationPolicy;
+import net.ontrack.core.security.AuthorizationUtils;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.web.api.model.ActionResource;
 import net.ontrack.web.api.model.AuthenticationResource;
 import net.ontrack.web.support.ErrorHandler;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -24,11 +31,15 @@ import java.util.List;
 public class AuthenticationController extends APIController {
 
     private final SecurityUtils securityUtils;
+    private final ExtensionManager extensionManager;
+    private final AuthorizationUtils authorizationUtils;
 
     @Autowired
-    protected AuthenticationController(ErrorHandler errorHandler, Strings strings, SecurityUtils securityUtils) {
+    protected AuthenticationController(ErrorHandler errorHandler, Strings strings, SecurityUtils securityUtils, ExtensionManager extensionManager, AuthorizationUtils authorizationUtils) {
         super(errorHandler, strings);
         this.securityUtils = securityUtils;
+        this.extensionManager = extensionManager;
+        this.authorizationUtils = authorizationUtils;
     }
 
     /**
@@ -45,7 +56,24 @@ public class AuthenticationController extends APIController {
             List<ActionResource> actions = new ArrayList<>();
             // Built-in actions
             fillBuiltinActions(actions);
-            // TODO Extension actions
+            // Extension actions
+            Collection<? extends TopActionExtension> topLevelActions = extensionManager.getTopLevelActions();
+            // Filter on access rights
+            topLevelActions = Collections2.filter(
+                    topLevelActions,
+                    new Predicate<TopActionExtension>() {
+                        @Override
+                        public boolean apply(TopActionExtension action) {
+                            AuthorizationPolicy policy = action.getAuthorizationPolicy();
+                            return authorizationUtils.applyPolicy(policy);
+                        }
+                    }
+            );
+            // Adds them to the list of actions
+            for (TopActionExtension action : topLevelActions) {
+                actions.add(new ActionResource(action.getTitleKey()));
+                // TODO Action view
+            }
             // Response
             return new ResponseEntity<>(
                     new AuthenticationResource(
