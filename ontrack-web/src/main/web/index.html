@@ -61,6 +61,12 @@
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu" role="menu">
+                    <!-- User actions -->
+                    <li ng-repeat="action in user().actions">
+                        <a id="{{action.key}}" href="#{{action.links.view.href}}">{{action.key | translate}}</a>
+                    </li>
+                    <!-- Signout section -->
+                    <li class="divider"></li>
                     <li><a id="header-signout" ng-click="signout()">{{'logout' | translate}}</a></li>
                 </ul>
             </li>
