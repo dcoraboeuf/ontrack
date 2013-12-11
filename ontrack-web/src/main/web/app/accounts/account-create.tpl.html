@@ -1,3 +1,51 @@
 <ot-page>
-    <ot-todo>Account form</ot-todo>
+    <form class="form-horizontal" role="form">
+        <!-- General -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="name">{{'account.name' | translate}}</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="name" name="name" value="" size="16" maxlength="16" required="required" autofocus="autofocus" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="fullName">{{'account.fullName' | translate}}</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="fullName" name="fullName" value="" size="40" maxlength="80" required="required" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="email">{{'account.email' | translate}}</label>
+            <div class="col-sm-5">
+                <input type="email" class="form-control" id="email" name="email" value="" size="40" maxlength="80" required="required" />
+            </div>
+        </div>
+        <!-- Role -->
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="roleName">{{'account.role' | translate}}</label>
+            <div class="col-sm-5">
+                <select id="roleName" name="roleName" class="form-control">
+                    <option value="ROLE_USER">{{'account.role.ROLE_USER' | translate}}</option>
+                    <option value="ROLE_CONTROLLER">{{'account.role.ROLE_CONTROLLER' | translate}}</option>
+                    <option value="ROLE_ADMIN">{{'account.role.ROLE_ADMIN' | translate}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 ot-description">
+                <p>{{'account.role.ROLE_ADMIN.help' | translate}}</p>
+                <p>{{'account.role.ROLE_CONTROLLER.help' | translate}}</p>
+                <p>{{'account.role.ROLE_USER.help' | translate}}</p>
+            </div>
+        </div>
+        <!-- Mode -->
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="mode">{{'account.mode' | translate}}</label>
+            <div class="controls col-sm-5">
+                <select id="mode" name="mode" class="form-control">
+                    <option value="builtin">{{'account.mode.builtin' | translate}}</option>
+                    <option value="ldap">{{'account.mode.ldap' | translate}}</option>
+                </select>
+            </div>
+        </div>
+    </form>
 </ot-page>
