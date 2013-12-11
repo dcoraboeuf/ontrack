@@ -16,7 +16,18 @@ angular.module('ontrack.signin', [
         })
     })
 
-    .controller('SigninCtrl', function SigninController($scope, $location, securityService) {
+    .controller('SigninCtrl', function SigninController($scope, $location, $translate, pageService, securityService) {
+
+        // Breadcrumbs
+        pageService.setBreadcrumbs([
+            {
+                text: $translate('home'),
+                link: '/home'
+            }, {
+                text: $translate('login')
+            }
+        ]);
+
         $scope.name = '';
         $scope.password = '';
         $scope.error = '';

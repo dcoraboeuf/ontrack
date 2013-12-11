@@ -81,7 +81,8 @@
 <!-- Breadcrumbs -->
 <ul class="breadcrumb" ng-show="breadcrumbs()">
     <li ng-repeat="item in breadcrumbs()">
-        <a href="#{{item.link}}">{{item.text}}</a>
+        <a href="#{{item.link}}" ng-if="item.link">{{item.text}}</a>
+        <span ng-if="!item.link">{{item.text}}</span>
     </li>
 </ul>
 

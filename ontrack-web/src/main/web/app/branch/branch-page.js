@@ -33,6 +33,8 @@ angular.module('ontrack.branch.page', [
                 },{
                     text: projectResource.name,
                     link: '/project/' + projectResource.name
+                }, {
+                    text: 'TODO Branch'
                 }
             ]);
         });

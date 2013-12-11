@@ -16,7 +16,18 @@ angular.module('ontrack.project.create', [
         })
     })
 
-    .controller('ProjectCreateCtrl', function ProjectCreateCtrl($scope, $state, projectService) {
+    .controller('ProjectCreateCtrl', function ProjectCreateCtrl($scope, $state, $translate, pageService, projectService) {
+
+        // Breadcrumbs
+        pageService.setBreadcrumbs([
+            {
+                text: $translate('home'),
+                link: '/home'
+            }, {
+                text: $translate('project.create')
+            }
+        ]);
+
         $scope.name = '';
         $scope.description = '';
         $scope.error = undefined;

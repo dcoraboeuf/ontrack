@@ -16,7 +16,14 @@ angular.module('ontrack.home', [
         })
     })
 
-    .controller('HomeCtrl', function HomeController($scope, projectService) {
+    .controller('HomeCtrl', function HomeController($scope, $translate, projectService, pageService) {
+
+        // Breadcrumbs
+        pageService.setBreadcrumbs([
+            {
+                text: $translate('home')
+            }
+        ]);
 
         // Loads the project list
         function loadProjectList() {

@@ -18,7 +18,7 @@ angular.module('ontrack.project.page', [
         })
     })
 
-    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, dialog) {
+    .controller('ProjectCtrl', function ProjectCtrl($scope, $state, $stateParams, $translate, projectService, messageService, dialog, pageService) {
         // Loads the project
         projectService.getProject($stateParams.projectName, function (projectResource) {
             // Page definition
@@ -50,6 +50,15 @@ angular.module('ontrack.project.page', [
                     $state.go('home')
                 }
             };
+            // Breadcrumbs
+            pageService.setBreadcrumbs([
+                {
+                    text: $translate('home'),
+                    link: '/home'
+                },{
+                    text: projectResource.name
+                }
+            ]);
         });
         // Loads the project branch statuses
         projectService.loadProjectBranchStatus($stateParams.projectName, function (branchLastStatusResourceListResource) {
