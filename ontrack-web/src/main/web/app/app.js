@@ -17,6 +17,7 @@ var ontrack = angular.module('ontrack', [
             'ontrack.service.ref',
             // Pages
             'ontrack.home',
+            'ontrack.admin.accounts',
             'ontrack.signin',
             'ontrack.project.page',
             'ontrack.project.create',

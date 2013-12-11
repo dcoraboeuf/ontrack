@@ -92,23 +92,23 @@ public class AuthenticationController extends APIController {
     protected void fillBuiltinActions(List<ActionResource> actions) {
         // Account management
         addAction(actions, "accounts", GlobalFunction.ACCOUNT_MANAGEMENT)
-                .withView("admin/account")
+                .withView("/admin/account")
         ;
         // Settings
         addAction(actions, "settings", GlobalFunction.SETTINGS)
-                .withView("admin/settings")
+                .withView("/admin/settings")
         ;
         // Extensions
         addAction(actions, "extensions", GlobalFunction.EXTENSIONS)
-                .withView("admin/extensions")
+                .withView("/admin/extensions")
         ;
         // Subscriptions
         addAction(actions, "admin.subscriptions", GlobalFunction.SUBSCRIPTIONS_MANAGEMENT)
-                .withView("admin/subscriptions")
+                .withView("/admin/subscriptions")
         ;
         // Profile
         actions.add(new ActionResource("profile")
-                .withView("profile")
+                .withView("/profile")
         );
     }
 
