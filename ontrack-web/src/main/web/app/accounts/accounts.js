@@ -32,7 +32,16 @@ angular.module('ontrack.admin.accounts', [
         ]);
         // Loading the list of accounts
         accountService.getAccountList().success(function (accounts) {
-            $scope.accounts = accounts
+            $scope.accounts = accounts;
+            $scope.page.commands = [{
+                id: 'account-create',
+                name: 'account.new',
+                icon: 'plus',
+                link: accounts.links['accountCreate'],
+                action: function () {
+                    $state.go('account-create')
+                }
+            }];
         });
     })
 ;
