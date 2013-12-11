@@ -82,12 +82,6 @@ var ontrack = angular.module('ontrack', [
             $scope.$on('$stateChangeSuccess', function (event, toState) {
                 // Clears any notification
                 notificationService.clear();
-                // Clears any breadcrumb
-                pageService.clearBreadcrumbs();
-                // Page title
-                if (angular.isDefined(toState.data.pageTitle)) {
-                    $scope.pageTitle = toState.data.pageTitle + ' | ontrack';
-                }
             });
             // Notifications
             $scope.hasNotification = function () {
@@ -127,6 +121,24 @@ var ontrack = angular.module('ontrack', [
             // Page breadcrumbs
             $scope.breadcrumbs = function () {
                 return pageService.getBreadcrumbs();
+            }
+            // Page title defined from the breadcrumbs
+            $scope.title = function () {
+                var title;
+                var breadcrumbs = pageService.getBreadcrumbs();
+                if (breadcrumbs) {
+                    title = '';
+                    // Starting from 1 to exclude the home page at 0
+                    for (var i = 1 ; i < breadcrumbs.length ; i++) {
+                        var breadcrumb = breadcrumbs[i];
+                        title += breadcrumb.text;
+                        title += ' | ';
+                    }
+                    title += 'ontrack';
+                } else {
+                    title = 'ontrack';
+                }
+                return title;
             }
         })
     ;

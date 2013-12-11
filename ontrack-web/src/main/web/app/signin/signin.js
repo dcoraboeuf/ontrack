@@ -11,8 +11,7 @@ angular.module('ontrack.signin', [
                     controller: 'SigninCtrl',
                     templateUrl: 'app/signin/signin.tpl.html'
                 }
-            },
-            data: { pageTitle: 'Sign in' }
+            }
         })
     })
 

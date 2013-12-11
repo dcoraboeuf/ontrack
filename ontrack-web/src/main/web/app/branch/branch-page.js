@@ -12,9 +12,7 @@ angular.module('ontrack.branch.page', [
                     controller: 'BranchCtrl',
                     templateUrl: 'app/branch/branch-page.tpl.html'
                 }
-            },
-            // TODO Branch name?
-            data: { pageTitle: 'Branch' }
+            }
         })
     })
 

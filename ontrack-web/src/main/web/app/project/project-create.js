@@ -11,8 +11,7 @@ angular.module('ontrack.project.create', [
                     controller: 'ProjectCreateCtrl',
                     templateUrl: 'app/project/project-create.tpl.html'
                 }
-            },
-            data: { pageTitle: 'Project creation' }
+            }
         })
     })
 

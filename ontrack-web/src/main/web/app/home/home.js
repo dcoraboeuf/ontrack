@@ -11,8 +11,7 @@ angular.module('ontrack.home', [
                     controller: 'HomeCtrl',
                     templateUrl: 'app/home/home.tpl.html'
                 }
-            },
-            data: { pageTitle: 'Home' }
+            }
         })
     })
 

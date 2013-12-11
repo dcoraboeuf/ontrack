@@ -12,9 +12,7 @@ angular.module('ontrack.project.page', [
                     controller: 'ProjectCtrl',
                     templateUrl: 'app/project/project.tpl.html'
                 }
-            },
-            // TODO Project name?
-            data: { pageTitle: 'Project' }
+            }
         })
     })
 

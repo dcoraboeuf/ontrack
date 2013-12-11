@@ -4,9 +4,6 @@ angular.module('ontrack.service.core', [])
         self.setBreadcrumbs = function (list) {
             self.breadcrumbs = list;
         };
-        self.clearBreadcrumbs = function () {
-            self.breadcrumbs = undefined;
-        };
         self.getBreadcrumbs = function () {
             return self.breadcrumbs;
         };
