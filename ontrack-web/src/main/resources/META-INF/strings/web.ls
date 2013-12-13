@@ -341,6 +341,10 @@ account.new
     en -> Create a new account
     fr -> Créer un nouvel utilisateur
 
+account.created
+    en -> Account "{0}" has been created.
+    fr -> Le compte "{0}" a été créé.
+
 account.name
     en -> Name
     fr -> Nom
