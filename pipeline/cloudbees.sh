@@ -209,7 +209,7 @@ then
 		fi
 	fi
 	echo Creating application $ONTRACK_APP...
-	bees app:create -ep ${CB_ZONE} --type tomcat $ONTRACK_APP
+	bees app:create -ep ${CB_ZONE} --type tomcat7 $ONTRACK_APP
 	if [ "$?" != "0" ]
 	then
 		echo Could not create the application.
