@@ -3,10 +3,12 @@ package net.ontrack.backend;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.DashboardConfig;
 import net.ontrack.core.model.DashboardConfigForm;
+import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.service.DashboardService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,6 +95,37 @@ public class DashboardServiceIntegrationTest extends AbstractBackendTest {
         });
     }
 
+    /**
+     * Not authorized for normal users
+     */
+    @Test(expected = AccessDeniedException.class)
+    public void not_for_users() throws Exception {
+        asUser().call(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                BranchSummary b1 = doCreateBranch();
+                dashboardService.createDashboardConfig(new DashboardConfigForm("D1", Arrays.asList(b1.getId())));
+                return null;
+            }
+        });
+    }
+
+    /**
+     * OK for registered users
+     */
+    @Test
+    public void ok_for_authorized_users() throws Exception {
+        asUser().withGlobalFn(GlobalFunction.DASHBOARD_CUSTOM).call(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                BranchSummary b1 = doCreateBranch();
+                DashboardConfig config = dashboardService.createDashboardConfig(new DashboardConfigForm("D1", Arrays.asList(b1.getId())));
+                assertEquals("D1", config.getName());
+                assertEquals(Arrays.asList(b1), config.getBranches());
+                return null;
+            }
+        });
+    }
 
 
 }
