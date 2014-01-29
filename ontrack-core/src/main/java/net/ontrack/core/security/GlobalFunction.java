@@ -12,6 +12,8 @@ public enum GlobalFunction {
 
     PROJECT_CREATE,
 
-    PROJECT_EXPORT
+    PROJECT_EXPORT,
+
+    DASHBOARD_CUSTOM
 
 }

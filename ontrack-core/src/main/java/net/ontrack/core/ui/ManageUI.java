@@ -1,10 +1,6 @@
 package net.ontrack.core.ui;
 
 import net.ontrack.core.model.*;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -76,6 +72,18 @@ public interface ManageUI {
     BuildCleanup getBuildCleanup(String project, String branch);
 
     Ack setBuildCleanup(String project, String branch, BuildCleanupForm form);
+
+    // Dashboard management
+
+    List<DashboardConfig> getDashboards();
+
+    DashboardConfig createDashboard(DashboardConfigForm form);
+
+    DashboardConfig getDashboard(int id);
+
+    DashboardConfig updateDashboard(int id, DashboardConfigForm form);
+
+    Ack deleteDashboard(int id);
 
     // Validation stamps
 

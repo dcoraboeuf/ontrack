@@ -85,6 +85,10 @@ globalFunction.PROJECT_EXPORT
     en -> Project export
     fr -> Exportation des projets
 
+globalFunction.DASHBOARD_CUSTOM
+    en -> Custom dashboards
+    fr -> Dashboards personnalisés
+
 [projectFunction]
 
 projectFunction.ACL
