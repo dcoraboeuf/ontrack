@@ -15,6 +15,8 @@ public interface DashboardService {
 
     Dashboard getBranchDashboard(Locale locale, int branchId);
 
+    Dashboard getCustomDashboard(Locale locale, int dashboardId);
+
     // Branch page
 
     DashboardPage getBranchPage(Locale locale, int branchId);

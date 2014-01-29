@@ -110,6 +110,16 @@ public class DefaultDashboardService implements DashboardService {
         );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Dashboard getCustomDashboard(Locale locale, int dashboardId) {
+        DashboardConfig config = getDashboardConfig(dashboardId);
+        return new Dashboard(
+                config.getName(),
+                config.getBranches()
+        );
+    }
+
     private String getBranchTitle(BranchSummary branch) {
         return branch.getProject().getName() + "/" + branch.getName();
     }
