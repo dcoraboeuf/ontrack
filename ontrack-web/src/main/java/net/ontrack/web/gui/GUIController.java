@@ -355,6 +355,14 @@ public class GUIController extends AbstractGUIController {
         return "dashboard";
     }
 
+    /**
+     * Custom dashboard list
+     */
+    @RequestMapping(value = "/dashboard/custom", method = RequestMethod.GET)
+    public String customDashboardList() {
+        return "dashboard-custom";
+    }
+
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
         // General
         response.setContentType("image/png");

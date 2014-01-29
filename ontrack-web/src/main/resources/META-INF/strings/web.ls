@@ -1172,6 +1172,10 @@ dashboard.admin.help
     en -> Select the validation stamps that must appear in the dashboard
     fr -> Sélectionnez les validations qui doivent apparaître dans le tableau de bord
 
+dashboard.custom.list
+    en -> Custom dashboards
+    fr -> Dashboards personnalisés
+
 [acl]
 
 acl
