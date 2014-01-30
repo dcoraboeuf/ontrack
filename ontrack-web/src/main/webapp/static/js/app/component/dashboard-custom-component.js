@@ -32,7 +32,7 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
                 showDashboardDialog({
                     dashboard: dashboardConfig,
                     successFn: function (form, dialog) {
-                        ajax.post({
+                        ajax.put({
                             url: 'ui/manage/dashboard/{0}'.format(dashboardId),
                             data: form,
                             successFn: function () {
@@ -65,6 +65,16 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
                         config.form.find('.dashboard-custom-dialog-branch').each(function (i, tr) {
                             var branchId = $(tr).attr('id');
                             // TODO Initial state
+                            var selected = false;
+                            $.each(dialogConfig.dashboard.branches, function (index, branch) {
+                                if (branch.id == branchId) {
+                                    selected = true;
+                                }
+                            });
+                            $(tr).data('branch-selected', selected);
+                            if (selected) {
+                                $(tr).addClass('dashboard-custom-branch-selected');
+                            }
                             // TODO Checks for authz
                             // Selection of branches
                             $(tr).click(function () {
