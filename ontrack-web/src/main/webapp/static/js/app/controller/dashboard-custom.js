@@ -8,7 +8,17 @@ define(['jquery', 'render', 'app/component/dashboard-custom-component'], functio
                 $(el).click(function () {
                     dashboardCustom.editDashboard($(el).attr('data-id'), config.admin == 'true')
                 })
-            })
+            });
+            // Deletion buttons
+            $('.dashboard-custom-delete').each(function (index, el) {
+                if (config.admin == 'true') {
+                    $(el).click(function () {
+                        dashboardCustom.deleteDashboard($(el).attr('data-id'))
+                    })
+                } else {
+                    $(el).remove();
+                }
+            });
         })
     }
 

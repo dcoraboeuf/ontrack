@@ -49,6 +49,15 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
         })
     };
 
+    self.deleteDashboard = function (dashboardId) {
+        ajax.del({
+            url: 'ui/manage/dashboard/{0}'.format(dashboardId),
+            successFn: function () {
+                dynamic.reloadSection('dashboard-custom');
+            }
+        })
+    };
+
     function showDashboardDialog(dialogConfig) {
         ajax.get({
             url: 'ui/manage/branch',
