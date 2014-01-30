@@ -1184,6 +1184,10 @@ dashboard.custom
     en -> Custom dashboard
     fr -> Dashboard personnalisé
 
+dashboard.custom.branches
+    en -> Selected branches
+    fr -> Branches sélectionnées
+
 [acl]
 
 acl

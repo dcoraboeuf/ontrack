@@ -256,6 +256,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/branch", method = RequestMethod.GET)
+    @ResponseBody
+    public List<BranchSummary> getBranchAll() {
+        List<BranchSummary> branches = new ArrayList<>();
+        for (ProjectSummary project : getProjectList()) {
+            branches.addAll(managementService.getBranchList(project.getId()));
+        }
+        return branches;
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.POST)
     public
     @ResponseBody

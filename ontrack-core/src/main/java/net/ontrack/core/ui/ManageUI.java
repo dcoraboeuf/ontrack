@@ -47,6 +47,8 @@ public interface ManageUI {
 
     // Branches
 
+    List<BranchSummary> getBranchAll();
+
     List<BranchSummary> getBranchList(String project);
 
     List<BranchLastStatus> getBranchLastStatusList(Locale locale, String project);

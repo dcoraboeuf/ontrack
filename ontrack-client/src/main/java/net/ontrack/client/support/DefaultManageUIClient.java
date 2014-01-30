@@ -147,6 +147,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<BranchSummary> getBranchAll() {
+        return list(getDefaultLocale(), "/ui/manage/branch", BranchSummary.class);
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }
