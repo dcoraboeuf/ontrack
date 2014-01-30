@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row-fluid">
-            <div id="dashboard-custom" class="span12 dynamic" dynamic-controller="dashboard-custom">
+            <div id="dashboard-custom" class="span12 dynamic" dynamic-controller="dashboard-custom" dynamic-admin="${secGlobal('DASHBOARD_CUSTOM')?string}">
             </div>
             <#if secGlobal('DASHBOARD_CUSTOM')>
                 <btn id="dashboard-custom-create" class="btn"><i class="icon-plus"></i> <@lh key="dashboard.custom.create"/></btn>

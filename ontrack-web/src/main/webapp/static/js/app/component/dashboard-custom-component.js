@@ -7,6 +7,7 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
             loading: {
                 el: $(btn)
             },
+            admin: true,
             dashboard: {
                 name: '',
                 branches: []
@@ -25,12 +26,13 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
         });
     };
 
-    self.editDashboard = function (dashboardId) {
+    self.editDashboard = function (dashboardId, admin) {
         ajax.get({
             url: 'ui/manage/dashboard/{0}'.format(dashboardId),
             successFn: function (dashboardConfig) {
                 showDashboardDialog({
                     dashboard: dashboardConfig,
+                    admin: admin,
                     successFn: function (form, dialog) {
                         ajax.put({
                             url: 'ui/manage/dashboard/{0}'.format(dashboardId),
@@ -75,16 +77,23 @@ define(['jquery', 'ajax', 'dialog', 'dynamic'], function ($, ajax, dialog, dynam
                             if (selected) {
                                 $(tr).addClass('dashboard-custom-branch-selected');
                             }
-                            // TODO Checks for authz
-                            // Selection of branches
-                            $(tr).click(function () {
-                                $(tr).data('branch-selected', !$(tr).data('branch-selected'));
-                                if ($(tr).data('branch-selected')) {
-                                    $(tr).addClass('dashboard-custom-branch-selected');
-                                } else {
-                                    $(tr).removeClass('dashboard-custom-branch-selected');
-                                }
-                            })
+                            // Checks for authorisation mode
+                            if (dialogConfig.admin) {
+                                config.controls['submit'].show();
+                                config.form.find('#dashboard-custom-name').removeAttr('disabled');
+                                // Selection of branches
+                                $(tr).click(function () {
+                                    $(tr).data('branch-selected', !$(tr).data('branch-selected'));
+                                    if ($(tr).data('branch-selected')) {
+                                        $(tr).addClass('dashboard-custom-branch-selected');
+                                    } else {
+                                        $(tr).removeClass('dashboard-custom-branch-selected');
+                                    }
+                                })
+                            } else {
+                                config.controls['submit'].hide();
+                                config.form.find('#dashboard-custom-name').attr('disabled', 'disabled');
+                            }
                         })
                     },
                     submitFn: function (config) {

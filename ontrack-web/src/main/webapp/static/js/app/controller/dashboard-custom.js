@@ -6,7 +6,7 @@ define(['jquery', 'render', 'app/component/dashboard-custom-component'], functio
             // Edition buttons
             $('.dashboard-custom-edit').each(function (index, el) {
                 $(el).click(function () {
-                    dashboardCustom.editDashboard($(el).attr('data-id'))
+                    dashboardCustom.editDashboard($(el).attr('data-id'), config.admin == 'true')
                 })
             })
         })
