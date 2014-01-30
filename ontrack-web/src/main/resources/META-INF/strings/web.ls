@@ -1176,6 +1176,14 @@ dashboard.custom.list
     en -> Custom dashboards
     fr -> Dashboards personnalisés
 
+dashboard.custom.create
+    en -> New custom dashboard
+    fr -> Nouveau dashboard personnalisé
+
+dashboard.custom
+    en -> Custom dashboard
+    fr -> Dashboard personnalisé
+
 [acl]
 
 acl
