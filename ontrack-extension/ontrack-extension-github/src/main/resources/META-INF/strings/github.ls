@@ -88,6 +88,10 @@ github.commit.author
     en -> Author
     fr -> Auteur
 
+github.commit.author.none
+    en -> No assignee
+    fr -> Aucune personne assignée
+
 github.commit.message
     en -> Message
     fr -> Message
