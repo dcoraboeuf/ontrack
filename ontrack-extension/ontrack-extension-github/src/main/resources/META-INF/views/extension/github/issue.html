@@ -29,7 +29,12 @@
             </small></h1>
             <!-- Meta info -->
             <!-- Author -->
-            <i class="icon-user"></i> <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
+            <i class="icon-user"></i>
+            <#if info.issue.assignee??>
+                <a href="${info.issue.assignee.url?html}"><b>${info.issue.assignee.login?html}</b></a>
+            <#else>
+                <span class="description"><@lh key="github.commit.author.none" /></span>
+            </#if>
             <!-- Creation date -->
             <i class="icon-calendar"></i>
             ${ loc ('github.issue.createdAt', locFormatDate(info.issue.createdAt), locFormatTime(info.issue.createdAt)) }
