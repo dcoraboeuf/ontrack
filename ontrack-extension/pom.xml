@@ -8,7 +8,7 @@
     <parent>
         <artifactId>ontrack-parent</artifactId>
         <groupId>net.ontrack</groupId>
-        <version>1.46.3-SNAPSHOT</version>
+        <version>1.48-SNAPSHOT</version>
     </parent>
 
     <artifactId>ontrack-extension</artifactId>
@@ -26,6 +26,7 @@
         <module>ontrack-extension-general</module>
         <module>ontrack-extension-git</module>
         <module>ontrack-extension-github</module>
+        <module>ontrack-extension-git-jira</module>
     </modules>
 
     <dependencies>

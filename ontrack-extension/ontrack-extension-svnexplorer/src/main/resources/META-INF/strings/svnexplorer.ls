@@ -47,38 +47,6 @@ svnexplorer.changelog.revisions.path
 
 [issues]
 
-svnexplorer.changelog.issues
-    en -> Issues
-    fr -> Tickets
-
-svnexplorer.changelog.issues.key
-    en -> Key
-    fr -> Clef
-
-svnexplorer.changelog.issues.status
-    en -> Status
-    fr -> Statut
-
-svnexplorer.changelog.issues.summary
-    en -> Summary
-    fr -> Titre
-
-svnexplorer.changelog.issues.affectedVersions
-    en -> Affected versions
-    fr -> Version affectées
-
-svnexplorer.changelog.issues.fixVersions
-    en -> Fix versions
-    fr -> Versions corrigées
-
-svnexplorer.changelog.issues.assignee
-    en -> Assignee
-    fr -> Destinataire
-
-svnexplorer.changelog.issues.updateTime
-    en -> Update time
-    fr -> Mise à jour
-
 svnexplorer.changelog.issues.revision
     en -> Last revision
     fr -> Dernière révision
@@ -88,6 +56,10 @@ svnexplorer.changelog.issues.openAll
     fr -> Ouvrir tous les tickets dans JIRA
 
 [files]
+
+svnexplorer.changelog.issues
+    en -> Issues
+    fr -> Tickets
 
 svnexplorer.changelog.files
     en -> Files

@@ -10,6 +10,7 @@ import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.core.ui.ManageUI;
 import net.ontrack.core.ui.PropertyUI;
+import net.ontrack.service.DashboardService;
 import net.ontrack.service.ExportService;
 import net.ontrack.service.ManagementService;
 import net.ontrack.service.ProfileService;
@@ -41,6 +42,7 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     public static final long BACKUP_TIMEOUT = 5 * 60 * 1000L;
     private final SecurityUtils securityUtils;
     private final ManagementService managementService;
+    private final DashboardService dashboardService;
     private final ProfileService profileService;
     private final ExportService exportService;
     private final PropertyUI propertyUI;
@@ -48,10 +50,11 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     private final String version;
 
     @Autowired
-    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, ProfileService profileService, ExportService exportService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
+    public ManageUIController(ErrorHandler errorHandler, Strings strings, ManagementService managementService, EntityConverter entityConverter, SecurityUtils securityUtils, DashboardService dashboardService, ProfileService profileService, ExportService exportService, PropertyUI propertyUI, ObjectMapper objectMapper, @Value("${app.version}") String version) {
         super(errorHandler, strings, entityConverter);
         this.managementService = managementService;
         this.securityUtils = securityUtils;
+        this.dashboardService = dashboardService;
         this.profileService = profileService;
         this.exportService = exportService;
         this.propertyUI = propertyUI;
@@ -253,6 +256,17 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     }
 
     @Override
+    @RequestMapping(value = "/ui/manage/branch", method = RequestMethod.GET)
+    @ResponseBody
+    public List<BranchSummary> getBranchAll() {
+        List<BranchSummary> branches = new ArrayList<>();
+        for (ProjectSummary project : getProjectList()) {
+            branches.addAll(managementService.getBranchList(project.getId()));
+        }
+        return branches;
+    }
+
+    @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/validation-stamp-mgt", method = RequestMethod.POST)
     public
     @ResponseBody
@@ -406,6 +420,41 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @ResponseBody
     Ack setBuildCleanup(@PathVariable String project, @PathVariable String branch, @RequestBody BuildCleanupForm form) {
         return managementService.setBuildCleanup(entityConverter.getBranchId(project, branch), form);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/dashboard", method = RequestMethod.GET)
+    @ResponseBody
+    public List<DashboardConfig> getDashboards() {
+        return dashboardService.getDashboardConfigs();
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/dashboard", method = RequestMethod.POST)
+    @ResponseBody
+    public DashboardConfig createDashboard(@RequestBody DashboardConfigForm form) {
+        return dashboardService.createDashboardConfig(form);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/dashboard/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public DashboardConfig getDashboard(@PathVariable int id) {
+        return dashboardService.getDashboardConfig(id);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/dashboard/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public DashboardConfig updateDashboard(@PathVariable int id, @RequestBody DashboardConfigForm form) {
+        return dashboardService.updateDashboardConfig(id, form);
+    }
+
+    @Override
+    @RequestMapping(value = "/ui/manage/dashboard/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Ack deleteDashboard(@PathVariable int id) {
+        return dashboardService.deleteDashboardConfig(id);
     }
 
     @Override

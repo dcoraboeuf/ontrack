@@ -286,6 +286,28 @@ public class DefaultGitClient implements GitClient {
         }
     }
 
+    @Override
+    public boolean scanCommits(Function<RevCommit, Boolean> scanFunction) {
+        // Client
+        Git git = repository.git();
+        // All commits
+        try {
+            Iterable<RevCommit> commits = git.log().all().call();
+            for (RevCommit commit : commits) {
+                if (scanFunction.apply(commit)) {
+                    // Not going on
+                    return true;
+                }
+            }
+            // Default behaviour
+            return false;
+        } catch (GitAPIException e) {
+            throw new GitException(e);
+        } catch (IOException e) {
+            throw new GitIOException(e);
+        }
+    }
+
     private GitChangeType toChangeType(DiffEntry.ChangeType changeType) {
         switch (changeType) {
             case ADD:
@@ -320,7 +342,8 @@ public class DefaultGitClient implements GitClient {
         return revCommit.getId().getName();
     }
 
-    private GitCommit toCommit(RevCommit revCommit) {
+    @Override
+    public GitCommit toCommit(RevCommit revCommit) {
         return new GitCommit(
                 getId(revCommit),
                 toPerson(revCommit.getAuthorIdent()),

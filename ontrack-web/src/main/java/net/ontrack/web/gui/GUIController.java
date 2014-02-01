@@ -346,6 +346,23 @@ public class GUIController extends AbstractGUIController {
         return "dashboard";
     }
 
+    /**
+     * Custom dashboard access
+     */
+    @RequestMapping(value = "/dashboard/{dashboard:\\d+}", method = RequestMethod.GET)
+    public String customDashboard(Locale locale, Model model, @PathVariable int dashboard) {
+        model.addAttribute("dashboard", dashboardService.getCustomDashboard(locale, dashboard));
+        return "dashboard";
+    }
+
+    /**
+     * Custom dashboard list
+     */
+    @RequestMapping(value = "/dashboard/custom", method = RequestMethod.GET)
+    public String customDashboardList() {
+        return "dashboard-custom";
+    }
+
     protected void renderImage(HttpServletResponse response, byte[] content) throws IOException {
         // General
         response.setContentType("image/png");

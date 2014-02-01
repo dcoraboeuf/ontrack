@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.ontrack</groupId>
 		<artifactId>ontrack-parent</artifactId>
-		<version>1.46.3-SNAPSHOT</version>
+		<version>1.48-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>ontrack-web</artifactId>
@@ -173,6 +173,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ontrack-extension-github</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-git-jira</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>

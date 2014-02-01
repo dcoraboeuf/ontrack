@@ -1,0 +1,27 @@
+<form class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="dashboard-custom-name">{{loc 'model.name'}}</label>
+        <div class="controls">
+            <input type="text" id="dashboard-custom-name" value="" size="40" maxlength="80" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">{{loc 'dashboard.custom.branches'}}</label>
+    </div>
+    <div class="control-group">
+        <table class="table table-condensed table-hover">
+            <tbody>
+                {{#branches}}
+                    <tr class="dashboard-custom-dialog-branch" id="{{id}}">
+                        <td>
+                            {{project.name}}
+                        </td>
+                        <td>
+                            {{name}}
+                        </td>
+                    </tr>
+                {{/branches}}
+            </tbody>
+        </table>
+    </div>
+</form>

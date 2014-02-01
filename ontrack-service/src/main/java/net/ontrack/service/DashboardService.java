@@ -1,10 +1,8 @@
 package net.ontrack.service;
 
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.Dashboard;
-import net.ontrack.core.model.DashboardBranchAdmin;
-import net.ontrack.core.model.DashboardPage;
+import net.ontrack.core.model.*;
 
+import java.util.List;
 import java.util.Locale;
 
 public interface DashboardService {
@@ -17,6 +15,8 @@ public interface DashboardService {
 
     Dashboard getBranchDashboard(Locale locale, int branchId);
 
+    Dashboard getCustomDashboard(Locale locale, int dashboardId);
+
     // Branch page
 
     DashboardPage getBranchPage(Locale locale, int branchId);
@@ -28,4 +28,16 @@ public interface DashboardService {
     Ack associateBranchValidationStamp(int branchId, int validationStampId);
 
     Ack dissociateBranchValidationStamp(int branchId, int validationStampId);
+
+    // Custom dashboards
+
+    List<DashboardConfig> getDashboardConfigs();
+
+    DashboardConfig createDashboardConfig(DashboardConfigForm form);
+
+    DashboardConfig getDashboardConfig(int id);
+
+    DashboardConfig updateDashboardConfig(int id, DashboardConfigForm form);
+
+    Ack deleteDashboardConfig(int id);
 }

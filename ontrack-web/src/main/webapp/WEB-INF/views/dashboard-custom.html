@@ -1,0 +1,29 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="dashboard-custom"
+    style=true
+    title=loc('dashboard.custom.list')
+    breadcrumbs = {
+        loc("home"): ""
+    }>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12 page-title">
+                <span class="title">
+                    <@lh key="dashboard.custom.list" />
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div id="dashboard-custom" class="span12 dynamic" dynamic-controller="dashboard-custom" dynamic-admin="${secGlobal('DASHBOARD_CUSTOM')?string}">
+            </div>
+            <#if secGlobal('DASHBOARD_CUSTOM')>
+                <btn id="dashboard-custom-create" class="btn"><i class="icon-plus"></i> <@lh key="dashboard.custom.create"/></btn>
+            </#if>
+        </div>
+    </div>
+</@layout_std>

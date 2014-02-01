@@ -8,28 +8,32 @@
     noscript=true
     >
     <!-- List of branches -->
-    <#assign width = 100 / dashboard.branches?size />
-    <table width="100%" class="dashboard">
-        <tbody>
-            <tr>
-                <#list dashboard.branches as branch>
-                    <td valign="top" width="${width}%">
-                        <h1><a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a></h1>
-                        <h2><a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a></h2>
-                        <div
-                            id="branch-${branch.id?c}"
-                            class="dynamic"
-                            dynamic-controller="dashboard-branch"
-                            dynamic-project="${branch.project.name?html}"
-                            dynamic-branch="${branch.name?html}"
-                            dynamic-refresh="true"
-                            dynamic-refresh-interval="60000"
-                            ></div>
-                    </td>
-                </#list>
-            </tr>
-        </tbody>
-    </table>
+   <#if dashboard.branches?size == 0>
+       <div class="alert alert-error">No project/branch configured.</div>
+   <#else>
+        <#assign width = 100 / dashboard.branches?size />
+        <table width="100%" class="dashboard">
+            <tbody>
+                <tr>
+                    <#list dashboard.branches as branch>
+                        <td valign="top" width="${width}%">
+                            <h1><a href="gui/project/${branch.project.name?html}">${branch.project.name?html}</a></h1>
+                            <h2><a href="gui/project/${branch.project.name?html}/branch/${branch.name?html}">${branch.name?html}</a></h2>
+                            <div
+                                id="branch-${branch.id?c}"
+                                class="dynamic"
+                                dynamic-controller="dashboard-branch"
+                                dynamic-project="${branch.project.name?html}"
+                                dynamic-branch="${branch.name?html}"
+                                dynamic-refresh="true"
+                                dynamic-refresh-interval="60000"
+                                ></div>
+                        </td>
+                    </#list>
+                </tr>
+            </tbody>
+        </table>
+   </#if>
 
     <div id="logo">
         <a href=".">

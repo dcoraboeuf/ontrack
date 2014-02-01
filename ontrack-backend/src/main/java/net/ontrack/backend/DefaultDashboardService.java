@@ -5,8 +5,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.ontrack.backend.dao.DashboardDao;
-import net.ontrack.core.security.AuthorizationUtils;
+import net.ontrack.backend.dao.model.TDashboard;
 import net.ontrack.core.model.*;
+import net.ontrack.core.security.AuthorizationUtils;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.GlobalGrant;
 import net.ontrack.core.security.ProjectFunction;
 import net.ontrack.service.DashboardSectionDecorator;
 import net.ontrack.service.DashboardSectionProvider;
@@ -30,6 +33,24 @@ public class DefaultDashboardService implements DashboardService {
     private final AuthorizationUtils authorizationUtils;
     private List<DashboardSectionProvider> dashboardSectionProviders;
     private List<DashboardSectionDecorator> dashboardSectionDecorators;
+    private Function<TDashboard, DashboardConfig> dashboardConfigFunction = new Function<TDashboard, DashboardConfig>() {
+        @Override
+        public DashboardConfig apply(TDashboard t) {
+            return new DashboardConfig(
+                    t.getId(),
+                    t.getName(),
+                    Lists.transform(
+                            t.getBranches(),
+                            new Function<Integer, BranchSummary>() {
+                                @Override
+                                public BranchSummary apply(Integer id) {
+                                    return managementService.getBranch(id);
+                                }
+                            }
+                    )
+            );
+        }
+    };
 
     @Autowired
     public DefaultDashboardService(ManagementService managementService, Strings strings, DashboardDao dashboardDao, AuthorizationUtils authorizationUtils) {
@@ -86,6 +107,16 @@ public class DefaultDashboardService implements DashboardService {
         return new Dashboard(
                 strings.get(locale, "dashboard.branch", branch.getProject().getName(), branch.getName()),
                 Collections.singletonList(branch)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Dashboard getCustomDashboard(Locale locale, int dashboardId) {
+        DashboardConfig config = getDashboardConfig(dashboardId);
+        return new Dashboard(
+                config.getName(),
+                config.getBranches()
         );
     }
 
@@ -242,5 +273,49 @@ public class DefaultDashboardService implements DashboardService {
     public Ack dissociateBranchValidationStamp(int branchId, int validationStampId) {
         authorizationUtils.checkBranch(branchId, ProjectFunction.DASHBOARD_SETUP);
         return dashboardDao.dissociateBranchValidationStamp(branchId, validationStampId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DashboardConfig> getDashboardConfigs() {
+        return Lists.transform(
+                dashboardDao.findAllCustoms(),
+                dashboardConfigFunction
+        );
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.DASHBOARD_CUSTOM)
+    public DashboardConfig createDashboardConfig(DashboardConfigForm form) {
+        return getDashboardConfig(
+                dashboardDao.createCustom(
+                        form.getName(),
+                        form.getBranches()
+                )
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DashboardConfig getDashboardConfig(int id) {
+        return dashboardConfigFunction.apply(
+                dashboardDao.getCustom(id)
+        );
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.DASHBOARD_CUSTOM)
+    public DashboardConfig updateDashboardConfig(int id, DashboardConfigForm form) {
+        dashboardDao.updateCustom(id, form.getName(), form.getBranches());
+        return getDashboardConfig(id);
+    }
+
+    @Override
+    @Transactional
+    @GlobalGrant(GlobalFunction.DASHBOARD_CUSTOM)
+    public Ack deleteDashboardConfig(int id) {
+        return dashboardDao.deleteCustom(id);
     }
 }

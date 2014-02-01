@@ -147,6 +147,11 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
+    public List<BranchSummary> getBranchAll() {
+        return list(getDefaultLocale(), "/ui/manage/branch", BranchSummary.class);
+    }
+
+    @Override
     public List<BranchSummary> getBranchList(String project) {
         return list(getDefaultLocale(), format("/ui/manage/project/%s/branch", project), BranchSummary.class);
     }
@@ -206,6 +211,31 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
                 Ack.class,
                 form
         );
+    }
+
+    @Override
+    public List<DashboardConfig> getDashboards() {
+        return list(getDefaultLocale(), "/ui/manage/dashboard", DashboardConfig.class);
+    }
+
+    @Override
+    public DashboardConfig createDashboard(DashboardConfigForm form) {
+        return post(getDefaultLocale(), "/ui/manage/dashboard", DashboardConfig.class, form);
+    }
+
+    @Override
+    public DashboardConfig getDashboard(int id) {
+        return get(getDefaultLocale(), format("/ui/manage/dashboard/%d", id), DashboardConfig.class);
+    }
+
+    @Override
+    public DashboardConfig updateDashboard(int id, DashboardConfigForm form) {
+        return put(getDefaultLocale(), format("/ui/manage/dashboard/%d", id), DashboardConfig.class, form);
+    }
+
+    @Override
+    public Ack deleteDashboard(int id) {
+        return delete(getDefaultLocale(), format("/ui/manage/dashboard/%d", id), Ack.class);
     }
 
     @Override

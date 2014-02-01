@@ -1,0 +1,7 @@
+.dashboard-custom-dialog-branch.dashboard-custom-branch-selected {
+    background-color: #ffff00 !important;
+}
+
+.dashboard-custom-dialog-branch {
+    cursor: pointer;
+}
