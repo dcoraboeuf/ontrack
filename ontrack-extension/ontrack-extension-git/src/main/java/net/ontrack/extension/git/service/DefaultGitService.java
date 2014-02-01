@@ -21,6 +21,7 @@ import net.ontrack.service.ManagementService;
 import net.ontrack.service.api.ScheduledService;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,6 +204,14 @@ public class DefaultGitService implements GitService, GitIndexation, ScheduledSe
         else {
             throw new GitCommitNotFoundException(commit);
         }
+    }
+
+    @Override
+    public boolean scanCommits(int branchId, Function<RevCommit, Boolean> scanFunction) {
+        // Gets the client client for this branch
+        GitClient gitClient = getGitClient(branchId);
+        // Scanning
+        return gitClient.scanCommits(scanFunction);
     }
 
     @Override
