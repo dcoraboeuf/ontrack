@@ -25,18 +25,18 @@
             <table>
                 <tbody>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.status" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.status" /></td>
                         <td class="issue-info-value">
                             <img src="${info.issue.status.iconUrl?html}" />
                             ${info.issue.status.name?html}
                         </td>
                     </tr>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.summary" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.summary" /></td>
                         <td class="issue-info-value">${info.issue.summary?html}</td>
                     </tr>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.affectedVersions" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.affectedVersions" /></td>
                         <td class="issue-info-value">
                             <ul class="version">
                                 <#list info.issue.affectedVersions as version>
@@ -49,7 +49,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.fixVersions" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.fixVersions" /></td>
                         <td class="issue-info-value">
                             <ul class="version">
                                 <#list info.issue.fixVersions as version>
@@ -62,11 +62,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.assignee" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.assignee" /></td>
                         <td class="issue-info-value">${info.issue.assignee?html}</td>
                     </tr>
                     <tr>
-                        <td class="issue-info-label"><@lh key="svnexplorer.changelog.issues.updateTime" /></td>
+                        <td class="issue-info-label"><@lh key="jira.issue.updateTime" /></td>
                         <td class="issue-info-value">${info.formattedUpdateTime?html}</td>
                     </tr>
                 </tbody>
