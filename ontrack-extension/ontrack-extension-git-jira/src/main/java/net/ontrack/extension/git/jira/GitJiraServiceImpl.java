@@ -14,6 +14,8 @@ import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.service.ManagementService;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ import java.util.*;
 
 @Service
 public class GitJiraServiceImpl implements GitJiraService {
+
+    private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private final ManagementService managementService;
     private final GitService gitService;
@@ -108,6 +112,7 @@ public class GitJiraServiceImpl implements GitJiraService {
         return new GitJiraIssueInfo(
                 branch,
                 issue,
+                format.print(issue.getUpdateTime()),
                 commitInfo,
                 commits
         );

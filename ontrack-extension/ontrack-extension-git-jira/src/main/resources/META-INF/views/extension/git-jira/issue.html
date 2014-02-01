@@ -1,5 +1,6 @@
 <#include "/lib/layout.html">
 <#include "/extension/git/lib/commit_lib.html" >
+<#include "/extension/jira/lib/jira-issue.html" >
 
 <@layout_std
     page="git-jira-issue"
@@ -10,6 +11,19 @@
     breadcrumbs={
         loc("home"):""
     }>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="${info.issue.url?html}">${info.issue.key?html}</a>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <@jiraIssue issue=info.issue formattedTime=info.formattedUpdateTime />
 
     <#if info.commitInfo??>
 
