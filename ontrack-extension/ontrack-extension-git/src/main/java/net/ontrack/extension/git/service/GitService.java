@@ -1,6 +1,7 @@
 package net.ontrack.extension.git.service;
 
 import com.google.common.base.Function;
+import net.ontrack.extension.git.client.GitCommit;
 import net.ontrack.extension.git.model.*;
 import org.eclipse.jgit.revwalk.RevCommit;
 

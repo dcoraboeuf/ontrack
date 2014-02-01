@@ -15,6 +15,8 @@ public interface GitClient {
 
     GitLog log(String from, String to);
 
+    GitCommit toCommit(RevCommit revCommit);
+
     void sync();
 
     GitDiff diff(String from, String to);

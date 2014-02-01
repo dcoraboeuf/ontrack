@@ -342,7 +342,8 @@ public class DefaultGitClient implements GitClient {
         return revCommit.getId().getName();
     }
 
-    private GitCommit toCommit(RevCommit revCommit) {
+    @Override
+    public GitCommit toCommit(RevCommit revCommit) {
         return new GitCommit(
                 getId(revCommit),
                 toPerson(revCommit.getAuthorIdent()),
