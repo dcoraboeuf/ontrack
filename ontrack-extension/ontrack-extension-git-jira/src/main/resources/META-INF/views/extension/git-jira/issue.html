@@ -1,0 +1,57 @@
+<#include "/lib/layout.html">
+<#include "/extension/git/lib/commit_lib.html" >
+
+<@layout_std
+    page="git-jira-issue"
+    title="#" + info.issue.key?html
+    style=true
+    noscript=true
+    extension=true
+    breadcrumbs={
+        loc("home"):""
+    }>
+
+    <#if info.commitInfo??>
+
+        <@commit_summary info = info.commitInfo title = loc('git-jira.issue.commit') + ":" />
+
+        <@commit_builds info = info.commitInfo />
+
+        <@commit_promotions info = info.commitInfo />
+
+        <div class="row-fluid">
+            <div class="span12">
+                <h1><small><@lh key="git-jira.issue.commits" /></small></h1>
+                <table class="table table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <th><@lh key="git-jira.commit.id" /></th>
+                            <th><@lh key="git-jira.commit.author" /></th>
+                            <th><@lh key="git-jira.commit.message" /></th>
+                            <th><@lh key="git-jira.commit.commitTime" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <#list info.commits as commit>
+                            <tr>
+                                <td>
+                                    <a href="/gui/extension/git/commit/${commit.id?html}"><code>${commit.id?html}</code></a>
+                                </td>
+                                <td>${commit.author.name?html!''}</td>
+                                <td>${commit.shortMessage?html}</td>
+                                <td>
+                                    ${ loc ('git.commit.commitTime.detailed', locFormatDate(commit.commitTime), locFormatTime(commit.commitTime)) }
+                                </td>
+                            </tr>
+                        </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <#else>
+        <div class="span12 alert alert-warning">
+            <@lh key="github.issue.commit.none" />
+        </div>
+    </#if>
+
+</@layout_std>
