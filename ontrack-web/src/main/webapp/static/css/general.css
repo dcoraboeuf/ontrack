@@ -297,3 +297,11 @@ ul.list-sortable.list-sortable-enabled > li:hover {
     line-height: 1.2em;
     background-color: lightyellow;
 }
+
+/* Printing layout */
+
+@media print {
+    .navbar, .breadcrumb, .page-commands {
+        display: none;
+    }
+}
