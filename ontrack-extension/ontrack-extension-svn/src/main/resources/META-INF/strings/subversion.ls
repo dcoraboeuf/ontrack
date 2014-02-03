@@ -55,6 +55,18 @@ subversion.buildPath
     en -> Subversion build path
     fr -> Chemin Subversion pour les builds
 
+subversion.buildPath.description
+    en -> ...
+        Path relative to the SVN root, that contains a * that will be
+        replaced by the build name in order to get the path to the
+        corresponding SVN tag.
+        ...
+    fr -> ...
+        Chemin relatif à la racine SVN, qui contient un * qui sera
+        remplacé par le nom du build afin d'obtenir le chemin vers
+        le tag SVN correspondant.
+        ...
+
 [indexation]
 
 subversion.indexation.configuration

@@ -45,6 +45,11 @@ public interface PropertyExtensionDescriptor {
     String getDisplayNameKey();
 
     /**
+     * Key for the display name
+     */
+    String getDisplayDescriptionKey();
+
+    /**
      * Relative path to an icon
      */
     String getIconPath();

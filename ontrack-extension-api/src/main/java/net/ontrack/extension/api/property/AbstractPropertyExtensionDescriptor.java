@@ -66,4 +66,12 @@ public abstract class AbstractPropertyExtensionDescriptor implements PropertyExt
     public AuthorizationPolicy getViewingAuthorizationPolicy(Entity entity) {
         return AuthorizationPolicy.ALLOW_ALL;
     }
+
+    /**
+     * Default description key is the name key followed by <code>.description</code>.
+     */
+    @Override
+    public String getDisplayDescriptionKey() {
+        return getDisplayNameKey() + ".description";
+    }
 }

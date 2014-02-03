@@ -100,11 +100,13 @@ public class PropertyUIController extends AbstractUIController implements Proper
                 new Function<PropertyValueWithDescriptor, DisplayablePropertyValue>() {
                     @Override
                     public DisplayablePropertyValue apply(PropertyValueWithDescriptor property) {
+                        String descriptionKey = property.getDescriptor().getDisplayDescriptionKey();
                         return new DisplayablePropertyValue(
                                 property.getDescriptor().toHTML(strings, locale, property.getValue()),
                                 property.getDescriptor().getExtension(),
                                 property.getDescriptor().getName(),
                                 strings.get(locale, property.getDescriptor().getDisplayNameKey()),
+                                strings.isDefined(locale, descriptionKey) ? strings.get(locale, descriptionKey) : "",
                                 property.getDescriptor().getIconPath(),
                                 property.getValue(),
                                 isPropertyEditable(property.getDescriptor(), entity, entityId)
