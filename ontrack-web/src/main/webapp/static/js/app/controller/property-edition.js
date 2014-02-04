@@ -12,15 +12,15 @@ define(['render', 'ajax', 'dynamic'], function (render, ajax, dynamic) {
         // Loading the edition box
         ajax.get({
             url: 'ui/property/{0}/{1}/edit/{2}/{3}'.format(config.entity, config.entityId, config.extension, config.name),
-            responseType: 'html',
             loading: {
                 mode: 'toggle',
                 el: '#' + config.id + '-loading'
             },
-            successFn: function (html) {
+            successFn: function (editableProperty) {
                 // Display
-                $('#' + config.id + '-field').html(html);
-                // Adjusting the label
+                $('#' + config.id + '-field').html(editableProperty.htmlForEdit);
+                // Adjusting the description
+                $('#' + config.id + '-description').text(editableProperty.displayDescription);
                 // Showing the edition box
                 $('#' + config.id + '-field').show();
             },

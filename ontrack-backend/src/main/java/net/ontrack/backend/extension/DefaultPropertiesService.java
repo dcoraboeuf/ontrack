@@ -113,13 +113,34 @@ public class DefaultPropertiesService implements PropertiesService {
 
     @Override
     @Transactional(readOnly = true)
-    public String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name) {
+    public EditableProperty editableProperty(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name) {
         // Gets the property value
         String value = getPropertyValue(entity, entityId, extension, name);
         // Gets the descriptor for this property
         PropertyExtensionDescriptor descriptor = extensionManager.getPropertyExtensionDescriptor(extension, name);
+        // Edition field as HTML
+        String html = descriptor.editHTML(strings, locale, value);
         // OK
-        return descriptor.editHTML(strings, locale, value);
+        return new EditableProperty(
+                extension,
+                name,
+                strings.get(locale, descriptor.getDisplayNameKey()),
+                getDisplayDescription(strings, locale, descriptor),
+                descriptor.getIconPath(),
+                value,
+                toHTML(
+                        strings,
+                        locale,
+                        extension,
+                        name,
+                        value
+                ),
+                html
+        );
+    }
+
+    private String getDisplayDescription(Strings strings, Locale locale, PropertyExtensionDescriptor descriptor) {
+        return strings.isDefined(locale, descriptor.getDisplayDescriptionKey()) ? strings.get(locale, descriptor.getDisplayDescriptionKey()) : "";
     }
 
     @Override
