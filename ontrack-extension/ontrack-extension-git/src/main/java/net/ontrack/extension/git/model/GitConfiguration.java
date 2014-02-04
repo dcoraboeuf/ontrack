@@ -23,6 +23,18 @@ public class GitConfiguration {
         return new GitConfiguration("", "", "", "", "");
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public String getCommitLink() {
+        return commitLink;
+    }
+
+    public String getFileAtCommitLink() {
+        return fileAtCommitLink;
+    }
+
     public GitConfiguration withDefaults() {
         if (StringUtils.isBlank(branch)) {
             return withDefaultBranch();

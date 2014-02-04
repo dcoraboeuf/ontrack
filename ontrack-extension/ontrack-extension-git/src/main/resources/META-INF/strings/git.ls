@@ -4,24 +4,73 @@ extension.git
     en -> Git
 
 git.remote
-    en -> Git repository to clone
-    fr -> Repository Git à cloner
+    en -> Git repository
+    fr -> Repository Git
+
+git.remote.description
+    en -> URL to the Git repository to clone
+    fr -> URL vers le repository Git à cloner
 
 git.branch
     en -> Git branch
     fr -> Branche Git
 
+git.branch.description
+    en -> ...
+        Name of the Git branch that is linked to this branch.
+        It defaults to master.
+        ...
+    fr -> ...
+        Nom de la branche Git à lier à cette branche. La valeur
+        par défaut est "master".
+        ...
+
 git.tag
     en -> Git tag pattern
     fr -> Motif pour les tags Git
+
+git.tag.description
+    en -> ...
+        Text that contains a * that will be
+        replaced by the build name in order to get the name of the
+        associated Git tag.
+        ...
+    fr -> ...
+        Texte qui contient un * qui sera
+        remplacé par le nom du build afin d'obtenir
+        le tag Git correspondant.
+        ...
 
 git.commitLink
     en -> Commit link
     fr -> Lien pour commit
 
+git.commitLink.description
+    en -> ...
+        URL to a page that can display details about a commit. This is
+        a pattern where * is replaced by the actual commit hash.
+        ...
+    fr -> ...
+        URL vers une page qui affiche les détails d'un commit donné. Il
+        s'agit d'un texte où * est remplacé par le commit.
+        ...
+
 git.fileAtCommitLink
     en -> File at commit link
     fr -> Lien pour fichier et commit
+
+
+git.fileAtCommitLink.description
+    en -> ...
+        URL to a page that can display details about a file for a given
+        commit. This is a pattern where * is replaced by the actual
+        commit hash and $ by the file relative path.
+        ...
+    fr -> ...
+        URL vers une page qui affiche les détails d'un fichier pour
+        un commit donné. Il s'agit d'un texte où * est remplacé par
+        le commit et $ par le chemin relatif du fichier.
+        ...
 
 [changelog]
 
