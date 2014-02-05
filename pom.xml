@@ -35,7 +35,7 @@
 
 	<properties>
 		<!-- Versions -->
-		<springVersion>3.2.4.RELEASE</springVersion>
+		<springVersion>3.2.7.RELEASE</springVersion>
 		<springSecurityVersion>3.2.0.RC2</springSecurityVersion>
 		<slf4jVersion>1.7.5</slf4jVersion>
 		<lombokVersion>1.12.2</lombokVersion>
