@@ -47,13 +47,13 @@ public class PropertyUIController extends AbstractUIController implements Proper
     @RequestMapping(value = "/{entity}/{entityId:\\d+}/edit/{extension}/{name:.*}", method = RequestMethod.GET)
     public
     @ResponseBody
-    String editProperty(
+    EditableProperty editProperty(
             Locale locale,
             @PathVariable Entity entity,
             @PathVariable int entityId,
             @PathVariable String extension,
             @PathVariable String name) {
-        return propertiesService.editHTML(strings, locale, entity, entityId, extension, name);
+        return propertiesService.editableProperty(strings, locale, entity, entityId, extension, name);
     }
 
     /**
@@ -100,11 +100,13 @@ public class PropertyUIController extends AbstractUIController implements Proper
                 new Function<PropertyValueWithDescriptor, DisplayablePropertyValue>() {
                     @Override
                     public DisplayablePropertyValue apply(PropertyValueWithDescriptor property) {
+                        String descriptionKey = property.getDescriptor().getDisplayDescriptionKey();
                         return new DisplayablePropertyValue(
                                 property.getDescriptor().toHTML(strings, locale, property.getValue()),
                                 property.getDescriptor().getExtension(),
                                 property.getDescriptor().getName(),
                                 strings.get(locale, property.getDescriptor().getDisplayNameKey()),
+                                strings.isDefined(locale, descriptionKey) ? strings.get(locale, descriptionKey) : "",
                                 property.getDescriptor().getIconPath(),
                                 property.getValue(),
                                 isPropertyEditable(property.getDescriptor(), entity, entityId)
@@ -170,33 +172,13 @@ public class PropertyUIController extends AbstractUIController implements Proper
                     public EditableProperty apply(PropertyExtensionDescriptor descriptor) {
                         String extension = descriptor.getExtension();
                         String propertyName = descriptor.getName();
-                        String propertyValue = propertiesService.getPropertyValue(
+                        return propertiesService.editableProperty(
+                                strings,
+                                locale,
                                 entity,
                                 entityId,
                                 extension,
                                 propertyName);
-                        return new EditableProperty(
-                                extension,
-                                propertyName,
-                                strings.get(locale, descriptor.getDisplayNameKey()),
-                                descriptor.getIconPath(),
-                                propertyValue,
-                                propertiesService.toHTML(
-                                        strings,
-                                        locale,
-                                        extension,
-                                        propertyName,
-                                        propertyValue
-                                ),
-                                propertiesService.editHTML(
-                                        strings,
-                                        locale,
-                                        entity,
-                                        entityId,
-                                        extension,
-                                        propertyName
-                                )
-                        );
                     }
                 }
         );

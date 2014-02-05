@@ -1,9 +1,6 @@
 package net.ontrack.extension.api.property;
 
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.PropertiesCreationForm;
-import net.ontrack.core.model.PropertyValue;
+import net.ontrack.core.model.*;
 import net.sf.jstring.Strings;
 
 import java.util.Collection;
@@ -34,9 +31,9 @@ public interface PropertiesService {
     List<? extends PropertyExtensionDescriptor> getProperties(Entity entity);
 
     /**
-     * Gets the HTML fragment that allows for the edition of the property
+     * Gets the property edition properties that allows for the edition of the property
      */
-    String editHTML(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name);
+    EditableProperty editableProperty(Strings strings, Locale locale, Entity entity, int entityId, String extension, String name);
 
     /**
      * Saves a property value

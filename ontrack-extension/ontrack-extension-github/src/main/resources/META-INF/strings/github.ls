@@ -5,8 +5,27 @@ github.project
     en -> GitHub project
     fr -> Projet GitHub
 
+github.project.description
+    en -> Name of the GitHub project, like <user>/<repository>.
+    fr -> Nom du projet GitHub, comme <utilisateur>/<repository>.
+
 github.authentication
     en,fr -> GitHub API token
+
+github.authentication.description
+    en -> ...
+        API token used when connecting to GitHub in order
+        to allow for more requests per hour. If this token
+        is not set, you may encounter problems if you connect
+        too often to the GitHub repository.
+        ...
+    fr -> ...
+        Token utilisé lors de la connexion à l'API GitHub
+        afin d'allouer plus de requêtes par heure. Si vous
+        ne renseignez pas ce champs, vous risquez de rencontrer
+        des problèmes si vous vous connectez trop souvent au
+        repository GitHub.
+        ...
 
 [changelog]
 

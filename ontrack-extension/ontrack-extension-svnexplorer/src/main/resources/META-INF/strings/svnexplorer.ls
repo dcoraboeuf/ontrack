@@ -9,6 +9,23 @@ svnexplorer.sensibleFiles
     en -> List of sensible files
     fr -> Liste des fichiers sensibles
 
+svnexplorer.sensibleFiles.description
+    en -> ...
+        Each line defines a regular expression that is used against
+        the relative repository file paths in a change log in order
+        to detect the files whose changes should be monitored. This
+        list of files will be displayed in the "Information" tab
+        of the change log.
+        ...
+    fr -> ...
+        Chaque ligne définit une expression régulière qui sera utilisée
+        pour les chemins relatifs au repository des fichiers dans un
+        rapport de changement, afin de détecter les fichiers dont
+        tout changement devrait être observé avec plus d'attention. La
+        liste de ces fichiers sera affichée dans l'onglet "Information"
+        du rapport de changement.
+        ...
+
 [changelog]
 
 svnexplorer.changelog
@@ -190,6 +207,18 @@ svnexplorer.branch-history.promotions
 svnexplorer.rootPath
     en -> SVN root path
     fr -> Chemin racine SVN
+
+svnexplorer.rootPath.description
+    en -> ...
+        Path relative to the SVN repository that define the root when
+        looking for the branches history. It is typically the trunk
+        of all the branches.
+        ...
+    fr -> ...
+        Chemin relatif au repository SVN qui définit le point de départ
+        quand la recherche de l'historique des branches est effectuée. Il
+        s'agit typiquement du 'trunk' associé à toutes les branches.
+        ...
 
 [errors]
 
