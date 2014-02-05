@@ -5,6 +5,18 @@ jenkins.url
     en -> Jenkins URL
     fr -> URL vers Jenkins
 
+jenkins.url.description
+    en -> ...
+        URL to a Jenkins job. It may be used to contact the
+        associated API in order to get more information, like
+        the job status.
+        ...
+    fr -> ...
+        URL vers un job Jenkins. Elle peut être utilisée pour
+        contacter l'API associée afin d'obtenir plus d'information,
+        comme le statut du job.
+        ...
+
 jenkins.configuration
     en -> Jenkins configuration
     fr -> Configuration Jenkins

@@ -49,6 +49,10 @@ subversion.path
     en -> Subversion path
     fr -> Chemin Subversion
 
+subversion.path.description
+    en -> Relative path of the branch in the SVN repository
+    fr -> Chemin relatif de la branche dans le repository SVN
+
 [buildpath]
 
 subversion.buildPath

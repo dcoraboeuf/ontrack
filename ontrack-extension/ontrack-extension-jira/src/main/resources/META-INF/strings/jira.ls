@@ -33,6 +33,10 @@ jira.issue
     en -> Issue
     fr -> Ticket
 
+jira.issue.description
+    en -> JIRA issue key, displayed using a link to its description page.
+    fr -> Identifiant de ticket JIRA, affiché grâce à un lien vers la page correspondante.
+
 jira.issue.key
     en -> Key
     fr -> Clef

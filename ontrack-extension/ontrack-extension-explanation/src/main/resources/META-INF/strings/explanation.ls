@@ -13,3 +13,7 @@ explanation.configuration.list
 explanation
     en -> Explanation
     fr -> Explication
+
+explanation.description
+    en -> Allows the selection of an explanation among a list set by the administrator in the settings.
+    fr -> Autorise la sélection d'une explication parmi une liste définie par l'administrateur dans les paramètres généraux.
