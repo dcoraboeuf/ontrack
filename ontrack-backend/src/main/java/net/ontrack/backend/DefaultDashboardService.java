@@ -114,9 +114,26 @@ public class DefaultDashboardService implements DashboardService {
     @Transactional(readOnly = true)
     public Dashboard getCustomDashboard(Locale locale, int dashboardId) {
         DashboardConfig config = getDashboardConfig(dashboardId);
+        List<BranchSummary> branches = new ArrayList<>(config.getBranches());
+        // Sorts branches by project name and branch name
+        Collections.sort(
+                branches,
+                new Comparator<BranchSummary>() {
+                    @Override
+                    public int compare(BranchSummary b1, BranchSummary b2) {
+                        int projectCompare = b1.getProject().getName().compareTo(b2.getProject().getName());
+                        if (projectCompare != 0) {
+                            return projectCompare;
+                        } else {
+                            return b1.getName().compareTo(b2.getName());
+                        }
+                    }
+                }
+        );
+        // Dashboard configuration
         return new Dashboard(
                 config.getName(),
-                config.getBranches()
+                branches
         );
     }
 
