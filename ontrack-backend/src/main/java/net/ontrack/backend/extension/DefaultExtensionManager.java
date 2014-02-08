@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.backend.dao.ConfigurationDao;
-import net.ontrack.backend.db.StartupService;
+import net.ontrack.extension.api.support.StartupService;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
