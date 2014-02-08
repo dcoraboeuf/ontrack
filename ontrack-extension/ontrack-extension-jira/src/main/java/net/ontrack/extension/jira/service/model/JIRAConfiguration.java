@@ -1,6 +1,8 @@
-package net.ontrack.extension.jira.model;
+package net.ontrack.extension.jira.service.model;
 
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class JIRAConfiguration {
@@ -9,5 +11,6 @@ public class JIRAConfiguration {
     private final String url;
     private final String user;
     private final String password;
-    private final String exclusions;
+    private final Set<String> excludedProjects;
+    private final Set<String> excludedIssues;
 }

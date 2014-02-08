@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Component
+@Deprecated
 public class JIRAConfigurationExtension implements ConfigurationExtension {
 
     public static final String URL = "url";
