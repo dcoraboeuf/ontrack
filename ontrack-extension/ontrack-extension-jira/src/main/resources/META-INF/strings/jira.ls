@@ -79,3 +79,7 @@ net.ontrack.extension.jira.JIRAIssuePatternException
 net.ontrack.extension.jira.tx.JIRAConnectionException
     en -> Cannot connect to JIRA at {0}: {1}
     fr -> Impossible de se connecter à JIRA à {0} : {1}
+
+net.ontrack.extension.jira.service.JIRAConfigurationNameAlreadyExistsException
+    en -> The JIRA configuration with name "{0}" already exists.
+    fr -> La configuration JIRA de nom "{0}" existe déjà.

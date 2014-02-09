@@ -3,9 +3,11 @@ package net.ontrack.extension.jira.dao;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.extension.jira.service.JIRAConfigurationNameAlreadyExistsException;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -63,16 +65,20 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
 
     @Override
     public JIRAConfiguration create(String name, String url, String user, String password, Set<String> excludedProjects, Set<String> excludedIssues) {
-        String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
-        int id = dbCreate(
-                JIRASQL.JIRA_CONFIGURATION_CREATE,
-                params("name", name)
-                        .addValue("url", url)
-                        .addValue("user", user)
-                        .addValue("password", password)
-                        .addValue("exclusions", exclusions)
-        );
-        return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+        try {
+            String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
+            int id = dbCreate(
+                    JIRASQL.JIRA_CONFIGURATION_CREATE,
+                    params("name", name)
+                            .addValue("url", url)
+                            .addValue("user", user)
+                            .addValue("password", password)
+                            .addValue("exclusions", exclusions)
+            );
+            return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+        } catch (DuplicateKeyException ex) {
+            throw new JIRAConfigurationNameAlreadyExistsException(name);
+        }
     }
 
     private String getExclusionsAsString(Set<String> excludedProjects, Set<String> excludedIssues) {
@@ -87,17 +93,21 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
 
     @Override
     public JIRAConfiguration update(int id, String name, String url, String user, String password, Set<String> excludedProjects, Set<String> excludedIssues) {
-        String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
-        getNamedParameterJdbcTemplate().update(
-                JIRASQL.JIRA_CONFIGURATION_UPDATE,
-                params("id", id)
-                        .addValue("name", name)
-                        .addValue("url", url)
-                        .addValue("user", user)
-                        .addValue("password", password)
-                        .addValue("exclusions", exclusions)
-        );
-        return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+        try {
+            String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
+            getNamedParameterJdbcTemplate().update(
+                    JIRASQL.JIRA_CONFIGURATION_UPDATE,
+                    params("id", id)
+                            .addValue("name", name)
+                            .addValue("url", url)
+                            .addValue("user", user)
+                            .addValue("password", password)
+                            .addValue("exclusions", exclusions)
+            );
+            return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+        } catch (DuplicateKeyException ex) {
+            throw new JIRAConfigurationNameAlreadyExistsException(name);
+        }
     }
 
     @Override

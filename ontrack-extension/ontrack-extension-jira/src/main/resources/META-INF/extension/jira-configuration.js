@@ -4,7 +4,7 @@ define(['jquery', 'dialog', 'dynamic', 'ajax'], function ($, dialog, dynamic, aj
 
     self.createConfiguration = function () {
         dialog.show({
-            title: 'jira.configuration',
+            title: 'jira.configuration'.loc(),
             width: 600,
             templateId: 'extension/jira-configuration-dialog',
             submitFn: function (dialog) {
