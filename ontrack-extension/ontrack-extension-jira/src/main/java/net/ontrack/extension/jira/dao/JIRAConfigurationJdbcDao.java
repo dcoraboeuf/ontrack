@@ -1,5 +1,6 @@
 package net.ontrack.extension.jira.dao;
 
+import com.google.common.collect.Iterables;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -55,5 +56,25 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
                     }
                 }
         );
+    }
+
+    @Override
+    public JIRAConfiguration create(String name, String url, String user, String password, Set<String> excludedProjects, Set<String> excludedIssues) {
+        String exclusions = StringUtils.join(
+                Iterables.concat(
+                        excludedProjects,
+                        excludedIssues
+                ),
+                ","
+        );
+        int id = dbCreate(
+                JIRASQL.JIRA_CONFIGURATION_CREATE,
+                params("name", name)
+                        .addValue("url", url)
+                        .addValue("user", user)
+                        .addValue("password", password)
+                        .addValue("exclusions", exclusions)
+        );
+        return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
     }
 }

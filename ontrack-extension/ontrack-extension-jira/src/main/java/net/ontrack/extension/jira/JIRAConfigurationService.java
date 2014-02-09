@@ -11,4 +11,5 @@ public interface JIRAConfigurationService {
 
     List<JIRAConfiguration> getAllConfigurations();
 
+    JIRAConfiguration createConfiguration(JIRAConfiguration configuration);
 }

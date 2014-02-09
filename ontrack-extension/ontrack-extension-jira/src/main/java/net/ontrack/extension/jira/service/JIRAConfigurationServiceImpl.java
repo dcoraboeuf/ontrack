@@ -1,5 +1,7 @@
 package net.ontrack.extension.jira.service;
 
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.GlobalGrant;
 import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.dao.JIRAConfigurationDao;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
@@ -23,5 +25,19 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Transactional(readOnly = true)
     public List<JIRAConfiguration> getAllConfigurations() {
         return jiraConfigurationDao.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @GlobalGrant(GlobalFunction.SETTINGS)
+    public JIRAConfiguration createConfiguration(JIRAConfiguration configuration) {
+        return jiraConfigurationDao.create(
+                configuration.getName(),
+                configuration.getUrl(),
+                configuration.getUser(),
+                configuration.getPassword(),
+                configuration.getExcludedProjects(),
+                configuration.getExcludedIssues()
+        );
     }
 }

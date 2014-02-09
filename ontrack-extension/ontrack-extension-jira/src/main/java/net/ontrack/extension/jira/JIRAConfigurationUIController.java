@@ -6,6 +6,7 @@ import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,5 +29,11 @@ public class JIRAConfigurationUIController extends AbstractUIController {
     @ResponseBody
     public List<JIRAConfiguration> getAllConfigurations() {
         return jiraConfigurationService.getAllConfigurations();
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    @ResponseBody
+    public JIRAConfiguration createConfiguration(@RequestBody JIRAConfiguration configuration) {
+        return jiraConfigurationService.createConfiguration(configuration);
     }
 }
