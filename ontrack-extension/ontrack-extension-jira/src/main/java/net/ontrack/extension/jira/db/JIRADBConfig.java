@@ -16,7 +16,7 @@ public class JIRADBConfig {
 	private DataSource dataSource;
 	
 	@Bean
-	public DBInit dbSubversionInit() {
+	public DBInit dbJIRAInit() {
 		DBInit db = new DBInit();
 		db.setVersion(VERSION);
 		db.setJdbcDataSource(dataSource);
