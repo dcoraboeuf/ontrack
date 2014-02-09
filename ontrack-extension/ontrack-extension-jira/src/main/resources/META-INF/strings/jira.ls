@@ -9,6 +9,13 @@ jira.configuration
     en -> JIRA configuration
     fr -> Configuration JIRA
 
+jira.configuration.create
+    en -> Add a JIRA configuration
+    fr -> Ajouter une configuration JIRA
+
+jira.configuration.name
+    en,fr -> @[model.name]
+
 jira.configuration.url
     en -> JIRA URL
     fr -> URL JIRA

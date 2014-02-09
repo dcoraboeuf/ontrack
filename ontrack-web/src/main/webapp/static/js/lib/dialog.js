@@ -53,7 +53,7 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
             // Gets the HTML to display
             var html = $(compiledTemplate(data));
             // ID
-            var dialogId = 'dialog-{0}'.format(dialog.templateId);
+            var dialogId = 'dialog-{0}'.format(dialog.templateId.replace('/', '_'));
             dialog.id = dialogId;
             $(html).attr('id', dialogId);
             // Close function
