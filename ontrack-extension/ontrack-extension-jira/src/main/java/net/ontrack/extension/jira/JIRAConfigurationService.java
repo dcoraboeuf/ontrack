@@ -1,6 +1,8 @@
 package net.ontrack.extension.jira;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 
 import java.util.List;
 
@@ -11,5 +13,9 @@ public interface JIRAConfigurationService {
 
     List<JIRAConfiguration> getAllConfigurations();
 
-    JIRAConfiguration createConfiguration(JIRAConfiguration configuration);
+    JIRAConfiguration createConfiguration(JIRAConfigurationForm configuration);
+
+    JIRAConfiguration updateConfiguration(int id, JIRAConfigurationForm configuration);
+
+    Ack deleteConfiguration(int id);
 }

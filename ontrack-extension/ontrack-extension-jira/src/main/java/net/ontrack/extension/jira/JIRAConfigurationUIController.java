@@ -1,15 +1,14 @@
 package net.ontrack.extension.jira;
 
+import net.ontrack.core.model.Ack;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,7 +32,19 @@ public class JIRAConfigurationUIController extends AbstractUIController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public JIRAConfiguration createConfiguration(@RequestBody JIRAConfiguration configuration) {
+    public JIRAConfiguration createConfiguration(@RequestBody JIRAConfigurationForm configuration) {
         return jiraConfigurationService.createConfiguration(configuration);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JIRAConfiguration updateConfiguration(@PathVariable int id, @RequestBody JIRAConfigurationForm configuration) {
+        return jiraConfigurationService.createConfiguration(configuration);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Ack deleteConfiguration(@PathVariable int id) {
+        return jiraConfigurationService.deleteConfiguration(id);
     }
 }
