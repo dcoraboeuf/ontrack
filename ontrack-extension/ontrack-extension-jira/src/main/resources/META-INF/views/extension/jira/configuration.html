@@ -1,0 +1,22 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="jira-configuration"
+    title=loc("jira.configuration")
+    extension=true
+    noscript=true
+    breadcrumbs={
+        loc("home"):""
+    }>
+
+    <@title value=loc("jira.configuration")></@title>
+
+    <div class="row-fluid">
+        <div id="jira-configuration-list"
+             class="span12 dynamic"
+             dynamic-controller="jira-configuration-list">
+
+        </div>
+    </div>
+
+</@layout_std>
