@@ -2,7 +2,7 @@ package net.ontrack.extension.jira.service;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
-import net.ontrack.core.security.GlobalGrant;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.dao.JIRAConfigurationDao;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
@@ -17,10 +17,12 @@ import java.util.List;
 public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
 
     private final JIRAConfigurationDao jiraConfigurationDao;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public JIRAConfigurationServiceImpl(JIRAConfigurationDao jiraConfigurationDao) {
+    public JIRAConfigurationServiceImpl(JIRAConfigurationDao jiraConfigurationDao, SecurityUtils securityUtils) {
         this.jiraConfigurationDao = jiraConfigurationDao;
+        this.securityUtils = securityUtils;
     }
 
     @Override
@@ -31,8 +33,8 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
 
     @Override
     @Transactional
-    @GlobalGrant(GlobalFunction.SETTINGS)
     public JIRAConfiguration createConfiguration(JIRAConfigurationForm configuration) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.create(
                 configuration.getName(),
                 configuration.getUrl(),
@@ -45,8 +47,8 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
 
     @Override
     @Transactional
-    @GlobalGrant(GlobalFunction.SETTINGS)
     public JIRAConfiguration updateConfiguration(int id, JIRAConfigurationForm configuration) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.update(
                 id,
                 configuration.getName(),
@@ -60,8 +62,8 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
 
     @Override
     @Transactional
-    @GlobalGrant(GlobalFunction.SETTINGS)
     public Ack deleteConfiguration(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.delete(id);
     }
 }
