@@ -16,19 +16,23 @@ jira.configuration.create
     en -> Add a JIRA configuration
     fr -> Ajouter une configuration JIRA
 
+jira.configuration.delete
+    en -> JIRA configuration deletion
+    fr -> Suppression d'une configuration JIRA
+
 jira.configuration.delete.prompt
     en -> Do you want to delete this configuration?
     fr -> Voulez-vous supprimer cette configuration ?
 
 jira.configuration.delete.promptWithProjects
     en -> ...
-        @[jira.configuration.delete.prompt] Projects that were associated
-        with this configuration won't have access to it any longer. This
+        @[jira.configuration.delete.prompt] Projects listed below were associated
+        with this configuration and won't have access to it any longer. This
         may cause problems when working those projects.
         ...
     fr -> ...
-        @[jira.configuration.delete.prompt] Les projets qui étaient associés
-        à cette configuration n'y auront plus accès. Cela pourrait causer
+        @[jira.configuration.delete.prompt] Les projets listés ci-dessous étaient associés
+        à cette configuration et n'y auront plus accès. Cela pourrait causer
         des problèmes quand vous essayer de travailler avec ces projets.
         ...
 

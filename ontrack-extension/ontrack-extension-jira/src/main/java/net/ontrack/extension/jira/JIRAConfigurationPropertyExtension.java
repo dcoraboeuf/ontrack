@@ -19,6 +19,7 @@ import static java.lang.String.format;
 @Component
 public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensionDescriptor {
 
+    public static final String NAME = "configuration";
     private final JIRAConfigurationService jiraConfigurationService;
 
     @Autowired
@@ -41,7 +42,7 @@ public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensio
 
     @Override
     public String getName() {
-        return "configuration";
+        return NAME;
     }
 
     @Override

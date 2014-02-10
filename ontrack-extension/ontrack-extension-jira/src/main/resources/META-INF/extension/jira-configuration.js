@@ -98,7 +98,7 @@ define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, d
                     );
                 } else {
                     dialog.show({
-                        title: '',
+                        title: 'jira.configuration.delete'.loc(),
                         templateId: 'extension/jira-configuration-deletion',
                         data: jiraConfigurationDeletion,
                         submitFn: function (dialog) {
