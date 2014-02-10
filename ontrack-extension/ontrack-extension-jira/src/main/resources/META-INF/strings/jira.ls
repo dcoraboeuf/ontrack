@@ -13,6 +13,10 @@ jira.configuration.create
     en -> Add a JIRA configuration
     fr -> Ajouter une configuration JIRA
 
+jira.configuration.delete.prompt
+    en -> Do you want to delete this configuration?
+    fr -> Voulez-vous supprimer cette configuration ?
+
 jira.configuration.name
     en,fr -> @[model.name]
 

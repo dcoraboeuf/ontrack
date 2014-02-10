@@ -10,7 +10,13 @@ define(['render', 'jquery', 'extension/jira-configuration'], function (render, $
                     jiraConfiguration.editConfiguration(id);
                 });
             });
-            // TODO Deletion
+            // Deletion
+            $('.jira-configuration-delete').each(function (index, btn) {
+                var id = $(btn).attr('data-id');
+                $(btn).click(function () {
+                    jiraConfiguration.deleteConfiguration(id);
+                });
+            });
         })
     }
 

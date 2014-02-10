@@ -2,6 +2,7 @@ package net.ontrack.extension.jira;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationDeletion;
 import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface JIRAConfigurationService {
     Ack deleteConfiguration(int id);
 
     JIRAConfiguration getConfigurationById(int id);
+
+    JIRAConfigurationDeletion getConfigurationForDeletion(int id);
 }

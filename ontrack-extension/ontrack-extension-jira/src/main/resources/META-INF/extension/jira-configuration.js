@@ -1,7 +1,8 @@
-define(['jquery', 'dialog', 'dynamic', 'ajax'], function ($, dialog, dynamic, ajax) {
+define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, dynamic, ajax, common) {
 
     var self = {};
 
+    // TODO Test button
     function showDialog(config) {
         dialog.show({
             title: 'jira.configuration'.loc(),
@@ -72,6 +73,32 @@ define(['jquery', 'dialog', 'dynamic', 'ajax'], function ($, dialog, dynamic, aj
                         });
                     }
                 })
+            }
+        })
+    };
+
+    self.deleteConfiguration = function (id) {
+        ajax.get({
+            url: 'ui/extension/jira/configuration/{0}/deletion'.format(id),
+            successFn: function (jiraConfigurationDeletion) {
+                // Deletion function
+                var deleteFn = function () {
+                    ajax.del({
+                        url: 'ui/extension/jira/configuration/{0}'.format(id),
+                        successFn: function () {
+                            dynamic.reloadSection('jira-configuration-list');
+                        }
+                    })
+                };
+                // If no project is impacted, just delete it after prompt
+                if (jiraConfigurationDeletion.projects.length == 0) {
+                    common.confirmAndCall(
+                        'jira.configuration.delete.prompt'.loc(),
+                        deleteFn
+                    );
+                } else {
+                    // TODO Displays the list of impacted projects
+                }
             }
         })
     };

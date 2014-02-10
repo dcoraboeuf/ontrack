@@ -2,6 +2,7 @@ package net.ontrack.extension.jira;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationDeletion;
 import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
@@ -46,6 +47,12 @@ public class JIRAConfigurationUIController extends AbstractUIController {
     @ResponseBody
     public JIRAConfiguration getConfigurationById(@PathVariable int id) {
         return jiraConfigurationService.getConfigurationById(id);
+    }
+
+    @RequestMapping(value = "/{id}/deletion", method = RequestMethod.GET)
+    @ResponseBody
+    public JIRAConfigurationDeletion getConfigurationForDeletion(@PathVariable int id) {
+        return jiraConfigurationService.getConfigurationForDeletion(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
