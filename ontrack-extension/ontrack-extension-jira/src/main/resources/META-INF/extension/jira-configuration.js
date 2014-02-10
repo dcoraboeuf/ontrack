@@ -61,9 +61,9 @@ define(['jquery', 'dialog', 'dynamic', 'ajax'], function ($, dialog, dynamic, aj
                 showDialog({
                     jiraConfiguration: jiraConfiguration,
                     successFn: function (config, dialog, editedJiraConfiguration) {
-                        ajax.post({
+                        ajax.put({
                             url: 'ui/extension/jira/configuration/{0}'.format(id),
-                            data: jiraConfiguration,
+                            data: editedJiraConfiguration,
                             successFn: function () {
                                 dialog.closeFn();
                                 dynamic.reloadSection('jira-configuration-list');
