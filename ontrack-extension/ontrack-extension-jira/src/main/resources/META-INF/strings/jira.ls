@@ -5,6 +5,9 @@ jira.issue
     en -> JIRA issue
     fr -> Ticket JIRA
 
+jira.configuration.property
+    en,fr -> @[jira.configuration]
+
 jira.configuration
     en -> JIRA configuration
     fr -> Configuration JIRA
