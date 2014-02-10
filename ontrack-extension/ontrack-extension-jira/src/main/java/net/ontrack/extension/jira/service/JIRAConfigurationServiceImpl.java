@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -78,7 +79,17 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Transactional
     public Ack deleteConfiguration(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        // TODO Removes associated JIRA properties from projects
+        // Removes associated JIRA properties from projects
+        Collection<Integer> projectIds = propertiesService.findEntityByPropertyValue(
+                Entity.PROJECT,
+                JIRAExtension.EXTENSION,
+                JIRAConfigurationPropertyExtension.NAME,
+                String.valueOf(id)
+        );
+        for (int projectId : projectIds) {
+            propertiesService.saveProperty(Entity.PROJECT, projectId, JIRAExtension.EXTENSION, JIRAConfigurationPropertyExtension.NAME, null);
+        }
+        // Actual deletion
         return jiraConfigurationDao.delete(id);
     }
 
