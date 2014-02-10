@@ -18,4 +18,6 @@ public interface JIRAConfigurationService {
     JIRAConfiguration updateConfiguration(int id, JIRAConfigurationForm configuration);
 
     Ack deleteConfiguration(int id);
+
+    JIRAConfiguration getConfigurationById(int id);
 }

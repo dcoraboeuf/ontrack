@@ -28,6 +28,7 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Override
     @Transactional(readOnly = true)
     public List<JIRAConfiguration> getAllConfigurations() {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.findAll();
     }
 
@@ -65,5 +66,12 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     public Ack deleteConfiguration(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.delete(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public JIRAConfiguration getConfigurationById(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return jiraConfigurationDao.getById(id);
     }
 }

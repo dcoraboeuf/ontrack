@@ -39,7 +39,13 @@ public class JIRAConfigurationUIController extends AbstractUIController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public JIRAConfiguration updateConfiguration(@PathVariable int id, @RequestBody JIRAConfigurationForm configuration) {
-        return jiraConfigurationService.createConfiguration(configuration);
+        return jiraConfigurationService.updateConfiguration(id, configuration);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public JIRAConfiguration getConfigurationById(@PathVariable int id) {
+        return jiraConfigurationService.getConfigurationById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
