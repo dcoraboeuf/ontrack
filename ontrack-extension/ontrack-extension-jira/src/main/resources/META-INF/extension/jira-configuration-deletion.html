@@ -1,0 +1,16 @@
+<div>
+    <div class="alert alert-warning">
+        {{jira.configuration.delete.promptWithProjects}}
+    </div>
+    <table class="table table-condensed">
+        <tbody>
+            {{#projects}}
+                <tr>
+                    <td>
+                        <a href="gui/project/{{name}}">{{name}}</a>
+                    </td>
+                </tr>
+            {{/projects}}
+        </tbody>
+    </table>
+</div>

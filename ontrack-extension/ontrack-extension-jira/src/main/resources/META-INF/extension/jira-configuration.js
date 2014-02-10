@@ -97,7 +97,15 @@ define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, d
                         deleteFn
                     );
                 } else {
-                    // TODO Displays the list of impacted projects
+                    dialog.show({
+                        title: '',
+                        templateId: 'extension/jira-configuration-deletion',
+                        data: jiraConfigurationDeletion,
+                        submitFn: function (dialog) {
+                            dialog.closeFn();
+                            deleteFn();
+                        }
+                    })
                 }
             }
         })

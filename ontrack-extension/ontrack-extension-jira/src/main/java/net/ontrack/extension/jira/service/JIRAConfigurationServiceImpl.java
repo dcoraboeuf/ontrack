@@ -71,6 +71,7 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Transactional
     public Ack deleteConfiguration(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        // TODO Removes associated JIRA properties from projects
         return jiraConfigurationDao.delete(id);
     }
 

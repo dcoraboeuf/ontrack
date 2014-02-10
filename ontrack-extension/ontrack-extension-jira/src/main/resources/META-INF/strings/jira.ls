@@ -17,6 +17,18 @@ jira.configuration.delete.prompt
     en -> Do you want to delete this configuration?
     fr -> Voulez-vous supprimer cette configuration ?
 
+jira.configuration.delete.promptWithProjects
+    en -> ...
+        @[jira.configuration.delete.prompt] Projects that were associated
+        with this configuration won't have access to it any longer. This
+        may cause problems when working those projects.
+        ...
+    fr -> ...
+        @[jira.configuration.delete.prompt] Les projets qui étaient associés
+        à cette configuration n'y auront plus accès. Cela pourrait causer
+        des problèmes quand vous essayer de travailler avec ces projets.
+        ...
+
 jira.configuration.name
     en,fr -> @[model.name]
 
