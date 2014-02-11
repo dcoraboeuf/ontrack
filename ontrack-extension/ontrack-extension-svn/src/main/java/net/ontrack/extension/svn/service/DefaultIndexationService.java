@@ -193,8 +193,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         }
 
         // Opens a transaction
-        Transaction transaction = transactionService.start();
-        try {
+        try (Transaction ignored = transactionService.start()) {
             // SVN URL
             SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
             // Filters the revision range using the repository configuration
@@ -215,8 +214,6 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             // Calls the indexer, including merge revisions
             IndexationHandler handler = new IndexationHandler(indexationListener);
             subversionService.log(url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
-        } finally {
-            transaction.close();
         }
     }
 
@@ -239,12 +236,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         // Inserting or updating the revision
         revisionDao.addRevision(revision, author, dateTime, message, branch);
         // Merge relationships (using a nested SVN client)
-        Transaction svn = transactionService.start(true);
-        try {
+        try (Transaction ignored = transactionService.start(true)) {
             List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(subversionConfigurationExtension.getUrl(), branch), revision);
             revisionDao.addMergedRevisions(revision, mergedRevisions);
-        } finally {
-            svn.close();
         }
         // Subversion events
         indexSVNEvents(logEntry);
