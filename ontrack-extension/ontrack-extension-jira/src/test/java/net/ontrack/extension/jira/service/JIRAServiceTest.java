@@ -4,7 +4,9 @@ import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
+import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
@@ -29,6 +31,8 @@ public class JIRAServiceTest {
         JIRASession jiraSession = mock(JIRASession.class);
         JiraRestClient client = mock(JiraRestClient.class);
         IssueRestClient issueClient = mock(IssueRestClient.class);
+        JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
+        PropertiesService propertiesService = mock(PropertiesService.class);
 
         when(transactionService.start()).thenReturn(tx);
         when(tx.getResource(JIRASession.class)).thenReturn(jiraSession);
@@ -47,7 +51,7 @@ public class JIRAServiceTest {
 
         DefaultJIRAService service = new DefaultJIRAService(
                 configurationExtension,
-                transactionService
+                jiraConfigurationService, propertiesService, transactionService
         );
         JIRAIssue issue = service.getIssue("XXX-1");
         assertNull(issue);
@@ -56,10 +60,12 @@ public class JIRAServiceTest {
     @Test
     public void isIssue() {
         JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
+        JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
+        PropertiesService propertiesService = mock(PropertiesService.class);
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
                 configurationExtension,
-                transactionService
+                jiraConfigurationService, propertiesService, transactionService
         );
         service.isIssue("TEST-12");
         verify(configurationExtension, times(1)).isIssue("TEST-12");
@@ -68,12 +74,14 @@ public class JIRAServiceTest {
     @Test
     public void insertIssueUrlsInMessage() {
         JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
+        JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
+        PropertiesService propertiesService = mock(PropertiesService.class);
         when(configurationExtension.isIssue("PRJ-13")).thenReturn(true);
         when(configurationExtension.getIssueURL("PRJ-13")).thenReturn("http://jira/browse/PRJ-13");
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
                 configurationExtension,
-                transactionService
+                jiraConfigurationService, propertiesService, transactionService
         );
         String message = service.insertIssueUrlsInMessage("TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals("TEST-12, PRJ-12, <a href=\"http://jira/browse/PRJ-13\">PRJ-13</a> List of issues", message);
@@ -83,12 +91,14 @@ public class JIRAServiceTest {
     public void extractIssueKeysFromMessage() {
         JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
         when(configurationExtension.isIssue("PRJ-13")).thenReturn(true);
+        JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
+        PropertiesService propertiesService = mock(PropertiesService.class);
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
                 configurationExtension,
-                transactionService
+                jiraConfigurationService, propertiesService, transactionService
         );
-        Set<String> issues = service.extractIssueKeysFromMessage("TEST-12, PRJ-12, PRJ-13 List of issues");
+        Set<String> issues = service.extractIssueKeysFromMessage(1, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals(Collections.singleton("PRJ-13"), issues);
     }
 

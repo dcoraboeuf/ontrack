@@ -3,12 +3,10 @@ package net.ontrack.extension.jira;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Entity;
-import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.core.model.ValidationRunSummary;
 import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.support.InputException;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
-import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
@@ -27,15 +25,11 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
 
     private static final String ISSUE_SEPARATORS = ",; ";
     private final ManagementService managementService;
-    private final PropertiesService propertiesService;
-    private final JIRAConfigurationService jiraConfigurationService;
     private final JIRAService jiraService;
 
     @Autowired
-    public JIRAIssuePropertyExtension(ManagementService managementService, PropertiesService propertiesService, JIRAConfigurationService jiraConfigurationService, JIRAService jiraService) {
+    public JIRAIssuePropertyExtension(ManagementService managementService, JIRAService jiraService) {
         this.managementService = managementService;
-        this.propertiesService = propertiesService;
-        this.jiraConfigurationService = jiraConfigurationService;
         this.jiraService = jiraService;
     }
 
@@ -88,18 +82,9 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
         Validate.isTrue(entity == Entity.VALIDATION_RUN, "Expecting validation run");
         ValidationRunSummary validationRun = managementService.getValidationRun(entityId);
         // Gets the project
-        ProjectSummary project = validationRun.getValidationStamp().getBranch().getProject();
+        int projectId = validationRun.getValidationStamp().getBranch().getProject().getId();
         // Gets the project JIRA configuration
-        final JIRAConfiguration jiraConfiguration = jiraConfigurationService.getConfigurationById(
-                Integer.parseInt(
-                        propertiesService.getPropertyValue(
-                                Entity.PROJECT,
-                                project.getId(),
-                                JIRAExtension.EXTENSION,
-                                JIRAConfigurationPropertyExtension.NAME
-                        ),
-                        10)
-        );
+        final JIRAConfiguration jiraConfiguration = jiraService.getConfigurationForProject(projectId);
         // For each issue
         html.append(
                 StringUtils.join(

@@ -1,12 +1,13 @@
 package net.ontrack.extension.jira;
 
+import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 
 import java.util.Set;
 
 public interface JIRAService {
 
-    Set<String> extractIssueKeysFromMessage(String message);
+    Set<String> extractIssueKeysFromMessage(int projectId, String message);
 
     String insertIssueUrlsInMessage(String message);
 
@@ -16,5 +17,7 @@ public interface JIRAService {
 
     boolean isIssue(String token);
 
-    String getJIRAURL();
+    String getJIRAURL(int projectId);
+
+    JIRAConfiguration getConfigurationForProject(int projectId);
 }

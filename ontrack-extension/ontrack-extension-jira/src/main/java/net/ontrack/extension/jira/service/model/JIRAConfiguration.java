@@ -4,9 +4,13 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 @Data
 public class JIRAConfiguration {
+
+    public static final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
+
     private final int id;
     private final String name;
     private final String url;
@@ -28,5 +32,15 @@ public class JIRAConfiguration {
         } else {
             return issue;
         }
+    }
+
+    public boolean isIssue(String token) {
+        return ISSUE_PATTERN.matcher(token).matches()
+                && !isIssueExcluded(token);
+    }
+
+    private boolean isIssueExcluded(String token) {
+        return excludedIssues.contains(token)
+                || excludedProjects.contains(StringUtils.substringBefore(token, "-"));
     }
 }

@@ -207,7 +207,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // TODO Validation
             // validationService.validate(changeLog, issuesList);
             // OK
-            return new ChangeLogIssues(jiraService.getJIRAURL(), issuesList);
+            return new ChangeLogIssues(jiraService.getJIRAURL(summary.getBranch().getProject().getId()), issuesList);
 
         }
     }

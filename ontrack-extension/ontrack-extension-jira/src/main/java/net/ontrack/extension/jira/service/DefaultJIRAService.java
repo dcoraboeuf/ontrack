@@ -7,12 +7,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.ontrack.extension.jira.JIRAConfigurationExtension;
-import net.ontrack.extension.jira.JIRAService;
-import net.ontrack.extension.jira.service.model.JIRAField;
-import net.ontrack.extension.jira.service.model.JIRAIssue;
-import net.ontrack.extension.jira.service.model.JIRAStatus;
-import net.ontrack.extension.jira.service.model.JIRAVersion;
+import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.jira.*;
+import net.ontrack.extension.jira.service.model.*;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
 import net.ontrack.tx.TransactionService;
@@ -31,6 +29,8 @@ import java.util.regex.Matcher;
 public class DefaultJIRAService implements JIRAService {
 
     private final JIRAConfigurationExtension configurationExtension;
+    private final JIRAConfigurationService jiraConfigurationService;
+    private final PropertiesService propertiesService;
     private final TransactionService transactionService;
     /**
      * Conversion to a JIRAVersion from a REST JIRA version
@@ -46,20 +46,23 @@ public class DefaultJIRAService implements JIRAService {
     };
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, TransactionService transactionService) {
+    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
         this.configurationExtension = configurationExtension;
+        this.jiraConfigurationService = jiraConfigurationService;
+        this.propertiesService = propertiesService;
         this.transactionService = transactionService;
     }
 
     @Override
-    public Set<String> extractIssueKeysFromMessage(String message) {
+    public Set<String> extractIssueKeysFromMessage(int projectId, String message) {
+        JIRAConfiguration configuration = getConfigurationForProject(projectId);
         Set<String> result = new HashSet<>();
-        Matcher matcher = JIRAConfigurationExtension.ISSUE_PATTERN.matcher(message);
+        Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(message);
         while (matcher.find()) {
             // Gets the issue
             String issueKey = matcher.group();
             // Adds to the result
-            if (configurationExtension.isIssue(issueKey)) {
+            if (configuration.isIssue(issueKey)) {
                 result.add(issueKey);
             }
         }
@@ -150,8 +153,22 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public String getJIRAURL() {
-        return configurationExtension.getUrl();
+    public String getJIRAURL(int projectId) {
+        return getConfigurationForProject(projectId).getUrl();
+    }
+
+    @Override
+    public JIRAConfiguration getConfigurationForProject(int projectId) {
+        return jiraConfigurationService.getConfigurationById(
+                Integer.parseInt(
+                        propertiesService.getPropertyValue(
+                                Entity.PROJECT,
+                                projectId,
+                                JIRAExtension.EXTENSION,
+                                JIRAConfigurationPropertyExtension.NAME
+                        ),
+                        10)
+        );
     }
 
     private JIRAStatus toStatus(BasicStatus status) {
