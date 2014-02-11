@@ -74,7 +74,7 @@ public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensio
      * </ol>
      */
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String value) {
         if (StringUtils.isNotBlank(value)) {
             final int jiraConfigurationId = Integer.parseInt(value, 10);
             JIRAConfiguration jiraConfiguration = securityUtils.asAdmin(

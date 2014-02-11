@@ -69,7 +69,7 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     }
 
     @Override
-    public String toHTML(final Strings strings, final Locale locale, String value) {
+    public String toHTML(final Strings strings, final Locale locale, Entity entity, int entityId, String value) {
         if (StringUtils.isBlank(value)) {
             return "";
         }

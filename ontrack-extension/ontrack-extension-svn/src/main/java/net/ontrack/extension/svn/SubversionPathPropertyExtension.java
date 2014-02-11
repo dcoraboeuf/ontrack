@@ -49,7 +49,7 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String path) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String path) {
         if (StringUtils.isBlank(path)) {
             return "";
         } else {

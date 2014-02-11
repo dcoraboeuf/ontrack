@@ -60,7 +60,7 @@ public class PropertiesServiceTest extends AbstractBackendTest {
     @Test
     public void rendering() {
         // Rendering
-        String html = propertiesService.toHTML(strings, Locale.ENGLISH, "jenkins", "url", "http://jenkins/test/2");
+        String html = propertiesService.toHTML(strings, Locale.ENGLISH, "jenkins", "url", Entity.PROJECT, 1, "http://jenkins/test/2");
         // Check
         assertEquals("<a href=\"http://jenkins/test/2\">http://jenkins/test/2</a>", html);
     }
