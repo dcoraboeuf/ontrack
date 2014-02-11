@@ -3,6 +3,7 @@ package net.ontrack.extension.jira;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.core.security.ProjectFunction;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.sf.jstring.Strings;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import static java.lang.String.format;
 
@@ -21,10 +24,12 @@ public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensio
 
     public static final String NAME = "configuration";
     private final JIRAConfigurationService jiraConfigurationService;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public JIRAConfigurationPropertyExtension(JIRAConfigurationService jiraConfigurationService) {
+    public JIRAConfigurationPropertyExtension(JIRAConfigurationService jiraConfigurationService, SecurityUtils securityUtils) {
         this.jiraConfigurationService = jiraConfigurationService;
+        this.securityUtils = securityUtils;
     }
 
     /**
@@ -71,8 +76,15 @@ public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensio
     @Override
     public String toHTML(Strings strings, Locale locale, String value) {
         if (StringUtils.isNotBlank(value)) {
-            int jiraConfigurationId = Integer.parseInt(value, 10);
-            JIRAConfiguration jiraConfiguration = jiraConfigurationService.getConfigurationById(jiraConfigurationId);
+            final int jiraConfigurationId = Integer.parseInt(value, 10);
+            JIRAConfiguration jiraConfiguration = securityUtils.asAdmin(
+                    new Callable<JIRAConfiguration>() {
+                        @Override
+                        public JIRAConfiguration call() throws Exception {
+                            return jiraConfigurationService.getConfigurationById(jiraConfigurationId);
+                        }
+                    }
+            );
             return String.format("<a href=\"%s\">%s</a>",
                     StringEscapeUtils.escapeHtml4(jiraConfiguration.getUrl()),
                     StringEscapeUtils.escapeHtml4(jiraConfiguration.getName())
@@ -96,7 +108,12 @@ public class JIRAConfigurationPropertyExtension extends AbstractPropertyExtensio
         ));
         // Options
         html.append("<option value=\"\"></option>");
-        for (JIRAConfiguration jiraConfiguration : jiraConfigurationService.getAllConfigurations()) {
+        List<JIRAConfiguration> allConfigurations = securityUtils.asAdmin(new Callable<List<JIRAConfiguration>>() {
+            public List<JIRAConfiguration> call() throws Exception {
+                return jiraConfigurationService.getAllConfigurations();
+            }
+        });
+        for (JIRAConfiguration jiraConfiguration : allConfigurations) {
             html.append(format("<option value=\"%1$s\" %3$s>%2$s</option>",
                     jiraConfiguration.getId(),
                     StringEscapeUtils.escapeHtml4(jiraConfiguration.getName()),
