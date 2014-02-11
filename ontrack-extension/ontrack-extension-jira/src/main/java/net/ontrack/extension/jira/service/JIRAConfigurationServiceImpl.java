@@ -124,4 +124,10 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
                 )
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public JIRAConfiguration getConfigurationByName(String name) {
+        return jiraConfigurationDao.getByName(name);
+    }
 }

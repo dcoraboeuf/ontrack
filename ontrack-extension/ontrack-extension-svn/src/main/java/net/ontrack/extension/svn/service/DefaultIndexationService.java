@@ -4,7 +4,9 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.JIRAService;
+import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.extension.svn.IndexationConfigurationExtension;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.extension.svn.SubversionExtension;
@@ -42,6 +44,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
+// TODO There should not be any dependency on the JIRA module!
 @Service
 public class DefaultIndexationService implements IndexationService, ScheduledService, InfoProvider {
 
@@ -51,6 +54,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final TransactionService transactionService;
     private final SubversionService subversionService;
     private final JIRAService jiraService;
+    private final JIRAConfigurationService jiraConfigurationService;
     private final RevisionDao revisionDao;
     private final SVNEventDao svnEventDao;
     private final IssueRevisionDao issueRevisionDao;
@@ -61,12 +65,13 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, JIRAService jiraService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, IndexationConfigurationExtension indexationConfigurationExtension, SubversionConfigurationExtension subversionConfigurationExtension, TransactionService transactionService, SubversionService subversionService, JIRAService jiraService, JIRAConfigurationService jiraConfigurationService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager) {
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
         this.transactionService = transactionService;
         this.subversionService = subversionService;
         this.jiraService = jiraService;
+        this.jiraConfigurationService = jiraConfigurationService;
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
         this.issueRevisionDao = issueRevisionDao;
@@ -194,6 +199,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
         // Opens a transaction
         try (Transaction ignored = transactionService.start()) {
+            // Gets the 'default' JIRA configuration
+            // TODO #306 The JIRA configuration must be extracted from the SVN configuration
+            JIRAConfiguration jiraConfiguration = jiraConfigurationService.getConfigurationByName("default");
             // SVN URL
             SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
             // Filters the revision range using the repository configuration
@@ -212,7 +220,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             SVNRevision fromRevision = SVNRevision.create(from);
             SVNRevision toRevision = SVNRevision.create(to);
             // Calls the indexer, including merge revisions
-            IndexationHandler handler = new IndexationHandler(indexationListener);
+            IndexationHandler handler = new IndexationHandler(jiraConfiguration, indexationListener);
             subversionService.log(url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
         }
     }
@@ -220,7 +228,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     /**
      * This method is executed within a transaction
      */
-    private void indexInTransaction(SVNLogEntry logEntry) throws SVNException {
+    private void indexInTransaction(JIRAConfiguration jiraConfiguration, SVNLogEntry logEntry) throws SVNException {
         // Log values
         long revision = logEntry.getRevision();
         String author = logEntry.getAuthor();
@@ -243,10 +251,10 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         // Subversion events
         indexSVNEvents(logEntry);
         // Indexes the issues
-        indexIssues(logEntry);
+        indexIssues(jiraConfiguration, logEntry);
     }
 
-    private void indexIssues(SVNLogEntry logEntry) {
+    private void indexIssues(JIRAConfiguration jiraConfiguration, SVNLogEntry logEntry) {
         long revision = logEntry.getRevision();
         String message = logEntry.getMessage();
         // Cache for issues
@@ -395,9 +403,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
     private class IndexationHandler implements ISVNLogEntryHandler {
 
+        private final JIRAConfiguration jiraConfiguration;
         private final IndexationListener indexationListener;
 
-        public IndexationHandler(IndexationListener indexationListener) {
+        public IndexationHandler(JIRAConfiguration jiraConfiguration, IndexationListener indexationListener) {
+            this.jiraConfiguration = jiraConfiguration;
             this.indexationListener = indexationListener;
         }
 
@@ -410,7 +420,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                     try {
                         indexationListener.setRevision(logEntry.getRevision());
-                        indexInTransaction(logEntry);
+                        indexInTransaction(jiraConfiguration, logEntry);
                     } catch (Exception ex) {
                         logger.error("Cannot index revision " + logEntry.getRevision(), ex);
                         throw new RuntimeException(ex);

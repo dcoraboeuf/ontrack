@@ -23,4 +23,6 @@ public interface JIRAConfigurationService {
     JIRAConfiguration getConfigurationById(int id);
 
     JIRAConfigurationDeletion getConfigurationForDeletion(int id);
+
+    JIRAConfiguration getConfigurationByName(String name);
 }
