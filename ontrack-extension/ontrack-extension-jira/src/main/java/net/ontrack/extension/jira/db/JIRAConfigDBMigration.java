@@ -23,8 +23,9 @@ import java.util.*;
 @Component
 public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupService {
 
-    public static final String MIGRATION_OLD_CONFIGURATION_TEST = "SELECT COUNT(*) FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'";
-    public static final String MIGRATION_OLD_CONFIGURATION_VALUES = "SELECT NAME, VALUE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'";
+    public static final String MIGRATION_OLD_CONFIGURATION_TEST = "SELECT COUNT(*) FROM CONFIGURATION WHERE NAME LIKE 'x-jira-configuration-%'";
+    public static final String MIGRATION_OLD_CONFIGURATION_VALUES = "SELECT NAME, VALUE FROM CONFIGURATION WHERE NAME LIKE 'x-jira-configuration-%'";
+    public static final String MIGRATION_OLD_CONFIGURATION_DELETE = "DELETE FROM CONFIGURATION WHERE NAME LIKE 'x-jira-configuration-%'";
     private final PropertiesService propertiesService;
     private final JIRAConfigurationDao jiraConfigurationDao;
 
@@ -75,9 +76,9 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
             // Creates a new JIRA configuration and saves it with name `default`
             int configurationId = jiraConfigurationDao.create(
                     "default",
-                    configuration.get("x-jira-url"),
-                    configuration.get("x-jira-user"),
-                    configuration.get("x-jira-password"),
+                    configuration.get("x-jira-configuration-url"),
+                    configuration.get("x-jira-configuration-user"),
+                    configuration.get("x-jira-configuration-password"),
                     excludedProjects,
                     excludedIssues
             ).getId();
@@ -113,7 +114,7 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
                 );
             }
             // Migration OK, erasing previous configuration data
-            getJdbcTemplate().update("DELETE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
+            getJdbcTemplate().update(MIGRATION_OLD_CONFIGURATION_DELETE);
         }
     }
 }
