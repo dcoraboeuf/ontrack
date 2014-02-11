@@ -1,12 +1,15 @@
 package net.ontrack.extension.jira.db;
 
 import net.ontrack.dao.AbstractJdbcDao;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.api.support.StartupService;
+import net.ontrack.extension.jira.dao.JIRAConfigurationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.util.*;
 
 /**
  * Applies some code to convert existing JIRA configurations stored at global level
@@ -16,9 +19,14 @@ import javax.sql.DataSource;
 @Component
 public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupService {
 
+    private final PropertiesService propertiesService;
+    private final JIRAConfigurationDao jiraConfigurationDao;
+
     @Autowired
-    public JIRAConfigDBMigration(DataSource dataSource) {
+    public JIRAConfigDBMigration(DataSource dataSource, PropertiesService propertiesService, JIRAConfigurationDao jiraConfigurationDao) {
         super(dataSource);
+        this.propertiesService = propertiesService;
+        this.jiraConfigurationDao = jiraConfigurationDao;
     }
 
     @Override
@@ -48,6 +56,43 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
                 Integer.class
         );
         if (count > 0) {
+            // Gets the configuration attributes
+            List<Map<String, Object>> rows = getJdbcTemplate().queryForList("SELECT NAME, VALUE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
+            Map<String, String> configuration = new HashMap<>();
+            for (Map<String, Object> row : rows) {
+                configuration.put((String) row.get("name"), (String) row.get("value"));
+            }
+            // TODO Creates a new JIRA configuration and saves it with name `default`
+            // jiraConfigurationDao.create(
+            //         "default",
+            //         url,
+            //         user,
+            //         password,
+            //         excludedProjects,
+            //         excludedIssues
+            // );
+            // Gets all projects which have (them or one of their branches) a SVNExplorer or SVN-related property.
+            Set<Integer> projectIds = new HashSet<>();
+            projectIds.addAll(
+                    getJdbcTemplate().queryForList(
+                            "SELECT PROJECT FROM PROPERTIES WHERE PROJECT IS NOT NULL AND (EXTENSION = 'svn' OR EXTENSION = 'svnexplorer')",
+                            Integer.class
+                    )
+            );
+            Collection<Integer> branchIds =
+                    getJdbcTemplate().queryForList(
+                            "SELECT BRANCH FROM PROPERTIES WHERE BRANCH IS NOT NULL AND (EXTENSION = 'svn' OR EXTENSION = 'svnexplorer')",
+                            Integer.class
+                    );
+            for (int branchId : branchIds) {
+                int projectId = getNamedParameterJdbcTemplate().queryForObject(
+                        "SELECT PROJECT FROM BRANCH WHERE ID = :id",
+                        params("id", branchId),
+                        Integer.class
+                );
+                projectIds.add(projectId);
+            }
+            // TODO Adds the JIRA configuration to the projects
             // TODO Migration OK, erasing previous configuration data
             // getJdbcTemplate().update("DELETE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
         }
