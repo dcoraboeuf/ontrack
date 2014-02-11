@@ -95,6 +95,7 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
 
     @Override
     @Transactional(readOnly = true)
+    // TODO Caching
     public JIRAConfiguration getConfigurationById(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.getById(id);

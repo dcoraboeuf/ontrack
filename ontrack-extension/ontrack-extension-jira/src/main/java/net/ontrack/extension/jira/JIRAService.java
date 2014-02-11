@@ -9,13 +9,13 @@ public interface JIRAService {
 
     Set<String> extractIssueKeysFromMessage(int projectId, String message);
 
-    String insertIssueUrlsInMessage(String message);
+    String insertIssueUrlsInMessage(int projectId, String message);
 
-    String getIssueURL(String key);
+    String getIssueURL(int projectId, String key);
 
-    JIRAIssue getIssue(String key);
+    JIRAIssue getIssue(int projectId, String key);
 
-    boolean isIssue(String token);
+    boolean isIssue(int projectId, String token);
 
     String getJIRAURL(int projectId);
 

@@ -9,7 +9,10 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.extension.jira.*;
+import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
+import net.ontrack.extension.jira.JIRAConfigurationService;
+import net.ontrack.extension.jira.JIRAExtension;
+import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.*;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
@@ -28,7 +31,6 @@ import java.util.regex.Matcher;
 @Service
 public class DefaultJIRAService implements JIRAService {
 
-    private final JIRAConfigurationExtension configurationExtension;
     private final JIRAConfigurationService jiraConfigurationService;
     private final PropertiesService propertiesService;
     private final TransactionService transactionService;
@@ -46,8 +48,7 @@ public class DefaultJIRAService implements JIRAService {
     };
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
-        this.configurationExtension = configurationExtension;
+    public DefaultJIRAService(JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
         this.jiraConfigurationService = jiraConfigurationService;
         this.propertiesService = propertiesService;
         this.transactionService = transactionService;
@@ -71,16 +72,17 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public String insertIssueUrlsInMessage(String message) {
+    public String insertIssueUrlsInMessage(int projectId, String message) {
+        JIRAConfiguration configuration = getConfigurationForProject(projectId);
         // First, makes the message HTML-ready
         String htmlMessage = StringEscapeUtils.escapeHtml4(message);
         // Replaces each issue by a link
         StringBuffer html = new StringBuffer();
-        Matcher matcher = JIRAConfigurationExtension.ISSUE_PATTERN.matcher(htmlMessage);
+        Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(htmlMessage);
         while (matcher.find()) {
             String key = matcher.group();
-            if (configurationExtension.isIssue(key)) {
-                String href = getIssueURL(key);
+            if (configuration.isIssue(key)) {
+                String href = getIssueURL(projectId, key);
                 String link = String.format("<a href=\"%s\">%s</a>", href, key);
                 matcher.appendReplacement(html, link);
             }
@@ -91,12 +93,12 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public String getIssueURL(String key) {
-        return configurationExtension.getIssueURL(key);
+    public String getIssueURL(int projectId, String key) {
+        return getConfigurationForProject(projectId).getIssueURL(key);
     }
 
     @Override
-    public JIRAIssue getIssue(String key) {
+    public JIRAIssue getIssue(int projectId, String key) {
         try (Transaction tx = transactionService.start()) {
             JIRASession session = tx.getResource(JIRASession.class);
             try {
@@ -125,7 +127,7 @@ public class DefaultJIRAService implements JIRAService {
 
                 // Formatted JIRA issue
                 return new JIRAIssue(
-                        getIssueURL(issue.getKey()),
+                        getIssueURL(projectId, issue.getKey()),
                         issue.getKey(),
                         issue.getSummary(),
                         status,
@@ -148,8 +150,8 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public boolean isIssue(String token) {
-        return configurationExtension.isIssue(token);
+    public boolean isIssue(int projectId, String token) {
+        return getConfigurationForProject(projectId).isIssue(token);
     }
 
     @Override
@@ -157,6 +159,7 @@ public class DefaultJIRAService implements JIRAService {
         return getConfigurationForProject(projectId).getUrl();
     }
 
+    // TODO Caching
     @Override
     public JIRAConfiguration getConfigurationForProject(int projectId) {
         return jiraConfigurationService.getConfigurationById(

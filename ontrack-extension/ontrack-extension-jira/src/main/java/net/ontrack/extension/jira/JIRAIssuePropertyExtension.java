@@ -61,7 +61,7 @@ public class JIRAIssuePropertyExtension extends AbstractPropertyExtensionDescrip
     public void validate(String value) throws InputException {
         String[] issues = parseIssues(value);
         for (String issue : issues) {
-            if (!jiraService.isIssue(issue)) {
+            if (!JIRAConfiguration.ISSUE_PATTERN.matcher(issue).matches()) {
                 throw new JIRAIssuePatternException(issue);
             }
         }
