@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,19 +24,9 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
         @Override
         public JIRAConfiguration mapRow(ResultSet rs, int rowNum) throws SQLException {
             String exclusions = rs.getString("exclusions");
-            Set<String> excludedProjects = new HashSet<>();
-            Set<String> excludedIssues = new HashSet<>();
-            String[] tokens = StringUtils.split(exclusions, ",");
-            if (tokens != null) {
-                for (String token : tokens) {
-                    int index = token.indexOf("-");
-                    if (index > 0) {
-                        excludedIssues.add(token);
-                    } else {
-                        excludedProjects.add(token);
-                    }
-                }
-            }
+            ExclusionsParser exclusionsParser = new ExclusionsParser(exclusions).invoke();
+            Set<String> excludedProjects = exclusionsParser.getExcludedProjects();
+            Set<String> excludedIssues = exclusionsParser.getExcludedIssues();
             return new JIRAConfiguration(
                     rs.getInt("id"),
                     rs.getString("name"),

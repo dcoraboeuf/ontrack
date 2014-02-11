@@ -1,8 +1,12 @@
 package net.ontrack.extension.jira.db;
 
+import net.ontrack.core.model.Entity;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.api.support.StartupService;
+import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
+import net.ontrack.extension.jira.JIRAExtension;
+import net.ontrack.extension.jira.dao.ExclusionsParser;
 import net.ontrack.extension.jira.dao.JIRAConfigurationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +23,8 @@ import java.util.*;
 @Component
 public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupService {
 
+    public static final String MIGRATION_OLD_CONFIGURATION_TEST = "SELECT COUNT(*) FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'";
+    public static final String MIGRATION_OLD_CONFIGURATION_VALUES = "SELECT NAME, VALUE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'";
     private final PropertiesService propertiesService;
     private final JIRAConfigurationDao jiraConfigurationDao;
 
@@ -52,25 +58,29 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
     @Transactional
     public void start() {
         int count = getJdbcTemplate().queryForObject(
-                "SELECT COUNT(*) FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'",
+                MIGRATION_OLD_CONFIGURATION_TEST,
                 Integer.class
         );
         if (count > 0) {
             // Gets the configuration attributes
-            List<Map<String, Object>> rows = getJdbcTemplate().queryForList("SELECT NAME, VALUE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
+            List<Map<String, Object>> rows = getJdbcTemplate().queryForList(MIGRATION_OLD_CONFIGURATION_VALUES);
             Map<String, String> configuration = new HashMap<>();
             for (Map<String, Object> row : rows) {
                 configuration.put((String) row.get("name"), (String) row.get("value"));
             }
-            // TODO Creates a new JIRA configuration and saves it with name `default`
-            // jiraConfigurationDao.create(
-            //         "default",
-            //         url,
-            //         user,
-            //         password,
-            //         excludedProjects,
-            //         excludedIssues
-            // );
+            // Exclusions
+            ExclusionsParser exclusionsParser = new ExclusionsParser(configuration.get("x-jira-configuration-exclusions")).invoke();
+            Set<String> excludedProjects = exclusionsParser.getExcludedProjects();
+            Set<String> excludedIssues = exclusionsParser.getExcludedIssues();
+            // Creates a new JIRA configuration and saves it with name `default`
+            int configurationId = jiraConfigurationDao.create(
+                    "default",
+                    configuration.get("x-jira-url"),
+                    configuration.get("x-jira-user"),
+                    configuration.get("x-jira-password"),
+                    excludedProjects,
+                    excludedIssues
+            ).getId();
             // Gets all projects which have (them or one of their branches) a SVNExplorer or SVN-related property.
             Set<Integer> projectIds = new HashSet<>();
             projectIds.addAll(
@@ -92,9 +102,18 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
                 );
                 projectIds.add(projectId);
             }
-            // TODO Adds the JIRA configuration to the projects
-            // TODO Migration OK, erasing previous configuration data
-            // getJdbcTemplate().update("DELETE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
+            // Adds the JIRA configuration to the projects
+            for (int projectId : projectIds) {
+                propertiesService.saveProperty(
+                        Entity.PROJECT,
+                        projectId,
+                        JIRAExtension.EXTENSION,
+                        JIRAConfigurationPropertyExtension.NAME,
+                        String.valueOf(configurationId)
+                );
+            }
+            // Migration OK, erasing previous configuration data
+            getJdbcTemplate().update("DELETE FROM CONFIGURATION WHERE NAME LIKE 'x-jira.%'");
         }
     }
 }
