@@ -20,7 +20,7 @@ public class SVNDBConfig {
 		DBInit db = new DBInit();
 		db.setVersion(VERSION);
 		db.setJdbcDataSource(dataSource);
-		db.setVersionTable("SVNVERSION");
+		db.setVersionTable("EXT_SVN_VERSION");
 		db.setVersionColumnName("VALUE");
 		db.setVersionColumnTimestamp("UPDATED");
 		db.setResourceInitialization("/META-INF/db/subversion/init.sql");
