@@ -1,9 +1,13 @@
 package net.ontrack.extension.svn.service;
 
 import com.google.common.base.Function;
+import net.ontrack.core.model.Ack;
+import net.ontrack.core.security.GlobalFunction;
+import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
+import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
@@ -56,19 +60,60 @@ public class DefaultSubversionService implements SubversionService {
     };
     private final SubversionConfigurationExtension configurationExtension;
     private final TransactionService transactionService;
+    private final RepositoryDao repositoryDao;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
     private final IssueRevisionDao issueRevisionDao;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao) {
+    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, RepositoryDao repositoryDao, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
         this.configurationExtension = configurationExtension;
         this.transactionService = transactionService;
+        this.repositoryDao = repositoryDao;
         this.svnEventDao = svnEventDao;
         this.revisionDao = revisionDao;
         this.issueRevisionDao = issueRevisionDao;
+        this.securityUtils = securityUtils;
         SVNRepositoryFactoryImpl.setup();
         DAVRepositoryFactory.setup();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SVNRepository> getAllRepositories() {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return repositoryDao.findAll();
+    }
+
+    @Override
+    @Transactional
+    public SVNRepository createRepository(SVNRepositoryForm form) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return repositoryDao.create(form);
+    }
+
+    @Override
+    @Transactional
+    public SVNRepository updateRepository(int id, SVNRepositoryForm form) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return repositoryDao.update(id, form);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNRepository getRepository(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return repositoryDao.getById(id);
+    }
+
+    @Override
+    @Transactional
+    public Ack deleteRepository(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        // TODO Removes links to projects
+        // OK
+        return repositoryDao.delete(id);
     }
 
     @Override
