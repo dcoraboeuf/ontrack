@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/gui/extension/svn/indexation")
+@Deprecated
 public class IndexationActionController extends AbstractGUIController implements TopActionExtension {
 
     private final IndexationService indexationService;

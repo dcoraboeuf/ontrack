@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@Deprecated
 public class IndexationConfigurationExtension implements ConfigurationExtension {
 
     public static final String SCAN_INTERVAL = "scanInterval";

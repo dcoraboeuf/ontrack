@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -22,6 +21,7 @@ public class SubversionExtension extends ExtensionAdapter {
     private final SubversionConfigurationExtension subversionConfigurationExtension;
     private final IndexationConfigurationExtension indexationConfigurationExtension;
     private final IndexationActionController indexationActionController;
+    private final SVNConfigurationController svnConfigurationController;
 
     @Autowired
     public SubversionExtension(
@@ -29,13 +29,14 @@ public class SubversionExtension extends ExtensionAdapter {
             SubversionBuildPathPropertyExtension subversionBuildPathPropertyExtension,
             SubversionConfigurationExtension subversionConfigurationExtension,
             IndexationConfigurationExtension indexationConfigurationExtension,
-            IndexationActionController indexationActionController) {
+            IndexationActionController indexationActionController, SVNConfigurationController svnConfigurationController) {
         super(EXTENSION);
         this.subversionPathPropertyExtension = subversionPathPropertyExtension;
         this.subversionBuildPathPropertyExtension = subversionBuildPathPropertyExtension;
         this.subversionConfigurationExtension = subversionConfigurationExtension;
         this.indexationConfigurationExtension = indexationConfigurationExtension;
         this.indexationActionController = indexationActionController;
+        this.svnConfigurationController = svnConfigurationController;
     }
 
     @Override
@@ -50,6 +51,8 @@ public class SubversionExtension extends ExtensionAdapter {
 
     @Override
     public Collection<? extends TopActionExtension> getTopLevelActions() {
-        return Collections.singletonList(indexationActionController);
+        return Arrays.asList(
+                indexationActionController,
+                svnConfigurationController);
     }
 }
