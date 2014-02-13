@@ -4,8 +4,15 @@ extension.svn
     en -> Subversion
 
 subversion.configuration
-    en -> Subversion configuration
-    fr -> Configuration Subversion
+    en -> Subversion repository
+    fr -> Repository Subversion
+
+subversion.configuration.create
+    en -> New Subversion repository
+    fr -> Nouveau repository Subversion
+
+subversion.configuration.name
+    en,fr -> @[model.name]
 
 subversion.configuration.url
     en -> Subversion URL
