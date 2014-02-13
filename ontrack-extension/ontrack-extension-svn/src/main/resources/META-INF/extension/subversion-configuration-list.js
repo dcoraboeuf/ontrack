@@ -4,6 +4,12 @@ define(['crud'], function (crud) {
         url: 'ui/extension/svn/configuration',
         itemName: 'subversion.configuration'.loc(),
         itemTemplateId: 'extension/subversion-repository-row',
+        itemNewFn: function () {
+            return {
+                branchPattern: '.*/branches/.*',
+                tagPattern: '.*/tags/.*'
+            }
+        },
         itemDialogTemplateId: 'extension/subversion-repository-dialog',
         itemDialogWidth: 800,
         itemDialogFieldPrefix: 'subversion-repository-',
