@@ -12,32 +12,35 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
      * Internal function used to set-up the table after the rendering of items
      */
     function setupTableAfterRender(dynamicConfig, items, container, cfg) {
-        var row = $('<div></div>').insertAfter(container);
-        // Commands?
-        if (cfg.commands) {
-            $.each(cfg.commands, function (i, command) {
-                var btn = $('<button/>').appendTo(row).addClass('btn');
-                // Additional classes
-                if (command.classes) {
-                    $.each(command.classes, function (j, cls) {
-                        btn.addClass(cls)
-                    })
-                }
-                // Icon
-                if (command.iconCls) {
-                    $('<i></i>').addClass(command.iconCls).appendTo(btn)
-                }
-                // Text
-                if (command.title) {
-                    btn.append(' ' + command.title)
-                }
-                // Action
-                if (command.action) {
-                    btn.click(function () {
-                        command.action(btn, cfg, dynamicConfig)
-                    })
-                }
-            })
+        var rowId = 'crud-{0}-commands'.format(dynamicConfig.id);
+        if ($('#' + rowId).length == 0) {
+            var row = $('<div></div>').insertAfter(container).attr('id', rowId);
+            // Commands?
+            if (cfg.commands) {
+                $.each(cfg.commands, function (i, command) {
+                    var btn = $('<button/>').appendTo(row).addClass('btn');
+                    // Additional classes
+                    if (command.classes) {
+                        $.each(command.classes, function (j, cls) {
+                            btn.addClass(cls)
+                        })
+                    }
+                    // Icon
+                    if (command.iconCls) {
+                        $('<i></i>').addClass(command.iconCls).appendTo(btn)
+                    }
+                    // Text
+                    if (command.title) {
+                        btn.append(' ' + command.title)
+                    }
+                    // Action
+                    if (command.action) {
+                        btn.click(function () {
+                            command.action(btn, cfg, dynamicConfig)
+                        })
+                    }
+                })
+            }
         }
     }
 
