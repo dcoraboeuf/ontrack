@@ -58,6 +58,7 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      * - itemDialogFieldPrefix, optional, defaults to ''. Prefix to add before the property name to get the field ID in the dialog
      * - itemNewFn, optional, defaults to a function that returns an empty object. Function that is called to
      *              get a new item to create
+     * - itemDialogWidth, optional, defaults to 600, width of the dialog
      *
      * The client will call the method by doing:
      *
@@ -74,7 +75,8 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
             itemDialogFieldPrefix: '',
             itemNewFn: function () {
                 return {}
-            }
+            },
+            itemDialogWidth: 600
         }, config);
 
         /**
@@ -125,18 +127,14 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      * Generic create/update dialog
      */
     function dialogItem(btn, cfg, dialogConfig) {
-        // Defaults
-        var dialogCfg = $.extend({}, {
-            width: 600
-        }, dialogConfig);
         // Shows the dialog
         dialog.show({
             title: cfg.itemName,
-            width: dialogCfg.width,
+            width: cfg.itemDialogWidth,
             templateId: cfg.itemDialogTemplateId,
             initFn: function (dialog) {
                 // Gets the data
-                var item = dialogCfg.data;
+                var item = dialogConfig.data;
                 // Standard fields
                 if (cfg.itemFields) {
                     $.each(cfg.itemFields, function (f, itemField) {
