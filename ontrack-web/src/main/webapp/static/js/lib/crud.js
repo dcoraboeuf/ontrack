@@ -59,6 +59,9 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      * - itemNewFn, optional, defaults to a function that returns an empty object. Function that is called to
      *              get a new item to create
      * - itemDialogWidth, optional, defaults to 600, width of the dialog
+     * - itemDialogInitFn, optional, defaults to doing nothing. Initializes the dialog before display.
+     * - itemDialogReadFn, optional, defaults to doing nothing. Reads the dialog data before validation.
+     * - itemDialogValidateFn, optional, default to doing nothing. Validation of the dialog before reading the dialog data.
      *
      * The client will call the method by doing:
      *
@@ -76,7 +79,10 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
             itemNewFn: function () {
                 return {}
             },
-            itemDialogWidth: 600
+            itemDialogWidth: 600,
+            itemDialogInitFn: $.noop,
+            itemDialogReadFn: $.noop,
+            itemDialogValidateFn: $.noop
         }, config);
 
         /**
@@ -143,18 +149,39 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
                             var itemProperty = itemField.property;
                             dialog.form.find('#' + fieldName).val(item[itemProperty]);
                         } else if ($.isFunction(itemField)) {
-                            itemField(cfg, dialog, item);
+                            itemField(cfg, dialog, item, 'set');
                         } else {
                             dialog.form.find('#' + cfg.itemDialogFieldPrefix + itemField).val(item[itemField]);
                         }
                     })
                 }
                 // Custom init
-                if (cfg.itemDialogInitFn) {
-                    cfg.itemDialogInitFn(cfg, dialog, item)
-                }
+                cfg.itemDialogInitFn(cfg, dialog, item);
             },
             submitFn: function (dialog) {
+                // Collects the fields
+                var form = {};
+                // Extra validation method?
+                var message = cfg.itemDialogValidateFn(cfg, dialog, form);
+                if (message) {
+                    dialog.errorFn(message)
+                }
+                // Standard fields
+                if (cfg.itemFields) {
+                    $.each(cfg.itemFields, function (f, itemField) {
+                        if ($.isPlainObject(itemField)) {
+                            var fieldName = itemField.field;
+                            var itemProperty = itemField.property;
+                            form[itemProperty] = dialog.form.find('#' + fieldName).val();
+                        } else if ($.isFunction(itemField)) {
+                            itemField(cfg, dialog, form, 'get');
+                        } else {
+                            form[itemField] = dialog.form.find('#' + cfg.itemDialogFieldPrefix + itemField).val();
+                        }
+                    })
+                }
+                // Custom read
+                cfg.itemDialogReadFn(cfg, dialog, form);
             }
         })
     }
