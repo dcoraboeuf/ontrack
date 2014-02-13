@@ -56,6 +56,8 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      * - itemTemplateId: required, template ID (see `render.js`) used to render the row for an item in the table
      * - itemDialogTemplateId: required, template ID used to render the
      * - itemDialogFieldPrefix, optional, defaults to ''. Prefix to add before the property name to get the field ID in the dialog
+     * - itemNewFn, optional, defaults to a function that returns an empty object. Function that is called to
+     *              get a new item to create
      *
      * The client will call the method by doing:
      *
@@ -69,7 +71,10 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
          * Defaults
          */
         var cfg = $.extend({}, {
-            itemDialogFieldPrefix: ''
+            itemDialogFieldPrefix: '',
+            itemNewFn: function () {
+                return {}
+            }
         }, config);
 
         /**
@@ -112,7 +117,7 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      */
     self.createItem = function (btn, cfg) {
         dialogItem(btn, cfg, {
-
+            data: cfg.itemNewFn()
         })
     };
 
