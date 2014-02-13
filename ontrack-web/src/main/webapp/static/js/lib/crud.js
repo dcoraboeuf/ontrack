@@ -1,7 +1,7 @@
 /**
  * Defines a standard behaviour for a CRUD table.
  */
-define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, dynamic) {
+define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, dialog, dynamic, ajax) {
 
     /**
      * This service
@@ -11,7 +11,7 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
     /**
      * Internal function used to set-up the table after the rendering of items
      */
-    function setupTableAfterRender(renderCfg, items, container, cfg) {
+    function setupTableAfterRender(dynamicConfig, items, container, cfg) {
         var row = $('<div></div>').insertAfter(container);
         // Commands?
         if (cfg.commands) {
@@ -34,7 +34,7 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
                 // Action
                 if (command.action) {
                     btn.click(function () {
-                        command.action(btn, cfg)
+                        command.action(btn, cfg, dynamicConfig)
                     })
                 }
             })
@@ -100,8 +100,8 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
          */
         return {
             url: cfg.url,
-            render: render.asTableTemplate(cfg.itemTemplateId, function (renderCfg, items, container) {
-                setupTableAfterRender(renderCfg, items, container, cfg)
+            render: render.asTableTemplate(cfg.itemTemplateId, function (dynamicConfig, items, container) {
+                setupTableAfterRender(dynamicConfig, items, container, cfg)
             })
         }
 
@@ -114,8 +114,8 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
         return {
             title: title,
             iconCls: 'icon-plus',
-            action: function (btn, cfg) {
-                self.createItem(btn, cfg)
+            action: function (btn, cfg, dynamicConfig) {
+                self.createItem(btn, cfg, dynamicConfig)
             }
         }
     };
@@ -123,9 +123,23 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
     /**
      * Create command.
      */
-    self.createItem = function (btn, cfg) {
+    self.createItem = function (btn, cfg, dynamicConfig) {
         dialogItem(btn, cfg, {
-            data: cfg.itemNewFn()
+            data: cfg.itemNewFn(),
+            action: function (dialogBtn, dialog, form, okFn) {
+                ajax.post({
+                    url: cfg.url,
+                    data: form,
+                    loading: {
+                        el: $(dialogBtn)
+                    },
+                    successFn: function () {
+                        dialog.closeFn();
+                        dynamic.reloadSection(dynamicConfig.id);
+                    },
+                    errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                })
+            }
         })
     };
 
@@ -181,7 +195,16 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
                     })
                 }
                 // Custom read
-                cfg.itemDialogReadFn(cfg, dialog, form);
+                cfg.itemDialogReadFn(cfg, dialog, form)
+                // Taking action now!
+                dialogConfig.action(
+                    // Clicked button
+                    dialog.controls['submit'],
+                    // The current opened dialog
+                    dialog,
+                    // The form that has been read
+                    form
+                );
             }
         })
     }
