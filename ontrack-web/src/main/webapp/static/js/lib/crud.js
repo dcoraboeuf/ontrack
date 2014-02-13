@@ -54,7 +54,8 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
      * - itemId: optional, defaults to 'id'. Field that contains the ID in an item.
      * - itemName: required, name of the type of item
      * - itemTemplateId: required, template ID (see `render.js`) used to render the row for an item in the table
-     * - itemDialogTemplateId: required, template ID used to render the dialog
+     * - itemDialogTemplateId: required, template ID used to render the
+     * - itemDialogFieldPrefix, optional, defaults to ''. Prefix to add before the property name to get the field ID in the dialog
      *
      * The client will call the method by doing:
      *
@@ -65,10 +66,10 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
     self.create = function (config) {
 
         /**
-         * TODO Defaults
+         * Defaults
          */
         var cfg = $.extend({}, {
-
+            itemDialogFieldPrefix: ''
         }, config);
 
         /**
@@ -141,7 +142,7 @@ define(['jquery', 'render', 'dialog', 'dynamic'], function ($, render, dialog, d
                         } else if ($.isFunction(itemField)) {
                             itemField(cfg, dialog, item);
                         } else {
-                            dialog.form.find('#' + itemField).val(item[itemField]);
+                            dialog.form.find('#' + cfg.itemDialogFieldPrefix + itemField).val(item[itemField]);
                         }
                     })
                 }

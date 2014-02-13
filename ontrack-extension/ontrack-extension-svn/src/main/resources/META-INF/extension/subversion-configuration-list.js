@@ -5,6 +5,7 @@ define(['crud'], function (crud) {
         itemName: 'subversion.configuration'.loc(),
         itemTemplateId: 'extension/subversion-repository-row',
         itemDialogTemplateId: 'extension/subversion-repository-dialog',
+        itemDialogFieldPrefix: 'subversion-repository-',
         commands: [ crud.createCommand('subversion.configuration.create'.loc()) ]
     })
 
