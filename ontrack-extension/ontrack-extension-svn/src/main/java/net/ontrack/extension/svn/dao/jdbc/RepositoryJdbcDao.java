@@ -18,12 +18,12 @@ import java.util.List;
 public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao {
 
     public static final String REPOSITORY_ALL = "SELECT * FROM EXT_SVN_REPOSITORY ORDER BY NAME";
-    public static final String REPOSITORY_BY_ID = "SELECT * FORM EXT_SVN_REPOSITORY WHERE ID = :id";
+    public static final String REPOSITORY_BY_ID = "SELECT * FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_DELETE = "DELETE FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_INSERT = "INSERT INTO EXT_SVN_REPOSITORY(" +
             "NAME, URL, USER, PASSWORD, BRANCH_PATTERN, TAG_PATTERN, TAG_FILTER_PATTERN, BROWSER_FOR_PATH, BROWSER_FOR_REVISION, BROWSER_FOR_CHANGE" +
             ") VALUES (" +
-            ":name, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange" +
+            ":name, :url, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange" +
             ")";
     public static final String REPOSITORY_UPDATE = "UPDATE EXT_SVN_REPOSITORY SET " +
             "NAME = :name, URL = :url, " +
