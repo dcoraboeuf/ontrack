@@ -1,0 +1,18 @@
+<form>
+
+    <section>
+        <h1><small>{{loc 'subversion.indexation.last'}}</small></h1>
+        {{#if lastRevisionInfo.revision}}
+            <ul>
+                <li>{{loc 'subversion.indexation.last.revision'}}: {{lastRevisionInfo.revision}}</li>
+                <li>{{loc 'subversion.indexation.last.message'}}: {{lastRevisionInfo.message}}</li>
+                <li>{{loc 'subversion.indexation.last.repositoryRevision'}}: {{lastRevisionInfo.repositoryRevision}}</li>
+            </ul>
+        {{else}}
+            <div class="alert alert-warning">
+                {{loc 'subversion.indexation.last.none'}}
+            </div>
+        {{/if}}
+    </section>
+
+</form>

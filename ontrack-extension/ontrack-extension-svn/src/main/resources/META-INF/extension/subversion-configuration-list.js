@@ -1,10 +1,17 @@
-define(['crud', 'ajax'], function (crud, ajax) {
+define(['crud', 'ajax', 'dialog'], function (crud, ajax, dialog) {
 
     function indexationDialog(repositoryId) {
         ajax.get({
             url: 'ui/extension/svn/indexation/{0}'.format(repositoryId),
             successFn: function (lastRevisionInfo) {
-                console.log(lastRevisionInfo)
+                dialog.show({
+                    title: 'subversion.indexation'.loc(),
+                    templateId: 'extension/subversion-indexation-dialog',
+                    data: {
+                        repositoryId: repositoryId,
+                        lastRevisionInfo: lastRevisionInfo
+                    }
+                })
             }
         })
     }
