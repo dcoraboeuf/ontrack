@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.EnumSet;
 
 @Component
+@Deprecated
 public class SubversionBuildPathPropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     @Override

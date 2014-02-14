@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+// TODO Migration of the SVN path property to SVNExplorer
+// TODO Migration of the SVN build path property to SVNExplorer
 @Component
 public class SubversionExtension extends ExtensionAdapter {
 

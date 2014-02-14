@@ -13,6 +13,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 
 @Component
+@Deprecated
 public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDescriptor {
 
     public static final String PATH = "path";
