@@ -11,6 +11,10 @@ subversion.configuration.create
     en -> New Subversion repository
     fr -> Nouveau repository Subversion
 
+subversion.configuration.delete.prompt
+    en -> Do you want to delete the "{0}" Subversion repository?
+    fr -> Voulez-vous supprimer le repository Subversion "{0}" ?
+
 subversion.configuration.name
     en,fr -> @[model.name]
 

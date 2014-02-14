@@ -18,7 +18,8 @@ define(['crud'], function (crud) {
         itemCommands: [
             crud.updateItemCommand(),
             crud.deleteItemCommand()
-        ]
+        ],
+        itemDeletePromptKey: 'subversion.configuration.delete.prompt'
     })
 
 });

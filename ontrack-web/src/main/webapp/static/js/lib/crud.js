@@ -112,7 +112,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
                 return {}
             },
             itemDeleteFn: self.defaultItemDeleteFn,
-            itemDeletePrompt: 'general.delete.prompt'.loc(),
+            itemDeletePromptKey: 'general.delete.prompt',
             itemDialogWidth: 600,
             itemDialogInitFn: $.noop,
             itemDialogReadFn: $.noop,
@@ -172,7 +172,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
      */
     self.defaultItemDeleteFn = function (dynamicConfig, cfg, itemId, item) {
         common.confirmAndCall(
-            cfg.itemDeletePrompt.format(item[cfg.itemPropertyName]),
+            cfg.itemDeletePromptKey.loc(item[cfg.itemPropertyName]),
             function () {
                 self.deleteItem(dynamicConfig, cfg, itemId)
             }
