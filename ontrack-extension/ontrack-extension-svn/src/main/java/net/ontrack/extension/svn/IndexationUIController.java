@@ -7,7 +7,9 @@ import net.ontrack.extension.api.action.TopActionExtension;
 import net.ontrack.extension.svn.service.IndexationService;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.web.support.AbstractGUIController;
+import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
+import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,41 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/gui/extension/svn/indexation")
-@Deprecated
-public class IndexationActionController extends AbstractGUIController implements TopActionExtension {
+@RequestMapping("/ui/extension/svn/indexation")
+public class IndexationUIController extends AbstractUIController {
 
     private final IndexationService indexationService;
 
     @Autowired
-    public IndexationActionController(ErrorHandler errorHandler, IndexationService indexationService) {
-        super(errorHandler);
+    public IndexationUIController(ErrorHandler errorHandler, Strings strings, IndexationService indexationService) {
+        super(errorHandler, strings);
         this.indexationService = indexationService;
-    }
-
-    @Override
-    public AuthorizationPolicy getAuthorizationPolicy() {
-        return AuthorizationPolicy.forGlobal(GlobalFunction.SETTINGS);
-    }
-
-    @Override
-    public String getExtension() {
-        return SubversionExtension.EXTENSION;
-    }
-
-    @Override
-    public String getName() {
-        return "indexation";
-    }
-
-    @Override
-    public String getPath() {
-        return "gui/extension/svn/indexation";
-    }
-
-    @Override
-    public String getTitleKey() {
-        return "subversion.indexation";
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
