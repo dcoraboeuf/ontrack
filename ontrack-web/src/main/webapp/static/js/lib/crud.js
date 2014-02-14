@@ -1,7 +1,7 @@
 /**
  * Defines a standard behaviour for a CRUD table.
  */
-define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, dialog, dynamic, ajax) {
+define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($, render, dialog, dynamic, ajax, common) {
 
     /**
      * This service
@@ -106,10 +106,13 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
          * Defaults
          */
         var cfg = $.extend({}, {
+            itemPropertyName: 'name',
             itemDialogFieldPrefix: '',
             itemNewFn: function () {
                 return {}
             },
+            itemDeleteFn: self.defaultItemDeleteFn,
+            itemDeletePrompt: 'general.delete.prompt'.loc(),
             itemDialogWidth: 600,
             itemDialogInitFn: $.noop,
             itemDialogReadFn: $.noop,
@@ -157,10 +160,36 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
         return {
             iconCls: 'icon-trash',
             action: function (btn, dynamicConfig, cfg, itemId) {
-                self.deleteItem(btn, cfg, dynamicConfig, itemId)
+                onItemGet(btn, cfg, itemId, function (item) {
+                    cfg.itemDeleteFn(dynamicConfig, cfg, itemId, item)
+                })
             }
         }
     };
+
+    /**
+     * Default deletion function, which displays a prompt
+     */
+    self.defaultItemDeleteFn = function (dynamicConfig, cfg, itemId, item) {
+        common.confirmAndCall(
+            cfg.itemDeletePrompt.format(item[cfg.itemPropertyName]),
+            function () {
+                self.deleteItem(dynamicConfig, cfg, itemId)
+            }
+        )
+    };
+
+    /**
+     * Actual deletion
+     */
+    self.deleteItem = function (dynamicConfig, cfg, itemId) {
+        ajax.del({
+            url: '{0}/{1}'.format(cfg.url, itemId),
+            successFn: function () {
+                dynamic.reloadSection(dynamicConfig.id);
+            }
+        })
+    }
 
     /**
      * Creates a 'create' command to use in the `commands` field of the configuration.
@@ -187,15 +216,6 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
             successFn: itemFn
         })
     }
-
-    /**
-     * Delete command
-     */
-    self.deleteItem = function (btn, cfg, dynamicConfig, itemId) {
-        onItemGet(btn, cfg, itemId, function (item) {
-
-        })
-    };
 
     /**
      * Update command

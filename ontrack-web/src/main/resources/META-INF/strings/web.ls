@@ -41,6 +41,10 @@ general.delete
 	en -> Delete
 	fr -> Supprimer
 
+general.delete.prompt
+    en -> Do you want to delete this?
+    fr -> Voulez-vous supprimer ceci ?
+
 general.confirm.title
 	en,fr -> Confirmation
 	
