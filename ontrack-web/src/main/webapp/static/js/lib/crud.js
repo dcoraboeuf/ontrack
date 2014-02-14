@@ -44,7 +44,8 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
     function setupItemCommand(dynamicConfig, cfg, cell, itemCommand, itemId) {
         var btn = $('<i></i>')
             .addClass(itemCommand.iconCls)
-            .appendTo(cell);
+            .appendTo(cell)
+            .after(' ');
         btn.click(function () {
             itemCommand.action(btn, dynamicConfig, cfg, itemId)
         });
@@ -150,6 +151,18 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
     };
 
     /**
+     * Creates an 'delete' command to use for the items
+     */
+    self.deleteItemCommand = function () {
+        return {
+            iconCls: 'icon-trash',
+            action: function (btn, dynamicConfig, cfg, itemId) {
+                self.deleteItem(btn, cfg, dynamicConfig, itemId)
+            }
+        }
+    };
+
+    /**
      * Creates a 'create' command to use in the `commands` field of the configuration.
      */
     self.createCommand = function (title) {
@@ -163,33 +176,49 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
     };
 
     /**
-     * Update command
+     * Access to an item, followed by an action
      */
-    self.updateItem = function (btn, cfg, dynamicConfig, itemId) {
+    function onItemGet(btn, cfg, itemId, itemFn) {
         ajax.get({
             url: '{0}/{1}'.format(cfg.url, itemId),
             loading: {
                 el: $(btn)
             },
-            successFn: function (item) {
-                dialogItem(btn, cfg, {
-                    data: item,
-                    action: function (dialogBtn, dialog, form) {
-                        ajax.put({
-                            url: '{0}/{1}'.format(cfg.url, itemId),
-                            data: form,
-                            loading: {
-                                el: $(dialogBtn)
-                            },
-                            successFn: function () {
-                                dialog.closeFn();
-                                dynamic.reloadSection(dynamicConfig.id);
-                            },
-                            errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
-                        })
-                    }
-                })
-            }
+            successFn: itemFn
+        })
+    }
+
+    /**
+     * Delete command
+     */
+    self.deleteItem = function (btn, cfg, dynamicConfig, itemId) {
+        onItemGet(btn, cfg, itemId, function (item) {
+
+        })
+    };
+
+    /**
+     * Update command
+     */
+    self.updateItem = function (btn, cfg, dynamicConfig, itemId) {
+        onItemGet(btn, cfg, itemId, function (item) {
+            dialogItem(btn, cfg, {
+                data: item,
+                action: function (dialogBtn, dialog, form) {
+                    ajax.put({
+                        url: '{0}/{1}'.format(cfg.url, itemId),
+                        data: form,
+                        loading: {
+                            el: $(dialogBtn)
+                        },
+                        successFn: function () {
+                            dialog.closeFn();
+                            dynamic.reloadSection(dynamicConfig.id);
+                        },
+                        errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                    })
+                }
+            })
         })
     }
 

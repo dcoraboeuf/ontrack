@@ -16,8 +16,8 @@ define(['crud'], function (crud) {
         itemFields: [ 'name', 'url', 'user', 'password', 'branchPattern', 'tagPattern', 'tagFilterPattern', 'browserForPath', 'browserForRevision', 'browserForChange' ],
         commands: [ crud.createCommand('subversion.configuration.create'.loc()) ],
         itemCommands: [
-            crud.updateItemCommand()
-            // TODO crud.deleteItemCommand()
+            crud.updateItemCommand(),
+            crud.deleteItemCommand()
         ]
     })
 
