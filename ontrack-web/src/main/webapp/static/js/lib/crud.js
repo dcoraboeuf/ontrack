@@ -46,6 +46,9 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
             .addClass(itemCommand.iconCls)
             .appendTo(cell)
             .after(' ');
+        if (itemCommand.title) {
+            btn.attr('title', itemCommand.title)
+        }
         btn.click(function () {
             itemCommand.action(btn, dynamicConfig, cfg, itemId)
         });
@@ -147,6 +150,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
     self.updateItemCommand = function () {
         return {
             iconCls: 'icon-pencil',
+            title: 'general.modify'.loc(),
             action: function (btn, dynamicConfig, cfg, itemId) {
                 self.updateItem(btn, cfg, dynamicConfig, itemId)
             }
@@ -159,6 +163,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
     self.deleteItemCommand = function () {
         return {
             iconCls: 'icon-trash',
+            title: 'general.delete'.loc(),
             action: function (btn, dynamicConfig, cfg, itemId) {
                 onItemGet(btn, cfg, itemId, function (item) {
                     cfg.itemDeleteFn(dynamicConfig, cfg, itemId, item)
