@@ -19,7 +19,16 @@ define(['crud'], function (crud) {
         commands: [ crud.createCommand('subversion.configuration.create'.loc()) ],
         itemCommands: [
             crud.updateItemCommand(),
-            crud.deleteItemCommand()
+            crud.deleteItemCommand(),
+            {
+                iconCls: 'icon-time',
+                title: 'subversion.indexation'.loc(),
+                action: function (btn, dynamicConfig, cfg, itemId) {
+                    crud.onItemGet(btn, cfg, itemId, function (item) {
+                        // TODO Indexation dialog
+                    })
+                }
+            }
         ],
         itemDeletePromptKey: 'subversion.configuration.delete.prompt'
     })

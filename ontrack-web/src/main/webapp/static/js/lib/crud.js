@@ -165,7 +165,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
             iconCls: 'icon-trash',
             title: 'general.delete'.loc(),
             action: function (btn, dynamicConfig, cfg, itemId) {
-                onItemGet(btn, cfg, itemId, function (item) {
+                self.onItemGet(btn, cfg, itemId, function (item) {
                     cfg.itemDeleteFn(dynamicConfig, cfg, itemId, item)
                 })
             }
@@ -212,7 +212,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
     /**
      * Access to an item, followed by an action
      */
-    function onItemGet(btn, cfg, itemId, itemFn) {
+    self.onItemGet = function (btn, cfg, itemId, itemFn) {
         ajax.get({
             url: '{0}/{1}'.format(cfg.url, itemId),
             loading: {
@@ -226,7 +226,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax', 'common'], function ($,
      * Update command
      */
     self.updateItem = function (btn, cfg, dynamicConfig, itemId) {
-        onItemGet(btn, cfg, itemId, function (item) {
+        self.onItemGet(btn, cfg, itemId, function (item) {
             dialogItem(btn, cfg, {
                 data: item,
                 action: function (dialogBtn, dialog, form) {
