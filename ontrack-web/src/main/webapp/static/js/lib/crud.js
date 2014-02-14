@@ -8,10 +8,7 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
      */
     var self = {};
 
-    /**
-     * Internal function used to set-up the table after the rendering of items
-     */
-    function setupTableAfterRender(dynamicConfig, items, container, cfg) {
+    function setupGlobalCommands(dynamicConfig, container, cfg) {
         var rowId = 'crud-{0}-commands'.format(dynamicConfig.id);
         if ($('#' + rowId).length == 0) {
             var row = $('<div></div>').insertAfter(container).attr('id', rowId);
@@ -42,6 +39,36 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
                 })
             }
         }
+    }
+
+    function setupItemCommand(dynamicConfig, cfg, cell, itemCommand, itemId) {
+        var btn = $('<i></i>')
+            .addClass(itemCommand.iconCls)
+            .appendTo(cell);
+        btn.click(function () {
+            itemCommand.action(btn, dynamicConfig, cfg, itemId)
+        });
+    }
+
+    function setupItemCommands(dynamicConfig, container, cfg) {
+        if (cfg.itemCommands) {
+            $(container).find('.crud-item-commands').each(function (i, commandContainer) {
+                var itemId = $(commandContainer).attr('crud-id');
+                var cell = $('<span></span>').appendTo($(commandContainer));
+                cell.addClass('action').addClass('action-optional');
+                $.each(cfg.itemCommands, function (j, itemCommand) {
+                    setupItemCommand(dynamicConfig, cfg, cell, itemCommand, itemId)
+                })
+            });
+        }
+    }
+
+    /**
+     * Internal function used to set-up the table after the rendering of items
+     */
+    function setupTableAfterRender(dynamicConfig, items, container, cfg) {
+        setupGlobalCommands(dynamicConfig, container, cfg);
+        setupItemCommands(dynamicConfig, container, cfg);
     }
 
     /**
@@ -111,6 +138,18 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
     };
 
     /**
+     * Creates an 'update' command to use for the items
+     */
+    self.updateItemCommand = function () {
+        return {
+            iconCls: 'icon-pencil',
+            action: function (btn, dynamicConfig, cfg, itemId) {
+                self.updateItem(btn, cfg, dynamicConfig, itemId)
+            }
+        }
+    };
+
+    /**
      * Creates a 'create' command to use in the `commands` field of the configuration.
      */
     self.createCommand = function (title) {
@@ -124,12 +163,43 @@ define(['jquery', 'render', 'dialog', 'dynamic', 'ajax'], function ($, render, d
     };
 
     /**
+     * Update command
+     */
+    self.updateItem = function (btn, cfg, dynamicConfig, itemId) {
+        ajax.get({
+            url: '{0}/{1}'.format(cfg.url, itemId),
+            loading: {
+                el: $(btn)
+            },
+            successFn: function (item) {
+                dialogItem(btn, cfg, {
+                    data: item,
+                    action: function (dialogBtn, dialog, form) {
+                        ajax.put({
+                            url: '{0}/{1}'.format(cfg.url, itemId),
+                            data: form,
+                            loading: {
+                                el: $(dialogBtn)
+                            },
+                            successFn: function () {
+                                dialog.closeFn();
+                                dynamic.reloadSection(dynamicConfig.id);
+                            },
+                            errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+    /**
      * Create command.
      */
     self.createItem = function (btn, cfg, dynamicConfig) {
         dialogItem(btn, cfg, {
             data: cfg.itemNewFn(),
-            action: function (dialogBtn, dialog, form, okFn) {
+            action: function (dialogBtn, dialog, form) {
                 ajax.post({
                     url: cfg.url,
                     data: form,

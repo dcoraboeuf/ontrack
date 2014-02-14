@@ -14,7 +14,11 @@ define(['crud'], function (crud) {
         itemDialogWidth: 800,
         itemDialogFieldPrefix: 'subversion-repository-',
         itemFields: [ 'name', 'url', 'user', 'password', 'branchPattern', 'tagPattern', 'tagFilterPattern', 'browserForPath', 'browserForRevision', 'browserForChange' ],
-        commands: [ crud.createCommand('subversion.configuration.create'.loc()) ]
+        commands: [ crud.createCommand('subversion.configuration.create'.loc()) ],
+        itemCommands: [
+            crud.updateItemCommand()
+            // TODO crud.deleteItemCommand()
+        ]
     })
 
 });
