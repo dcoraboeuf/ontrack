@@ -7,13 +7,15 @@ define(['crud'], function (crud) {
         itemNewFn: function () {
             return {
                 branchPattern: '.*/branches/.*',
-                tagPattern: '.*/tags/.*'
+                tagPattern: '.*/tags/.*',
+                indexationInterval: 0,
+                indexationStart: 1
             }
         },
         itemDialogTemplateId: 'extension/subversion-repository-dialog',
         itemDialogWidth: 800,
         itemDialogFieldPrefix: 'subversion-repository-',
-        itemFields: [ 'name', 'url', 'user', 'password', 'branchPattern', 'tagPattern', 'tagFilterPattern', 'browserForPath', 'browserForRevision', 'browserForChange' ],
+        itemFields: [ 'name', 'url', 'user', 'password', 'branchPattern', 'tagPattern', 'tagFilterPattern', 'browserForPath', 'browserForRevision', 'browserForChange', 'indexationInterval', 'indexationStart' ],
         commands: [ crud.createCommand('subversion.configuration.create'.loc()) ],
         itemCommands: [
             crud.updateItemCommand(),

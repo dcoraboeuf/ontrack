@@ -54,6 +54,14 @@ subversion.configuration.browserForChange
     en -> URL for browsing a change set ($) for a path (*)
     fr -> URL pour la navigation pour un changement ($) vers un chemin (*)
 
+subversion.configuration.indexationInterval
+    en -> Minutes between scans (0 to disable)
+    fr -> Nombre de minutes entre les indexations (0 pour désactiver)
+
+subversion.configuration.indexationStart
+    en -> Start revision
+    fr -> Révision de départ
+
 [path]
 
 subversion.path
@@ -83,18 +91,6 @@ subversion.buildPath.description
         ...
 
 [indexation]
-
-subversion.indexation.configuration
-    en -> Indexation configuration
-    fr -> Configuration de l'indexation
-
-subversion.indexation.configuration.scanInterval
-    en -> Minutes between scans (0 to disable)
-    fr -> Nombre de minutes entre les indexations (0 pour désactiver)
-
-subversion.indexation.configuration.startRevision
-    en -> Start revision
-    fr -> Révision de départ
 
 subversion.indexation.message
     en -> Indexation is {0} ({1} to {2} - at {3} - {4}%)

@@ -16,5 +16,8 @@ public class SVNRepository {
     private final String browserForPath;
     private final String browserForRevision;
     private final String browserForChange;
+    private final int indexationInterval;
+    private final long indexationStart;
+
 
 }

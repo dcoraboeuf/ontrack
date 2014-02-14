@@ -21,9 +21,9 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     public static final String REPOSITORY_BY_ID = "SELECT * FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_DELETE = "DELETE FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_INSERT = "INSERT INTO EXT_SVN_REPOSITORY(" +
-            "NAME, URL, USER, PASSWORD, BRANCH_PATTERN, TAG_PATTERN, TAG_FILTER_PATTERN, BROWSER_FOR_PATH, BROWSER_FOR_REVISION, BROWSER_FOR_CHANGE" +
+            "NAME, URL, USER, PASSWORD, BRANCH_PATTERN, TAG_PATTERN, TAG_FILTER_PATTERN, BROWSER_FOR_PATH, BROWSER_FOR_REVISION, BROWSER_FOR_CHANGE, INDEXATION_INTERVAL, INDEXATION_START" +
             ") VALUES (" +
-            ":name, :url, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange" +
+            ":name, :url, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange, :indexationInterval, :indexationStart" +
             ")";
     public static final String REPOSITORY_UPDATE = "UPDATE EXT_SVN_REPOSITORY SET " +
             "NAME = :name, URL = :url, " +
@@ -35,6 +35,8 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "BROWSER_FOR_PATH = :browserForPath, " +
             "BROWSER_FOR_REVISION = :browserForRevision, " +
             "BROWSER_FOR_CHANGE = :browserForChange " +
+            "INDEXATION_INTERVAL = :indexationInterval " +
+            "INDEXATION_START = :indexationStart " +
             "WHERE ID = :id";
     private final RowMapper<SVNRepository> repositoryRowMapper = new RowMapper<SVNRepository>() {
         @Override
@@ -50,7 +52,9 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                     rs.getString("tag_filter_pattern"),
                     rs.getString("browser_for_path"),
                     rs.getString("browser_for_revision"),
-                    rs.getString("browser_for_change")
+                    rs.getString("browser_for_change"),
+                    rs.getInt("indexation_interval"),
+                    rs.getLong("indexation_start")
             );
         }
     };
@@ -82,6 +86,8 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                         .addValue("browserForPath", form.getBrowserForPath())
                         .addValue("browserForRevision", form.getBrowserForRevision())
                         .addValue("browserForChange", form.getBrowserForChange())
+                        .addValue("indexationInterval", form.getIndexationInterval())
+                        .addValue("indexationStart", form.getIndexationStart())
         );
         return getById(id);
     }
@@ -101,6 +107,8 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                         .addValue("browserForPath", form.getBrowserForPath())
                         .addValue("browserForRevision", form.getBrowserForRevision())
                         .addValue("browserForChange", form.getBrowserForChange())
+                        .addValue("indexationInterval", form.getIndexationInterval())
+                        .addValue("indexationStart", form.getIndexationStart())
         );
         return getById(id);
     }

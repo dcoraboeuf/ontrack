@@ -59,4 +59,16 @@
             <input type="text" id="subversion-repository-browserForChange" value="" size="40" maxlength="200" class="input-xxlarge" />
         </div>
     </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-indexationInterval">{{loc 'subversion.configuration.indexationInterval'}}</label>
+        <div class="controls">
+            <input type="number" id="subversion-repository-indexationInterval" value="" min="0" max="9999" maxlength="5" class="input-small" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-indexationStart">{{loc 'subversion.configuration.indexationStart'}}</label>
+        <div class="controls">
+            <input type="number" id="subversion-repository-indexationStart" value="" min="1" max="99999999" maxlength="8" required="required" />
+        </div>
+    </div>
 </form>
