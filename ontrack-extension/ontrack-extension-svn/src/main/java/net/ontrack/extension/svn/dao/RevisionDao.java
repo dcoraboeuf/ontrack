@@ -17,7 +17,7 @@ public interface RevisionDao {
 
     List<Long> getMergesForRevision(long revision);
 
-    TRevision getLastRevision();
+    TRevision getLastRevision(int repositoryId);
 
     TRevision get(long revision);
 }

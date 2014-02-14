@@ -1,4 +1,13 @@
-define(['crud'], function (crud) {
+define(['crud', 'ajax'], function (crud, ajax) {
+
+    function indexationDialog(repositoryId) {
+        ajax.get({
+            url: 'ui/extension/svn/indexation/{0}'.format(repositoryId),
+            successFn: function (lastRevisionInfo) {
+                console.log(lastRevisionInfo)
+            }
+        })
+    }
 
     return crud.create({
         url: 'ui/extension/svn/configuration',
@@ -24,9 +33,8 @@ define(['crud'], function (crud) {
                 iconCls: 'icon-time',
                 title: 'subversion.indexation'.loc(),
                 action: function (btn, dynamicConfig, cfg, itemId) {
-                    crud.onItemGet(btn, cfg, itemId, function (item) {
-                        // TODO Indexation dialog
-                    })
+                    // Indexation dialog
+                    indexationDialog(itemId)
                 }
             }
         ],

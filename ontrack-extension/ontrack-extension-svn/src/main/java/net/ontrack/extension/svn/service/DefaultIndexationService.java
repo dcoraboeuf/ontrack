@@ -136,12 +136,12 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     }
 
     @Override
-    public LastRevisionInfo getLastRevisionInfo() {
+    public LastRevisionInfo getLastRevisionInfo(int repositoryId) {
         try (Transaction ignored = transactionService.start()) {
-            TRevision r = revisionDao.getLastRevision();
+            TRevision r = revisionDao.getLastRevision(repositoryId);
             if (r != null) {
                 // Loads the repository information
-                SVNURL url = SVNUtils.toURL(subversionConfigurationExtension.getUrl());
+                SVNURL url = SVNUtils.toURL(subversionService.getRepository(repositoryId).getUrl());
                 long repositoryRevision = subversionService.getRepositoryRevision(url);
                 // OK
                 return new LastRevisionInfo(
@@ -150,7 +150,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                         repositoryRevision
                 );
             } else {
-                return null;
+                return new LastRevisionInfo(
+                        0L,
+                        "",
+                        0L
+                );
             }
         }
     }

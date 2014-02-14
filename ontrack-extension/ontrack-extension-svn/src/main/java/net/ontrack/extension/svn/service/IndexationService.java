@@ -12,5 +12,5 @@ public interface IndexationService {
 
     boolean isIndexationRunning();
 
-    LastRevisionInfo getLastRevisionInfo();
+    LastRevisionInfo getLastRevisionInfo(int repositoryId);
 }

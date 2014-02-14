@@ -28,6 +28,7 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
         @Override
         public TRevision mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TRevision(
+                    rs.getInt("REPOSITORY"),
                     rs.getLong("REVISION"),
                     rs.getString("AUTHOR"),
                     SQLUtils.getDateTime(rs, "CREATION"),
@@ -50,8 +51,11 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional(readOnly = true)
-    public TRevision getLastRevision() {
-        return getFirstItem("SELECT * FROM REVISION ORDER BY REVISION DESC LIMIT 1", new MapSqlParameterSource(), revisionRowMapper);
+    public TRevision getLastRevision(int repositoryId) {
+        return getFirstItem(
+                "SELECT * FROM EXT_SVN_REVISION WHERE REPOSITORY = :repositoryId ORDER BY REVISION DESC LIMIT 1",
+                params("repositoryId", repositoryId),
+                revisionRowMapper);
     }
 
     @Override

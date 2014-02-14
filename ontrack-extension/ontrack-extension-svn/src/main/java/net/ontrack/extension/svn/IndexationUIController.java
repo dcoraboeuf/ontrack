@@ -13,9 +13,7 @@ import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -30,15 +28,10 @@ public class IndexationUIController extends AbstractUIController {
         this.indexationService = indexationService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String getPage(Model model) {
-        // Gets the latest information
-        LastRevisionInfo info = indexationService.getLastRevisionInfo();
-        if (info != null) {
-            model.addAttribute("lastRevisionInfo", info);
-        }
-        // OK
-        return "extension/svn/indexation";
+    @RequestMapping(value = "/{repositoryId}", method = RequestMethod.GET)
+    @ResponseBody
+    public LastRevisionInfo getLastRevisionInfo(@PathVariable int repositoryId) {
+        return indexationService.getLastRevisionInfo(repositoryId);
     }
 
     @RequestMapping(value = "/latest", method = RequestMethod.GET)
