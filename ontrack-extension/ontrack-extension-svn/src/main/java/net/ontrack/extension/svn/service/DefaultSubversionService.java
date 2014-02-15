@@ -16,8 +16,11 @@ import net.ontrack.extension.svn.dao.model.TSVNEvent;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.extension.svn.tx.DefaultSVNSession;
 import net.ontrack.extension.svn.tx.SVNSession;
 import net.ontrack.tx.Transaction;
+import net.ontrack.tx.TransactionResource;
+import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -27,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
@@ -467,13 +471,38 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     // FIXME The session depends on the repository
-    protected SVNClientManager getClientManager(SVNRepository repository) {
+    protected SVNClientManager getClientManager(final SVNRepository repository) {
         // Gets the current transaction
         Transaction transaction = transactionService.get();
         if (transaction == null) {
             throw new IllegalStateException("All SVN calls must be part of a SVN transaction");
         }
         // Gets the client manager
-        return transaction.getResource(SVNSession.class).getClientManager();
+        return transaction
+                .getResource(
+                        SVNSession.class,
+                        repository.getId(),
+                        new TransactionResourceProvider<SVNSession>() {
+                            @Override
+                            public SVNSession createTxResource() {
+                                // Creates the client manager for SVN
+                                SVNClientManager clientManager = SVNClientManager.newInstance();
+                                // Authentication (if needed)
+                                String svnUser = repository.getUser();
+                                String svnPassword = repository.getPassword();
+                                if (org.apache.commons.lang.StringUtils.isNotBlank(svnUser) && org.apache.commons.lang.StringUtils.isNotBlank(svnPassword)) {
+                                    clientManager.setAuthenticationManager(new BasicAuthenticationManager(svnUser, svnPassword));
+                                }
+                                // OK
+                                return new DefaultSVNSession(clientManager);
+                            }
+
+                            @Override
+                            public boolean supports(Class<? extends TransactionResource> resourceType) {
+                                return true;
+                            }
+                        }
+                )
+                .getClientManager();
     }
 }

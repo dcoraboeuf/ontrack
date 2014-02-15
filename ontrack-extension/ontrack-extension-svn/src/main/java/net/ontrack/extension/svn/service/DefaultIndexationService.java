@@ -73,15 +73,21 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     }
 
     protected void indexTask(SVNRepository repository) {
-        int repositoryId = repository.getId();
+        final int repositoryId = repository.getId();
         logger.info("[svn-indexation] Repository={}, Indexation task starting...", repositoryId);
         // Checks if there is running indexation for this repository
         if (isIndexationRunning(repositoryId)) {
             // Log
             logger.info("[indexation] Repository={}, An indexation is already running. Will try later", repositoryId);
         } else {
-            // Launches the indexation
-            indexFromLatest(repositoryId);
+            // Launches the indexation, using admin rights
+            securityUtils.asAdmin(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    indexFromLatest(repositoryId);
+                    return null;
+                }
+            });
         }
         logger.info("[indexation] Repository={}, Indexation task stopped.", repositoryId);
     }

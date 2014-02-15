@@ -34,8 +34,8 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "TAG_FILTER_PATTERN = :tagFilterPattern, " +
             "BROWSER_FOR_PATH = :browserForPath, " +
             "BROWSER_FOR_REVISION = :browserForRevision, " +
-            "BROWSER_FOR_CHANGE = :browserForChange " +
-            "INDEXATION_INTERVAL = :indexationInterval " +
+            "BROWSER_FOR_CHANGE = :browserForChange, " +
+            "INDEXATION_INTERVAL = :indexationInterval, " +
             "INDEXATION_START = :indexationStart " +
             "WHERE ID = :id";
     private final RowMapper<SVNRepository> repositoryRowMapper = new RowMapper<SVNRepository>() {
