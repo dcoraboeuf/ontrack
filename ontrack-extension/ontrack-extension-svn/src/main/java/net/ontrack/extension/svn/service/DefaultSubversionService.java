@@ -447,7 +447,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     private boolean isTrunk(String path) {
-        return org.apache.commons.lang.StringUtils.isNotBlank(path) && Pattern.matches(".+/trunk", path);
+        return isPathOK(".+/trunk", path);
     }
 
     private SubversionException translateSVNException(SVNException e) {
