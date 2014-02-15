@@ -1,7 +1,6 @@
 package net.ontrack.extension.svn;
 
 import net.ontrack.core.model.Ack;
-import net.ontrack.core.model.UserMessage;
 import net.ontrack.extension.svn.service.IndexationService;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.web.support.AbstractUIController;
@@ -10,7 +9,6 @@ import net.sf.jstring.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/ui/extension/svn/indexation")
@@ -30,27 +28,25 @@ public class IndexationUIController extends AbstractUIController {
         return indexationService.getLastRevisionInfo(repositoryId);
     }
 
-    @RequestMapping(value = "/latest", method = RequestMethod.GET)
-    public String latest(RedirectAttributes redirectAttributes) {
-        // FIXME Indexation from latest
-        if (indexationService.isIndexationRunning(0)) {
-            return alreadyRunning(redirectAttributes);
+    @RequestMapping(value = "/{repositoryId}/latest", method = RequestMethod.GET)
+    @ResponseBody
+    public Ack latest(@PathVariable int repositoryId) {
+        if (indexationService.isIndexationRunning(repositoryId)) {
+            return Ack.NOK;
         } else {
-            indexationService.indexFromLatest(0);
-            // Goes back to the home page
-            return "redirect:/";
+            indexationService.indexFromLatest(repositoryId);
+            return Ack.OK;
         }
     }
 
-    @RequestMapping(value = "/range", method = RequestMethod.POST)
-    public String range(@RequestParam long from, @RequestParam long to, RedirectAttributes redirectAttributes) {
-        // FIXME Indexation of a range
-        if (indexationService.isIndexationRunning(0)) {
-            return alreadyRunning(redirectAttributes);
+    @RequestMapping(value = "/{repositoryId}/range", method = RequestMethod.POST)
+    @ResponseBody
+    public Ack range(@PathVariable int repositoryId, @RequestParam long from, @RequestParam long to) {
+        if (indexationService.isIndexationRunning(repositoryId)) {
+            return Ack.NOK;
         } else {
-            indexationService.indexRange(0, from, to);
-            // Goes back to the home page
-            return "redirect:/";
+            indexationService.indexRange(repositoryId, from, to);
+            return Ack.OK;
         }
     }
 
@@ -64,10 +60,5 @@ public class IndexationUIController extends AbstractUIController {
             indexationService.reindex(repositoryId);
             return Ack.OK;
         }
-    }
-
-    private String alreadyRunning(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("message", UserMessage.error("subversion.indexation.alreadyrunning"));
-        return "redirect:/gui/extension/svn/indexation";
     }
 }
