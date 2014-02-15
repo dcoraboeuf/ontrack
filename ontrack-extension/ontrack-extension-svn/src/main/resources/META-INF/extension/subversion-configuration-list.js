@@ -1,4 +1,4 @@
-define(['crud', 'ajax', 'dialog'], function (crud, ajax, dialog) {
+define(['crud', 'ajax', 'dialog', 'common'], function (crud, ajax, dialog, common) {
 
     function indexationDialog(repositoryId) {
         ajax.get({
@@ -10,10 +10,29 @@ define(['crud', 'ajax', 'dialog'], function (crud, ajax, dialog) {
                     data: {
                         lastRevisionInfo: lastRevisionInfo
                     },
-                    buttons: [{
-                        text: 'general.cancel'.loc(),
-                        action: 'cancel'
-                    }]
+                    buttons: [
+                        {
+                            text: 'general.cancel'.loc(),
+                            action: 'cancel'
+                        }
+                    ],
+                    initFn: function (dialog) {
+                        // TODO Indexation from latest
+                        // TODO Range indexation
+                        // Full indexation
+                        dialog.form.find('#subversion-indexation-dialog-full-submit').click(function () {
+                            common.confirmAndCall(
+                                'subversion.indexation.full.confirmation'.loc(),
+                                function () {
+                                    ajax.post({
+                                        url: 'ui/extension/svn/indexation/{0}/full'.format(repositoryId),
+                                        successFn: dialog.closeFn,
+                                        errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                                    })
+                                }
+                            )
+                        })
+                    }
                 })
             }
         })
