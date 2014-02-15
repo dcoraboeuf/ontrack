@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class TSVNCopyEvent {
 
+    private final int repository;
     private final long revision;
     private final String copyFromPath;
     private final long copyFromRevision;

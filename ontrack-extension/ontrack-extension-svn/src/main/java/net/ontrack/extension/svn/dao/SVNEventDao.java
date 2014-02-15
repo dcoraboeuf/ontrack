@@ -14,15 +14,15 @@ public interface SVNEventDao {
 
     void createStopEvent(int repositoryId, long revision, String path);
 
-    TSVNCopyEvent getLastCopyEvent(String path, long revision);
+    TSVNCopyEvent getLastCopyEvent(int repositoryId, String path, long revision);
 
-    Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
+    Collection<SVNLocation> getCopiesFrom(int repositoryId, SVNLocation location, SVNLocationSortMode sortMode);
 
-    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
+    Collection<SVNLocation> getCopiesFromBefore(int repositoryId, SVNLocation location, SVNLocationSortMode sortMode);
 
-    List<TSVNEvent> getAllEvents(String path);
+    List<TSVNEvent> getAllEvents(int repositoryId, String path);
 
-    TSVNEvent getLastEvent(String path);
+    TSVNEvent getLastEvent(int repositoryId, String path);
 
-    SVNLocation getFirstCopyAfter(SVNLocation location);
+    SVNLocation getFirstCopyAfter(int repositoryId, SVNLocation location);
 }

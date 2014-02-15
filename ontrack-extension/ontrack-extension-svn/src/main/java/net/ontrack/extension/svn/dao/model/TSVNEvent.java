@@ -6,6 +6,7 @@ import net.ontrack.extension.svn.SVNEventType;
 @Data
 public class TSVNEvent {
 
+    private final int repository;
     private final long revision;
     private final SVNEventType type;
     private final String copyFromPath;

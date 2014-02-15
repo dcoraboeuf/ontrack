@@ -62,7 +62,7 @@ public interface SubversionService {
 
     List<Long> getMergedRevisions(SVNRepository repository, SVNURL svnurl, long revision);
 
-    List<Long> getMergesForRevision(long revision);
+    List<Long> getMergesForRevision(SVNRepository repository, long revision);
 
     boolean exists(SVNRepository repository, SVNURL url, SVNRevision revision);
 
@@ -116,15 +116,15 @@ public interface SubversionService {
      */
     String getFileChangeBrowsingURL(SVNRepository repository, String path, long revision);
 
-    Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
+    Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
-    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
+    Collection<SVNLocation> getCopiesFromBefore(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
     boolean isIndexedIssue(String key);
 
     List<Long> getRevisionsForIssueKey(String key);
 
-    boolean isClosed(String path);
+    boolean isClosed(SVNRepository repository, String path);
 
-    SVNLocation getFirstCopyAfter(SVNLocation location);
+    SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location);
 }

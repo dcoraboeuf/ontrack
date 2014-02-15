@@ -286,7 +286,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
 
         // Gets the first copy event on this path after this revision
-        SVNLocation firstCopy = subversionService.getFirstCopyAfter(basicInfo.toLocation());
+        // FIXME SVN Repository
+        SVNLocation firstCopy = subversionService.getFirstCopyAfter(null, basicInfo.toLocation());
 
         // Data to collect
         Collection<BuildInfo> buildSummaries = new ArrayList<>();
@@ -387,7 +388,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         ChangeLogRevision firstRevision = revisions.get(0);
         RevisionInfo revisionInfo = getRevisionInfo(locale, firstRevision.getRevision());
         // Merged revisions
-        List<Long> merges = subversionService.getMergesForRevision(revisionInfo.getChangeLogRevision().getRevision());
+        // FIXME SVN Repository
+        List<Long> merges = subversionService.getMergesForRevision(null, revisionInfo.getChangeLogRevision().getRevision());
         List<RevisionInfo> mergedRevisionInfos = new ArrayList<>();
         Set<String> paths = new HashSet<>();
         for (long merge : merges) {
@@ -439,7 +441,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 // Gets the top
                 SVNTreeNode current = stack.pop();
                 // Gets all the copies from this location
+                // FIXME SVN Repository
                 Collection<SVNLocation> copies = subversionService.getCopiesFrom(
+                        null,
                         current.getLocation().withRevision(1),
                         SVNLocationSortMode.FROM_NEWEST);
                 // No copy?
@@ -469,7 +473,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 public void visit(SVNTreeNode node) {
                     // FIXME Gets the repository configuration from the project
                     if (subversionService.isTrunkOrBranch(null, node.getLocation().getPath())) {
-                        node.setClosed(subversionService.isClosed(node.getLocation().getPath()));
+                        // FIXME SVN Repository
+                        node.setClosed(subversionService.isClosed(null, node.getLocation().getPath()));
                     }
                     // Loops over children
                     node.filterChildren(new Predicate<SVNTreeNode>() {

@@ -64,11 +64,11 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional(readOnly = true)
-    public TRevision get(long revision) {
+    public TRevision get(int repositoryId, long revision) {
         try {
             return getNamedParameterJdbcTemplate().queryForObject(
-                    "SELECT * FROM REVISION WHERE REVISION = :revision",
-                    params("revision", revision),
+                    "SELECT * FROM EXT_SVN_REVISION WHERE REPOSITORY = :repository AND REVISION = :revision",
+                    params("revision", revision).addValue("repository", repositoryId),
                     revisionRowMapper
             );
         } catch (EmptyResultDataAccessException ex) {
@@ -117,10 +117,10 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getMergesForRevision(long revision) {
+    public List<Long> getMergesForRevision(int repositoryId, long revision) {
         return getNamedParameterJdbcTemplate().queryForList(
-                "SELECT TARGET FROM MERGE_REVISION WHERE REVISION = :revision ORDER BY TARGET",
-                params("revision", revision),
+                "SELECT TARGET FROM EXT_SVN_MERGE_REVISION WHERE REPOSITORY = :repository REVISION = :revision ORDER BY TARGET",
+                params("revision", revision).addValue("repository", repositoryId),
                 Long.class
         );
     }

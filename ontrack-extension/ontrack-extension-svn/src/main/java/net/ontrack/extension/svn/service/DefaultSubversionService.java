@@ -47,6 +47,7 @@ public class DefaultSubversionService implements SubversionService {
     private final RepositoryDao repositoryDao;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
+    // FIXME Issue indexation to refactor
     private final IssueRevisionDao issueRevisionDao;
     private final SecurityUtils securityUtils;
 
@@ -106,15 +107,15 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isClosed(String path) {
-        TSVNEvent lastEvent = svnEventDao.getLastEvent(path);
+    public boolean isClosed(SVNRepository repository, String path) {
+        TSVNEvent lastEvent = svnEventDao.getLastEvent(repository.getId(), path);
         return lastEvent != null && lastEvent.getType() == SVNEventType.STOP;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SVNLocation getFirstCopyAfter(SVNLocation location) {
-        return svnEventDao.getFirstCopyAfter(location);
+    public SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location) {
+        return svnEventDao.getFirstCopyAfter(repository.getId(), location);
     }
 
     @Override
@@ -166,14 +167,14 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode) {
-        return svnEventDao.getCopiesFrom(location, sortMode);
+    public Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFrom(repository.getId(), location, sortMode);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode) {
-        return svnEventDao.getCopiesFromBefore(location, sortMode);
+    public Collection<SVNLocation> getCopiesFromBefore(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFromBefore(repository.getId(), location, sortMode);
     }
 
     @Override
@@ -216,7 +217,7 @@ public class DefaultSubversionService implements SubversionService {
     @Override
     @Transactional(readOnly = true)
     public SVNRevisionInfo getRevisionInfo(SVNRepository repository, long revision) {
-        TRevision t = revisionDao.get(revision);
+        TRevision t = revisionDao.get(repository.getId(), revision);
         return new SVNRevisionInfo(
                 t.getRevision(),
                 t.getAuthor(),
@@ -332,8 +333,8 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getMergesForRevision(long revision) {
-        return revisionDao.getMergesForRevision(revision);
+    public List<Long> getMergesForRevision(SVNRepository repository, long revision) {
+        return revisionDao.getMergesForRevision(repository.getId(), revision);
     }
 
     @Override
@@ -371,7 +372,7 @@ public class DefaultSubversionService implements SubversionService {
 
     private SVNReference getOrigin(SVNRepository repository, SVNReference destination) {
         // Gets the last copy event
-        TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(destination.getPath(), destination.getRevision());
+        TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(repository.getId(), destination.getPath(), destination.getRevision());
         if (copyEvent != null) {
             return getReference(repository, copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
         } else {
