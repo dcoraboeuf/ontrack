@@ -38,7 +38,8 @@ public class RevisionSearchProvider implements SearchProvider {
         if (extensionManager.isExtensionEnabled(SVNExplorerExtension.EXTENSION)) {
             long revision = Long.parseLong(token, 10);
             try {
-                subversionService.getRevisionInfo(revision);
+                // FIXME SVN Repository - looping over them
+                subversionService.getRevisionInfo(null, revision);
                 return Collections.singleton(
                         new SearchResult(
                                 String.valueOf(revision),

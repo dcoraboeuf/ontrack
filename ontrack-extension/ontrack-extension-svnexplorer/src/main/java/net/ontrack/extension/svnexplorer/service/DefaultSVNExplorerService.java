@@ -158,7 +158,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // FIXME Repository from the summary
                     subversionService.log(
                             null,
-                            SVNUtils.toURL(subversionService.getURL(reference.getPath())),
+                            SVNUtils.toURL(subversionService.getURL(null, reference.getPath())),
                             SVNRevision.create(reference.getEnd()),
                             SVNRevision.create(reference.getStart()),
                             SVNRevision.create(reference.getEnd()),
@@ -273,8 +273,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Override
     @Transactional(readOnly = true)
     public RevisionInfo getRevisionInfo(Locale locale, long revision) {
+        // FIXME SVN Repository
         // Gets information about the revision
-        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
+        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
         ChangeLogRevision changeLogRevision = createChangeLogRevision(
                 basicInfo.getPath(),
                 0,
@@ -370,7 +371,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 new Function<Long, ChangeLogRevision>() {
                     @Override
                     public ChangeLogRevision apply(Long revision) {
-                        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(revision);
+                        // FIXME SVN Repository
+                        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
                         return createChangeLogRevision(
                                 basicInfo.getPath(),
                                 0,
@@ -425,7 +427,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             }
             // FIXME Gets the repository configuration from the project
             // Gets the latest revision on this root path
-            long rootRevision = subversionService.getRepositoryRevision(null, SVNUtils.toURL(subversionService.getURL(rootPath)));
+            long rootRevision = subversionService.getRepositoryRevision(null, SVNUtils.toURL(subversionService.getURL(null, rootPath)));
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Tree of locations
             SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
@@ -623,14 +625,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Existing file entry?
             ChangeLogFile changeLogFile = files.get(path);
             if (changeLogFile == null) {
-                changeLogFile = new ChangeLogFile(path, subversionService.getBrowsingURL(path));
+                // FIXME SVN Repository
+                changeLogFile = new ChangeLogFile(path, subversionService.getBrowsingURL(null, path));
                 files.put(path, changeLogFile);
             }
             // Adds the revision and the type
             ChangeLogFileChange change = new ChangeLogFileChange(
                     revisionPaths.getInfo(),
                     revisionPath.getChangeType(),
-                    subversionService.getFileChangeBrowsingURL(path, revisionPaths.getInfo().getRevision())
+                    // FIXME SVN Repository
+                    subversionService.getFileChangeBrowsingURL(null, path, revisionPaths.getInfo().getRevision())
             );
             changeLogFile.addChange(change);
         }
@@ -649,7 +653,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Existing issue?
             if (changeLogIssue != null) {
                 // Attaches the revision to this issue
-                SVNRevisionInfo issueRevision = subversionService.getRevisionInfo(revision);
+                // FIXME SVN Repository
+                SVNRevisionInfo issueRevision = subversionService.getRevisionInfo(null, revision);
                 changeLogIssue = changeLogIssue.addRevision(issueRevision);
                 // Puts back into the cache
                 issues.put(issueKey, changeLogIssue);
@@ -686,7 +691,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Formatted message
         String formattedMessage = jiraService.insertIssueUrlsInMessage(message);
         // Revision URL
-        String revisionUrl = subversionService.getRevisionBrowsingURL(revision);
+        // FIXME SVN Repository
+        String revisionUrl = subversionService.getRevisionBrowsingURL(null, revision);
         // OK
         return new ChangeLogRevision(
                 path,

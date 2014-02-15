@@ -1,11 +1,9 @@
 package net.ontrack.extension.svn.service;
 
-import com.google.common.base.Function;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.svn.SVNEventType;
-import net.ontrack.extension.svn.SubversionConfigurationExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
@@ -45,24 +43,6 @@ public class DefaultSubversionService implements SubversionService {
     public static final int HISTORY_MAX_DEPTH = 6;
     private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private final Pattern pathWithRevision = Pattern.compile("(.*)@(\\d+)$");
-    /**
-     * Transforms a DAO revision into a formatted revision information object.
-     */
-    private final Function<TRevision, SVNRevisionInfo> revisionInfoFunction = new Function<TRevision, SVNRevisionInfo>() {
-        @Override
-        public SVNRevisionInfo apply(TRevision t) {
-            return new SVNRevisionInfo(
-                    t.getRevision(),
-                    t.getAuthor(),
-                    t.getCreation(),
-                    t.getBranch(),
-                    formatRevisionTime(t.getCreation()),
-                    t.getMessage(),
-                    getRevisionBrowsingURL(t.getRevision())
-            );
-        }
-    };
-    private final SubversionConfigurationExtension configurationExtension;
     private final TransactionService transactionService;
     private final RepositoryDao repositoryDao;
     private final SVNEventDao svnEventDao;
@@ -71,8 +51,7 @@ public class DefaultSubversionService implements SubversionService {
     private final SecurityUtils securityUtils;
 
     @Autowired
-    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, RepositoryDao repositoryDao, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
-        this.configurationExtension = configurationExtension;
+    public DefaultSubversionService(TransactionService transactionService, RepositoryDao repositoryDao, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
         this.transactionService = transactionService;
         this.repositoryDao = repositoryDao;
         this.svnEventDao = svnEventDao;
@@ -142,7 +121,7 @@ public class DefaultSubversionService implements SubversionService {
     @Transactional(readOnly = true)
     public SVNRevisionPaths getRevisionPaths(SVNRepository repository, long revision) {
         // Result
-        final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
+        final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(repository, revision));
         // Gets the URL of the repository
         SVNURL rootUrl = repository.getSVNURL();
         // Gets the diff for the revision
@@ -176,12 +155,12 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public String getFileChangeBrowsingURL(String path, long revision) {
-        String browserForPathAndRevision = configurationExtension.getBrowserForChange();
+    public String getFileChangeBrowsingURL(SVNRepository repository, String path, long revision) {
+        String browserForPathAndRevision = repository.getBrowserForChange();
         if (StringUtils.isNotBlank(browserForPathAndRevision)) {
             return browserForPathAndRevision.replace("*", path).replace("$", String.valueOf(revision));
         } else {
-            return getURL(path);
+            return getURL(repository, path);
         }
     }
 
@@ -210,23 +189,23 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public String getURL(String path) {
-        return configurationExtension.getUrl() + path;
+    public String getURL(SVNRepository repository, String path) {
+        return repository.getUrl() + path;
     }
 
     @Override
-    public String getBrowsingURL(String path) {
-        String browserForPath = configurationExtension.getBrowserForPath();
+    public String getBrowsingURL(SVNRepository repository, String path) {
+        String browserForPath = repository.getBrowserForPath();
         if (StringUtils.isNotBlank(browserForPath)) {
             return browserForPath.replace("*", path);
         } else {
-            return getURL(path);
+            return getURL(repository, path);
         }
     }
 
     @Override
-    public String getRevisionBrowsingURL(long revision) {
-        String browserForPath = configurationExtension.getBrowserForRevision();
+    public String getRevisionBrowsingURL(SVNRepository repository, long revision) {
+        String browserForPath = repository.getBrowserForRevision();
         if (StringUtils.isNotBlank(browserForPath)) {
             return browserForPath.replace("*", String.valueOf(revision));
         } else {
@@ -236,8 +215,17 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRevisionInfo getRevisionInfo(long revision) {
-        return revisionInfoFunction.apply(revisionDao.get(revision));
+    public SVNRevisionInfo getRevisionInfo(SVNRepository repository, long revision) {
+        TRevision t = revisionDao.get(revision);
+        return new SVNRevisionInfo(
+                t.getRevision(),
+                t.getAuthor(),
+                t.getCreation(),
+                t.getBranch(),
+                formatRevisionTime(t.getCreation()),
+                t.getMessage(),
+                getRevisionBrowsingURL(repository, t.getRevision())
+        );
     }
 
     @Override
@@ -403,7 +391,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     private SVNReference getReference(SVNRepository repository, String path, SVNRevision revision) {
-        String url = getURL(path);
+        String url = getURL(repository, path);
         SVNURL svnurl = SVNUtils.toURL(url);
         SVNInfo info = getInfo(repository, svnurl, revision);
         return new SVNReference(

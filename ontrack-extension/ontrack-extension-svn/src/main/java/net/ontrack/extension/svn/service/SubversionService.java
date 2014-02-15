@@ -40,12 +40,12 @@ public interface SubversionService {
     /**
      * Gets the absolute URL that for a path in the subversion repository
      */
-    String getURL(String path);
+    String getURL(SVNRepository repository, String path);
 
     /**
      * Gets the browsing URL that for a path in the subversion repository
      */
-    String getBrowsingURL(String path);
+    String getBrowsingURL(SVNRepository repository, String path);
 
     /**
      * Gets the latest revision for the URL
@@ -83,7 +83,7 @@ public interface SubversionService {
     /**
      * Gets the URL that allows a user to browse the content of a revision
      */
-    String getRevisionBrowsingURL(long revision);
+    String getRevisionBrowsingURL(SVNRepository repository, long revision);
 
     /**
      * Returns the list of indexed issues for a given revision
@@ -99,7 +99,7 @@ public interface SubversionService {
      * @param revision Revision to get information about
      * @return Full details about this revision
      */
-    SVNRevisionInfo getRevisionInfo(long revision);
+    SVNRevisionInfo getRevisionInfo(SVNRepository repository, long revision);
 
     /**
      * Formats a date as ISO for a revision
@@ -114,7 +114,7 @@ public interface SubversionService {
     /**
      * Gets the URL that allows to browse for one changeset on a path
      */
-    String getFileChangeBrowsingURL(String path, long revision);
+    String getFileChangeBrowsingURL(SVNRepository repository, String path, long revision);
 
     Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
 

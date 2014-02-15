@@ -51,12 +51,13 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
 
     @Override
     public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String path) {
+        // FIXME Gets the repository from the project
         if (StringUtils.isBlank(path)) {
             return "";
         } else {
             return String.format(
                     "<a href=\"%s\">%s</a>",
-                    subversionService.getBrowsingURL(path),
+                    subversionService.getBrowsingURL(null, path),
                     path
             );
         }
