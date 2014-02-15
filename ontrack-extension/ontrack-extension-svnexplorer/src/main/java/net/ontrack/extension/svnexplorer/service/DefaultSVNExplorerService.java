@@ -368,7 +368,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         JIRAIssue issue = jiraService.getIssue(key);
         // Gets the list of revisions & their basic info (order from latest to oldest)
         List<ChangeLogRevision> revisions = Lists.transform(
-                subversionService.getRevisionsForIssueKey(key),
+                // FIXME SVN Repository
+                subversionService.getRevisionsForIssueKey(null, key),
                 new Function<Long, ChangeLogRevision>() {
                     @Override
                     public ChangeLogRevision apply(Long revision) {
@@ -647,7 +648,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     private void collectIssuesForRevision(Map<String, ChangeLogIssue> issues, long revision) {
         // Gets all issues attached to this revision
-        List<String> issueKeys = subversionService.getIssueKeysForRevision(revision);
+        // FIXME SVN Repository
+        List<String> issueKeys = subversionService.getIssueKeysForRevision(null, revision);
         // For each issue
         for (String issueKey : issueKeys) {
             // Gets its details if not indexed yet

@@ -91,7 +91,7 @@ public interface SubversionService {
      * @param revision Revision to get the issue keys for
      * @return List of keys, never <code>null</code>
      */
-    List<String> getIssueKeysForRevision(long revision);
+    List<String> getIssueKeysForRevision(SVNRepository repository, long revision);
 
     /**
      * Gets the information about a revision
@@ -118,11 +118,15 @@ public interface SubversionService {
 
     Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
+    // TODO This method seems not being used
     Collection<SVNLocation> getCopiesFromBefore(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
+    /**
+     * Is this issue indexed in any repository?
+     */
     boolean isIndexedIssue(String key);
 
-    List<Long> getRevisionsForIssueKey(String key);
+    List<Long> getRevisionsForIssueKey(SVNRepository repository, String key);
 
     boolean isClosed(SVNRepository repository, String path);
 

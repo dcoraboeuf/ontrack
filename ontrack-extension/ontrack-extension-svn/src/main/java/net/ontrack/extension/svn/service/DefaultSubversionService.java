@@ -1,5 +1,7 @@
 package net.ontrack.extension.svn.service;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
@@ -34,6 +36,7 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,14 +182,27 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isIndexedIssue(String key) {
-        return issueRevisionDao.isIndexed(key);
+    public boolean isIndexedIssue(final String key) {
+        return securityUtils.asAdmin(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return Iterables.any(
+                        getAllRepositories(),
+                        new Predicate<SVNRepository>() {
+                            @Override
+                            public boolean apply(SVNRepository repository) {
+                                return issueRevisionDao.isIndexed(repository.getId(), key);
+                            }
+                        }
+                );
+            }
+        });
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getRevisionsForIssueKey(String key) {
-        return issueRevisionDao.findRevisionsByIssue(key);
+    public List<Long> getRevisionsForIssueKey(SVNRepository repository, String key) {
+        return issueRevisionDao.findRevisionsByIssue(repository.getId(), key);
     }
 
     @Override
@@ -231,8 +247,8 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getIssueKeysForRevision(long revision) {
-        return issueRevisionDao.findIssuesByRevision(revision);
+    public List<String> getIssueKeysForRevision(SVNRepository repository, long revision) {
+        return issueRevisionDao.findIssuesByRevision(repository.getId(), revision);
     }
 
     @Override

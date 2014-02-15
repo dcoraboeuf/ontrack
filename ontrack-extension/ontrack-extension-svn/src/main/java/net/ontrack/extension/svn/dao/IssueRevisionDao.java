@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface IssueRevisionDao {
 
-    void link(long revision, String key);
+    void link(int repository, long revision, String key);
 
-    List<String> findIssuesByRevision(long revision);
+    List<String> findIssuesByRevision(int repository, long revision);
 
-    boolean isIndexed(String key);
+    boolean isIndexed(int repository, String key);
 
-    List<Long> findRevisionsByIssue(String key);
+    List<Long> findRevisionsByIssue(int repository, String key);
 }
