@@ -46,10 +46,11 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     @Override
     @Transactional(readOnly = true)
     public long getLast(int repositoryId) {
-        return getNamedParameterJdbcTemplate().queryForObject(
+        Long value = getNamedParameterJdbcTemplate().queryForObject(
                 "SELECT MAX(REVISION) FROM EXT_SVN_REVISION WHERE REPOSITORY = :repositoryId",
                 params("repositoryId", repositoryId),
                 Long.class);
+        return value != null ? value : 0L;
     }
 
     @Override
