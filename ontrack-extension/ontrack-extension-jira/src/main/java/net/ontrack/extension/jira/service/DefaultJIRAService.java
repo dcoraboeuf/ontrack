@@ -1,11 +1,8 @@
 package net.ontrack.extension.jira.service;
 
 import com.atlassian.httpclient.api.HttpStatus;
-import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
@@ -17,11 +14,9 @@ import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.*;
-import net.ontrack.extension.jira.tx.DefaultJIRASession;
-import net.ontrack.extension.jira.tx.JIRAConnectionException;
 import net.ontrack.extension.jira.tx.JIRASession;
+import net.ontrack.extension.jira.tx.JIRASessionFactory;
 import net.ontrack.tx.Transaction;
-import net.ontrack.tx.TransactionResource;
 import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -29,8 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +36,7 @@ public class DefaultJIRAService implements JIRAService {
     private final JIRAConfigurationService jiraConfigurationService;
     private final PropertiesService propertiesService;
     private final TransactionService transactionService;
+    private final JIRASessionFactory jiraSessionFactory;
     /**
      * Conversion to a JIRAVersion from a REST JIRA version
      */
@@ -57,10 +51,11 @@ public class DefaultJIRAService implements JIRAService {
     };
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
+    public DefaultJIRAService(JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService, JIRASessionFactory jiraSessionFactory) {
         this.jiraConfigurationService = jiraConfigurationService;
         this.propertiesService = propertiesService;
         this.transactionService = transactionService;
+        this.jiraSessionFactory = jiraSessionFactory;
     }
 
     @Override
@@ -161,22 +156,7 @@ public class DefaultJIRAService implements JIRAService {
         return tx.getResource(JIRASession.class, configuration.getId(), new TransactionResourceProvider<JIRASession>() {
             @Override
             public JIRASession createTxResource() {
-                String url = configuration.getUrl();
-                String user = configuration.getUser();
-                String password = configuration.getPassword();
-                JiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
-                try {
-                    URI jiraServerUri = new URI(url);
-                    JiraRestClient client = factory.createWithBasicHttpAuthentication(jiraServerUri, user, password);
-                    return new DefaultJIRASession(client);
-                } catch (URISyntaxException ex) {
-                    throw new JIRAConnectionException(url, ex);
-                }
-            }
-
-            @Override
-            public boolean supports(Class<? extends TransactionResource> resourceType) {
-                return true;
+                return jiraSessionFactory.create(configuration);
             }
         });
     }

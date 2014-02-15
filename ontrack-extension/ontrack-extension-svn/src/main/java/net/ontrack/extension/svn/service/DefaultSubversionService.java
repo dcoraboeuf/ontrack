@@ -19,7 +19,6 @@ import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.extension.svn.tx.DefaultSVNSession;
 import net.ontrack.extension.svn.tx.SVNSession;
 import net.ontrack.tx.Transaction;
-import net.ontrack.tx.TransactionResource;
 import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
@@ -499,11 +498,6 @@ public class DefaultSubversionService implements SubversionService {
                                 }
                                 // OK
                                 return new DefaultSVNSession(clientManager);
-                            }
-
-                            @Override
-                            public boolean supports(Class<? extends TransactionResource> resourceType) {
-                                return true;
                             }
                         }
                 )
