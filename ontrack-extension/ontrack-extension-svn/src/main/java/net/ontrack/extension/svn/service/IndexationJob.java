@@ -1,5 +1,7 @@
 package net.ontrack.extension.svn.service;
 
+import net.ontrack.extension.svn.service.model.SVNRepository;
+
 public interface IndexationJob {
 
 	boolean isRunning();
@@ -14,4 +16,9 @@ public interface IndexationJob {
 	 * Returns the job progression in percentage (0..100)
 	 */
 	int getProgress();
+
+    /**
+     * Returns the associated SVN repository
+     */
+    SVNRepository getRepository();
 }

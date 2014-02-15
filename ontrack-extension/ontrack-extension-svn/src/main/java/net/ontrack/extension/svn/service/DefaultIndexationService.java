@@ -176,7 +176,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             max = Math.max(from, to);
         }
         // Indexation job
-        DefaultIndexationJob job = new DefaultIndexationJob(repositoryId, min, max);
+        DefaultIndexationJob job = new DefaultIndexationJob(subversionService.getRepository(repositoryId), min, max);
         indexationJobs.put(repositoryId, job);
         // Schedule the scan
         executor.submit(job);
@@ -195,8 +195,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
      * Indexation of a range in a thread for one repository - since it is called by a single thread executor, we can
      * be sure that only one call of this method is running at one time for one given repository.
      */
-    // FIXME Uses the SVNRepository object instead of the ID
-    protected void index(int repositoryId, long from, long to, IndexationListener indexationListener) {
+    protected void index(SVNRepository repository, long from, long to, IndexationListener indexationListener) {
         // Ordering
         if (from > to) {
             long t = from;
@@ -210,7 +209,6 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             // FIXME The repository must be linked with an `IssueMessageScanner` at configuration level
             // JIRAConfiguration jiraConfiguration = jiraConfigurationService.getConfigurationByName("default");
             // SVN URL
-            SVNRepository repository = subversionService.getRepository(repositoryId);
             SVNURL url = SVNUtils.toURL(repository.getUrl());
             // Filters the revision range using the repository configuration
             long startRevision = repository.getIndexationStart();
@@ -223,7 +221,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 throw new IllegalArgumentException(String.format("Cannot index range from %d to %d", from, to));
             }
             // Log
-            logger.info("[svn-indexation] Repository={}, Range: {}-{}", repositoryId, from, to);
+            logger.info("[svn-indexation] Repository={}, Range: {}-{}", repository.getId(), from, to);
             // SVN range
             SVNRevision fromRevision = SVNRevision.create(from);
             SVNRevision toRevision = SVNRevision.create(to);
@@ -469,17 +467,22 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
     private class DefaultIndexationJob implements IndexationJob, Runnable, IndexationListener {
 
-        private final int repositoryId;
+        private final SVNRepository repository;
         private final long min;
         private final long max;
         private boolean running;
         private long current;
 
-        private DefaultIndexationJob(int repositoryId, long min, long max) {
-            this.repositoryId = repositoryId;
+        private DefaultIndexationJob(SVNRepository repository, long min, long max) {
+            this.repository = repository;
             this.min = min;
             this.max = max;
             this.current = min;
+        }
+
+        @Override
+        public SVNRepository getRepository() {
+            return repository;
         }
 
         @Override
@@ -512,11 +515,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         public void run() {
             try {
                 running = true;
-                index(repositoryId, min, max, this);
+                index(repository, min, max, this);
             } catch (Exception ex) {
                 logger.error(String.format("Could not index range from %s to %s", min, max), ex);
             } finally {
-                indexationJobs.remove(repositoryId);
+                indexationJobs.remove(repository.getId());
             }
         }
 
