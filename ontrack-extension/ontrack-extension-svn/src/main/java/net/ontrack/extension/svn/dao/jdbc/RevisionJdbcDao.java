@@ -45,8 +45,11 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional(readOnly = true)
-    public long getLast() {
-        return getJdbcTemplate().queryForLong("SELECT MAX(REVISION) FROM REVISION");
+    public long getLast(int repositoryId) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                "SELECT MAX(REVISION) FROM EXT_SVN_REVISION WHERE REPOSITORY = :repositoryId",
+                params("repositoryId", repositoryId),
+                Long.class);
     }
 
     @Override
@@ -74,13 +77,13 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional
-    public void addRevision(long revision, String author, DateTime date, String dbMessage, String branch) {
+    public void addRevision(int repositoryId, long revision, String author, DateTime date, String dbMessage, String branch) {
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
         // Getting rid of the revision
-        MapSqlParameterSource params = params("revision", revision);
-        t.update("DELETE FROM REVISION WHERE REVISION = :revision", params);
+        MapSqlParameterSource params = params("revision", revision).addValue("repositoryId", repositoryId);
+        t.update("DELETE FROM EXT_SVN_REVISION WHERE REPOSITORY =:repositoryId AND REVISION = :revision", params);
         // Creates the revision record
-        t.update("INSERT INTO REVISION (REVISION, AUTHOR, CREATION, MESSAGE, BRANCH) VALUES (:revision, :author, :creation, :message, :branch)",
+        t.update("INSERT INTO EXT_SVN_REVISION (REPOSITORY, REVISION, AUTHOR, CREATION, MESSAGE, BRANCH) VALUES (:repositoryId, :revision, :author, :creation, :message, :branch)",
                 params
                         .addValue("author", author)
                         .addValue("creation", SQLUtils.toTimestamp(date))
@@ -91,17 +94,23 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
 
     @Override
     @Transactional
-    public void deleteAll() {
-        getJdbcTemplate().update("DELETE FROM REVISION");
+    public void deleteAll(int repositoryId) {
+        getNamedParameterJdbcTemplate().update(
+                "DELETE FROM EXT_SVN_REVISION WHERE REPOSITORY = :repositoryId",
+                params("repositoryId", repositoryId)
+        );
     }
 
     @Override
     @Transactional
-    public void addMergedRevisions(long revision, List<Long> mergedRevisions) {
+    public void addMergedRevisions(int repositoryId, long revision, List<Long> mergedRevisions) {
         NamedParameterJdbcTemplate t = getNamedParameterJdbcTemplate();
         for (long mergedRevision : mergedRevisions) {
-            t.update("INSERT INTO MERGE_REVISION (REVISION, TARGET) VALUES (:mergedRevision, :revision)",
-                    params("mergedRevision", mergedRevision).addValue("revision", revision));
+            t.update("INSERT INTO SVN_EXT_MERGE_REVISION (REPOSITORY, REVISION, TARGET) VALUES (:repository, :mergedRevision, :revision)",
+                    params("mergedRevision", mergedRevision)
+                            .addValue("repository", repositoryId)
+                            .addValue("revision", revision)
+            );
         }
     }
 

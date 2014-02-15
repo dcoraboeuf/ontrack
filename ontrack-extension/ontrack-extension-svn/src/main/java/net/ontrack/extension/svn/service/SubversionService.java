@@ -50,7 +50,7 @@ public interface SubversionService {
     /**
      * Gets the latest revision for the URL
      */
-    long getRepositoryRevision(SVNURL url);
+    long getRepositoryRevision(int repositoryId, SVNURL url);
 
     SVNReference getReference(SVNLocation location);
 
@@ -58,7 +58,7 @@ public interface SubversionService {
              boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions,
              ISVNLogEntryHandler isvnLogEntryHandler);
 
-    boolean isTrunkOrBranch(String path);
+    boolean isTrunkOrBranch(SVNRepository repository, String path);
 
     List<Long> getMergedRevisions(SVNURL svnurl, long revision);
 
@@ -66,9 +66,9 @@ public interface SubversionService {
 
     boolean exists(SVNURL url, SVNRevision revision);
 
-    boolean isTagOrBranch(String path);
+    boolean isTagOrBranch(SVNRepository repository, String path);
 
-    boolean isTag(String path);
+    boolean isTag(SVNRepository repository, String path);
 
     /**
      * Gets the Subversion history from a path
@@ -78,7 +78,7 @@ public interface SubversionService {
      * @return History of copy events. Never null and will at least contain the information
      *         for the given <code>path</code>.
      */
-    SVNHistory getHistory(String path);
+    SVNHistory getHistory(int repositoryId, String path);
 
     /**
      * Gets the URL that allows a user to browse the content of a revision

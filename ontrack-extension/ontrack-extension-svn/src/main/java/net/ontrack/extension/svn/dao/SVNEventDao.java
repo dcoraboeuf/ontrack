@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface SVNEventDao {
 
-    void createCopyEvent(long revision, String copyFromPath, long copyFromRevision, String copyToPath);
+    void createCopyEvent(int repositoryId, long revision, String copyFromPath, long copyFromRevision, String copyToPath);
 
-    void createStopEvent(long revision, String path);
+    void createStopEvent(int repositoryId, long revision, String path);
 
     TSVNCopyEvent getLastCopyEvent(String path, long revision);
 

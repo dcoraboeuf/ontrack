@@ -243,7 +243,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public long getRepositoryRevision(SVNURL url) {
+    public long getRepositoryRevision(int repositoryId, SVNURL url) {
         try {
             SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
             return info.getCommittedRevision().getNumber();
@@ -345,13 +345,15 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public SVNHistory getHistory(String path) {
+    public SVNHistory getHistory(int repositoryId, String path) {
+        // Configuration
+        SVNRepository repository = getRepository(repositoryId);
         // Gets the reference for this first path
         SVNReference reference = getReference(path);
         // Initializes the history
         SVNHistory history = new SVNHistory();
         // Adds the initial reference if this a branch or trunk
-        if (isTrunkOrBranch(reference.getPath())) {
+        if (isTrunkOrBranch(repository, reference.getPath())) {
             history = history.add(reference);
         }
         // Loops on copies
@@ -362,7 +364,7 @@ public class DefaultSubversionService implements SubversionService {
             SVNReference origin = getOrigin(reference);
             if (origin != null) {
                 // Adds to the history if this a branch or trunk
-                if (isTrunkOrBranch(origin.getPath())) {
+                if (isTrunkOrBranch(repository, origin.getPath())) {
                     history = history.add(origin);
                 }
                 // Going on
@@ -422,22 +424,22 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public boolean isTagOrBranch(String path) {
-        return isTag(path) || isBranch(path);
+    public boolean isTagOrBranch(SVNRepository repository, String path) {
+        return isTag(repository, path) || isBranch(repository, path);
     }
 
     @Override
-    public boolean isTrunkOrBranch(String path) {
-        return isTrunk(path) || isBranch(path);
+    public boolean isTrunkOrBranch(SVNRepository repository, String path) {
+        return isTrunk(path) || isBranch(repository, path);
     }
 
     @Override
-    public boolean isTag(String path) {
-        return isPathOK(configurationExtension.getTagPattern(), path);
+    public boolean isTag(SVNRepository repository, String path) {
+        return isPathOK(repository.getTagPattern(), path);
     }
 
-    private boolean isBranch(String path) {
-        return isPathOK(configurationExtension.getBranchPattern(), path);
+    private boolean isBranch(SVNRepository repository, String path) {
+        return isPathOK(repository.getBranchPattern(), path);
     }
 
     private boolean isPathOK(String pattern, String path) {
@@ -464,6 +466,7 @@ public class DefaultSubversionService implements SubversionService {
         return getClientManager().getDiffClient();
     }
 
+    // FIXME The session depends on the repository
     protected SVNClientManager getClientManager() {
         // Gets the current transaction
         Transaction transaction = transactionService.get();

@@ -26,7 +26,13 @@ define(['crud', 'ajax', 'dialog', 'common'], function (crud, ajax, dialog, commo
                                 function () {
                                     ajax.post({
                                         url: 'ui/extension/svn/indexation/{0}/full'.format(repositoryId),
-                                        successFn: dialog.closeFn,
+                                        successFn: function (ack) {
+                                            if (ack.success) {
+                                                dialog.closeFn()
+                                            } else {
+                                                dialog.errorFn('subversion.indexation.alreadyrunning'.loc())
+                                            }
+                                        },
                                         errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
                                     })
                                 }

@@ -92,6 +92,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         return getById(id);
     }
 
+    // TODO Caching
     @Override
     public SVNRepository update(int id, SVNRepositoryForm form) {
         getNamedParameterJdbcTemplate().update(
@@ -113,6 +114,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         return getById(id);
     }
 
+    // TODO Caching
     @Override
     public SVNRepository getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
@@ -122,6 +124,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         );
     }
 
+    // TODO Caching
     @Override
     public Ack delete(int id) {
         return Ack.one(

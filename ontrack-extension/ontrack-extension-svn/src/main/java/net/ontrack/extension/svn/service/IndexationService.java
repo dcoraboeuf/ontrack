@@ -4,13 +4,13 @@ import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 
 public interface IndexationService {
 
-    void indexFromLatest();
+    void indexFromLatest(int repositoryId);
 
-    void indexRange(Long from, Long to);
+    void indexRange(int repositoryId, Long from, Long to);
 
-    void reindex();
+    void reindex(int repositoryId);
 
-    boolean isIndexationRunning();
+    boolean isIndexationRunning(int repositoryId);
 
     LastRevisionInfo getLastRevisionInfo(int repositoryId);
 }

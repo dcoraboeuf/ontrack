@@ -421,8 +421,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             if (StringUtils.isBlank(rootPath)) {
                 throw new ProjectHasRootPathException(project.getName());
             }
+            // FIXME Gets the repository configuration from the project
             // Gets the latest revision on this root path
-            long rootRevision = subversionService.getRepositoryRevision(SVNUtils.toURL(subversionService.getURL(rootPath)));
+            long rootRevision = subversionService.getRepositoryRevision(0, SVNUtils.toURL(subversionService.getURL(rootPath)));
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Tree of locations
             SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
@@ -439,8 +440,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         SVNLocationSortMode.FROM_NEWEST);
                 // No copy?
                 if (copies.isEmpty()) {
+                    // FIXME Gets the repository configuration from the project
                     // Trunk or branch
-                    if (subversionService.isTrunkOrBranch(current.getLocation().getPath())) {
+                    if (subversionService.isTrunkOrBranch(null, current.getLocation().getPath())) {
                         // Attaches to the parent
                         current.attachToParent();
                     }
@@ -461,7 +463,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
                 @Override
                 public void visit(SVNTreeNode node) {
-                    if (subversionService.isTrunkOrBranch(node.getLocation().getPath())) {
+                    // FIXME Gets the repository configuration from the project
+                    if (subversionService.isTrunkOrBranch(null, node.getLocation().getPath())) {
                         node.setClosed(subversionService.isClosed(node.getLocation().getPath()));
                     }
                     // Loops over children
@@ -480,8 +483,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
                 @Override
                 public void visit(SVNTreeNode node) {
+                    // FIXME Gets the repository configuration from the project
                     // Is this node a tag?
-                    node.setTag(subversionService.isTag(node.getLocation().getPath()));
+                    node.setTag(subversionService.isTag(null, node.getLocation().getPath()));
                     // Loops over children
                     node.filterChildren(new Predicate<SVNTreeNode>() {
 
@@ -530,10 +534,11 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     }
 
     private BranchHistoryLine createBranchHistoryLine(final Locale locale, SVNLocation location) {
+        // FIXME Gets the repository configuration from the project
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
                 subversionService.getReference(location),
-                subversionService.isTag(location.getPath())
+                subversionService.isTag(null, location.getPath())
         );
         // Branch?
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, location.getPath());
@@ -697,7 +702,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Gets the build SVN tag
         String buildPath = getBuildPath(build.getBranch().getId(), build.getName());
         // Gets the history for this tag using the SubversionService
-        SVNHistory history = subversionService.getHistory(buildPath);
+        // FIXME Gets the repository ID from the build's project
+        SVNHistory history = subversionService.getHistory(0, buildPath);
         // OK
         return new SVNBuild(
                 build,

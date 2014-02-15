@@ -51,10 +51,11 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
 
     @Override
     @Transactional
-    public void createCopyEvent(long revision, String copyFromPath, long copyFromRevision, String copyToPath) {
+    public void createCopyEvent(int repositoryId, long revision, String copyFromPath, long copyFromRevision, String copyToPath) {
         getNamedParameterJdbcTemplate().update(
-                "INSERT INTO SVNCOPYEVENT (REVISION, COPYFROMPATH, COPYFROMREVISION, COPYTOPATH) VALUES (:revision, :copyFromPath, :copyFromRevision, :copyToPath)",
+                "INSERT INTO EXT_SVN_COPY (REPOSITORY, REVISION, COPYFROMPATH, COPYFROMREVISION, COPYTOPATH) VALUES (:repository, :revision, :copyFromPath, :copyFromRevision, :copyToPath)",
                 params("revision", revision)
+                        .addValue("repository", repositoryId)
                         .addValue("copyFromPath", copyFromPath)
                         .addValue("copyFromRevision", copyFromRevision)
                         .addValue("copyToPath", copyToPath)
@@ -63,10 +64,11 @@ public class SVNEventJdbcDao extends AbstractJdbcDao implements SVNEventDao {
 
     @Override
     @Transactional
-    public void createStopEvent(long revision, String path) {
+    public void createStopEvent(int repositoryId, long revision, String path) {
         getNamedParameterJdbcTemplate().update(
-                "INSERT INTO SVNSTOPEVENT (REVISION, PATH) VALUES (:revision, :path)",
+                "INSERT INTO EXT_SVN_STOP (REPOSITORY, REVISION, PATH) VALUES (:repository, :revision, :path)",
                 params("revision", revision)
+                        .addValue("repository", repositoryId)
                         .addValue("path", path));
     }
 

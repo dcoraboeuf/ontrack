@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface RevisionDao {
 
-    long getLast();
+    long getLast(int repositoryId);
 
-    void addRevision(long revision, String author, DateTime date, String dbMessage, String branch);
+    void addRevision(int repositoryId, long revision, String author, DateTime date, String dbMessage, String branch);
 
-    void deleteAll();
+    void deleteAll(int repositoryId);
 
-    void addMergedRevisions(long revision, List<Long> mergedRevisions);
+    void addMergedRevisions(int repositoryId, long revision, List<Long> mergedRevisions);
 
     List<Long> getMergesForRevision(long revision);
 
