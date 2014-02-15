@@ -269,7 +269,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
      * // Cache for issues
      * Set<String> revisionIssues = new HashSet<>();
      * // Gets all issues
-     * // FIXME Indexation is dependent on the project!
+     * // FIXME Indexation of the issues is dependent on the project!
      * Set<String> issues = jiraService.extractIssueKeysFromMessage(0, message);
      * // For each issue in the message
      * for (String issueKey : issues) {

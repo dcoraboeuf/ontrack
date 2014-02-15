@@ -475,7 +475,6 @@ public class DefaultSubversionService implements SubversionService {
         return getClientManager(repository).getDiffClient();
     }
 
-    // FIXME The session depends on the repository
     protected SVNClientManager getClientManager(final SVNRepository repository) {
         // Gets the current transaction
         Transaction transaction = transactionService.get();
