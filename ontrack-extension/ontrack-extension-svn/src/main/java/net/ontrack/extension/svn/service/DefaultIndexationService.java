@@ -44,8 +44,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-// TODO There should not be any dependency on the JIRA module!
-// TODO Remove all commented code about JIRA
 @Service
 public class DefaultIndexationService implements IndexationService, ScheduledService, InfoProvider {
 
@@ -205,9 +203,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
         // Opens a transaction
         try (Transaction ignored = transactionService.start()) {
-            // Gets the 'default' JIRA configuration
             // FIXME The repository must be linked with an `IssueMessageScanner` at configuration level
-            // JIRAConfiguration jiraConfiguration = jiraConfigurationService.getConfigurationByName("default");
             // SVN URL
             SVNURL url = SVNUtils.toURL(repository.getUrl());
             // Filters the revision range using the repository configuration
@@ -234,7 +230,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     /**
      * This method is executed within a transaction
      */
-    private void indexInTransaction(SVNRepository repository, /*JIRAConfiguration jiraConfiguration, */SVNLogEntry logEntry) throws SVNException {
+    private void indexInTransaction(SVNRepository repository, SVNLogEntry logEntry) throws SVNException {
         // Log values
         long revision = logEntry.getRevision();
         String author = logEntry.getAuthor();
@@ -437,12 +433,10 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private class IndexationHandler implements ISVNLogEntryHandler {
 
         private final SVNRepository repository;
-        // private final JIRAConfiguration jiraConfiguration;
         private final IndexationListener indexationListener;
 
-        public IndexationHandler(/*JIRAConfiguration jiraConfiguration, */SVNRepository repository, IndexationListener indexationListener) {
+        public IndexationHandler(SVNRepository repository, IndexationListener indexationListener) {
             this.repository = repository;
-            // this.jiraConfiguration = jiraConfiguration;
             this.indexationListener = indexationListener;
         }
 
@@ -455,7 +449,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
                     try {
                         indexationListener.setRevision(logEntry.getRevision());
-                        indexInTransaction(repository, /*jiraConfiguration, */logEntry);
+                        indexInTransaction(repository, logEntry);
                     } catch (Exception ex) {
                         logger.error("Cannot index revision " + logEntry.getRevision(), ex);
                         throw new RuntimeException(ex);
