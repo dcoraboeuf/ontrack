@@ -74,7 +74,8 @@ public class GitJiraServiceImpl implements GitJiraService {
         BranchSummary branch = managementService.getBranch(branchId);
         final int projectId = branch.getProject().getId();
         // Gets the details about the issue
-        JIRAIssue issue = jiraService.getIssue(key);
+        // FIXME JIRA Configuration
+        JIRAIssue issue = jiraService.getIssue(null, key);
         // Git configuration
         GitConfiguration gitConfiguration = gitService.getGitConfiguration(branchId);
         // Git client

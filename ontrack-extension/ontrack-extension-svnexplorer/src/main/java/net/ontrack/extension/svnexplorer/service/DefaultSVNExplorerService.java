@@ -365,7 +365,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Transactional(readOnly = true)
     public IssueInfo getIssueInfo(Locale locale, String key) {
         // Gets the details about the issue
-        JIRAIssue issue = jiraService.getIssue(key);
+        // FIXME JIRA Configuration
+        JIRAIssue issue = jiraService.getIssue(null, key);
         // Gets the list of revisions & their basic info (order from latest to oldest)
         List<ChangeLogRevision> revisions = Lists.transform(
                 // FIXME SVN Repository
@@ -672,7 +673,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private ChangeLogIssue getChangeLogIssue(String issueKey) {
         // Gets the details about the JIRA issue
         try {
-            JIRAIssue issue = jiraService.getIssue(issueKey);
+            // FIXME JIRA Configuration
+            JIRAIssue issue = jiraService.getIssue(null, issueKey);
             if (issue == null || StringUtils.isBlank(issue.getKey())) {
                 return null;
             }
@@ -696,7 +698,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     private ChangeLogRevision createChangeLogRevision(String path, int level, long revision, String message, String author, DateTime revisionDate) {
         // Formatted message
-        String formattedMessage = jiraService.insertIssueUrlsInMessage(message);
+        // FIXME JIRA configuration
+        String formattedMessage = jiraService.insertIssueUrlsInMessage(null, message);
         // Revision URL
         // FIXME SVN Repository
         String revisionUrl = subversionService.getRevisionBrowsingURL(null, revision);

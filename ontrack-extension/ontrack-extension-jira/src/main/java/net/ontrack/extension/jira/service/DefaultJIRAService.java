@@ -1,24 +1,36 @@
 package net.ontrack.extension.jira.service;
 
 import com.atlassian.httpclient.api.HttpStatus;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.extension.jira.*;
+import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
+import net.ontrack.extension.jira.JIRAConfigurationService;
+import net.ontrack.extension.jira.JIRAExtension;
+import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.model.*;
+import net.ontrack.extension.jira.tx.DefaultJIRASession;
+import net.ontrack.extension.jira.tx.JIRAConnectionException;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
+import net.ontrack.tx.TransactionResource;
+import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +40,6 @@ import java.util.regex.Matcher;
 @Service
 public class DefaultJIRAService implements JIRAService {
 
-    private final JIRAConfigurationExtension configurationExtension;
     private final JIRAConfigurationService jiraConfigurationService;
     private final PropertiesService propertiesService;
     private final TransactionService transactionService;
@@ -46,8 +57,7 @@ public class DefaultJIRAService implements JIRAService {
     };
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationExtension configurationExtension, JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
-        this.configurationExtension = configurationExtension;
+    public DefaultJIRAService(JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService) {
         this.jiraConfigurationService = jiraConfigurationService;
         this.propertiesService = propertiesService;
         this.transactionService = transactionService;
@@ -71,16 +81,16 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public String insertIssueUrlsInMessage(String message) {
+    public String insertIssueUrlsInMessage(JIRAConfiguration configuration, String message) {
         // First, makes the message HTML-ready
         String htmlMessage = StringEscapeUtils.escapeHtml4(message);
         // Replaces each issue by a link
         StringBuffer html = new StringBuffer();
-        Matcher matcher = JIRAConfigurationExtension.ISSUE_PATTERN.matcher(htmlMessage);
+        Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(htmlMessage);
         while (matcher.find()) {
             String key = matcher.group();
-            if (configurationExtension.isIssue(key)) {
-                String href = getIssueURL(key);
+            if (configuration.isIssue(key)) {
+                String href = getIssueURL(configuration, key);
                 String link = String.format("<a href=\"%s\">%s</a>", href, key);
                 matcher.appendReplacement(html, link);
             }
@@ -91,14 +101,14 @@ public class DefaultJIRAService implements JIRAService {
     }
 
     @Override
-    public String getIssueURL(String key) {
-        return configurationExtension.getIssueURL(key);
+    public String getIssueURL(JIRAConfiguration configuration, String key) {
+        return configuration.getIssueURL(key);
     }
 
     @Override
-    public JIRAIssue getIssue(String key) {
+    public JIRAIssue getIssue(JIRAConfiguration configuration, String key) {
         try (Transaction tx = transactionService.start()) {
-            JIRASession session = tx.getResource(JIRASession.class);
+            JIRASession session = getJIRASession(tx, configuration);
             try {
                 // Gets the JIRA issue
                 Issue issue = session.getClient().getIssueClient().getIssue(key).claim();
@@ -121,11 +131,11 @@ public class DefaultJIRAService implements JIRAService {
                 List<JIRAVersion> fixVersions = toVersions(issue.getFixVersions());
 
                 // Status
-                JIRAStatus status = toStatus(issue.getStatus());
+                JIRAStatus status = toStatus(configuration, issue.getStatus());
 
                 // Formatted JIRA issue
                 return new JIRAIssue(
-                        getIssueURL(issue.getKey()),
+                        getIssueURL(configuration, issue.getKey()),
                         issue.getKey(),
                         issue.getSummary(),
                         status,
@@ -147,9 +157,33 @@ public class DefaultJIRAService implements JIRAService {
         }
     }
 
+    private JIRASession getJIRASession(Transaction tx, final JIRAConfiguration configuration) {
+        return tx.getResource(JIRASession.class, configuration.getId(), new TransactionResourceProvider<JIRASession>() {
+            @Override
+            public JIRASession createTxResource() {
+                String url = configuration.getUrl();
+                String user = configuration.getUser();
+                String password = configuration.getPassword();
+                JiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
+                try {
+                    URI jiraServerUri = new URI(url);
+                    JiraRestClient client = factory.createWithBasicHttpAuthentication(jiraServerUri, user, password);
+                    return new DefaultJIRASession(client);
+                } catch (URISyntaxException ex) {
+                    throw new JIRAConnectionException(url, ex);
+                }
+            }
+
+            @Override
+            public boolean supports(Class<? extends TransactionResource> resourceType) {
+                return true;
+            }
+        });
+    }
+
     @Override
-    public boolean isIssue(String token) {
-        return configurationExtension.isIssue(token);
+    public boolean isIssue(JIRAConfiguration configuration, String token) {
+        return configuration.isIssue(token);
     }
 
     @Override
@@ -171,16 +205,16 @@ public class DefaultJIRAService implements JIRAService {
         );
     }
 
-    private JIRAStatus toStatus(BasicStatus status) {
+    private JIRAStatus toStatus(JIRAConfiguration configuration, BasicStatus status) {
         return new JIRAStatus(
                 status.getName(),
-                getStatusIconURL(status)
+                getStatusIconURL(configuration, status)
         );
     }
 
-    private String getStatusIconURL(BasicStatus status) {
+    private String getStatusIconURL(JIRAConfiguration configuration, BasicStatus status) {
         try (Transaction tx = transactionService.start()) {
-            Status s = tx.getResource(JIRASession.class).getClient().getMetadataClient().getStatus(status.getSelf()).claim();
+            Status s = getJIRASession(tx, configuration).getClient().getMetadataClient().getStatus(status.getSelf()).claim();
             return s.getIconUrl().toString();
         }
     }

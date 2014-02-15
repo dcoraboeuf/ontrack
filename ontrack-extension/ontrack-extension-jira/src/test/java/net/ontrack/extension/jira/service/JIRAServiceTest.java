@@ -7,6 +7,7 @@ import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAConfigurationExtension;
 import net.ontrack.extension.jira.JIRAConfigurationService;
+import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.jira.tx.JIRASession;
 import net.ontrack.tx.Transaction;
@@ -25,7 +26,7 @@ public class JIRAServiceTest {
 
     @Test
     public void issueNotFound() {
-        JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
+        JIRAConfiguration config = createJiraConfiguration();
         TransactionService transactionService = mock(TransactionService.class);
         Transaction tx = mock(Transaction.class);
         JIRASession jiraSession = mock(JIRASession.class);
@@ -35,7 +36,7 @@ public class JIRAServiceTest {
         PropertiesService propertiesService = mock(PropertiesService.class);
 
         when(transactionService.start()).thenReturn(tx);
-        when(tx.getResource(JIRASession.class)).thenReturn(jiraSession);
+        // TODO when(tx.getResource(JIRASession.class)).thenReturn(jiraSession);
         when(jiraSession.getClient()).thenReturn(client);
         when(client.getIssueClient()).thenReturn(issueClient);
         when(issueClient.getIssue("XXX-1")).thenThrow(new RestClientException(
@@ -50,29 +51,33 @@ public class JIRAServiceTest {
         ));
 
         DefaultJIRAService service = new DefaultJIRAService(
-                configurationExtension,
                 jiraConfigurationService, propertiesService, transactionService
         );
-        JIRAIssue issue = service.getIssue("XXX-1");
+        JIRAIssue issue = service.getIssue(config, "XXX-1");
         assertNull(issue);
+    }
+
+    private JIRAConfiguration createJiraConfiguration() {
+        return new JIRAConfiguration(0, "test", "http://jira", "user", "pwd", Collections.<String>emptySet(), Collections.<String>emptySet());
     }
 
     @Test
     public void isIssue() {
+        JIRAConfiguration config = createJiraConfiguration();
         JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
         JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
         PropertiesService propertiesService = mock(PropertiesService.class);
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
-                configurationExtension,
                 jiraConfigurationService, propertiesService, transactionService
         );
-        service.isIssue("TEST-12");
+        service.isIssue(config, "TEST-12");
         verify(configurationExtension, times(1)).isIssue("TEST-12");
     }
 
     @Test
     public void insertIssueUrlsInMessage() {
+        JIRAConfiguration config = createJiraConfiguration();
         JIRAConfigurationExtension configurationExtension = mock(JIRAConfigurationExtension.class);
         JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
         PropertiesService propertiesService = mock(PropertiesService.class);
@@ -80,10 +85,9 @@ public class JIRAServiceTest {
         when(configurationExtension.getIssueURL("PRJ-13")).thenReturn("http://jira/browse/PRJ-13");
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
-                configurationExtension,
                 jiraConfigurationService, propertiesService, transactionService
         );
-        String message = service.insertIssueUrlsInMessage("TEST-12, PRJ-12, PRJ-13 List of issues");
+        String message = service.insertIssueUrlsInMessage(config, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals("TEST-12, PRJ-12, <a href=\"http://jira/browse/PRJ-13\">PRJ-13</a> List of issues", message);
     }
 
@@ -95,7 +99,6 @@ public class JIRAServiceTest {
         PropertiesService propertiesService = mock(PropertiesService.class);
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
-                configurationExtension,
                 jiraConfigurationService, propertiesService, transactionService
         );
         Set<String> issues = service.extractIssueKeysFromMessage(1, "TEST-12, PRJ-12, PRJ-13 List of issues");

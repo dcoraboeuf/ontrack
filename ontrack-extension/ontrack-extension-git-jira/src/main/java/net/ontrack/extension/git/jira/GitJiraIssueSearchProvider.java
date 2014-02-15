@@ -5,7 +5,7 @@ import com.google.common.collect.Collections2;
 import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.jira.JIRAService;
+import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.service.GUIService;
 import net.ontrack.service.SearchProvider;
 import net.ontrack.web.support.AbstractGUIController;
@@ -26,16 +26,14 @@ import java.util.Locale;
 @Controller
 public class GitJiraIssueSearchProvider extends AbstractGUIController implements SearchProvider {
 
-    private final JIRAService jiraService;
     private final ExtensionManager extensionManager;
     private final GUIService guiService;
     private final GitJiraService gitJiraService;
     private final EntityConverter entityConverter;
 
     @Autowired
-    public GitJiraIssueSearchProvider(ErrorHandler errorHandler, JIRAService jiraService, ExtensionManager extensionManager, GUIService guiService, GitJiraService gitJiraService, EntityConverter entityConverter) {
+    public GitJiraIssueSearchProvider(ErrorHandler errorHandler, ExtensionManager extensionManager, GUIService guiService, GitJiraService gitJiraService, EntityConverter entityConverter) {
         super(errorHandler);
-        this.jiraService = jiraService;
         this.extensionManager = extensionManager;
         this.guiService = guiService;
         this.gitJiraService = gitJiraService;
@@ -44,7 +42,7 @@ public class GitJiraIssueSearchProvider extends AbstractGUIController implements
 
     @Override
     public boolean isTokenSearchable(String token) {
-        return jiraService.isIssue(token);
+        return JIRAConfiguration.ISSUE_PATTERN.matcher(token).matches();
     }
 
     @Override

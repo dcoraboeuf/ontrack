@@ -2,7 +2,7 @@ package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.jira.JIRAService;
+import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.service.GUIService;
 import net.ontrack.service.SearchProvider;
@@ -16,14 +16,12 @@ import java.util.Collections;
 @Component
 public class IssueSearchProvider implements SearchProvider {
 
-    private final JIRAService jiraService;
     private final SubversionService subversionService;
     private final GUIService guiService;
     private final ExtensionManager extensionManager;
 
     @Autowired
-    public IssueSearchProvider(JIRAService jiraService, SubversionService subversionService, GUIService guiService, ExtensionManager extensionManager) {
-        this.jiraService = jiraService;
+    public IssueSearchProvider(SubversionService subversionService, GUIService guiService, ExtensionManager extensionManager) {
         this.subversionService = subversionService;
         this.guiService = guiService;
         this.extensionManager = extensionManager;
@@ -31,7 +29,7 @@ public class IssueSearchProvider implements SearchProvider {
 
     @Override
     public boolean isTokenSearchable(String token) {
-        return jiraService.isIssue(token);
+        return JIRAConfiguration.ISSUE_PATTERN.matcher(token).matches();
     }
 
     @Override
