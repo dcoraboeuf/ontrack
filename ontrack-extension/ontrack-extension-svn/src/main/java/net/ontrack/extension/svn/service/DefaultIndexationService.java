@@ -124,7 +124,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             // Logging
             logger.info("[svn-indexation] Repository={}, LastScannedRevision={}", repositoryId, lastScannedRevision);
             // HEAD revision
-            long repositoryRevision = subversionService.getRepositoryRevision(repositoryId, url);
+            long repositoryRevision = subversionService.getRepositoryRevision(repository, url);
             // Request index of the range
             indexRange(repositoryId, lastScannedRevision + 1, repositoryRevision);
         }
@@ -136,8 +136,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             TRevision r = revisionDao.getLastRevision(repositoryId);
             if (r != null) {
                 // Loads the repository information
-                SVNURL url = SVNUtils.toURL(subversionService.getRepository(repositoryId).getUrl());
-                long repositoryRevision = subversionService.getRepositoryRevision(repositoryId, url);
+                SVNRepository repository = subversionService.getRepository(repositoryId);
+                SVNURL url = SVNUtils.toURL(repository.getUrl());
+                long repositoryRevision = subversionService.getRepositoryRevision(repository, url);
                 // OK
                 return new LastRevisionInfo(
                         r.getRevision(),
@@ -188,6 +189,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
      * Indexation of a range in a thread for one repository - since it is called by a single thread executor, we can
      * be sure that only one call of this method is running at one time for one given repository.
      */
+    // FIXME Uses the SVNRepository object instead of the ID
     protected void index(int repositoryId, long from, long to, IndexationListener indexationListener) {
         // Ordering
         if (from > to) {
@@ -208,7 +210,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             long startRevision = repository.getIndexationStart();
             from = Math.max(startRevision, from);
             // Filters the revision range using the SVN repository
-            long repositoryRevision = subversionService.getRepositoryRevision(repositoryId, url);
+            long repositoryRevision = subversionService.getRepositoryRevision(repository, url);
             to = Math.min(to, repositoryRevision);
             // Final check of range
             if (from > to) {
@@ -221,7 +223,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             SVNRevision toRevision = SVNRevision.create(to);
             // Calls the indexer, including merge revisions
             IndexationHandler handler = new IndexationHandler(repository, /*jiraConfiguration, */indexationListener);
-            subversionService.log(url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
+            subversionService.log(repository, url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
         }
     }
 
@@ -245,7 +247,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         revisionDao.addRevision(repository.getId(), revision, author, dateTime, message, branch);
         // Merge relationships (using a nested SVN client)
         try (Transaction ignored = transactionService.start(true)) {
-            List<Long> mergedRevisions = subversionService.getMergedRevisions(SVNUtils.toURL(repository.getUrl(), branch), revision);
+            List<Long> mergedRevisions = subversionService.getMergedRevisions(repository, SVNUtils.toURL(repository.getUrl(), branch), revision);
             revisionDao.addMergedRevisions(repository.getId(), revision, mergedRevisions);
         }
         // Subversion events

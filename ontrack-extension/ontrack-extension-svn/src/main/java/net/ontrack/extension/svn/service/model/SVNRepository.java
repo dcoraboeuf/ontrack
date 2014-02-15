@@ -1,6 +1,8 @@
 package net.ontrack.extension.svn.service.model;
 
 import lombok.Data;
+import net.ontrack.extension.svn.support.SVNUtils;
+import org.tmatesoft.svn.core.SVNURL;
 
 @Data
 public class SVNRepository {
@@ -20,4 +22,7 @@ public class SVNRepository {
     private final long indexationStart;
 
 
+    public SVNURL getSVNURL() {
+        return SVNUtils.toURL(url);
+    }
 }

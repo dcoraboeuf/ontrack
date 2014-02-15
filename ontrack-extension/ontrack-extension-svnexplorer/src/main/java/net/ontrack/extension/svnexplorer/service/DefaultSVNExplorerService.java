@@ -155,7 +155,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // List of log entries
                     SVNLogEntryCollector logEntryCollector = new SVNLogEntryCollector();
                     // SVN change log
+                    // FIXME Repository from the summary
                     subversionService.log(
+                            null,
                             SVNUtils.toURL(subversionService.getURL(reference.getPath())),
                             SVNRevision.create(reference.getEnd()),
                             SVNRevision.create(reference.getStart()),
@@ -423,7 +425,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             }
             // FIXME Gets the repository configuration from the project
             // Gets the latest revision on this root path
-            long rootRevision = subversionService.getRepositoryRevision(0, SVNUtils.toURL(subversionService.getURL(rootPath)));
+            long rootRevision = subversionService.getRepositoryRevision(null, SVNUtils.toURL(subversionService.getURL(rootPath)));
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Tree of locations
             SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
@@ -537,7 +539,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // FIXME Gets the repository configuration from the project
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
-                subversionService.getReference(location),
+                subversionService.getReference(null, location),
                 subversionService.isTag(null, location.getPath())
         );
         // Branch?
@@ -614,7 +616,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     }
 
     private void collectFilesForRevision(Map<String, ChangeLogFile> files, long revision) {
-        SVNRevisionPaths revisionPaths = subversionService.getRevisionPaths(revision);
+        // FIXME SVN repository
+        SVNRevisionPaths revisionPaths = subversionService.getRevisionPaths(null, revision);
         for (SVNRevisionPath revisionPath : revisionPaths.getPaths()) {
             String path = revisionPath.getPath();
             // Existing file entry?

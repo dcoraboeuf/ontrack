@@ -50,21 +50,21 @@ public interface SubversionService {
     /**
      * Gets the latest revision for the URL
      */
-    long getRepositoryRevision(int repositoryId, SVNURL url);
+    long getRepositoryRevision(SVNRepository repository, SVNURL url);
 
-    SVNReference getReference(SVNLocation location);
+    SVNReference getReference(SVNRepository repository, SVNLocation location);
 
-    void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
+    void log(SVNRepository repository, SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
              boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions,
              ISVNLogEntryHandler isvnLogEntryHandler);
 
     boolean isTrunkOrBranch(SVNRepository repository, String path);
 
-    List<Long> getMergedRevisions(SVNURL svnurl, long revision);
+    List<Long> getMergedRevisions(SVNRepository repository, SVNURL svnurl, long revision);
 
     List<Long> getMergesForRevision(long revision);
 
-    boolean exists(SVNURL url, SVNRevision revision);
+    boolean exists(SVNRepository repository, SVNURL url, SVNRevision revision);
 
     boolean isTagOrBranch(SVNRepository repository, String path);
 
@@ -109,7 +109,7 @@ public interface SubversionService {
     /**
      * Gets the list of changes for a revision
      */
-    SVNRevisionPaths getRevisionPaths(long revision);
+    SVNRevisionPaths getRevisionPaths(SVNRepository repository, long revision);
 
     /**
      * Gets the URL that allows to browse for one changeset on a path

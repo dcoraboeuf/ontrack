@@ -136,14 +136,14 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRevisionPaths getRevisionPaths(long revision) {
+    public SVNRevisionPaths getRevisionPaths(SVNRepository repository, long revision) {
         // Result
         final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
         // Gets the URL of the repository
-        SVNURL rootUrl = SVNUtils.toURL(configurationExtension.getUrl());
+        SVNURL rootUrl = repository.getSVNURL();
         // Gets the diff for the revision
         try {
-            getDiffClient().doDiffStatus(
+            getDiffClient(repository).doDiffStatus(
                     rootUrl,
                     SVNRevision.create(revision - 1),
                     rootUrl,
@@ -243,9 +243,9 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public long getRepositoryRevision(int repositoryId, SVNURL url) {
+    public long getRepositoryRevision(SVNRepository repository, SVNURL url) {
         try {
-            SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
+            SVNInfo info = getWCClient(repository).doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
             return info.getCommittedRevision().getNumber();
         } catch (SVNException e) {
             throw translateSVNException(e);
@@ -253,9 +253,9 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision, boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions, ISVNLogEntryHandler isvnLogEntryHandler) {
+    public void log(SVNRepository repository, SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision, boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions, ISVNLogEntryHandler isvnLogEntryHandler) {
         try {
-            getLogClient().doLog(url, null, pegRevision, startRevision, stopRevision, stopOnCopy, discoverChangedPaths,
+            getLogClient(repository).doLog(url, null, pegRevision, startRevision, stopRevision, stopOnCopy, discoverChangedPaths,
                     includeMergedRevisions, limit, null, isvnLogEntryHandler);
         } catch (SVNException e) {
             throw translateSVNException(e);
@@ -263,10 +263,10 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public boolean exists(SVNURL url, SVNRevision revision) {
+    public boolean exists(SVNRepository repository, SVNURL url, SVNRevision revision) {
         // Tries to gets information
         try {
-            SVNInfo info = getWCClient().doInfo(url, revision, revision);
+            SVNInfo info = getWCClient(repository).doInfo(url, revision, revision);
             return info != null;
         } catch (SVNException ex) {
             return false;
@@ -274,17 +274,17 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public List<Long> getMergedRevisions(SVNURL url, long revision) {
+    public List<Long> getMergedRevisions(SVNRepository repository, SVNURL url, long revision) {
         // Checks that the URL exists at both R-1 and R
         SVNRevision rm1 = SVNRevision.create(revision - 1);
         SVNRevision r = SVNRevision.create(revision);
-        boolean existRM1 = exists(url, rm1);
-        boolean existR = exists(url, r);
+        boolean existRM1 = exists(repository, url, rm1);
+        boolean existR = exists(repository, url, r);
         try {
             // Both revisions must be valid in order to get some merges in between
             if (existRM1 && existR) {
                 // Gets the changes in merge information
-                SVNDiffClient diffClient = getDiffClient();
+                SVNDiffClient diffClient = getDiffClient(repository);
                 @SuppressWarnings("unchecked")
                 Map<SVNURL, SVNMergeRangeList> before = diffClient.doGetMergedMergeInfo(url, rm1);
                 @SuppressWarnings("unchecked")
@@ -320,7 +320,7 @@ public class DefaultSubversionService implements SubversionService {
                         for (SVNMergeRange mergeRange : mergeRanges) {
                             SVNRevision endRevision = SVNRevision.create(mergeRange.getEndRevision());
                             SVNRevision startRevision = SVNRevision.create(mergeRange.getStartRevision());
-                            log(source, endRevision, startRevision, endRevision, true, false, 0, false, collector);
+                            log(repository, source, endRevision, startRevision, endRevision, true, false, 0, false, collector);
                         }
                     }
                     List<Long> revisions = new ArrayList<>();
@@ -349,7 +349,7 @@ public class DefaultSubversionService implements SubversionService {
         // Configuration
         SVNRepository repository = getRepository(repositoryId);
         // Gets the reference for this first path
-        SVNReference reference = getReference(path);
+        SVNReference reference = getReference(repository, path);
         // Initializes the history
         SVNHistory history = new SVNHistory();
         // Adds the initial reference if this a branch or trunk
@@ -361,7 +361,7 @@ public class DefaultSubversionService implements SubversionService {
         while (reference != null && depth > 0) {
             depth--;
             // Gets the reference of the source
-            SVNReference origin = getOrigin(reference);
+            SVNReference origin = getOrigin(repository, reference);
             if (origin != null) {
                 // Adds to the history if this a branch or trunk
                 if (isTrunkOrBranch(repository, origin.getPath())) {
@@ -377,31 +377,31 @@ public class DefaultSubversionService implements SubversionService {
         return history;
     }
 
-    private SVNReference getOrigin(SVNReference destination) {
+    private SVNReference getOrigin(SVNRepository repository, SVNReference destination) {
         // Gets the last copy event
         TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(destination.getPath(), destination.getRevision());
         if (copyEvent != null) {
-            return getReference(copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
+            return getReference(repository, copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
         } else {
             return null;
         }
     }
 
-    private SVNReference getReference(String path) {
+    private SVNReference getReference(SVNRepository repository, String path) {
         Matcher matcher = pathWithRevision.matcher(path);
         if (matcher.matches()) {
             String pathOnly = matcher.group(1);
             long revision = Long.parseLong(matcher.group(2), 10);
-            return getReference(pathOnly, SVNRevision.create(revision));
+            return getReference(repository, pathOnly, SVNRevision.create(revision));
         } else {
-            return getReference(path, SVNRevision.HEAD);
+            return getReference(repository, path, SVNRevision.HEAD);
         }
     }
 
-    private SVNReference getReference(String path, SVNRevision revision) {
+    private SVNReference getReference(SVNRepository repository, String path, SVNRevision revision) {
         String url = getURL(path);
         SVNURL svnurl = SVNUtils.toURL(url);
-        SVNInfo info = getInfo(svnurl, revision);
+        SVNInfo info = getInfo(repository, svnurl, revision);
         return new SVNReference(
                 path,
                 url,
@@ -411,13 +411,13 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public SVNReference getReference(SVNLocation location) {
-        return getReference(location.getPath(), SVNRevision.create(location.getRevision()));
+    public SVNReference getReference(SVNRepository repository, SVNLocation location) {
+        return getReference(repository, location.getPath(), SVNRevision.create(location.getRevision()));
     }
 
-    private SVNInfo getInfo(SVNURL url, SVNRevision revision) {
+    private SVNInfo getInfo(SVNRepository repository, SVNURL url, SVNRevision revision) {
         try {
-            return getWCClient().doInfo(url, revision, revision);
+            return getWCClient(repository).doInfo(url, revision, revision);
         } catch (SVNException e) {
             throw translateSVNException(e);
         }
@@ -454,20 +454,20 @@ public class DefaultSubversionService implements SubversionService {
         return new SubversionException(e);
     }
 
-    protected SVNWCClient getWCClient() {
-        return getClientManager().getWCClient();
+    protected SVNWCClient getWCClient(SVNRepository repository) {
+        return getClientManager(repository).getWCClient();
     }
 
-    protected SVNLogClient getLogClient() {
-        return getClientManager().getLogClient();
+    protected SVNLogClient getLogClient(SVNRepository repository) {
+        return getClientManager(repository).getLogClient();
     }
 
-    protected SVNDiffClient getDiffClient() {
-        return getClientManager().getDiffClient();
+    protected SVNDiffClient getDiffClient(SVNRepository repository) {
+        return getClientManager(repository).getDiffClient();
     }
 
     // FIXME The session depends on the repository
-    protected SVNClientManager getClientManager() {
+    protected SVNClientManager getClientManager(SVNRepository repository) {
         // Gets the current transaction
         Transaction transaction = transactionService.get();
         if (transaction == null) {
