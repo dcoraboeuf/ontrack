@@ -93,8 +93,8 @@ subversion.buildPath.description
 [indexation]
 
 subversion.indexation.message
-    en -> Indexation is {0} ({1} to {2} - at {3} - {4}%)
-    fr -> Indexation {0} (de {1} à {2} - à {3} - {4}%)
+    en -> Indexation on {5} is {0} ({1} to {2} - at {3} - {4}%)
+    fr -> Indexation de {5} {0} (de {1} à {2} - à {3} - {4}%)
 subversion.indexation.running
     en -> running
     fr -> en cours

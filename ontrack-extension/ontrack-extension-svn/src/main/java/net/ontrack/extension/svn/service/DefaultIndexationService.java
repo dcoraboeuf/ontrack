@@ -35,10 +35,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -97,20 +94,28 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     }
 
     @Override
-    public UserMessage getInfo() {
-        // FIXME Gets the current jobs - the getInfo must return several messages
-        IndexationJob job = indexationJobs.get(0);
-        if (job != null) {
-            Localizable message = new LocalizableMessage(
-                    "subversion.indexation.message",
-                    job.isRunning() ? new LocalizableMessage("subversion.indexation.running") : new LocalizableMessage("subversion.indexation.pending"),
-                    job.getMin(), job.getMax(),
-                    job.getCurrent(),
-                    job.getProgress());
-            return UserMessage.info(message);
-        } else {
-            return null;
+    public Collection<UserMessage> getInfo() {
+        Collection<UserMessage> messages = new ArrayList<>();
+        List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
+            @Override
+            public List<SVNRepository> call() throws Exception {
+                return subversionService.getAllRepositories();
+            }
+        });
+        for (SVNRepository repository : repositories) {
+            IndexationJob job = indexationJobs.get(repository.getId());
+            if (job != null) {
+                Localizable message = new LocalizableMessage(
+                        "subversion.indexation.message",
+                        job.isRunning() ? new LocalizableMessage("subversion.indexation.running") : new LocalizableMessage("subversion.indexation.pending"),
+                        job.getMin(), job.getMax(),
+                        job.getCurrent(),
+                        job.getProgress(),
+                        repository.getName());
+                messages.add(UserMessage.info(message));
+            }
         }
+        return messages;
     }
 
     @Override
