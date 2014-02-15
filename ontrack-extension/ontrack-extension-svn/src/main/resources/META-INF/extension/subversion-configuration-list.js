@@ -8,9 +8,12 @@ define(['crud', 'ajax', 'dialog'], function (crud, ajax, dialog) {
                     title: 'subversion.indexation'.loc(),
                     templateId: 'extension/subversion-indexation-dialog',
                     data: {
-                        repositoryId: repositoryId,
                         lastRevisionInfo: lastRevisionInfo
-                    }
+                    },
+                    buttons: [{
+                        text: 'general.cancel'.loc(),
+                        action: 'cancel'
+                    }]
                 })
             }
         })
