@@ -1,18 +1,12 @@
 package net.ontrack.extension.svn.service;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import net.ontrack.core.model.Ack;
-import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.svn.SVNEventType;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
-import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
-import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.dao.model.TSVNEvent;
@@ -48,90 +42,24 @@ public class DefaultSubversionService implements SubversionService {
     public static final int HISTORY_MAX_DEPTH = 6;
     private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private final Pattern pathWithRevision = Pattern.compile("(.*)@(\\d+)$");
+    private final RepositoryService repositoryService;
     private final TransactionService transactionService;
-    private final RepositoryDao repositoryDao;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
     // FIXME Issue indexation to refactor
     private final IssueRevisionDao issueRevisionDao;
     private final SecurityUtils securityUtils;
 
-    // TRepository --> SVNRepository
-    private final Function<TRepository, SVNRepository> repositoryFn = new Function<TRepository, SVNRepository>() {
-        @Override
-        public SVNRepository apply(TRepository t) {
-            return new SVNRepository(
-                    t.getId(),
-                    t.getName(),
-                    t.getUrl(),
-                    t.getUser(),
-                    t.getPassword(),
-                    t.getBranchPattern(),
-                    t.getTagPattern(),
-                    t.getTagFilterPattern(),
-                    t.getBrowserForPath(),
-                    t.getBrowserForRevision(),
-                    t.getBrowserForChange(),
-                    t.getIndexationInterval(),
-                    t.getIndexationStart(),
-                    // FIXME Issue service
-                    null,
-                    // FIXME Issue service config
-                    null
-            );
-        }
-    };
-
     @Autowired
-    public DefaultSubversionService(TransactionService transactionService, RepositoryDao repositoryDao, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
+    public DefaultSubversionService(RepositoryService repositoryService, TransactionService transactionService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
+        this.repositoryService = repositoryService;
         this.transactionService = transactionService;
-        this.repositoryDao = repositoryDao;
         this.svnEventDao = svnEventDao;
         this.revisionDao = revisionDao;
         this.issueRevisionDao = issueRevisionDao;
         this.securityUtils = securityUtils;
         SVNRepositoryFactoryImpl.setup();
         DAVRepositoryFactory.setup();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<SVNRepository> getAllRepositories() {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return Lists.transform(
-                repositoryDao.findAll(),
-                repositoryFn
-        );
-    }
-
-    @Override
-    @Transactional
-    public SVNRepository createRepository(SVNRepositoryForm form) {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryFn.apply(repositoryDao.create(form));
-    }
-
-    @Override
-    @Transactional
-    public SVNRepository updateRepository(int id, SVNRepositoryForm form) {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryFn.apply(repositoryDao.update(id, form));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public SVNRepository getRepository(int id) {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryFn.apply(repositoryDao.getById(id));
-    }
-
-    @Override
-    @Transactional
-    public Ack deleteRepository(int id) {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        // TODO Removes links to projects
-        // OK
-        return repositoryDao.delete(id);
     }
 
     @Override
@@ -218,7 +146,7 @@ public class DefaultSubversionService implements SubversionService {
             @Override
             public Boolean call() throws Exception {
                 return Iterables.any(
-                        getAllRepositories(),
+                        repositoryService.getAllRepositories(),
                         new Predicate<SVNRepository>() {
                             @Override
                             public boolean apply(SVNRepository repository) {
@@ -387,7 +315,7 @@ public class DefaultSubversionService implements SubversionService {
     @Override
     public SVNHistory getHistory(int repositoryId, String path) {
         // Configuration
-        SVNRepository repository = getRepository(repositoryId);
+        SVNRepository repository = repositoryService.getRepository(repositoryId);
         // Gets the reference for this first path
         SVNReference reference = getReference(repository, path);
         // Initializes the history

@@ -1,7 +1,7 @@
 package net.ontrack.extension.svn;
 
 import net.ontrack.core.model.Ack;
-import net.ontrack.extension.svn.service.SubversionService;
+import net.ontrack.extension.svn.service.RepositoryService;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 import net.ontrack.web.support.AbstractUIController;
@@ -15,38 +15,38 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/ui/extension/svn/configuration")
-public class SVNConfigurationUIController extends AbstractUIController {
+public class SVNRepositoryUIController extends AbstractUIController {
 
-    private final SubversionService subversionService;
+    private final RepositoryService repositoryService;
 
     @Autowired
-    public SVNConfigurationUIController(ErrorHandler errorHandler, Strings strings, SubversionService subversionService) {
+    public SVNRepositoryUIController(ErrorHandler errorHandler, Strings strings, RepositoryService repositoryService) {
         super(errorHandler, strings);
-        this.subversionService = subversionService;
+        this.repositoryService = repositoryService;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
     public List<SVNRepository> getAllConfigurations() {
-        return subversionService.getAllRepositories();
+        return repositoryService.getAllRepositories();
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
     public SVNRepository createConfiguration(@RequestBody SVNRepositoryForm configuration) {
-        return subversionService.createRepository(configuration);
+        return repositoryService.createRepository(configuration);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
     public SVNRepository updateConfiguration(@PathVariable int id, @RequestBody SVNRepositoryForm configuration) {
-        return subversionService.updateRepository(id, configuration);
+        return repositoryService.updateRepository(id, configuration);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public SVNRepository getConfigurationById(@PathVariable int id) {
-        return subversionService.getRepository(id);
+        return repositoryService.getRepository(id);
     }
 
     // TODO Deletion configuration
@@ -59,6 +59,6 @@ public class SVNConfigurationUIController extends AbstractUIController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public Ack deleteConfiguration(@PathVariable int id) {
-        return subversionService.deleteRepository(id);
+        return repositoryService.deleteRepository(id);
     }
 }

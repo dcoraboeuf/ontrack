@@ -47,6 +47,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final Logger logger = LoggerFactory.getLogger(IndexationService.class);
     private final TransactionService transactionService;
     private final SubversionService subversionService;
+    private final RepositoryService repositoryService;
     private final RevisionDao revisionDao;
     private final SVNEventDao svnEventDao;
     private final TransactionTemplate transactionTemplate;
@@ -57,9 +58,10 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final ExecutorService executor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RevisionDao revisionDao, SVNEventDao svnEventDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RepositoryService repositoryService, RevisionDao revisionDao, SVNEventDao svnEventDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
         this.transactionService = transactionService;
         this.subversionService = subversionService;
+        this.repositoryService = repositoryService;
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
         this.extensionManager = extensionManager;
@@ -99,7 +101,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
             @Override
             public List<SVNRepository> call() throws Exception {
-                return subversionService.getAllRepositories();
+                return repositoryService.getAllRepositories();
             }
         });
         for (SVNRepository repository : repositories) {
@@ -123,7 +125,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     public void indexFromLatest(int repositoryId) {
         try (Transaction ignored = transactionService.start()) {
             // Loads the repository information
-            SVNRepository repository = subversionService.getRepository(repositoryId);
+            SVNRepository repository = repositoryService.getRepository(repositoryId);
             SVNURL url = SVNUtils.toURL(repository.getUrl());
             // Last scanned revision
             long lastScannedRevision = revisionDao.getLast(repositoryId);
@@ -145,7 +147,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             TRevision r = revisionDao.getLastRevision(repositoryId);
             if (r != null) {
                 // Loads the repository information
-                SVNRepository repository = subversionService.getRepository(repositoryId);
+                SVNRepository repository = repositoryService.getRepository(repositoryId);
                 SVNURL url = SVNUtils.toURL(repository.getUrl());
                 long repositoryRevision = subversionService.getRepositoryRevision(repository, url);
                 // OK
@@ -179,7 +181,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             max = Math.max(from, to);
         }
         // Indexation job
-        DefaultIndexationJob job = new DefaultIndexationJob(subversionService.getRepository(repositoryId), min, max);
+        DefaultIndexationJob job = new DefaultIndexationJob(repositoryService.getRepository(repositoryId), min, max);
         indexationJobs.put(repositoryId, job);
         // Schedule the scan
         executor.submit(job);
@@ -374,7 +376,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
                     @Override
                     public List<SVNRepository> call() throws Exception {
-                        return subversionService.getAllRepositories();
+                        return repositoryService.getAllRepositories();
                     }
                 });
                 // Launches all indexations
@@ -398,7 +400,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
                     @Override
                     public List<SVNRepository> call() throws Exception {
-                        return subversionService.getAllRepositories();
+                        return repositoryService.getAllRepositories();
                     }
                 });
                 for (SVNRepository repository : repositories) {
