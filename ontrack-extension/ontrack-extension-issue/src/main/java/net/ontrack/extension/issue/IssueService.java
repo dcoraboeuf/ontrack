@@ -1,5 +1,7 @@
 package net.ontrack.extension.issue;
 
+import com.google.common.base.Function;
+
 import java.util.Collection;
 
 /**
@@ -7,6 +9,16 @@ import java.util.Collection;
  * JIRA, GitHub, etc.
  */
 public interface IssueService {
+
+    Function<IssueService, IssueServiceSummary> summaryFn = new Function<IssueService, IssueServiceSummary>() {
+        @Override
+        public IssueServiceSummary apply(IssueService service) {
+            return new IssueServiceSummary(
+                    service.getId(),
+                    service.getName()
+            );
+        }
+    };
 
     /**
      * Gets the ID of this service. It must be unique among all the available

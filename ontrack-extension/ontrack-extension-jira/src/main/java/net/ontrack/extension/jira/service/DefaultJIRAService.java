@@ -70,15 +70,7 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     public Collection<IssueServiceConfigSummary> getAllConfigurations() {
         return Collections2.transform(
                 jiraConfigurationService.getAllConfigurations(),
-                new Function<JIRAConfiguration, IssueServiceConfigSummary>() {
-                    @Override
-                    public IssueServiceConfigSummary apply(JIRAConfiguration config) {
-                        return new IssueServiceConfigSummary(
-                                config.getId(),
-                                config.getName()
-                        );
-                    }
-                }
+                IssueServiceConfig.summaryFn
         );
     }
 

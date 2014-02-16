@@ -45,15 +45,7 @@ public class IssueServiceFactoryImpl implements IssueServiceFactory {
     public Collection<IssueServiceSummary> getAllServices() {
         return Collections2.transform(
                 services.values(),
-                new Function<IssueService, IssueServiceSummary>() {
-                    @Override
-                    public IssueServiceSummary apply(IssueService service) {
-                        return new IssueServiceSummary(
-                                service.getId(),
-                                service.getName()
-                        );
-                    }
-                }
+                IssueService.summaryFn
         );
     }
 
