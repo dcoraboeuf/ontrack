@@ -27,6 +27,7 @@
         <module>ontrack-extension-git</module>
         <module>ontrack-extension-github</module>
         <module>ontrack-extension-git-jira</module>
+        <module>ontrack-extension-issue</module>
     </modules>
 
     <dependencies>

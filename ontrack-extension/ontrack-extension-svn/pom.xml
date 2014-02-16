@@ -31,6 +31,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-extension-issue</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.sf.dbinit</groupId>
             <artifactId>dbinit</artifactId>
         </dependency>
