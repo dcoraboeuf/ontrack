@@ -4,6 +4,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.service.RepositoryService;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
+import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -27,7 +28,7 @@ public class SVNRepositoryUIController extends AbstractUIController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @ResponseBody
-    public List<SVNRepository> getAllConfigurations() {
+    public List<SVNRepositorySummary> getAllConfigurations() {
         return repositoryService.getAllRepositories();
     }
 

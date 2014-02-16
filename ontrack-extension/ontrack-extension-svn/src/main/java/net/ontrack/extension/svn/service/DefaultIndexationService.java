@@ -11,6 +11,7 @@ import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.extension.svn.service.model.SVNRepository;
+import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.InfoProvider;
 import net.ontrack.service.api.ScheduledService;
@@ -98,13 +99,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     @Override
     public Collection<UserMessage> getInfo() {
         Collection<UserMessage> messages = new ArrayList<>();
-        List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
-            @Override
-            public List<SVNRepository> call() throws Exception {
-                return repositoryService.getAllRepositories();
-            }
-        });
-        for (SVNRepository repository : repositories) {
+        List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
+        for (SVNRepositorySummary repository : repositories) {
             IndexationJob job = indexationJobs.get(repository.getId());
             if (job != null) {
                 Localizable message = new LocalizableMessage(
@@ -373,16 +369,17 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             @Override
             public void run() {
                 // Gets all repositories
-                List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
-                    @Override
-                    public List<SVNRepository> call() throws Exception {
-                        return repositoryService.getAllRepositories();
-                    }
-                });
+                List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
                 // Launches all indexations
-                for (SVNRepository repository : repositories) {
-                    int scanInterval = repository.getIndexationInterval();
+                for (final SVNRepositorySummary repositorySummary : repositories) {
+                    int scanInterval = repositorySummary.getIndexationInterval();
                     if (scanInterval > 0 && extensionManager.isExtensionEnabled(SubversionExtension.EXTENSION)) {
+                        SVNRepository repository = securityUtils.asAdmin(new Callable<SVNRepository>() {
+                            @Override
+                            public SVNRepository call() throws Exception {
+                                return repositoryService.getRepository(repositorySummary.getId());
+                            }
+                        });
                         indexTask(repository);
                     }
                 }
@@ -397,13 +394,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             public Date nextExecutionTime(TriggerContext triggerContext) {
                 // Gets the mimimum of the scan intervals (outside of 0)
                 Integer scanInterval = null;
-                List<SVNRepository> repositories = securityUtils.asAdmin(new Callable<List<SVNRepository>>() {
-                    @Override
-                    public List<SVNRepository> call() throws Exception {
-                        return repositoryService.getAllRepositories();
-                    }
-                });
-                for (SVNRepository repository : repositories) {
+                List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
+                for (SVNRepositorySummary repository : repositories) {
                     int interval = repository.getIndexationInterval();
                     if (interval > 0) {
                         if (scanInterval != null) {

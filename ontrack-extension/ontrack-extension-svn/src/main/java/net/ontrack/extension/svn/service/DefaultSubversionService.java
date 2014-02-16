@@ -32,7 +32,6 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,20 +141,15 @@ public class DefaultSubversionService implements SubversionService {
     @Override
     @Transactional(readOnly = true)
     public boolean isIndexedIssue(final String key) {
-        return securityUtils.asAdmin(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return Iterables.any(
-                        repositoryService.getAllRepositories(),
-                        new Predicate<SVNRepository>() {
-                            @Override
-                            public boolean apply(SVNRepository repository) {
-                                return issueRevisionDao.isIndexed(repository.getId(), key);
-                            }
-                        }
-                );
-            }
-        });
+        return Iterables.any(
+                repositoryService.getAllRepositories(),
+                new Predicate<SVNRepositorySummary>() {
+                    @Override
+                    public boolean apply(SVNRepositorySummary repository) {
+                        return issueRevisionDao.isIndexed(repository.getId(), key);
+                    }
+                }
+        );
     }
 
     @Override

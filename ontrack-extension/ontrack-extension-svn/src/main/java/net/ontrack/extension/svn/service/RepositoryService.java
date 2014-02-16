@@ -3,6 +3,7 @@ package net.ontrack.extension.svn.service;
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
+import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface RepositoryService {
     /**
      * Gets the list of defined repository configurations
      */
-    List<SVNRepository> getAllRepositories();
+    List<SVNRepositorySummary> getAllRepositories();
 
     /**
      * Creates a new repository configuration
