@@ -119,9 +119,11 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                 fillConfigurationCbo(serviceName, configurationCbo);
             });
             // Initial selection
-            serviceCbo.val(item.issueServiceName);
-            fillConfigurationCbo(item.issueServiceName, configurationCbo);
-            configurationCbo.val(item.issueServiceConfigId);
+            // FIXME SVNREpository contains the full service & configuration, not summaries
+            var itemServiceName = item.issueService ? item.issueService.id : '';
+            serviceCbo.val(itemServiceName);
+            fillConfigurationCbo(itemServiceName, configurationCbo);
+            configurationCbo.val(item.issueServiceConfig ? item.issueServiceConfig.id : '');
         },
         itemDialogReadFn: function (cfg, dialog, form) {
             var serviceCbo = dialog.form.find('#subversion-repository-issueServiceName');

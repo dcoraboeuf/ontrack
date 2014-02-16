@@ -2,7 +2,10 @@
     <td>{{name}}</td>
     <td>{{url}}</td>
     <td>
-
+        {{#if issueService}}
+            {{issueService.name}}
+            ({{issueServiceConfig.name}})
+        {{/if}}
     </td>
     <td class="crud-item-commands" crud-id="{{id}}"></td>
 </tr>
