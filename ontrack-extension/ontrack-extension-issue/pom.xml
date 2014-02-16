@@ -15,4 +15,12 @@
     <name>ontrack Extension Issue</name>
     <description>Module used to define a generic behaviour when accessing issues from a SCM.</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ontrack-web-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

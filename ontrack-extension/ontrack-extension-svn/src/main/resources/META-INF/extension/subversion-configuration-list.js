@@ -1,4 +1,4 @@
-define(['crud', 'ajax', 'dialog', 'common'], function (crud, ajax, dialog, common) {
+define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, dialog, common) {
 
     function indexationDialog(repositoryId) {
         ajax.get({
@@ -73,7 +73,26 @@ define(['crud', 'ajax', 'dialog', 'common'], function (crud, ajax, dialog, commo
                 }
             }
         ],
-        itemDeletePromptKey: 'subversion.configuration.delete.prompt'
+        itemDeletePromptKey: 'subversion.configuration.delete.prompt',
+        itemDialogInitFn: function (cfg, dialog, item) {
+            var serviceCbo = dialog.form.find('#subversion-repository-issueServiceName');
+            // Loading of the issue services
+            ajax.get({
+                url: 'ui/extension/issue/services',
+                successFn: function (services) {
+                    // Fills the `select` with the services name
+                    $.each(services, function (i, service) {
+                        $('<option></option>')
+                            .attr('value', service.id)
+                            .text(service.name)
+                            .appendTo(serviceCbo)
+                    });
+                    // TODO Selection of the name triggers the selection of the configurations for this service
+                }
+            });
+            // Initial selection
+            serviceCbo.val(item.issueServiceName);
+        }
     })
 
 });

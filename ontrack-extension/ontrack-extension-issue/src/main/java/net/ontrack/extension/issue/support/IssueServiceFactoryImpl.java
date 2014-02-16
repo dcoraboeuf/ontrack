@@ -1,10 +1,12 @@
 package net.ontrack.extension.issue.support;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import net.ontrack.extension.issue.IssueService;
 import net.ontrack.extension.issue.IssueServiceFactory;
 import net.ontrack.extension.issue.IssueServiceNotFoundException;
+import net.ontrack.extension.issue.IssueServiceSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,22 @@ public class IssueServiceFactoryImpl implements IssueServiceFactory {
         } else {
             throw new IssueServiceNotFoundException(name);
         }
+    }
+
+    @Override
+    public Collection<IssueServiceSummary> getAllServices() {
+        return Collections2.transform(
+                services.values(),
+                new Function<IssueService, IssueServiceSummary>() {
+                    @Override
+                    public IssueServiceSummary apply(IssueService service) {
+                        return new IssueServiceSummary(
+                                service.getId(),
+                                service.getName()
+                        );
+                    }
+                }
+        );
     }
 
 }

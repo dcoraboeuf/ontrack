@@ -62,6 +62,14 @@ subversion.configuration.indexationStart
     en -> Start revision
     fr -> Révision de départ
 
+subversion.configuration.issueServiceName
+    en -> Issue service
+    fr -> Service de tickets
+
+subversion.configuration.issueServiceConfigId
+    en -> Issue service configuration
+    fr -> Configuration pour les tickets
+
 [path]
 
 subversion.path
