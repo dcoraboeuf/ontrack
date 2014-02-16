@@ -1,7 +1,9 @@
 package net.ontrack.extension.svn.service;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
@@ -10,6 +12,7 @@ import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
+import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.dao.model.TSVNCopyEvent;
 import net.ontrack.extension.svn.dao.model.TSVNEvent;
@@ -53,6 +56,32 @@ public class DefaultSubversionService implements SubversionService {
     private final IssueRevisionDao issueRevisionDao;
     private final SecurityUtils securityUtils;
 
+    // TRepository --> SVNRepository
+    private final Function<TRepository, SVNRepository> repositoryFn = new Function<TRepository, SVNRepository>() {
+        @Override
+        public SVNRepository apply(TRepository t) {
+            return new SVNRepository(
+                    t.getId(),
+                    t.getName(),
+                    t.getUrl(),
+                    t.getUser(),
+                    t.getPassword(),
+                    t.getBranchPattern(),
+                    t.getTagPattern(),
+                    t.getTagFilterPattern(),
+                    t.getBrowserForPath(),
+                    t.getBrowserForRevision(),
+                    t.getBrowserForChange(),
+                    t.getIndexationInterval(),
+                    t.getIndexationStart(),
+                    // FIXME Issue service
+                    null,
+                    // FIXME Issue service config
+                    null
+            );
+        }
+    };
+
     @Autowired
     public DefaultSubversionService(TransactionService transactionService, RepositoryDao repositoryDao, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
         this.transactionService = transactionService;
@@ -69,28 +98,31 @@ public class DefaultSubversionService implements SubversionService {
     @Transactional(readOnly = true)
     public List<SVNRepository> getAllRepositories() {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryDao.findAll();
+        return Lists.transform(
+                repositoryDao.findAll(),
+                repositoryFn
+        );
     }
 
     @Override
     @Transactional
     public SVNRepository createRepository(SVNRepositoryForm form) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryDao.create(form);
+        return repositoryFn.apply(repositoryDao.create(form));
     }
 
     @Override
     @Transactional
     public SVNRepository updateRepository(int id, SVNRepositoryForm form) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryDao.update(id, form);
+        return repositoryFn.apply(repositoryDao.update(id, form));
     }
 
     @Override
     @Transactional(readOnly = true)
     public SVNRepository getRepository(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return repositoryDao.getById(id);
+        return repositoryFn.apply(repositoryDao.getById(id));
     }
 
     @Override

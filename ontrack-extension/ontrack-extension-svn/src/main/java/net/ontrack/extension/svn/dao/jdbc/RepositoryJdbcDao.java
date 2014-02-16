@@ -3,7 +3,7 @@ package net.ontrack.extension.svn.dao.jdbc;
 import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.svn.dao.RepositoryDao;
-import net.ontrack.extension.svn.service.model.SVNRepository;
+import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,9 +21,9 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     public static final String REPOSITORY_BY_ID = "SELECT * FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_DELETE = "DELETE FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_INSERT = "INSERT INTO EXT_SVN_REPOSITORY(" +
-            "NAME, URL, USER, PASSWORD, BRANCH_PATTERN, TAG_PATTERN, TAG_FILTER_PATTERN, BROWSER_FOR_PATH, BROWSER_FOR_REVISION, BROWSER_FOR_CHANGE, INDEXATION_INTERVAL, INDEXATION_START" +
+            "NAME, URL, USER, PASSWORD, BRANCH_PATTERN, TAG_PATTERN, TAG_FILTER_PATTERN, BROWSER_FOR_PATH, BROWSER_FOR_REVISION, BROWSER_FOR_CHANGE, INDEXATION_INTERVAL, INDEXATION_START, ISSUE_SERVICE_NAME, ISSUE_SERVICE_CONFIG_ID" +
             ") VALUES (" +
-            ":name, :url, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange, :indexationInterval, :indexationStart" +
+            ":name, :url, :user, :password, :branchPattern, :tagPattern, :tagFilterPattern, :browserForPath, :browserForRevision, :browserForChange, :indexationInterval, :indexationStart, :issueServiceName, :issueServiceConfigId" +
             ")";
     public static final String REPOSITORY_UPDATE = "UPDATE EXT_SVN_REPOSITORY SET " +
             "NAME = :name, URL = :url, " +
@@ -36,12 +36,14 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "BROWSER_FOR_REVISION = :browserForRevision, " +
             "BROWSER_FOR_CHANGE = :browserForChange, " +
             "INDEXATION_INTERVAL = :indexationInterval, " +
-            "INDEXATION_START = :indexationStart " +
+            "INDEXATION_START = :indexationStart, " +
+            "ISSUE_SERVICE_NAME = :issueServiceName, " +
+            "ISSUE_SERVICE_CONFIG_ID = :issueServiceConfigId " +
             "WHERE ID = :id";
-    private final RowMapper<SVNRepository> repositoryRowMapper = new RowMapper<SVNRepository>() {
+    private final RowMapper<TRepository> repositoryRowMapper = new RowMapper<TRepository>() {
         @Override
-        public SVNRepository mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new SVNRepository(
+        public TRepository mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new TRepository(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("url"),
@@ -54,7 +56,9 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                     rs.getString("browser_for_revision"),
                     rs.getString("browser_for_change"),
                     rs.getInt("indexation_interval"),
-                    rs.getLong("indexation_start")
+                    rs.getLong("indexation_start"),
+                    rs.getString("issue_service_name"),
+                    getInteger(rs, "issue_service_config_id")
             );
         }
     };
@@ -65,7 +69,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     }
 
     @Override
-    public List<SVNRepository> findAll() {
+    public List<TRepository> findAll() {
         return getJdbcTemplate().query(
                 REPOSITORY_ALL,
                 repositoryRowMapper
@@ -73,7 +77,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     }
 
     @Override
-    public SVNRepository create(SVNRepositoryForm form) {
+    public TRepository create(SVNRepositoryForm form) {
         int id = dbCreate(
                 REPOSITORY_INSERT,
                 params("name", form.getName())
@@ -88,13 +92,15 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                         .addValue("browserForChange", form.getBrowserForChange())
                         .addValue("indexationInterval", form.getIndexationInterval())
                         .addValue("indexationStart", form.getIndexationStart())
+                        .addValue("issueServiceName", form.getIssueServiceName())
+                        .addValue("issueServiceConfigId", form.getIssueServiceConfigId())
         );
         return getById(id);
     }
 
     // TODO Caching
     @Override
-    public SVNRepository update(int id, SVNRepositoryForm form) {
+    public TRepository update(int id, SVNRepositoryForm form) {
         getNamedParameterJdbcTemplate().update(
                 REPOSITORY_UPDATE,
                 params("id", id)
@@ -110,13 +116,15 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                         .addValue("browserForChange", form.getBrowserForChange())
                         .addValue("indexationInterval", form.getIndexationInterval())
                         .addValue("indexationStart", form.getIndexationStart())
+                        .addValue("issueServiceName", form.getIssueServiceName())
+                        .addValue("issueServiceConfigId", form.getIssueServiceConfigId())
         );
         return getById(id);
     }
 
     // TODO Caching
     @Override
-    public SVNRepository getById(int id) {
+    public TRepository getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
                 REPOSITORY_BY_ID,
                 params("id", id),

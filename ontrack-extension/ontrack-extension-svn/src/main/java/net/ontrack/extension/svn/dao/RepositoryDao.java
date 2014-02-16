@@ -1,6 +1,7 @@
 package net.ontrack.extension.svn.dao;
 
 import net.ontrack.core.model.Ack;
+import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 
@@ -8,13 +9,13 @@ import java.util.List;
 
 public interface RepositoryDao {
 
-    List<SVNRepository> findAll();
+    List<TRepository> findAll();
 
-    SVNRepository create(SVNRepositoryForm form);
+    TRepository create(SVNRepositoryForm form);
 
-    SVNRepository update(int id, SVNRepositoryForm form);
+    TRepository update(int id, SVNRepositoryForm form);
 
-    SVNRepository getById(int id);
+    TRepository getById(int id);
 
     Ack delete(int id);
 

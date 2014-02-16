@@ -1,6 +1,8 @@
 package net.ontrack.extension.svn.service.model;
 
 import lombok.Data;
+import net.ontrack.extension.issue.IssueService;
+import net.ontrack.extension.issue.IssueServiceConfig;
 import net.ontrack.extension.svn.support.SVNUtils;
 import org.tmatesoft.svn.core.SVNURL;
 
@@ -20,6 +22,8 @@ public class SVNRepository {
     private final String browserForChange;
     private final int indexationInterval;
     private final long indexationStart;
+    private final IssueService issueService;
+    private final IssueServiceConfig issueServiceConfig;
 
 
     public SVNURL getSVNURL() {
