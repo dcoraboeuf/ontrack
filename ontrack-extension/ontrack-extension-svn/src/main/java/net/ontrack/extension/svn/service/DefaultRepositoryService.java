@@ -5,10 +5,14 @@ import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.issue.IssueService;
+import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.IssueServiceFactory;
 import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +22,7 @@ import java.util.List;
 @Service
 public class DefaultRepositoryService implements RepositoryService {
 
+    private final IssueServiceFactory issueServiceFactory;
     private final RepositoryDao repositoryDao;
     private final SecurityUtils securityUtils;
 
@@ -25,6 +30,19 @@ public class DefaultRepositoryService implements RepositoryService {
     private final Function<TRepository, SVNRepository> repositoryFn = new Function<TRepository, SVNRepository>() {
         @Override
         public SVNRepository apply(TRepository t) {
+            // Issue service
+            IssueService issueService = null;
+            IssueServiceConfig issueServiceConfig = null;
+            String issueServiceName = t.getIssueServiceName();
+            Integer issueServiceConfigId = t.getIssueServiceConfigId();
+            if (StringUtils.isNotBlank(issueServiceName)) {
+                issueService = issueServiceFactory.getServiceByName(issueServiceName);
+                if (issueServiceConfigId == null) {
+                    throw new IllegalStateException("[svn] The issue service configuration ID is null but the issue service is defined for the repository " + t.getName());
+                }
+                issueServiceConfig = issueService.getConfigurationById(issueServiceConfigId);
+            }
+            // OK
             return new SVNRepository(
                     t.getId(),
                     t.getName(),
@@ -39,16 +57,15 @@ public class DefaultRepositoryService implements RepositoryService {
                     t.getBrowserForChange(),
                     t.getIndexationInterval(),
                     t.getIndexationStart(),
-                    // FIXME Issue service
-                    null,
-                    // FIXME Issue service config
-                    null
+                    issueService,
+                    issueServiceConfig
             );
         }
     };
 
     @Autowired
-    public DefaultRepositoryService(RepositoryDao repositoryDao, SecurityUtils securityUtils) {
+    public DefaultRepositoryService(IssueServiceFactory issueServiceFactory, RepositoryDao repositoryDao, SecurityUtils securityUtils) {
+        this.issueServiceFactory = issueServiceFactory;
         this.repositoryDao = repositoryDao;
         this.securityUtils = securityUtils;
     }

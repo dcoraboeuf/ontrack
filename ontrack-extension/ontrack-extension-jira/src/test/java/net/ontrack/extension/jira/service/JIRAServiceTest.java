@@ -6,6 +6,7 @@ import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.google.common.collect.Sets;
 import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAConfigurationService;
@@ -30,6 +31,7 @@ public class JIRAServiceTest {
 
     @Test
     public void issueNotFound() {
+        ExtensionManager extensionManager = mock(ExtensionManager.class);
         JIRAConfiguration config = createJiraConfiguration();
         JIRASessionFactory jiraSessionFactory = mock(JIRASessionFactory.class);
         TransactionService transactionService = new DefaultTransactionService();
@@ -54,7 +56,7 @@ public class JIRAServiceTest {
         ));
 
         DefaultJIRAService service = new DefaultJIRAService(
-                jiraConfigurationService, propertiesService, transactionService,
+                extensionManager, jiraConfigurationService, propertiesService, transactionService,
                 jiraSessionFactory);
         JIRAIssue issue = service.getIssue(config, "XXX-1");
         assertNull(issue);
@@ -66,6 +68,7 @@ public class JIRAServiceTest {
 
     @Test
     public void isIssue() {
+        ExtensionManager extensionManager = mock(ExtensionManager.class);
         JIRAConfiguration config = createJiraConfiguration();
         JIRASessionFactory jiraSessionFactory = mock(JIRASessionFactory.class);
         JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);
@@ -73,13 +76,14 @@ public class JIRAServiceTest {
         TransactionService transactionService = mock(TransactionService.class);
 
         DefaultJIRAService service = new DefaultJIRAService(
-                jiraConfigurationService, propertiesService, transactionService,
+                extensionManager, jiraConfigurationService, propertiesService, transactionService,
                 jiraSessionFactory);
         assertTrue(service.isIssue(config, "TEST-12"));
     }
 
     @Test
     public void insertIssueUrlsInMessage() {
+        ExtensionManager extensionManager = mock(ExtensionManager.class);
         JIRAConfiguration config = new JIRAConfiguration(0, "test", "http://jira", "user", "pwd",
                 Collections.<String>emptySet(),
                 Sets.newHashSet("TEST-12", "PRJ-12"));
@@ -88,7 +92,7 @@ public class JIRAServiceTest {
         PropertiesService propertiesService = mock(PropertiesService.class);
         TransactionService transactionService = mock(TransactionService.class);
         DefaultJIRAService service = new DefaultJIRAService(
-                jiraConfigurationService, propertiesService, transactionService,
+                extensionManager, jiraConfigurationService, propertiesService, transactionService,
                 jiraSessionFactory);
         String message = service.insertIssueUrlsInMessage(config, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals("TEST-12, PRJ-12, <a href=\"http://jira/browse/PRJ-13\">PRJ-13</a> List of issues", message);
@@ -96,6 +100,7 @@ public class JIRAServiceTest {
 
     @Test
     public void extractIssueKeysFromMessage() {
+        ExtensionManager extensionManager = mock(ExtensionManager.class);
         JIRAConfiguration config = new JIRAConfiguration(12, "test", "http://jira", "user", "pwd",
                 Sets.newHashSet("TEST"),
                 Sets.newHashSet("PRJ-12"));
@@ -113,7 +118,7 @@ public class JIRAServiceTest {
         when(jiraConfigurationService.getConfigurationById(12)).thenReturn(config);
 
         DefaultJIRAService service = new DefaultJIRAService(
-                jiraConfigurationService, propertiesService, transactionService,
+                extensionManager, jiraConfigurationService, propertiesService, transactionService,
                 jiraSessionFactory);
         Set<String> issues = service.extractIssueKeysFromMessage(10, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals(Collections.singleton("PRJ-13"), issues);

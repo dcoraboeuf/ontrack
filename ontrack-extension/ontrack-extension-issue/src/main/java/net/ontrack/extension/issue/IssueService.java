@@ -22,4 +22,8 @@ public interface IssueService {
      */
     boolean isEnabled();
 
+    /**
+     * Gets a configuration to be used with this service, using its ID.
+     */
+    IssueServiceConfig getConfigurationById(int id);
 }

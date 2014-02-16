@@ -8,7 +8,10 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Entity;
+import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.support.AbstractIssueService;
 import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.JIRAExtension;
@@ -31,7 +34,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 @Service
-public class DefaultJIRAService implements JIRAService {
+public class DefaultJIRAService extends AbstractIssueService implements JIRAService {
 
     private final JIRAConfigurationService jiraConfigurationService;
     private final PropertiesService propertiesService;
@@ -51,11 +54,17 @@ public class DefaultJIRAService implements JIRAService {
     };
 
     @Autowired
-    public DefaultJIRAService(JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService, JIRASessionFactory jiraSessionFactory) {
+    public DefaultJIRAService(ExtensionManager extensionManager, JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService, JIRASessionFactory jiraSessionFactory) {
+        super("jira", "JIRA", JIRAExtension.EXTENSION, extensionManager);
         this.jiraConfigurationService = jiraConfigurationService;
         this.propertiesService = propertiesService;
         this.transactionService = transactionService;
         this.jiraSessionFactory = jiraSessionFactory;
+    }
+
+    @Override
+    public IssueServiceConfig getConfigurationById(int id) {
+        return jiraConfigurationService.getConfigurationById(id);
     }
 
     @Override

@@ -1,13 +1,14 @@
 package net.ontrack.extension.jira.service.model;
 
 import lombok.Data;
+import net.ontrack.extension.issue.IssueServiceConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 import java.util.regex.Pattern;
 
 @Data
-public class JIRAConfiguration {
+public class JIRAConfiguration implements IssueServiceConfig {
 
     public static final Pattern ISSUE_PATTERN = Pattern.compile("[A-Za-z][A-Za-z0-9]*\\-[0-9]+");
 
