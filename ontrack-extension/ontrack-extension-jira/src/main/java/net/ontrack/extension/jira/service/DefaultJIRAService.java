@@ -5,12 +5,14 @@ import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.*;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.IssueServiceConfigSummary;
 import net.ontrack.extension.issue.support.AbstractIssueService;
 import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAConfigurationService;
@@ -27,10 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 @Service
@@ -65,6 +64,22 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     @Override
     public IssueServiceConfig getConfigurationById(int id) {
         return jiraConfigurationService.getConfigurationById(id);
+    }
+
+    @Override
+    public Collection<IssueServiceConfigSummary> getAllConfigurations() {
+        return Collections2.transform(
+                jiraConfigurationService.getAllConfigurations(),
+                new Function<JIRAConfiguration, IssueServiceConfigSummary>() {
+                    @Override
+                    public IssueServiceConfigSummary apply(JIRAConfiguration config) {
+                        return new IssueServiceConfigSummary(
+                                config.getId(),
+                                config.getName()
+                        );
+                    }
+                }
+        );
     }
 
     @Override

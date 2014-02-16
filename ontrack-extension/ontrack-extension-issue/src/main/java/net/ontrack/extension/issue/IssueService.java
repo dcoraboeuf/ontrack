@@ -1,5 +1,7 @@
 package net.ontrack.extension.issue;
 
+import java.util.Collection;
+
 /**
  * Defines a generic service used to access issues from a ticketing system like
  * JIRA, GitHub, etc.
@@ -26,4 +28,9 @@ public interface IssueService {
      * Gets a configuration to be used with this service, using its ID.
      */
     IssueServiceConfig getConfigurationById(int id);
+
+    /**
+     * Gets the list of all available configurations
+     */
+    Collection<IssueServiceConfigSummary> getAllConfigurations();
 }

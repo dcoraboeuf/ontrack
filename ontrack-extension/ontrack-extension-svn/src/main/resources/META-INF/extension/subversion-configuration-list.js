@@ -44,6 +44,26 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
         })
     }
 
+    function fillConfigurationCbo(serviceName, configurationCbo) {
+        configurationCbo.empty();
+        // No entry
+        $('<option></option>').attr('value', '').html('&nbsp;').appendTo(configurationCbo);
+        if (serviceName && serviceName != '') {
+            ajax.get({
+                url: 'ui/extension/issue/service/{0}/configurations'.format(serviceName),
+                successFn: function (configurations) {
+                    // Fills the `select` with the configuration names
+                    $.each(configurations, function (i, configuration) {
+                        $('<option></option>')
+                            .attr('value', configuration.id)
+                            .text(configuration.name)
+                            .appendTo(configurationCbo)
+                    });
+                }
+            })
+        }
+    }
+
     return crud.create({
         url: 'ui/extension/svn/configuration',
         itemName: 'subversion.configuration'.loc(),
@@ -76,10 +96,14 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
         itemDeletePromptKey: 'subversion.configuration.delete.prompt',
         itemDialogInitFn: function (cfg, dialog, item) {
             var serviceCbo = dialog.form.find('#subversion-repository-issueServiceName');
+            var configurationCbo = dialog.form.find('#subversion-repository-issueServiceConfigId');
             // Loading of the issue services
             ajax.get({
-                url: 'ui/extension/issue/services',
+                url: 'ui/extension/issue/service',
                 successFn: function (services) {
+                    serviceCbo.empty();
+                    // No entry
+                    $('<option></option>').attr('value', '').html('&nbsp;').appendTo(serviceCbo);
                     // Fills the `select` with the services name
                     $.each(services, function (i, service) {
                         $('<option></option>')
@@ -87,11 +111,17 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                             .text(service.name)
                             .appendTo(serviceCbo)
                     });
-                    // TODO Selection of the name triggers the selection of the configurations for this service
                 }
+            });
+            // Selection of the name triggers the selection of the configurations for this service
+            serviceCbo.change(function () {
+                var serviceName = serviceCbo.val();
+                fillConfigurationCbo(serviceName, configurationCbo);
             });
             // Initial selection
             serviceCbo.val(item.issueServiceName);
+            fillConfigurationCbo(item.issueServiceName, configurationCbo);
+            configurationCbo.val(item.issueServiceConfigId);
         }
     })
 
