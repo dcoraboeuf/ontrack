@@ -10,10 +10,14 @@ public interface IssueServiceConfig {
     Function<IssueServiceConfig, IssueServiceConfigSummary> summaryFn = new Function<IssueServiceConfig, IssueServiceConfigSummary>() {
         @Override
         public IssueServiceConfigSummary apply(IssueServiceConfig config) {
-            return new IssueServiceConfigSummary(
-                    config.getId(),
-                    config.getName()
-            );
+            if (config != null) {
+                return new IssueServiceConfigSummary(
+                        config.getId(),
+                        config.getName()
+                );
+            } else {
+                return null;
+            }
         }
     };
 

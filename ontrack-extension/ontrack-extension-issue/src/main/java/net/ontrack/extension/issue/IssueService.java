@@ -13,10 +13,14 @@ public interface IssueService {
     Function<IssueService, IssueServiceSummary> summaryFn = new Function<IssueService, IssueServiceSummary>() {
         @Override
         public IssueServiceSummary apply(IssueService service) {
-            return new IssueServiceSummary(
-                    service.getId(),
-                    service.getName()
-            );
+            if (service != null) {
+                return new IssueServiceSummary(
+                        service.getId(),
+                        service.getName()
+                );
+            } else {
+                return null;
+            }
         }
     };
 
