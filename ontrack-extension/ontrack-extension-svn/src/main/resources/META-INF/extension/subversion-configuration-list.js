@@ -122,6 +122,16 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
             serviceCbo.val(item.issueServiceName);
             fillConfigurationCbo(item.issueServiceName, configurationCbo);
             configurationCbo.val(item.issueServiceConfigId);
+        },
+        itemDialogReadFn: function (cfg, dialog, form) {
+            var serviceCbo = dialog.form.find('#subversion-repository-issueServiceName');
+            var configurationCbo = dialog.form.find('#subversion-repository-issueServiceConfigId');
+            form.issueServiceName = serviceCbo.val();
+            if (form.issueServiceName && form.issueServiceName != '') {
+                form.issueServiceConfigId = configurationCbo.val()
+            } else {
+                delete form.issueServiceConfigId
+            }
         }
     })
 
