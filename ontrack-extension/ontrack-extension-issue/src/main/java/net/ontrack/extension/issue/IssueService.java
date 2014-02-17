@@ -3,6 +3,7 @@ package net.ontrack.extension.issue;
 import com.google.common.base.Function;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Defines a generic service used to access issues from a ticketing system like
@@ -49,4 +50,13 @@ public interface IssueService {
      * Gets the list of all available configurations
      */
     Collection<IssueServiceConfigSummary> getAllConfigurations();
+
+    /**
+     * Given a message, extracts the issue keys from the message
+     *
+     * @param issueServiceConfig Configuration for the service
+     * @param message            Message to scan
+     * @return List of keys (can be empty, never <code>null</code>)
+     */
+    Set<String> extractIssueKeysFromMessage(IssueServiceConfig issueServiceConfig, String message);
 }

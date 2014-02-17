@@ -5,7 +5,10 @@ import net.ontrack.core.model.UserMessage;
 import net.ontrack.core.security.SecurityRoles;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
+import net.ontrack.extension.issue.IssueService;
+import net.ontrack.extension.issue.IssueServiceConfig;
 import net.ontrack.extension.svn.SubversionExtension;
+import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
@@ -51,6 +54,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final RepositoryService repositoryService;
     private final RevisionDao revisionDao;
     private final SVNEventDao svnEventDao;
+    private final IssueRevisionDao issueRevisionDao;
     private final TransactionTemplate transactionTemplate;
     private final ExtensionManager extensionManager;
     private final SecurityUtils securityUtils;
@@ -59,12 +63,13 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final ExecutorService executor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RepositoryService repositoryService, RevisionDao revisionDao, SVNEventDao svnEventDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RepositoryService repositoryService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
         this.transactionService = transactionService;
         this.subversionService = subversionService;
         this.repositoryService = repositoryService;
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
+        this.issueRevisionDao = issueRevisionDao;
         this.extensionManager = extensionManager;
         this.securityUtils = securityUtils;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
@@ -206,7 +211,6 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
         // Opens a transaction
         try (Transaction ignored = transactionService.start()) {
-            // FIXME The repository must be linked with an `IssueMessageScanner` at configuration level
             // SVN URL
             SVNURL url = SVNUtils.toURL(repository.getUrl());
             // Filters the revision range using the repository configuration
@@ -225,7 +229,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             SVNRevision fromRevision = SVNRevision.create(from);
             SVNRevision toRevision = SVNRevision.create(to);
             // Calls the indexer, including merge revisions
-            IndexationHandler handler = new IndexationHandler(repository, /*jiraConfiguration, */indexationListener);
+            IndexationHandler handler = new IndexationHandler(repository, indexationListener);
             subversionService.log(repository, url, SVNRevision.HEAD, fromRevision, toRevision, true, true, 0, false, handler);
         }
     }
@@ -255,30 +259,35 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         }
         // Subversion events
         indexSVNEvents(repository, logEntry);
-        // FIXME Indexes the issues
-        // indexIssues(repositoryId, /*jiraConfiguration, */logEntry);
+        // Indexes the issues
+        indexIssues(repository, logEntry);
     }
 
-    /**
-     * private void indexIssues(int repositoryId, JIRAConfiguration jiraConfiguration, SVNLogEntry logEntry) {
-     * long revision = logEntry.getRevision();
-     * String message = logEntry.getMessage();
-     * // Cache for issues
-     * Set<String> revisionIssues = new HashSet<>();
-     * // Gets all issues
-     * // FIXME Indexation of the issues is dependent on the project!
-     * Set<String> issues = jiraService.extractIssueKeysFromMessage(0, message);
-     * // For each issue in the message
-     * for (String issueKey : issues) {
-     * // Checks that the issue has not already been associated with this revision
-     * if (!revisionIssues.contains(issueKey)) {
-     * revisionIssues.add(issueKey);
-     * // Indexes this issue
-     * issueRevisionDao.link(revision, issueKey);
-     * }
-     * }
-     * }
-     */
+
+    protected void indexIssues(SVNRepository repository, SVNLogEntry logEntry) {
+        // Is the repository associated with any issue service?
+        IssueService issueService = repository.getIssueService();
+        IssueServiceConfig issueServiceConfig = repository.getIssueServiceConfig();
+        if (issueService != null && issueServiceConfig != null) {
+            // Revision information to scan
+            long revision = logEntry.getRevision();
+            String message = logEntry.getMessage();
+            // Cache for issues
+            Set<String> revisionIssues = new HashSet<>();
+            // Gets all issues from the message
+            Set<String> issues = issueService.extractIssueKeysFromMessage(issueServiceConfig, message);
+            // For each issue in the message
+            for (String issueKey : issues) {
+                // Checks that the issue has not already been associated with this revision
+                if (!revisionIssues.contains(issueKey)) {
+                    revisionIssues.add(issueKey);
+                    // Indexes this issue
+                    issueRevisionDao.link(repository.getId(), revision, issueKey);
+                }
+            }
+        }
+    }
+
 
     private void indexSVNEvents(SVNRepository repository, SVNLogEntry logEntry) {
         indexSVNCopyEvents(repository, logEntry);

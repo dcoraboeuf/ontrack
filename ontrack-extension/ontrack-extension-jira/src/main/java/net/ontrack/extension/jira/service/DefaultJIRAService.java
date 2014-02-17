@@ -75,8 +75,16 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     }
 
     @Override
+    public Set<String> extractIssueKeysFromMessage(IssueServiceConfig issueServiceConfig, String message) {
+        return extractJIRAIssuesFromMessage((JIRAConfiguration) issueServiceConfig, message);
+    }
+
+    @Override
     public Set<String> extractIssueKeysFromMessage(int projectId, String message) {
-        JIRAConfiguration configuration = getConfigurationForProject(projectId);
+        return extractJIRAIssuesFromMessage(getConfigurationForProject(projectId), message);
+    }
+
+    protected Set<String> extractJIRAIssuesFromMessage(JIRAConfiguration configuration, String message) {
         Set<String> result = new HashSet<>();
         Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(message);
         while (matcher.find()) {
