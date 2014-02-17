@@ -2,7 +2,6 @@ package net.ontrack.extension.svn.dao;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.dao.model.TRepository;
-import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 
 import java.util.List;

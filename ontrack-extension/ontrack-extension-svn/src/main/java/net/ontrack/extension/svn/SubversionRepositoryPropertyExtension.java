@@ -4,7 +4,7 @@ import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.ontrack.extension.svn.service.RepositoryService;
-import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
+import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.sf.jstring.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class SubversionRepositoryPropertyExtension extends AbstractPropertyExten
     @Override
     public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String repositoryId) {
         if (StringUtils.isNotBlank(repositoryId)) {
-            SVNRepositorySummary repository = repositoryService.getRepositorySummary(Integer.parseInt(repositoryId, 10));
+            SVNRepository repository = repositoryService.getRepositorySummary(Integer.parseInt(repositoryId, 10));
             return String.format(
                     "%s (%s)",
                     escapeHtml4(repository.getName()),
@@ -77,7 +77,7 @@ public class SubversionRepositoryPropertyExtension extends AbstractPropertyExten
         ));
         // Options
         html.append("<option value=\"\">&nbsp;</option>");
-        for (SVNRepositorySummary repository : repositoryService.getAllRepositories()) {
+        for (SVNRepository repository : repositoryService.getAllRepositories()) {
             html.append(format("<option value=\"%s\" %s>%s</option>",
                     String.valueOf(repository.getId()),
                     (StringUtils.isNotBlank(repositoryId) && (repository.getId() == Integer.parseInt(repositoryId, 10))) ? "selected=\"selected\"" : "",

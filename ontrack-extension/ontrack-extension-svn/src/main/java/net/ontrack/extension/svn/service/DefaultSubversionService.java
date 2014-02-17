@@ -143,9 +143,9 @@ public class DefaultSubversionService implements SubversionService {
     public boolean isIndexedIssue(final String key) {
         return Iterables.any(
                 repositoryService.getAllRepositories(),
-                new Predicate<SVNRepositorySummary>() {
+                new Predicate<SVNRepository>() {
                     @Override
-                    public boolean apply(SVNRepositorySummary repository) {
+                    public boolean apply(SVNRepository repository) {
                         return issueRevisionDao.isIndexed(repository.getId(), key);
                     }
                 }

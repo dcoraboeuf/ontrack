@@ -7,6 +7,7 @@ import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.issue.IssueService;
 import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.IssueServiceFactory;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
@@ -14,7 +15,6 @@ import net.ontrack.extension.svn.dao.SVNEventDao;
 import net.ontrack.extension.svn.dao.model.TRevision;
 import net.ontrack.extension.svn.service.model.LastRevisionInfo;
 import net.ontrack.extension.svn.service.model.SVNRepository;
-import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
 import net.ontrack.extension.svn.support.SVNUtils;
 import net.ontrack.service.InfoProvider;
 import net.ontrack.service.api.ScheduledService;
@@ -52,6 +52,7 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final TransactionService transactionService;
     private final SubversionService subversionService;
     private final RepositoryService repositoryService;
+    private final IssueServiceFactory issueServiceFactory;
     private final RevisionDao revisionDao;
     private final SVNEventDao svnEventDao;
     private final IssueRevisionDao issueRevisionDao;
@@ -63,10 +64,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     private final ExecutorService executor = Executors.newFixedThreadPool(5, new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Indexation %s").build());
 
     @Autowired
-    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RepositoryService repositoryService, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
+    public DefaultIndexationService(PlatformTransactionManager transactionManager, TransactionService transactionService, SubversionService subversionService, RepositoryService repositoryService, IssueServiceFactory issueServiceFactory, RevisionDao revisionDao, SVNEventDao svnEventDao, IssueRevisionDao issueRevisionDao, ExtensionManager extensionManager, SecurityUtils securityUtils) {
         this.transactionService = transactionService;
         this.subversionService = subversionService;
         this.repositoryService = repositoryService;
+        this.issueServiceFactory = issueServiceFactory;
         this.revisionDao = revisionDao;
         this.svnEventDao = svnEventDao;
         this.issueRevisionDao = issueRevisionDao;
@@ -104,8 +106,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
     @Override
     public Collection<UserMessage> getInfo() {
         Collection<UserMessage> messages = new ArrayList<>();
-        List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
-        for (SVNRepositorySummary repository : repositories) {
+        List<SVNRepository> repositories = repositoryService.getAllRepositories();
+        for (SVNRepository repository : repositories) {
             IndexationJob job = indexationJobs.get(repository.getId());
             if (job != null) {
                 Localizable message = new LocalizableMessage(
@@ -266,9 +268,11 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
 
     protected void indexIssues(SVNRepository repository, SVNLogEntry logEntry) {
         // Is the repository associated with any issue service?
-        IssueService issueService = repository.getIssueService();
-        IssueServiceConfig issueServiceConfig = repository.getIssueServiceConfig();
-        if (issueService != null && issueServiceConfig != null) {
+        String issueServiceName = repository.getIssueServiceName();
+        Integer issueServiceConfigId = repository.getIssueServiceConfigId();
+        if (StringUtils.isNotBlank(issueServiceName) && issueServiceConfigId != null) {
+            IssueService issueService = issueServiceFactory.getServiceByName(issueServiceName);
+            IssueServiceConfig issueServiceConfig = issueService.getConfigurationById(issueServiceConfigId);
             // Revision information to scan
             long revision = logEntry.getRevision();
             String message = logEntry.getMessage();
@@ -378,9 +382,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             @Override
             public void run() {
                 // Gets all repositories
-                List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
+                List<SVNRepository> repositories = repositoryService.getAllRepositories();
                 // Launches all indexations
-                for (final SVNRepositorySummary repositorySummary : repositories) {
+                for (final SVNRepository repositorySummary : repositories) {
                     int scanInterval = repositorySummary.getIndexationInterval();
                     if (scanInterval > 0 && extensionManager.isExtensionEnabled(SubversionExtension.EXTENSION)) {
                         SVNRepository repository = securityUtils.asAdmin(new Callable<SVNRepository>() {
@@ -403,8 +407,8 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
             public Date nextExecutionTime(TriggerContext triggerContext) {
                 // Gets the mimimum of the scan intervals (outside of 0)
                 Integer scanInterval = null;
-                List<SVNRepositorySummary> repositories = repositoryService.getAllRepositories();
-                for (SVNRepositorySummary repository : repositories) {
+                List<SVNRepository> repositories = repositoryService.getAllRepositories();
+                for (SVNRepository repository : repositories) {
                     int interval = repository.getIndexationInterval();
                     if (interval > 0) {
                         if (scanInterval != null) {

@@ -1,7 +1,6 @@
 package net.ontrack.extension.svn.service;
 
 import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import net.ontrack.core.model.Ack;
 import net.ontrack.core.security.GlobalFunction;
@@ -13,7 +12,6 @@ import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
-import net.ontrack.extension.svn.service.model.SVNRepositorySummary;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,8 +66,8 @@ public class DefaultRepositoryService implements RepositoryService {
                     t.getBrowserForChange(),
                     t.getIndexationInterval(),
                     t.getIndexationStart(),
-                    issueService,
-                    issueServiceConfig
+                    IssueService.summaryFn.apply(issueService),
+                    IssueServiceConfig.summaryFn.apply(issueServiceConfig)
             );
         }
     };
@@ -83,13 +81,10 @@ public class DefaultRepositoryService implements RepositoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SVNRepositorySummary> getAllRepositories() {
+    public List<SVNRepository> getAllRepositories() {
         return Lists.transform(
                 repositoryDao.findAll(),
-                Functions.compose(
-                        SVNRepository.summaryFn,
-                        repositoryFn
-                )
+                repositoryFn
         );
     }
 
@@ -116,11 +111,8 @@ public class DefaultRepositoryService implements RepositoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRepositorySummary getRepositorySummary(int id) {
-        return Functions.compose(
-                SVNRepository.summaryFn,
-                repositoryFn
-        ).apply(repositoryDao.getById(id));
+    public SVNRepository getRepositorySummary(int id) {
+        return repositoryFn.apply(repositoryDao.getById(id));
     }
 
     @Override

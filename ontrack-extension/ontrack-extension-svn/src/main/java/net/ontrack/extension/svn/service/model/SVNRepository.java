@@ -1,37 +1,15 @@
 package net.ontrack.extension.svn.service.model;
 
-import com.google.common.base.Function;
 import lombok.Data;
-import net.ontrack.extension.issue.IssueService;
-import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.IssueServiceConfigSummary;
+import net.ontrack.extension.issue.IssueServiceSummary;
 import net.ontrack.extension.svn.support.SVNUtils;
 import org.tmatesoft.svn.core.SVNURL;
 
+// FIXME The password must be removed, and the update service must be updated
+// in order to update the password only if filled in
 @Data
 public class SVNRepository {
-
-    public static final Function<SVNRepository, SVNRepositorySummary> summaryFn = new Function<SVNRepository, SVNRepositorySummary>() {
-        @Override
-        public SVNRepositorySummary apply(SVNRepository o) {
-            return new SVNRepositorySummary(
-                    o.getId(),
-                    o.getName(),
-                    o.getUrl(),
-                    o.getUser(),
-                    o.getPassword(),
-                    o.getBranchPattern(),
-                    o.getTagPattern(),
-                    o.getTagFilterPattern(),
-                    o.getBrowserForPath(),
-                    o.getBrowserForRevision(),
-                    o.getBrowserForChange(),
-                    o.getIndexationInterval(),
-                    o.getIndexationStart(),
-                    IssueService.summaryFn.apply(o.getIssueService()),
-                    IssueServiceConfig.summaryFn.apply(o.getIssueServiceConfig())
-            );
-        }
-    };
 
     private final int id;
     private final String name;
@@ -46,11 +24,22 @@ public class SVNRepository {
     private final String browserForChange;
     private final int indexationInterval;
     private final long indexationStart;
-    private final IssueService issueService;
-    private final IssueServiceConfig issueServiceConfig;
-
+    private final IssueServiceSummary issueService;
+    private final IssueServiceConfigSummary issueServiceConfig;
 
     public SVNURL getSVNURL() {
         return SVNUtils.toURL(url);
+    }
+
+    public String getIssueServiceName() {
+        return issueService != null
+                ? issueService.getId()
+                : null;
+    }
+
+    public Integer getIssueServiceConfigId() {
+        return issueServiceConfig != null
+                ? issueServiceConfig.getId()
+                : null;
     }
 }
