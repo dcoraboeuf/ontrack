@@ -5,6 +5,7 @@ import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.svn.dao.RepositoryDao;
 import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -101,14 +102,17 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     // TODO Caching
     @Override
     public TRepository update(int id, SVNRepositoryForm form) {
-        // FIXME Password update
+        String password = form.getPassword();
+        if (StringUtils.isBlank(password)) {
+            password = getPassword(id);
+        }
         getNamedParameterJdbcTemplate().update(
                 REPOSITORY_UPDATE,
                 params("id", id)
                         .addValue("name", form.getName())
                         .addValue("url", form.getUrl())
                         .addValue("user", form.getUser())
-                        .addValue("password", form.getPassword())
+                        .addValue("password", password)
                         .addValue("branchPattern", form.getBranchPattern())
                         .addValue("tagPattern", form.getTagPattern())
                         .addValue("tagFilterPattern", form.getTagFilterPattern())
