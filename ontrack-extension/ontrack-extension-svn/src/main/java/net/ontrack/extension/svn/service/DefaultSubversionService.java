@@ -2,8 +2,12 @@ package net.ontrack.extension.svn.service;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.svn.SVNEventType;
+import net.ontrack.extension.svn.SubversionExtension;
+import net.ontrack.extension.svn.SubversionRepositoryPropertyExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
@@ -44,15 +48,17 @@ public class DefaultSubversionService implements SubversionService {
     private final Pattern pathWithRevision = Pattern.compile("(.*)@(\\d+)$");
     private final RepositoryService repositoryService;
     private final TransactionService transactionService;
+    private final PropertiesService propertiesService;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
     private final IssueRevisionDao issueRevisionDao;
     private final SecurityUtils securityUtils;
 
     @Autowired
-    public DefaultSubversionService(RepositoryService repositoryService, TransactionService transactionService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
+    public DefaultSubversionService(RepositoryService repositoryService, TransactionService transactionService, PropertiesService propertiesService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
         this.repositoryService = repositoryService;
         this.transactionService = transactionService;
+        this.propertiesService = propertiesService;
         this.svnEventDao = svnEventDao;
         this.revisionDao = revisionDao;
         this.issueRevisionDao = issueRevisionDao;
@@ -77,6 +83,19 @@ public class DefaultSubversionService implements SubversionService {
     @Transactional(readOnly = true)
     public SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location) {
         return svnEventDao.getFirstCopyAfter(repository.getId(), location);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNRepository getRepositoryForProject(int projectId) {
+        // Gets the SVN Repository property on the project
+        String repositoryIdValue = propertiesService.getPropertyValue(Entity.PROJECT, projectId, SubversionExtension.EXTENSION, SubversionRepositoryPropertyExtension.NAME);
+        if (StringUtils.isNotBlank(repositoryIdValue)) {
+            int repositoryId = Integer.parseInt(repositoryIdValue, 10);
+            return repositoryService.getRepository(repositoryId);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -105,4 +105,9 @@ public interface SubversionService {
     boolean isClosed(SVNRepository repository, String path);
 
     SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location);
+
+    /**
+     * Gets the repository associated with a project, if any.
+     */
+    SVNRepository getRepositoryForProject(int projectId);
 }
