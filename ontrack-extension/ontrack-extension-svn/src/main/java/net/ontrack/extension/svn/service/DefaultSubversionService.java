@@ -153,12 +153,6 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFromBefore(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode) {
-        return svnEventDao.getCopiesFromBefore(repository.getId(), location, sortMode);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public boolean isIndexedIssue(final String key) {
         return Iterables.any(
                 repositoryService.getAllRepositories(),

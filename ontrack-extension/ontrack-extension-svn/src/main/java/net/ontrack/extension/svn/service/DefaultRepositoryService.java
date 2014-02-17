@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-// FIXME Removes the admin callbacks for most of the client calls
 @Service
 public class DefaultRepositoryService implements RepositoryService {
 

@@ -92,9 +92,6 @@ public interface SubversionService {
 
     Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
-    // TODO This method seems not being used
-    Collection<SVNLocation> getCopiesFromBefore(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
-
     /**
      * Is this issue indexed in any repository?
      */
