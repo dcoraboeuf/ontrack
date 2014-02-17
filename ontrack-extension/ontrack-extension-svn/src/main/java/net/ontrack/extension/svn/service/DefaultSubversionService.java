@@ -32,6 +32,7 @@ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -446,8 +447,15 @@ public class DefaultSubversionService implements SubversionService {
                                 SVNClientManager clientManager = SVNClientManager.newInstance();
                                 // Authentication (if needed)
                                 String svnUser = repository.getUser();
-                                String svnPassword = repository.getPassword();
-                                if (org.apache.commons.lang.StringUtils.isNotBlank(svnUser) && org.apache.commons.lang.StringUtils.isNotBlank(svnPassword)) {
+                                String svnPassword = securityUtils.asAdmin(
+                                        new Callable<String>() {
+                                            @Override
+                                            public String call() throws Exception {
+                                                return repositoryService.getPassword(repository.getId());
+                                            }
+                                        }
+                                );
+                                if (StringUtils.isNotBlank(svnUser) && StringUtils.isNotBlank(svnPassword)) {
                                     clientManager.setAuthenticationManager(new BasicAuthenticationManager(svnUser, svnPassword));
                                 }
                                 // OK

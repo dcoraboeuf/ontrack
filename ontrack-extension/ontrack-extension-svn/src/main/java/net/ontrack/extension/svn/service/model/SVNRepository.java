@@ -6,8 +6,6 @@ import net.ontrack.extension.issue.IssueServiceSummary;
 import net.ontrack.extension.svn.support.SVNUtils;
 import org.tmatesoft.svn.core.SVNURL;
 
-// FIXME The password must be removed, and the update service must be updated
-// in order to update the password only if filled in
 @Data
 public class SVNRepository {
 
@@ -15,7 +13,6 @@ public class SVNRepository {
     private final String name;
     private final String url;
     private final String user;
-    private final String password;
     private final String branchPattern;
     private final String tagPattern;
     private final String tagFilterPattern;

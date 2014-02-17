@@ -11,7 +11,6 @@ public class TRepository {
     private final String name;
     private final String url;
     private final String user;
-    private final String password;
     private final String branchPattern;
     private final String tagPattern;
     private final String tagFilterPattern;

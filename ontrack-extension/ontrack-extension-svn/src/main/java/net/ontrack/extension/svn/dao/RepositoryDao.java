@@ -18,4 +18,5 @@ public interface RepositoryDao {
 
     Ack delete(int id);
 
+    String getPassword(int id);
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+// FIXME Removes the admin callbacks for most of the client calls
 @Service
 public class DefaultRepositoryService implements RepositoryService {
 
@@ -57,7 +58,6 @@ public class DefaultRepositoryService implements RepositoryService {
                     t.getName(),
                     t.getUrl(),
                     t.getUser(),
-                    t.getPassword(),
                     t.getBranchPattern(),
                     t.getTagPattern(),
                     t.getTagFilterPattern(),
@@ -105,14 +105,14 @@ public class DefaultRepositoryService implements RepositoryService {
     @Override
     @Transactional(readOnly = true)
     public SVNRepository getRepository(int id) {
-        securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return repositoryFn.apply(repositoryDao.getById(id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRepository getRepositorySummary(int id) {
-        return repositoryFn.apply(repositoryDao.getById(id));
+    public String getPassword(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return repositoryDao.getPassword(id);
     }
 
     @Override

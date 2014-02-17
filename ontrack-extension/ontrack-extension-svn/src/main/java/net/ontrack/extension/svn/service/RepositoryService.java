@@ -37,7 +37,11 @@ public interface RepositoryService {
     Ack deleteRepository(int id);
 
     /**
-     * Gets the summary for a repository configuration.
+     * Gets the protected password for a repository.
+     * <p/>
+     * This method is called internally using admin callbacks.
+     *
+     * @see net.ontrack.core.security.SecurityUtils#asAdmin(java.util.concurrent.Callable)
      */
-    SVNRepository getRepositorySummary(int id);
+    String getPassword(int id);
 }

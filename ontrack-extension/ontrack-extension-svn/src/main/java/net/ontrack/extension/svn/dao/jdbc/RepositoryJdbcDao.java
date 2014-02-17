@@ -40,6 +40,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "ISSUE_SERVICE_NAME = :issueServiceName, " +
             "ISSUE_SERVICE_CONFIG_ID = :issueServiceConfigId " +
             "WHERE ID = :id";
+    public static final String REPOSITORY_GET_PASSWORD = "SELECT PASSWORD FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     private final RowMapper<TRepository> repositoryRowMapper = new RowMapper<TRepository>() {
         @Override
         public TRepository mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -48,7 +49,6 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                     rs.getString("name"),
                     rs.getString("url"),
                     rs.getString("user"),
-                    rs.getString("password"),
                     rs.getString("branch_pattern"),
                     rs.getString("tag_pattern"),
                     rs.getString("tag_filter_pattern"),
@@ -101,6 +101,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
     // TODO Caching
     @Override
     public TRepository update(int id, SVNRepositoryForm form) {
+        // FIXME Password update
         getNamedParameterJdbcTemplate().update(
                 REPOSITORY_UPDATE,
                 params("id", id)
@@ -140,6 +141,15 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                         REPOSITORY_DELETE,
                         params("id", id)
                 )
+        );
+    }
+
+    @Override
+    public String getPassword(int id) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                REPOSITORY_GET_PASSWORD,
+                params("id", id),
+                String.class
         );
     }
 }

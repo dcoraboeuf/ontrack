@@ -56,7 +56,7 @@ public class SubversionRepositoryPropertyExtension extends AbstractPropertyExten
     @Override
     public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String repositoryId) {
         if (StringUtils.isNotBlank(repositoryId)) {
-            SVNRepository repository = repositoryService.getRepositorySummary(Integer.parseInt(repositoryId, 10));
+            SVNRepository repository = repositoryService.getRepository(Integer.parseInt(repositoryId, 10));
             return String.format(
                     "%s (%s)",
                     escapeHtml4(repository.getName()),
