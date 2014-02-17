@@ -5,6 +5,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.jira.service.JIRAConfigurationNameAlreadyExistsException;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -32,7 +33,6 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
                     rs.getString("name"),
                     rs.getString("url"),
                     rs.getString("user"),
-                    rs.getString("password"),
                     excludedProjects,
                     excludedIssues
             );
@@ -53,20 +53,20 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
     }
 
     @Override
-    public JIRAConfiguration create(String name, String url, String user, String password, Set<String> excludedProjects, Set<String> excludedIssues) {
+    public JIRAConfiguration create(JIRAConfigurationForm form) {
         try {
-            String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
+            String exclusions = getExclusionsAsString(form.getExcludedProjects(), form.getExcludedIssues());
             int id = dbCreate(
                     JIRASQL.JIRA_CONFIGURATION_CREATE,
-                    params("name", name)
-                            .addValue("url", url)
-                            .addValue("user", user)
-                            .addValue("password", password)
+                    params("name", form.getName())
+                            .addValue("url", form.getUser())
+                            .addValue("user", form.getUser())
+                            .addValue("password", form.getPassword())
                             .addValue("exclusions", exclusions)
             );
-            return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+            return getById(id);
         } catch (DuplicateKeyException ex) {
-            throw new JIRAConfigurationNameAlreadyExistsException(name);
+            throw new JIRAConfigurationNameAlreadyExistsException(form.getName());
         }
     }
 
@@ -81,21 +81,25 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
     }
 
     @Override
-    public JIRAConfiguration update(int id, String name, String url, String user, String password, Set<String> excludedProjects, Set<String> excludedIssues) {
+    public JIRAConfiguration update(int id, JIRAConfigurationForm form) {
         try {
-            String exclusions = getExclusionsAsString(excludedProjects, excludedIssues);
+            String password = form.getPassword();
+            if (StringUtils.isBlank(password)) {
+                password = getPassword(id);
+            }
+            String exclusions = getExclusionsAsString(form.getExcludedProjects(), form.getExcludedIssues());
             getNamedParameterJdbcTemplate().update(
                     JIRASQL.JIRA_CONFIGURATION_UPDATE,
                     params("id", id)
-                            .addValue("name", name)
-                            .addValue("url", url)
-                            .addValue("user", user)
+                            .addValue("name", form.getName())
+                            .addValue("url", form.getUser())
+                            .addValue("user", form.getUser())
                             .addValue("password", password)
                             .addValue("exclusions", exclusions)
             );
-            return new JIRAConfiguration(id, name, url, user, password, excludedProjects, excludedIssues);
+            return getById(id);
         } catch (DuplicateKeyException ex) {
-            throw new JIRAConfigurationNameAlreadyExistsException(name);
+            throw new JIRAConfigurationNameAlreadyExistsException(form.getName());
         }
     }
 
@@ -124,6 +128,15 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
                         JIRASQL.JIRA_CONFIGURATION_DELETE,
                         params("id", id)
                 )
+        );
+    }
+
+    @Override
+    public String getPassword(int id) {
+        return getNamedParameterJdbcTemplate().queryForObject(
+                JIRASQL.JIRA_CONFIGURATION_PASSWORD,
+                params("id", id),
+                String.class
         );
     }
 }

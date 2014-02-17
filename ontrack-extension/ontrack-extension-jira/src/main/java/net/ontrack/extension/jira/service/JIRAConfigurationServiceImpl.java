@@ -50,14 +50,7 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Transactional
     public JIRAConfiguration createConfiguration(JIRAConfigurationForm configuration) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
-        return jiraConfigurationDao.create(
-                configuration.getName(),
-                configuration.getUrl(),
-                configuration.getUser(),
-                configuration.getPassword(),
-                configuration.getExcludedProjects(),
-                configuration.getExcludedIssues()
-        );
+        return jiraConfigurationDao.create(configuration);
     }
 
     @Override
@@ -66,12 +59,7 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);
         return jiraConfigurationDao.update(
                 id,
-                configuration.getName(),
-                configuration.getUrl(),
-                configuration.getUser(),
-                configuration.getPassword(),
-                configuration.getExcludedProjects(),
-                configuration.getExcludedIssues()
+                configuration
         );
     }
 
@@ -129,5 +117,12 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
     @Transactional(readOnly = true)
     public JIRAConfiguration getConfigurationByName(String name) {
         return jiraConfigurationDao.getByName(name);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getPassword(int id) {
+        securityUtils.checkGrant(GlobalFunction.SETTINGS);
+        return jiraConfigurationDao.getPassword(id);
     }
 }

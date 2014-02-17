@@ -63,7 +63,7 @@ public class JIRAServiceTest {
     }
 
     private JIRAConfiguration createJiraConfiguration() {
-        return new JIRAConfiguration(0, "test", "http://jira", "user", "pwd", Collections.<String>emptySet(), Collections.<String>emptySet());
+        return new JIRAConfiguration(0, "test", "http://jira", "user", Collections.<String>emptySet(), Collections.<String>emptySet());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class JIRAServiceTest {
     @Test
     public void insertIssueUrlsInMessage() {
         ExtensionManager extensionManager = mock(ExtensionManager.class);
-        JIRAConfiguration config = new JIRAConfiguration(0, "test", "http://jira", "user", "pwd",
+        JIRAConfiguration config = new JIRAConfiguration(0, "test", "http://jira", "user",
                 Collections.<String>emptySet(),
                 Sets.newHashSet("TEST-12", "PRJ-12"));
         JIRASessionFactory jiraSessionFactory = mock(JIRASessionFactory.class);
@@ -101,7 +101,7 @@ public class JIRAServiceTest {
     @Test
     public void extractIssueKeysFromMessage() {
         ExtensionManager extensionManager = mock(ExtensionManager.class);
-        JIRAConfiguration config = new JIRAConfiguration(12, "test", "http://jira", "user", "pwd",
+        JIRAConfiguration config = new JIRAConfiguration(12, "test", "http://jira", "user",
                 Sets.newHashSet("TEST"),
                 Sets.newHashSet("PRJ-12"));
         JIRAConfigurationService jiraConfigurationService = mock(JIRAConfigurationService.class);

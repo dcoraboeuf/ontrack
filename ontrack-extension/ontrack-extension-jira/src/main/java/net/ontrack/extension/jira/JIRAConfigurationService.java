@@ -25,4 +25,6 @@ public interface JIRAConfigurationService {
     JIRAConfigurationDeletion getConfigurationForDeletion(int id);
 
     JIRAConfiguration getConfigurationByName(String name);
+
+    String getPassword(int id);
 }

@@ -8,6 +8,7 @@ import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.dao.ExclusionsParser;
 import net.ontrack.extension.jira.dao.JIRAConfigurationDao;
+import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,12 +76,14 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
             Set<String> excludedIssues = exclusionsParser.getExcludedIssues();
             // Creates a new JIRA configuration and saves it with name `default`
             int configurationId = jiraConfigurationDao.create(
-                    "default",
-                    configuration.get("x-jira-configuration-url"),
-                    configuration.get("x-jira-configuration-user"),
-                    configuration.get("x-jira-configuration-password"),
-                    excludedProjects,
-                    excludedIssues
+                    new JIRAConfigurationForm(
+                            "default",
+                            configuration.get("x-jira-configuration-url"),
+                            configuration.get("x-jira-configuration-user"),
+                            configuration.get("x-jira-configuration-password"),
+                            excludedProjects,
+                            excludedIssues
+                    )
             ).getId();
             // Gets all projects which have (them or one of their branches) a SVNExplorer or SVN-related property.
             Set<Integer> projectIds = new HashSet<>();
