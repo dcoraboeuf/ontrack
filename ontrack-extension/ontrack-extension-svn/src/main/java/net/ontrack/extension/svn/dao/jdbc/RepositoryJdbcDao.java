@@ -99,7 +99,6 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         return getById(id);
     }
 
-    // TODO Caching
     @Override
     public TRepository update(int id, SVNRepositoryForm form) {
         String password = form.getPassword();
@@ -127,7 +126,6 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         return getById(id);
     }
 
-    // TODO Caching
     @Override
     public TRepository getById(int id) {
         return getNamedParameterJdbcTemplate().queryForObject(
@@ -137,7 +135,6 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
         );
     }
 
-    // TODO Caching
     @Override
     public Ack delete(int id) {
         return Ack.one(

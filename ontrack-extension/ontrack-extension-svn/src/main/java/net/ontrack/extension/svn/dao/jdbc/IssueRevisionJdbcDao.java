@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.util.List;
 
-// FIXME Where do the issues come from?
 @Component
 public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisionDao {
 
