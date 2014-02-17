@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 @Service
 public class DefaultRepositoryService implements RepositoryService {
@@ -33,16 +34,24 @@ public class DefaultRepositoryService implements RepositoryService {
         @Override
         public SVNRepository apply(TRepository t) {
             // Issue service
-            IssueService issueService = null;
+            final IssueService issueService;
             IssueServiceConfig issueServiceConfig = null;
             String issueServiceName = t.getIssueServiceName();
-            Integer issueServiceConfigId = t.getIssueServiceConfigId();
+            final Integer issueServiceConfigId = t.getIssueServiceConfigId();
             if (StringUtils.isNotBlank(issueServiceName)) {
                 issueService = issueServiceFactory.getServiceByName(issueServiceName);
                 if (issueServiceConfigId == null) {
                     throw new IllegalStateException("[svn] The issue service configuration ID is null but the issue service is defined for the repository " + t.getName());
                 }
-                issueServiceConfig = issueService.getConfigurationById(issueServiceConfigId);
+                // Makes sure to elevate the privileges here
+                issueServiceConfig = securityUtils.asAdmin(new Callable<IssueServiceConfig>() {
+                    @Override
+                    public IssueServiceConfig call() throws Exception {
+                        return issueService.getConfigurationById(issueServiceConfigId);
+                    }
+                });
+            } else {
+                issueService = null;
             }
             // OK
             return new SVNRepository(

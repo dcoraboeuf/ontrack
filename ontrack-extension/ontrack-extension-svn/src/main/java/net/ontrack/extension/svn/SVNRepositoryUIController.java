@@ -34,20 +34,20 @@ public class SVNRepositoryUIController extends AbstractUIController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody
-    public SVNRepository createConfiguration(@RequestBody SVNRepositoryForm configuration) {
-        return repositoryService.createRepository(configuration);
+    public SVNRepositorySummary createConfiguration(@RequestBody SVNRepositoryForm configuration) {
+        return SVNRepository.summaryFn.apply(repositoryService.createRepository(configuration));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public SVNRepository updateConfiguration(@PathVariable int id, @RequestBody SVNRepositoryForm configuration) {
-        return repositoryService.updateRepository(id, configuration);
+    public SVNRepositorySummary updateConfiguration(@PathVariable int id, @RequestBody SVNRepositoryForm configuration) {
+        return SVNRepository.summaryFn.apply(repositoryService.updateRepository(id, configuration));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public SVNRepository getConfigurationById(@PathVariable int id) {
-        return repositoryService.getRepository(id);
+    public SVNRepositorySummary getConfigurationById(@PathVariable int id) {
+        return SVNRepository.summaryFn.apply(repositoryService.getRepository(id));
     }
 
     // TODO Deletion configuration

@@ -44,7 +44,7 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
         })
     }
 
-    function fillConfigurationCbo(serviceName, configurationCbo) {
+    function fillConfigurationCbo(serviceName, configurationCbo, selection) {
         configurationCbo.empty();
         // No entry
         $('<option></option>').attr('value', '').html('&nbsp;').appendTo(configurationCbo);
@@ -59,6 +59,10 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                             .text(configuration.name)
                             .appendTo(configurationCbo)
                     });
+                    // Selection?
+                    if (selection) {
+                        configurationCbo.val(selection);
+                    }
                 }
             })
         }
@@ -111,19 +115,17 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                             .text(service.name)
                             .appendTo(serviceCbo)
                     });
+                    // Initial selection
+                    var itemServiceName = item.issueService ? item.issueService.id : '';
+                    serviceCbo.val(itemServiceName);
+                    fillConfigurationCbo(itemServiceName, configurationCbo, item.issueServiceConfig ? item.issueServiceConfig.id : '');
                 }
             });
             // Selection of the name triggers the selection of the configurations for this service
             serviceCbo.change(function () {
                 var serviceName = serviceCbo.val();
-                fillConfigurationCbo(serviceName, configurationCbo);
+                fillConfigurationCbo(serviceName, configurationCbo, '');
             });
-            // Initial selection
-            // FIXME SVNREpository contains the full service & configuration, not summaries
-            var itemServiceName = item.issueService ? item.issueService.id : '';
-            serviceCbo.val(itemServiceName);
-            fillConfigurationCbo(itemServiceName, configurationCbo);
-            configurationCbo.val(item.issueServiceConfig ? item.issueServiceConfig.id : '');
         },
         itemDialogReadFn: function (cfg, dialog, form) {
             var serviceCbo = dialog.form.find('#subversion-repository-issueServiceName');

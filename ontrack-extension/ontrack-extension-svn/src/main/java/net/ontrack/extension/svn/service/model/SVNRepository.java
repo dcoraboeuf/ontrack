@@ -17,6 +17,8 @@ public class SVNRepository {
                     o.getId(),
                     o.getName(),
                     o.getUrl(),
+                    o.getUser(),
+                    o.getPassword(),
                     o.getBranchPattern(),
                     o.getTagPattern(),
                     o.getTagFilterPattern(),
