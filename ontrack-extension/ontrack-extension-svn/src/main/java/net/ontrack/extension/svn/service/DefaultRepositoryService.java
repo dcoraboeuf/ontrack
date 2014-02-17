@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 // FIXME Removes the admin callbacks for most of the client calls
 @Service
@@ -42,13 +41,7 @@ public class DefaultRepositoryService implements RepositoryService {
                 if (issueServiceConfigId == null) {
                     throw new IllegalStateException("[svn] The issue service configuration ID is null but the issue service is defined for the repository " + t.getName());
                 }
-                // Makes sure to elevate the privileges here
-                issueServiceConfig = securityUtils.asAdmin(new Callable<IssueServiceConfig>() {
-                    @Override
-                    public IssueServiceConfig call() throws Exception {
-                        return issueService.getConfigurationById(issueServiceConfigId);
-                    }
-                });
+                issueServiceConfig = issueService.getConfigurationById(issueServiceConfigId);
             } else {
                 issueService = null;
             }

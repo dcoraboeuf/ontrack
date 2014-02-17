@@ -384,15 +384,9 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
                 // Gets all repositories
                 List<SVNRepository> repositories = repositoryService.getAllRepositories();
                 // Launches all indexations
-                for (final SVNRepository repositorySummary : repositories) {
-                    int scanInterval = repositorySummary.getIndexationInterval();
+                for (final SVNRepository repository : repositories) {
+                    int scanInterval = repository.getIndexationInterval();
                     if (scanInterval > 0 && extensionManager.isExtensionEnabled(SubversionExtension.EXTENSION)) {
-                        SVNRepository repository = securityUtils.asAdmin(new Callable<SVNRepository>() {
-                            @Override
-                            public SVNRepository call() throws Exception {
-                                return repositoryService.getRepository(repositorySummary.getId());
-                            }
-                        });
                         indexTask(repository);
                     }
                 }

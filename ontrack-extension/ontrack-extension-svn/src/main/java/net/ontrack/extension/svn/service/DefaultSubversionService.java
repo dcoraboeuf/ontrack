@@ -46,7 +46,6 @@ public class DefaultSubversionService implements SubversionService {
     private final TransactionService transactionService;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
-    // FIXME Issue indexation to refactor
     private final IssueRevisionDao issueRevisionDao;
     private final SecurityUtils securityUtils;
 
