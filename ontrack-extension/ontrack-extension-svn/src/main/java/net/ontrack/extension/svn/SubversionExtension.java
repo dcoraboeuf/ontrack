@@ -10,23 +10,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-// TODO Migration of the SVN path property to SVNExplorer
-// TODO Migration of the SVN build path property to SVNExplorer
+// FIXME Migration code
 @Component
 public class SubversionExtension extends ExtensionAdapter {
 
     public static final String EXTENSION = "svn";
     public static final String SUBVERSION_BUILD_PATH = "buildPath";
+    private final SubversionRepositoryPropertyExtension subversionRepositoryPropertyExtension;
     private final SubversionPathPropertyExtension subversionPathPropertyExtension;
     private final SubversionBuildPathPropertyExtension subversionBuildPathPropertyExtension;
     private final SVNConfigurationController svnConfigurationController;
 
     @Autowired
     public SubversionExtension(
-            SubversionPathPropertyExtension subversionPathPropertyExtension,
+            SubversionRepositoryPropertyExtension subversionRepositoryPropertyExtension, SubversionPathPropertyExtension subversionPathPropertyExtension,
             SubversionBuildPathPropertyExtension subversionBuildPathPropertyExtension,
             SVNConfigurationController svnConfigurationController) {
         super(EXTENSION);
+        this.subversionRepositoryPropertyExtension = subversionRepositoryPropertyExtension;
         this.subversionPathPropertyExtension = subversionPathPropertyExtension;
         this.subversionBuildPathPropertyExtension = subversionBuildPathPropertyExtension;
         this.svnConfigurationController = svnConfigurationController;
@@ -34,7 +35,7 @@ public class SubversionExtension extends ExtensionAdapter {
 
     @Override
     public List<? extends PropertyExtensionDescriptor> getPropertyExtensionDescriptors() {
-        return Arrays.asList(subversionPathPropertyExtension, subversionBuildPathPropertyExtension);
+        return Arrays.asList(subversionRepositoryPropertyExtension, subversionPathPropertyExtension, subversionBuildPathPropertyExtension);
     }
 
     @Override

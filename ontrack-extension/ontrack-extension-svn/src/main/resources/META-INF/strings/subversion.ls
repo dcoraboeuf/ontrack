@@ -70,6 +70,16 @@ subversion.configuration.issueServiceConfigId
     en -> Issue service configuration
     fr -> Configuration pour les tickets
 
+[repository]
+
+subversion.repository
+    en -> SVN repository
+    fr -> Repository SVN
+
+subversion.repository.description
+    en -> SVN repository to use for this project
+    fr -> Repository SVN à utiliser pour ce projet
+
 [path]
 
 subversion.path

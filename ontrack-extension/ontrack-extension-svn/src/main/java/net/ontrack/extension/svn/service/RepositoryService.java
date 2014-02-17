@@ -37,4 +37,8 @@ public interface RepositoryService {
      */
     Ack deleteRepository(int id);
 
+    /**
+     * Gets the summary for a repository configuration.
+     */
+    SVNRepositorySummary getRepositorySummary(int id);
 }

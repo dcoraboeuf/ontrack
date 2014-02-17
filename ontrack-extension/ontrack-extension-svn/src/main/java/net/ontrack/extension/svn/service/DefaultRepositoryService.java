@@ -115,6 +115,15 @@ public class DefaultRepositoryService implements RepositoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public SVNRepositorySummary getRepositorySummary(int id) {
+        return Functions.compose(
+                SVNRepository.summaryFn,
+                repositoryFn
+        ).apply(repositoryDao.getById(id));
+    }
+
+    @Override
     @Transactional
     public Ack deleteRepository(int id) {
         securityUtils.checkGrant(GlobalFunction.SETTINGS);

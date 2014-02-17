@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+// FIXME The password must be removed, and the update service must be updated
+// in order to update the password only if filled in
 @Data
 public class JIRAConfiguration implements IssueServiceConfig {
 
