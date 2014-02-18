@@ -45,4 +45,11 @@ public class RepositoryIssueServiceSubscription implements IssueServiceConfigSub
                 }
         );
     }
+
+    @Override
+    public void unsubscribe(String serviceId, int configId) {
+        for (TRepository t : repositoryDao.findByIssueServiceConfig(serviceId, configId)) {
+            repositoryDao.resetIssueServiceConfig(t.getId());
+        }
+    }
 }

@@ -30,4 +30,13 @@ public class IssueServiceConfigRegistryImpl implements IssueServiceConfigRegistr
         return subscribers;
     }
 
+    @Override
+    public void unsubscribe(String serviceId, int configId) {
+        for (IssueServiceConfigSubscription subscription : subscriptions) {
+            if (subscription.supportsService(serviceId)) {
+                subscription.unsubscribe(serviceId, configId);
+            }
+        }
+    }
+
 }

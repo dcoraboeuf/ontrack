@@ -9,4 +9,5 @@ public interface IssueServiceConfigRegistry {
 
     Collection<IssueServiceConfigSubscriber> getSubscribers(String serviceId, int configId);
 
+    void unsubscribe(String serviceId, int configId);
 }

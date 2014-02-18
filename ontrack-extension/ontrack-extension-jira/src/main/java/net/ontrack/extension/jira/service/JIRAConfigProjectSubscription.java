@@ -69,4 +69,17 @@ public class JIRAConfigProjectSubscription implements IssueServiceConfigSubscrip
                 }
         );
     }
+
+    @Override
+    public void unsubscribe(String serviceId, int configId) {
+        Collection<Integer> projectIds = propertiesService.findEntityByPropertyValue(
+                Entity.PROJECT,
+                JIRAExtension.EXTENSION,
+                JIRAConfigurationPropertyExtension.NAME,
+                String.valueOf(configId)
+        );
+        for (int projectId : projectIds) {
+            propertiesService.saveProperty(Entity.PROJECT, projectId, JIRAExtension.EXTENSION, JIRAConfigurationPropertyExtension.NAME, null);
+        }
+    }
 }

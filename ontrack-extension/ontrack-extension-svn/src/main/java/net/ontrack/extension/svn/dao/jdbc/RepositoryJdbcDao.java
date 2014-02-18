@@ -44,6 +44,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "WHERE ID = :id";
     public static final String REPOSITORY_GET_PASSWORD = "SELECT PASSWORD FROM EXT_SVN_REPOSITORY WHERE ID = :id";
     public static final String REPOSITORY_BY_ISSUE_SERVICE_CONFIG = "SELECT * FROM EXT_SVN_REPOSITORY WHERE ISSUE_SERVICE_NAME = :serviceId AND ISSUE_SERVICE_CONFIG_ID = :configId";
+    public static final String REPOSITORY_ISSUE_SERVICE_RESET = "UPDATE EXT_SVN_REPOSITORY SET ISSUE_SERVICE_NAME = NULL, ISSUE_SERVICE_CONFIG_ID = NULL WHERE ID = :id";
     private final RowMapper<TRepository> repositoryRowMapper = new RowMapper<TRepository>() {
         @Override
         public TRepository mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -162,6 +163,14 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                 REPOSITORY_BY_ISSUE_SERVICE_CONFIG,
                 params("serviceId", serviceId).addValue("configId", configId),
                 repositoryRowMapper
+        );
+    }
+
+    @Override
+    public void resetIssueServiceConfig(int id) {
+        getNamedParameterJdbcTemplate().update(
+                REPOSITORY_ISSUE_SERVICE_RESET,
+                params("id", id)
         );
     }
 }

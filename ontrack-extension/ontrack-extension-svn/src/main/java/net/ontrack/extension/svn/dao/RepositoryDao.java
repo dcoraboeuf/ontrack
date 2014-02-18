@@ -22,4 +22,6 @@ public interface RepositoryDao {
     String getPassword(int id);
 
     Collection<TRepository> findByIssueServiceConfig(String serviceId, int configId);
+
+    void resetIssueServiceConfig(int id);
 }

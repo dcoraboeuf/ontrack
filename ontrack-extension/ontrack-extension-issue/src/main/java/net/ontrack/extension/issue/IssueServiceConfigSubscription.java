@@ -8,4 +8,5 @@ public interface IssueServiceConfigSubscription {
 
     Collection<? extends IssueServiceConfigSubscriber> getSubscribers(String serviceId, int configId);
 
+    void unsubscribe(String serviceId, int configId);
 }
