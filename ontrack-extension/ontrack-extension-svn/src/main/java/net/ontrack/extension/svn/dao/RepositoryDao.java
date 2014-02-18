@@ -4,6 +4,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.dao.model.TRepository;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface RepositoryDao {
@@ -19,4 +20,6 @@ public interface RepositoryDao {
     Ack delete(int id);
 
     String getPassword(int id);
+
+    Collection<TRepository> findByIssueServiceConfig(String serviceId, int configId);
 }

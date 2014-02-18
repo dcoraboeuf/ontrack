@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -42,6 +43,7 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
             "ISSUE_SERVICE_CONFIG_ID = :issueServiceConfigId " +
             "WHERE ID = :id";
     public static final String REPOSITORY_GET_PASSWORD = "SELECT PASSWORD FROM EXT_SVN_REPOSITORY WHERE ID = :id";
+    public static final String REPOSITORY_BY_ISSUE_SERVICE_CONFIG = "SELECT * FROM EXT_SVN_REPOSITORY WHERE ISSUE_SERVICE_NAME = :serviceId AND ISSUE_SERVICE_CONFIG_ID = :configId";
     private final RowMapper<TRepository> repositoryRowMapper = new RowMapper<TRepository>() {
         @Override
         public TRepository mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -151,6 +153,15 @@ public class RepositoryJdbcDao extends AbstractJdbcDao implements RepositoryDao 
                 REPOSITORY_GET_PASSWORD,
                 params("id", id),
                 String.class
+        );
+    }
+
+    @Override
+    public Collection<TRepository> findByIssueServiceConfig(String serviceId, int configId) {
+        return getNamedParameterJdbcTemplate().query(
+                REPOSITORY_BY_ISSUE_SERVICE_CONFIG,
+                params("serviceId", serviceId).addValue("configId", configId),
+                repositoryRowMapper
         );
     }
 }
