@@ -61,6 +61,7 @@ public class JIRAConfigProjectSubscription implements IssueServiceConfigSubscrip
                     @Override
                     public IssueServiceConfigSubscriber apply(ProjectSummary project) {
                         return new IssueServiceConfigSubscriber(
+                                "model.project",
                                 project.getName(),
                                 guiService.getProjectGUIURL(project)
                         );

@@ -37,6 +37,7 @@ public class RepositoryIssueServiceSubscription implements IssueServiceConfigSub
                     @Override
                     public IssueServiceConfigSubscriber apply(TRepository t) {
                         return new IssueServiceConfigSubscriber(
+                                "subversion.repository",
                                 t.getName(),
                                 null
                         );
