@@ -3,7 +3,7 @@ package net.ontrack.extension.jira.db;
 import net.ontrack.core.model.Entity;
 import net.ontrack.dao.AbstractJdbcDao;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.extension.api.support.StartupService;
+import net.ontrack.service.StartupService;
 import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAExtension;
 import net.ontrack.extension.jira.dao.ExclusionsParser;
@@ -35,6 +35,11 @@ public class JIRAConfigDBMigration extends AbstractJdbcDao implements StartupSer
         super(dataSource);
         this.propertiesService = propertiesService;
         this.jiraConfigurationDao = jiraConfigurationDao;
+    }
+
+    @Override
+    public String getName() {
+        return JIRAConfigDBMigration.class.getSimpleName();
     }
 
     @Override

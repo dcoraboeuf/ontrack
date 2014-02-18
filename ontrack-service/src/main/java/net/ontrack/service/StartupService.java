@@ -1,4 +1,4 @@
-package net.ontrack.extension.api.support;
+package net.ontrack.service;
 
 /**
  * Implement this interface and declare the implementation as a <code>@Component</code>
@@ -6,6 +6,11 @@ package net.ontrack.extension.api.support;
  * or migrated.
  */
 public interface StartupService {
+
+    /**
+     * Display name (used for tracing information)
+     */
+    String getName();
 
     int startupOrder();
 

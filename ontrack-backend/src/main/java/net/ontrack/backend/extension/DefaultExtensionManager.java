@@ -19,7 +19,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundExc
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
-import net.ontrack.extension.api.support.StartupService;
+import net.ontrack.service.StartupService;
 import net.sf.jstring.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +53,11 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         this.strings = strings;
         this.configurationDao = configurationDao;
         this.securityUtils = securityUtils;
+    }
+
+    @Override
+    public String getName() {
+        return DefaultExtensionManager.class.getSimpleName();
     }
 
     @Override
