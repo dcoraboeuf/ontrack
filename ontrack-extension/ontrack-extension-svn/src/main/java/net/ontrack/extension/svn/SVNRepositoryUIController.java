@@ -49,7 +49,7 @@ public class SVNRepositoryUIController extends AbstractUIController {
         return repositoryService.getRepository(id);
     }
 
-    // TODO Deletion configuration
+    // FIXME Deletion configuration
     // @RequestMapping(value = "/{id}/deletion", method = RequestMethod.GET)
     // @ResponseBody
     // public JIRAConfigurationDeletion getConfigurationForDeletion(@PathVariable int id) {

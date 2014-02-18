@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-// FIXME Migration code
 @Component
 public class SubversionExtension extends ExtensionAdapter {
 

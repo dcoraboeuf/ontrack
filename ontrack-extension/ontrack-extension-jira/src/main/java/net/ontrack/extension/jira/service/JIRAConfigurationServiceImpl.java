@@ -62,6 +62,13 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
         );
     }
 
+    // FIXME Removes SVN repositories
+    /*
+     * How to detect the SVN repositories? There must be the notion of a `IssueServiceClient`
+     * that gives the list of "entities" to be deleted. For example, the `SVN` extension
+     * can declare a `IssueServiceClient` that will return the list of repositories
+     * linked to the issue service configuration.
+     */
     @Override
     @Transactional
     public Ack deleteConfiguration(int id) {
@@ -86,11 +93,13 @@ public class JIRAConfigurationServiceImpl implements JIRAConfigurationService {
         return jiraConfigurationDao.getById(id);
     }
 
+    // FIXME Add the list of impacted entities (see deleteConfiguration)
     @Override
     @Transactional(readOnly = true)
     public JIRAConfigurationDeletion getConfigurationForDeletion(int id) {
         return new JIRAConfigurationDeletion(
                 getConfigurationById(id),
+                // FIXME Gets the list of SVN repositories that are associated with this JIRA configuration
                 // Gets the list of projects that have the JIRA property set
                 Lists.transform(
                         Lists.newArrayList(
