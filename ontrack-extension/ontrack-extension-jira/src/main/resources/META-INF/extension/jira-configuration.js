@@ -90,8 +90,8 @@ define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, d
                         }
                     })
                 };
-                // If no project is impacted, just delete it after prompt
-                if (jiraConfigurationDeletion.projects.length == 0) {
+                // If no entity is impacted, just delete it after prompt
+                if (jiraConfigurationDeletion.subscribers.length == 0) {
                     common.confirmAndCall(
                         'jira.configuration.delete.prompt'.loc(),
                         deleteFn

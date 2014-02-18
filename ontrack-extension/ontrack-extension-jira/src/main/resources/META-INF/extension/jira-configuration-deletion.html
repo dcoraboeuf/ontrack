@@ -4,13 +4,18 @@
     </div>
     <table class="table table-condensed">
         <tbody>
-            {{#projects}}
+            {{#subscribers}}
                 <tr>
                     <td>
-                        <a href="gui/project/{{name}}">{{name}}</a>
+                        {{loc typeKey}}
+                        {{#if guiLink}}
+                            <b><a href="{{guiLink}}">{{name}}</a></b>
+                        {{else}}
+                            <b>{{name}}</b>
+                        {{/if}}
                     </td>
                 </tr>
-            {{/projects}}
+            {{/subscribers}}
         </tbody>
     </table>
 </form>
