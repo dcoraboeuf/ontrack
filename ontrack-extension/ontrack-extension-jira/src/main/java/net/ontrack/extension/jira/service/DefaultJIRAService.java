@@ -54,7 +54,7 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
 
     @Autowired
     public DefaultJIRAService(ExtensionManager extensionManager, JIRAConfigurationService jiraConfigurationService, PropertiesService propertiesService, TransactionService transactionService, JIRASessionFactory jiraSessionFactory) {
-        super("jira", "JIRA", JIRAExtension.EXTENSION, extensionManager);
+        super(JIRAExtension.EXTENSION, "JIRA", JIRAExtension.EXTENSION, extensionManager);
         this.jiraConfigurationService = jiraConfigurationService;
         this.propertiesService = propertiesService;
         this.transactionService = transactionService;

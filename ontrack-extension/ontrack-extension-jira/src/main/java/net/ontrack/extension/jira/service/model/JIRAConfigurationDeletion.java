@@ -1,17 +1,17 @@
 package net.ontrack.extension.jira.service.model;
 
 import lombok.Data;
-import net.ontrack.core.model.ProjectSummary;
+import net.ontrack.extension.issue.IssueServiceConfigSubscriber;
 
-import java.util.List;
+import java.util.Collection;
 
 @Data
 public class JIRAConfigurationDeletion {
 
     private final JIRAConfiguration configuration;
     /**
-     * List of projects that have a JIRA property associated with them.
+     * List of entities that have a JIRA property associated with them.
      */
-    private final List<ProjectSummary> projects;
+    private final Collection<IssueServiceConfigSubscriber> subscribers;
 
 }

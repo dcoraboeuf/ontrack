@@ -2,6 +2,7 @@ package net.ontrack.backend;
 
 import net.ontrack.core.RunProfile;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.ProjectSummary;
 import net.ontrack.service.GUIService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -26,5 +27,17 @@ public class MockGUIService implements GUIService {
                 build.getBranch().getProject().getName(),
                 build.getBranch().getName(),
                 build.getName());
+    }
+
+    @Override
+    public String getProjectGUIURL(ProjectSummary project) {
+        return toGUI(getProjectURI(project));
+    }
+
+    @Override
+    public String getProjectURI(ProjectSummary project) {
+        return String.format(
+                "project/%s",
+                project.getName());
     }
 }
