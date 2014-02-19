@@ -50,7 +50,7 @@ public class DefaultPropertiesServiceTest extends AbstractBackendTest {
 
     @Test
     public void findEntityByPropertyValue_build_one() throws Exception {
-        String value = uid("P");
+        String value = "http://" + uid("P");
         // For one build...
         BuildSummary build = doCreateBuild();
         // ... adds a property
@@ -62,7 +62,7 @@ public class DefaultPropertiesServiceTest extends AbstractBackendTest {
 
     @Test
     public void findEntityByPropertyValue_build_no_match() throws Exception {
-        String value = uid("P");
+        String value = "http://" + uid("P");
         // For one build...
         BuildSummary build = doCreateBuild();
         // ... adds a property
@@ -75,7 +75,7 @@ public class DefaultPropertiesServiceTest extends AbstractBackendTest {
 
     @Test
     public void findEntityByPropertyValue_two_builds_two_matches() throws Exception {
-        String value = uid("P");
+        String value = "http://" + uid("P");
         // For two builds...
         BuildSummary build1 = doCreateBuild();
         BuildSummary build2 = doCreateBuild();
@@ -92,7 +92,7 @@ public class DefaultPropertiesServiceTest extends AbstractBackendTest {
 
     @Test
     public void findEntityByPropertyValue_two_builds_one_match() throws Exception {
-        String value = uid("P");
+        String value = "http://" + uid("P");
         // For two builds...
         BuildSummary build1 = doCreateBuild();
         BuildSummary build2 = doCreateBuild();

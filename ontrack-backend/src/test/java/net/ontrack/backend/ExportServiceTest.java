@@ -120,8 +120,8 @@ public class ExportServiceTest extends AbstractBackendTest {
                 managementService.addValidationStampComment(b1smoke.getId(), new ValidationStampCommentForm("Comment for b1smoke"));
                 managementService.addValidationStampComment(b2acc.getId(), new ValidationStampCommentForm("Comment for b2acc"));
                 // Properties
-                propertiesService.createProperties(Entity.PROJECT, project.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://project")));
-                propertiesService.createProperties(Entity.BRANCH, b1.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "uri://branch")));
+                propertiesService.createProperties(Entity.PROJECT, project.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "http://project")));
+                propertiesService.createProperties(Entity.BRANCH, b1.getId(), PropertiesCreationForm.create().with(new PropertyCreationForm(JenkinsExtension.EXTENSION, JenkinsUrlPropertyDescriptor.NAME, "http://project/branch")));
                 // Build clean-up policy
                 managementService.setBuildCleanup(b2.getId(), new BuildCleanupForm(60, Collections.singleton(b2prod.getId())));
                 // OK
