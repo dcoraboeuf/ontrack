@@ -3,6 +3,7 @@ package net.ontrack.extension.svn;
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.service.RepositoryService;
 import net.ontrack.extension.svn.service.model.SVNRepository;
+import net.ontrack.extension.svn.service.model.SVNRepositoryDeletion;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
@@ -49,12 +50,11 @@ public class SVNRepositoryUIController extends AbstractUIController {
         return repositoryService.getRepository(id);
     }
 
-    // FIXME Deletion configuration
-    // @RequestMapping(value = "/{id}/deletion", method = RequestMethod.GET)
-    // @ResponseBody
-    // public JIRAConfigurationDeletion getConfigurationForDeletion(@PathVariable int id) {
-    //     return jiraConfigurationService.getConfigurationForDeletion(id);
-    // }
+    @RequestMapping(value = "/{id}/deletion", method = RequestMethod.GET)
+    @ResponseBody
+    public SVNRepositoryDeletion getConfigurationForDeletion(@PathVariable int id) {
+        return repositoryService.getConfigurationForDeletion(id);
+    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody

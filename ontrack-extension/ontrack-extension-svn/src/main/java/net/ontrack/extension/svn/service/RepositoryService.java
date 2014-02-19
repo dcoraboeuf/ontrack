@@ -2,6 +2,7 @@ package net.ontrack.extension.svn.service;
 
 import net.ontrack.core.model.Ack;
 import net.ontrack.extension.svn.service.model.SVNRepository;
+import net.ontrack.extension.svn.service.model.SVNRepositoryDeletion;
 import net.ontrack.extension.svn.service.model.SVNRepositoryForm;
 
 import java.util.List;
@@ -44,4 +45,12 @@ public interface RepositoryService {
      * @see net.ontrack.core.security.SecurityUtils#asAdmin(java.util.concurrent.Callable)
      */
     String getPassword(int id);
+
+    /**
+     * Gets the dependencies of a {@link SVNRepository} before its deletion.
+     *
+     * @param id ID of the repository
+     * @return Repository and its dependencies
+     */
+    SVNRepositoryDeletion getConfigurationForDeletion(int id);
 }
