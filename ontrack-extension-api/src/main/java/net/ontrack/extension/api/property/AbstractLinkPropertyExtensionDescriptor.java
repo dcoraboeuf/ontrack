@@ -1,7 +1,12 @@
 package net.ontrack.extension.api.property;
 
+import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Locale;
 
 public abstract class AbstractLinkPropertyExtensionDescriptor extends AbstractPropertyExtensionDescriptor {
@@ -12,6 +17,21 @@ public abstract class AbstractLinkPropertyExtensionDescriptor extends AbstractPr
     protected AbstractLinkPropertyExtensionDescriptor(String nameKey, String iconName) {
         this.nameKey = nameKey;
         this.iconName = iconName;
+    }
+
+    /**
+     * Only valid URLs are accepted
+     */
+    @Override
+    public void validate(String value) throws InputException {
+        try {
+            // URI validation
+            new URI(value);
+            // URL validation
+            new URL(value);
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new InvalidURLException(value);
+        }
     }
 
     /**
