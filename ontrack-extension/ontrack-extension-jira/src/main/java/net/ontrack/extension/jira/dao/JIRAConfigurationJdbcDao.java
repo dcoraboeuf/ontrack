@@ -59,7 +59,7 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
             int id = dbCreate(
                     JIRASQL.JIRA_CONFIGURATION_CREATE,
                     params("name", form.getName())
-                            .addValue("url", form.getUser())
+                            .addValue("url", form.getUrl())
                             .addValue("user", form.getUser())
                             .addValue("password", form.getPassword())
                             .addValue("exclusions", exclusions)
@@ -92,7 +92,7 @@ public class JIRAConfigurationJdbcDao extends AbstractJdbcDao implements JIRACon
                     JIRASQL.JIRA_CONFIGURATION_UPDATE,
                     params("id", id)
                             .addValue("name", form.getName())
-                            .addValue("url", form.getUser())
+                            .addValue("url", form.getUrl())
                             .addValue("user", form.getUser())
                             .addValue("password", password)
                             .addValue("exclusions", exclusions)
