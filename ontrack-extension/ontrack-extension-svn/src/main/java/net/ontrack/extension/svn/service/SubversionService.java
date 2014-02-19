@@ -52,7 +52,7 @@ public interface SubversionService {
      * @return History of copy events. Never null and will at least contain the information
      *         for the given <code>path</code>.
      */
-    SVNHistory getHistory(int repositoryId, String path);
+    SVNHistory getHistory(SVNRepository repository, String path);
 
     /**
      * Gets the URL that allows a user to browse the content of a revision

@@ -3,6 +3,7 @@ package net.ontrack.extension.svnexplorer.service;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.svn.service.model.SVNHistory;
 import net.ontrack.extension.svn.service.model.SVNReference;
+import net.ontrack.extension.svn.service.model.SVNRepository;
 import net.ontrack.extension.svnexplorer.model.ChangeLogReference;
 import net.ontrack.extension.svnexplorer.model.ChangeLogSummary;
 import net.ontrack.extension.svnexplorer.model.SVNBuild;
@@ -27,6 +28,7 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
         ChangeLogSummary summary = new ChangeLogSummary(
                 "1",
                 branch,
+                mockSVNRepository(),
                 new SVNBuild(
                         new BuildSummary(1, "10", "Build 10", branch),
                         new SVNHistory(trunk),
@@ -56,6 +58,7 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
         ChangeLogSummary summary = new ChangeLogSummary(
                 "1",
                 branch,
+                mockSVNRepository(),
                 new SVNBuild(
                         new BuildSummary(1, "11", "Build 11", branch),
                         new SVNHistory(Arrays.asList(
@@ -90,6 +93,7 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
         ChangeLogSummary summary = new ChangeLogSummary(
                 "1",
                 branch,
+                mockSVNRepository(),
                 new SVNBuild(
                         new BuildSummary(101, "1.0.1", "Build 1.0.1", branch),
                         new SVNHistory(Arrays.asList(
@@ -124,6 +128,25 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
             assertEquals(90, referenceTrunk.getStart());
             assertEquals(100, referenceTrunk.getEnd());
         }
+    }
+
+    private SVNRepository mockSVNRepository() {
+        return new SVNRepository(
+                0,
+                "test",
+                "http://test",
+                "test",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                1,
+                null,
+                null
+        );
     }
 
     private SVNReference ref(String path, int revision) {

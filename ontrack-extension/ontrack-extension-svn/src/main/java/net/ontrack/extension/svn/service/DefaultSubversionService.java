@@ -320,9 +320,7 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public SVNHistory getHistory(int repositoryId, String path) {
-        // Configuration
-        SVNRepository repository = repositoryService.getRepository(repositoryId);
+    public SVNHistory getHistory(SVNRepository repository, String path) {
         // Gets the reference for this first path
         SVNReference reference = getReference(repository, path);
         // Initializes the history

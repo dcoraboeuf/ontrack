@@ -45,6 +45,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final SubversionService subversionService;
+    // FIXME Removes the reference to JIRA
     private final JIRAService jiraService;
     private final TransactionService transactionService;
 
@@ -63,13 +64,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         try (Transaction ignored = transactionService.start()) {
             // Gets the branch
             BranchSummary branch = managementService.getBranch(branchId);
+            // Gets the SVN repository for this branch
+            SVNRepository repository = subversionService.getRepositoryForProject(branch.getProject().getId());
             // Gets the build information
-            SVNBuild buildFrom = getBuild(locale, from);
-            SVNBuild buildTo = getBuild(locale, to);
+            SVNBuild buildFrom = getBuild(repository, locale, from);
+            SVNBuild buildTo = getBuild(repository, locale, to);
             // OK
             return new ChangeLogSummary(
                     UUID.randomUUID().toString(),
                     branch,
+                    repository,
                     buildFrom,
                     buildTo
             );
@@ -715,14 +719,13 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 formattedMessage);
     }
 
-    private SVNBuild getBuild(Locale locale, int buildId) {
+    private SVNBuild getBuild(SVNRepository repository, Locale locale, int buildId) {
         // Gets the build basic information
         BuildSummary build = managementService.getBuild(buildId);
         // Gets the build SVN tag
         String buildPath = getBuildPath(build.getBranch().getId(), build.getName());
         // Gets the history for this tag using the SubversionService
-        // FIXME Gets the repository ID from the build's project
-        SVNHistory history = subversionService.getHistory(0, buildPath);
+        SVNHistory history = subversionService.getHistory(repository, buildPath);
         // OK
         return new SVNBuild(
                 build,
