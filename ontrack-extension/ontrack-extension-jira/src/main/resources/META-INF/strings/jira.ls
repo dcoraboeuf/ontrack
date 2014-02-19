@@ -28,12 +28,12 @@ jira.configuration.delete.promptWithProjects
     en -> ...
         @[jira.configuration.delete.prompt] Elements listed below are associated
         with this configuration and won't have access to it any longer. This
-        may cause problems when working those projects.
+        may cause problems when working those elements.
         ...
     fr -> ...
         @[jira.configuration.delete.prompt] Les éléments listés ci-dessous sont associés
         à cette configuration et n'y auront plus accès. Cela pourrait causer
-        des problèmes quand vous essayer de travailler avec ces projets.
+        des problèmes quand vous essayer de travailler avec ces éléments.
         ...
 
 jira.configuration.name

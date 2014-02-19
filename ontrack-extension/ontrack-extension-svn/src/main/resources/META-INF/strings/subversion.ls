@@ -11,9 +11,25 @@ subversion.configuration.create
     en -> New Subversion repository
     fr -> Nouveau repository Subversion
 
+subversion.configuration.delete
+    en -> Subversion repository deletion
+    fr -> Suppression d'un repository Subversion
+
 subversion.configuration.delete.prompt
-    en -> Do you want to delete the "{0}" Subversion repository?
-    fr -> Voulez-vous supprimer le repository Subversion "{0}" ?
+    en -> Do you want to delete this Subversion repository?
+    fr -> Voulez-vous supprimer ce repository Subversion ?
+
+subversion.configuration.delete.prompt.promptWithProjects
+    en -> ...
+        @[subversion.configuration.delete.prompt] Elements listed below are associated
+        with this repository and won't have access to it any longer. This
+        may cause problems when working those elements.
+        ...
+    fr -> ...
+        @[subversion.configuration.delete.prompt] Les éléments listés ci-dessous sont associés
+        à ce repository et n'y auront plus accès. Cela pourrait causer
+        des problèmes quand vous essayer de travailler avec ces éléments.
+        ...
 
 subversion.configuration.name
     en,fr -> @[model.name]

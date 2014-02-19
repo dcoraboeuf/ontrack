@@ -68,6 +68,22 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
         }
     }
 
+    function deleteRepository(svnRepositoryDeletion, dynamicConfig, cfg, itemId, item) {
+        if (svnRepositoryDeletion.projects.length == 0) {
+            crud.defaultItemDeleteFn(dynamicConfig, cfg, itemId, item)
+        } else {
+            dialog.show({
+                title: 'subversion.configuration.delete'.loc(),
+                templateId: 'extension/subversion-repository-deletion',
+                data: svnRepositoryDeletion,
+                submitFn: function (dialog) {
+                    dialog.closeFn();
+                    crud.deleteItem(dynamicConfig, cfg, itemId);
+                }
+            })
+        }
+    }
+
     return crud.create({
         url: 'ui/extension/svn/configuration',
         itemName: 'subversion.configuration'.loc(),
@@ -136,6 +152,14 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
             } else {
                 delete form.issueServiceConfigId
             }
+        },
+        itemDeleteFn: function (dynamicConfig, cfg, itemId, item) {
+            ajax.get({
+                url: 'ui/extension/svn/configuration/{0}/deletion'.format(itemId),
+                successFn: function (deletion) {
+                    deleteRepository(deletion, dynamicConfig, cfg, itemId, item)
+                }
+            })
         }
     })
 
