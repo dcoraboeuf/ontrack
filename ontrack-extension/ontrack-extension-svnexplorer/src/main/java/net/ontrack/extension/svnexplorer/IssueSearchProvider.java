@@ -29,12 +29,14 @@ public class IssueSearchProvider implements SearchProvider {
 
     @Override
     public boolean isTokenSearchable(String token) {
+        // FIXME Uses all issue services?
         return JIRAConfiguration.ISSUE_PATTERN.matcher(token).matches();
     }
 
     @Override
     public Collection<SearchResult> search(String key) {
         if (extensionManager.isExtensionEnabled(SVNExplorerExtension.EXTENSION) && subversionService.isIndexedIssue(key)) {
+            // FIXME SVN Repository - looping over them
             return Collections.singleton(
                     new SearchResult(
                             key,
