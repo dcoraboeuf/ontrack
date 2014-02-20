@@ -100,7 +100,8 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     }
 
     @Override
-    public String insertIssueUrlsInMessage(JIRAConfiguration configuration, String message) {
+    public String formatIssuesInMessage(IssueServiceConfig issueServiceConfig, String message) {
+        JIRAConfiguration configuration = (JIRAConfiguration) issueServiceConfig;
         // First, makes the message HTML-ready
         String htmlMessage = StringEscapeUtils.escapeHtml4(message);
         // Replaces each issue by a link

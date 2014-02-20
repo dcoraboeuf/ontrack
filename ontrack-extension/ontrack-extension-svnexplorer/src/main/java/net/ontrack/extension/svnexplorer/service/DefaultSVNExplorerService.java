@@ -1,6 +1,7 @@
 package net.ontrack.extension.svnexplorer.service;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
@@ -8,6 +9,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.issue.IssueService;
+import net.ontrack.extension.issue.IssueServiceConfig;
+import net.ontrack.extension.issue.IssueServiceFactory;
 import net.ontrack.extension.issue.IssueStatus;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
@@ -45,6 +49,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
     private final SubversionService subversionService;
+    private final IssueServiceFactory issueServiceFactory;
     // FIXME Removes the reference to JIRA
     private final JIRAService jiraService;
     private final TransactionService transactionService;
@@ -60,10 +65,11 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     };
 
     @Autowired
-    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, JIRAService jiraService, TransactionService transactionService) {
+    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, IssueServiceFactory issueServiceFactory, JIRAService jiraService, TransactionService transactionService) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.subversionService = subversionService;
+        this.issueServiceFactory = issueServiceFactory;
         this.jiraService = jiraService;
         this.transactionService = transactionService;
     }
@@ -700,9 +706,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     }
 
     private ChangeLogRevision createChangeLogRevision(SVNRepository repository, String path, int level, long revision, String message, String author, DateTime revisionDate) {
+        // Issue service
+        Optional<IssueService> issueService = issueServiceFactory.getOptionalServiceByName(repository.getIssueServiceName());
         // Formatted message
-        // FIXME JIRA configuration
-        String formattedMessage = jiraService.insertIssueUrlsInMessage(null, message);
+        String formattedMessage;
+        if (issueService.isPresent()) {
+            IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
+            formattedMessage = issueService.get().formatIssuesInMessage(issueServiceConfig, message);
+        } else {
+            formattedMessage = message;
+        }
         // Revision URL
         String revisionUrl = subversionService.getRevisionBrowsingURL(repository, revision);
         // OK

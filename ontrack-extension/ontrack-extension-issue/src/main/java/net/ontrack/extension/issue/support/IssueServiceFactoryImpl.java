@@ -1,6 +1,7 @@
 package net.ontrack.extension.issue.support;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import net.ontrack.extension.issue.IssueService;
@@ -33,11 +34,21 @@ public class IssueServiceFactoryImpl implements IssueServiceFactory {
 
     @Override
     public IssueService getServiceByName(String name) {
-        IssueService service = services.get(name);
-        if (service != null) {
-            return service;
+        Optional<IssueService> option = getOptionalServiceByName(name);
+        if (option.isPresent()) {
+            return option.get();
         } else {
             throw new IssueServiceNotFoundException(name);
+        }
+    }
+
+    @Override
+    public Optional<IssueService> getOptionalServiceByName(String name) {
+        IssueService service = services.get(name);
+        if (service != null) {
+            return Optional.of(service);
+        } else {
+            return Optional.absent();
         }
     }
 

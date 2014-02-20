@@ -94,7 +94,7 @@ public class JIRAServiceTest {
         DefaultJIRAService service = new DefaultJIRAService(
                 extensionManager, jiraConfigurationService, propertiesService, transactionService,
                 jiraSessionFactory);
-        String message = service.insertIssueUrlsInMessage(config, "TEST-12, PRJ-12, PRJ-13 List of issues");
+        String message = service.formatIssuesInMessage(config, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals("TEST-12, PRJ-12, <a href=\"http://jira/browse/PRJ-13\">PRJ-13</a> List of issues", message);
     }
 
