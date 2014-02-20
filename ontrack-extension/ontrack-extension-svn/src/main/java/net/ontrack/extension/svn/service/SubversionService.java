@@ -93,9 +93,13 @@ public interface SubversionService {
     Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
     /**
-     * Is this issue indexed in any repository?
+     * Is this issue indexed in this repository?
+     *
+     * @param repository The repository to the issue into
+     * @param key        The issue to key to look for
+     * @return <code>true</code> if the issue is associated with some code in the repository
      */
-    boolean isIndexedIssue(String key);
+    boolean isIndexedIssue(SVNRepository repository, String key);
 
     List<Long> getRevisionsForIssueKey(SVNRepository repository, String key);
 

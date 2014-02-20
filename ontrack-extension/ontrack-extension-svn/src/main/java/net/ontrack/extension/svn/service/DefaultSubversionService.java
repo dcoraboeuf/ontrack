@@ -1,7 +1,5 @@
 package net.ontrack.extension.svn.service;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.SecurityUtils;
 import net.ontrack.extension.api.property.PropertiesService;
@@ -153,16 +151,8 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isIndexedIssue(final String key) {
-        return Iterables.any(
-                repositoryService.getAllRepositories(),
-                new Predicate<SVNRepository>() {
-                    @Override
-                    public boolean apply(SVNRepository repository) {
-                        return issueRevisionDao.isIndexed(repository.getId(), key);
-                    }
-                }
-        );
+    public boolean isIndexedIssue(SVNRepository repository, String key) {
+        return issueRevisionDao.isIndexed(repository.getId(), key);
     }
 
     @Override
