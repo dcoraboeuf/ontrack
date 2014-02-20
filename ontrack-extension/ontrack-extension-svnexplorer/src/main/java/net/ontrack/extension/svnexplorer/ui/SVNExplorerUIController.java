@@ -48,11 +48,11 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     }
 
     @Override
-    @RequestMapping(value = "/issue/{key:.*}", method = RequestMethod.GET)
+    @RequestMapping(value = "/repository/{repositoryId:\\d+}/issue/{key:.*}", method = RequestMethod.GET)
     public
     @ResponseBody
-    IssueInfo getIssueInfo(Locale locale, @PathVariable String key) {
-        return svnExplorerService.getIssueInfo(locale, key);
+    IssueInfo getIssueInfo(Locale locale, @PathVariable int repositoryId, @PathVariable String key) {
+        return svnExplorerService.getIssueInfo(locale, repositoryId, key);
     }
 
     @Override

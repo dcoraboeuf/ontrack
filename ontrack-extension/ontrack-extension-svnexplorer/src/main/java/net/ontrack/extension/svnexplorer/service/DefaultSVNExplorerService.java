@@ -10,9 +10,7 @@ import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.issue.*;
-import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
-import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.RepositoryService;
@@ -49,8 +47,6 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final RepositoryService repositoryService;
     private final SubversionService subversionService;
     private final IssueServiceFactory issueServiceFactory;
-    // FIXME Removes the reference to JIRA
-    private final JIRAService jiraService;
     private final TransactionService transactionService;
 
     /**
@@ -64,13 +60,12 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     };
 
     @Autowired
-    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, RepositoryService repositoryService, SubversionService subversionService, IssueServiceFactory issueServiceFactory, JIRAService jiraService, TransactionService transactionService) {
+    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, RepositoryService repositoryService, SubversionService subversionService, IssueServiceFactory issueServiceFactory, TransactionService transactionService) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
         this.repositoryService = repositoryService;
         this.subversionService = subversionService;
         this.issueServiceFactory = issueServiceFactory;
-        this.jiraService = jiraService;
         this.transactionService = transactionService;
     }
 
@@ -383,22 +378,26 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public IssueInfo getIssueInfo(Locale locale, String key) {
+    public IssueInfo getIssueInfo(Locale locale, int repositoryId, String key) {
+        // Repository
+        final SVNRepository repository = repositoryService.getRepository(repositoryId);
+        // Issue service
+        Optional<IssueService> issueService = issueServiceFactory.getOptionalServiceByName(repository.getIssueServiceName());
+        if (!issueService.isPresent()) {
+            return null;
+        }
+        IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
         // Gets the details about the issue
-        // FIXME JIRA Configuration
-        JIRAIssue issue = jiraService.getIssue(null, key);
+        Issue issue = issueService.get().getIssue(issueServiceConfig, key);
         // Gets the list of revisions & their basic info (order from latest to oldest)
         List<ChangeLogRevision> revisions = Lists.transform(
-                // FIXME SVN Repository
-                subversionService.getRevisionsForIssueKey(null, key),
+                subversionService.getRevisionsForIssueKey(repository, key),
                 new Function<Long, ChangeLogRevision>() {
                     @Override
                     public ChangeLogRevision apply(Long revision) {
-                        // FIXME SVN Repository
-                        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
+                        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(repository, revision);
                         return createChangeLogRevision(
-                                // FIXME SVN Repository
-                                null,
+                                repository,
                                 basicInfo.getPath(),
                                 0,
                                 revision,
@@ -410,17 +409,14 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 });
         // Gets the last revision (which is the first in the list)
         ChangeLogRevision firstRevision = revisions.get(0);
-        // FIXME SVN repository
-        RevisionInfo revisionInfo = getRevisionInfo(0, locale, firstRevision.getRevision());
+        RevisionInfo revisionInfo = getRevisionInfo(repository, locale, firstRevision.getRevision());
         // Merged revisions
-        // FIXME SVN Repository
-        List<Long> merges = subversionService.getMergesForRevision(null, revisionInfo.getChangeLogRevision().getRevision());
+        List<Long> merges = subversionService.getMergesForRevision(repository, revisionInfo.getChangeLogRevision().getRevision());
         List<RevisionInfo> mergedRevisionInfos = new ArrayList<>();
         Set<String> paths = new HashSet<>();
         for (long merge : merges) {
             // Gets the revision info
-            // FIXME SVN Repository
-            RevisionInfo mergeRevisionInfo = getRevisionInfo(0, locale, merge);
+            RevisionInfo mergeRevisionInfo = getRevisionInfo(repository, locale, merge);
             // If the information contains as least one build, adds it
             if (!mergeRevisionInfo.getBuilds().isEmpty()) {
                 // Keeps only the first one for a given target path
@@ -433,6 +429,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
         // OK
         return new IssueInfo(
+                repository,
                 issue,
                 subversionService.formatRevisionTime(issue.getUpdateTime()),
                 revisionInfo,
