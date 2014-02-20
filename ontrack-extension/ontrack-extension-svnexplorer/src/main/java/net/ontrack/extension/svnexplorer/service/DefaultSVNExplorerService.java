@@ -347,6 +347,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
         // OK
         return new RevisionInfo(
+                repository,
                 changeLogRevision,
                 buildSummaries,
                 revisionPromotionsPerBranch
