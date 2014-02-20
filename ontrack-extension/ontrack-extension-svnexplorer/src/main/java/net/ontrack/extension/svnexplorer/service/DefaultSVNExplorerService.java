@@ -49,6 +49,16 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final JIRAService jiraService;
     private final TransactionService transactionService;
 
+    /**
+     * Function that extracts the path from a SVN location
+     */
+    private final Function<SVNReference, String> referencePathFn = new Function<SVNReference, String>() {
+        @Override
+        public String apply(SVNReference reference) {
+            return reference.getPath();
+        }
+    };
+
     @Autowired
     public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, JIRAService jiraService, TransactionService transactionService) {
         this.managementService = managementService;
@@ -80,13 +90,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    protected Collection<ChangeLogReference> getChangeLogReferences(ChangeLogSummary summary) {// Function that extracts the path from a SVN location
-        Function<SVNReference, String> pathFn = new Function<SVNReference, String>() {
-            @Override
-            public String apply(SVNReference reference) {
-                return reference.getPath();
-            }
-        };
+    protected Collection<ChangeLogReference> getChangeLogReferences(ChangeLogSummary summary) {
 
         // Gets the two histories
         SVNHistory historyFrom = summary.getBuildFrom().getHistory();
@@ -106,7 +110,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // Indexation of the 'from' history using the paths
         Map<String, SVNReference> historyFromIndex = Maps.uniqueIndex(
                 historyFrom.getReferences(),
-                pathFn
+                referencePathFn
         );
 
         // List of ranges to collect
@@ -159,10 +163,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                     // List of log entries
                     SVNLogEntryCollector logEntryCollector = new SVNLogEntryCollector();
                     // SVN change log
-                    // FIXME Repository from the summary
                     subversionService.log(
-                            null,
-                            SVNUtils.toURL(subversionService.getURL(null, reference.getPath())),
+                            summary.getRepository(),
+                            SVNUtils.toURL(subversionService.getURL(summary.getRepository(), reference.getPath())),
                             SVNRevision.create(reference.getEnd()),
                             SVNRevision.create(reference.getStart()),
                             SVNRevision.create(reference.getEnd()),
@@ -178,7 +181,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         long revision = svnEntry.getRevision();
                         if (SVNRevision.isValidRevisionNumber(revision)) {
                             // Conversion
-                            ChangeLogRevision entry = createChangeLogRevision(reference.getPath(), level, svnEntry);
+                            ChangeLogRevision entry = createChangeLogRevision(summary.getRepository(), reference.getPath(), level, svnEntry);
                             // Adds it to the list
                             revisions.add(entry);
                             // New parent?
@@ -206,7 +209,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // For all revisions in this revision log
             for (ChangeLogRevision changeLogRevision : revisions.getList()) {
                 long revision = changeLogRevision.getRevision();
-                collectIssuesForRevision(issues, revision);
+                collectIssuesForRevision(summary.getRepository(), issues, revision);
             }
             // List of issues
             List<ChangeLogIssue> issuesList = new ArrayList<>(issues.values());
@@ -230,7 +233,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 // Takes into account only the unmerged revisions
                 if (changeLogRevision.getLevel() == 0) {
                     long revision = changeLogRevision.getRevision();
-                    collectFilesForRevision(files, revision);
+                    collectFilesForRevision(summary.getRepository(), files, revision);
                 }
             }
             // List of files
@@ -280,7 +283,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // FIXME SVN Repository
         // Gets information about the revision
         SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
+        // FIXME SVN Repository
         ChangeLogRevision changeLogRevision = createChangeLogRevision(
+                null,
                 basicInfo.getPath(),
                 0,
                 revision,
@@ -381,6 +386,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                         // FIXME SVN Repository
                         SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
                         return createChangeLogRevision(
+                                // FIXME SVN Repository
+                                null,
                                 basicInfo.getPath(),
                                 0,
                                 revision,
@@ -428,14 +435,15 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             logger.debug("[branch-history] Start");
             // Gets the project details
             ProjectSummary project = managementService.getProject(projectId);
+            // Gets the SVN repository for this project
+            final SVNRepository repository = subversionService.getRepositoryForProject(projectId);
             // Gets the root path for this project
             String rootPath = propertiesService.getPropertyValue(Entity.PROJECT, projectId, SVNExplorerExtension.EXTENSION, ProjectRootPathPropertyExtension.NAME);
             if (StringUtils.isBlank(rootPath)) {
                 throw new ProjectHasRootPathException(project.getName());
             }
-            // FIXME Gets the repository configuration from the project
             // Gets the latest revision on this root path
-            long rootRevision = subversionService.getRepositoryRevision(null, SVNUtils.toURL(subversionService.getURL(null, rootPath)));
+            long rootRevision = subversionService.getRepositoryRevision(repository, SVNUtils.toURL(subversionService.getURL(null, rootPath)));
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Tree of locations
             SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
@@ -447,16 +455,14 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 // Gets the top
                 SVNTreeNode current = stack.pop();
                 // Gets all the copies from this location
-                // FIXME SVN Repository
                 Collection<SVNLocation> copies = subversionService.getCopiesFrom(
-                        null,
+                        repository,
                         current.getLocation().withRevision(1),
                         SVNLocationSortMode.FROM_NEWEST);
                 // No copy?
                 if (copies.isEmpty()) {
-                    // FIXME Gets the repository configuration from the project
                     // Trunk or branch
-                    if (subversionService.isTrunkOrBranch(null, current.getLocation().getPath())) {
+                    if (subversionService.isTrunkOrBranch(repository, current.getLocation().getPath())) {
                         // Attaches to the parent
                         current.attachToParent();
                     }
@@ -477,10 +483,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             rootNode.visitBottomUp(new SVNTreeNodeVisitor() {
                 @Override
                 public void visit(SVNTreeNode node) {
-                    // FIXME Gets the repository configuration from the project
-                    if (subversionService.isTrunkOrBranch(null, node.getLocation().getPath())) {
-                        // FIXME SVN Repository
-                        node.setClosed(subversionService.isClosed(null, node.getLocation().getPath()));
+                    if (subversionService.isTrunkOrBranch(repository, node.getLocation().getPath())) {
+                        node.setClosed(subversionService.isClosed(repository, node.getLocation().getPath()));
                     }
                     // Loops over children
                     node.filterChildren(new Predicate<SVNTreeNode>() {
@@ -498,9 +502,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
                 @Override
                 public void visit(SVNTreeNode node) {
-                    // FIXME Gets the repository configuration from the project
                     // Is this node a tag?
-                    node.setTag(subversionService.isTag(null, node.getLocation().getPath()));
+                    node.setTag(subversionService.isTag(repository, node.getLocation().getPath()));
                     // Loops over children
                     node.filterChildren(new Predicate<SVNTreeNode>() {
 
@@ -520,7 +523,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             });
 
             // Collects history
-            BranchHistoryLine root = collectHistory(locale, rootNode);
+            BranchHistoryLine root = collectHistory(repository, locale, rootNode);
 
             // OK
             logger.debug("[branch-history] End");
@@ -537,23 +540,22 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         return StringUtils.isNotBlank(buildPathPattern);
     }
 
-    private BranchHistoryLine collectHistory(Locale locale, SVNTreeNode node) {
+    private BranchHistoryLine collectHistory(SVNRepository repository, Locale locale, SVNTreeNode node) {
         // Line itself
-        BranchHistoryLine line = createBranchHistoryLine(locale, node.getLocation());
+        BranchHistoryLine line = createBranchHistoryLine(repository, locale, node.getLocation());
         // Collects lines
         for (SVNTreeNode childNode : node.getChildren()) {
-            line.addLine(collectHistory(locale, childNode));
+            line.addLine(collectHistory(repository, locale, childNode));
         }
         // OK
         return line;
     }
 
-    private BranchHistoryLine createBranchHistoryLine(final Locale locale, SVNLocation location) {
-        // FIXME Gets the repository configuration from the project
+    private BranchHistoryLine createBranchHistoryLine(SVNRepository repository, final Locale locale, SVNLocation location) {
         // Core
         BranchHistoryLine line = new BranchHistoryLine(
-                subversionService.getReference(null, location),
-                subversionService.isTag(null, location.getPath())
+                subversionService.getReference(repository, location),
+                subversionService.isTag(repository, location.getPath())
         );
         // Branch?
         Collection<Integer> branchIds = propertiesService.findEntityByPropertyValue(Entity.BRANCH, SubversionExtension.EXTENSION, SubversionPathPropertyExtension.PATH, location.getPath());
@@ -628,33 +630,29 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         };
     }
 
-    private void collectFilesForRevision(Map<String, ChangeLogFile> files, long revision) {
-        // FIXME SVN repository
-        SVNRevisionPaths revisionPaths = subversionService.getRevisionPaths(null, revision);
+    private void collectFilesForRevision(SVNRepository repository, Map<String, ChangeLogFile> files, long revision) {
+        SVNRevisionPaths revisionPaths = subversionService.getRevisionPaths(repository, revision);
         for (SVNRevisionPath revisionPath : revisionPaths.getPaths()) {
             String path = revisionPath.getPath();
             // Existing file entry?
             ChangeLogFile changeLogFile = files.get(path);
             if (changeLogFile == null) {
-                // FIXME SVN Repository
-                changeLogFile = new ChangeLogFile(path, subversionService.getBrowsingURL(null, path));
+                changeLogFile = new ChangeLogFile(path, subversionService.getBrowsingURL(repository, path));
                 files.put(path, changeLogFile);
             }
             // Adds the revision and the type
             ChangeLogFileChange change = new ChangeLogFileChange(
                     revisionPaths.getInfo(),
                     revisionPath.getChangeType(),
-                    // FIXME SVN Repository
-                    subversionService.getFileChangeBrowsingURL(null, path, revisionPaths.getInfo().getRevision())
+                    subversionService.getFileChangeBrowsingURL(repository, path, revisionPaths.getInfo().getRevision())
             );
             changeLogFile.addChange(change);
         }
     }
 
-    private void collectIssuesForRevision(Map<String, ChangeLogIssue> issues, long revision) {
+    private void collectIssuesForRevision(SVNRepository repository, Map<String, ChangeLogIssue> issues, long revision) {
         // Gets all issues attached to this revision
-        // FIXME SVN Repository
-        List<String> issueKeys = subversionService.getIssueKeysForRevision(null, revision);
+        List<String> issueKeys = subversionService.getIssueKeysForRevision(repository, revision);
         // For each issue
         for (String issueKey : issueKeys) {
             // Gets its details if not indexed yet
@@ -665,8 +663,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Existing issue?
             if (changeLogIssue != null) {
                 // Attaches the revision to this issue
-                // FIXME SVN Repository
-                SVNRevisionInfo issueRevision = subversionService.getRevisionInfo(null, revision);
+                SVNRevisionInfo issueRevision = subversionService.getRevisionInfo(repository, revision);
                 changeLogIssue = changeLogIssue.addRevision(issueRevision);
                 // Puts back into the cache
                 issues.put(issueKey, changeLogIssue);
@@ -689,8 +686,9 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private ChangeLogRevision createChangeLogRevision(String path, int level, SVNLogEntry svnEntry) {
+    private ChangeLogRevision createChangeLogRevision(SVNRepository repository, String path, int level, SVNLogEntry svnEntry) {
         return createChangeLogRevision(
+                repository,
                 path,
                 level,
                 svnEntry.getRevision(),
@@ -700,13 +698,12 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     }
 
-    private ChangeLogRevision createChangeLogRevision(String path, int level, long revision, String message, String author, DateTime revisionDate) {
+    private ChangeLogRevision createChangeLogRevision(SVNRepository repository, String path, int level, long revision, String message, String author, DateTime revisionDate) {
         // Formatted message
         // FIXME JIRA configuration
         String formattedMessage = jiraService.insertIssueUrlsInMessage(null, message);
         // Revision URL
-        // FIXME SVN Repository
-        String revisionUrl = subversionService.getRevisionBrowsingURL(null, revision);
+        String revisionUrl = subversionService.getRevisionBrowsingURL(repository, revision);
         // OK
         return new ChangeLogRevision(
                 path,
