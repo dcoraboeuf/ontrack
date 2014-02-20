@@ -15,6 +15,7 @@ import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
+import net.ontrack.extension.svn.service.RepositoryService;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
@@ -45,6 +46,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     private final Logger logger = LoggerFactory.getLogger(SVNExplorerService.class);
     private final ManagementService managementService;
     private final PropertiesService propertiesService;
+    private final RepositoryService repositoryService;
     private final SubversionService subversionService;
     private final IssueServiceFactory issueServiceFactory;
     // FIXME Removes the reference to JIRA
@@ -62,9 +64,10 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     };
 
     @Autowired
-    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, SubversionService subversionService, IssueServiceFactory issueServiceFactory, JIRAService jiraService, TransactionService transactionService) {
+    public DefaultSVNExplorerService(ManagementService managementService, PropertiesService propertiesService, RepositoryService repositoryService, SubversionService subversionService, IssueServiceFactory issueServiceFactory, JIRAService jiraService, TransactionService transactionService) {
         this.managementService = managementService;
         this.propertiesService = propertiesService;
+        this.repositoryService = repositoryService;
         this.subversionService = subversionService;
         this.issueServiceFactory = issueServiceFactory;
         this.jiraService = jiraService;
@@ -283,13 +286,17 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
 
     @Override
     @Transactional(readOnly = true)
-    public RevisionInfo getRevisionInfo(Locale locale, long revision) {
-        // FIXME SVN Repository
+    public RevisionInfo getRevisionInfo(int repositoryId, Locale locale, long revision) {
+        SVNRepository repository = repositoryService.getRepository(repositoryId);
+        return getRevisionInfo(repository, locale, revision);
+
+    }
+
+    private RevisionInfo getRevisionInfo(SVNRepository repository, Locale locale, long revision) {
         // Gets information about the revision
-        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(null, revision);
-        // FIXME SVN Repository
+        SVNRevisionInfo basicInfo = subversionService.getRevisionInfo(repository, revision);
         ChangeLogRevision changeLogRevision = createChangeLogRevision(
-                null,
+                repository,
                 basicInfo.getPath(),
                 0,
                 revision,
@@ -299,8 +306,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         );
 
         // Gets the first copy event on this path after this revision
-        // FIXME SVN Repository
-        SVNLocation firstCopy = subversionService.getFirstCopyAfter(null, basicInfo.toLocation());
+        SVNLocation firstCopy = subversionService.getFirstCopyAfter(repository, basicInfo.toLocation());
 
         // Data to collect
         Collection<BuildInfo> buildSummaries = new ArrayList<>();
@@ -403,7 +409,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 });
         // Gets the last revision (which is the first in the list)
         ChangeLogRevision firstRevision = revisions.get(0);
-        RevisionInfo revisionInfo = getRevisionInfo(locale, firstRevision.getRevision());
+        // FIXME SVN repository
+        RevisionInfo revisionInfo = getRevisionInfo(0, locale, firstRevision.getRevision());
         // Merged revisions
         // FIXME SVN Repository
         List<Long> merges = subversionService.getMergesForRevision(null, revisionInfo.getChangeLogRevision().getRevision());
@@ -411,7 +418,8 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         Set<String> paths = new HashSet<>();
         for (long merge : merges) {
             // Gets the revision info
-            RevisionInfo mergeRevisionInfo = getRevisionInfo(locale, merge);
+            // FIXME SVN Repository
+            RevisionInfo mergeRevisionInfo = getRevisionInfo(0, locale, merge);
             // If the information contains as least one build, adds it
             if (!mergeRevisionInfo.getBuilds().isEmpty()) {
                 // Keeps only the first one for a given target path

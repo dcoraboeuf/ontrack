@@ -40,20 +40,26 @@ public class SVNExplorerUIController extends AbstractUIController implements SVN
     }
 
     @Override
-    @RequestMapping(value = "/revision/{revision:\\d+}", method = RequestMethod.GET)
-    public @ResponseBody RevisionInfo getRevisionInfo(Locale locale, @PathVariable long revision) {
-        return svnExplorerService.getRevisionInfo(locale, revision);
+    @RequestMapping(value = "/repository/{repositoryId:\\d+}/revision/{revision:\\d+}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    RevisionInfo getRevisionInfo(Locale locale, @PathVariable int repositoryId, @PathVariable long revision) {
+        return svnExplorerService.getRevisionInfo(repositoryId, locale, revision);
     }
 
     @Override
     @RequestMapping(value = "/issue/{key:.*}", method = RequestMethod.GET)
-    public @ResponseBody IssueInfo getIssueInfo(Locale locale, @PathVariable String key) {
+    public
+    @ResponseBody
+    IssueInfo getIssueInfo(Locale locale, @PathVariable String key) {
         return svnExplorerService.getIssueInfo(locale, key);
     }
 
     @Override
     @RequestMapping(value = "/branch-history/{projectName:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
-    public @ResponseBody BranchHistory getBranchHistory(Locale locale, @PathVariable String projectName) {
+    public
+    @ResponseBody
+    BranchHistory getBranchHistory(Locale locale, @PathVariable String projectName) {
         // Gets the project ID
         int projectId = entityConverter.getProjectId(projectName);
         // Branch history

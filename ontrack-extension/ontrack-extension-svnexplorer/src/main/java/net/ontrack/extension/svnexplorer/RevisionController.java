@@ -23,11 +23,10 @@ public class RevisionController extends AbstractGUIController {
         this.ui = ui;
     }
 
-    // FIXME Repository
-    @RequestMapping(value = "/gui/extension/svnexplorer/epository/{repository:\\d+}/revision/{revision:\\d+}", method = RequestMethod.GET)
-    public String revision (Locale locale, @PathVariable long revision, Model model) {
+    @RequestMapping(value = "/gui/extension/svnexplorer/repository/{repository:\\d+}/revision/{revision:\\d+}", method = RequestMethod.GET)
+    public String revision(Locale locale, @PathVariable int repository, @PathVariable long revision, Model model) {
         // Revision info
-        model.addAttribute("info", ui.getRevisionInfo(locale, revision));
+        model.addAttribute("info", ui.getRevisionInfo(locale, repository, revision));
         // OK
         // FIXME Rename the page
         return "extension/svnexplorer/repository-revision";

@@ -161,6 +161,7 @@ public class DefaultSVNExplorerServiceGetChangeLogReferencesTest {
                 null,
                 null,
                 null,
+                null,
                 null
         );
     }

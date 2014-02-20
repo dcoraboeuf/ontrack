@@ -16,7 +16,7 @@ public interface SVNExplorerService {
 
     ChangeLogInfo getChangeLogInfo(ChangeLogSummary summary, ChangeLogIssues issues, ChangeLogFiles files);
 
-    RevisionInfo getRevisionInfo(Locale locale, long revision);
+    RevisionInfo getRevisionInfo(int repositoryId, Locale locale, long revision);
 
     IssueInfo getIssueInfo(Locale locale, String key);
 
