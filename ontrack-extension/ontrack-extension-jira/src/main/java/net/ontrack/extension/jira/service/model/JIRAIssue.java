@@ -1,12 +1,13 @@
 package net.ontrack.extension.jira.service.model;
 
 import lombok.Data;
+import net.ontrack.extension.issue.Issue;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 @Data
-public class JIRAIssue {
+public class JIRAIssue implements Issue {
 
     private final String url;
     private final String key;
