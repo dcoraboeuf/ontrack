@@ -9,4 +9,6 @@ public interface Issue {
 
     String getSummary();
 
+    IssueStatus getStatus();
+
 }

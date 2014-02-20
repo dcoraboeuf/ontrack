@@ -8,10 +8,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.issue.IssueStatus;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
-import net.ontrack.extension.jira.service.model.JIRAStatus;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.SubversionService;
@@ -253,7 +253,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         // JIRA issue statuses
         Map<String, ChangeLogInfoStatus> statuses = new TreeMap<>();
         for (ChangeLogIssue changeLogIssue : issues.getList()) {
-            JIRAStatus status = changeLogIssue.getIssue().getStatus();
+            IssueStatus status = changeLogIssue.getIssue().getStatus();
             String statusName = status.getName();
             ChangeLogInfoStatus infoStatus = statuses.get(statusName);
             if (infoStatus != null) {
