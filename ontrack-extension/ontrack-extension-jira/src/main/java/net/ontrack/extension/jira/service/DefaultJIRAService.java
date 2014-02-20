@@ -121,6 +121,11 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     }
 
     @Override
+    public net.ontrack.extension.issue.Issue getIssue(IssueServiceConfig issueServiceConfig, String key) {
+        return getIssue((JIRAConfiguration) issueServiceConfig, key);
+    }
+
+    @Override
     public String getIssueURL(JIRAConfiguration configuration, String key) {
         return configuration.getIssueURL(key);
     }

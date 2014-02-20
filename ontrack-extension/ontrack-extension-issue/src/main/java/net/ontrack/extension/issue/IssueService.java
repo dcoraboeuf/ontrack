@@ -69,4 +69,13 @@ public interface IssueService {
      * @return Formatted message
      */
     String formatIssuesInMessage(IssueServiceConfig issueServiceConfig, String message);
+
+    /**
+     * Given a key, tries to find the issue with this key.
+     *
+     * @param issueServiceConfig Configuration for the service
+     * @param key                Issue key
+     * @return Issue if found, <code>null</code> otherwise
+     */
+    Issue getIssue(IssueServiceConfig issueServiceConfig, String key);
 }

@@ -9,10 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
-import net.ontrack.extension.issue.IssueService;
-import net.ontrack.extension.issue.IssueServiceConfig;
-import net.ontrack.extension.issue.IssueServiceFactory;
-import net.ontrack.extension.issue.IssueStatus;
+import net.ontrack.extension.issue.*;
 import net.ontrack.extension.jira.JIRAService;
 import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.jira.service.model.JIRAIssue;
@@ -665,7 +662,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // Gets its details if not indexed yet
             ChangeLogIssue changeLogIssue = issues.get(issueKey);
             if (changeLogIssue == null) {
-                changeLogIssue = getChangeLogIssue(issueKey);
+                changeLogIssue = getChangeLogIssue(repository, issueKey);
             }
             // Existing issue?
             if (changeLogIssue != null) {
@@ -678,17 +675,23 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         }
     }
 
-    private ChangeLogIssue getChangeLogIssue(String issueKey) {
-        // Gets the details about the JIRA issue
-        try {
-            // FIXME JIRA Configuration
-            JIRAIssue issue = jiraService.getIssue(null, issueKey);
-            if (issue == null || StringUtils.isBlank(issue.getKey())) {
+    private ChangeLogIssue getChangeLogIssue(SVNRepository repository, String issueKey) {
+        // Issue service
+        Optional<IssueService> issueService = issueServiceFactory.getOptionalServiceByName(repository.getIssueServiceName());
+        // Gets the details about the issue
+        if (issueService.isPresent()) {
+            try {
+                IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
+                Issue issue = issueService.get().getIssue(issueServiceConfig, issueKey);
+                if (issue == null || StringUtils.isBlank(issue.getKey())) {
+                    return null;
+                }
+                // Creates the issue details for the change logs
+                return new ChangeLogIssue(issue, subversionService.formatRevisionTime(issue.getUpdateTime()));
+            } catch (JIRAIssueNotFoundException ex) {
                 return null;
             }
-            // Creates the issue details for the change logs
-            return new ChangeLogIssue(issue, subversionService.formatRevisionTime(issue.getUpdateTime()));
-        } catch (JIRAIssueNotFoundException ex) {
+        } else {
             return null;
         }
     }
