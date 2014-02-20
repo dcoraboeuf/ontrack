@@ -96,7 +96,7 @@ define(['config', 'render', 'jquery'], function(config, render, $) {
                         if (button.action) {
                             dialog.controls[button.action] = item;
                         }
-                        controls.append(item);
+                        controls.append(item).append("&nbsp;");
                     });
                     $('<div></div>').addClass('control-group').append(controls).appendTo(form);
                 }

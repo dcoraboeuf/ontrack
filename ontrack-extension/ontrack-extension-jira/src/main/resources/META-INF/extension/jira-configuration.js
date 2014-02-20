@@ -8,6 +8,20 @@ define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, d
             title: 'jira.configuration'.loc(),
             width: 600,
             templateId: 'extension/jira-configuration-dialog',
+            buttons: [
+                {
+                    text: 'general.submit'.loc(),
+                    action: 'submit'
+                },
+                {
+                    text: 'jira.configuration.test'.loc(),
+                    id: 'jira-configuration-test'
+                },
+                {
+                    text: 'general.cancel'.loc(),
+                    action: 'cancel'
+                }
+            ],
             initFn: function (dialog) {
                 dialog.form.find('#jira-configuration-name').val(config.jiraConfiguration.name);
                 dialog.form.find('#jira-configuration-url').val(config.jiraConfiguration.url);
@@ -15,6 +29,29 @@ define(['jquery', 'dialog', 'dynamic', 'ajax', 'common'], function ($, dialog, d
                 dialog.form.find('#jira-configuration-password').val(config.jiraConfiguration.password);
                 // TODO Excluded projects
                 // TODO Excluded issues
+                // Test button
+                dialog.form.find('#jira-configuration-test').click(function () {
+                    var form = {
+                        name: dialog.form.find('#jira-configuration-name').val(),
+                        url: dialog.form.find('#jira-configuration-url').val(),
+                        user: dialog.form.find('#jira-configuration-user').val(),
+                        password: dialog.form.find('#jira-configuration-password').val(),
+                        excludedProjects: [],
+                        excludedIssues: []
+                    };
+                    ajax.post({
+                        url: 'ui/extension/jira/configuration/test',
+                        data: form,
+                        loading: {
+                            el: dialog.form.find('#jira-configuration-test')
+                        },
+                        successFn: function () {
+                            // TODO Use a non-error message
+                            dialog.errorFn('jira.configuration.test.ok'.loc())
+                        },
+                        errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                    });
+                })
             },
             submitFn: function (dialog) {
                 config.successFn(config, dialog, {

@@ -36,6 +36,14 @@ jira.configuration.delete.promptWithProjects
         des problèmes quand vous essayer de travailler avec ces éléments.
         ...
 
+jira.configuration.test
+    en -> Test connection
+    fr -> Tester la connexion
+
+jira.configuration.test.ok
+    en -> Connection OK
+    fr -> Connextion réussie
+
 jira.configuration.name
     en,fr -> @[model.name]
 

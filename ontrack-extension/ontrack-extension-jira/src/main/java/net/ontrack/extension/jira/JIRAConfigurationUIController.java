@@ -4,6 +4,7 @@ import net.ontrack.core.model.Ack;
 import net.ontrack.extension.jira.service.model.JIRAConfiguration;
 import net.ontrack.extension.jira.service.model.JIRAConfigurationDeletion;
 import net.ontrack.extension.jira.service.model.JIRAConfigurationForm;
+import net.ontrack.extension.jira.tx.JIRASessionFactory;
 import net.ontrack.web.support.AbstractUIController;
 import net.ontrack.web.support.ErrorHandler;
 import net.sf.jstring.Strings;
@@ -18,11 +19,13 @@ import java.util.List;
 public class JIRAConfigurationUIController extends AbstractUIController {
 
     private final JIRAConfigurationService jiraConfigurationService;
+    private final JIRASessionFactory jiraSessionFactory;
 
     @Autowired
-    public JIRAConfigurationUIController(ErrorHandler errorHandler, Strings strings, JIRAConfigurationService jiraConfigurationService) {
+    public JIRAConfigurationUIController(ErrorHandler errorHandler, Strings strings, JIRAConfigurationService jiraConfigurationService, JIRASessionFactory jiraSessionFactory) {
         super(errorHandler, strings);
         this.jiraConfigurationService = jiraConfigurationService;
+        this.jiraSessionFactory = jiraSessionFactory;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -35,6 +38,12 @@ public class JIRAConfigurationUIController extends AbstractUIController {
     @ResponseBody
     public JIRAConfiguration createConfiguration(@RequestBody JIRAConfigurationForm configuration) {
         return jiraConfigurationService.createConfiguration(configuration);
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    @ResponseBody
+    public Ack testConfiguration(@RequestBody JIRAConfigurationForm configuration) {
+        return jiraSessionFactory.testConfiguration(configuration);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
