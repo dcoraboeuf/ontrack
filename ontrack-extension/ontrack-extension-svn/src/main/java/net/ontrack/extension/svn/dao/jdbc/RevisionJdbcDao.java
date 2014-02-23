@@ -119,7 +119,7 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
     @Transactional(readOnly = true)
     public List<Long> getMergesForRevision(int repositoryId, long revision) {
         return getNamedParameterJdbcTemplate().queryForList(
-                "SELECT TARGET FROM EXT_SVN_MERGE_REVISION WHERE REPOSITORY = :repository REVISION = :revision ORDER BY TARGET",
+                "SELECT TARGET FROM EXT_SVN_MERGE_REVISION WHERE REPOSITORY = :repository AND REVISION = :revision ORDER BY TARGET",
                 params("revision", revision).addValue("repository", repositoryId),
                 Long.class
         );

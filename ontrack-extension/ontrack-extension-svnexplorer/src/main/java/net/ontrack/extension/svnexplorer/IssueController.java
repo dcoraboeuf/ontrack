@@ -24,12 +24,11 @@ public class IssueController extends AbstractGUIController {
     }
 
 
-    @RequestMapping(value = "/gui/extension/svnexplorer/repository/{repositoryId:\\d+}issue/{key:.*}", method = RequestMethod.GET)
+    @RequestMapping(value = "/gui/extension/svnexplorer/repository/{repositoryId:\\d+}/issue/{key:.*}", method = RequestMethod.GET)
     public String issue(Locale locale, @PathVariable int repositoryId, @PathVariable String key, Model model) {
         // Issue info
         model.addAttribute("info", ui.getIssueInfo(locale, repositoryId, key));
         // OK
-        // FIXME Updates & renames the page
         return "extension/svnexplorer/repository-issue";
     }
 
