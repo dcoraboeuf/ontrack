@@ -217,7 +217,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
             // TODO Validation
             // validationService.validate(changeLog, issuesList);
             // OK
-            // FIXME Removes link from JIRA
+            // FIXME Removes link from JIRA (used to get the link to several issues in the change log)
             return new ChangeLogIssues(null, issuesList);
 
         }
@@ -453,7 +453,10 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
                 throw new ProjectHasRootPathException(project.getName());
             }
             // Gets the latest revision on this root path
-            long rootRevision = subversionService.getRepositoryRevision(repository, SVNUtils.toURL(subversionService.getURL(null, rootPath)));
+            long rootRevision = subversionService.getRepositoryRevision(
+                    repository,
+                    SVNUtils.toURL(subversionService.getURL(repository, rootPath))
+            );
             SVNLocation rootLocation = new SVNLocation(rootPath, rootRevision);
             // Tree of locations
             SVNTreeNode rootNode = new SVNTreeNode(rootLocation);
