@@ -92,13 +92,13 @@ public class SecurityUtilsImpl implements SecurityUtils {
         return new Callable<T>() {
             @Override
             public T call() throws Exception {
-                SecurityContext oldContent = SecurityContextHolder.getContext();
+                SecurityContext oldContext = SecurityContextHolder.getContext();
                 try {
                     SecurityContextHolder.setContext(context);
                     // Result
                     return callable.call();
                 } finally {
-                    SecurityContextHolder.setContext(context);
+                    SecurityContextHolder.setContext(oldContext);
                 }
             }
         };
