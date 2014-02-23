@@ -28,7 +28,6 @@ public class RevisionController extends AbstractGUIController {
         // Revision info
         model.addAttribute("info", ui.getRevisionInfo(locale, repository, revision));
         // OK
-        // FIXME Rename the page
         return "extension/svnexplorer/repository-revision";
     }
 
