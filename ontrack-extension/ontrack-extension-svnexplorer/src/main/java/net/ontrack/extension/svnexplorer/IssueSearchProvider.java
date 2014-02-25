@@ -2,7 +2,9 @@ package net.ontrack.extension.svnexplorer;
 
 import net.ontrack.core.model.SearchResult;
 import net.ontrack.extension.api.ExtensionManager;
-import net.ontrack.extension.jira.service.model.JIRAConfiguration;
+import net.ontrack.extension.issue.IssueService;
+import net.ontrack.extension.issue.IssueServiceFactory;
+import net.ontrack.extension.issue.IssueServiceSummary;
 import net.ontrack.extension.svn.service.RepositoryService;
 import net.ontrack.extension.svn.service.SubversionService;
 import net.ontrack.extension.svn.service.model.SVNRepository;
@@ -22,20 +24,27 @@ public class IssueSearchProvider implements SearchProvider {
     private final RepositoryService repositoryService;
     private final SubversionService subversionService;
     private final GUIService guiService;
+    private final IssueServiceFactory issueServiceFactory;
     private final ExtensionManager extensionManager;
 
     @Autowired
-    public IssueSearchProvider(RepositoryService repositoryService, SubversionService subversionService, GUIService guiService, ExtensionManager extensionManager) {
+    public IssueSearchProvider(RepositoryService repositoryService, SubversionService subversionService, GUIService guiService, IssueServiceFactory issueServiceFactory, ExtensionManager extensionManager) {
         this.repositoryService = repositoryService;
         this.subversionService = subversionService;
         this.guiService = guiService;
+        this.issueServiceFactory = issueServiceFactory;
         this.extensionManager = extensionManager;
     }
 
     @Override
     public boolean isTokenSearchable(String token) {
-        // FIXME Uses all issue services?
-        return JIRAConfiguration.ISSUE_PATTERN.matcher(token).matches();
+        for (IssueServiceSummary issueServiceSummary : issueServiceFactory.getAllServices()) {
+            IssueService service = issueServiceFactory.getServiceByName(issueServiceSummary.getName());
+            if (service.isIssue(token)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

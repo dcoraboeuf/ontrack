@@ -88,4 +88,13 @@ public interface IssueService {
      * @return Link
      */
     String getLinkForAllIssues(IssueServiceConfig issueServiceConfig, Collection<Issue> issues);
+
+    /**
+     * Quick test about the validity of any token to be an issue key.
+     *
+     * @param token Token to test (may be <code>null</code>)
+     * @return <code>true</code> if the <code>token</code> may represent a valid issue key for this issue service. If
+     *         this method returns <code>true</code>, it does not mean that this is actually a valid issue.
+     */
+    boolean isIssue(String token);
 }

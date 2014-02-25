@@ -176,6 +176,11 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     }
 
     @Override
+    public boolean isIssue(String token) {
+        return token != null && JIRAConfiguration.ISSUE_PATTERN.matcher(token).matches();
+    }
+
+    @Override
     public String getIssueURL(JIRAConfiguration configuration, String key) {
         return configuration.getIssueURL(key);
     }

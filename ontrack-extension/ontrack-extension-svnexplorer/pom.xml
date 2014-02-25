@@ -20,11 +20,6 @@
             <artifactId>ontrack-extension-svn</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ontrack-extension-jira</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>

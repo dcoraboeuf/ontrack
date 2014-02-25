@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import net.ontrack.core.model.*;
 import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.issue.*;
-import net.ontrack.extension.jira.service.JIRAIssueNotFoundException;
 import net.ontrack.extension.svn.SubversionExtension;
 import net.ontrack.extension.svn.SubversionPathPropertyExtension;
 import net.ontrack.extension.svn.service.RepositoryService;
@@ -702,17 +701,13 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         Optional<IssueService> issueService = issueServiceFactory.getOptionalServiceByName(repository.getIssueServiceName());
         // Gets the details about the issue
         if (issueService.isPresent()) {
-            try {
-                IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
-                Issue issue = issueService.get().getIssue(issueServiceConfig, issueKey);
-                if (issue == null || StringUtils.isBlank(issue.getKey())) {
-                    return null;
-                }
-                // Creates the issue details for the change logs
-                return new ChangeLogIssue(issue, subversionService.formatRevisionTime(issue.getUpdateTime()));
-            } catch (JIRAIssueNotFoundException ex) {
+            IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
+            Issue issue = issueService.get().getIssue(issueServiceConfig, issueKey);
+            if (issue == null || StringUtils.isBlank(issue.getKey())) {
                 return null;
             }
+            // Creates the issue details for the change logs
+            return new ChangeLogIssue(issue, subversionService.formatRevisionTime(issue.getUpdateTime()));
         } else {
             return null;
         }
