@@ -1,5 +1,6 @@
 package net.ontrack.extension.svnexplorer.model;
 
+import com.google.common.base.Function;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,13 @@ import java.util.List;
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChangeLogIssue {
+
+    public static final Function<ChangeLogIssue, Issue> issueFn = new Function<ChangeLogIssue, Issue>() {
+        @Override
+        public Issue apply(ChangeLogIssue o) {
+            return o.getIssue();
+        }
+    };
 
     private final Issue issue;
     private final String formattedUpdateTime;

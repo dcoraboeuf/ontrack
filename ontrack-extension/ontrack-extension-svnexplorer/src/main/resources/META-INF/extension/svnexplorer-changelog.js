@@ -1,31 +1,31 @@
-define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
+define(['jquery', 'ajax', 'render', 'common'], function ($, ajax, render, common) {
 
     var revisions = null;
-    var issues = null;
+    var changeLogIssues = null;
     var files = null;
     var info = null;
 
-    function toggleMergedRevision (parentRevision) {
+    function toggleMergedRevision(parentRevision) {
         $('tr[parent="{0}"]'.format(parentRevision)).toggle();
     }
 
     function indent(level) {
         var s = '';
-        for (var i = 0 ; i < level ; i++) {
-            for (var j = 0 ; j < 4 ; j++) {
+        for (var i = 0; i < level; i++) {
+            for (var j = 0; j < 4; j++) {
                 s += '&#xa0;';
             }
         }
         return s;
     }
 
-    function displayRevisions (data) {
+    function displayRevisions(data) {
         // Stores the revisions (local cache for display purpose only)
         revisions = data;
         // Computation for the layout
         var currentLevel = 0;
         var stack = [];
-        $.each (revisions.list, function (index, entry) {
+        $.each(revisions.list, function (index, entry) {
             // Merge management
             entry.merge = false;
             entry.merged = false;
@@ -74,41 +74,26 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         );
     }
 
-    function displayIssues (data) {
+    function displayIssues(data) {
         // Stores the issues (local cache for display purpose only)
-        issues = data;
+        changeLogIssues = data;
         // Computed fields
-        $.each (issues.list, function (index, changeLogIssue) {
+        $.each(changeLogIssues.list, function (index, changeLogIssue) {
             changeLogIssue.lastRevision = changeLogIssue.revisions[changeLogIssue.revisions.length - 1];
         });
         // Rendering
         render.renderInto(
             $('#issues'),
             'extension/svnexplorer-changelog-issues',
-            issues,
+            changeLogIssues,
             function () {
                 // 'Open all issues' button
                 $('#svnexplorer-changelog-issues-openall').click(function () {
-                    // FIXME Remove link from JIRA by using an AJAX service
-                    if (issues.list.length == 0) {
-                        // Does nothing
-                    } else if (issues.list.length == 1) {
-                        // FIXME Remove link from JIRA
-                        var url = issues.jiraUrl + '/browse/' + issues.list[0].issue.key;
-                        window.open(url, '_blank');
+                    var link = changeLogIssues.allIssuesLink;
+                    if (link != '') {
+                        window.open(link, '_blank');
                     } else {
-                        // FIXME Remove link from JIRA
-                        var url = issues.jiraUrl + '/secure/IssueNavigator.jspa?reset=true&mode=hide&jqlQuery=';
-                        var query = 'key in (';
-                        $.each (issues.list, function (index, issue) {
-                            if (index > 0) {
-                                query += ',';
-                            }
-                            query += "'" + issue.issue.key + "'";
-                        });
-                        query += ')';
-                        url += encodeURIComponent(query);
-                        window.open(url, '_blank');
+                        // Does nothing
                     }
                 });
                 // Tooltips
@@ -117,12 +102,12 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         );
     }
 
-    function displayFiles (data) {
+    function displayFiles(data) {
         // Stores the files (local cache for display purpose only)
         files = data;
         // Computed fields
-        $.each (files.list, function (index, changeLogFile) {
-            $.each (changeLogFile.changes, function (i, changeLogFileChange) {
+        $.each(files.list, function (index, changeLogFile) {
+            $.each(changeLogFile.changes, function (i, changeLogFileChange) {
                 var changeType = changeLogFileChange.changeType;
                 var icon;
                 if (changeType == "modified") {
@@ -149,7 +134,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         );
     }
 
-    function displayInfo (data) {
+    function displayInfo(data) {
         // Stores the information (local cache for display purpose only)
         info = data;
 
@@ -157,11 +142,11 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
 
         // Processing, % of width
         var total = 0;
-        $.each (info.statuses, function (index, statusInfo) {
+        $.each(info.statuses, function (index, statusInfo) {
             total += statusInfo.count;
         });
         var reference = 400;
-        $.each (info.statuses, function (index, statusInfo) {
+        $.each(info.statuses, function (index, statusInfo) {
             var ratio = 1.0 * statusInfo.count / total;
             statusInfo.width = Math.round(ratio * reference);
         });
@@ -203,7 +188,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         location.hash = "";
     }
 
-    function loadRevisions () {
+    function loadRevisions() {
         location.hash = "revisions";
         if (revisions == null) {
             // UUID for the change log
@@ -221,9 +206,9 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
-    function loadIssues () {
+    function loadIssues() {
         location.hash = "issues";
-        if (issues == null) {
+        if (changeLogIssues == null) {
             // UUID for the change log
             var uuid = $('#changelog').val();
             // Loads the issues
@@ -239,7 +224,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
-    function loadFiles () {
+    function loadFiles() {
         location.hash = "files";
         if (files == null) {
             // UUID for the change log
@@ -257,7 +242,7 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
-    function loadInfo () {
+    function loadInfo() {
         location.hash = "info";
         if (info == null) {
             // UUID for the change log
@@ -275,11 +260,11 @@ define(['jquery','ajax','render','common'], function ($, ajax, render, common) {
         }
     }
 
-    function changelogErrorFn () {
+    function changelogErrorFn() {
         return ajax.simpleAjaxErrorFn(ajax.elementErrorMessageFn('#changelog-error'));
     }
 
-    function init () {
+    function init() {
         $('#summary-tab').on('show', loadSummary);
         $('#revisions-tab').on('show', loadRevisions);
         $('#issues-tab').on('show', loadIssues);

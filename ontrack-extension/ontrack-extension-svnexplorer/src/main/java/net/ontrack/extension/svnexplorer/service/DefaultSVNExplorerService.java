@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -205,20 +206,32 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     public ChangeLogIssues getChangeLogIssues(ChangeLogSummary summary, ChangeLogRevisions revisions) {
         // In a SVN/JIRA transaction
         try (Transaction ignored = transactionService.start()) {
+            // Repository
+            SVNRepository repository = summary.getRepository();
             // Index of issues, sorted by keys
             Map<String, ChangeLogIssue> issues = new TreeMap<>();
             // For all revisions in this revision log
             for (ChangeLogRevision changeLogRevision : revisions.getList()) {
                 long revision = changeLogRevision.getRevision();
-                collectIssuesForRevision(summary.getRepository(), issues, revision);
+                collectIssuesForRevision(repository, issues, revision);
             }
             // List of issues
             List<ChangeLogIssue> issuesList = new ArrayList<>(issues.values());
-            // TODO Validation
-            // validationService.validate(changeLog, issuesList);
+            // Issues link
+            String allIssuesLink = "";
+            Optional<IssueService> issueService = issueServiceFactory.getOptionalServiceByName(repository.getIssueServiceName());
+            if (issueService.isPresent()) {
+                IssueServiceConfig issueServiceConfig = issueService.get().getConfigurationById(repository.getIssueServiceConfigId());
+                allIssuesLink = issueService.get().getLinkForAllIssues(
+                        issueServiceConfig,
+                        Collections2.transform(
+                                issuesList,
+                                ChangeLogIssue.issueFn
+                        )
+                );
+            }
             // OK
-            // FIXME Removes link from JIRA (used to get the link to several issues in the change log)
-            return new ChangeLogIssues(null, issuesList);
+            return new ChangeLogIssues(allIssuesLink, repository, issuesList);
 
         }
     }

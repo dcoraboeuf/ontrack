@@ -26,11 +26,16 @@ import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
+
+import static java.lang.String.format;
 
 @Service
 public class DefaultJIRAService extends AbstractIssueService implements JIRAService {
@@ -111,7 +116,7 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
             String key = matcher.group();
             if (configuration.isIssue(key)) {
                 String href = getIssueURL(configuration, key);
-                String link = String.format("<a href=\"%s\">%s</a>", href, key);
+                String link = format("<a href=\"%s\">%s</a>", href, key);
                 matcher.appendReplacement(html, link);
             }
         }
@@ -123,6 +128,50 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
     @Override
     public net.ontrack.extension.issue.Issue getIssue(IssueServiceConfig issueServiceConfig, String key) {
         return getIssue((JIRAConfiguration) issueServiceConfig, key);
+    }
+
+    @Override
+    public String getLinkForAllIssues(IssueServiceConfig issueServiceConfig, Collection<net.ontrack.extension.issue.Issue> issues) {
+        JIRAConfiguration configuration = (JIRAConfiguration) issueServiceConfig;
+        Validate.notNull(issues, "The list of issues must not be null");
+        if (issues.size() == 0) {
+            // Nothing to link to
+            return "";
+        } else if (issues.size() == 1) {
+            // Link to one issue
+            return format(
+                    "%s/browse/%s",
+                    configuration.getUrl(),
+                    issues.iterator().next().getKey()
+            );
+        } else {
+            try {
+                return format(
+                        "%s/secure/IssueNavigator.jspa?reset=true&mode=hide&jqlQuery=%s",
+                        configuration.getUrl(),
+                        URLEncoder.encode(
+                                format(
+                                        "key in (%s)",
+                                        StringUtils.join(
+                                                Collections2.transform(
+                                                        issues,
+                                                        new Function<net.ontrack.extension.issue.Issue, String>() {
+                                                            @Override
+                                                            public String apply(net.ontrack.extension.issue.Issue i) {
+                                                                return format("\"%s\"", i.getKey());
+                                                            }
+                                                        }
+                                                ),
+                                                ","
+                                        )
+                                ),
+                                "UTF-8"
+                        )
+                );
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException("UTF-8 not supported");
+            }
+        }
     }
 
     @Override

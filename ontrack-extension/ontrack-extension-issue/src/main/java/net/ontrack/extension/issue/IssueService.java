@@ -78,4 +78,14 @@ public interface IssueService {
      * @return Issue if found, <code>null</code> otherwise
      */
     Issue getIssue(IssueServiceConfig issueServiceConfig, String key);
+
+    /**
+     * Given a list of issues, returns a link that allows the user to display the list of
+     * all those issues in a browser.
+     *
+     * @param issueServiceConfig Configuration for the service
+     * @param issues             List of issues to display. Can be empty, but not <code>null</code>.
+     * @return Link
+     */
+    String getLinkForAllIssues(IssueServiceConfig issueServiceConfig, Collection<Issue> issues);
 }
