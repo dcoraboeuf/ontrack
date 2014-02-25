@@ -156,6 +156,10 @@ subversion.indexation.range
     en -> Range re-indexation
     fr -> Indexation d'un intervalle
 
+subversion.indexation.range.format
+    en -> Range boundaries are not correct
+    fr -> Les bornes de l'intervalle de ré-indexation ne sont pas correctes.
+
 subversion.indexation.range.button
     en -> Index
     fr -> Indexer

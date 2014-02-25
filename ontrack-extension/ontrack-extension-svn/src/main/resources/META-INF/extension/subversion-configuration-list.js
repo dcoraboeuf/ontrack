@@ -35,17 +35,21 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                         dialog.form.find('#subversion-indexation-dialog-range-submit').click(function () {
                             var from = dialog.form.find('#subversion-indexation-dialog-range-from').val();
                             var to = dialog.form.find('#subversion-indexation-dialog-range-to').val();
-                            ajax.post({
-                                url: 'ui/extension/svn/indexation/{0}/range?from={1}&to={2}'.format(repositoryId, from, to),
-                                successFn: function (ack) {
-                                    if (ack.success) {
-                                        dialog.closeFn()
-                                    } else {
-                                        dialog.errorFn('subversion.indexation.alreadyrunning'.loc())
-                                    }
-                                },
-                                errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
-                            })
+                            if (from == '' || to == '' || !/^\d+$/.test(form) || !/^\d+$/.test(to)) {
+                                dialog.errorFn('subversion.indexation.range.format'.loc())
+                            } else {
+                                ajax.post({
+                                    url: 'ui/extension/svn/indexation/{0}/range?from={1}&to={2}'.format(repositoryId, from, to),
+                                    successFn: function (ack) {
+                                        if (ack.success) {
+                                            dialog.closeFn()
+                                        } else {
+                                            dialog.errorFn('subversion.indexation.alreadyrunning'.loc())
+                                        }
+                                    },
+                                    errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                                })
+                            }
                         });
                         // Full indexation
                         dialog.form.find('#subversion-indexation-dialog-full-submit').click(function () {
