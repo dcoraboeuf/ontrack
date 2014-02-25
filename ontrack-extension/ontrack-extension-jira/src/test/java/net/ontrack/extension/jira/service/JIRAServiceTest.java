@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import net.ontrack.core.model.Entity;
 import net.ontrack.extension.api.ExtensionManager;
 import net.ontrack.extension.api.property.PropertiesService;
+import net.ontrack.extension.issue.Issue;
 import net.ontrack.extension.jira.JIRAConfigurationPropertyExtension;
 import net.ontrack.extension.jira.JIRAConfigurationService;
 import net.ontrack.extension.jira.JIRAExtension;
@@ -19,6 +20,8 @@ import net.ontrack.tx.DefaultTransactionService;
 import net.ontrack.tx.TransactionService;
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -122,6 +125,63 @@ public class JIRAServiceTest {
                 jiraSessionFactory);
         Set<String> issues = service.extractIssueKeysFromMessage(10, "TEST-12, PRJ-12, PRJ-13 List of issues");
         assertEquals(Collections.singleton("PRJ-13"), issues);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getLinkForAllIssues_null_config() {
+        DefaultJIRAService service = new DefaultJIRAService(null, null, null, null, null);
+        service.getLinkForAllIssues(null, Collections.<Issue>emptyList());
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getLinkForAllIssues_null_issues() {
+        DefaultJIRAService service = new DefaultJIRAService(null, null, null, null, null);
+        service.getLinkForAllIssues(
+                new JIRAConfiguration(0, "test", "http://jira", "user", Collections.<String>emptySet(), Collections.<String>emptySet()),
+                null);
+
+    }
+
+    @Test
+    public void getLinkForAllIssues_no_issue() {
+        DefaultJIRAService service = new DefaultJIRAService(null, null, null, null, null);
+        String link = service.getLinkForAllIssues(
+                new JIRAConfiguration(0, "test", "http://jira", "user", Collections.<String>emptySet(), Collections.<String>emptySet()),
+                Collections.<Issue>emptyList());
+        assertEquals("The link for no issue is empty", "", link);
+    }
+
+    @Test
+    public void getLinkForAllIssues_one_issue() {
+        Issue issue = mock(Issue.class);
+        when(issue.getKey()).thenReturn("PRJ-13");
+        DefaultJIRAService service = new DefaultJIRAService(null, null, null, null, null);
+        String link = service.getLinkForAllIssues(
+                new JIRAConfiguration(0, "test", "http://jira", "user", Collections.<String>emptySet(), Collections.<String>emptySet()),
+                Collections.singletonList(issue));
+        assertEquals("http://jira/browse/PRJ-13", link);
+    }
+
+    @Test
+    public void getLinkForAllIssues_two_issues() throws UnsupportedEncodingException {
+        Issue issue1 = mock(Issue.class);
+        when(issue1.getKey()).thenReturn("PRJ-13");
+        Issue issue2 = mock(Issue.class);
+        when(issue2.getKey()).thenReturn("PRJ-15");
+        DefaultJIRAService service = new DefaultJIRAService(null, null, null, null, null);
+        String link = service.getLinkForAllIssues(
+                new JIRAConfiguration(0, "test", "http://jira", "user", Collections.<String>emptySet(), Collections.<String>emptySet()),
+                Arrays.asList(issue1, issue2));
+        assertEquals(
+                String.format(
+                        "http://jira/secure/IssueNavigator.jspa?reset=true&mode=hide&jqlQuery=%s",
+                        URLEncoder.encode(
+                                "key in (\"PRJ-13\",\"PRJ-15\")",
+                                "UTF-8")
+                ),
+                link
+        );
     }
 
 }

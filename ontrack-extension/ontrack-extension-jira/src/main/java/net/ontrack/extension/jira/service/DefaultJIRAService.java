@@ -132,8 +132,9 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
 
     @Override
     public String getLinkForAllIssues(IssueServiceConfig issueServiceConfig, Collection<net.ontrack.extension.issue.Issue> issues) {
-        JIRAConfiguration configuration = (JIRAConfiguration) issueServiceConfig;
+        Validate.notNull(issueServiceConfig, "The issue service configuration is required");
         Validate.notNull(issues, "The list of issues must not be null");
+        JIRAConfiguration configuration = (JIRAConfiguration) issueServiceConfig;
         if (issues.size() == 0) {
             // Nothing to link to
             return "";
