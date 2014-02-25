@@ -28,7 +28,7 @@ public class IndexationUIController extends AbstractUIController {
         return indexationService.getLastRevisionInfo(repositoryId);
     }
 
-    @RequestMapping(value = "/{repositoryId}/latest", method = RequestMethod.GET)
+    @RequestMapping(value = "/{repositoryId}/latest", method = RequestMethod.POST)
     @ResponseBody
     public Ack latest(@PathVariable int repositoryId) {
         if (indexationService.isIndexationRunning(repositoryId)) {

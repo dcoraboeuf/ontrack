@@ -17,7 +17,20 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                         }
                     ],
                     initFn: function (dialog) {
-                        // TODO Indexation from latest
+                        // Indexation from latest
+                        dialog.form.find('#subversion-indexation-dialog-latest-submit').click(function () {
+                            ajax.post({
+                                url: 'ui/extension/svn/indexation/{0}/latest'.format(repositoryId),
+                                successFn: function (ack) {
+                                    if (ack.success) {
+                                        dialog.closeFn()
+                                    } else {
+                                        dialog.errorFn('subversion.indexation.alreadyrunning'.loc())
+                                    }
+                                },
+                                errorFn: ajax.simpleAjaxErrorFn(dialog.errorFn)
+                            })
+                        });
                         // TODO Range indexation
                         // Full indexation
                         dialog.form.find('#subversion-indexation-dialog-full-submit').click(function () {
