@@ -35,7 +35,7 @@ define(['jquery', 'crud', 'ajax', 'dialog', 'common'], function ($, crud, ajax, 
                         dialog.form.find('#subversion-indexation-dialog-range-submit').click(function () {
                             var from = dialog.form.find('#subversion-indexation-dialog-range-from').val();
                             var to = dialog.form.find('#subversion-indexation-dialog-range-to').val();
-                            if (from == '' || to == '' || !/^\d+$/.test(form) || !/^\d+$/.test(to)) {
+                            if (from == '' || to == '' || !/^\d+$/.test(from) || !/^\d+$/.test(to)) {
                                 dialog.errorFn('subversion.indexation.range.format'.loc())
                             } else {
                                 ajax.post({
