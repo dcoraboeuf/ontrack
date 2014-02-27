@@ -27,7 +27,8 @@ public interface IssueService {
 
     /**
      * Gets the ID of this service. It must be unique among all the available
-     * issue services.
+     * issue services. This must be mapped to the associated extension since this
+     * ID can be used to identify web resources using the <code>/extension/&lt;id&gt;</code> URI.
      */
     String getId();
 

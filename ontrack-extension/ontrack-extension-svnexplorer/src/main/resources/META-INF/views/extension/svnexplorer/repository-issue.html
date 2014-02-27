@@ -24,7 +24,8 @@
         </div>
     </div>
 
-    <!-- TODO Use jira-issue.html for #293 -->
+    <#include "/extension/${info.repository.issueService.id}/lib/issue-summary.html" />
+    <@issueSummary issue=info.issue formattedTime=info.formattedUpdateTime />
 
     <div class="row-fluid">
         <div class="span12">

@@ -1,6 +1,6 @@
 <#include "/lib/layout.html">
 <#include "/extension/git/lib/commit_lib.html" >
-<#include "/extension/jira/lib/jira-issue.html" >
+<#include "/extension/jira/lib/issue-summary.html" >
 
 <@layout_std
     page="git-jira-issue"
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <@jiraIssue issue=info.issue formattedTime=info.formattedUpdateTime />
+    <@issueSummary issue=info.issue formattedTime=info.formattedUpdateTime />
 
     <#if info.commitInfo??>
 
