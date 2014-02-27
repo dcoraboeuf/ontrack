@@ -39,7 +39,7 @@ public class IssueSearchProvider implements SearchProvider {
     @Override
     public boolean isTokenSearchable(String token) {
         for (IssueServiceSummary issueServiceSummary : issueServiceFactory.getAllServices()) {
-            IssueService service = issueServiceFactory.getServiceByName(issueServiceSummary.getName());
+            IssueService service = issueServiceFactory.getServiceByName(issueServiceSummary.getId());
             if (service.isIssue(token)) {
                 return true;
             }
