@@ -203,7 +203,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Override
     @Transactional(readOnly = true)
     public ChangeLogIssues getChangeLogIssues(ChangeLogSummary summary, ChangeLogRevisions revisions) {
-        // In a SVN/JIRA transaction
+        // In a transaction
         try (Transaction ignored = transactionService.start()) {
             // Repository
             SVNRepository repository = summary.getRepository();
@@ -238,7 +238,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
     @Override
     @Transactional(readOnly = true)
     public ChangeLogFiles getChangeLogFiles(ChangeLogSummary summary, ChangeLogRevisions revisions) {
-        // In a SVN/JIRA transaction
+        // In a transaction
         try (Transaction ignored = transactionService.start()) {
             // Index of files, indexed by path
             Map<String, ChangeLogFile> files = new TreeMap<>();
@@ -264,7 +264,7 @@ public class DefaultSVNExplorerService implements SVNExplorerService {
         String sensibleFilesPattern = propertiesService.getPropertyValue(Entity.BRANCH, summary.getBranch().getId(), SVNExplorerExtension.EXTENSION, SensibleFilesPropertyExtension.NAME);
         // Filtering function
         Predicate<ChangeLogFile> sensibleFilePredicate = getSensibleFilePredicateFn(sensibleFilesPattern);
-        // JIRA issue statuses
+        // Issue statuses
         Map<String, ChangeLogInfoStatus> statuses = new TreeMap<>();
         for (ChangeLogIssue changeLogIssue : issues.getList()) {
             IssueStatus status = changeLogIssue.getIssue().getStatus();
