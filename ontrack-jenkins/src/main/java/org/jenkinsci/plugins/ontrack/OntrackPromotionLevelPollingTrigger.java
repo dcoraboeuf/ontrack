@@ -7,6 +7,7 @@ import hudson.model.*;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.OptionalBuildSummary;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
 import org.jenkinsci.lib.xtrigger.XTriggerDescriptor;
@@ -142,12 +143,12 @@ public class OntrackPromotionLevelPollingTrigger extends AbstractTrigger {
 	}
 
 	private BuildSummary getBuildSummary(final String project, final String branch, final String promotionLevel) {
-		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+		return OntrackClient.manage(new ManageClientCall<OptionalBuildSummary>() {
 			@Override
-			public BuildSummary onCall(ManageUIClient ui) {
+			public OptionalBuildSummary onCall(ManageUIClient ui) {
 				return ui.getLastBuildWithPromotionLevel(null, project, branch, promotionLevel);
 			}
-		});
+		}).getBuild();
 	}
 
 	private static void logException(XTriggerLog xTriggerLog, Exception e) {

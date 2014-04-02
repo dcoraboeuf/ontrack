@@ -145,7 +145,7 @@ public class OntrackValidationStampPollingTrigger extends AbstractTrigger {
 		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
 			@Override
 			public BuildSummary onCall(ManageUIClient ui) {
-				return ui.getLastBuildWithValidationStamp(null, project, branch, validationStamp);
+				return ui.getLastBuildWithValidationStamp(null, project, branch, validationStamp).getBuild();
 			}
 		});
 	}

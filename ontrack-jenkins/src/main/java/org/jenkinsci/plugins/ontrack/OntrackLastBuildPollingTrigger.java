@@ -10,6 +10,7 @@ import hudson.model.Node;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.OptionalBuildSummary;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.lib.xtrigger.AbstractTrigger;
 import org.jenkinsci.lib.xtrigger.XTriggerDescriptor;
@@ -62,11 +63,12 @@ public class OntrackLastBuildPollingTrigger extends AbstractTrigger {
 		String lastBuildNr = loadLastBuildNr(xTriggerLog, lastBuildNrFile);
 
 		// Gets the last build
-		BuildSummary lastBuild = getBuildSummary(actualBranch, actualProject);
+        OptionalBuildSummary optionLastBuild = getBuildSummary(actualBranch, actualProject);
 
 		// Found
-		if (lastBuild != null) {
-			String name = lastBuild.getName();
+		if (optionLastBuild.getBuild() != null) {
+            BuildSummary lastBuild = optionLastBuild.getBuild();
+            String name = lastBuild.getName();
 			xTriggerLog.info(String.format("Found build '%s' for branch '%s' and project '%s'%n", name, actualBranch, actualProject));
 			try {
 				if (lastBuildNr == null || lastBuildNr.isEmpty() || !lastBuildNr.equals(name)) {
@@ -132,10 +134,10 @@ public class OntrackLastBuildPollingTrigger extends AbstractTrigger {
 		return false;
 	}
 
-	private BuildSummary getBuildSummary(final String branch, final String project) {
-		return OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+	private OptionalBuildSummary getBuildSummary(final String branch, final String project) {
+		return OntrackClient.manage(new ManageClientCall<OptionalBuildSummary>() {
 			@Override
-			public BuildSummary onCall(ManageUIClient ui) {
+			public OptionalBuildSummary onCall(ManageUIClient ui) {
 				return ui.getLastBuild(project, branch);
 			}
 		});

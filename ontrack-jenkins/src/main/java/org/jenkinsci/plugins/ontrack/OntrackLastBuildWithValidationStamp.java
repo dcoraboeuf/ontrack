@@ -55,7 +55,7 @@ public class OntrackLastBuildWithValidationStamp extends Builder {
         BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
             @Override
             public BuildSummary onCall(ManageUIClient ui) {
-				return ui.getLastBuildWithValidationStamp(null, actualProject, actualBranch, actualValidationStamp);
+				return ui.getLastBuildWithValidationStamp(null, actualProject, actualBranch, actualValidationStamp).getBuild();
             }
         });
         // Found

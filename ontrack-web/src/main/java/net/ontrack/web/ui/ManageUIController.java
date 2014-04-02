@@ -816,27 +816,27 @@ public class ManageUIController extends AbstractEntityUIController implements Ma
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/last", method = RequestMethod.GET)
     public
     @ResponseBody
-    BuildSummary getLastBuild(@PathVariable String project, @PathVariable String branch) {
+    OptionalBuildSummary getLastBuild(@PathVariable String project, @PathVariable String branch) {
         int branchId = entityConverter.getBranchId(project, branch);
-        return managementService.getLastBuild(branchId);
+        return new OptionalBuildSummary(managementService.getLastBuild(branchId));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/withValidationStamp/{validationStamp:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody
-    BuildSummary getLastBuildWithValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
+    OptionalBuildSummary getLastBuildWithValidationStamp(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String validationStamp) {
         int validationStampId = entityConverter.getValidationStampId(project, branch, validationStamp);
-        return managementService.findLastBuildWithValidationStamp(validationStampId, Collections.singleton(Status.PASSED));
+        return new OptionalBuildSummary(managementService.findLastBuildWithValidationStamp(validationStampId, Collections.singleton(Status.PASSED)));
     }
 
     @Override
     @RequestMapping(value = "/ui/manage/project/{project:[A-Za-z0-9_\\.\\-]+}/branch/{branch:[A-Za-z0-9_\\.\\-]+}/build/withPromotionLevel/{promotionLevel:[A-Za-z0-9_\\.\\-]+}", method = RequestMethod.GET)
     public
     @ResponseBody
-    BuildSummary getLastBuildWithPromotionLevel(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
+    OptionalBuildSummary getLastBuildWithPromotionLevel(Locale locale, @PathVariable String project, @PathVariable String branch, @PathVariable String promotionLevel) {
         int promotionLevelId = entityConverter.getPromotionLevelId(project, branch, promotionLevel);
-        return managementService.findLastBuildWithPromotionLevel(promotionLevelId);
+        return new OptionalBuildSummary(managementService.findLastBuildWithPromotionLevel(promotionLevelId));
     }
 
     @Override

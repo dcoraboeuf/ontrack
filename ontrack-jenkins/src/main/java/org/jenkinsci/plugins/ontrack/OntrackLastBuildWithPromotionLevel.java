@@ -8,6 +8,7 @@ import hudson.tasks.Builder;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.OptionalBuildSummary;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -52,12 +53,12 @@ public class OntrackLastBuildWithPromotionLevel extends Builder {
         final String actualPromotionLevel = OntrackPluginSupport.expand(promotionLevel, theBuild, listener);
 
         // Gets the last build
-        BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+        BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<OptionalBuildSummary>() {
             @Override
-            public BuildSummary onCall(ManageUIClient ui) {
+            public OptionalBuildSummary onCall(ManageUIClient ui) {
 				return ui.getLastBuildWithPromotionLevel(null, actualProject, actualBranch, actualPromotionLevel);
             }
-        });
+        }).getBuild();
         // Found
         if (lastBuild != null) {
             String name = lastBuild.getName();

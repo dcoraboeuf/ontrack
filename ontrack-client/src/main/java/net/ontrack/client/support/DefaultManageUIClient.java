@@ -473,18 +473,18 @@ public class DefaultManageUIClient extends AbstractClient implements ManageUICli
     }
 
     @Override
-    public BuildSummary getLastBuild(String project, String branch) {
-        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/last", project, branch), BuildSummary.class);
+    public OptionalBuildSummary getLastBuild(String project, String branch) {
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/last", project, branch), OptionalBuildSummary.class);
     }
 
     @Override
-    public BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp) {
-        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withValidationStamp/%s", project, branch, validationStamp), BuildSummary.class);
+    public OptionalBuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp) {
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withValidationStamp/%s", project, branch, validationStamp), OptionalBuildSummary.class);
     }
 
     @Override
-    public BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel) {
-        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), BuildSummary.class);
+    public OptionalBuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel) {
+        return get(getDefaultLocale(), format("/ui/manage/project/%s/branch/%s/build/withPromotionLevel/%s", project, branch, promotionLevel), OptionalBuildSummary.class);
     }
 
     @Override

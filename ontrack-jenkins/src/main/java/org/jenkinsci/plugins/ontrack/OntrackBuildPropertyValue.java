@@ -11,6 +11,7 @@ import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
+import net.ontrack.core.model.OptionalBuildSummary;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -51,11 +52,11 @@ public class OntrackBuildPropertyValue extends Builder {
         final BuildSummary lastBuild;
         if (StringUtils.isEmpty(buildName)) {
             // Get build from parameters
-            lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
-                public BuildSummary onCall(ManageUIClient ui) {
+            lastBuild = OntrackClient.manage(new ManageClientCall<OptionalBuildSummary>() {
+                public OptionalBuildSummary onCall(ManageUIClient ui) {
                     return ui.getLastBuildWithPromotionLevel(null, actualProject, actualBranch, actualPromotionLevel);
                 }
-            });
+            }).getBuild();
         } else {
             lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
                 public BuildSummary onCall(ManageUIClient ui) {

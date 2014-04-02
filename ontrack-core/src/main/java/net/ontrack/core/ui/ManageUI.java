@@ -157,11 +157,11 @@ public interface ManageUI {
 
     BuildSummary updateBuild(String project, String branch, String build, BranchUpdateForm form);
 
-    BuildSummary getLastBuild(String project, String branch);
+    OptionalBuildSummary getLastBuild(String project, String branch);
 
-    BuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);
+    OptionalBuildSummary getLastBuildWithValidationStamp(Locale locale, String project, String branch, String validationStamp);
 
-    BuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
+    OptionalBuildSummary getLastBuildWithPromotionLevel(Locale locale, String project, String branch, String promotionLevel);
 
     List<BuildValidationStamp> getBuildValidationStamps(Locale locale, String project, String branch, String name);
 

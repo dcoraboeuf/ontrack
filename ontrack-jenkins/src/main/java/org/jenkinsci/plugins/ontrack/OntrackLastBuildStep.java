@@ -8,6 +8,7 @@ import hudson.tasks.Builder;
 import net.ontrack.client.ManageUIClient;
 import net.ontrack.client.support.ManageClientCall;
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.OptionalBuildSummary;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -44,12 +45,12 @@ public class OntrackLastBuildStep extends Builder {
     @Override
     public boolean perform(AbstractBuild<?, ?> theBuild, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         // Gets the last build
-        BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<BuildSummary>() {
+        BuildSummary lastBuild = OntrackClient.manage(new ManageClientCall<OptionalBuildSummary>() {
             @Override
-            public BuildSummary onCall(ManageUIClient ui) {
+            public OptionalBuildSummary onCall(ManageUIClient ui) {
                 return ui.getLastBuild(project, branch);
             }
-        });
+        }).getBuild();
         // Found
         if (lastBuild != null) {
             String name = lastBuild.getName();
