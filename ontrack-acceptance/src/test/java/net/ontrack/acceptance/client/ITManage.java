@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -143,6 +144,27 @@ public class ITManage extends AbstractIT {
         assertTrue(summary.getId() > 0);
         assertEquals("ui_createProject", summary.getName());
         assertEquals("ui_createProject description", summary.getDescription());
+    }
+
+    @Test
+    public void last_build_with_promotion_level_when_no_build() {
+        // Prerequisites
+        final PromotionLevelSummary promotionLevel = data.doCreatePromotionLevel();
+        // Call
+        OptionalBuildSummary optionalBuildSummary = data.asAdmin(new ManageClientCall<OptionalBuildSummary>() {
+            @Override
+            public OptionalBuildSummary onCall(ManageUIClient ui) {
+                return ui.getLastBuildWithPromotionLevel(
+                        Locale.ENGLISH,
+                        promotionLevel.getBranch().getProject().getName(),
+                        promotionLevel.getBranch().getName(),
+                        promotionLevel.getName()
+                );
+            }
+        });
+        // Checks
+        assertNotNull(optionalBuildSummary);
+        assertNull("The returned build is null", optionalBuildSummary.getBuild());
     }
 
 }
