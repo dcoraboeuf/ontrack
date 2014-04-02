@@ -37,14 +37,14 @@ The `webdriver.base.url` must contain the URL the application is deployed on (fo
 In the `ontrack-acceptance` project:
 
 ```
-mvn clean install -P it P it-jetty
+mvn clean install -P it -P it-jetty
 ```
 
 The application will automatically be deployed on http://localhost:9999/ontrack. One can optionally define another port
 by defining the `itPort` system property:
 
 ```
-mvn clean install -P it P it-jetty -DitPort=9080
+mvn clean install -P it -P it-jetty -DitPort=9080
 ```
 
 Note that the `ontrack-web` module must be installed with the same version than the `ontrack-acceptance` one.
@@ -52,7 +52,7 @@ Note that the `ontrack-web` module must be installed with the same version than 
 One can change the version to be deployed by specifying the `ontrackVersion` system property:
 
 ```
-mvn clean install -P it P it-jetty -DontrackVersion=1.8
+mvn clean install -P it -P it-jetty -DontrackVersion=1.8
 ```
 
 ## Testing against production
