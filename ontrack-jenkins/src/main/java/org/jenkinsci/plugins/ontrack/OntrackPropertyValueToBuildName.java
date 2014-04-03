@@ -14,6 +14,7 @@ import net.ontrack.client.support.PropertyClientCall;
 import net.ontrack.core.model.BuildSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.model.EntityStub;
+import net.ontrack.core.model.PropertyValue;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -55,9 +56,12 @@ public class OntrackPropertyValueToBuildName extends Builder {
         Collection<EntityStub> entities = OntrackClient.property(new PropertyClientCall<Collection<EntityStub>>() {
             public Collection<EntityStub> onCall(PropertyUIClient ui) {
                 return ui.getEntitiesForPropertyValue(Entity.BUILD,
-                        extensionName,
-                        propertyName,
-                        expandedPropertyValue);
+                        new PropertyValue(
+                                extensionName,
+                                propertyName,
+                                expandedPropertyValue
+                        )
+                ).getEntities();
             }
         });
         // Filtering on project & branch

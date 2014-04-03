@@ -2,7 +2,6 @@ package net.ontrack.core.ui;
 
 import net.ontrack.core.model.*;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,11 +35,9 @@ public interface PropertyUI {
             String name
     );
 
-    Collection<EntityStub> getEntitiesForPropertyValue(
+    EntityStubCollection getEntitiesForPropertyValue(
             Entity entity,
-            String extension,
-            String name,
-            String value
+            PropertyValue propertyValue
     );
 
 }

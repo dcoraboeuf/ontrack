@@ -30,10 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractClient implements Client {
 
@@ -93,23 +90,27 @@ public abstract class AbstractClient implements Client {
         return request(locale, new HttpGet(getUrl(path)), new ResponseParser<List<T>>() {
             @Override
             public List<T> parse(final String content) throws IOException {
-                final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
-                JsonNode node = mapper.readTree(content);
-                if (node.isArray()) {
-                    return Lists.newArrayList(
-                            Iterables.transform(node, new Function<JsonNode, T>() {
-                                @Override
-                                public T apply(JsonNode input) {
-                                    try {
-                                        return mapper.readValue(input, elementType);
-                                    } catch (IOException e) {
-                                        throw new ClientGeneralException(path, e);
-                                    }
-                                }
-                            })
-                    );
+                if (StringUtils.isBlank(content)) {
+                    return Collections.emptyList();
                 } else {
-                    throw new IOException("Did not receive a JSON array");
+                    final ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
+                    JsonNode node = mapper.readTree(content);
+                    if (node.isArray()) {
+                        return Lists.newArrayList(
+                                Iterables.transform(node, new Function<JsonNode, T>() {
+                                    @Override
+                                    public T apply(JsonNode input) {
+                                        try {
+                                            return mapper.readValue(input, elementType);
+                                        } catch (IOException e) {
+                                            throw new ClientGeneralException(path, e);
+                                        }
+                                    }
+                                })
+                        );
+                    } else {
+                        throw new IOException("Did not receive a JSON array");
+                    }
                 }
             }
         });

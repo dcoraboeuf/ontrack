@@ -193,17 +193,24 @@ public class PropertyUIController extends AbstractUIController implements Proper
     }
 
     @Override
-    @RequestMapping(value = "/search/{entity}/{extension}/{name}/{value}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/{entity}", method = RequestMethod.POST)
     @ResponseBody
-    public Collection<EntityStub> getEntitiesForPropertyValue(@PathVariable final Entity entity, @PathVariable String extension, @PathVariable String name, @PathVariable String value) {
-        return Collections2.transform(
-                propertiesService.findEntityByPropertyValue(entity, extension, name, value),
-                new Function<Integer, EntityStub>() {
-                    @Override
-                    public EntityStub apply(Integer id) {
-                        return entityService.getEntityStub(entity, id);
-                    }
-                }
+    public EntityStubCollection getEntitiesForPropertyValue(@PathVariable final Entity entity, @RequestBody PropertyValue propertyValue) {
+        return new EntityStubCollection(
+                Collections2.transform(
+                        propertiesService.findEntityByPropertyValue(
+                                entity,
+                                propertyValue.getExtension(),
+                                propertyValue.getName(),
+                                propertyValue.getValue()
+                        ),
+                        new Function<Integer, EntityStub>() {
+                            @Override
+                            public EntityStub apply(Integer id) {
+                                return entityService.getEntityStub(entity, id);
+                            }
+                        }
+                )
         );
     }
 

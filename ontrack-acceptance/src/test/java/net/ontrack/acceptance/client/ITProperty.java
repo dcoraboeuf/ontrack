@@ -105,7 +105,7 @@ public class ITProperty extends AbstractIT {
 
     @Test
     public void findEntity() {
-        final String value = data.uid("P");
+        final String value = "http://" + data.uid("P");
         // Prerequisites
         final BuildSummary build = data.doCreateBuild();
         // Sets a property
@@ -117,12 +117,12 @@ public class ITProperty extends AbstractIT {
             }
         });
         // Retrieves the build
-        Collection<EntityStub> stubs = data.anonymous(new PropertyClientCall<Collection<EntityStub>>() {
+        Collection<EntityStub> stubs = data.anonymous(new PropertyClientCall<EntityStubCollection>() {
             @Override
-            public Collection<EntityStub> onCall(PropertyUIClient ui) {
-                return ui.getEntitiesForPropertyValue(Entity.BUILD, "link", "url", value);
+            public EntityStubCollection onCall(PropertyUIClient ui) {
+                return ui.getEntitiesForPropertyValue(Entity.BUILD, new PropertyValue("link", "url", value));
             }
-        });
+        }).getEntities();
         // Checks
         assertEquals(1, stubs.size());
         EntityStub stub = stubs.iterator().next();
