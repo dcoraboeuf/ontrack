@@ -49,7 +49,7 @@
                         <#list info.commits as commit>
                             <tr>
                                 <td>
-                                    <a href="/gui/extension/git/commit/${commit.id?html}"><code>${commit.id?html}</code></a>
+                                    <a href="gui/extension/git/commit/${commit.id?html}"><code>${commit.id?html}</code></a>
                                 </td>
                                 <td>${commit.author.name?html!''}</td>
                                 <td>${commit.shortMessage?html}</td>
