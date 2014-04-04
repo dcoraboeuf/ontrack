@@ -36,6 +36,7 @@
                                     {{else}}
                                         <code>{{commit.id}}</code>
                                     {{/if}}
+                                    <a href="gui/extension/git/commit/{{commit.id}}" class="action action-optional action-inline"><i class="icon-info-sign" title="{{loc 'git.changelog.commits.link'}}"></i></a>
                                 </td>
                                 <td>{{commit.author.name}}</td>
                                 <td class="extension-git-commit-message">{{{annotatedMessage}}}</td>

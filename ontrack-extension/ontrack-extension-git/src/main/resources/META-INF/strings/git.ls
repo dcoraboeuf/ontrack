@@ -89,6 +89,10 @@ git.changelog.commits
 git.changelog.commits.id
     en,fr -> SHA-1
 
+git.changelog.commits.link
+    en -> More info about this commit...
+    fr -> Plus d'information sur ce commit...
+
 git.changelog.commits.author
     en -> Author
     fr -> Auteur
