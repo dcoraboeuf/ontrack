@@ -70,6 +70,25 @@ must do it.
 A typical solution is to use the [Jenkins Xvnc plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvnc+Plugin) when
 running with Jenkins.
 
+At OS level:
+
+* `vncserver` must be installed:
+
+        sudo apt-get install vnc4server
+
+        # Launch vncserver and enter any password
+        vncserver :11
+
+        # Copy the created .vnc configuration to your Jenkins location, for example:
+        cp -r .vnc /var/lib/jenkins
+
+        # Adjust rights accordingly to this directory
+
+* Firefox must be installed:
+
+        sudo apt-get install vnc4server
+
+
 ## Filtering the tests to be executed
 
 ### Running a story only
@@ -102,23 +121,3 @@ mvn clean verify -pl ontrack-acceptance -am -P it -P it-prod -DitUrl=http://ontr
 ```
 
 where `***` is the password on the `admin` account on the production environment.
-
-## Running tests in headless mode in Jenkins
-
-* The [Xvnc Jenkins plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvnc+Plugin) must be installed
-* `vncserver` must be installed:
-
-        sudo apt-get install vnc4server
-
-        # Launch vncserver and enter any password
-        vncserver :11
-
-        # Copy the created .vnc configuration to your Jenkins location, for example:
-        cp -r .vnc /var/lib/jenkins
-
-        # Adjust rights accordingly to this directory
-
-* Firefox must be installed:
-
-        sudo apt-get install vnc4server
-
