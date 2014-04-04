@@ -1026,6 +1026,10 @@ query.name
     en -> Filter name
     fr -> Nom du filtre
 
+query.filter.cancel
+    en -> Clear filter
+    fr -> Effacer filtre
+
 query.nofilter
     en -> No saved filter
     fr -> Aucun filtre enregistré

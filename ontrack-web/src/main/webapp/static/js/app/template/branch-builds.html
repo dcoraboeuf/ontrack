@@ -118,6 +118,8 @@
                 {{else}}
                     <button id="filter-button" class="btn {{#filterActive}}btn-warning{{/filterActive}}">{{loc 'query' }}</button>
                 {{/if}}
+                <!-- Clean filter button -->
+                <button id="filter-clear" type="button" class="btn btn-link">{{loc 'query.filter.cancel'}}</button>
                 <!-- Diff actions -->
                 {{#diffActions}}
                     <button

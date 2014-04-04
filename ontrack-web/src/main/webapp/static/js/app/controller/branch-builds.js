@@ -1,5 +1,16 @@
 define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (render, ajax, dynamic, common, dialog, $) {
 
+    function getDefaultFilter() {
+        return {
+            name: '',
+            limit: 10,
+            sincePromotionLevel: '',
+            withPromotionLevel: '',
+            sinceValidationStamps: [],
+            withValidationStamps: []
+        };
+    }
+
     function getCurrentFilterFn(project, branch) {
         return function () {
             var filter = $('#branch-builds').data('filter');
@@ -17,14 +28,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 $('#branch-builds').data('filter', filter);
                 return filter;
             } else {
-                return {
-                    name: '',
-                    limit: 10,
-                    sincePromotionLevel: '',
-                    withPromotionLevel: '',
-                    sinceValidationStamps: [],
-                    withValidationStamps: []
-                };
+                return getDefaultFilter();
             }
         }
     }
@@ -251,6 +255,10 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                 )
             );
         }
+        // Deletes any current filter
+        $('#filter-clear').unbind('click').click(function () {
+            withFilter(getDefaultFilter());
+        });
     }
 
     function setupSavedFilters(config, branchBuilds) {
@@ -291,7 +299,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         });
     }
 
-    function loadValidationStampDecorations (target) {
+    function loadValidationStampDecorations(target) {
         $(target).find('.validation-stamp-decorations').each(function (index, def) {
             var project = $(def).attr('data-project');
             var branch = $(def).attr('data-branch');
