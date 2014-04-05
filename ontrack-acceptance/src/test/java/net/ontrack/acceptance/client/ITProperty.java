@@ -48,7 +48,7 @@ public class ITProperty extends AbstractIT {
         });
         // Checks
         assertNotNull(editableProperties);
-        assertEquals(2, editableProperties.size());
+        assertEquals(3, editableProperties.size());
         {
             EditableProperty editableProperty = editableProperties.get(0);
             assertNotNull(editableProperty);
@@ -59,6 +59,14 @@ public class ITProperty extends AbstractIT {
         }
         {
             EditableProperty editableProperty = editableProperties.get(1);
+            assertNotNull(editableProperty);
+            assertEquals("svn", editableProperty.getExtension());
+            assertEquals("repository", editableProperty.getName());
+            assertEquals("Repository SVN", editableProperty.getDisplayName());
+            System.out.println(editableProperty);
+        }
+        {
+            EditableProperty editableProperty = editableProperties.get(2);
             assertNotNull(editableProperty);
             assertEquals("svnexplorer", editableProperty.getExtension());
             assertEquals("rootPath", editableProperty.getName());
@@ -84,7 +92,7 @@ public class ITProperty extends AbstractIT {
         });
         // Checks
         assertNotNull(editableProperties);
-        assertEquals(2, editableProperties.size());
+        assertEquals(3, editableProperties.size());
         {
             EditableProperty editableProperty = editableProperties.get(0);
             assertNotNull(editableProperty);
@@ -95,6 +103,14 @@ public class ITProperty extends AbstractIT {
         }
         {
             EditableProperty editableProperty = editableProperties.get(1);
+            assertNotNull(editableProperty);
+            assertEquals("svn", editableProperty.getExtension());
+            assertEquals("repository", editableProperty.getName());
+            assertEquals("SVN repository", editableProperty.getDisplayName());
+            System.out.println(editableProperty);
+        }
+        {
+            EditableProperty editableProperty = editableProperties.get(2);
             assertNotNull(editableProperty);
             assertEquals("svnexplorer", editableProperty.getExtension());
             assertEquals("rootPath", editableProperty.getName());
