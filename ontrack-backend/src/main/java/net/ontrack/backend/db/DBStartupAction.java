@@ -1,5 +1,6 @@
 package net.ontrack.backend.db;
 
+import net.ontrack.service.StartupService;
 import net.sf.dbinit.DBExecutor;
 import net.sf.dbinit.DBInitAction;
 import org.slf4j.Logger;

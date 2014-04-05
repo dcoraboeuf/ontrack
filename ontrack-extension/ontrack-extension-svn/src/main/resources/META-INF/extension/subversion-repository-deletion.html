@@ -1,0 +1,16 @@
+<form>
+    <div class="alert alert-warning">
+        {{loc 'subversion.configuration.delete.prompt.promptWithProjects'}}
+    </div>
+    <table class="table table-condensed">
+        <tbody>
+            {{#projects}}
+                <tr>
+                    <td>
+                       <b><a href="gui/project/{{name}}">{{name}}</a></b>
+                    </td>
+                </tr>
+            {{/projects}}
+        </tbody>
+    </table>
+</form>

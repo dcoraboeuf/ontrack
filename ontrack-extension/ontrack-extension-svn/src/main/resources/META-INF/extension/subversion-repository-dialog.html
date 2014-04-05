@@ -1,0 +1,86 @@
+<form class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-name">{{loc 'subversion.configuration.name'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-name" value="" size="40" maxlength="80" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-url">{{loc 'subversion.configuration.url'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-url" value="" maxlength="200" required="required" class="input-xxlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-user">{{loc 'subversion.configuration.user'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-user" value="" size="40" maxlength="80" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-password">{{loc 'subversion.configuration.password'}}</label>
+        <div class="controls">
+            <input type="password" id="subversion-repository-password" value="" size="40" maxlength="80" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-branchPattern">{{loc 'subversion.configuration.branchPattern'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-branchPattern" value="" size="40" maxlength="120" class="input-xlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-tagPattern">{{loc 'subversion.configuration.tagPattern'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-tagPattern" value="" size="40" maxlength="120" class="input-xlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-tagFilterPattern">{{loc 'subversion.configuration.tagFilterPattern'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-tagFilterPattern" value="" size="40" maxlength="120" class="input-xlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-browserForPath">{{loc 'subversion.configuration.browserForPath'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-browserForPath" value="" size="40" maxlength="200" class="input-xxlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-browserForRevision">{{loc 'subversion.configuration.browserForRevision'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-browserForRevision" value="" size="40" maxlength="200" class="input-xxlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-browserForChange">{{loc 'subversion.configuration.browserForChange'}}</label>
+        <div class="controls">
+            <input type="text" id="subversion-repository-browserForChange" value="" size="40" maxlength="200" class="input-xxlarge" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-indexationInterval">{{loc 'subversion.configuration.indexationInterval'}}</label>
+        <div class="controls">
+            <input type="number" id="subversion-repository-indexationInterval" value="" min="0" max="9999" maxlength="5" class="input-small" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-indexationStart">{{loc 'subversion.configuration.indexationStart'}}</label>
+        <div class="controls">
+            <input type="number" id="subversion-repository-indexationStart" value="" min="1" max="99999999" maxlength="8" required="required" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-issueServiceName">{{loc 'subversion.configuration.issueServiceName'}}</label>
+        <div class="controls">
+            <select id="subversion-repository-issueServiceName"></select>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="subversion-repository-issueServiceConfigId">{{loc 'subversion.configuration.issueServiceConfigId'}}</label>
+        <div class="controls">
+            <select id="subversion-repository-issueServiceConfigId"></select>
+        </div>
+    </div>
+</form>

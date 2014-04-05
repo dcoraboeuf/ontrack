@@ -23,13 +23,12 @@ public class RevisionController extends AbstractGUIController {
         this.ui = ui;
     }
 
-
-    @RequestMapping(value = "/gui/extension/svnexplorer/revision/{revision:\\d+}", method = RequestMethod.GET)
-    public String revision (Locale locale, @PathVariable long revision, Model model) {
+    @RequestMapping(value = "/gui/extension/svnexplorer/repository/{repository:\\d+}/revision/{revision:\\d+}", method = RequestMethod.GET)
+    public String revision(Locale locale, @PathVariable int repository, @PathVariable long revision, Model model) {
         // Revision info
-        model.addAttribute("info", ui.getRevisionInfo(locale, revision));
+        model.addAttribute("info", ui.getRevisionInfo(locale, repository, revision));
         // OK
-        return "extension/svnexplorer/revision";
+        return "extension/svnexplorer/repository-revision";
     }
 
 }

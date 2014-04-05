@@ -107,7 +107,7 @@ define(['common'], function (common) {
             if (c.mode == 'append') {
                 if (show) {
                     $(config.el).addClass('disabled');
-                    $(config.el).append('&nbsp;<img class="ajax-loader x-icon-small" src="static/images/ajax-loader.gif" />');
+                    $(config.el).append('<span class="ajax-loader">&nbsp;<img class="x-icon-small" src="static/images/ajax-loader.gif" /></span>');
                 } else {
                     $(config.el).removeClass('disabled');
                     $(config.el).find('.ajax-loader').remove();

@@ -102,10 +102,10 @@ public class DefaultPropertiesService implements PropertiesService {
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String extension, String name, String value) {
+    public String toHTML(Strings strings, Locale locale, String extension, String name, Entity entity, int entityId, String value) {
         try {
             PropertyExtensionDescriptor descriptor = extensionManager.getPropertyExtensionDescriptor(extension, name);
-            return descriptor.toHTML(strings, locale, value);
+            return descriptor.toHTML(strings, locale, entity, entityId, value);
         } catch (PropertyExtensionNotFoundException e) {
             return StringEscapeUtils.escapeHtml4(value);
         }
@@ -133,6 +133,8 @@ public class DefaultPropertiesService implements PropertiesService {
                         locale,
                         extension,
                         name,
+                        entity,
+                        entityId,
                         value
                 ),
                 html

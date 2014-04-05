@@ -20,7 +20,7 @@ public interface PropertiesService {
     /**
      * Renders HTML for a property value
      */
-    String toHTML(Strings strings, Locale locale, String extension, String name, String value);
+    String toHTML(Strings strings, Locale locale, String extension, String name, Entity entity, int entityId, String value);
 
     /**
      * List all possible properties for this entity

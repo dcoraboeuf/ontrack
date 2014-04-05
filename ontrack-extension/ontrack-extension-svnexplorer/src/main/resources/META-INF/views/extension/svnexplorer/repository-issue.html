@@ -1,0 +1,66 @@
+<#include "/lib/layout.html">
+<#include "/extension/svnexplorer/lib/revision.html" >
+
+<@layout_std
+    page="svnexplorer-issue"
+    title=info.issue.key
+    style=true
+    noscript=true
+    extension=true
+    breadcrumbs={loc("home"):""}>
+
+    <div class="row-fluid">
+        <div class="span12 page-title">
+                <span class="title">
+                    <a href="${info.issue.url?html}">${info.issue.key?html}</a>
+                    <span class="description">
+                        @
+                        ${info.repository.name}
+                    </span>
+                </span>
+                <span class="action action-optional">
+                    <a href=""><i class="icon-remove"></i> <@lh key="general.close" /></a>
+                </span>
+        </div>
+    </div>
+
+    <#include "/extension/${info.repository.issueService.id}/lib/issue-summary.html" />
+    <@issueSummary issue=info.issue formattedTime=info.formattedUpdateTime />
+
+    <@revision_info_summary info = info.revisionInfo title = true />
+
+    <@revision_info_builds info = info.revisionInfo mergedInfos = info.mergedRevisionInfos />
+
+    <@revision_info_promotions info = info.revisionInfo mergedInfos = info.mergedRevisionInfos />
+
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h1><small><@lh key="svnexplorer.issue.revisions" /></small></h1>
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th><@lh key="svnexplorer.changelog.revisions.revision" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.author" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.date" /></th>
+                        <th><@lh key="svnexplorer.changelog.revisions.message" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <#list info.revisions as revision>
+                        <tr>
+                            <td>
+                                <a href="${revision.revisionUrl?html}">${revision.revision?c}</a>
+                                <a href="gui/extension/svnexplorer/repository/${info.repository.id}/revision/${revision.revision?c}"><i class="icon-info-sign"></i></a>
+                            </td>
+                            <td>${revision.author?html}</td>
+                            <td>${revision.isoDateTime?html}</td>
+                            <td>${revision.formattedMessage}</td>
+                        </tr>
+                    </#list>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</@layout_std>

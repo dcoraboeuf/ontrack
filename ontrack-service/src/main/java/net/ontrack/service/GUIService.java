@@ -1,6 +1,7 @@
 package net.ontrack.service;
 
 import net.ontrack.core.model.BuildSummary;
+import net.ontrack.core.model.ProjectSummary;
 
 public interface GUIService {
 
@@ -19,4 +20,14 @@ public interface GUIService {
      * Gets the URI for a build
      */
     String getBuildURI(BuildSummary build);
+
+    /**
+     * Gets the GUI for a project
+     */
+    String getProjectGUIURL(ProjectSummary project);
+
+    /**
+     * Gets the URI for a project
+     */
+    String getProjectURI(ProjectSummary project);
 }

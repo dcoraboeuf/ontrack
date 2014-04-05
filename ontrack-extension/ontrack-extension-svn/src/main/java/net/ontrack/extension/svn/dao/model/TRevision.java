@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 @Data
 public class TRevision {
 
+    private final int repository;
     private final long revision;
     private final String author;
     private final DateTime creation;

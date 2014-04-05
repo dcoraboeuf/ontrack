@@ -25,43 +25,44 @@ public class IssueRevisionJdbcDao extends AbstractJdbcDao implements IssueRevisi
 
     @Override
     @Transactional
-    public void link(long revision, String key) {
+    public void link(int repository, long revision, String key) {
         if (StringUtils.isBlank(key)) {
             logger.warn("Cannot insert a null or blank key (revision {})", revision);
         } else if (key.length() > ISSUE_KEY_MAX_LENGTH) {
             logger.warn("Cannot insert a key longer than {} characters: {} for revision {}", ISSUE_KEY_MAX_LENGTH, key, revision);
         } else {
             getNamedParameterJdbcTemplate().update(
-                    "INSERT INTO REVISION_ISSUE (REVISION, ISSUE) VALUES (:revision, :key)",
-                    params("revision", revision).addValue("key", key));
+                    "INSERT INTO EXT_SVN_REVISION_ISSUE (REPOSITORY, REVISION, ISSUE) VALUES (:repository, :revision, :key)",
+                    params("revision", revision).addValue("key", key).addValue("repository", repository));
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findIssuesByRevision(long revision) {
+    public List<String> findIssuesByRevision(int repository, long revision) {
         return getNamedParameterJdbcTemplate().queryForList(
-                "SELECT ISSUE FROM REVISION_ISSUE WHERE REVISION = :revision ORDER BY ISSUE",
-                params("revision", revision),
+                "SELECT ISSUE FROM EXT_SVN_REVISION_ISSUE WHERE REPOSITORY = :repository AND REVISION = :revision ORDER BY ISSUE",
+                params("revision", revision).addValue("repository", repository),
                 String.class
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isIndexed(String key) {
+    public boolean isIndexed(int repository, String key) {
         return getFirstItem(
-                "SELECT ISSUE FROM REVISION_ISSUE WHERE ISSUE = :key",
-                params("key", key),
+                "SELECT ISSUE FROM EXT_SVN_REVISION_ISSUE WHERE REPOSITORY = :repository AND ISSUE = :key",
+                params("key", key).addValue("repository", repository),
                 String.class) != null;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> findRevisionsByIssue(String key) {
+    public List<Long> findRevisionsByIssue(int repository, String key) {
         return getNamedParameterJdbcTemplate().queryForList(
-                "SELECT REVISION FROM REVISION_ISSUE WHERE ISSUE = :key ORDER BY REVISION DESC",
-                params("key", key),
+                "SELECT REVISION FROM EXT_SVN_REVISION_ISSUE WHERE REPOSITORY = :repository AND ISSUE = :key ORDER BY REVISION DESC",
+                params("key", key).addValue("repository", repository),
                 Long.class);
     }
+
 }

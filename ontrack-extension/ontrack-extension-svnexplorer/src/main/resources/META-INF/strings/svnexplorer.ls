@@ -123,11 +123,12 @@ svnexplorer.changelog.info.files.none
 [search]
 
 svnexplorer.search.revision
-    en,fr -> @[svnexplorer.revision]
+    en -> Revision {0} in repository {1}
+    fr -> Révision {1} dans le repository {1}
 
 svnexplorer.search.key
-    en -> Issue {0} is associated with some code.
-    fr -> Le ticket {0} est associé à du code.
+    en -> Issue {0} is associated with some code in repository {1).
+    fr -> Le ticket {0} est associé à du code dans le repository {1}.
 
 [revision]
 

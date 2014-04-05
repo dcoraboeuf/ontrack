@@ -1,0 +1,21 @@
+<form>
+    <div class="alert alert-warning">
+        {{loc 'jira.configuration.delete.promptWithProjects'}}
+    </div>
+    <table class="table table-condensed">
+        <tbody>
+            {{#subscribers}}
+                <tr>
+                    <td>
+                        {{loc typeKey}}
+                        {{#if guiLink}}
+                            <b><a href="{{guiLink}}">{{name}}</a></b>
+                        {{else}}
+                            <b>{{name}}</b>
+                        {{/if}}
+                    </td>
+                </tr>
+            {{/subscribers}}
+        </tbody>
+    </table>
+</form>

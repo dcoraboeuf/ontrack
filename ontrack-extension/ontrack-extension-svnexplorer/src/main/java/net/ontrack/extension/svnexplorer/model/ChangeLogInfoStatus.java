@@ -3,16 +3,16 @@ package net.ontrack.extension.svnexplorer.model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.ontrack.extension.jira.service.model.JIRAStatus;
+import net.ontrack.extension.issue.IssueStatus;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChangeLogInfoStatus {
 
-    private final JIRAStatus status;
+    private final IssueStatus status;
     private int count;
 
-    public ChangeLogInfoStatus(JIRAStatus status) {
+    public ChangeLogInfoStatus(IssueStatus status) {
         this(status, 1);
     }
 

@@ -1,0 +1,21 @@
+<#include "/lib/layout.html">
+
+<@layout_std
+    page="subversion-configuration"
+    title=loc("subversion.configuration")
+    extension=true
+    noscript=true
+    breadcrumbs={
+        loc("home"):""
+    }>
+
+    <@title value=loc("subversion.configuration")></@title>
+
+    <div class="row-fluid">
+        <div id="subversion-configuration-list"
+             class="span12 dynamic"
+             dynamic-controller="extension/subversion-configuration-list">
+        </div>
+    </div>
+
+</@layout_std>

@@ -1,8 +1,11 @@
 package net.ontrack.extension.svn.service;
 
-import com.google.common.base.Function;
+import net.ontrack.core.model.Entity;
+import net.ontrack.core.security.SecurityUtils;
+import net.ontrack.extension.api.property.PropertiesService;
 import net.ontrack.extension.svn.SVNEventType;
-import net.ontrack.extension.svn.SubversionConfigurationExtension;
+import net.ontrack.extension.svn.SubversionExtension;
+import net.ontrack.extension.svn.SubversionRepositoryPropertyExtension;
 import net.ontrack.extension.svn.dao.IssueRevisionDao;
 import net.ontrack.extension.svn.dao.RevisionDao;
 import net.ontrack.extension.svn.dao.SVNEventDao;
@@ -12,8 +15,10 @@ import net.ontrack.extension.svn.dao.model.TSVNEvent;
 import net.ontrack.extension.svn.service.model.*;
 import net.ontrack.extension.svn.support.SVNLogEntryCollector;
 import net.ontrack.extension.svn.support.SVNUtils;
+import net.ontrack.extension.svn.tx.DefaultSVNSession;
 import net.ontrack.extension.svn.tx.SVNSession;
 import net.ontrack.tx.Transaction;
+import net.ontrack.tx.TransactionResourceProvider;
 import net.ontrack.tx.TransactionService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -23,11 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,36 +44,23 @@ public class DefaultSubversionService implements SubversionService {
     public static final int HISTORY_MAX_DEPTH = 6;
     private final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private final Pattern pathWithRevision = Pattern.compile("(.*)@(\\d+)$");
-    /**
-     * Transforms a DAO revision into a formatted revision information object.
-     */
-    private final Function<TRevision, SVNRevisionInfo> revisionInfoFunction = new Function<TRevision, SVNRevisionInfo>() {
-        @Override
-        public SVNRevisionInfo apply(TRevision t) {
-            return new SVNRevisionInfo(
-                    t.getRevision(),
-                    t.getAuthor(),
-                    t.getCreation(),
-                    t.getBranch(),
-                    formatRevisionTime(t.getCreation()),
-                    t.getMessage(),
-                    getRevisionBrowsingURL(t.getRevision())
-            );
-        }
-    };
-    private final SubversionConfigurationExtension configurationExtension;
+    private final RepositoryService repositoryService;
     private final TransactionService transactionService;
+    private final PropertiesService propertiesService;
     private final SVNEventDao svnEventDao;
     private final RevisionDao revisionDao;
     private final IssueRevisionDao issueRevisionDao;
+    private final SecurityUtils securityUtils;
 
     @Autowired
-    public DefaultSubversionService(SubversionConfigurationExtension configurationExtension, TransactionService transactionService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao) {
-        this.configurationExtension = configurationExtension;
+    public DefaultSubversionService(RepositoryService repositoryService, TransactionService transactionService, PropertiesService propertiesService, SVNEventDao svnEventDao, RevisionDao revisionDao, IssueRevisionDao issueRevisionDao, SecurityUtils securityUtils) {
+        this.repositoryService = repositoryService;
         this.transactionService = transactionService;
+        this.propertiesService = propertiesService;
         this.svnEventDao = svnEventDao;
         this.revisionDao = revisionDao;
         this.issueRevisionDao = issueRevisionDao;
+        this.securityUtils = securityUtils;
         SVNRepositoryFactoryImpl.setup();
         DAVRepositoryFactory.setup();
     }
@@ -78,27 +72,40 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isClosed(String path) {
-        TSVNEvent lastEvent = svnEventDao.getLastEvent(path);
+    public boolean isClosed(SVNRepository repository, String path) {
+        TSVNEvent lastEvent = svnEventDao.getLastEvent(repository.getId(), path);
         return lastEvent != null && lastEvent.getType() == SVNEventType.STOP;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SVNLocation getFirstCopyAfter(SVNLocation location) {
-        return svnEventDao.getFirstCopyAfter(location);
+    public SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location) {
+        return svnEventDao.getFirstCopyAfter(repository.getId(), location);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRevisionPaths getRevisionPaths(long revision) {
+    public SVNRepository getRepositoryForProject(int projectId) {
+        // Gets the SVN Repository property on the project
+        String repositoryIdValue = propertiesService.getPropertyValue(Entity.PROJECT, projectId, SubversionExtension.EXTENSION, SubversionRepositoryPropertyExtension.NAME);
+        if (StringUtils.isNotBlank(repositoryIdValue)) {
+            int repositoryId = Integer.parseInt(repositoryIdValue, 10);
+            return repositoryService.getRepository(repositoryId);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SVNRevisionPaths getRevisionPaths(SVNRepository repository, long revision) {
         // Result
-        final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(revision));
+        final SVNRevisionPaths paths = new SVNRevisionPaths(getRevisionInfo(repository, revision));
         // Gets the URL of the repository
-        SVNURL rootUrl = SVNUtils.toURL(configurationExtension.getUrl());
+        SVNURL rootUrl = repository.getSVNURL();
         // Gets the diff for the revision
         try {
-            getDiffClient().doDiffStatus(
+            getDiffClient(repository).doDiffStatus(
                     rootUrl,
                     SVNRevision.create(revision - 1),
                     rootUrl,
@@ -127,57 +134,51 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public String getFileChangeBrowsingURL(String path, long revision) {
-        String browserForPathAndRevision = configurationExtension.getBrowserForChange();
+    public String getFileChangeBrowsingURL(SVNRepository repository, String path, long revision) {
+        String browserForPathAndRevision = repository.getBrowserForChange();
         if (StringUtils.isNotBlank(browserForPathAndRevision)) {
             return browserForPathAndRevision.replace("*", path).replace("$", String.valueOf(revision));
         } else {
-            return getURL(path);
+            return getURL(repository, path);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode) {
-        return svnEventDao.getCopiesFrom(location, sortMode);
+    public Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode) {
+        return svnEventDao.getCopiesFrom(repository.getId(), location, sortMode);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode) {
-        return svnEventDao.getCopiesFromBefore(location, sortMode);
+    public boolean isIndexedIssue(SVNRepository repository, String key) {
+        return issueRevisionDao.isIndexed(repository.getId(), key);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isIndexedIssue(String key) {
-        return issueRevisionDao.isIndexed(key);
+    public List<Long> getRevisionsForIssueKey(SVNRepository repository, String key) {
+        return issueRevisionDao.findRevisionsByIssue(repository.getId(), key);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Long> getRevisionsForIssueKey(String key) {
-        return issueRevisionDao.findRevisionsByIssue(key);
+    public String getURL(SVNRepository repository, String path) {
+        return repository.getUrl() + path;
     }
 
     @Override
-    public String getURL(String path) {
-        return configurationExtension.getUrl() + path;
-    }
-
-    @Override
-    public String getBrowsingURL(String path) {
-        String browserForPath = configurationExtension.getBrowserForPath();
+    public String getBrowsingURL(SVNRepository repository, String path) {
+        String browserForPath = repository.getBrowserForPath();
         if (StringUtils.isNotBlank(browserForPath)) {
             return browserForPath.replace("*", path);
         } else {
-            return getURL(path);
+            return getURL(repository, path);
         }
     }
 
     @Override
-    public String getRevisionBrowsingURL(long revision) {
-        String browserForPath = configurationExtension.getBrowserForRevision();
+    public String getRevisionBrowsingURL(SVNRepository repository, long revision) {
+        String browserForPath = repository.getBrowserForRevision();
         if (StringUtils.isNotBlank(browserForPath)) {
             return browserForPath.replace("*", String.valueOf(revision));
         } else {
@@ -187,20 +188,29 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public SVNRevisionInfo getRevisionInfo(long revision) {
-        return revisionInfoFunction.apply(revisionDao.get(revision));
+    public SVNRevisionInfo getRevisionInfo(SVNRepository repository, long revision) {
+        TRevision t = revisionDao.get(repository.getId(), revision);
+        return new SVNRevisionInfo(
+                t.getRevision(),
+                t.getAuthor(),
+                t.getCreation(),
+                t.getBranch(),
+                formatRevisionTime(t.getCreation()),
+                t.getMessage(),
+                getRevisionBrowsingURL(repository, t.getRevision())
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getIssueKeysForRevision(long revision) {
-        return issueRevisionDao.findIssuesByRevision(revision);
+    public List<String> getIssueKeysForRevision(SVNRepository repository, long revision) {
+        return issueRevisionDao.findIssuesByRevision(repository.getId(), revision);
     }
 
     @Override
-    public long getRepositoryRevision(SVNURL url) {
+    public long getRepositoryRevision(SVNRepository repository, SVNURL url) {
         try {
-            SVNInfo info = getWCClient().doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
+            SVNInfo info = getWCClient(repository).doInfo(url, SVNRevision.HEAD, SVNRevision.HEAD);
             return info.getCommittedRevision().getNumber();
         } catch (SVNException e) {
             throw translateSVNException(e);
@@ -208,9 +218,9 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision, boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions, ISVNLogEntryHandler isvnLogEntryHandler) {
+    public void log(SVNRepository repository, SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision, boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions, ISVNLogEntryHandler isvnLogEntryHandler) {
         try {
-            getLogClient().doLog(url, null, pegRevision, startRevision, stopRevision, stopOnCopy, discoverChangedPaths,
+            getLogClient(repository).doLog(url, null, pegRevision, startRevision, stopRevision, stopOnCopy, discoverChangedPaths,
                     includeMergedRevisions, limit, null, isvnLogEntryHandler);
         } catch (SVNException e) {
             throw translateSVNException(e);
@@ -218,10 +228,10 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public boolean exists(SVNURL url, SVNRevision revision) {
+    public boolean exists(SVNRepository repository, SVNURL url, SVNRevision revision) {
         // Tries to gets information
         try {
-            SVNInfo info = getWCClient().doInfo(url, revision, revision);
+            SVNInfo info = getWCClient(repository).doInfo(url, revision, revision);
             return info != null;
         } catch (SVNException ex) {
             return false;
@@ -229,17 +239,17 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public List<Long> getMergedRevisions(SVNURL url, long revision) {
+    public List<Long> getMergedRevisions(SVNRepository repository, SVNURL url, long revision) {
         // Checks that the URL exists at both R-1 and R
         SVNRevision rm1 = SVNRevision.create(revision - 1);
         SVNRevision r = SVNRevision.create(revision);
-        boolean existRM1 = exists(url, rm1);
-        boolean existR = exists(url, r);
+        boolean existRM1 = exists(repository, url, rm1);
+        boolean existR = exists(repository, url, r);
         try {
             // Both revisions must be valid in order to get some merges in between
             if (existRM1 && existR) {
                 // Gets the changes in merge information
-                SVNDiffClient diffClient = getDiffClient();
+                SVNDiffClient diffClient = getDiffClient(repository);
                 @SuppressWarnings("unchecked")
                 Map<SVNURL, SVNMergeRangeList> before = diffClient.doGetMergedMergeInfo(url, rm1);
                 @SuppressWarnings("unchecked")
@@ -275,7 +285,7 @@ public class DefaultSubversionService implements SubversionService {
                         for (SVNMergeRange mergeRange : mergeRanges) {
                             SVNRevision endRevision = SVNRevision.create(mergeRange.getEndRevision());
                             SVNRevision startRevision = SVNRevision.create(mergeRange.getStartRevision());
-                            log(source, endRevision, startRevision, endRevision, true, false, 0, false, collector);
+                            log(repository, source, endRevision, startRevision, endRevision, true, false, 0, false, collector);
                         }
                     }
                     List<Long> revisions = new ArrayList<>();
@@ -295,18 +305,18 @@ public class DefaultSubversionService implements SubversionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getMergesForRevision(long revision) {
-        return revisionDao.getMergesForRevision(revision);
+    public List<Long> getMergesForRevision(SVNRepository repository, long revision) {
+        return revisionDao.getMergesForRevision(repository.getId(), revision);
     }
 
     @Override
-    public SVNHistory getHistory(String path) {
+    public SVNHistory getHistory(SVNRepository repository, String path) {
         // Gets the reference for this first path
-        SVNReference reference = getReference(path);
+        SVNReference reference = getReference(repository, path);
         // Initializes the history
         SVNHistory history = new SVNHistory();
         // Adds the initial reference if this a branch or trunk
-        if (isTrunkOrBranch(reference.getPath())) {
+        if (isTrunkOrBranch(repository, reference.getPath())) {
             history = history.add(reference);
         }
         // Loops on copies
@@ -314,10 +324,10 @@ public class DefaultSubversionService implements SubversionService {
         while (reference != null && depth > 0) {
             depth--;
             // Gets the reference of the source
-            SVNReference origin = getOrigin(reference);
+            SVNReference origin = getOrigin(repository, reference);
             if (origin != null) {
                 // Adds to the history if this a branch or trunk
-                if (isTrunkOrBranch(origin.getPath())) {
+                if (isTrunkOrBranch(repository, origin.getPath())) {
                     history = history.add(origin);
                 }
                 // Going on
@@ -330,31 +340,31 @@ public class DefaultSubversionService implements SubversionService {
         return history;
     }
 
-    private SVNReference getOrigin(SVNReference destination) {
+    private SVNReference getOrigin(SVNRepository repository, SVNReference destination) {
         // Gets the last copy event
-        TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(destination.getPath(), destination.getRevision());
+        TSVNCopyEvent copyEvent = svnEventDao.getLastCopyEvent(repository.getId(), destination.getPath(), destination.getRevision());
         if (copyEvent != null) {
-            return getReference(copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
+            return getReference(repository, copyEvent.getCopyFromPath(), SVNRevision.create(copyEvent.getCopyFromRevision()));
         } else {
             return null;
         }
     }
 
-    private SVNReference getReference(String path) {
+    private SVNReference getReference(SVNRepository repository, String path) {
         Matcher matcher = pathWithRevision.matcher(path);
         if (matcher.matches()) {
             String pathOnly = matcher.group(1);
             long revision = Long.parseLong(matcher.group(2), 10);
-            return getReference(pathOnly, SVNRevision.create(revision));
+            return getReference(repository, pathOnly, SVNRevision.create(revision));
         } else {
-            return getReference(path, SVNRevision.HEAD);
+            return getReference(repository, path, SVNRevision.HEAD);
         }
     }
 
-    private SVNReference getReference(String path, SVNRevision revision) {
-        String url = getURL(path);
+    private SVNReference getReference(SVNRepository repository, String path, SVNRevision revision) {
+        String url = getURL(repository, path);
         SVNURL svnurl = SVNUtils.toURL(url);
-        SVNInfo info = getInfo(svnurl, revision);
+        SVNInfo info = getInfo(repository, svnurl, revision);
         return new SVNReference(
                 path,
                 url,
@@ -364,35 +374,35 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     @Override
-    public SVNReference getReference(SVNLocation location) {
-        return getReference(location.getPath(), SVNRevision.create(location.getRevision()));
+    public SVNReference getReference(SVNRepository repository, SVNLocation location) {
+        return getReference(repository, location.getPath(), SVNRevision.create(location.getRevision()));
     }
 
-    private SVNInfo getInfo(SVNURL url, SVNRevision revision) {
+    private SVNInfo getInfo(SVNRepository repository, SVNURL url, SVNRevision revision) {
         try {
-            return getWCClient().doInfo(url, revision, revision);
+            return getWCClient(repository).doInfo(url, revision, revision);
         } catch (SVNException e) {
             throw translateSVNException(e);
         }
     }
 
     @Override
-    public boolean isTagOrBranch(String path) {
-        return isTag(path) || isBranch(path);
+    public boolean isTagOrBranch(SVNRepository repository, String path) {
+        return isTag(repository, path) || isBranch(repository, path);
     }
 
     @Override
-    public boolean isTrunkOrBranch(String path) {
-        return isTrunk(path) || isBranch(path);
+    public boolean isTrunkOrBranch(SVNRepository repository, String path) {
+        return isTrunk(path) || isBranch(repository, path);
     }
 
     @Override
-    public boolean isTag(String path) {
-        return isPathOK(configurationExtension.getTagPattern(), path);
+    public boolean isTag(SVNRepository repository, String path) {
+        return isPathOK(repository.getTagPattern(), path);
     }
 
-    private boolean isBranch(String path) {
-        return isPathOK(configurationExtension.getBranchPattern(), path);
+    private boolean isBranch(SVNRepository repository, String path) {
+        return isPathOK(repository.getBranchPattern(), path);
     }
 
     private boolean isPathOK(String pattern, String path) {
@@ -400,32 +410,59 @@ public class DefaultSubversionService implements SubversionService {
     }
 
     private boolean isTrunk(String path) {
-        return org.apache.commons.lang.StringUtils.isNotBlank(path) && Pattern.matches(".+/trunk", path);
+        return isPathOK(".+/trunk", path);
     }
 
     private SubversionException translateSVNException(SVNException e) {
         return new SubversionException(e);
     }
 
-    protected SVNWCClient getWCClient() {
-        return getClientManager().getWCClient();
+    protected SVNWCClient getWCClient(SVNRepository repository) {
+        return getClientManager(repository).getWCClient();
     }
 
-    protected SVNLogClient getLogClient() {
-        return getClientManager().getLogClient();
+    protected SVNLogClient getLogClient(SVNRepository repository) {
+        return getClientManager(repository).getLogClient();
     }
 
-    protected SVNDiffClient getDiffClient() {
-        return getClientManager().getDiffClient();
+    protected SVNDiffClient getDiffClient(SVNRepository repository) {
+        return getClientManager(repository).getDiffClient();
     }
 
-    protected SVNClientManager getClientManager() {
+    protected SVNClientManager getClientManager(final SVNRepository repository) {
         // Gets the current transaction
         Transaction transaction = transactionService.get();
         if (transaction == null) {
             throw new IllegalStateException("All SVN calls must be part of a SVN transaction");
         }
         // Gets the client manager
-        return transaction.getResource(SVNSession.class).getClientManager();
+        return transaction
+                .getResource(
+                        SVNSession.class,
+                        repository.getId(),
+                        new TransactionResourceProvider<SVNSession>() {
+                            @Override
+                            public SVNSession createTxResource() {
+                                // Creates the client manager for SVN
+                                SVNClientManager clientManager = SVNClientManager.newInstance();
+                                // Authentication (if needed)
+                                String svnUser = repository.getUser();
+                                String svnPassword = securityUtils.asAdmin(
+                                        new Callable<String>() {
+                                            @Override
+                                            public String call() throws Exception {
+                                                return repositoryService.getPassword(repository.getId());
+                                            }
+                                        }
+                                );
+                                if (StringUtils.isNotBlank(svnUser) && StringUtils.isNotBlank(svnPassword)) {
+                                    clientManager.setAuthenticationManager(new BasicAuthenticationManager(svnUser, svnPassword));
+                                }
+                                // OK
+                                return new DefaultSVNSession(clientManager);
+                            }
+                        }
+                )
+                .getClientManager();
     }
 }

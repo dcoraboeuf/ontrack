@@ -1,6 +1,7 @@
 package net.ontrack.extension.api.property;
 
 import net.ontrack.core.support.InputException;
+import net.ontrack.core.model.Entity;
 import net.sf.jstring.Strings;
 
 import java.net.MalformedURLException;
@@ -48,7 +49,7 @@ public abstract class AbstractLinkPropertyExtensionDescriptor extends AbstractPr
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String value) {
         return String.format(
                 "<a href=\"%1$s\">%1$s</a>",
                 value);

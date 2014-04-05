@@ -1,12 +1,12 @@
 package net.ontrack.backend;
 
 import net.ontrack.core.model.UserMessage;
-import net.ontrack.core.model.UserMessageType;
 import net.ontrack.service.InfoProvider;
 import net.ontrack.service.InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -20,16 +20,13 @@ public class DefaultInfoService implements InfoService {
     }
 
     @Override
-    public UserMessage getInfo() {
-        UserMessage info = UserMessage.none();
+    public Collection<UserMessage> getInfo() {
+        Collection<UserMessage> messages = new ArrayList<>();
         if (infoProviders != null) {
             for (InfoProvider infoProvider : infoProviders) {
-                UserMessage providedInfo = infoProvider.getInfo();
-                if (providedInfo != null && providedInfo.getType() != UserMessageType.none) {
-                    info = providedInfo;
-                }
+                messages.addAll(infoProvider.getInfo());
             }
         }
-        return info;
+        return messages;
     }
 }

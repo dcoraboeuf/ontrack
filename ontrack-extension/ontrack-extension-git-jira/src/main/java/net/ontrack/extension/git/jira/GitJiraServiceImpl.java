@@ -43,7 +43,7 @@ public class GitJiraServiceImpl implements GitJiraService {
     public Collection<BranchSummary> getBranchesWithIssue(final String key) {
         final Collection<BranchSummary> result = new ArrayList<>();
         for (ProjectSummary projectSummary : managementService.getProjectList()) {
-            int projectId = projectSummary.getId();
+            final int projectId = projectSummary.getId();
             for (final BranchSummary branchSummary : managementService.getBranchList(projectId)) {
                 GitConfiguration gitConfiguration = gitService.getGitConfiguration(branchSummary.getId());
                 if (gitConfiguration.isValid()) {
@@ -51,7 +51,7 @@ public class GitJiraServiceImpl implements GitJiraService {
                         @Override
                         public Boolean apply(RevCommit commit) {
                             String message = commit.getFullMessage();
-                            Set<String> keys = jiraService.extractIssueKeysFromMessage(message);
+                            Set<String> keys = jiraService.extractIssueKeysFromMessage(projectId, message);
                             if (keys.contains(key)) {
                                 // Found a branch whose history contains the issue
                                 result.add(branchSummary);
@@ -72,8 +72,10 @@ public class GitJiraServiceImpl implements GitJiraService {
     public GitJiraIssueInfo getIssueInfo(Locale locale, int branchId, final String key) {
         // The branch
         BranchSummary branch = managementService.getBranch(branchId);
+        final int projectId = branch.getProject().getId();
         // Gets the details about the issue
-        JIRAIssue issue = jiraService.getIssue(key);
+        // FIXME JIRA Configuration
+        JIRAIssue issue = jiraService.getIssue(null, key);
         // Git configuration
         GitConfiguration gitConfiguration = gitService.getGitConfiguration(branchId);
         // Git client
@@ -84,7 +86,7 @@ public class GitJiraServiceImpl implements GitJiraService {
             @Override
             public Boolean apply(RevCommit commit) {
                 String message = commit.getFullMessage();
-                Set<String> keys = jiraService.extractIssueKeysFromMessage(message);
+                Set<String> keys = jiraService.extractIssueKeysFromMessage(projectId, message);
                 if (keys.contains(key)) {
                     revCommits.add(commit);
                 }

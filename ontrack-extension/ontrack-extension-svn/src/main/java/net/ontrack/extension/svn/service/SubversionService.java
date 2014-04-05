@@ -14,35 +14,35 @@ public interface SubversionService {
     /**
      * Gets the absolute URL that for a path in the subversion repository
      */
-    String getURL(String path);
+    String getURL(SVNRepository repository, String path);
 
     /**
      * Gets the browsing URL that for a path in the subversion repository
      */
-    String getBrowsingURL(String path);
+    String getBrowsingURL(SVNRepository repository, String path);
 
     /**
      * Gets the latest revision for the URL
      */
-    long getRepositoryRevision(SVNURL url);
+    long getRepositoryRevision(SVNRepository repository, SVNURL url);
 
-    SVNReference getReference(SVNLocation location);
+    SVNReference getReference(SVNRepository repository, SVNLocation location);
 
-    void log(SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
+    void log(SVNRepository repository, SVNURL url, SVNRevision pegRevision, SVNRevision startRevision, SVNRevision stopRevision,
              boolean stopOnCopy, boolean discoverChangedPaths, long limit, boolean includeMergedRevisions,
              ISVNLogEntryHandler isvnLogEntryHandler);
 
-    boolean isTrunkOrBranch(String path);
+    boolean isTrunkOrBranch(SVNRepository repository, String path);
 
-    List<Long> getMergedRevisions(SVNURL svnurl, long revision);
+    List<Long> getMergedRevisions(SVNRepository repository, SVNURL svnurl, long revision);
 
-    List<Long> getMergesForRevision(long revision);
+    List<Long> getMergesForRevision(SVNRepository repository, long revision);
 
-    boolean exists(SVNURL url, SVNRevision revision);
+    boolean exists(SVNRepository repository, SVNURL url, SVNRevision revision);
 
-    boolean isTagOrBranch(String path);
+    boolean isTagOrBranch(SVNRepository repository, String path);
 
-    boolean isTag(String path);
+    boolean isTag(SVNRepository repository, String path);
 
     /**
      * Gets the Subversion history from a path
@@ -52,12 +52,12 @@ public interface SubversionService {
      * @return History of copy events. Never null and will at least contain the information
      *         for the given <code>path</code>.
      */
-    SVNHistory getHistory(String path);
+    SVNHistory getHistory(SVNRepository repository, String path);
 
     /**
      * Gets the URL that allows a user to browse the content of a revision
      */
-    String getRevisionBrowsingURL(long revision);
+    String getRevisionBrowsingURL(SVNRepository repository, long revision);
 
     /**
      * Returns the list of indexed issues for a given revision
@@ -65,7 +65,7 @@ public interface SubversionService {
      * @param revision Revision to get the issue keys for
      * @return List of keys, never <code>null</code>
      */
-    List<String> getIssueKeysForRevision(long revision);
+    List<String> getIssueKeysForRevision(SVNRepository repository, long revision);
 
     /**
      * Gets the information about a revision
@@ -73,7 +73,7 @@ public interface SubversionService {
      * @param revision Revision to get information about
      * @return Full details about this revision
      */
-    SVNRevisionInfo getRevisionInfo(long revision);
+    SVNRevisionInfo getRevisionInfo(SVNRepository repository, long revision);
 
     /**
      * Formats a date as ISO for a revision
@@ -83,22 +83,32 @@ public interface SubversionService {
     /**
      * Gets the list of changes for a revision
      */
-    SVNRevisionPaths getRevisionPaths(long revision);
+    SVNRevisionPaths getRevisionPaths(SVNRepository repository, long revision);
 
     /**
      * Gets the URL that allows to browse for one changeset on a path
      */
-    String getFileChangeBrowsingURL(String path, long revision);
+    String getFileChangeBrowsingURL(SVNRepository repository, String path, long revision);
 
-    Collection<SVNLocation> getCopiesFrom(SVNLocation location, SVNLocationSortMode sortMode);
+    Collection<SVNLocation> getCopiesFrom(SVNRepository repository, SVNLocation location, SVNLocationSortMode sortMode);
 
-    Collection<SVNLocation> getCopiesFromBefore(SVNLocation location, SVNLocationSortMode sortMode);
+    /**
+     * Is this issue indexed in this repository?
+     *
+     * @param repository The repository to the issue into
+     * @param key        The issue to key to look for
+     * @return <code>true</code> if the issue is associated with some code in the repository
+     */
+    boolean isIndexedIssue(SVNRepository repository, String key);
 
-    boolean isIndexedIssue(String key);
+    List<Long> getRevisionsForIssueKey(SVNRepository repository, String key);
 
-    List<Long> getRevisionsForIssueKey(String key);
+    boolean isClosed(SVNRepository repository, String path);
 
-    boolean isClosed(String path);
+    SVNLocation getFirstCopyAfter(SVNRepository repository, SVNLocation location);
 
-    SVNLocation getFirstCopyAfter(SVNLocation location);
+    /**
+     * Gets the repository associated with a project, if any.
+     */
+    SVNRepository getRepositoryForProject(int projectId);
 }

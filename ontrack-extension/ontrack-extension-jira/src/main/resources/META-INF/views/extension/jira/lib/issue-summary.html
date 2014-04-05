@@ -1,0 +1,59 @@
+<#macro issueSummary issue formattedTime=''>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="jira.issue.status" /></td>
+                        <td class="issue-info-value">
+                            <img src="${issue.status.iconUrl?html}" />
+                            ${issue.status.name?html}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="jira.issue.summary" /></td>
+                        <td class="issue-info-value">${issue.summary?html}</td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="jira.issue.affectedVersions" /></td>
+                        <td class="issue-info-value">
+                            <ul class="version">
+                                <#list issue.affectedVersions as version>
+                                    <li>
+                                        <span class="separator">, </span>
+                                        ${version.name}
+                                    </li>
+                                </#list>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="jira.issue.fixVersions" /></td>
+                        <td class="issue-info-value">
+                            <ul class="version">
+                                <#list issue.fixVersions as version>
+                                    <li>
+                                        <span class="separator">, </span>
+                                        ${version.name}
+                                    </li>
+                                </#list>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="issue-info-label"><@lh key="jira.issue.assignee" /></td>
+                        <td class="issue-info-value">${issue.assignee?html}</td>
+                    </tr>
+                    <#if formattedTime != ''>
+                        <tr>
+                            <td class="issue-info-label"><@lh key="jira.issue.updateTime" /></td>
+                            <td class="issue-info-value">${formattedTime?html}</td>
+                        </tr>
+                    </#if>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</#macro>

@@ -1,16 +1,15 @@
 package net.ontrack.tx;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -18,12 +17,6 @@ public class DefaultTransactionService implements TransactionService {
 
     private final Logger logger = LoggerFactory.getLogger(TransactionService.class);
     private final ThreadLocal<Stack<ITransaction>> transaction = new ThreadLocal<>();
-    private final Collection<TransactionResourceProvider<?>> transactionResourceProviders;
-
-    @Autowired
-    public DefaultTransactionService(Collection<TransactionResourceProvider<?>> transactionResourceProviders) {
-        this.transactionResourceProviders = transactionResourceProviders;
-    }
 
     @Override
     public Transaction start() {
@@ -71,26 +64,6 @@ public class DefaultTransactionService implements TransactionService {
 
         TransactionCallback txCallback = new TransactionCallback() {
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public <T extends TransactionResource> T createResource(final Class<T> resourceType) {
-                TransactionResourceProvider<?> provider = Iterables.find(
-                        transactionResourceProviders,
-                        new Predicate<TransactionResourceProvider<?>>() {
-                            @Override
-                            public boolean apply(TransactionResourceProvider<?> candicate) {
-                                return candicate.supports(resourceType);
-                            }
-                        },
-                        null
-                );
-                if (provider == null) {
-                    throw new IllegalArgumentException("Cannot create a transaction resource for type " + resourceType);
-                } else {
-                    return (T) provider.createTxResource();
-                }
-            }
-
             @Override
             public void remove(ITransaction tx) {
                 Stack<ITransaction> stack = transaction.get();
@@ -113,8 +86,6 @@ public class DefaultTransactionService implements TransactionService {
 
     private static interface TransactionCallback {
 
-        <T extends TransactionResource> T createResource(Class<T> resourceType);
-
         void remove(ITransaction tx);
 
     }
@@ -123,7 +94,16 @@ public class DefaultTransactionService implements TransactionService {
 
         private final TransactionCallback transactionCallback;
         private final AtomicInteger count = new AtomicInteger(1);
-        private final Map<Class<? extends TransactionResource>, TransactionResource> resources = new HashMap<>();
+        private final Table<Class<? extends TransactionResource>, Object, TransactionResource> resources = Tables
+                .newCustomTable(
+                        new ConcurrentHashMap<Class<? extends TransactionResource>, Map<Object, TransactionResource>>(),
+                        new Supplier<Map<Object, TransactionResource>>() {
+                            @Override
+                            public Map<Object, TransactionResource> get() {
+                                return new ConcurrentHashMap<>();
+                            }
+                        }
+                );
 
         public TransactionImpl(TransactionCallback transactionCallback) {
             this.transactionCallback = transactionCallback;
@@ -143,12 +123,12 @@ public class DefaultTransactionService implements TransactionService {
         }
 
         @Override
-        public <T extends TransactionResource> T getResource(Class<T> resourceType) {
+        public synchronized <T extends TransactionResource> T getResource(Class<T> resourceType, Object resourceId, TransactionResourceProvider<T> provider) {
             @SuppressWarnings("unchecked")
-            T resource = (T) resources.get(resourceType);
+            T resource = (T) resources.get(resourceType, resourceId);
             if (resource == null) {
-                resource = transactionCallback.createResource(resourceType);
-                resources.put(resourceType, resource);
+                resource = provider.createTxResource();
+                resources.put(resourceType, resourceId, resource);
             }
             return resource;
         }

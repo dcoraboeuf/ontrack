@@ -1,11 +1,13 @@
 package net.ontrack.extension.svn;
 
+import net.ontrack.core.model.BranchSummary;
 import net.ontrack.core.model.Entity;
 import net.ontrack.core.security.AuthorizationPolicy;
 import net.ontrack.extension.api.property.AbstractPropertyExtensionDescriptor;
 import net.ontrack.extension.svn.service.SubversionService;
+import net.ontrack.extension.svn.service.model.SVNRepository;
+import net.ontrack.service.ManagementService;
 import net.sf.jstring.Strings;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +19,12 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
 
     public static final String PATH = "path";
     private final SubversionService subversionService;
+    private final ManagementService managementService;
 
     @Autowired
-    public SubversionPathPropertyExtension(SubversionService subversionService) {
+    public SubversionPathPropertyExtension(SubversionService subversionService, ManagementService managementService) {
         this.subversionService = subversionService;
+        this.managementService = managementService;
     }
 
     @Override
@@ -49,13 +53,17 @@ public class SubversionPathPropertyExtension extends AbstractPropertyExtensionDe
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String path) {
-        if (StringUtils.isBlank(path)) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int branchId, String path) {
+        // Gets the branch
+        BranchSummary branch = managementService.getBranch(branchId);
+        // Gets the repository from the project
+        SVNRepository repository = subversionService.getRepositoryForProject(branch.getProject().getId());
+        if (repository == null) {
             return "";
         } else {
             return String.format(
                     "<a href=\"%s\">%s</a>",
-                    subversionService.getBrowsingURL(path),
+                    subversionService.getBrowsingURL(repository, path),
                     path
             );
         }

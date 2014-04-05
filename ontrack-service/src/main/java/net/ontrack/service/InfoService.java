@@ -2,8 +2,10 @@ package net.ontrack.service;
 
 import net.ontrack.core.model.UserMessage;
 
+import java.util.Collection;
+
 public interface InfoService {
 
-    UserMessage getInfo();
+    Collection<UserMessage> getInfo();
 
 }

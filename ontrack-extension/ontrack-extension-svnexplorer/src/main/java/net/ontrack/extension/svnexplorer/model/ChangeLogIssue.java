@@ -1,9 +1,10 @@
 package net.ontrack.extension.svnexplorer.model;
 
+import com.google.common.base.Function;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.ontrack.extension.jira.service.model.JIRAIssue;
+import net.ontrack.extension.issue.Issue;
 import net.ontrack.extension.svn.service.model.SVNRevisionInfo;
 
 import java.util.ArrayList;
@@ -14,11 +15,18 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChangeLogIssue {
 
-    private final JIRAIssue issue;
+    public static final Function<ChangeLogIssue, Issue> issueFn = new Function<ChangeLogIssue, Issue>() {
+        @Override
+        public Issue apply(ChangeLogIssue o) {
+            return o.getIssue();
+        }
+    };
+
+    private final Issue issue;
     private final String formattedUpdateTime;
     private final List<SVNRevisionInfo> revisions;
 
-    public ChangeLogIssue(JIRAIssue issue, String formattedUpdateTime) {
+    public ChangeLogIssue(Issue issue, String formattedUpdateTime) {
         this(issue, formattedUpdateTime, Collections.<SVNRevisionInfo>emptyList());
     }
 

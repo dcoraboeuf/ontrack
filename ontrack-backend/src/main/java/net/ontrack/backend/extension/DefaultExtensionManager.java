@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ontrack.backend.dao.ConfigurationDao;
-import net.ontrack.backend.db.StartupService;
 import net.ontrack.core.model.*;
 import net.ontrack.core.security.GlobalFunction;
 import net.ontrack.core.security.SecurityUtils;
@@ -20,6 +19,7 @@ import net.ontrack.extension.api.configuration.ConfigurationExtensionNotFoundExc
 import net.ontrack.extension.api.decorator.EntityDecorator;
 import net.ontrack.extension.api.property.PropertyExtensionDescriptor;
 import net.ontrack.extension.api.property.PropertyExtensionNotFoundException;
+import net.ontrack.service.StartupService;
 import net.sf.jstring.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +53,11 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
         this.strings = strings;
         this.configurationDao = configurationDao;
         this.securityUtils = securityUtils;
+    }
+
+    @Override
+    public String getName() {
+        return DefaultExtensionManager.class.getSimpleName();
     }
 
     @Override
@@ -131,7 +136,13 @@ public class DefaultExtensionManager implements ExtensionManager, StartupService
                  * Indexation of actions
                  */
                 topLevelActions.addAll(extension.getTopLevelActions());
+                for (TopActionExtension topActionExtension : extension.getTopLevelActions()) {
+                    logger.info("[extension] Top level action extension={}, name={}", extensionName, topActionExtension.getName());
+                }
                 diffActions.addAll(extension.getDiffActions());
+                for (ActionExtension actionExtension : extension.getDiffActions()) {
+                    logger.info("[extension] Diff action extension={}, name={}", extensionName, actionExtension.getName());
+                }
 
                 /**
                  * Indexation of decorators

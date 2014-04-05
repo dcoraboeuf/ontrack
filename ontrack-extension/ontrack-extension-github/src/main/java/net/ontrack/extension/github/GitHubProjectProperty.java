@@ -40,7 +40,7 @@ public class GitHubProjectProperty extends AbstractPropertyExtensionDescriptor {
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String value) {
         return String.format(
                 "<a href=\"https://github.com/%1$s\">%1$s</a>",
                 value);

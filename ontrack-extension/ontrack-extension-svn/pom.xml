@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ontrack-extension-jira</artifactId>
+            <artifactId>ontrack-extension-issue</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

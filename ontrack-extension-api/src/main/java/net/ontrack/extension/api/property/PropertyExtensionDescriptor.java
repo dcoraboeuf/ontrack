@@ -57,12 +57,14 @@ public interface PropertyExtensionDescriptor {
     /**
      * Given a value, renders it as HTML.
      *
-     * @param strings Localization
-     * @param locale  Locale to render into
-     * @param value   Value to render
+     * @param strings  Localization
+     * @param locale   Locale to render into
+     * @param entity   The entity that holds the value
+     * @param entityId The ID of the entity that holds the value
+     * @param value    Value to render
      * @return HTML to display
      */
-    String toHTML(Strings strings, Locale locale, String value);
+    String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String value);
 
     /**
      * Can this property be directly edited by a used on the given

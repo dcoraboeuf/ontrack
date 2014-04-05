@@ -43,7 +43,7 @@ public class SensibleFilesPropertyExtension extends AbstractPropertyExtensionDes
     }
 
     @Override
-    public String toHTML(Strings strings, Locale locale, String value) {
+    public String toHTML(Strings strings, Locale locale, Entity entity, int entityId, String value) {
         return value == null ? "" : StringEscapeUtils.escapeHtml4(value).replaceAll("\n", "<br/>");
     }
 

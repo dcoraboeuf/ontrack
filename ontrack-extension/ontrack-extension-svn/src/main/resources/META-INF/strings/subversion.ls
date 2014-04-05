@@ -4,8 +4,35 @@ extension.svn
     en -> Subversion
 
 subversion.configuration
-    en -> Subversion configuration
-    fr -> Configuration Subversion
+    en -> Subversion repository
+    fr -> Repository Subversion
+
+subversion.configuration.create
+    en -> New Subversion repository
+    fr -> Nouveau repository Subversion
+
+subversion.configuration.delete
+    en -> Subversion repository deletion
+    fr -> Suppression d'un repository Subversion
+
+subversion.configuration.delete.prompt
+    en -> Do you want to delete this Subversion repository?
+    fr -> Voulez-vous supprimer ce repository Subversion ?
+
+subversion.configuration.delete.prompt.promptWithProjects
+    en -> ...
+        @[subversion.configuration.delete.prompt] Elements listed below are associated
+        with this repository and won't have access to it any longer. This
+        may cause problems when working those elements.
+        ...
+    fr -> ...
+        @[subversion.configuration.delete.prompt] Les éléments listés ci-dessous sont associés
+        à ce repository et n'y auront plus accès. Cela pourrait causer
+        des problèmes quand vous essayer de travailler avec ces éléments.
+        ...
+
+subversion.configuration.name
+    en,fr -> @[model.name]
 
 subversion.configuration.url
     en -> Subversion URL
@@ -43,6 +70,32 @@ subversion.configuration.browserForChange
     en -> URL for browsing a change set ($) for a path (*)
     fr -> URL pour la navigation pour un changement ($) vers un chemin (*)
 
+subversion.configuration.indexationInterval
+    en -> Minutes between scans (0 to disable)
+    fr -> Nombre de minutes entre les indexations (0 pour désactiver)
+
+subversion.configuration.indexationStart
+    en -> Start revision
+    fr -> Révision de départ
+
+subversion.configuration.issueServiceName
+    en -> Issue service
+    fr -> Service de tickets
+
+subversion.configuration.issueServiceConfigId
+    en -> Issue service configuration
+    fr -> Configuration pour les tickets
+
+[repository]
+
+subversion.repository
+    en -> SVN repository
+    fr -> Repository SVN
+
+subversion.repository.description
+    en -> SVN repository to use for this project
+    fr -> Repository SVN à utiliser pour ce projet
+
 [path]
 
 subversion.path
@@ -73,21 +126,9 @@ subversion.buildPath.description
 
 [indexation]
 
-subversion.indexation.configuration
-    en -> Indexation configuration
-    fr -> Configuration de l'indexation
-
-subversion.indexation.configuration.scanInterval
-    en -> Minutes between scans (0 to disable)
-    fr -> Nombre de minutes entre les indexations (0 pour désactiver)
-
-subversion.indexation.configuration.startRevision
-    en -> Start revision
-    fr -> Révision de départ
-
 subversion.indexation.message
-    en -> Indexation is {0} ({1} to {2} - at {3} - {4}%)
-    fr -> Indexation {0} (de {1} à {2} - à {3} - {4}%)
+    en -> Indexation on {5} is {0} ({1} to {2} - at {3} - {4}%)
+    fr -> Indexation de {5} {0} (de {1} à {2} - à {3} - {4}%)
 subversion.indexation.running
     en -> running
     fr -> en cours
@@ -114,6 +155,10 @@ subversion.indexation.latest.message
 subversion.indexation.range
     en -> Range re-indexation
     fr -> Indexation d'un intervalle
+
+subversion.indexation.range.format
+    en -> Range boundaries are not correct
+    fr -> Les bornes de l'intervalle de ré-indexation ne sont pas correctes.
 
 subversion.indexation.range.button
     en -> Index

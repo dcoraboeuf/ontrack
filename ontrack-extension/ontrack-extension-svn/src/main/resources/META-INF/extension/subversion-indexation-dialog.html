@@ -1,0 +1,45 @@
+<form>
+
+    <section>
+        <h1><small>{{loc 'subversion.indexation.last'}}</small></h1>
+        {{#if lastRevisionInfo.revision}}
+            <ul>
+                <li>{{loc 'subversion.indexation.last.revision'}}: {{lastRevisionInfo.revision}}</li>
+                <li>{{loc 'subversion.indexation.last.message'}}: {{lastRevisionInfo.message}}</li>
+                <li>{{loc 'subversion.indexation.last.repositoryRevision'}}: {{lastRevisionInfo.repositoryRevision}}</li>
+            </ul>
+        {{else}}
+            <div class="alert alert-warning">
+                {{loc 'subversion.indexation.last.none'}}
+            </div>
+        {{/if}}
+    </section>
+
+    <section>
+        <h1><small>{{loc 'subversion.indexation.latest'}}</small></h1>
+        <p>{{loc 'subversion.indexation.latest.message'}}</p>
+        <button id="subversion-indexation-dialog-latest-submit" type="button" class="btn btn-primary">{{loc 'subversion.indexation.latest.button'}}</button>
+    </section>
+
+    <section>
+        <h1><small>{{loc 'subversion.indexation.range'}}</small></h1>
+        <div class="form-inline">
+            <label for="subversion-indexation-dialog-range-from">{{loc 'subversion.indexation.range.from'}}</label>
+            <input id="subversion-indexation-dialog-range-from" class="input-mini" name="from" type="number" size="7" min="1" max="5000000" required="required"  />
+            <label for="subversion-indexation-dialog-range-to">{{loc 'subversion.indexation.range.to'}}</label>
+            <input id="subversion-indexation-dialog-range-to" class="input-mini" name="to" type="number" size="7" min="1" max="5000000" required="required" />
+            <button id="subversion-indexation-dialog-range-submit" type="button" class="btn btn-primary">{{loc 'subversion.indexation.range.button'}}</button>
+        </div>
+    </section>
+
+    <section>
+        <h1><small>{{loc 'subversion.indexation.full'}}</small></h1>
+        <p>{{loc 'subversion.indexation.full.message'}}</p>
+        <p class="alert alert-error">{{loc 'subversion.indexation.full.warning'}}</p>
+        <button id="subversion-indexation-dialog-full-submit" type="button" class="btn btn-danger">{{loc 'subversion.indexation.full.button'}}</button>
+    </section>
+
+    <!-- Separator -->
+    <div>&nbsp;</div>
+
+</form>
