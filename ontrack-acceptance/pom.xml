@@ -16,8 +16,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <thucydides.version>0.9.131-NS</thucydides.version>
-        <seleniumVersion>2.32.0</seleniumVersion>
+        <thucydides.version>0.9.237</thucydides.version>
+        <thucydides.jbehave.version>0.9.235</thucydides.jbehave.version>
+        <seleniumVersion>2.41.0</seleniumVersion>
         <!-- Browser driver -->
         <webdriver.driver>firefox</webdriver.driver>
         <!-- Selenium configuration -->
@@ -53,7 +54,7 @@
         <dependency>
             <groupId>net.thucydides</groupId>
             <artifactId>thucydides-jbehave-plugin</artifactId>
-            <version>${thucydides.version}</version>
+            <version>${thucydides.jbehave.version}</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

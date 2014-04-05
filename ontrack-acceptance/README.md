@@ -67,26 +67,18 @@ When running in a headless environment, one display must be made available for t
 The `ontrack-acceptance` module does not take charge of setting up such an environment and the infrastructure
 must do it.
 
-A typical solution is to use the [Jenkins Xvnc plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvnc+Plugin) when
+A typical solution is to use the [Jenkins Xvfb plug-in](https://wiki.jenkins-ci.org/display/JENKINS/Xvfb+Plugin) when
 running with Jenkins.
 
 At OS level:
 
-* `vncserver` must be installed:
+* `xvfb` must be installed:
 
-        sudo apt-get install vnc4server
-
-        # Launch vncserver and enter any password
-        vncserver :11
-
-        # Copy the created .vnc configuration to your Jenkins location, for example:
-        cp -r .vnc /var/lib/jenkins
-
-        # Adjust rights accordingly to this directory
+        sudo apt-get install xvfb
 
 * Firefox must be installed:
 
-        sudo apt-get install vnc4server
+        sudo apt-get install firefox
 
 
 ## Filtering the tests to be executed
