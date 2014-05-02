@@ -1050,6 +1050,10 @@ query.forEachPromotionLevel
     en -> Last build for each promotion level
     fr -> Dernier build pour chaque niveau de promotion
 
+query.forEachPromotionLevel.description
+    en -> overrides all other filters
+    fr -> ne prend en compte aucun des autres filtres
+
 query.sincePromotionLevel
     en -> Since last promotion level
     fr -> Depuis le dernier niveau de promotion
