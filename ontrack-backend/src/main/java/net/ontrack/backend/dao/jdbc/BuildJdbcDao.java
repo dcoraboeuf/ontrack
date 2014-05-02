@@ -8,6 +8,7 @@ import net.ontrack.backend.dao.BuildDao;
 import net.ontrack.backend.dao.PromotionLevelDao;
 import net.ontrack.backend.dao.ValidationStampDao;
 import net.ontrack.backend.dao.model.TBuild;
+import net.ontrack.backend.dao.model.TPromotionLevel;
 import net.ontrack.backend.dao.model.TValidationStamp;
 import net.ontrack.backend.db.SQL;
 import net.ontrack.core.model.*;
@@ -25,9 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -145,6 +144,10 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
     @Override
     @Transactional(readOnly = true)
     public List<TBuild> query(int branch, BuildFilter filter) {
+        // "Last build per promotion" overrides all other filters
+        if (filter.isForEachPromotionLevel()) {
+            return queryLastBuildForEachPromotionLevel(branch, filter);
+        }
         // Query root
         StringBuilder sql = new StringBuilder("SELECT DISTINCT(B.ID) FROM BUILD B" +
                 "                LEFT JOIN PROMOTED_RUN PR ON PR.BUILD = B.ID" +
@@ -253,12 +256,38 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
         );
     }
 
+    protected List<TBuild> queryLastBuildForEachPromotionLevel(int branch, BuildFilter filter) {
+        List<TBuild> builds = new ArrayList<>();
+        // List of promotion levels
+        List<TPromotionLevel> promotionLevels = promotionLevelDao.findByBranch(branch);
+        for (TPromotionLevel promotionLevel : promotionLevels) {
+            // Last build with promotion level
+            TBuild build = findLastBuildWithPromotionLevel(promotionLevel.getId());
+            if (build != null) {
+                builds.add(build);
+            }
+        }
+        // Sorts by build ID
+        Collections.sort(
+                builds,
+                new Comparator<TBuild>() {
+                    @Override
+                    public int compare(TBuild o1, TBuild o2) {
+                        return o2.getId() - o1.getId();
+                    }
+                }
+        );
+        // OK
+        return builds;
+    }
+
     @Override
     public TBuild findLastBuildWithValidationStamp(int validationStamp, Set<Status> statuses) {
         StringBuilder sql = new StringBuilder(
                 "SELECT VR.BUILD FROM VALIDATION_RUN_STATUS VRS\n" +
                         "INNER JOIN VALIDATION_RUN VR ON VR.ID = VRS.VALIDATION_RUN\n" +
-                        "WHERE VR.VALIDATION_STAMP = :validationStamp\n");
+                        "WHERE VR.VALIDATION_STAMP = :validationStamp\n"
+        );
         // Status criteria
         if (statuses != null && !statuses.isEmpty()) {
             sql.append(format("AND VRS.STATUS IN (%s)\n", getStatusesForSQLInClause(statuses)));
@@ -303,7 +332,8 @@ public class BuildJdbcDao extends AbstractJdbcDao implements BuildDao {
                     SQL.BUILD_CREATE,
                     params("branch", branch)
                             .addValue("name", name)
-                            .addValue("description", description));
+                            .addValue("description", description)
+            );
         } catch (DuplicateKeyException ex) {
             throw new BuildAlreadyExistsException(name);
         }
