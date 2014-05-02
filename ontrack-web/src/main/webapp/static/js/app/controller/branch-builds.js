@@ -60,7 +60,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         // Conversion into a BuildFilter
         var filter = {
             name: form.filterName,
-            forEachPromotionLevel: form.forEachPromotionLevel,
+            forEachPromotionLevel: form.forEachPromotionLevel == 'on',
             sincePromotionLevel: form.sincePromotionLevel,
             withPromotionLevel: form.withPromotionLevel,
             limit: form.limit
