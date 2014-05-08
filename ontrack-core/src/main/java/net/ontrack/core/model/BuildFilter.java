@@ -9,6 +9,7 @@ public class BuildFilter {
 
     private final String name;
     private final int limit;
+    private final boolean forEachPromotionLevel;
     private final String sincePromotionLevel;
     private final String withPromotionLevel;
     private final List<BuildValidationStampFilter> sinceValidationStamps;
@@ -19,6 +20,7 @@ public class BuildFilter {
         return new BuildFilter(
                 name,
                 limit,
+                forEachPromotionLevel,
                 sincePromotionLevel,
                 withPromotionLevel,
                 sinceValidationStamps,

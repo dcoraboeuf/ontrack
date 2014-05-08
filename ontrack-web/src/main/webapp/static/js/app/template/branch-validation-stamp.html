@@ -1,23 +1,29 @@
-<ul id="validation-stamp-list" class="list-sortable list-sortable-enabled">
-    {{#.}}
-        <li data-validation-stamp="{{name}}">
-            <img src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
-            <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
-            <!-- Owner -->
-            {{#owner}}
-                <span class="description">({{fullName}})</span>
-            {{/owner}}
-            {{#if admin}}
-                {{^first}}
-                    <i class="icon-arrow-up action action-optional validation-stamp-order" order-direction="down" order-stamp="{{name}}"></i>
-                {{/first}}
-                {{^last}}
-                    <i class="icon-arrow-down action action-optional validation-stamp-order" order-direction="up" order-stamp="{{name}}"></i>
-                {{/last}}
-                <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
-                <!-- Ownership -->
-                <i class="icon-user action action-optional validation-stamp-owner" owner-stamp="{{name}}" title="{{loc 'validation_stamp.owner.change' }}"></i>
-            {{/if}}
-        </li>
-    {{/.}}
-</ul>
+<div>
+    {{#if length}}
+        <ul id="validation-stamp-list" class="list-sortable list-sortable-enabled">
+            {{#.}}
+                <li data-validation-stamp="{{name}}">
+                    <img src="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}/image" />
+                    <a href="gui/project/{{branch.project.name}}/branch/{{branch.name}}/validation_stamp/{{name}}">{{name}}</a>
+                    <!-- Owner -->
+                    {{#owner}}
+                        <span class="description">({{fullName}})</span>
+                    {{/owner}}
+                    {{#if admin}}
+                        {{^first}}
+                            <i class="icon-arrow-up action action-optional validation-stamp-order" order-direction="down" order-stamp="{{name}}"></i>
+                        {{/first}}
+                        {{^last}}
+                            <i class="icon-arrow-down action action-optional validation-stamp-order" order-direction="up" order-stamp="{{name}}"></i>
+                        {{/last}}
+                        <div id="validation-stamp-{{name}}-order-loading" class="hidden"></div>
+                        <!-- Ownership -->
+                        <i class="icon-user action action-optional validation-stamp-owner" owner-stamp="{{name}}" title="{{loc 'validation_stamp.owner.change' }}"></i>
+                    {{/if}}
+                </li>
+            {{/.}}
+        </ul>
+    {{else}}
+        <div class="alert alert-warning">{{loc 'general.empty' }}</div>
+    {{/if}}
+</div>

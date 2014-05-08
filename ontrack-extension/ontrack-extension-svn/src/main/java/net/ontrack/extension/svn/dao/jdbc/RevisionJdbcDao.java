@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
@@ -88,7 +89,7 @@ public class RevisionJdbcDao extends AbstractJdbcDao implements RevisionDao {
                 params
                         .addValue("author", author)
                         .addValue("creation", SQLUtils.toTimestamp(date))
-                        .addValue("message", StringUtils.abbreviate(dbMessage, MESSAGE_LENGTH))
+                        .addValue("message", Objects.toString(StringUtils.abbreviate(dbMessage, MESSAGE_LENGTH), ""))
                         .addValue("branch", branch)
         );
     }

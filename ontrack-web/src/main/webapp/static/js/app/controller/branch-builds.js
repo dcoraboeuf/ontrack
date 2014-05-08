@@ -4,6 +4,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         return {
             name: '',
             limit: 10,
+            forEachPromotionLevel: false,
             sincePromotionLevel: '',
             withPromotionLevel: '',
             sinceValidationStamps: [],
@@ -59,6 +60,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
         // Conversion into a BuildFilter
         var filter = {
             name: form.filterName,
+            forEachPromotionLevel: form.forEachPromotionLevel == 'on',
             sincePromotionLevel: form.sincePromotionLevel,
             withPromotionLevel: form.withPromotionLevel,
             limit: form.limit
@@ -108,6 +110,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
     function isFilterActive(project, branch) {
         var filter = getCurrentFilterFn(project, branch)();
         return filter.limit != 10
+            || filter.forEachPromotionLevel
             || filter.withPromotionLevel != ''
             || filter.sincePromotionLevel != ''
             || (filter.withValidationStamps && filter.withValidationStamps.length > 0)
@@ -148,6 +151,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
 
     function clearFilter(config) {
         // Clears the form
+        config.form.find('#forEachPromotionLevel').removeAttr('checked');
         config.form.find('#withPromotionLevel').val('');
         config.form.find('#sincePromotionLevel').val('');
         config.form.find('#withValidationStamp').val('');
@@ -179,6 +183,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                         var form = {
                             filterName: filter.name,
                             limit: filter.limit,
+                            forEachPromotionLevel: filter.forEachPromotionLevel,
                             withPromotionLevel: filter.withPromotionLevel,
                             sincePromotionLevel: filter.sincePromotionLevel,
                             withProperty: '',
@@ -204,6 +209,7 @@ define(['render', 'ajax', 'dynamic', 'common', 'dialog', 'jquery'], function (re
                             form.withPropertyValue = filter.withProperty.value;
                         }
                         // Initialization of fields
+                        config.form.find('#forEachPromotionLevel').prop('checked', form.forEachPromotionLevel);
                         config.form.find('#withPromotionLevel').val(form.withPromotionLevel);
                         config.form.find('#sincePromotionLevel').val(form.sincePromotionLevel);
                         config.form.find('#withValidationStamp').val(form.withValidationStamp);

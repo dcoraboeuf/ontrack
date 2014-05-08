@@ -243,11 +243,13 @@ public class DefaultIndexationService implements IndexationService, ScheduledSer
         // Log values
         long revision = logEntry.getRevision();
         String author = logEntry.getAuthor();
-        // Date to date time
-        Date date = logEntry.getDate();
-        DateTime dateTime = new DateTime(date.getTime(), DateTimeZone.UTC);
-        // Message
         String message = logEntry.getMessage();
+        Date date = logEntry.getDate();
+        // Sanitizes the possible null values
+        author = Objects.toString(author, "");
+        message = Objects.toString(message, "");
+        // Date to date time
+        DateTime dateTime = date != null ? new DateTime(date.getTime(), DateTimeZone.UTC) : new DateTime(DateTimeZone.UTC);
         // Branch for the revision
         String branch = getBranchForRevision(repository, logEntry);
         // Logging

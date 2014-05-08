@@ -91,13 +91,15 @@ public class DefaultJIRAService extends AbstractIssueService implements JIRAServ
 
     protected Set<String> extractJIRAIssuesFromMessage(JIRAConfiguration configuration, String message) {
         Set<String> result = new HashSet<>();
-        Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(message);
-        while (matcher.find()) {
-            // Gets the issue
-            String issueKey = matcher.group();
-            // Adds to the result
-            if (configuration.isIssue(issueKey)) {
-                result.add(issueKey);
+        if (StringUtils.isNotBlank(message)) {
+            Matcher matcher = JIRAConfiguration.ISSUE_PATTERN.matcher(message);
+            while (matcher.find()) {
+                // Gets the issue
+                String issueKey = matcher.group();
+                // Adds to the result
+                if (configuration.isIssue(issueKey)) {
+                    result.add(issueKey);
+                }
             }
         }
         // OK

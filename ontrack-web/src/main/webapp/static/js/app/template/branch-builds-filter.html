@@ -6,6 +6,13 @@
         </p>
     {{/if}}
     <p>
+        <label for="forEachPromotionLevel" style="font-size: 1em">
+            {{loc 'query.forEachPromotionLevel'}}
+            <input id="forEachPromotionLevel" name="forEachPromotionLevel" class="input-medium" type="checkbox" />
+            <span class="description">({{loc 'query.forEachPromotionLevel.description'}})</span>
+        </label>
+    </p>
+    <p>
         {{loc 'query.withPromotionLevel' }}
         <select id="withPromotionLevel" name="withPromotionLevel" class="input-medium">
             <option value="">&nbsp;</option>
