@@ -42,4 +42,10 @@ public class AbstractLinkPropertyExtensionDescriptorTest {
         descriptor.validate(link);
     }
 
+    @Test
+    public void validate_empty_ok() {
+        String link = "";
+        descriptor.validate(link);
+    }
+
 }

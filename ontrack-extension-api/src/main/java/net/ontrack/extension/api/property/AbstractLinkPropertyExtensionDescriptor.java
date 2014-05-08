@@ -2,6 +2,7 @@ package net.ontrack.extension.api.property;
 
 import net.ontrack.core.support.InputException;
 import net.sf.jstring.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -24,6 +25,11 @@ public abstract class AbstractLinkPropertyExtensionDescriptor extends AbstractPr
      */
     @Override
     public void validate(String value) throws InputException {
+        // Empty value is allowed for property deletion
+        if(StringUtils.isEmpty(value)) {
+            return;
+        }
+
         try {
             // URI validation
             new URI(value);
