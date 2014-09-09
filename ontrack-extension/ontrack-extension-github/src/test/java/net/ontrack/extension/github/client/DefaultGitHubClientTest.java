@@ -51,7 +51,7 @@ public class DefaultGitHubClientTest {
                         "Management of extensions",
                         "Extensions can be enabled/disabled.\n" +
                                 "Extensions have dependencies",
-                        "<ul>\n" +
+                        "<ul class=\"task-list\">\n" +
                                 "<li>Extensions can be enabled/disabled.</li>\n" +
                                 "<li>Extensions have dependencies</li>\n" +
                                 "</ul>",
